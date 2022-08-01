@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,5 +41,10 @@ Il faut renseigner au moins un des mots-clés MAILLAGE_N ou RESU_INIT.
     5 : _("""
 Le maillage est obsolète : les groupes %(k1)s ne sont pas conformes aux orientations de la cuve.
 """),
-
+    6 : _("""
+Le fichier THYC est invalide : il n'y a pas de cohérence entre le barycentre et l'épaisseur des mailles.
+"""),
+    7 : _("""
+On ne trouve que %(i1)d mailles THYC associées aux %(i2)d grilles.
+"""),
 }

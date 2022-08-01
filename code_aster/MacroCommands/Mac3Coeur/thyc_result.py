@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,284 +17,354 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: pierre.badel at edf.fr
+# person_in_charge: francesco.bettonte at edf.fr
 
-"""
-Ce module définit des fonctions permettant de manipuler un résultat issu de THYC
-"""
+import numpy as np
+from collections import OrderedDict
+from .mac3coeur_commons import (get_first_digit, check_centers_and_size as check,
+                               check_contiguous, find_nearest_idx,
+                               MAC3_ROUND)
 
-import re
+class ThycResult:
 
-from ...Cata.Syntax import _F
-from ...Commands import AFFE_CHAR_MECA, AFFE_CHAR_MECA_F, DEFI_FONCTION
+    _Z = "Z(m)"
+    _Ep = "ep(m)"
+    _K = "K"
+    _method_tr = "M2TEN"
 
+    @property
+    def method_tr(self):
+        return self._method_tr
 
-class ThycResult(object):
+    @method_tr.setter
+    def method_tr(self, v):
+        assert v in ("M1DEV", "M2TEN")
+        self._method_tr = v
 
-    """Object to represent a result read from THYC"""
-    # TODO: encapsulate the following functions as methods of ThycResult
-    __slots__ = ('chtr_nodal', 'chtr_poutre', 'chax_nodal', 'chax_poutre')
+    @property
+    def grids_position(self):
+        if self._grids_position_meters is None:
+            msg = "grids_position not set"
+            raise IOError(msg)
+        return self._grids_position_meters
 
+    @grids_position.setter
+    def grids_position(self, v):
+        assert len(v) in (8, 10)
+        self._grids_position_meters = v
 
-def cherche_rubrique_nom(fobj, nom):
-    """Chercher une rubrique definie par son nom"""
-    while 1:
-        line = fobj.readline()
-        if not line:
-            break
-        # if line.strip() == nom:
-        #     return 1
-        #strtmp = line[0:len(line) - 1]
-        #if len(line) >= len(nom):
-            #if line[0:len(nom)] == nom:
-                #return 1
-        if re.search(nom,line) : return True
-    return None
+    @property
+    def grids_index(self):
+        return [find_nearest_idx(i, self.cells_center, self.cells_size)
+                for i in self.grids_position]
 
-def compute_ep_from_Z(line) :
-  Zstr=line[2:len(line)]
-  size=len(Zstr)
-  Z=size*[None]
-  for i in range(size) :
-    Z[i]=float(Zstr[i])
+    @property
+    def cells_number(self):
+        """
+        Number of THYC cells
+        """
+        return self.cells_id.size
 
-  ep=[None]*size
-  ep[0]=2*float(Z[0])
-  for i in range(size-1) :
-    ep[i+1]=2*(Z[i+1]-Z[i])-ep[i]
-  epstr=['ep(m)', '=']
-  for i in range(size) :
-    epstr.append(ep[i])
-  return(epstr)
+    @property
+    def cells_center(self):
+        """
+        Center of mass of the THYC cells
+        """
+        return self._thyc_mesh[self._Z].round(MAC3_ROUND)
 
-def definir_chargement_transverse(cote, epaisseur, pos_thyc, force, prod):
-    """XXX pas documenté, propre à lire_resu_thyc"""
-    # Determination du chargement transverse sur les crayons pour un
-    # assemblage donne.
-    kk = 2
-    eps = 1.0e-6
+    @property
+    def cells_id(self):
+        """
+        Ids of the THYC cells
+        """
+        return self._thyc_mesh[self._K].round(MAC3_ROUND)
 
-    defi_fonc = []
-    # Pour aller de l embout inferieur jusqu'a la premiere grille.
-    som_l = 0.0
-    som_f = 0.0
-    for k in range(kk, pos_thyc[0]):
-        som_l = som_l + float(epaisseur[k])
-        som_f = som_f + prod * float(force[k])
-    som_feq = som_f / (som_l + 0.25 * float(epaisseur[pos_thyc[0]]))
-    defi_fonc.append(
-        float(cote[kk]) - 0.5 * float(epaisseur[kk]) - eps)
-    defi_fonc.append(som_feq)
-    defi_fonc.append(
-        float(cote[pos_thyc[0]]) - 0.5 * float(epaisseur[pos_thyc[0]]) + eps)
-    defi_fonc.append(som_feq)
-    defi_fonc.append(float(cote[pos_thyc[0]]))
-    defi_fonc.append(0.0)
+    @property
+    def cells_size(self):
+        """
+        Axial dimension of the THYC cells
+        """
+        return self._thyc_mesh[self._Ep].round(MAC3_ROUND)
 
-    # Pour aller de la premiere a la derniere grille.
-    for j in range(0, len(pos_thyc) - 1):
-        som_l = 0.0
-        som_f = 0.0
-        for k in range(pos_thyc[j] + 1, pos_thyc[j + 1]):
-            som_l = som_l + float(epaisseur[k])
-            #print('epaisseur = %s'%epaisseur[k])
-            som_f = som_f + prod * float(force[k])
-        #print('som_l = %f ; som_f = %f'%(som_l,som_f))
-        som_feq = som_f / (som_l + 0.25 * (float(epaisseur[pos_thyc[j]]) + float(epaisseur[pos_thyc[j + 1]])))
-        #print('epaisseur avant = %s ; epaisseur apres = %s'%(epaisseur[pos_thyc[j]],epaisseur[pos_thyc[j + 1]]))
-        #print('cote grille avant = %s ; cote grille apres = %s'%(cote[pos_thyc[j]],cote[pos_thyc[j + 1]]))
-        defi_fonc.append(
-            float(cote[pos_thyc[j]]) + 0.5 * float(epaisseur[pos_thyc[j]]) - eps)
-        defi_fonc.append(som_feq)
-        defi_fonc.append(
-            float(cote[pos_thyc[j + 1]]) - 0.5 * float(epaisseur[pos_thyc[j + 1]]) + eps)
-        defi_fonc.append(som_feq)
-        defi_fonc.append(float(cote[pos_thyc[j + 1]]))
-        defi_fonc.append(0.0)
+    @property
+    def cells_size_from_center(self):
+        """
+        Axial dimension of the THYC cells computed from the barycenter
+        """
+        cells_size = np.zeros(self.cells_center.size)
+        cells_size[0] = 2*self.cells_center[0]
+        delta_center = self.cells_center[1:] - self.cells_center[:-1]
+        for i in range(delta_center.size):
+            cells_size[i+1] = 2*delta_center[i] - cells_size[i]
+        return cells_size.round(MAC3_ROUND)
 
-    # Pour aller de la derniere grille jusqu'a l embout superieur.
-    som_l = 0.0
-    som_f = 0.0
-    for k in range(pos_thyc[len(pos_thyc) - 1] + 1, len(cote)):
-        som_l = som_l + float(epaisseur[k])
-        som_f = som_f + prod * float(force[k])
-    som_feq = som_f / (som_l + 0.25 * float(epaisseur[len(cote) - 1]))
-    defi_fonc.append(float(cote[pos_thyc[len(pos_thyc) - 1]]) + 0.5 * float(
-        epaisseur[pos_thyc[len(pos_thyc) - 1]]) - eps)
-    defi_fonc.append(som_feq)
-    defi_fonc.append(
-        float(cote[len(cote) - 1]) + 0.5 * float(epaisseur[len(cote) - 1]) + eps)
-    defi_fonc.append(som_feq)
+    @property
+    def fa_positions(self):
+        """
+        Number of fuel assemblies positions
+        """
+        pos_ax = self._thyc_data["AXIAL"].keys()
+        pos_trx = self._thyc_data[self.method_tr]["X"].keys()
+        pos_try = self._thyc_data[self.method_tr]["Y"].keys()
+        assert (pos_ax == pos_trx == pos_try)
+        return list(pos_ax)
 
-    _resu = DEFI_FONCTION(NOM_PARA='X',
-                          VALE=defi_fonc,
-                          PROL_DROITE='CONSTANT',
-                          PROL_GAUCHE='CONSTANT',)
-    return _resu
+    @property
+    def fa_number(self):
+        """
+        Number of fuel assemblies positions
+        """
+        return len(self.fa_positions)
 
+    def axial_force(self, i, j):
+        """
+        Axial force along the Z(THYC) axis
 
-def lire_resu_thyc(coeur, MODELE, nom_fic):
-    """XXX
-    À définir dans un autre module : fonction qui prend un Coeur en argument
-    ou un objet ThycResult avec .read(), .hydr_load()... pour récupérer les
-    différents résultats
-    """
-    # Fonction multiplicative de la force hydrodynamique axiale.
-    # On multiplie par 0.708 les forces hydrodynamiques a froid pour obtenir
-    # celles a chaud.
-    FOHYFR_1 = 1.0    # Valeur a froid
-    FOHYCH_1 = 0.708  # Valeur a chaud
-    res = ThycResult()
+        Arguments:
+            i (int): The X (THYC) position of the assembly
+            j (int): The Y (THYC) position of the assembly
 
-    f = open(nom_fic, 'r')
-    f2 = open(nom_fic, 'r')
-    cherche_rubrique_nom(f, 'EFFORTS TRANSVERSES selon X en N')
-    cherche_rubrique_nom(f2, 'EFFORTS TRANSVERSES selon Y en N')
-    line = f.readline().split()
-    line2 = f2.readline().split()
-    line2 = f2.readline().split()
-    fline=f.readline().split()
-    version=None
-    if (fline[0] == "ep(m)"):
-      version = "Old"
-    elif (fline[0] == "Z(m)"):
-      version = "New"
-    else :
-      raise KeyError("invalid thyc result file")
-    # Recuperation de l'epaisseur des mailles dans Thyc
-    #epaisseur = f.readline().split()
-    #if (epaisseur[0] != "ep(m)"):
-        #raise KeyError("invalid epaisseur")
-    if version == "Old" :
-      cote = f.readline().split()
-    else :
-      cote=fline
-    #if (cote[0] != "Z(m)"):
-        #raise KeyError("invalid cote axial")
-    epaisseur = compute_ep_from_Z(cote)
-    #print('epaisseur = %s'%epaisseur)
-    j = 0
-    pos_thyc = []
-    for i in range(2, len(cote)):
-        # Positionnement des grilles
-        if ((coeur.altitude[j] > (float(cote[i]) - float(epaisseur[i]) / 2.)) & (coeur.altitude[j] < (float(cote[i]) + float(epaisseur[i]) / 2.))):
-            pos_thyc.append(i)
-            j = j + 1
-            if (j == len(coeur.altitude)):
-                break
+        Returns:
+            (array): The axial force for the assembly (i,j).
 
-    for i in range(2, len(cote)):
-        # Positionnement des crayons pour application des efforts transverses
-        if ((coeur.XINFC > (float(cote[i]) - float(epaisseur[i]) / 2.)) & (coeur.XINFC < (float(cote[i]) + float(epaisseur[i]) / 2.))):
-            pos_gril_inf = i
-        if ((coeur.XSUPC > (float(cote[i]) - float(epaisseur[i]) / 2.)) & (coeur.XSUPC < (float(cote[i]) + float(epaisseur[i]) / 2.))):
-            pos_gril_sup = i
+        """
+        return self._thyc_data["AXIAL"][i,j][0]
 
-    # Recuperation des efforts transverses sur les grilles
-    mcf = []
-    mcft = []
-    chThyc={}
-    for i in range(0, coeur.NBAC):
-        line = f.readline().split()
-        line2 = f2.readline().split()
-        #print('line = ',line)
-        #print('line2 = ',line2)
-        posi_aster1 = coeur.position_fromthyc(int(line[0]),int(line[1]))
-        posi_aster2 = coeur.position_fromthyc(int(line2[0]),int(line2[1]))
-        if (posi_aster1 != posi_aster2):
-            raise KeyError("position d assemblage avec ordre different")
+    def transversal_force_x(self, i, j):
+        """
+        Transversal force along the X(THYC) axis
 
-        for j in range(0, len(pos_thyc)):
-            chThyc['X']=float(line[pos_thyc[j]])  / 4.0
-            chThyc['Y']=float(line2[pos_thyc[j]]) / 4.0
-            chAsterY=coeur.coefFromThyc('Y')*chThyc[coeur.axeFromThyc('Y')]
-            chAsterZ=coeur.coefFromThyc('Z')*chThyc[coeur.axeFromThyc('Z')]
-            #print 'chAsterY , type()',chAsterY,type(chAsterY)
-            mtmp = (_F(GROUP_NO='G_' + posi_aster1 + '_' + str(j + 1), FY=chAsterY , FZ=chAsterZ),)
-            mcf.extend(mtmp)
+        Arguments:
+            i (int): The X (THYC) position of the assembly
+            j (int): The Y (THYC) position of the assembly
 
-        chThyc['X']=definir_chargement_transverse(cote, epaisseur, pos_thyc, line, coeur.coefToThyc('X'))
-        chThyc['Y']=definir_chargement_transverse(cote, epaisseur, pos_thyc, line2, coeur.coefToThyc('Y'))
+        Returns:
+            (array): The transversal force along the X axis for the assembly (i,j).
+        """
+        return self._thyc_data[self.method_tr]["X"][i,j]
 
-        _resu_fy = chThyc[coeur.axeFromThyc('Y')]
-        _resu_fz = chThyc[coeur.axeFromThyc('Z')]
-        mtmp = (
-            _F(GROUP_MA='CR_' + posi_aster1, FY=_resu_fy, FZ=_resu_fz),)
-        mcft.extend(mtmp)
+    def transversal_force_y(self, i, j):
+        """
+        Transversal force along the Y(THYC) axis
 
-    _co = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=mcf)
-    res.chtr_nodal = _co
-    _co = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_POUTRE=mcft)
-    res.chtr_poutre = _co
+        Arguments:
+            i (int): The X (THYC) position of the assembly
+            j (int): The Y (THYC) position of the assembly
 
-    # Recuperation des efforts axiaux
-    cherche_rubrique_nom(
-        f, 'FORCE HYDRODYNAMIQUE AXIALE')
-    line = f.readline().split()
-    line = f.readline().split()
-    line = f.readline().split()
+        Returns:
+            (array): The transversal force along the Y axis for the assembly (i,j).
+        """
+        return self._thyc_data[self.method_tr]["Y"][i,j]
 
-    mcp = []
-    mcpf = []
-    for i in range(0, coeur.NBAC):
-        line = f.readline().split()
-        posi_aster=coeur.position_fromthyc(int(line[0]),int(line[1]))
-        idAC = coeur.position_todamac(posi_aster)
+    def __init__(self):
+        self._reset_structures()
+        self._grids_position_meters = None
 
-        #print(list(coeur.collAC.keys()))
+    def _reset_structures(self):
 
-        ac = coeur.collAC[idAC]
-        KTOT = ac.K_GRM * (ac.NBGR - 2) + ac.K_GRE * 2 + ac.K_EBSU + ac.K_TUB + ac.K_EBIN
+        self._thyc_mesh = OrderedDict()
+        self._thyc_data = OrderedDict()
+        self._thyc_data["AXIAL"] = OrderedDict()
+        self._thyc_data["M2TEN"] = {"X" : OrderedDict(), "Y" : OrderedDict()}
+        self._thyc_data["M1DEV"] = {"X" : OrderedDict(), "Y" : OrderedDict()}
 
-        # Force axiale pour une grille extremite (inf)
-        mtmp = (_F(GROUP_NO='G_' + posi_aster + '_' + str(1),
-                FX=float(line[2]) / FOHYCH_1 * ac.K_GRE / KTOT / 4.0),)
-        mcp.extend(mtmp)
+    def _read_mesh_data(self, thyclines):
 
-        # Force axiale pour chacune des grilles de mélange
-        for j in range(1, ac.NBGR - 1):
-            mtmp = (_F(GROUP_NO='G_' + posi_aster + '_' + str(j + 1),
-                    FX=float(line[2]) / FOHYCH_1 * ac.K_GRM / KTOT / 4.0),)
-            mcp.extend(mtmp)
+        mandatory_kws = [self._K, self._Ep, self._Z]
+        for line in thyclines:
+            spline = line.split()
+            for key_mesh in mandatory_kws:
+                if key_mesh.lower() in line.lower() and len(self._thyc_mesh) < 3:
+                    idx = get_first_digit(spline)
+                    typ = np.int if key_mesh is "K" else np.float
+                    self._thyc_mesh[key_mesh] = np.array(spline[idx:], dtype=typ)
 
-        # Force axiale pour une grille extremite (sup)
-        mtmp = (_F(GROUP_NO='G_' + posi_aster + '_' + str(ac.NBGR),
-                FX=float(line[2]) / FOHYCH_1 * ac.K_GRE / KTOT / 4.0),)
-        mcp.extend(mtmp)
+        # Check mesh data
+        for key_mesh in mandatory_kws:
+            if not key_mesh in self._thyc_mesh:
+                msg = "Mesh %s not found"%key_mesh
+                raise IOError(msg)
 
-        # Force axiale pour l'embout inferieur
-        mtmp = (
-            _F(GROUP_NO='PI_' + posi_aster, FX=float(line[2]) / FOHYCH_1 * ac.K_EBIN / KTOT),)
-        mcp.extend(mtmp)
+        if check_contiguous(self._thyc_mesh[self._K]) is False:
+            msg = "THYC discretization (K) is not contiguous"
+            raise IOError(msg)
 
-        # Force axiale pour l'embout superieur
-        mtmp = (
-            _F(GROUP_NO='PS_' + posi_aster, FX=float(line[2]) / FOHYCH_1 * ac.K_EBSU / KTOT),)
-        mcp.extend(mtmp)
+        cells_count = list(set([len(i) for i in self._thyc_mesh.values()]))
+        if len(cells_count) != 1:
+            msg = "Number of items mismatch between %s"%mandatory_kws
+            raise IOError(msg)
 
-        # Force axiale pour les crayons (appel a DEFI_FONCTION)
-        vale = float(line[2]) / FOHYCH_1 * ac.K_TUB / KTOT * ac.NBCR / (ac.NBCR + ac.NBTG) / ac.LONCR
-        _FXC = DEFI_FONCTION(
-            NOM_PARA='X', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(ac.XINFC, vale, ac.XSUPC, vale))
-        mtmp = (_F(GROUP_MA='CR_' + posi_aster, FX=_FXC),)
-        mcpf.extend(mtmp)
+        if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 0) is False:
+            # Premier cas, decalage de 1 verifié sur tout l'axe, on corrige
+            if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 1) is True:
+                ep0 = 2*(self._thyc_mesh[self._Z][1] - self._thyc_mesh[self._Z][0]) - self._thyc_mesh[self._Ep][0]
+                self._thyc_mesh[self._Ep] = np.roll(self._thyc_mesh[self._Ep], 1)
+                self._thyc_mesh[self._Ep][0] = ep0
+                if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 0) is False:
+                    msg = "Invalid THYC file : {} and {} do not match".format(self._Z, self._Ep)
+                    raise IOError(msg)
+            # Second cas, decalage de 1 vérifié sur 2 positions, on tolere.
+            elif check(self._thyc_mesh[self._Z][:2], self._thyc_mesh[self._Ep][:2], 0) is True:
+                pass
+            else:
+                msg = "Invalid THYC file : {} and {} do not match and cannot be repaired".format(self._Z, self._Ep)
+                raise IOError(msg)
 
-        # Force axiale pour les tubes-guides (appel a DEFI_FONCTION)
-        vale = float(line[2]) / FOHYCH_1 * ac.K_TUB / KTOT * ac.NBTG / (
-            ac.NBCR + ac.NBTG) / ac.LONTU
-        _FXT = DEFI_FONCTION(
-            NOM_PARA='X', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(ac.XINFT, vale, ac.XSUPT, vale))
-        mtmp = (_F(GROUP_MA='TG_' + posi_aster, FX=_FXT),)
-        mcpf.extend(mtmp)
+        # Z shift
+        z0mac3 = self._thyc_mesh[self._Z][0] - 0.5*self._thyc_mesh[self._Ep][0]
+        self._thyc_mesh[self._Z] -= z0mac3
 
-    _co = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=mcp)
-    res.chax_nodal = _co
-    _co = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_POUTRE=mcpf)
-    res.chax_poutre = _co
+    def _read_thyc_data(self, thyclines):
 
-    f.close()
-    f2.close()
+        for line in thyclines:
+            spline = line.split()
 
-    return res
+            # Recherche des blocs dans les lignes *
+            if all(i in line for i in ("*", "en (N)")):
+                if "AXIAL" in line :
+                    key_block = "AXIAL"
+                elif "TENSEURS" in line:
+                    key_block = "M2TEN"
+                elif "DEVELOPPEE" in line:
+                    key_block = "M1DEV"
+                else:
+                    assert(False)
+
+            # Recherches des valeurs dans les autres lignes
+            if (not "*" in line.strip() and len(line.strip()) !=0):
+                assert(key_block is not None)
+
+                if "TRANSVERSES" in line:
+                    key_dir = spline[-3]
+                    assert key_dir in ("X", "Y")
+
+                else:
+                    vline = tuple(map(float, spline))
+                    i, j = int(vline[0]), int(vline[1])
+                    forces = np.array(vline[2:])
+                    errmsg = "Items mismatch for position '%s' (%s, %s)"
+
+                    if key_block in ("M2TEN", "M1DEV"):
+                        self._thyc_data[key_block][key_dir][i,j] = forces
+                        if not len(forces) == self.cells_number:
+                            raise IOError(errmsg%(key_block, i, j))
+                    elif key_block in ("AXIAL",):
+                        self._thyc_data[key_block][i,j] = forces
+                        if not len(forces) == 1:
+                            raise IOError(errmsg%(key_block, i, j))
+                    else :
+                        assert(False)
+
+    def read_thyc_file(self, fname):
+        """
+        Transversal force along the Y(THYC) axis.
+
+        Up to THYC 6.0 the file EFFORTS is buggy, this reader performs a fix  a posteriori.
+
+        Arguments:
+            fname (str): Path to the THYC file (EFFORTS)
+
+        """
+        self._reset_structures()
+
+        with open(fname) as f:
+            all_lines = f.readlines()
+
+        self._read_mesh_data(all_lines)
+        # Keep only lines without mesh data
+        sub_lines = [l for l in all_lines
+                     if not any(x.lower() in l.lower() for x in [self._K, self._Ep, self._Z])]
+        self._read_thyc_data(sub_lines)
+
+    def get_transversal_load_profile(self, i, j, direction, coeff):
+        """
+        Transversal force along the X(THYC) axis
+
+        Arguments:
+            i (int): The X (THYC) position of the assembly
+            j (int): The Y (THYC) position of the assembly
+            direction (str): The load direction (THYC), either X or Y
+            coeff (float): Multiplicative coefficient
+
+        Returns:
+            (px, py): The load profile along the axial axis.
+        """
+
+        assert direction in ("X", "Y")
+
+        force =  self._thyc_data[self.method_tr][direction][i,j]
+        epaisseur = self.cells_size_from_center
+        cote = self.cells_center
+
+        eps = 1.0e-6
+
+        x_axis = []
+        y_axis = []
+        applied_force = []
+
+        # Pour aller de l embout inferieur jusqu'a la premiere grille.
+        start_eb = 0
+        stop_eb = self.grids_index[0]
+        som_l = sum(epaisseur[start_eb:stop_eb])
+        som_f = sum(coeff*force[start_eb:stop_eb])
+        som_feq = som_f / (som_l + 0.25*epaisseur[stop_eb])
+
+        # Point1
+        x1 = cote[start_eb] - 0.5*epaisseur[start_eb] - eps
+        y1 = som_feq
+        # Point2
+        x2 = cote[stop_eb] - 0.5*epaisseur[stop_eb] + eps
+        y2 = som_feq
+        # Point3
+        x3 = cote[stop_eb]
+        y3 = 0.0
+
+        x_axis.extend([x1, x2, x3])
+        y_axis.extend([y1, y2, y3])
+        applied_force.extend([som_f, som_f, 0.0])
+
+        # Pour aller de la premiere a la derniere grille.
+        for g in range(0, len(self.grids_index)-1):
+            start_me = self.grids_index[g]
+            stop_me = self.grids_index[g+1]
+
+            som_l = sum(epaisseur[start_me+1:stop_me])
+            som_f = sum(coeff*force[start_me+1:stop_me])
+            som_feq = som_f / (som_l + 0.25*(epaisseur[start_me] + epaisseur[stop_me]))
+
+            # Point1
+            x1 = cote[start_me] + 0.5*epaisseur[start_me] - eps
+            y1 = som_feq
+            # Point2
+            x2 = cote[stop_me] - 0.5*epaisseur[stop_me] + eps
+            y2 = som_feq
+            # Point3
+            x3 = cote[stop_me]
+            y3 = 0.0
+
+            x_axis.extend([x1, x2, x3])
+            y_axis.extend([y1, y2, y3])
+            applied_force.extend([som_f, som_f, 0.0])
+
+        # Pour aller de la derniere grille jusqu'a l embout superieur.
+        start_eh = self.grids_index[-1]
+        stop_eh = len(cote)-1
+
+        som_l = sum(epaisseur[start_eh+1:stop_eh+1])
+        som_f = sum(coeff*force[start_eh+1:stop_eh+1])
+        som_feq = som_f / (som_l + 0.25 * epaisseur[stop_eh])
+
+        x1 = cote[start_eh] + 0.5*epaisseur[start_eh] - eps
+        y1 = som_feq
+        x2 = cote[stop_eh] + 0.5*epaisseur[stop_eh] + eps
+        y2 = som_feq
+
+        x_axis.extend([x1, x2])
+        y_axis.extend([y1, y2])
+        applied_force.extend([som_f, som_f])
+
+        x_axis = [round(i, MAC3_ROUND) for i in x_axis]
+        y_axis = [round(i, MAC3_ROUND) for i in y_axis]
+        applied_force = [round(i, MAC3_ROUND) for i in applied_force]
+
+        return x_axis, y_axis, applied_force

@@ -33,8 +33,7 @@ from ...Messages import UTMESS
 from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
-
-MAC3_ROUND = 14
+from .mac3coeur_commons import MAC3_ROUND
 
 class CollectionDiscretChoc():
 
