@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,14 +36,14 @@ from ...Helpers.UniteAster import UniteAster
 from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
-from .thyc_result import lire_resu_thyc
+from .thyc_load import lire_resu_thyc
 
 
 def calc_mac3coeur_ops(self, **args):
     """Fonction d'appel de la macro CALC_MAC3COEUR"""
 
-    MasquerAlarme('MECANONLINE5_57') # DEPL_CALCULE 
-    MasquerAlarme('POUTRE0_59') # Coeff de poisson non constant 
+    MasquerAlarme('MECANONLINE5_57') # DEPL_CALCULE
+    MasquerAlarme('POUTRE0_59') # Coeff de poisson non constant
 
     analysis = Mac3CoeurCalcul.factory(self, args)
     result = analysis.run()
@@ -403,10 +403,10 @@ class Mac3CoeurCalcul(object):
 
         coef_mult_thv = self.mcf['COEF_MULT_THV'] or 1.
         coef_mult_tht = self.mcf['COEF_MULT_THT'] or 1.
-        
+
         fmult_ax = coeur.definition_temp_hydro_axiale(coef_mult_thv)
         fmult_tr = coeur.definition_effort_transverse(coef_mult_tht)
-        
+
         load_ax = [
             _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax,),
             _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax,),
@@ -596,7 +596,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         self.use_archimede = self.mcf['ARCHIMEDE']
         self._maintien_grille = (self.mcf['MAINTIEN_GRILLE'] == 'OUI')
         super()._prepare_data(noresu)
-    
+
     @property
     @cached_property
     def mesh(self):
@@ -641,7 +641,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     def dechargePSC(self,RESU) :
         coeur = self.coeur
-        
+
         CALC_CHAMP(reuse =RESU,
                    RESULTAT=RESU,
                    PRECISION=1.E-08,
@@ -697,21 +697,21 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         RetablirAlarme('COMPOR4_17')
 
         _tini = __NUL.LIST_PARA()['INST'][-1]
-        
+
         __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                              OPERATION='EXTR',
                              PRECISION=1.0E-08,
                              RESULTAT=__NUL,
                              NOM_CHAM='SIEF_ELGA',
                              INST=_tini,)
-        
+
         SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                              MODELE=self.model,
                              OPERATION='ASSE',
                              ASSE=(_F(TOUT='OUI',
                                       CHAM_GD=__CHSIE,
                                       CUMUL='NON',
-                                      COEF_R=0.0),),)     
+                                      COEF_R=0.0),),)
 
         coeur = self.coeur
         if self.keyw['TYPE_COEUR'][:4] == "MONO":
@@ -720,7 +720,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             chmat_contact = self.cham_mater_contact
         constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load + self.symetric_cond
         nbRatio = 9
-        
+
         # T0 - T8
         if (self.char_init) :
             __RESULT = STAT_NON_LINE(**self.snl(
@@ -733,7 +733,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                EXCIT=constant_load + self.vessel_head_load + self.thyc_load[0]+self.kinematic_cond,
                                ETAT_INIT=_F(SIGM=SIG_NUL),
             ))
-                               
+
             constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load_full + self.symetric_cond + self.periodic_cond + self.rigid_load
             __RESULT = STAT_NON_LINE(**self.snl(
                                reuse=__RESULT,
@@ -807,7 +807,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                 EXCIT=loads,
                                 ETAT_INIT=self.etat_init
             ))
-            
+
             nb_test = 0
             while nb_test < nbRatio :
                 try :
@@ -852,7 +852,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                 EXCIT=loads,
                                 ETAT_INIT=self.etat_init
                                 )
-            
+
             __RESULT = STAT_NON_LINE(**keywords)
 
             __RESULT = STAT_NON_LINE(**self.snl(
@@ -964,7 +964,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                                       DY=0, DZ=0, DX=0),
                                                    _F(GROUP_NO=('PMNT_S',),
                                                       DY=0, DZ=0))))]
-    
+
     @property
     @cached_property
     def layer_load(self):
@@ -1098,21 +1098,21 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                  MECA_IMPO=(_F(TOUT='OUI',
                                                DX=0.0, DY=0.0, DZ=0.0,
                                                DRX=0.0, DRY=0.0, DRZ=0.0)))
-        
+
         __NUL = STAT_NON_LINE(**self.snl(INCREMENT=_F(LIST_INST=self.times,
                                                       PRECISION=1.E-08,
                                                       NUME_INST_FIN=1),
                                          EXCIT=_F(CHARGE=_CL_NUL)))
 
         _tini = __NUL.LIST_PARA()['INST'][-1]
-        
+
         __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                              OPERATION='EXTR',
                              PRECISION=1.0E-08,
                              RESULTAT=__NUL,
                              NOM_CHAM='SIEF_ELGA',
                              INST=_tini)
-        
+
         SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                              MODELE=self.model,
                              OPERATION='ASSE',
@@ -1123,7 +1123,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         RetablirAlarme('COMPOR4_17')
 
-        
+
         coeur = self.coeur
         # calcul de deformation d'apres DAMAC / T0 - T1
         _snl_lame = STAT_NON_LINE(**self.snl_lame(INCREMENT=_F(LIST_INST=self.times,
@@ -1135,7 +1135,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                                          self.vessel_head_load + self.vessel_dilatation_load +
                                                          self.archimede_load + self.gravity_load),
                                                   ETAT_INIT=_F(SIGM=SIG_NUL)))
-        
+
         self.update_coeur(_snl_lame, self.keyw['TABLE_N'])
         # On fait l'irradiation historique sur assemblages droits
         # WARNING: element characteristics and the most of the loadings must be
@@ -1150,7 +1150,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                              self.vessel_head_load + self.vessel_dilatation_load +
                                              self.archimede_load + self.gravity_load),
                                       ETAT_INIT=_F(SIGM=SIG_NUL)))
-         
+
         __RESULT = STAT_NON_LINE(**keywords[-1])
         # On deforme le maillage
         depl_deformed = self.deform_mesh(_snl_lame)
@@ -1223,7 +1223,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT,
                                                               PRECISION=1.E-08,
                                                               CRITERE='RELATIF')))
-       
+
         __RESULT = STAT_NON_LINE(**self.snl_lame(reuse = __RESULT,
                                                  RESULTAT=__RESULT,
                                                  CHAM_MATER=self.cham_mater_contact,
@@ -1238,7 +1238,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT,
                                                               PRECISION=1.E-08,
                                                               CRITERE='RELATIF')))
-        
+
         if self.calc_res_def:
             self.output_resdef(__RESULT,depl_deformed,tinit,tfin)
         return __RESULT

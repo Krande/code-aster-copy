@@ -1,0 +1,65 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: francesco.bettonte at edf.fr
+
+import numpy as np
+
+MAC3_ROUND = 14
+
+def get_first_digit(spline):
+    for i, v in enumerate(spline):
+        try:
+            float(v)
+            return i
+        except ValueError as err:
+            continue
+
+def check_centers_and_size(z, ep, s):
+    """
+    Up to THYC 5.5 the vector Ep(m) is wrong by a shift of 1.
+    This function is to check the accordance between Z and Ep
+
+    If returns True using s = 0 the THYC file is OK
+    If returns True using s = 1 the THYC file is affected by the bug
+    If returns False using both s = O and 1 the THYC file is corrupted for un unknown reason
+    """
+    assert s in (0, 1)
+    assert len(z) == len(ep)
+    return all(abs(z[i+s] - z[i+1+s] + 0.5*(ep[i] + ep[i+1])) < 1.E-5
+               for i in range(len(z)-1-s))
+
+def check_contiguous(arr):
+    return all(arr[i+1] == arr[i]+1 for i in range(len(arr)-1))
+
+def find_nearest_idx(value, array, bounds=None):
+
+    array = np.asarray(array)
+
+    if bounds is None:
+        diff = np.abs(array - value)
+        idx = diff.argmin()
+    else:
+        bmax = array + bounds/2
+        bmin = array - bounds/2
+        condition = np.logical_and(value>bmin, value<bmax)
+        assert np.count_nonzero(condition) == 1
+        idx = condition.argmax()
+
+    return idx

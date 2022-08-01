@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ def perm_mac3coeur_ops(self, **args):
 
     MasquerAlarme('POUTRE0_59')
     MasquerAlarme('COMPOR4_17')
-    
+
     rcdir = ExecutionParameter().get_option("rcdir")
     datg = osp.join(rcdir, "datg")
     coeur_factory = CoeurFactory(datg)
@@ -218,7 +218,7 @@ def perm_mac3coeur_ops(self, **args):
                       CARA_ELEM=_CARANP1,
                       INST=0.0,
                       MODELE=_MO_NP1,))
-    
+
     nbresu = len(l_RESUI)
     assert (len(_l_coeur) == nbresu)
     assert (len(l_last_i) == nbresu)
@@ -226,7 +226,7 @@ def perm_mac3coeur_ops(self, **args):
 
     tran_x = 0.0
     indice = 1
-    
+
     for nom in list(_coeurp1.nameAC.keys()):
         for i in range(len(_l_coeur)) :
             _coeur = _l_coeur[i]
@@ -257,7 +257,7 @@ def perm_mac3coeur_ops(self, **args):
                     _coeur.nameAC[nom]), _coeurp1.position_todamac(_coeurp1.nameAC[nom])))
                 indice+=1
                 break
-            
+
     UTMESS('I', 'COEUR0_2', vali=(indice))
 
     RetablirAlarme('POUTRE0_59')

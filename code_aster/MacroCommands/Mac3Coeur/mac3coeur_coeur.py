@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ class Coeur(object):
         #Valeurs de gravité et tables de l'eau à pression int cuve
         'ACC_PESA', 'RHO_EAU20', 'RHO_EAU60', 'RHO_EAU307',
     ]
-    
+
     _time = ('T0', 'T0b', 'T1', 'T2', 'T3',
              'T4', 'T5', 'T6', 'T7', 'T8', 'T8b', 'T9',)
     _subtime = ('N0', 'N0b', 'N1', 'N2', 'N3',
@@ -591,7 +591,7 @@ class Coeur(object):
         if not set(cu_groups) == set(self.get_contactCuve()):
             return False
         return True
-    
+
     def recuperation_donnees_geom(self, MAILL):
         """recuperation de donnees géometrique a partir du maillage"""
 
@@ -1087,7 +1087,7 @@ class Coeur(object):
 
     def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT='NON',RATIO=1.):
 
-        # TP_REF = 20. ;
+        # TP_REF = 20.
 
         if CONTACT == 'OUI':
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E9*RATIO+1.E1*(1.-RATIO)))
