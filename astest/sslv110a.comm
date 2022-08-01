@@ -100,6 +100,15 @@ GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
                                 ),
              )
              
+GLOC0_C = CALC_G(   RESULTAT=CHAMDEPL,
+                       OPTION='G',
+                       THETA=_F(FISSURE=FISS1,
+                                NB_COUCHE_INF = 0,
+                                NB_COUCHE_SUP = 1,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                ),
+             )
 
 #----------------------------------------------------------------------
 #                           COURONNE 2
@@ -116,6 +125,16 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                                  ),
 
                        )
+                       
+GLOC1_C = CALC_G(   RESULTAT=CHAMDEPL,
+                       OPTION='G',
+                       THETA=_F(FISSURE=FISS1,
+                                NB_COUCHE_INF = 1,
+                                NB_COUCHE_SUP = 2,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                ),
+             )
 
 #----------------------------------------------------------------------
 #                           COURONNE 3
@@ -130,6 +149,17 @@ GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
                        ),
 
                        )
+                       
+GLOC2_C = CALC_G(   RESULTAT=CHAMDEPL,
+                       OPTION='G',
+                       THETA=_F(FISSURE=FISS1,
+                                NB_COUCHE_INF = 1,
+                                NB_COUCHE_SUP = 3,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                ),
+             )
+                       
 #----------------------------------------------------------------------
 #              TEST DE G(A) ET KJ(A) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
@@ -193,6 +223,36 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=4.06798003172,
            NOM_PARA='KJ',
            TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.06,
+           VALE_CALC=6.764355876685046E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC0_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.03,
+           VALE_CALC=7.026199141427522E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=7.008378646559547E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC2_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.0,),
            )
@@ -261,6 +321,37 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=2.66827E+01,),
            )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.14000000000000001,
+           VALE_CALC=1.4901004425715459E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC0_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66827E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.11,
+           VALE_CALC=1.5699814397130967E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66827E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.19,
+           VALE_CALC=1.5746835148452416E-05 ,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC2_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+           VALE=2.66827E+01,),
+           )
+                    
+
 #----------------------------------------------------------------------
 #              TEST DE G(C) ET KJ(C) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
@@ -321,6 +412,36 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=3.46909431763,
            NOM_PARA='KJ',
            TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.78016E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.060000000000000003,
+           VALE_CALC=4.906032408614157E-05,
+           VALE_REFE=5.215E-05,
+           NOM_PARA='G',
+           TABLE=GLOC0_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.78016E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=5.07187911739841E-05,
+           VALE_REFE=5.215E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.78016E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=5.079061737581803E-05,
+           VALE_REFE=5.215E-05,
+           NOM_PARA='G',
+           TABLE=GLOC2_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.78016E+01,),
            )

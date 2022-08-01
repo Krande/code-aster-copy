@@ -1052,7 +1052,7 @@ contains
 !
 !       if no radius is defined
         if (this%radius_type.ne.'R' .and. this%radius_type.ne.'R_FO' &
-            .and. this%radius_type.ne.'NB_COUCHE') then
+        .and. this%radius_type.ne.'NB_COUCHE') then
             this%radius_type='R'
             if (this%config_init == 'DECOLLEE') then
 !           A vérifier si toujours impossible de calculer r dans ce cas
@@ -1074,6 +1074,7 @@ contains
                 call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
             endif
         endif
+
 !
         call jedema()
 !

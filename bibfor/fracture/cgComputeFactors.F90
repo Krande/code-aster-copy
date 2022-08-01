@@ -39,6 +39,9 @@ use calcG_type
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/cgComputeLayers.h"
 #include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
@@ -60,6 +63,7 @@ use calcG_type
     real(kind=8), pointer :: v_coor(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_absc(:) => null()
+    real(kind=8), pointer :: v_numc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,6 +119,7 @@ use calcG_type
             endif
         endif
     endif
+    
 !
 ! allocation de la structure de données temporaire de theta
 
@@ -125,40 +130,56 @@ use calcG_type
     call cnscre(cgTheta%mesh,'THET_R',6,licmp,'V',cnstet)
     call jeveuo(cnstet(1:19)//'.CNSL','E',jcnsl)
     call jeveuo(cnstet(1:19)//'.CNSV','E', vr=v_theta)
-
+    
+    
+!   CALCUL DES NUMEROS DE COUCHE EN FONCTION DE LA CONNECTIVITE 
+    if(cgTheta%radius_type.eq.'NB_COUCHE') then 
+        AS_ALLOCATE(vr = v_numc,size = nbel)
+        call cgComputeLayers(cgField, cgTheta, cnstet,v_numc)
+    endif
+    
 !   BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE
     do i = 1, nbel
-!       CALCUL DE LA FONCTION DETERMINANT LA NORME DE THETA EN
-!       FONTION DE R_INF, R_SUP ET LA DISTANCE DU NOEUD AU FRONT
-!
-!       COORDONNEES DU NOEUD COURANT M
-        xm = v_coor((i-1)*3+1)
-        ym = v_coor((i-1)*3+2)
-        zm = 0.d0
-!
-        if(cgField%ndim .eq. 3) then
-            zm = v_coor((i-1)*3+3)
-        endif
-!
-!       COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE
-        xn = v_base(3*cgField%ndim*(i-1)+1)
-        yn = v_base(3*cgField%ndim*(i-1)+2)
-        zn = 0.d0
-        if(cgField%ndim .eq. 3) then
-            zn = v_base(3*cgField%ndim*(i-1)+3)
-        endif
-        d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
-        if (cgTheta%radius_type.eq.'R')then
-            alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
-        else if (cgTheta%radius_type.eq.'R_FO')then
-            nompar(1) = 'ABSC'
-            valpar(1) = v_absc(i)
-            call fointe('FM', cgTheta%r_inf_fo, 1, nompar, valpar, valres_i, iret)
-            call fointe('FM', cgTheta%r_sup_fo, 1, nompar, valpar, valres_s, iret)
-            alpha = (d - valres_i)/(valres_s-valres_i)
+    
+        if(cgTheta%radius_type.ne.'NB_COUCHE') then 
+    !       CALCUL DE LA FONCTION DETERMINANT LA NORME DE THETA EN
+    !       FONTION DE R_INF, R_SUP ET LA DISTANCE DU NOEUD AU FRONT
+    !
+    !       COORDONNEES DU NOEUD COURANT M
+            xm = v_coor((i-1)*3+1)
+            ym = v_coor((i-1)*3+2)
+            zm = 0.d0
+    !
+            if(cgField%ndim .eq. 3) then
+                zm = v_coor((i-1)*3+3)
+            endif
+    !
+    !       COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE
+            xn = v_base(3*cgField%ndim*(i-1)+1)
+            yn = v_base(3*cgField%ndim*(i-1)+2)
+            zn = 0.d0
+            if(cgField%ndim .eq. 3) then
+                zn = v_base(3*cgField%ndim*(i-1)+3)
+            endif
+            d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
+            if ((cgTheta%radius_type.eq.'R').or.(cgTheta%radius_type.eq.'DEFAUT')) then
+                alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
+            else if (cgTheta%radius_type.eq.'R_FO') then
+                nompar(1) = 'ABSC'
+                valpar(1) = v_absc(i)
+                call fointe('FM', cgTheta%r_inf_fo, 1, nompar, valpar, valres_i, iret)
+                call fointe('FM', cgTheta%r_sup_fo, 1, nompar, valpar, valres_s, iret)
+                alpha = (d - valres_i)/(valres_s-valres_i)
+            else
+                ASSERT(.FALSE.)
+            endif
         else
-            ASSERT(.FALSE.)
+    !       CALCUL DE LA FONCTION DETERMINANT LA NORME DE THETA EN
+    !       FONTION DE NB_COUCHE_INF, NB_COUCHE_SUP ET LE NUMERO DE COUCHE DU NOEUD
+            d = v_numc(i)
+            alpha = ( d- cgTheta%nb_couche_inf)/(cgTheta%nb_couche_sup-cgTheta%nb_couche_inf)
         endif
+            
 !       calcul de theta0 du noeud i
         if ((abs(alpha).le.eps) .or. (alpha.lt.0)) then
             theta0 = 1.d0
@@ -200,6 +221,10 @@ use calcG_type
             v_theta((i-1)*6+6) = cgTheta%lonfis
         endif
     end do
+    
+    if(cgTheta%radius_type.eq.'NB_COUCHE') then 
+        AS_DEALLOCATE(vr = v_numc)
+    endif
 !
 !   ALLOCATION DES OBJETS POUR STOCKER LE VRAI CHAMP_NO THETA_FACTORS
 !
