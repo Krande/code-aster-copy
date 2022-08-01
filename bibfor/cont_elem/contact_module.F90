@@ -102,6 +102,7 @@ end type
     public :: projQpSl2Ma, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, testLagrF
     public :: projBs, projRm, projTn, jump_tang, jump_norm, dNs_du, otimes, Iden3
+    public :: dProjBs_dx, dprojBs_ds, dprojBs_dn
 !
 contains
 !
@@ -327,12 +328,12 @@ contains
 !
 !===================================================================================================
 !
-    function projBs(param, x, s)
+    function projBs(param, x, s, norm_slav)
 !
     implicit none
 !
         type(ContactParameters), intent(in) :: param
-        real(kind=8), intent(in) :: x(3)
+        real(kind=8), intent(in) :: x(3), norm_slav(3)
         real(kind=8), intent(in) :: s
         real(kind=8) :: projBs(3)
 !
@@ -342,17 +343,134 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm_x
+        real(kind=8) :: norm_xT, Tn(3,3), xT(3)
 !
         projBs = 0
         if(param%type_fric .ne. FRIC_TYPE_NONE) then
             if(abs(s) > r8prem()) then
-                norm_x = norm2(x)
+                Tn = projTn(norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
 !
-                if(norm_x <= s) then
-                    projBs = x
+                if(norm_xT <= s) then
+                    projBs = xT
                 else
-                    projBs = s * x / norm_x
+                    projBs = s * xT / norm_xT
+                end if
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dprojBs_dx(param, x, s, norm_slav)
+!
+    implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(3)
+        real(kind=8), intent(in) :: s, norm_slav(3)
+        real(kind=8) :: dprojBs_dx(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Derivative along x of the projection on the sphere center to zero of radius s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: norm_xT, Tn(3,3), xT_uni(3), xT(3)
+!
+        dprojBs_dx = 0
+        if(param%type_fric .ne. FRIC_TYPE_NONE) then
+            if(abs(s) > r8prem()) then
+                Tn = projTn(norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
+!
+                if(norm_xT <= s) then
+                    dprojBs_dx = Tn
+                else
+                    xT_uni = xT / norm_xT
+                    dprojBs_dx = s * norm_xT * (Tn - otimes(xT_uni, xT_uni))
+                end if
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dprojBs_ds(param, x, s, norm_slav)
+!
+    implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(3), norm_slav(3)
+        real(kind=8), intent(in) :: s
+        real(kind=8) :: dprojBs_ds(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Derivative along s of the projection on the sphere center to zero of radius s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: norm_xT, Tn(3,3), xT(3)
+!
+        dprojBs_ds = 0
+        if(param%type_fric .ne. FRIC_TYPE_NONE) then
+            if(abs(s) > r8prem()) then
+                Tn = projTn(norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
+!
+                if(norm_xT > s) then
+                    dprojBs_ds = xT / norm_xT
+                end if
+            end if
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dprojBs_dn(param, x, s, norm_slav)
+!
+    implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(3)
+        real(kind=8), intent(in) :: s, norm_slav(3)
+        real(kind=8) :: dprojBs_dn(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Derivative along the normal of the projection on the sphere center to zero of radius s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: norm_xT, Tn(3,3), xT_uni(3), x_n, xT(3)
+!
+        dprojBs_dn = 0
+        if(param%type_fric .ne. FRIC_TYPE_NONE) then
+            if(abs(s) > r8prem()) then
+                Tn = projTn(norm_slav)
+                xT = matmul(Tn, x)
+                norm_xT = norm2(xT)
+                x_n = dot_product(x, norm_slav)
+!
+                if(norm_xT <= s) then
+                    dprojBs_dn = -x_n * Tn - otimes(norm_slav, xT)
+                else
+                    xT_uni = xT / norm_xT
+                    dprojBs_dn = -s/norm_xT*(x_n*(Tn-otimes(xT_uni,xT_uni)) + otimes(norm_slav, xT))
                 end if
             end if
         end if
@@ -735,7 +853,7 @@ contains
 ! --- Slave side
 !
         do i_node = 1, geom%nb_lagr_c
-            ASSERT(geom%indi_lagc(i_node) > 1)
+            ASSERT(geom%indi_lagc(i_node) > 0)
             index = index + geom%elem_dime
             !mu_f(index+2, 1:geom%elem_dime) = func_lagr(i_node) * tau_1_slav(1:geom%elem_dime)
             mu_f(index+2, 1) = func_lagr(i_node)

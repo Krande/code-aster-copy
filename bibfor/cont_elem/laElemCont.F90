@@ -62,7 +62,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: shape_func_sl(9), shape_func_ma(9), shape_func_lagr(4), dshape_func_sl(2,9)
-    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagrf_vT(3)
+    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagrf_v(3)
     real(kind=8) :: thres_qp, tau_1_slav(3), tau_2_slav(3), lagr_f_coeff(2)
 !
 ! ----- Project quadrature point (on master side)
@@ -132,8 +132,8 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
         lagr_f_coeff(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(2,:))
         gamma_f = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_fric) / hF
         lagr_f = lagr_f_coeff(1) * tau_1_slav + lagr_f_coeff(2) * tau_2_slav
-        lagrf_vT = lagr_f - gamma_f * vT
-        projBsVal = projBs(parameters, lagrf_vT, thres_qp)
+        lagrf_v = lagr_f - gamma_f * vT
+        projBsVal = projBs(parameters, lagrf_v, thres_qp, norm_slav)
     end if
 !
     if(present(dGap)) then
