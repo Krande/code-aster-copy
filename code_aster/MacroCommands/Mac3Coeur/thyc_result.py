@@ -352,7 +352,7 @@ class ThycResult:
 
         som_l = sum(epaisseur[start_eh+1:stop_eh+1])
         som_f = sum(coeff*force[start_eh+1:stop_eh+1])
-        som_feq = som_f / (som_l + 0.25 * epaisseur[stop_eh])
+        som_feq = som_f / (som_l + 0.25 * epaisseur[start_eh])
 
         x1 = cote[start_eh] + 0.5*epaisseur[start_eh] - eps
         y1 = som_feq
