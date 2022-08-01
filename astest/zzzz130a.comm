@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,17 +44,15 @@ MA=LIRE_MAILLAGE(FORMAT="ASTER", )
 MO=AFFE_MODELE(   MAILLAGE=MA,    AFFE=_F( TOUT = 'OUI',
              PHENOMENE = 'MECANIQUE', MODELISATION = '3D') )
 
-# CHXN = CHAMP DE GEOMETRIE AUX NOEUDS :
-
-# CHXG = CHAMP DE GEOMETRIE AUX POINTS DE GAUSS :
 
 # ---------------------------------------------------------
+# CHXN = CHAMP DE GEOMETRIE AUX NOEUDS :
 CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
       NOM_CHAM='GEOMETRIE', MAILLAGE=MA, INFO=1)
 
+# CHXG = CHAMP DE GEOMETRIE AUX POINTS DE GAUSS :
 CHXG=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELGA_GEOM_R',
       MODELE=MO,   CHAM_GD=CHXN,  INFO=1 )
-
 
 # ============================
 # 1) FABRICATION DE  SIGINI :
@@ -420,5 +418,32 @@ TEST_RESU(CHAM_NO=_F(GROUP_NO='N1',
                      VALE_CALC= 0.00000000E+00,
                      VALE_REFE=0.0,),
           )
+
+# 4.7  VALIDATION DE OPERATION:'DISC' ELEM -> NOEU
+# -------------------------------------------------------
+
+che0 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="ELEM_GEOM_R",
+    MODELE=MO,
+    AFFE=(
+        _F(GROUP_MA="CUBE", NOM_CMP=("X",), VALE=1.0),
+        _F(GROUP_MA="MASSIF", NOM_CMP=("X",), VALE=3.0),
+    ),
+    PROL_ZERO="OUI",
+)
+
+chn0 = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="NOEU_GEOM_R", MODELE=MO, CHAM_GD=che0, INFO=1)
+
+TEST_RESU(
+    CHAM_NO=_F(
+        GROUP_NO="N1",
+        REFERENCE="ANALYTIQUE",
+        NOM_CMP="X",
+        CHAM_GD=chn0,
+        VALE_CALC=2.0,
+        VALE_REFE=2.0,
+    ),
+)
 
 FIN()

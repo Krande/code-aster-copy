@@ -353,6 +353,14 @@ character(len=8), optional, intent(in) :: model_
         call detrsd('CHAM_ELEM_S', ces1)
 !
 !
+    else if (cas.eq.'ELEM->NOEU') then
+        call celces(chin, 'V', ces1)
+        call cescns(ces1, ' ', 'V', cns1, 'F', ibid)
+        call detrsd('CHAM_ELEM_S', ces1)
+        call cnscno(cns1, ' ', 'NON', base, chou,&
+                    'F', ibid)
+        call detrsd('CHAM_NO_S', cns1)
+
     else
 !       CAS NON ENCORE PROGRAMME
         call utmess('F', 'CALCULEL_5', sk=cas)

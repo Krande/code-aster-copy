@@ -38,7 +38,7 @@ class FieldReader(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         # Analysis of type of field
-        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
+        location, _, typ = keywords["TYPE_CHAM"].split("_")
 
         if location == "CART":
             if "MAILLAGE" in keywords:
@@ -64,13 +64,13 @@ class FieldReader(ExecuteCommand):
                 raise NotImplementedError("Output for LIRE_CHAMP not defined")
 
     def post_exec(self, keywords):
-        """Set member.
+        """Post-treatments of the command.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
         # Analysis of type of field
-        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
+        location, _, _ = keywords["TYPE_CHAM"].split("_")
 
         if location == "NOEU":
             self._result.setMesh(keywords["MAILLAGE"])

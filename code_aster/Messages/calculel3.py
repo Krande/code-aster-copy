@@ -20,70 +20,83 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
 Il manque les accélérations.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
  pour une SD RESULTAT de type DYNA_TRANS,
  seuls les mots-clés FONC_MULT et COEF_MULT sont autorisés
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
  pour une SD RESULTAT de type  EVOL_ELAS,
  seul le mot-clé FONC_MULT est autorisé
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
  l'utilisation du mot-clé FONC_MULT n'est licite que pour
  les structures de données résultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  Erreur d'utilisation :
    On veut utiliser la commande CALC_ERREUR.
    Il y a %(i1)d processeurs actifs.
  Risques & conseils :
    Cette commande doit être utilisée avec un seul processeur.
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
  La composante %(k1)s n'existe pas dans le champ sur la maille spécifiée.
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
  Calcul de  %(k1)s  impossible.
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
  le résultat  %(k1)s  doit comporter un champ de déplacement au numéro d'ordre  %(k2)s  .
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
  Le mot clé PREC_ERR est OBLIGATOIRE avec l'option SING_ELEM.
  Il faut renseigner le mot clé PREC_ERR avec une valeur comprise entre 0 et 1.
-"""),
-
-    13 : _("""
+"""
+    ),
+    13: _(
+        """
  Le mot clé PREC_ERR doit être strictement positif.
-"""),
-
-    14 : _("""
+"""
+    ),
+    14: _(
+        """
  Il n'y a pas de champ d'estimateur d'erreur dans la structure de donnée résultat.
  On ne calcule pas l'option SING_ELEM.
  Le calcul préalable d'un estimateur d'erreur est OBLIGATOIRE pour le calcul de cette option.
-"""),
-
-    15: _("""
+"""
+    ),
+    15: _(
+        """
  Par défaut on utilise l'estimateur en résidu ERME_ELEM.
-"""),
-
-    16 : _("""
+"""
+    ),
+    16: _(
+        """
  Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM.
-"""),
-
-    17 : _("""
+"""
+    ),
+    17: _(
+        """
 Erreur utilisateur dans la commande CREA_CHAMP / EXTR :
    Le champ que l'on veut extraire (%(k1)s n'existe pas dans la structure
    de donnée CARA_ELEM ou CHAR_MECA.
@@ -93,92 +106,109 @@ Conseil :
   vous pouvez utiliser la commande :
    IMPR_CO(CONCEPT=_F(NOM=XXXX), NIVEAU=-1)
 
-"""),
-
-    18 : _("""
+"""
+    ),
+    18: _(
+        """
  Erreur utilisateur :
    Pour les modélisations DKTG et Q4GG, la température doit être
    fournie sous le forme 'TEMP_SUP', 'TEMP_INF', ['TEMP_MIL'] et
    non pas sous la forme 'TEMP'.
-"""),
-
-    19 : _("""
+"""
+    ),
+    19: _(
+        """
 La variable de commande %(k1)s est présente dans le champ de matériau fourni à CALC_VECT_ELEM.
 Attention : les chargements induits par les variables de commande ne sont pas calculés par
 CALC_VECT_ELEM. Pour en tenir compte, il faut utiliser l'opérateur CALCUL.
-"""),
-
-    22 : _("""
+"""
+    ),
+    22: _(
+        """
   L'option %(k1)s est inexistante.
-"""),
-
-    24: _("""
+"""
+    ),
+    24: _(
+        """
  <I> L'estimateur que vous avez choisi pour le calcul de l'option SING_ELEM est %(k1)s.
-"""),
-
-    26: _("""
+"""
+    ),
+    26: _(
+        """
  L'estimateur %(k1)s que vous avez choisi pour le calcul de l'option SING_ELEM
  n'existe pas dans la structure de donnée résultat %(k2)s.
  L'option SING_ELEM n'est pas calculée.
-"""),
-
-    27 : _("""
+"""
+    ),
+    27: _(
+        """
 L'option  %(k2)s est incompatible avec ce type de résultat.
-"""),
-
-    28 : _("""
+"""
+    ),
+    28: _(
+        """
 PROJ_CHAMP / METHODE='ECLA_PG' :
  On va traiter les mailles de dimension :  %(i1)d
  Les autres mailles sont ignorées
-"""),
-
-    29 : _("""
+"""
+    ),
+    29: _(
+        """
  Il n'y a pas de champ d'énergie dans la structure de donnée résultat.
  On ne calcule pas l'option SING_ELEM.
  Le calcul préalable de l'option  EPOT_ELEM ou ETOT_ELEM est OBLIGATOIRE
  pour le calcul de cette option.
-"""),
-
-    35 : _("""
+"""
+    ),
+    35: _(
+        """
  le modèle doit contenir des éléments finis ou des sous-structures.
-"""),
-
-    36 : _("""
+"""
+    ),
+    36: _(
+        """
  A cause des alarmes précédentes, l'option SING_ELEM n'est pas calculée.
-"""),
-
-    38 : _("""
+"""
+    ),
+    38: _(
+        """
  on ne traite pas le type_scalaire: %(k1)s
-"""),
-
-    39 : _("""
+"""
+    ),
+    39: _(
+        """
  le modèle contient des éléments de structure
  il faut probablement utiliser le mot-clé CARA_ELEM.
-"""),
-
-    40 : _("""
+"""
+    ),
+    40: _(
+        """
   -> Le modèle a probablement besoin d'un champ de matériau (mot-clé CHAM_MATER).
 
   -> Risque & Conseil :
      Ce message peut aider à comprendre un éventuel problème ultérieur lors de calculs élémentaires
      nécessitant des caractéristiques matérielles.
      Vérifiez si votre modélisation nécessite un CHAM_MATER.
-"""),
-
-    41 : _("""
+"""
+    ),
+    41: _(
+        """
  les charges ne s'appuient pas toutes sur le même modèle.
-"""),
-
-    42 : _("""
+"""
+    ),
+    42: _(
+        """
  les charges ne s'appuient pas sur le modèle donné en argument.
-"""),
-
-    46 : _("""
+"""
+    ),
+    46: _(
+        """
 La MATR_ASSE et le CHAM_NO ont des numérotations différentes (%(k1)s et %(k2)s).
 Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis à zéro.
-"""),
-
-    47 : _("""
+"""
+    ),
+    47: _(
+        """
 Alarme utilisateur pour le calcul de SIRO_ELEM :
   La maille volumique %(k1)s qui borde la maille de peau %(k2)s
   est dégénérée ou bien elle n'est pas du côté "-" de la maille de peau.
@@ -188,89 +218,98 @@ Conseil :
   Le problème vient peut-être du fait que la peau du maillage est mal
   orientée. On peut réorienter les mailles de peau avec la commande
   MODI_MAILLAGE / ORIE_PEAU.
-"""),
-
-    48 : _("""
+"""
+    ),
+    48: _(
+        """
 Erreur utilisateur (EXTR_RESU / RESTREINT) :
  Le concept fourni après le mot clé CARA_ELEM : (%(k1)s) est associé
  au maillage : %(k3)s.
  Mais le maillage associé à la SD RESULTAT est différent : %(k2)s.
-"""),
-
-    49 : _("""
+"""
+    ),
+    49: _(
+        """
 Erreur utilisateur (EXTR_RESU / RESTREINT) :
  Le concept fourni après le mot clé CHAM_MATER : (%(k1)s) est associé
  au maillage : %(k3)s.
  Mais le maillage associé à la SD RESULTAT est différent : %(k2)s.
-"""),
-
-    50 : _("""
+"""
+    ),
+    50: _(
+        """
  La commande a besoin d'un nom de modèle.
-"""),
-
-
-
-
-
-    52 : _("""
+"""
+    ),
+    52: _(
+        """
  le champ doit être un CHAM_ELEM.
-"""),
-
-    53 : _("""
+"""
+    ),
+    53: _(
+        """
  ne traite qu'un CHAM_ELEM réel
-"""),
-
-    54 : _("""
+"""
+    ),
+    54: _(
+        """
  longueurs des modes locaux incompatibles entre eux.
-"""),
-
-    57 : _("""
+"""
+    ),
+    57: _(
+        """
  on ne sait pas moyenner cette composante négative
-"""),
-
-    58 : _("""
+"""
+    ),
+    58: _(
+        """
  champs sur des modèles différents
-"""),
-
-    59 : _("""
+"""
+    ),
+    59: _(
+        """
   %(k1)s  doit être un CHAM_ELEM.
-"""),
-
-    60 : _("""
+"""
+    ),
+    60: _(
+        """
  longueurs des modes locaux champ1 incompatibles entre eux.
-"""),
-
-    61 : _("""
+"""
+    ),
+    61: _(
+        """
  longueurs des modes locaux champ2 incompatibles entre eux.
-"""),
-
-    62 : _("""
+"""
+    ),
+    62: _(
+        """
  composante non définie
-"""),
-
-
-
-
-
-    71 : _("""
+"""
+    ),
+    71: _(
+        """
 Il faut un chargement de rotation et un seul.
-"""),
-
-    72 : _("""
+"""
+    ),
+    72: _(
+        """
   il ne faut pas définir plus d"un champ de vitesse
-"""),
-
-    73 : _("""
+"""
+    ),
+    73: _(
+        """
 Le champ %(k1)s n'est ni un CHAM_ELEM ni un résultat élémentaire
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    74 : _("""
+"""
+    ),
+    74: _(
+        """
  type scalaire interdit : %(k1)s
-"""),
-
-    78 : _("""
+"""
+    ),
+    78: _(
+        """
 Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
 Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
 le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
@@ -281,13 +320,15 @@ supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
       %(r4)g   %(r5)g   %(r6)g
    Distance : %(r9)g
    Rayon    : %(r8)g
-"""),
-
-    79 : _("""
+"""
+    ),
+    79: _(
+        """
  la matrice A est singulière
-"""),
-
-    80 : _("""
+"""
+    ),
+    80: _(
+        """
 Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
 Le noeud "poutre" (GROUP_NO_2 ou NOEUD_2) n'est pas situé géométriquement
 au même endroit que le centre de gravité de la section (GROUP_MA_1).
@@ -304,57 +345,70 @@ Risque et conseils :
    Vérifiez la position du noeud "poutre".
    Rappel : on ne peut pas utiliser ce type de liaison pour relier une poutre avec
    une section qui ne serait que partiellement maillée (symétrie du maillage).
-"""),
-
-    81 : _("""
+"""
+    ),
+    81: _(
+        """
  cette fonction ne marche que pour des modes locaux de type champ aux noeuds, vecteur, ou matrice.
-"""),
-
-    82 : _("""
+"""
+    ),
+    82: _(
+        """
  le mode local est de type matrice non_carrée
-"""),
-
-    84 : _("""
- il n y a pas de paramètre  %(k1)s  associe a la grandeur: %(k2)s  dans l option: %(k3)s
-"""),
-
-    85 : _("""
- il y a plusieurs paramètres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
-"""),
-
-    86 : _("""
- CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
-"""),
-
-    87 : _("""
+"""
+    ),
+    84: _(
+        """
+Il n'y a pas de paramètre '%(k1)s' associé à la grandeur '%(k2)s' dans l'option '%(k3)s'.
+"""
+    ),
+    85: _(
+        """
+Il y a plusieurs paramètres '%(k1)s' associés à la grandeur '%(k2)s' dans l'option '%(k3)s'.
+"""
+    ),
+    86: _(
+        """
+CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
+"""
+    ),
+    87: _(
+        """
  CREA_CHAMP ne sait créer de champ de type %(k1)s pour aucun des éléments fournis.
-"""),
-
-    88: _("""
+"""
+    ),
+    88: _(
+        """
  Les charges ne s'appuie pas sur le MODELE fourni.
-"""),
-
-    89 : _("""
+"""
+    ),
+    89: _(
+        """
  les charges ne s'appuient pas toutes sur le même modèle.
-"""),
-
-    90 : _("""
+"""
+    ),
+    90: _(
+        """
  le champ %(k1)s doit être une CARTE.
-"""),
-
-    91 : _("""
+"""
+    ),
+    91: _(
+        """
  une des charges n'est pas mécanique
-"""),
-
-    92 : _("""
+"""
+    ),
+    92: _(
+        """
  erreur: une des charges n'est pas thermique
-"""),
-
-    93 : _("""
+"""
+    ),
+    93: _(
+        """
  une des charges n'est pas acoustique
-"""),
-
-    97 : _("""
+"""
+    ),
+    97: _(
+        """
   Erreur d'utilisation :
     Fonctionnalité : projection de maillage
     On cherche à projeter des mailles sur certains noeuds.
@@ -363,16 +417,17 @@ Risque et conseils :
   Conseil :
     Cette erreur peut venir d'une mauvaise utilisation du mot clé
     PROJ_CHAMP/DISTANCE_MAX
-"""),
-
-    98 : _("""
+"""
+    ),
+    98: _(
+        """
  Le calcul de carte de taille et de détection de singularité n'est pas
  programmé en 3D pour les éléments de type HEXA, PENTA et PYRAM.
-"""),
-
-    99 : _("""
+"""
+    ),
+    99: _(
+        """
  Problème de convergence pour calculer la nouvelle carte de taille.
-"""),
-
-
+"""
+    ),
 }

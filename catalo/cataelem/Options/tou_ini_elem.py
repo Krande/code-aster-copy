@@ -23,57 +23,55 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = OutputParameter(phys=PHY.NBSP_I, type="ELEM")
 
 
-PNBSP_I  = OutputParameter(phys=PHY.NBSP_I, type='ELEM')
+PERREUR = OutputParameter(phys=PHY.ERRE_R, type="ELEM")
 
 
-PERREUR  = OutputParameter(phys=PHY.ERRE_R, type='ELEM')
+PPRES_R = OutputParameter(phys=PHY.PRES_R, type="ELEM")
 
 
-PPRES_R  = OutputParameter(phys=PHY.PRES_R, type='ELEM')
+PSOUR_R = OutputParameter(phys=PHY.SOUR_R, type="ELEM")
 
 
-PSOUR_R  = OutputParameter(phys=PHY.SOUR_R, type='ELEM')
+PGEOM_R = OutputParameter(phys=PHY.GEOM_R, type="ELEM")
 
 
-PGEOM_R  = OutputParameter(phys=PHY.GEOM_R, type='ELEM')
+PCOEH_R = OutputParameter(phys=PHY.COEH_R, type="ELEM")
 
 
-PCOEH_R  = OutputParameter(phys=PHY.COEH_R, type='ELEM')
+PFLUN_R = OutputParameter(phys=PHY.FLUN_R, type="ELEM")
 
 
-PFLUN_R  = OutputParameter(phys=PHY.FLUN_R, type='ELEM')
+PNEUT_F = OutputParameter(phys=PHY.NEUT_F, type="ELEM")
 
-
-PNEUT_F  = OutputParameter(phys=PHY.NEUT_F, type='ELEM')
-
-PCELL_R  = OutputParameter(phys=PHY.CELL_R, type='ELEM')
+PCELL_R = OutputParameter(phys=PHY.CELL_R, type="ELEM")
 
 
 TOU_INI_ELEM = Option(
-    para_in=(
-    ),
+    para_in=(),
     para_out=(
         SP.PCAFI_R,
-           PERREUR,
+        PERREUR,
         SP.PFORC_R,
-           PGEOM_R,
-           PNBSP_I,
+        PGEOM_R,
+        PNBSP_I,
         SP.PNEU1_R,
-           PPRES_R,
-           PSOUR_R,
-           PCOEH_R,
-           PFLUN_R,
-           PNEUT_F,
-           PCELL_R,
+        PPRES_R,
+        PSOUR_R,
+        PCOEH_R,
+        PFLUN_R,
+        PNEUT_F,
+        PCELL_R,
         SP.PNEUT_I,
+        SP.PDEPLEL,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),)),
-      CondCalcul('+', ((AT.PHENO,'AC'),)),
-      CondCalcul('+', ((AT.PHENO,'PR'),)),
-      CondCalcul('+', ((AT.LXFEM,'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"),)),
+        CondCalcul("+", ((AT.PHENO, "TH"),)),
+        CondCalcul("+", ((AT.PHENO, "AC"),)),
+        CondCalcul("+", ((AT.PHENO, "PR"),)),
+        CondCalcul("+", ((AT.LXFEM, "OUI"),)),
     ),
 )

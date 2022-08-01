@@ -913,10 +913,11 @@ EGGEO3D = LocatedComponents(
 # Displacements at Gauss points (in 2D)
 EGDEP2D = LocatedComponents(phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY"))
 
-# Displacements at Gauss points (in 3D)
+# Displacements at Gauss points and on cells (in 3D)
 EGDEP3D = LocatedComponents(
     phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY", "DZ")
 )
+ELDEP3D = LocatedComponents(phys=PHY.DEPL_R, type="ELEM", components=("DX", "DY", "DZ"))
 
 # For stresses (Real-3D)
 EGIG3DR = LocatedComponents(
