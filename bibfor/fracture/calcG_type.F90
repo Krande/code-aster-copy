@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -270,6 +270,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
         real(kind=8), pointer :: v_K3(:) => null()
         real(kind=8), pointer :: v_G_IRWIN(:) => null()
         real(kind=8), pointer :: v_G_EPSI(:) => null()
+        real(kind=8), pointer :: v_KJ(:) => null()
+        real(kind=8), pointer :: v_KJ_EPSI(:) => null()
         real(kind=8), pointer :: v_TEMP(:) => null()
         character(len=8), pointer :: v_COMPOR(:) => null()
 ! ----- nb point
@@ -420,6 +422,19 @@ contains
             this%nb_option = -ier
             ASSERT(this%nb_option <= NB_MAX_OPT)
             call getvtx(' ', 'OPTION', nbval=this%nb_option, vect=this%list_option)
+!
+! --- Remove option G* if option KJ* exists
+!
+            if (any('G' == this%list_option) .and. any('KJ' == this%list_option)) then 
+                this%nb_option = this%nb_option - 1 
+                this%list_option = pack(this%list_option, this%list_option.ne.'G')
+            endif
+            
+            if (any('G_EPSI' == this%list_option) .and. any('KJ_EPSI' == this%list_option)) then 
+                this%nb_option = this%nb_option - 1 
+                this%list_option = pack(this%list_option, this%list_option.ne.'G_EPSI')
+            endif
+                        
         end if
 !
 ! --- Level of information
@@ -691,6 +706,8 @@ contains
     AS_DEALLOCATE(vr=this%v_K3)
     AS_DEALLOCATE(vr=this%v_G_IRWIN)
     AS_DEALLOCATE(vr=this%v_G_EPSI)
+    AS_DEALLOCATE(vr=this%v_KJ)
+    AS_DEALLOCATE(vr=this%v_KJ_EPSI)
     AS_DEALLOCATE(vk8=this%v_COMPOR)
     AS_DEALLOCATE(vr=this%v_TEMP)
 !
@@ -1442,13 +1459,19 @@ contains
 
             if (option == "G" ) then
                 call this%addPara('G', 'R')
-            elseif (option == "K" ) then
+            elseif (option == "K") then
                 call this%addPara('K1', 'R')
                 call this%addPara('K2', 'R')
                 if (cgField%ndim.eq.3) then
                     call this%addPara('K3', 'R')
                 endif
                 call this%addPara('G_IRWIN', 'R')
+            elseif (option == "KJ") then 
+                call this%addPara('KJ', 'R')
+                call this%addPara('G', 'R')
+            elseif (option == "KJ_EPSI") then 
+                call this%addPara('KJ_EPSI', 'R')
+                call this%addPara('G_EPSI', 'R')
             elseif (option == "G_EPSI" ) then
                 call this%addPara('G_EPSI', 'R')
             else
@@ -1468,6 +1491,10 @@ contains
         this%v_G_IRWIN(:) = r8vide()
         AS_ALLOCATE(vr=this%v_G_EPSI, size=nbValues)
         this%v_G_EPSI(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_KJ, size=nbValues)
+        this%v_KJ(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_KJ_EPSI, size=nbValues)
+        this%v_KJ_EPSI(:) = r8vide()
 !
 ! --- create table
         call tbajpa(this%table_g, this%nb_para, this%list_name_para, this%list_type_para)
@@ -1506,6 +1533,22 @@ contains
                 this%v_K3(node_id) = cgStudy%gth(4)
             end if
             this%v_G_IRWIN(node_id) = cgStudy%gth(5)**2 + cgStudy%gth(6)**2 + cgStudy%gth(7)**2
+        elseif(cgStudy%option == "KJ") then
+            if (cgStudy%gth(2) .ge. 0) then 
+                this%v_KJ(node_id) = sqrt(cgStudy%gth(2))
+            else 
+                call utmess('F', 'RUPTURE3_12', ni = 1, vali = [node_id], &
+                            nr = 1, valr = [cgStudy%gth(2)])
+            endif
+            this%v_G(node_id) = cgStudy%gth(1)
+        elseif(cgStudy%option == "KJ_EPSI") then
+            if (cgStudy%gth(2) .ge. 0) then 
+                this%v_KJ_EPSI(node_id) = sqrt(cgStudy%gth(2))
+            else 
+                call utmess('F', 'RUPTURE3_12', ni = 1, vali = [node_id], &
+                            nr = 1, valr = [cgStudy%gth(2)])
+            endif
+            this%v_G_EPSI(node_id) = cgStudy%gth(1)
         elseif(cgStudy%option == "G_EPSI") then
             this%v_G_EPSI(node_id) = cgStudy%gth(1)
         else
@@ -1594,10 +1637,18 @@ contains
                         call tbajvr(this%table_g, this%nb_para, 'K3', this%v_K3(i_node), livr)
                     endif
                     call tbajvr(this%table_g, this%nb_para, 'G_IRWIN', this%v_G_IRWIN(i_node), livr)
+                elseif(option == "KJ") then
+                    call tbajvr(this%table_g, this%nb_para, 'KJ', this%v_KJ(i_node), livr)
+                    call tbajvr(this%table_g, this%nb_para, 'G', this%v_G(i_node), livr)
+                elseif(option == "KJ_EPSI") then
+                    call tbajvr(this%table_g, this%nb_para, 'KJ_EPSI', this%v_KJ_EPSI(i_node), livr)
+                    call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
+                elseif(option == "KJ_EPSI") then
+                
                 elseif(option == "G_EPSI") then
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
                 else
-                    ASSERT(ASTER_TRUE)
+                    ASSERT(ASTER_FALSE)
                 end if
             end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,15 +22,17 @@
 ! - CALC_G - General
 !
 ! --- number of option computed
-#define NB_MAX_OPT 3
+#define NB_MAX_OPT 5
 !
 ! --- list of options
 #define OPT_G 1
 #define OPT_K 2
 #define OPT_G_EPSI 3
+#define OPT_KJ 4
+#define OPT_KJ_EPSI 5
 !
 ! --- number of option computed
-#define NB_MAX_TERM 7
+#define NB_MAX_TERM 8
 !
 ! --- list of terms
 #define G  1
@@ -39,6 +41,8 @@
 #define K3 4
 #define G_IRWIN 5
 #define G_EPSI 6
+#define KJ 7 
+#define KJ_EPSI 8 
 !
 ! --- number of parameters for table
 #define NB_MAX_PARA 20

@@ -58,6 +58,10 @@ use calcG_type
         call utmess('I', 'RUPTURE3_1')
     end if
 !
+    if(any(cgField%list_option == 'KJ') .or. any(cgField%list_option == 'KJ_EPSI')) then 
+        call utmess('I', 'RUPTURE3_11')
+    end if
+!
     call dismoi('MODELE', cgField%result_in, 'RESULTAT', repk=model)
     call dismoi('NOM_MAILLA',model,'MODELE', repk=mesh)
     ASSERT(cgTheta%mesh .eq. mesh)

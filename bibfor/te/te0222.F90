@@ -30,6 +30,9 @@ subroutine te0222(option, nomte)
 !               'CALC_G_F'        (LOCAL,CHARGES FONCTIONS)
 !               'CALC_K_G'        (LOCAL,CHARGES REELLES)
 !               'CALC_K_G_F'      (LOCAL,CHARGES FONCTIONS)
+!               'CALC_KJ_G'       (LOCAL, CHARGES REELES)
+!               'CALC_KJ_G_F'     (LOCAL, CHARGES FONCTIONS)
+
 !
 ! ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -116,7 +119,7 @@ implicit none
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
 !                       Cas 2D/3D
-!                       Option calc_G/calc_K_G
+!                       Option calc_G/calc_K_G/calc_KJ_G
 ! =====================================================================
 !
     fami = 'RIGI'
@@ -251,7 +254,7 @@ implicit none
 !
 !-- Recuperation du champ local (carte) associe au pre-epsi
 !-- Ce champ est issu d un chargement pre epsi
-    if ( option == 'CALC_G_F' .or. option == 'CALC_K_G_F' ) then
+    if ( option == 'CALC_G_F' .or. option == 'CALC_K_G_F' .or. option == 'CALC_KJ_G_F') then
         fonc = ASTER_TRUE
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -294,7 +297,8 @@ implicit none
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
 !
-    if (option == 'CALC_G' .or. option == 'CALC_G_F') then
+    if (option == 'CALC_G' .or. option == 'CALC_G_F' & 
+        .or. option == 'CALC_KJ_G' .or. option == 'CALC_KJ_G_F') then
         call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
         if (incr) then
@@ -951,9 +955,19 @@ implicit none
 !
             endif
         endif
+        
 !
 !-- Fin boucle points de Gauss
     enddo
+    
+    ! ===========================================================
+    !         CALCUL DE K1 A PARTIR DE LA FORMULE D'IRWIN ET DE G  
+    !         OPTION G
+    ! ===========================================================
+    if ( option == 'CALC_G' .or. option == 'CALC_G_F' ) then
+        k1 = tthe + tcla + tfor + tini
+    endif 
+    
 !
 !-- Assemblage final des termes de G, K* et des K* réduits pour le
 !-- calcul de G_IRWIN

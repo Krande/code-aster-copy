@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ CALC_G=OPER(nom="CALC_G", op=27, sd_prod=calcg_prod,
               ),
 
         OPTION=SIMP(statut='o',typ='TXM',max='**',
-                               into=("G","G_EPSI","K"),
+                               into=("G","G_EPSI","K","KJ","KJ_EPSI"),
                              ),
 
          ETAT_INIT       =FACT(statut='f',

@@ -207,6 +207,8 @@ use calcG_type
             opti   = 'CALC_K_G_F'
         else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
             opti   = 'CALC_G_F'
+        else if (cgStudy%option .eq. 'KJ'.or.cgStudy%option .eq. 'KJ_EPSI') then
+            opti   = 'CALC_G_F'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -226,6 +228,8 @@ use calcG_type
         if (cgStudy%option .eq. 'K') then
             opti   = 'CALC_K_G'
         else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
+            opti   = 'CALC_G'
+        else if (cgStudy%option .eq. 'KJ'.or.cgStudy%option .eq. 'KJ_EPSI') then
             opti   = 'CALC_G'
         else
             ASSERT(ASTER_FALSE)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,17 @@ A partir de la V15, il n'est plus nécessaire à l'utilisateur de diviser le ré
 en sortie de CALC_G par la distance du fond de fissure à l'axe d’axis-symétrie. 
 
 Cette division est réalisée automatiquement par CALC_G.
+"""),
+
+    11: _("""
+Vous réalisez un calcul de K à partir de G et de la formule d'Irwin : attention, cette option ne peut être utilisée que pour
+des chargements en mode 1. 
+"""),
+
+    12: _("""
+Valeur de G ou G_EPSI négative au noeud %(i1)d. On ne peut pas calculer K avec la formule d'Irwin.
+
+G   =   %(r1)f
 """),
 
 }

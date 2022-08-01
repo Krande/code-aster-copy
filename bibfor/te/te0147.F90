@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,8 @@ subroutine te0147(option, nomte)
 !               'CALC_G_F'        (LOCAL,CHARGES FONCTIONS)
 !               'CALC_K_G'        (LOCAL,CHARGES REELLES)
 !               'CALC_K_G_F'      (LOCAL,CHARGES FONCTIONS)
+!               'CALC_KJ_G'       (LOCAL, CHARGES REELES)
+!               'CALC_KJ_G_F'     (LOCAL, CHARGES FONCTIONS)
 !
 ! ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -94,7 +96,7 @@ implicit none
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
 !                       Cas 2D/3D
-!                       Option calc_G/calc_K_G
+!                       Option calc_G/calc_K_G/calc_KJ_G
 ! =====================================================================
 !
     fami = 'RIGI'
@@ -199,7 +201,11 @@ implicit none
         call jevech('PLST', 'L', jlst)
     endif
 !
-    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_K_G_F' ) then
+    if (option .eq. 'CALC_KJ_G' .or. option .eq. 'CALC_KJ_G_F') then 
+        call jevech('PMATERC', 'L', imate)
+    endif
+!
+    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_K_G_F' .or. option .eq. 'CALC_KJ_G_F') then
         fonc = ASTER_TRUE
         call jevech('PPRESSF', 'L', ipref)
         call jevech('PTEMPSR', 'L', itemps)
@@ -648,6 +654,16 @@ implicit none
         endif
 !
     enddo
+    
+    ! ===========================================================
+    !         CALCUL DE K1 A PARTIR DE LA FORMULE D'IRWIN ET DE G  
+    !         OPTION G
+    ! ===========================================================
+!
+    if ( option == 'CALC_G' .or. option == 'CALC_G_F' ) then
+        tcla1 = tcla
+    endif 
+    
 !
 !-- Exit sur valeur de theta nulle sur element
     999 continue
