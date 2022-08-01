@@ -25,6 +25,10 @@ class TimeStepper:
         times (list[float]): List of time steps.
     """
 
+    @property
+    def null_increment(self):
+        return -1.e150
+    
     def __init__(self, times):
         self.current = 0
         self.level = 0
@@ -91,7 +95,7 @@ class TimeStepper:
         if self.hasFinished():
             raise IndexError
         if self.current == 0:
-            return -1.e150
+            return self.null_increment
 
         return self.times[self.current] - self.times[self.current-1]
 

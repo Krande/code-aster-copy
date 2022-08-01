@@ -7570,6 +7570,23 @@ class ThermalLoadReal(DataStructure):
     
     def getModel(self):
         pass
+    
+    def hasLoadField(self, arg0):
+        """Return true if the wanted field exists
+        
+        Arguments:
+            str: name of the load field
+        
+        Returns:
+            bool: field exists
+        """
+    
+    def hasLoadResult(self):
+        """Return true if the LoadResult structure exists
+        
+        Returns:
+            bool: field exists
+        """
 
 # class ThermalLoadFunction in libaster
 
@@ -7600,6 +7617,23 @@ class ThermalLoadFunction(DataStructure):
     
     def getModel(self):
         pass
+    
+    def hasLoadField(self, arg0):
+        """Return true if the wanted field exists
+        
+        Arguments:
+            str: name of the load field
+        
+        Returns:
+            bool: field exists
+        """
+    
+    def hasLoadResult(self):
+        """Return true if the LoadResult structure exists
+        
+        Returns:
+            bool: field exists
+        """
 
 # class BehaviourDefinition in libaster
 

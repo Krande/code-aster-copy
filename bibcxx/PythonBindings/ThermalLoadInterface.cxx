@@ -32,6 +32,21 @@ void exportThermalLoadToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ThermalLoadReal, ModelPtr & > ) )
         .def( py::init( &initFactoryPtr< ThermalLoadReal, std::string, ModelPtr & > ) )
         .def( "getFiniteElementDescriptor", &ThermalLoadReal::getFiniteElementDescriptor )
+        .def( "hasLoadField", &ThermalLoadReal::hasLoadField, R"(
+            Return true if the wanted field exists
+
+            Arguments:
+                str: name of the load field
+
+            Returns:
+                bool: field exists
+            )" )
+        .def( "hasLoadResult", &ThermalLoadReal::hasLoadResult, R"(
+            Return true if the LoadResult structure exists
+
+            Returns:
+                bool: field exists
+            )" )
         .def( "getMesh", &ThermalLoadReal::getMesh )
         .def( "getModel", &ThermalLoadReal::getModel );
 
@@ -40,6 +55,21 @@ void exportThermalLoadToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ThermalLoadFunction, ModelPtr & > ) )
         .def( py::init( &initFactoryPtr< ThermalLoadFunction, std::string, ModelPtr & > ) )
         .def( "getFiniteElementDescriptor", &ThermalLoadFunction::getFiniteElementDescriptor )
+        .def( "hasLoadField", &ThermalLoadFunction::hasLoadField, R"(
+            Return true if the wanted field exists
+
+            Arguments:
+                str: name of the load field
+
+            Returns:
+                bool: field exists
+            )"  )
+        .def( "hasLoadResult", &ThermalLoadFunction::hasLoadResult, R"(
+            Return true if the LoadResult structure exists
+
+            Returns:
+                bool: field exists
+            )" )
         .def( "getMesh", &ThermalLoadFunction::getMesh )
         .def( "getModel", &ThermalLoadFunction::getModel );
 };

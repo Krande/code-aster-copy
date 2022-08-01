@@ -76,6 +76,15 @@ def _checkIfStat(args):
             return True
     return False
 
+def _hasExchangeFields(args):
+    has_fields = False
+    if args.get("EXCIT") is not None:
+        for loadkws in args["EXCIT"]:
+            load = loadkws["CHARGE"]
+            if isinstance(load, (ThermalLoadFunction, ThermalLoadReal)):
+                has_fields = has_fields or load.hasLoadResult() or load.hasLoadField("COEFH") or load.hasLoadField("HECHP")
+    return has_fields
+
 @profile
 def _addLoads(phys_pb, args):
     """Add loads from cata inplace
@@ -255,28 +264,32 @@ def _createTimeStepper(is_stat, args):
 
 
 @profile
-def _computeMatrix(cond, disr_comp, matrix, time_parameters, externVar):
-    """Compute and assemble the elastic matrix
+def _computeMatrix(disr_comp, matrix,
+                   is_stat, time_value, time_delta, time_theta,
+                   externVarField):
+    """Compute and assemble the thermal matrix
 
     Arguments:
         disr_comp (DiscreteComputation): to compute discrete quantities
-        matrix (AssemblyMatrixDisplacementReal): matrix to compute and assemble inplace
-        time (float): current time
-        externVar (field): current external state variables
+        matrix (AssemblyMatrixTemperatureReal): matrix to compute and assemble inplace
+        time_value (float): Current time
+        time_delta (float): Time increment
+        time_theta (float): Theta parameter for integration
+        externVarField (fieldOnCellsReal): external state variable at current time
 
     Returns:
-        AssemblyMatrixDisplacementReal: matrix computed and assembled
+        AssemblyMatrixTemperatureReal: matrix computed and assembled
     """
     logger.debug("<THER_LINEAIRE><MATRIX>: Start")
 
-    matr_elem1 = disr_comp.linearConductivityMatrix(*time_parameters,
-                                                    externVarField=externVar)
+    matr_elem1 = disr_comp.linearConductivityMatrix(time_value, time_delta, time_theta,
+                                                    externVarField=externVarField)
     matrix.addElementaryMatrix(matr_elem1)
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
 
-    if cond:
-        matr_elem2 = disr_comp.linearCapacityMatrix(*time_parameters,
-                                                    externVarField=externVar)
+    if not is_stat:
+        matr_elem2 = disr_comp.linearCapacityMatrix(time_value, time_delta, time_theta,
+                                                    externVarField=externVarField)
         matrix.addElementaryMatrix(matr_elem2)
         logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")
 
@@ -288,15 +301,18 @@ def _computeMatrix(cond, disr_comp, matrix, time_parameters, externVar):
 
 
 @profile
-def _computeRhs(cond, phys_pb, disr_comp, time_parameters, externVarField, prevPrimalField):
+def _computeRhs(disr_comp,
+                is_evol, time_value, time_delta, time_theta,
+                externVarField, previousPrimalField):
     """Compute and assemble the right hand side
 
     Arguments:
-         phys_pb (PhysicalProblem): physical problem
-         disr_comp (DiscreteComputation): to compute discrete quantities
-         time (float): current time
-         timeField (ConstantFieldOnCell): field with value of current time
-         externVarField (fieldOnCellsReal): external state variable at current time
+        disr_comp (DiscreteComputation): to compute discrete quantities
+        time_value (float): Current time
+        time_delta (float): Time increment
+        time_theta (float): Theta parameter for integration
+        externVarField (fieldOnCellsReal): external state variable at current time
+        previousPrimalField (fieldOnNodesReal): solution field at previous time
 
      Returns:
          FieldOnNodesReal: vector of load
@@ -305,15 +321,17 @@ def _computeRhs(cond, phys_pb, disr_comp, time_parameters, externVarField, prevP
     logger.debug("<THER_LINEAIRE><RHS>: Start")
 
     # compute imposed temperature with Lagrange
-    rhs = disr_comp.imposedDualBC(*time_parameters)
+    rhs = disr_comp.imposedDualBC(time_value, time_delta, time_theta)
     logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
 
     # compute neumann forces
-    rhs += disr_comp.neumann(*time_parameters, externVarField, prevPrimalField)
+    rhs += disr_comp.neumann(time_value, time_delta, time_theta,
+                             externVarField, previousPrimalField)
     logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
 
-    if cond:
-        rhs += disr_comp.transientThermalLoad(*time_parameters, externVarField, prevPrimalField)
+    if is_evol:
+        rhs += disr_comp.transientThermalLoad(time_value, time_delta, time_theta,
+                                              externVarField, previousPrimalField)
         logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 
     logger.debug("<THER_LINEAIRE><RHS>: Finish")
@@ -352,6 +370,7 @@ def ther_lineaire_ops(self, **args):
 
     # Add loads
     phys_pb = _addLoads(phys_pb, args)
+    has_exchange_fields = _hasExchangeFields(args)
     logger.debug("<THER_LINEAIRE>: Loads added")
 
     # Compute numbering
@@ -389,7 +408,6 @@ def ther_lineaire_ops(self, **args):
     matrix = AssemblyMatrixTemperatureReal(phys_pb)
     # the matrix depends on times or external variables
     is_const = phys_pb.getCodedMaterial().constant()
-    is_first = True
 
     # Detect external state variables
     hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
@@ -402,38 +420,47 @@ def ther_lineaire_ops(self, **args):
 
     # Run computation
     logger.debug("<THER_LINEAIRE>: Start computation")
+
+    is_first = True
+    phys_state.primal = initial_field
+    time_delta_prev = timeStepper.null_increment
+
     while not timeStepper.hasFinished():
         phys_state.time = timeStepper.getNext()
 
         if is_stat :
-            theta = 1.0
-            delta_time = -1.
+            time_theta = 1.0
+            time_delta = timeStepper.null_increment
         else :
-            theta = args.get("PARM_THETA")
-            delta_time = timeStepper.getIncrement()
-
-        time_parameters = [phys_state.time, delta_time, theta]
+            time_theta = args.get("PARM_THETA")
+            time_delta = timeStepper.getIncrement()
 
         logger.debug("<THER_LINEAIRE>:     IS_EVOL %s"%is_evol)
         logger.debug("<THER_LINEAIRE>:     IS_STAT %s"%is_stat)
         logger.debug("<THER_LINEAIRE>:     IS_CONST = %s"%is_const)
         logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s"%hasExternalStateVariable)
         logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s"%phys_state.time)
-        logger.debug("<THER_LINEAIRE>:     TIME_PARAMETERS %s"%time_parameters)
+        logger.debug("<THER_LINEAIRE>:     TIME_VALUE %s"%phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s"%time_delta)
+        logger.debug("<THER_LINEAIRE>:     TIME_THETA %s"%time_theta)
 
         # Update external state variable if required
         if hasExternalStateVariable:
             phys_state.externVar = disc_comp.createExternalStateVariablesField(phys_state.time)
 
-        if is_first:
-            phys_state.primal = initial_field
-
         if not (is_first and not is_stat):
-            cond = is_evol and not is_stat
-            matrix = _computeMatrix(cond, disc_comp, matrix, time_parameters, phys_state.externVar)
-            profile(linear_solver.factorize)(matrix)
+            if (not is_const
+                or (is_const and time_delta is timeStepper.null_increment)
+                or (is_const and has_exchange_fields)
+                or (is_const and abs(time_delta - time_delta_prev) > 1.e-12)
+                or (is_const and hasExternalStateVariable)):
+                matrix = _computeMatrix(disc_comp, matrix,
+                                        is_stat, phys_state.time, time_delta, time_theta,
+                                        phys_state.externVar)
+                profile(linear_solver.factorize)(matrix)
 
-            rhs = _computeRhs(cond, phys_pb, disc_comp, time_parameters,
+            rhs = _computeRhs(disc_comp,
+                              is_evol, phys_state.time, time_delta, time_theta,
                               phys_state.externVar, phys_state.primal)
 
             # solve linear system
@@ -444,12 +471,13 @@ def ther_lineaire_ops(self, **args):
         if (rank == 0) or not is_first:
             if exists_unique(phys_state.time, arch_times, arch_prec, arch_crit):
                 storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state,
-                                           theta=time_parameters[2])
+                                           theta=time_theta)
                 rank += 1
 
         timeStepper.completed()
         is_first = False
         is_stat = False
+        time_delta_prev = time_delta
 
     logger.debug("<THER_LINEAIRE>: Finish computation")
     # delete factorized matrix - free memory

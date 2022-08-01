@@ -127,10 +127,11 @@ class ThermalLoadDescription : public DataStructure {
         else if ( name == "GRAIN")
             return ( _grain && _grain->exists() );
         else
-            AS_ASSERT( false );
+            throw std::runtime_error( "Invalid load name : " + name );
     }
 
     ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
+        AS_ASSERT( this->hasLoadField( name ) );
         if ( name == "COEFH")
             return _coefh;
         else if ( name == "T_EXT")
@@ -146,14 +147,15 @@ class ThermalLoadDescription : public DataStructure {
         else if ( name == "GRAIN")
             return _grain;
         else
-            AS_ASSERT( false );
+            throw std::runtime_error( "Invalid load name : " + name );
     }
 
     FieldOnCellsRealPtr getLoadField( const std::string name ) const {
+        AS_ASSERT( this->hasLoadField( name ) );
         if ( name == "SOURC" )
             return _sourc;
         else
-            AS_ASSERT( false );
+            throw std::runtime_error( "Invalid load name : " + name );
     }
 
     bool hasLoadResult() const {
