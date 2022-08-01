@@ -101,7 +101,7 @@ end type
     public :: ContactParameters, ContactGeom
     public :: projQpSl2Ma, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, testLagrF
-    public :: projBs, projRm, projTn, jump_tang, jump_norm, dNs_du
+    public :: projBs, projRm, projTn, jump_tang, jump_norm, dNs_du, otimes, Iden3
 !
 contains
 !
@@ -255,34 +255,73 @@ contains
 !
 !===================================================================================================
 !
-    subroutine projTn(normal, Tn)
+    function otimes(v1, v2)
 !
     implicit none
 !
-        real(kind=8), intent(in) :: normal(3)
-        real(kind=8), intent(out), optional :: Tn(3,3)
+        real(kind=8), intent(in) :: v1(3), v2(3)
+        real(kind=8) :: otimes(3,3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Projection operator onto the tangent plane corresponding to normal vector n
-!   Tn = I - n \otimes n
+!   Evaluate otimes product: (v1 \otimes v2 )_{i,j} = v1_{i} * v2_{j}
 !
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: i, j
 !
-        Tn = 0.d0
-        Tn(1,1) = 1.d0
-        Tn(2,2) = 1.d0
-        Tn(3,3) = 1.d0
-!
-        do i = 1, 3
-            do j = 1, 3
-                Tn(i,j) = Tn(i,j) - normal(i) * normal(j)
+        do j = 1, 3
+            do i= 1, 3
+                otimes(i,j) = v1(i) * v2(j)
             end do
         end do
 !
-    end subroutine
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function Iden3()
+!
+    implicit none
+!
+        real(kind=8) :: Iden3(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate identity matrix
+!
+! --------------------------------------------------------------------------------------------------
+!
+        Iden3 = 0
+        Iden3(1,1) = 1.d0
+        Iden3(2,2) = 1.d0
+        Iden3(3,3) = 1.d0
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function projTn(normal)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: normal(3)
+        real(kind=8) :: projTn(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Projection operator onto the tangent plane corresponding to normal vector n
+!   Tn = Id - n \otimes n
+!
+! --------------------------------------------------------------------------------------------------
+!
+        projTn = Iden3() - otimes(normal, normal)
+!
+    end function
 !
 !===================================================================================================
 !
@@ -293,9 +332,9 @@ contains
     implicit none
 !
         type(ContactParameters), intent(in) :: param
-        real(kind=8), intent(in) :: x(2)
+        real(kind=8), intent(in) :: x(3)
         real(kind=8), intent(in) :: s
-        real(kind=8) :: projBs(2)
+        real(kind=8) :: projBs(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -674,14 +713,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine testLagrF(geom, l_fric, func_lagr, mu_f)
+    subroutine testLagrF(geom, func_lagr, tau_1_slav, tau_2_slav, mu_f)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        aster_logical, intent(in) :: l_fric
-        real(kind=8), intent(in) :: func_lagr(4)
-        real(kind=8), intent(out) :: mu_f(MAX_LAGA_DOFS, 2)
+        real(kind=8), intent(in) :: func_lagr(4), tau_1_slav(3), tau_2_slav(3)
+        real(kind=8), intent(out) :: mu_f(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -696,17 +734,17 @@ contains
 !
 ! --- Slave side
 !
-        if(l_fric) then
-            do i_node = 1, geom%nb_lagr_c
-                ASSERT(geom%indi_lagc(i_node) > 1)
-                index = index + geom%elem_dime
-                mu_f(index+2, 1) = func_lagr(i_node)
-                if(geom%elem_dime == 3) then
-                    mu_f(index+3, 2) = func_lagr(i_node)
-                end if
-                index = index + geom%indi_lagc(i_node)
-            end do
-        end if
+        do i_node = 1, geom%nb_lagr_c
+            ASSERT(geom%indi_lagc(i_node) > 1)
+            index = index + geom%elem_dime
+            !mu_f(index+2, 1:geom%elem_dime) = func_lagr(i_node) * tau_1_slav(1:geom%elem_dime)
+            mu_f(index+2, 1) = func_lagr(i_node)
+            if(geom%elem_dime == 3) then
+                !mu_f(index+3, 1:geom%elem_dime) = func_lagr(i_node) * tau_2_slav(1:geom%elem_dime)
+                mu_f(index+3, 2) = func_lagr(i_node)
+            end if
+            index = index + geom%indi_lagc(i_node)
+        end do
 !
     end subroutine
 !
@@ -715,14 +753,14 @@ contains
 !===================================================================================================
 !
     subroutine jump_tang(geom, func_slav, func_mast, &
-                       tau_1_slav, tau_2_slav, jump_t)
+                       norm_slav, jump_t)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9)
-        real(kind=8), intent(in) :: tau_1_slav(3), tau_2_slav(3)
-        real(kind=8), intent(out) :: jump_t(MAX_LAGA_DOFS, 2)
+        real(kind=8), intent(in) :: norm_slav(3)
+        real(kind=8), intent(out) :: jump_t(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -731,20 +769,21 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index
+        integer :: i_node, i_dim, index, j_dim
+        real(kind=8) :: Tn(3,3)
 !
         jump_t = 0.d0
         index = 0
+        Tn = projTn(norm_slav)
 !
 ! --- Slave side
 !
         do i_node = 1, geom%nb_node_slav
             do i_dim = 1, geom%elem_dime
                 index = index + 1
-                jump_t(index, 1) = func_slav(i_node) * tau_1_slav(i_dim)
-                if(geom%elem_dime == 3) then
-                    jump_t(index, 2) = func_slav(i_node) * tau_2_slav(i_dim)
-                end if
+                do j_dim = 1, geom%elem_dime
+                    jump_t(index, j_dim) = func_slav(i_node) * Tn(j_dim, i_dim)
+                end do
             end do
 !
             index = index + geom%indi_lagc(i_node)
@@ -755,10 +794,9 @@ contains
         do i_node = 1, geom%nb_node_mast
             do i_dim = 1, geom%elem_dime
                 index = index + 1
-                jump_t(index, 1) = -func_mast(i_node) * tau_1_slav(i_dim)
-                if(geom%elem_dime == 3) then
-                    jump_t(index, 2) = -func_mast(i_node) * tau_2_slav(i_dim)
-                end if
+                do j_dim = 1, geom%elem_dime
+                    jump_t(index, j_dim) = -func_mast(i_node) * Tn(j_dim, i_dim)
+                end do
             end do
         end do
 !

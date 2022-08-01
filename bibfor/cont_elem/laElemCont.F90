@@ -33,13 +33,13 @@ type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
 real(kind=8), intent(in) :: coor_qp_sl(2), hF
 real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
-real(kind=8), intent(out) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
+real(kind=8), intent(out) :: lagr_f(3), vT(3), gamma_f, projBsVal(3)
 aster_logical, intent(out) :: l_cont_qp, l_fric_qp
 real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: mu_c(MAX_LAGA_DOFS)
-real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,2)
-real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
+real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,3)
+real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,8 +47,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
 !
 ! Compute elementary contact quantities
 !
-! --------------------------------------------------------------------------------------------------
-!
+! ------------------------------------l_fric,
 ! In  elem_dime        : dimension of elements
 ! In  l_axis           : .true. for axisymmetric element
 ! In  nb_lagr          : total number of Lagrangian dof on contact element
@@ -63,8 +62,8 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: shape_func_sl(9), shape_func_ma(9), shape_func_lagr(4), dshape_func_sl(2,9)
-    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagrf_vT(2)
-    real(kind=8) :: thres_qp, tau_1_slav(3), tau_2_slav(3)
+    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagrf_vT(3)
+    real(kind=8) :: thres_qp, tau_1_slav(3), tau_2_slav(3), lagr_f_coeff(2)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -129,9 +128,10 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
             end if
         end if
 !
-        lagr_f(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(1,:))
-        lagr_f(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(2,:))
+        lagr_f_coeff(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(1,:))
+        lagr_f_coeff(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(2,:))
         gamma_f = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_fric) / hF
+        lagr_f = lagr_f_coeff(1) * tau_1_slav + lagr_f_coeff(2) * tau_2_slav
         lagrf_vT = lagr_f - gamma_f * vT
         projBsVal = projBs(parameters, lagrf_vT, thres_qp)
     end if
@@ -165,14 +165,14 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
 !
 ! ----- Compute mu_f
 !
-        call testLagrF(geom, parameters%l_fric, shape_func_lagr, mu_f)
+        call testLagrF(geom, shape_func_lagr, tau_1_slav, tau_2_slav, mu_f)
     end if
 !
     if(present(jump_t)) then
 !
-! ----- Compute mu_f
+! ----- Compute tangential jump
 !
-         call jump_tang(geom, shape_func_sl, shape_func_ma, tau_1_slav, tau_2_slav, jump_t)
+         call jump_tang(geom, shape_func_sl, shape_func_ma, norm_slav, jump_t)
     end if
 !
 !    print*, "VAL: ", lagr_c, gamma_c, gap, H, projRmVal, hF

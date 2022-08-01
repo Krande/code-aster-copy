@@ -29,13 +29,13 @@ interface
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), hF
         real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
-        real(kind=8), intent(out) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
+        real(kind=8), intent(out) :: lagr_f(3), vT(3), gamma_f, projBsVal(3)
         aster_logical, intent(out) :: l_cont_qp, l_fric_qp
         real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: mu_c(MAX_LAGA_DOFS)
-        real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,2)
-        real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
+        real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     end subroutine laElemCont
 end interface
 

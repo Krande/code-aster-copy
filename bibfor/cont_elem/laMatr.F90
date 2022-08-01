@@ -63,9 +63,9 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
     real(kind=8) :: gap, lagr_c, gamma_c, projRmVal
-    real(kind=8) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
+    real(kind=8) :: lagr_f(3), vT(3), gamma_f, projBsVal(3)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
-    real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2)
+    real(kind=8) :: mu_f(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,7 +166,7 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !        term:  (-1/ gamma_f * mu_f, dlagr_f) - Without friction
 !
                 coeff = -weight_sl_qp / gamma_f
-                call dgemm('N', 'T', geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, coeff, &
+                call dgemm('N', 'T', geom%nb_dofs, geom%nb_dofs, geom%elem_dime, coeff, &
                             mu_f, MAX_LAGA_DOFS, mu_f, MAX_LAGA_DOFS, 1.d0, &
                             matr_fric, MAX_LAGA_DOFS)
             end if
