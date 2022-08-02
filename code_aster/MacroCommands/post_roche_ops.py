@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
+from math import pi
 from math import sqrt, pi
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
-from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM, CREA_TABLE,
+from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM,
                         POST_ELEM, FORMULE,
                         MODI_MAILLAGE, DEFI_CONSTANTE,
-                        COPIER,CREA_RESU, IMPR_RESU)
+                        COPIER,CREA_RESU)
 
 # ===========================================================================
 #           CORPS DE LA MACRO "POST_ROCHE"
@@ -383,16 +383,19 @@ class PostRocheCommon():
                              VALE='max(0.809/flambda(R,EP,X3)**(0.44)/fpourD2X(R,EP,X1,X3,X4),1.02)',
                                    fpourD2X=fpourD2X, flambda=flambda)
 
+        affe = [_F(NOM_CMP=('X1','X2','X3','X4','X5','X6'),
+                   VALE_F=(fB2_droit,fZ,fD1_droit,fD21,fD22_droit,fD22_droit),
+                   **self.dicAllZones)]
+        if self.lGrmaCoude:
+            affe.append(_F(GROUP_MA=self.lGrmaCoude,
+                           NOM_CMP=('X1','X2','X3','X4','X5','X6'),
+                           VALE_F=(fB2_coude,fZ,fD1_coude,fD21,fD22_coude,fD23_coude),))
+
         chfonc = CREA_CHAMP(OPERATION='AFFE',
                              TYPE_CHAM='ELNO_NEUT_F',
                              MODELE=self.model,
                              PROL_ZERO='OUI',
-                             AFFE= (_F(NOM_CMP=('X1','X2','X3','X4','X5','X6'),
-                                       VALE_F=(fB2_droit,fZ,fD1_droit,fD21,fD22_droit,fD22_droit),
-                                       **self.dicAllZones),
-                                    _F(GROUP_MA=self.lGrmaCoude, NOM_CMP=('X1','X2','X3','X4','X5','X6'),
-                                       VALE_F=(fB2_coude,fZ,fD1_coude,fD21,fD22_coude,fD23_coude),),
-                                    ))
+                             AFFE = affe)
 
         chParams= CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='ELNO_NEUT_R',
@@ -893,7 +896,7 @@ class PostRocheCommon():
                 return 0.
             else:
                 return max(T/t-1,0)
-        
+
         def fressSism(t, T):
             if t == 0.:
                 return 0.
@@ -903,7 +906,7 @@ class PostRocheCommon():
 
         fRessortMono = FORMULE(NOM_PARA=('X1', 'X2'),
                            VALE='fress(X1,X2)',fress=fressMono)
-        
+
         fRessortSism = FORMULE(NOM_PARA=('X1', 'X2'),
                            VALE='fress(X1,X2)',fress=fressSism)
 
@@ -914,7 +917,7 @@ class PostRocheCommon():
                                 AFFE= (_F(NOM_CMP=('X1'),
                                           VALE_F=(fRessortMono,),
                                           **self.dicAllZones),))
-        
+
         self.chFRessortSism = CREA_CHAMP(OPERATION='AFFE',
                                 TYPE_CHAM='ELNO_NEUT_F',
                                 MODELE=self.model,
