@@ -50,6 +50,13 @@ class MeshCoordinatesField : public DataField {
 
     using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
 
+    /**
+     * @brief Return list of dof to use
+     * @param local True: Use all nodes / False: Use only owned nodes
+     * @param list_cmp empty: Use all cmp / keep only cmp given
+     */
+    VectorLong _getDOFsToUse( const VectorString &list_cmp ) const;
+
   public:
     /**
      * @typedef MeshCoordinatesFieldPtr
@@ -84,14 +91,84 @@ class MeshCoordinatesField : public DataField {
      */
     MeshCoordinatesField &operator+=( const FieldOnNodesReal &rhs );
 
+    MeshCoordinatesField &operator+=( const MeshCoordinatesField &rhs ) {
+        ( *_valuesList ) += ( *rhs._valuesList );
+        return *this;
+    };
+
     friend MeshCoordinatesField operator+( MeshCoordinatesField lhs, const FieldOnNodesReal &rhs ) {
         lhs += rhs;
         return lhs;
     };
 
-    friend MeshCoordinatesField operator+( const FieldOnNodesReal &lhs, MeshCoordinatesField rhs ) {
-        rhs += lhs;
-        return rhs;
+    friend MeshCoordinatesField operator+( const FieldOnNodesReal &lhs,
+                                           const MeshCoordinatesField &rhs ) {
+        return rhs + lhs;
+    };
+
+    friend MeshCoordinatesField operator+( MeshCoordinatesField lhs,
+                                           const MeshCoordinatesField &rhs ) {
+        lhs += rhs;
+        return lhs;
+    };
+
+    MeshCoordinatesField &operator-=( const FieldOnNodesReal &rhs );
+
+    MeshCoordinatesField &operator-=( const MeshCoordinatesField &rhs ) {
+        ( *_valuesList ) -= ( *rhs._valuesList );
+        return *this;
+    };
+
+    friend MeshCoordinatesField operator-( MeshCoordinatesField lhs, const FieldOnNodesReal &rhs ) {
+        lhs -= rhs;
+        return lhs;
+    };
+
+    friend MeshCoordinatesField operator-( const FieldOnNodesReal &lhs,
+                                           const MeshCoordinatesField &rhs ) {
+        return -( rhs - lhs );
+    };
+
+    friend MeshCoordinatesField operator-( MeshCoordinatesField lhs,
+                                           const MeshCoordinatesField &rhs ) {
+        lhs -= rhs;
+        return lhs;
+    };
+
+    /**
+     * @brief TimesEqual overloading
+     * @return Updated field
+     */
+    MeshCoordinatesField &operator*=( const ASTERDOUBLE &scal ) {
+
+        ( *_valuesList ) *= scal;
+
+        return *this;
+    };
+
+    /**
+     * @brief Unary Minus overloading
+     * @return Updated field
+     */
+    MeshCoordinatesField operator-() const {
+        MeshCoordinatesField tmp( *this );
+        ( *tmp._valuesList ) *= double( -1.0 );
+        return tmp;
+    };
+
+    /**
+     * @brief Multiply by a scalar on right overloading
+     * @return New field
+     */
+    friend MeshCoordinatesField operator*( MeshCoordinatesField lhs, const ASTERDOUBLE &scal ) {
+
+        lhs *= scal;
+        return lhs;
+    };
+
+    friend MeshCoordinatesField operator*( const ASTERDOUBLE &scal,
+                                           const MeshCoordinatesField &rhs ) {
+        return rhs * scal;
     };
 
     /**

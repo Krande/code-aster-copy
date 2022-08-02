@@ -65,7 +65,7 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
     real(kind=8) :: gap, lagr_c, gamma_c, projRmVal
     real(kind=8) :: lagr_f(3), vT(3), gamma_f, projBsVal(3), term_f(3)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS)
-    real(kind=8) :: mu_f(MAX_LAGA_DOFS, 3), jump_t(MAX_LAGA_DOFS, 23)
+    real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2), jump_t(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,11 +76,11 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 !
     if(geom%elem_slav_code == "PO1") then
         if(geom%elem_mast_code == "LAGR") then
-            vect_cont(geom%elem_dime+1) = -geom%slav_lagc_curr(1)
+            vect_cont(geom%elem_dime+1) = -geom%lagc_slav_curr(1)
             if(parameters%l_fric) then
-                vect_fric(geom%elem_dime+2) = -geom%slav_lagf_curr(1,1)
+                vect_fric(geom%elem_dime+2) = -geom%lagf_slav_curr(1,1)
                 if(geom%elem_dime == 3) then
-                    vect_fric(geom%elem_dime+3) = -geom%slav_lagf_curr(2,1)
+                    vect_fric(geom%elem_dime+3) = -geom%lagf_slav_curr(2,1)
                 end if
             end if
         else
@@ -95,11 +95,11 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 ! - Get quadrature (slave side)
 !
     call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                    geom%slav_coor_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
+                    geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
 !
 ! - Diameter of slave side
 !
-    hF = diameter(geom%nb_node_slav, geom%slav_coor_init)
+    hF = diameter(geom%nb_node_slav, geom%coor_slav_init)
 !
 ! - Loop on quadrature points
 !
@@ -153,7 +153,7 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 !
             coeff = weight_sl_qp
             term_f = (projBsVal - lagr_f) / gamma_f
-            call dgemv('N', geom%nb_dofs, geom%elem_dime, coeff, mu_f, MAX_LAGA_DOFS, &
+            call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, mu_f, MAX_LAGA_DOFS, &
                             term_f, 1, 1.d0, vect_fric, 1)
         end if
     end do

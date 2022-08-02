@@ -86,7 +86,7 @@ RES = MECA_NON_LINE(
            _F(CHARGE=CHAR2,
               FONC_MULT=RAMPE,),),
     CONTACT=_F(DEFINITION=DEFICO,
-               ALGO_RESO_GEOM="NEWTON"),
+               ALGO_RESO_GEOM="POINT_FIXE"),
     NEWTON=_F(REAC_ITER=1,),
     COMPORTEMENT=_F(RELATION='ELAS',
                     DEFORMATION='PETIT',

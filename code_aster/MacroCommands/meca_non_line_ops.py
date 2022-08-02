@@ -25,9 +25,9 @@ from ..Objects import (
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
+    NonLinearResult,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
-    NonLinearResult,
 )
 from ..Messages import UTMESS
 from ..Utilities import print_stats

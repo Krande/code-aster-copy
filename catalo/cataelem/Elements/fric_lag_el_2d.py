@@ -65,6 +65,8 @@ CSTATR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
                             components=('X', 'Y',))
 
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST',))
 
 MVECGAP = ArrayOfComponents(phys=PHY.VNEU_R, locatedComponents=CGAPR)
 
@@ -118,6 +120,8 @@ class FMS2S2(Element):
                           para_in=((SP.PCONFR, LC.CCONFR),
                                    (SP.PDEPL_M, DDL_MECA),
                                    (SP.PDEPL_P, DDL_MECA),
+                                   (SP.PINSTMR, CTEMPSR),
+                                   (SP.PINSTPR, CTEMPSR),
                                    (SP.PGEOMER, NGEOMER),
                                    (SP.PGEOMCR, NGEOMER), ),
                           para_out=((SP.PVECTCR, MVECTUR),
@@ -128,6 +132,8 @@ class FMS2S2(Element):
                      para_in=((SP.PCONFR, LC.CCONFR),
                               (SP.PDEPL_M, DDL_MECA),
                               (SP.PDEPL_P, DDL_MECA),
+                              (SP.PINSTMR, CTEMPSR),
+                              (SP.PINSTPR, CTEMPSR),
                               (SP.PGEOMER, NGEOMER),
                               (SP.PGEOMCR, NGEOMER), ),
                      para_out=((SP.PMATUUR, MMATUUR),

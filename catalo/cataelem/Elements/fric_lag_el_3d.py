@@ -58,6 +58,9 @@ CSTATR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
                                ('EN2', ('X1',)),
                                ('EN3', ()),))
 
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST',))
+
 MVECGAP = ArrayOfComponents(phys=PHY.VNEU_R, locatedComponents=CGAPR)
 
 MVEIGAP = ArrayOfComponents(phys=PHY.VNEU_R, locatedComponents=CSTATR)
@@ -109,6 +112,8 @@ class FMQ4Q4(Element):
                           para_in=((SP.PCONFR, LC.CCONFR),
                                    (SP.PDEPL_M, DDL_MECA),
                                    (SP.PDEPL_P, DDL_MECA),
+                                   (SP.PINSTMR, CTEMPSR),
+                                   (SP.PINSTPR, CTEMPSR),
                                    (SP.PGEOMER, NGEOMER),
                                    (SP.PGEOMCR, NGEOMER), ),
                           para_out=((SP.PVECTCR, MVECTUR),
@@ -119,6 +124,8 @@ class FMQ4Q4(Element):
                      para_in=((SP.PCONFR, LC.CCONFR),
                               (SP.PDEPL_M, DDL_MECA),
                               (SP.PDEPL_P, DDL_MECA),
+                              (SP.PINSTMR, CTEMPSR),
+                              (SP.PINSTPR, CTEMPSR),
                               (SP.PGEOMER, NGEOMER),
                               (SP.PGEOMCR, NGEOMER), ),
                      para_out=((SP.PMATUUR, MMATUUR),

@@ -39,3 +39,48 @@ MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &
 
     return *this;
 }
+
+MeshCoordinatesField &MeshCoordinatesField::operator-=( const FieldOnNodesReal &rhs ) {
+
+    std::string base( "G" ), cumul( "CUMU" );
+    ASTERDOUBLE alpha = -1.;
+    MeshCoordinatesField oldCoord = this->duplicate();
+
+    CALLO_VTGPLD( cumul, &alpha, oldCoord.getName(), rhs.getName(), base, getName() );
+
+    updateValuePointers();
+
+    return *this;
+}
+
+VectorLong MeshCoordinatesField::_getDOFsToUse( const VectorString &list_cmp ) const {
+    const bool all_nodes = true;
+
+    const bool all_cmp = list_cmp.empty();
+    std::map< ASTERINTEGER, std::string > map_cmp;
+    if ( !all_cmp ) {
+        for ( auto &name : list_cmp ) {
+            auto name_trim = trim( name );
+            if ( name_trim == "X" ) {
+                map_cmp[0] = name_trim;
+            } else if ( name_trim == "Y" ) {
+                map_cmp[1] = name_trim;
+            } else if ( name_trim == "Z" ) {
+                map_cmp[2] = name_trim;
+            }
+        }
+    }
+
+    auto taille = this->size();
+    VectorLong dofUsed;
+    dofUsed.reserve( taille );
+
+    for ( auto dof = 0; dof < taille; ++dof ) {
+        bool l_keep_cmp = all_cmp || map_cmp.count( dof % 3 ) > 0;
+        bool l_keep_node = all_nodes;
+        if ( l_keep_node && l_keep_cmp )
+            dofUsed.push_back( dof );
+    }
+
+    return dofUsed;
+};

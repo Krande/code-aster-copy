@@ -33,7 +33,7 @@ class StepSolver:
     current_incr = phys_state = None
     phys_pb = linear_solver = None
     param = None
-    geom = current_matrix = None
+    geom = geom_step = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
@@ -63,6 +63,7 @@ class StepSolver:
         """
         self.phys_state = phys_state
         self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
+        self.geom_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
     def getPhysicalState(self):
         """Get the physical state.
@@ -91,7 +92,13 @@ class StepSolver:
                 convergency criteria.
         """
 
-        convManager.evalGeometricResidual(self.phys_state.createPrimal(self.phys_pb, 0.0))
+        if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
+            geom_diff = self.phys_state.primal_step - self.geom_step
+            self.geom_step = self.phys_state.primal_step.duplicate()
+        else:
+            geom_diff = self.phys_state.createPrimal(self.phys_pb, 0.0)
+
+        convManager.evalGeometricResidual(geom_diff)
 
         self.geom = self.phys_pb.getMesh().getCoordinates() \
             + self.phys_state.primal + self.phys_state.primal_step
@@ -146,6 +153,10 @@ class StepSolver:
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
+
+        if self.current_incr == 0:
+            return False
+
         reac_geom = self._get("CONTACT", "REAC_GEOM")
 
         if reac_geom == "AUTOMATIQUE":
@@ -182,6 +193,14 @@ class StepSolver:
             self.update(convManager)
 
             self.current_incr += 1
+
+            if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
+                logManager.printConvTableRow(
+                    [
+                        self.current_incr, " ", " ",
+                        convManager.getCriteria("RESI_GEOM"), "POINT_FIXE",
+                    ]
+                )
 
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_9")

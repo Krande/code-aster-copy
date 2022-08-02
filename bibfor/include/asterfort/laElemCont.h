@@ -34,7 +34,7 @@ interface
         real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: mu_c(MAX_LAGA_DOFS)
-        real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,2)
         real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     end subroutine laElemCont
 end interface

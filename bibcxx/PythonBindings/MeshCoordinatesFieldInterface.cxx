@@ -36,6 +36,14 @@ void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
         mod, "MeshCoordinatesField" )
         // fake initFactoryPtr: no default constructor, only for restart
         .def( py::init( &initFactoryPtr< MeshCoordinatesField, std::string > ) )
+        .def( py::self += py::self )
+        .def( py::self -= py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( py::self * float() )
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( -py::self )
         .def(
             "__add__", +[]( MeshCoordinatesField &a, const FieldOnNodesReal &b ) { return a + b; } )
         .def(

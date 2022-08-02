@@ -38,7 +38,7 @@ aster_logical, intent(out) :: l_cont_qp, l_fric_qp
 real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: mu_c(MAX_LAGA_DOFS)
-real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,3)
+real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,2)
 real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,8 +62,8 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: shape_func_sl(9), shape_func_ma(9), shape_func_lagr(4), dshape_func_sl(2,9)
-    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagrf_v(3)
-    real(kind=8) :: thres_qp, tau_1_slav(3), tau_2_slav(3), lagr_f_coeff(2)
+    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagr_v(3)
+    real(kind=8) :: thres_qp, tau_1_slav(3), tau_2_slav(3), lagr_f_coeff(2), speed(3)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -84,7 +84,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Evaluate Lagr_c and gamma_c at quadrature point
 !
-    lagr_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagc_curr)
+    lagr_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagc_slav_curr)
     gamma_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_cont) / hF
     lagrc_gap = lagr_c + gamma_c * gap
 !
@@ -128,12 +128,13 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
             end if
         end if
 !
-        lagr_f_coeff(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(1,:))
-        lagr_f_coeff(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagf_curr(2,:))
+        lagr_f_coeff(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(1,:))
+        lagr_f_coeff(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(2,:))
         gamma_f = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_fric) / hF
         lagr_f = lagr_f_coeff(1) * tau_1_slav + lagr_f_coeff(2) * tau_2_slav
-        lagrf_v = lagr_f - gamma_f * vT
-        projBsVal = projBs(parameters, lagrf_v, thres_qp, norm_slav)
+        speed = speedEval(geom, coor_qp_sl, coor_qp_ma, gap)
+        lagr_v = (lagr_c * norm_slav + lagr_f) - gamma_f * speed
+        projBsVal = projBs(parameters, lagr_v, thres_qp, norm_slav)
     end if
 !
     if(present(dGap)) then
@@ -165,7 +166,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Compute mu_f
 !
-        call testLagrF(geom, shape_func_lagr, tau_1_slav, tau_2_slav, mu_f)
+        call testLagrF(geom, shape_func_lagr, mu_f)
     end if
 !
     if(present(jump_t)) then

@@ -196,6 +196,8 @@ bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
 FieldOnNodesRealPtr DiscreteComputation::contactForces( const MeshCoordinatesFieldPtr geom,
                                                         const FieldOnNodesRealPtr displ,
                                                         const FieldOnNodesRealPtr displ_step,
+                                                        const ASTERDOUBLE &time_prev,
+                                                        const ASTERDOUBLE &time_step,
                                                         const FieldOnCellsRealPtr data ) const {
     // Select option for matrix
     std::string option = "CHAR_MECA_CONT";
@@ -212,6 +214,10 @@ FieldOnNodesRealPtr DiscreteComputation::contactForces( const MeshCoordinatesFie
     calcul->addInputField( "PDEPL_M", displ );
     calcul->addInputField( "PDEPL_P", displ_step );
     calcul->addInputField( "PCONFR", data );
+
+    // Add time fields
+    calcul->addTimeField( "PINSTMR", time_prev );
+    calcul->addTimeField( "PINSTPR", time_prev + time_step );
 
     // Create output vector
     auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();

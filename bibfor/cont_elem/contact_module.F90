@@ -73,20 +73,27 @@ type ContactGeom
     !! Slave side parameters
     integer                             :: nb_node_slav = 0
     character(len=8)                    :: elem_slav_code = " "
-    real(kind=8), dimension(3,9)        :: slav_coor_init = 0.d0
-    real(kind=8), dimension(3,9)        :: slav_coor_curr = 0.d0
-    real(kind=8), dimension(3,9)        :: slav_depl_curr = 0.d0
-    real(kind=8), dimension(4)          :: slav_lagc_curr = 0.d0
-    real(kind=8), dimension(2,4)        :: slav_lagf_curr = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_slav_init = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_slav_prev = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_slav_curr = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_slav_pair = 0.d0
+    real(kind=8), dimension(3,9)        :: depl_slav_curr = 0.d0
+    real(kind=8), dimension(4)          :: lagc_slav_curr = 0.d0
+    real(kind=8), dimension(2,4)        :: lagf_slav_curr = 0.d0
     integer                             :: nb_lagr_c      = 0
     integer, dimension(9)               :: indi_lagc      = 0
 
     !! Master side paramaters
     integer                             :: nb_node_mast = 0
     character(len=8)                    :: elem_mast_code = " "
-    real(kind=8), dimension(3,9)        :: mast_coor_init = 0.d0
-    real(kind=8), dimension(3,9)        :: mast_coor_curr = 0.d0
-    real(kind=8), dimension(3,9)        :: mast_depl_curr = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_mast_init = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_mast_prev = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_mast_curr = 0.d0
+    real(kind=8), dimension(3,9)        :: coor_mast_pair = 0.d0
+    real(kind=8), dimension(3,9)        :: depl_mast_curr = 0.d0
+
+    !! Time
+    real(kind=8) :: time_prev = 0.d0, time_curr = 0.d0
 
     !! Other
     integer                             :: elem_dime = 0
@@ -102,7 +109,7 @@ end type
     public :: projQpSl2Ma, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, testLagrF
     public :: projBs, projRm, projTn, jump_tang, jump_norm, dNs_du, otimes, Iden3
-    public :: dProjBs_dx, dprojBs_ds, dprojBs_dn
+    public :: dProjBs_dx, dprojBs_ds, dprojBs_dn, speedEval
 !
 contains
 !
@@ -138,42 +145,43 @@ contains
         tau_2_slav = 0.d0
         gap = 0.d0
 !
-! ------ Compute outward slave normal
+! ------ Compute outward slave normal (pairing configuration)
 !
-        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%slav_coor_curr, &
+        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_pair, &
                     coor_qp_sl(1), coor_qp_sl(2), norm_slav)
 !
-! ----- Return in real slave space
+! ----- Return in real slave space (current configuration)
 !
         coor_qp_sl_re = 0.d0
-        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%slav_coor_curr, coor_qp_sl, &
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl, &
                     coor_qp_sl_re)
 !
 ! ----- Projection of node on master cell (master parametric space)
 !
-        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%mast_coor_curr,&
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_curr,&
                     coor_qp_sl_re, 75, proj_tole, norm_slav, &
                     coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, &
                     iret)
         ASSERT(iret == 0)
 !
-! ------ Compute outward master normal
-!
-        call mmnorm(geom%elem_dime, tau1_mast, tau2_mast, norm_mast)
-        norm_mast = -norm_mast
-!
 ! ----- Return in real master space
 !
         coor_qp_ma_re = 0.d0
-        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%mast_coor_curr, coor_qp_ma, &
+        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma, &
                     coor_qp_ma_re)
+!
+! ------ Compute outward master normal (pairing configuration)
+!
+
+        call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair, &
+                    coor_qp_ma(1), coor_qp_ma(2), norm_mast)
 !
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s
 !
         gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
 
-        ! print*, "COOR_SL: ", geom%slav_coor_curr(1,1:2)
-        ! print*, "COOR_MA: ", geom%mast_coor_curr(1,1:2)
+        ! print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
+        ! print*, "COOR_MA: ", geom%coor_mast_curr(1,1:2)
         ! print*, "NORM_SL: ", norm_slav
         ! print*, "NORM_MA: ", norm_mast
         ! print*, "COOR_QP: ", coor_qp_sl
@@ -188,11 +196,11 @@ contains
 !
 !===================================================================================================
 !
-    real(kind=8) function gapEval(slav_pt, mast_pt, slav_norm)
+    real(kind=8) function gapEval(slav_pt, mast_pt, norm_slav)
 !
     implicit none
 !
-        real(kind=8), intent(in) :: slav_pt(3), mast_pt(3), slav_norm(3)
+        real(kind=8), intent(in) :: slav_pt(3), mast_pt(3), norm_slav(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -200,7 +208,50 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        gapEval = -dot_product(slav_pt-mast_pt, slav_norm)
+        gapEval = -dot_product(slav_pt-mast_pt, norm_slav)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function speedEval(geom, coor_qp_slav, coor_qp_mast, gap)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: coor_qp_slav(2), coor_qp_mast(2), gap
+        real(kind=8) :: speedEval(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute speed for raytracing v = -(x^s(t_prev) - x^m(t_prev) + gap * n^s(t_prev))
+!                                     /(t_curr - t_prev)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: coor_qp_sl_prev(3), coor_qp_ma_prev(3), norm_slav_prev(3)
+!
+! ----- Return in real slave space
+!
+        coor_qp_sl_prev = 0.d0
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_prev, coor_qp_slav, &
+                    coor_qp_sl_prev)
+!
+! ----- Return in real master space
+!
+        coor_qp_ma_prev = 0.d0
+        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_prev, coor_qp_mast, &
+                    coor_qp_ma_prev)
+!
+! ------ Compute outward slave normal
+!
+        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
+                    coor_qp_slav(1), coor_qp_slav(2), norm_slav_prev)
+!
+        speedEval = -(coor_qp_sl_prev - coor_qp_ma_prev + gap * norm_slav_prev) &
+                    / (geom%time_curr - geom%time_prev)
 !
     end function
 !
@@ -637,10 +688,10 @@ contains
 ! ----- Covariant basis
 !
         if(geom%elem_dime == 3) then
-            call subaco(geom%nb_node_slav, dfunc_slav, geom%slav_coor_curr, cova)
+            call subaco(geom%nb_node_slav, dfunc_slav, geom%coor_slav_pair, cova)
         else
             call subac1(geom%l_axis, geom%nb_node_slav, func_slav, dfunc_slav(1,:), &
-                        geom%slav_coor_curr(1:2,:), cova)
+                        geom%coor_slav_pair(1:2,:), cova)
         end if
 !
 ! ----- Metric tensor
@@ -831,13 +882,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine testLagrF(geom, func_lagr, tau_1_slav, tau_2_slav, mu_f)
+    subroutine testLagrF(geom, func_lagr, mu_f)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: func_lagr(4), tau_1_slav(3), tau_2_slav(3)
-        real(kind=8), intent(out) :: mu_f(MAX_LAGA_DOFS, 3)
+        real(kind=8), intent(in) :: func_lagr(4)
+        real(kind=8), intent(out) :: mu_f(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -855,10 +906,8 @@ contains
         do i_node = 1, geom%nb_lagr_c
             ASSERT(geom%indi_lagc(i_node) > 0)
             index = index + geom%elem_dime
-            !mu_f(index+2, 1:geom%elem_dime) = func_lagr(i_node) * tau_1_slav(1:geom%elem_dime)
             mu_f(index+2, 1) = func_lagr(i_node)
             if(geom%elem_dime == 3) then
-                !mu_f(index+3, 1:geom%elem_dime) = func_lagr(i_node) * tau_2_slav(1:geom%elem_dime)
                 mu_f(index+3, 2) = func_lagr(i_node)
             end if
             index = index + geom%indi_lagc(i_node)

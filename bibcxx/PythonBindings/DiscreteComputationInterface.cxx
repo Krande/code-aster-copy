@@ -335,13 +335,16 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 geom (MeshCoordinatesField): coordinates of mesh used to compute normal
                 displ (FieldOnNodes): displacement field at begin of current time
                 displ_step (FieldOnNodes): field of increment of displacement
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
                 data (FieldOnCells): contact data
 
             Returns:
                 FieldOnNodesReal: contact and friction forces
 
         )",
-              py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "data" ) )
+              py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ),
+              py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ) )
         .def( "contactMatrix", &DiscreteComputation::contactMatrix, R"(
             Compute contact matrix
 
@@ -349,10 +352,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 geom (MeshCoordinatesField): coordinates of mesh used to compute normal
                 displ (FieldOnNodes): displacement field at begin of current time
                 displ_step (FieldOnNodes): field of increment of displacement
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
                 data (FieldOnCells): contact data
 
             Returns:
                 ElementaryMatrixDisplacementReal: contact and friction elementary matrix
         )",
-              py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "data" ) );
+              py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ),
+              py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ) );
 };

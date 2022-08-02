@@ -297,15 +297,16 @@ class DiscreteComputation {
     FieldOnNodesRealPtr contactForces( const MeshCoordinatesFieldPtr geom,
                                        const FieldOnNodesRealPtr displ,
                                        const FieldOnNodesRealPtr displ_step,
+                                       const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
                                        const FieldOnCellsRealPtr data ) const;
 
     /**
      * @brief Compute contact matrix
      */
-    ElementaryMatrixDisplacementRealPtr contactMatrix( const MeshCoordinatesFieldPtr geom,
-                                                       const FieldOnNodesRealPtr displ,
-                                                       const FieldOnNodesRealPtr displ_step,
-                                                       const FieldOnCellsRealPtr data ) const;
+    ElementaryMatrixDisplacementRealPtr
+    contactMatrix( const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
+                   const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
+                   const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data ) const;
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;

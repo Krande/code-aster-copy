@@ -184,6 +184,8 @@ class IncrementalSolver:
                 self.contManager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
+                self.phys_state.time,
+                self.phys_state.time_step,
                 self.contManager.data())
         else:
             contact_forces = self.phys_state.createPrimal(
@@ -285,6 +287,8 @@ class IncrementalSolver:
                 self.contManager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
+                self.phys_state.time,
+                self.phys_state.time_step,
                 self.contManager.data()
             )
 
