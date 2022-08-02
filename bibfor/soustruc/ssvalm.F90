@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
         call jeveuo(nomacr//'.DESM', 'L', iadesm)
         nddle=zi(iadesm-1+4)
 !
-        if (optio2(1:4) .eq. 'RIGI') then
+        if (optio2(1:4) .eq. 'RIGI' .or. optio2 == "MECA_DDLM_R") then
 !          NOMOB=NOMACR//'.KP_EE'
             nomob=nomacr//'.MAEL_RAID_VALE'
         else if (optio2(1:4).eq.'MASS') then

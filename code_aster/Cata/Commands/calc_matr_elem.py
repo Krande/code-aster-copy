@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "AMOR_ACOU"        : return matr_elem_pres_c
   raise AsException("type de concept resultat non prevu")
 
-CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM", 
+CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
                     op=9, sd_prod=calc_matr_elem_prod,
                     fr=tr("Calcul des matrices élémentaires"),reentrant='n',
 
@@ -103,7 +103,6 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
         CARA_ELEM        = SIMP(statut='f',typ=cara_elem ),
         CHARGE           = SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
         GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-        MAILLE           = SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
     ),
 
     b_rigi_gyro = BLOC(condition = """equal_to("OPTION", 'RIGI_GYRO')""",
@@ -111,7 +110,6 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
         CARA_ELEM        = SIMP(statut='f',typ=cara_elem ),
         CHARGE           = SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
         GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-        MAILLE           = SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
     ),
 
     b_amor_meca = BLOC(condition = """equal_to("OPTION", 'AMOR_MECA')""",
@@ -173,4 +171,4 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
         CHAM_MATER      = SIMP(statut='o',typ=cham_mater ),
         CHARGE          = SIMP(statut='o',typ=char_meca,validators=NoRepeat(),max='**' ),
     ),
-)  
+)

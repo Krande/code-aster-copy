@@ -54,14 +54,6 @@ class ComputeElementaryMatrix(ExecuteCommand):
             if myOption in ("AMOR_MECA"):
                 return False
 
-        maille = keywords.get("MAILLE")
-        if maille is not None:
-            return False
-
-        macro = keywords.get("CALC_ELEM_MODELE")
-        if macro is not None and macro == "NON":
-            return False
-
         loads = keywords.get("CHARGE")
         if loads is not None:
             for load in force_list(loads):
@@ -110,7 +102,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
             cara = keywords.get("CARA_ELEM")
             phys_pb = PhysicalProblem(model, mater, cara)
             hasExternalStateVariable = False
-            if mater != None:
+            if mater is not None:
                 hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
 
             loads = keywords.get("CHARGE")
@@ -135,17 +127,19 @@ class ComputeElementaryMatrix(ExecuteCommand):
                 group_ma = force_list(group_ma)
 
             if myOption == "RIGI_MECA":
-                if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(
-                        time)
-                else:
-                    externVar = None
-                self._result = disc_comp.elasticStiffnessMatrix(
-                    time, fourier, group_ma, externVarField=externVar
-                )
-                matr_elem_dual = disc_comp.dualStiffnessMatrix()
-                self._result.addElementaryTerm(matr_elem_dual.getElementaryTerms())
-                self._result.build()
+                self._result = disc_comp.dualStiffnessMatrix()
+
+                if keywords["CALC_ELEM_MODELE"] == "OUI":
+                    if hasExternalStateVariable:
+                        externVar = disc_comp.createExternalStateVariablesField(
+                            time)
+                    else:
+                        externVar = None
+                    matr_rigi_meca = disc_comp.elasticStiffnessMatrix(
+                        time, fourier, group_ma, externVarField=externVar
+                    )
+                    self._result.addElementaryTerm(matr_rigi_meca.getElementaryTerms())
+                    self._result.build()
 
             elif myOption == "MASS_MECA":
                 if hasExternalStateVariable:
