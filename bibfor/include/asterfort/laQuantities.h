@@ -20,7 +20,7 @@
 !
 interface
     subroutine laQuantities(geom)
-        use contact_module
+        use contact_type
         type(ContactGeom), intent(inout) :: geom
     end subroutine laQuantities
 end interface

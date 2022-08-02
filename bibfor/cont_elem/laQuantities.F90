@@ -18,7 +18,7 @@
 !
 subroutine laQuantities(geom)
 !
-use contact_module
+use contact_type
 !
 implicit none
 !

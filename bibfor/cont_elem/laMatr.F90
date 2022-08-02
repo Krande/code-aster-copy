@@ -18,6 +18,7 @@
 !
 subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !
+use contact_type
 use contact_module
 !
 implicit none

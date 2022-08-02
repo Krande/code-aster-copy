@@ -20,7 +20,7 @@
 !
 interface
     subroutine laParam(parameters)
-        use contact_module
+        use contact_type
         type(ContactParameters), intent(out) :: parameters
     end subroutine laParam
 end interface

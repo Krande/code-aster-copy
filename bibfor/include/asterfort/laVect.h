@@ -21,7 +21,7 @@
 !
 interface
     subroutine laVect(parameters, geom, vect_cont, vect_fric)
-        use contact_module
+        use contact_type
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)

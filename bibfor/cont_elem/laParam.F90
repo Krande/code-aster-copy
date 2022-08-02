@@ -18,7 +18,7 @@
 !
 subroutine laParam(parameters)
 !
-use contact_module
+use contact_type
 !
 implicit none
 !

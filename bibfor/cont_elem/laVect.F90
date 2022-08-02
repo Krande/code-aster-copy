@@ -19,6 +19,7 @@
 subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 use contact_module
+use contact_type
 !
 implicit none
 !

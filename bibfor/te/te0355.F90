@@ -18,7 +18,7 @@
 
 subroutine te0355(nomopt, nomte)
 !
-use contact_module
+use contact_type
 !
     implicit none
 !

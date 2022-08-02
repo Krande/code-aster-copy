@@ -18,7 +18,7 @@
 !
 subroutine laelem(nomte, geom)
 !
-use contact_module
+use contact_type
 !
 implicit none
 !

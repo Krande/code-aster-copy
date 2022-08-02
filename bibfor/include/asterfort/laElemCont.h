@@ -24,7 +24,7 @@ interface
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
                     lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
                     dGap, d2Gap, mu_c, mu_f, jump_t)
-        use contact_module
+        use contact_type
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), hF

@@ -20,7 +20,7 @@
 !
 interface
     subroutine laelem(nomte, geom)
-        use contact_module
+        use contact_type
         character(len=16), intent(in) :: nomte
         type(ContactGeom), intent(out) :: geom
     end subroutine laelem

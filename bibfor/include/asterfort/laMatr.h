@@ -21,7 +21,7 @@
 !
 interface
     subroutine laMatr(parameters, geom, matr_cont, matr_fric)
-        use contact_module
+        use contact_type
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(inout) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)

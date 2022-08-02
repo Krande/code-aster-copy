@@ -22,6 +22,8 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
                     dGap, d2Gap, mu_c, mu_f, jump_t)
 !
 use contact_module
+use contact_type
+use contact_algebra_module
 !
 implicit none
 !
