@@ -33,7 +33,7 @@ type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
 real(kind=8), intent(in) :: coor_qp_sl(2), hF
 real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
-real(kind=8), intent(out) :: lagr_f(3), vT(3), gamma_f, projBsVal(3)
+real(kind=8), intent(out) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
 aster_logical, intent(out) :: l_cont_qp, l_fric_qp
 real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
@@ -63,12 +63,13 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
     real(kind=8) :: shape_func_sl(9), shape_func_ma(9), shape_func_lagr(4), dshape_func_sl(2,9)
     real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagr_v(3)
-    real(kind=8) :: thres_qp, tau_1_slav(3), tau_2_slav(3), lagr_f_coeff(2), speed(3)
+    real(kind=8) :: thres_qp, tau_slav(3,2), tau_mast(3,2), speed(3), projBsVal3(3)
+    real(kind=8) :: metricTens(2,2), invMetricTens(2,2)
 !
 ! ----- Project quadrature point (on master side)
 !
     call projQpSl2Ma(geom, coor_qp_sl, parameters%proj_tole, &
-                    coor_qp_ma, gap, tau_1_slav, tau_2_slav, norm_slav, norm_mast)
+                    coor_qp_ma, gap, tau_slav, norm_slav, tau_mast, norm_mast)
 !
 ! ----- Evaluate shape function for displacement (slave and master)
 !
@@ -108,33 +109,22 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     l_fric_qp = ASTER_FALSE
 !
     if(parameters%l_fric) then
-! ----- Define threshold for friction
-        if(parameters%type_fric == FRIC_TYPE_TRES) then
-            l_fric_qp = ASTER_TRUE
-            thres_qp = parameters%threshold_given
-        elseif(parameters%type_fric == FRIC_TYPE_NONE) then
-            l_fric_qp = ASTER_FALSE
-            thres_qp = 0.d0
-        else
-            l_fric_qp = l_cont_qp
-            if(l_cont_qp) then
-                if (parameters%type_fric == FRIC_TYPE_COUL) then
-                    thres_qp = - parameters%threshold_given * projRmVal
-                else
-                    thres_qp = THRES_STICK
-                end if
-            else
-                thres_qp = 0.d0
-            end if
-        end if
+        call thresEval(parameters, l_cont_qp, projRmVal, thres_qp, l_fric_qp)
 !
-        lagr_f_coeff(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(1,:))
-        lagr_f_coeff(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(2,:))
+        metricTens = metricTensor(tau_slav)
+        invMetricTens = invMetricTensor(geom, metricTens)
+!
+        lagr_f(1) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(1,:))
+        lagr_f(2) = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%lagf_slav_curr(2,:))
+!
         gamma_f = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_fric) / hF
-        lagr_f = lagr_f_coeff(1) * tau_1_slav + lagr_f_coeff(2) * tau_2_slav
+!
         speed = speedEval(geom, coor_qp_sl, coor_qp_ma, gap)
-        lagr_v = (lagr_c * norm_slav + lagr_f) - gamma_f * speed
-        projBsVal = projBs(parameters, lagr_v, thres_qp, norm_slav)
+        vT = cmpTang(invMetricTens, tau_slav, speed)
+!
+        lagr_v = (lagr_c * norm_slav + matmul(tau_slav, lagr_f) ) - gamma_f * speed
+        projBsVal3 = projBs(parameters, lagr_v, thres_qp, norm_slav)
+        projBsVal = cmpTang(invMetricTens, tau_slav, projBsVal3)
     end if
 !
     if(present(dGap)) then

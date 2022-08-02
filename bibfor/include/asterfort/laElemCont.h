@@ -29,7 +29,7 @@ interface
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), hF
         real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
-        real(kind=8), intent(out) :: lagr_f(3), vT(3), gamma_f, projBsVal(3)
+        real(kind=8), intent(out) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
         aster_logical, intent(out) :: l_cont_qp, l_fric_qp
         real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)

@@ -110,6 +110,7 @@ end type
     public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, testLagrF
     public :: projBs, projRm, projTn, jump_tang, jump_norm, dNs_du, otimes, Iden3
     public :: dProjBs_dx, dprojBs_ds, dprojBs_dn, speedEval
+    public :: metricTensor, invMetricTensor, cmpTang, thresEval
 !
 contains
 !
@@ -119,14 +120,14 @@ contains
 !
     subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, &
                             coor_qp_ma, gap, &
-                            tau_1_slav, tau_2_slav, norm_slav, norm_mast)
+                            tau_slav, norm_slav, tau_mast, norm_mast)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), proj_tole
         real(kind=8), intent(out) :: coor_qp_ma(2), gap
-        real(kind=8), intent(out) :: tau_1_slav(3), tau_2_slav(3)
+        real(kind=8), intent(out) :: tau_slav(3,2), tau_mast(3,2)
         real(kind=8), intent(out) :: norm_slav(3), norm_mast(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -141,14 +142,14 @@ contains
         coor_qp_ma = 0.d0
         norm_slav = 0.d0
         norm_mast = 0.d0
-        tau_1_slav = 0.d0
-        tau_2_slav = 0.d0
+        tau_slav = 0.d0
+        tau_mast = 0.d0
         gap = 0.d0
 !
 ! ------ Compute outward slave normal (pairing configuration)
 !
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_pair, &
-                    coor_qp_sl(1), coor_qp_sl(2), norm_slav)
+                    coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3,1), tau_slav(1:3,2))
 !
 ! ----- Return in real slave space (current configuration)
 !
@@ -174,7 +175,7 @@ contains
 !
 
         call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair, &
-                    coor_qp_ma(1), coor_qp_ma(2), norm_mast)
+                    coor_qp_ma(1), coor_qp_ma(2), norm_mast, tau_mast(1:3,1), tau_mast(1:3,2))
 !
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s
 !
@@ -211,6 +212,53 @@ contains
         gapEval = -dot_product(slav_pt-mast_pt, norm_slav)
 !
     end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine thresEval(param, l_cont_qp, projRmVal, thres_qp, l_fric_qp)
+!
+    implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        aster_logical, intent(in) :: l_cont_qp
+        real(kind=8), intent(in) :: projRmVal
+        aster_logical, intent(out) :: l_fric_qp
+        real(kind=8), intent(out) :: thres_qp
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute threshold for friction
+!
+! --------------------------------------------------------------------------------------------------
+!
+        thres_qp = 0.d0
+        l_fric_qp = ASTER_FALSE
+!
+! ----- Define threshold for friction
+        if(param%l_fric) then
+            if(param%type_fric == FRIC_TYPE_TRES) then
+                l_fric_qp = ASTER_TRUE
+                thres_qp = param%threshold_given
+            elseif(param%type_fric == FRIC_TYPE_NONE) then
+                l_fric_qp = ASTER_FALSE
+                thres_qp = 0.d0
+            else
+                l_fric_qp = l_cont_qp
+                if(l_cont_qp) then
+                    if (param%type_fric == FRIC_TYPE_COUL) then
+                        thres_qp = - param%threshold_given * projRmVal
+                    else
+                        thres_qp = THRES_STICK
+                    end if
+                else
+                    thres_qp = 0.d0
+                end if
+            end if
+        end if
+!
+    end subroutine
 !
 !===================================================================================================
 !
@@ -372,6 +420,87 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         projTn = Iden3() - otimes(normal, normal)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function metricTensor(tau)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: tau(3,2)
+        real(kind=8) :: metricTensor(2,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Metric tensor: m[i,j] = tau_i . tau_j
+!
+! --------------------------------------------------------------------------------------------------
+!
+        metricTensor = matmul(transpose(tau), tau)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function invMetricTensor(geom, metricTens)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: metricTens(2,2)
+        real(kind=8) :: invMetricTensor(2,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Metric tensor: m[i,j] = tau_i . tau_j
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: det
+!
+        invMetricTensor = 0.d0
+!
+        if(geom%elem_dime == 3) then
+            det = metricTens(1,1) * metricTens(2,2) - metricTens(1,2) * metricTens(2,1)
+            invMetricTensor(1,1) = metricTens(2,2) / det
+            invMetricTensor(1,2) = -metricTens(2,1) / det
+            invMetricTensor(2,1) = invMetricTensor(1,2)
+            invMetricTensor(2,2) = metricTens(1,1) / det
+        else
+            invMetricTensor(1,1) = 1.d0 / metricTens(1,1)
+         end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function cmpTang(invMetricTens, tau, vec)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: invMetricTens(2,2)
+        real(kind=8), intent(in) :: tau(3,2), vec(3)
+        real(kind=8) :: cmpTang(2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute coefficient in tangential basis (tau_1, tau_2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: rhs(2)
+!
+        rhs = matmul(transpose(tau), vec)
+!
+        cmpTang = matmul(invMetricTens, rhs)
 !
     end function
 !

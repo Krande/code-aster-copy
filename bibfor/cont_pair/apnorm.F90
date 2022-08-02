@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine apnorm(elem_nbnode, elem_code, elem_dime, elem_coor,&
-                  ksi1       , ksi2     , elem_norm)
+                  ksi1       , ksi2     , elem_norm, elem_tau1, elem_tau2)
 !
 implicit none
 !
@@ -34,6 +34,7 @@ implicit none
     real(kind=8), intent(in) :: ksi1
     real(kind=8), intent(in) :: ksi2
     real(kind=8), intent(out) :: elem_norm(3)
+    real(kind=8), intent(out), optional :: elem_tau1(3), elem_tau2(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,5 +70,13 @@ implicit none
     call mmnorm(elem_dime, tau1, tau2, elem_norm, noor)
 !
     elem_norm(1:3) = -elem_norm(1:3)
+!
+    if(present(elem_tau1)) then
+        elem_tau1 = tau1
+    end if
+!
+    if(present(elem_tau2)) then
+        elem_tau2 = tau2
+    end if
 !
 end subroutine
