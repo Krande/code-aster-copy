@@ -17,14 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
-from math import sqrt, pi, isnan
+from math import pi
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
-from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM, CREA_TABLE,
+from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM,
                         POST_ELEM, FORMULE,
                         MODI_MAILLAGE, DEFI_CONSTANTE,
-                        COPIER,CREA_RESU, IMPR_RESU)
+                        COPIER,CREA_RESU)
 
 # ===========================================================================
 #           CORPS DE LA MACRO "POST_ROCHE"
@@ -149,7 +148,7 @@ class PostRocheCommon():
         self.dResuMeca = dKey
 
         # zone analysee
-        
+
         dKey = []
         args = kwargs.get('ZONE_ANALYSE')
         for j in args:
@@ -157,7 +156,7 @@ class PostRocheCommon():
         self.dZone = dKey
 
         # coude
-        
+
         dKey = []
         args = kwargs.get('COUDE')
         if args:
@@ -220,12 +219,12 @@ class PostRocheCommon():
             self.chammaterName = self.chammater.getName()
         else:
             self.chammater = None
-        
+
         if self.args.get('RCCM_RX') == 'OUI':
             self.lRCCM_RX = True
         else:
             self.lRCCM_RX = False
-        
+
         self.inst_temp = self.args.get('INST_TEMP')
 
     def checkZones(self,):
@@ -318,7 +317,7 @@ class PostRocheCommon():
                                  PROL_ZERO='OUI',
                                  AFFE= affe)
         self.chPression  = chPression
-        
+
     def materAndBeamParams(self):
         """
         Récupération des paramètres matériau et des caractéristiques
@@ -333,7 +332,7 @@ class PostRocheCommon():
                                      **self.dicAllZones)
 
         self.chRochElno = chRochElno
-                
+
         # si RCCM_RX = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
         # si ces paramètres n'ont pas été fournis par l'utilisateur leurs valeurs
         # sont négatives
@@ -355,7 +354,7 @@ class PostRocheCommon():
                 UTMESS('F','POSTROCHE_18',valk='RP02_MOY')
             if minRM_MIN<0:
                 UTMESS('F','POSTROCHE_18',valk='RM_MIN')
-        
+
         # pour les coudes, verification de la présence de RP02_MIN
         elif self.lGrmaCoude != []:
 
@@ -425,16 +424,19 @@ class PostRocheCommon():
                              VALE='max(0.809/flambda(R,EP,X3)**(0.44)/fpourD2X(R,EP,X1,X3,RP02_MIN),1.02)',
                                    fpourD2X=fpourD2X, flambda=flambda)
 
+        affe = [_F(NOM_CMP=('X1','X2','X3','X4','X5','X6'),
+                   VALE_F=(fB2_droit,fZ,fD1_droit,fD21,fD22_droit,fD22_droit),
+                   **self.dicAllZones)]
+        if self.lGrmaCoude:
+            affe.append(_F(GROUP_MA=self.lGrmaCoude,
+                           NOM_CMP=('X1','X2','X3','X4','X5','X6'),
+                           VALE_F=(fB2_coude,fZ,fD1_coude,fD21,fD22_coude,fD23_coude),))
+
         chfonc = CREA_CHAMP(OPERATION='AFFE',
                              TYPE_CHAM='ELNO_NEUT_F',
                              MODELE=self.model,
                              PROL_ZERO='OUI',
-                             AFFE= (_F(NOM_CMP=('X1','X2','X3','X4','X5','X6'),
-                                       VALE_F=(fB2_droit,fZ,fD1_droit,fD21,fD22_droit,fD22_droit),
-                                       **self.dicAllZones),
-                                    _F(GROUP_MA=self.lGrmaCoude, NOM_CMP=('X1','X2','X3','X4','X5','X6'),
-                                       VALE_F=(fB2_coude,fZ,fD1_coude,fD21,fD22_coude,fD23_coude),),
-                                    ))
+                             AFFE = affe)
 
         chParams= CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='ELNO_NEUT_R',
@@ -448,14 +450,14 @@ class PostRocheCommon():
         """
            Calcul de la contrainte de pression
         """
-        
+
         foncsigP = FORMULE(NOM_PARA=(
                                   'X1',                # Pression
                                   'R','R2','EP','EP2',          # R, EP
                                   ),
                   VALE='0.87*X1*max((R-EP)/EP,(R2-EP2)/EP2)')
                   # VALE='0.87*X1*(R-EP)/EP')
-        
+
 
 
         chFoncSigP  = CREA_CHAMP(OPERATION='AFFE',
@@ -473,7 +475,7 @@ class PostRocheCommon():
                                 CHAM_PARA=(self.chPression, self.chRochElno) )
 
         # IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=chSigPres))
-        
+
         self.chSigPres = chSigPres
 
     def classification(self,):
@@ -973,7 +975,7 @@ class PostRocheCommon():
                 return 0.
             else:
                 return max(T/t-1,0)
-        
+
         def fressSism(t, T):
             if t == 0.:
                 return 0.
@@ -983,7 +985,7 @@ class PostRocheCommon():
 
         fRessortMono = FORMULE(NOM_PARA=('X1', 'X2'),
                            VALE='fress(X1,X2)',fress=fressMono)
-        
+
         fRessortSism = FORMULE(NOM_PARA=('X1', 'X2'),
                            VALE='fress(X1,X2)',fress=fressSism)
 
@@ -994,7 +996,7 @@ class PostRocheCommon():
                                 AFFE= (_F(NOM_CMP=('X1'),
                                           VALE_F=(fRessortMono,),
                                           **self.dicAllZones),))
-        
+
         self.chFRessortSism = CREA_CHAMP(OPERATION='AFFE',
                                 TYPE_CHAM='ELNO_NEUT_F',
                                 MODELE=self.model,
@@ -1007,12 +1009,12 @@ class PostRocheCommon():
 
         # pour RCCM_RC = OUI
         if self.lRCCM_RX:
-            
-            
+
+
             fSigVraieMax = FORMULE(NOM_PARA=('COEF', 'RP02_MOY' ,'RP02_MIN', 'RM_MIN'),
                                 VALE='2*COEF*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN')
-            
-            
+
+
             self.chFSigVraie = CREA_CHAMP(OPERATION='AFFE',
                                     TYPE_CHAM='ELNO_NEUT_F',
                                     MODELE=self.model,
@@ -1023,7 +1025,7 @@ class PostRocheCommon():
 
         # pour RCCM_RC = NON
         else:
-            
+
             def fsolve(sigRef, e, k, n, r, nbIterMax,seuil):
 
                 """
@@ -1069,7 +1071,7 @@ class PostRocheCommon():
                     return -1.
                 else:
                     return sigVk
-        
+
             # calcul à partir de l'effet de ressort
 
             # SigRef = N
@@ -1099,13 +1101,13 @@ class PostRocheCommon():
                                               VALE_F=(fSigVraie,fSigVraieMax),
                                               **self.dicAllZones),))
         # epsilon vraie
-        
+
         if self.lRCCM_RX:
-            
+
             fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
                               VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
-            
-            
+
+
             self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
                                     TYPE_CHAM='ELNO_NEUT_F',
                                     MODELE=self.model,
@@ -1115,14 +1117,14 @@ class PostRocheCommon():
                                               **self.dicAllZones),))
 
         else:
-        
+
             fEpsVraie = FORMULE(NOM_PARA = ('X1', 'E', 'K_FACT', 'N_EXPO'),
                               VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
-            
+
             fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
                               VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
-            
-            
+
+
             self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
                                     TYPE_CHAM='ELNO_NEUT_F',
                                     MODELE=self.model,
@@ -1130,7 +1132,7 @@ class PostRocheCommon():
                                     AFFE= (_F(NOM_CMP=('X1','X2'),
                                               VALE_F=(fEpsVraie,fEpsVraieMax),
                                               **self.dicAllZones),))
-        
+
         # veriContrainte
 
         def veriSupSigP(sigP, sigV):
@@ -1180,19 +1182,19 @@ class PostRocheCommon():
         # coefficient d'abattement
 
         if self.lRCCM_RX:
-            
-            
+
+
             def fepsiMP(sig, e, k, n) :
                 return k*pow(sig/e,1/n)
-            
+
             # X1 = Pression
             # X2 = sig Vraie
             # X3 = coef ressort max
-            
+
             fCoefAbatOpt = FORMULE(NOM_PARA=('X1', 'X2', 'X3','E', 'K_FACT','N_EXPO'),
-                                   VALE='(X2-X1)*(1+X3)/(E*(fepsiMP(X2,E,K_FACT,N_EXPO)-fepsiMP(X1,E,K_FACT,N_EXPO))+((X2-X1)*(1+X3)))', 
+                                   VALE='(X2-X1)*(1+X3)/(E*(fepsiMP(X2,E,K_FACT,N_EXPO)-fepsiMP(X1,E,K_FACT,N_EXPO))+((X2-X1)*(1+X3)))',
                                    fepsiMP=fepsiMP)
-            
+
             self.chFCoefAbat = CREA_CHAMP(OPERATION='AFFE',
                                     TYPE_CHAM='ELNO_NEUT_F',
                                     MODELE=self.model,
@@ -1200,9 +1202,9 @@ class PostRocheCommon():
                                     AFFE= (_F(NOM_CMP=('X2'),
                                               VALE_F=(fCoefAbatOpt),
                                               **self.dicAllZones),))
-            
+
         else:
-        
+
             def coefAbat(sigRef, sigP, sigV):
                 if sigV == 0:
                     return 1.
@@ -1364,7 +1366,7 @@ class PostRocheCommon():
                                          )
                            )
 
-        
+
         fonc = FORMULE(NOM_PARA=('X2','X3','X4','X5','X6', # Z, D1, D21, D22, D23
                                   'X7','X8','X9',       # MT, MFY, MFZ de M
                                   'X10','X11','X12',    # g(_opt)*(MT, MFY, MFZ) de m
@@ -1373,7 +1375,7 @@ class PostRocheCommon():
                                   'X17','X18',          # R, EP
                                   ),
                 VALE='sqrt((X3*X16*(X17-X18)/X18)**2 + 1/X2**2*(X4**2*(X7+X10+X13)**2+X5**2*(X8+X11+X14)**2+X6**2*(X9+X12+X15)**2))')
-        
+
 
         chFonc  = CREA_CHAMP(OPERATION='AFFE',
                          TYPE_CHAM='ELNO_NEUT_F',
@@ -1511,7 +1513,7 @@ class PostRocheCalc():
         chReversLoc= CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='ELNO_NEUT_R',
                                 CHAM_F=self.param.chFRevesLoc,
-                                CHAM_PARA=(self.chSigRef, self.param.chRochElno, 
+                                CHAM_PARA=(self.chSigRef, self.param.chRochElno,
                                 self.chEpsiMp
                                 ))
 
@@ -1697,14 +1699,14 @@ class PostRocheCalc():
                                     CHAM_PARA=(self.chSigRef, chUtil, self.param.chRochElno ))
 
             self.chSigVraie = chSigVraie
-        
+
         # calcul de epsilon vraie
-        
+
         chEpsVraie = CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='ELNO_NEUT_R',
                                 CHAM_F=self.param.chFEpsVraie,
                                 CHAM_PARA=(self.chSigVraie, self.param.chRochElno ))
-        
+
         self.chEpsVraie = chEpsVraie
 
     def veriContrainte(self,):
@@ -1810,7 +1812,7 @@ class PostRocheCalc():
             Calcul des coefficients d'abattement g et g_opt
             - à partir de l'effet de ressort => g
             - à partir de l'effet de ressort max => g_opt
-            
+
             pour RCCM_RX = OUI, on ne calcule que g_opt avec
             une formule propre
         """
@@ -1819,7 +1821,7 @@ class PostRocheCalc():
             # X1 = sigPression
             # X2 = sig Vraie
             # X3 = coef ressort max
-            
+
             chUtil3= CREA_CHAMP(OPERATION = 'ASSE',
                                 MODELE=self.param.model,
                                 TYPE_CHAM = 'ELNO_NEUT_R',
@@ -1844,7 +1846,7 @@ class PostRocheCalc():
                                     TYPE_CHAM='ELNO_NEUT_R',
                                     CHAM_F=self.param.chFCoefAbat,
                                     CHAM_PARA=(chUtil3, self.param.chRochElno,))
-        
+
         else:
 
             chCoefsAbat = CREA_CHAMP(OPERATION='EVAL',
@@ -1866,11 +1868,11 @@ class PostRocheCalc():
         # X5 = facteur d'effet de ressort maximal
         # X6 = coefficient d'abattement
         # X7 = coefficient d'abattement optimisé
-        
-        
-        # X10 = contrainte vraie 
-        # X11 = contrainte vraie optimisée 
-        # X12 = epsilon vraie 
+
+
+        # X10 = contrainte vraie
+        # X11 = contrainte vraie optimisée
+        # X12 = epsilon vraie
         # X13 = epsilon vraie optimisée
 
         chOutput= CREA_CHAMP(OPERATION = 'ASSE',

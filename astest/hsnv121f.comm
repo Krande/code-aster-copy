@@ -131,10 +131,7 @@ VT = STAT_NON_LINE(
 s = VT.getField("SIEF_ELGA", VT.getAccessParameters()["NUME_ORDRE"][-1])
 
 with shared_tmpdir("foo") as tmpdir:
-    if lParallel:
-        VT.printMedFile(osp.join(tmpdir, "/tmp/toto_{}.resu.med".format(rank)))
-    else:
-        VT.printMedFile(osp.join(tmpdir, "/tmp/toto.resu.med"))
+    VT.printMedFile(osp.join(tmpdir, f"hsnv121f_{rank}.resu.med"))
 
 test = code_aster.TestCase()
 
