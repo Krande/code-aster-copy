@@ -73,7 +73,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     real(kind=8) :: thres_qp, speed(3), projBsVal3(3)
     real(kind=8) :: dNs(MAX_LAGA_DOFS,3), dGap_(MAX_LAGA_DOFS)
     real(kind=8) :: jump_v(MAX_LAGA_DOFS,3), dZetaM(MAX_LAGA_DOFS,2)
-    real(kind=8) :: dTs_ns(MAX_LAGA_DOFS,2)
+    real(kind=8) :: dTs_ns(MAX_LAGA_DOFS,2), dTm_nm(MAX_LAGA_DOFS,2)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -115,6 +115,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     invMetricTens_mast = invMetricTensor(geom, metricTens_mast)
     H_mast = secondFundForm(geom%elem_dime, geom%nb_node_mast, geom%coor_mast_pair, &
                             ddshape_func_ma, norm_mast)
+    dTm_nm = dTm_du_nm(geom, dshape_func_ma, norm_mast)
 !
     jump_v = jump(geom, shape_func_sl, shape_func_ma)
     dTs_ns = dTs_du_ns(geom, dshape_func_sl, norm_slav)
@@ -160,7 +161,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Compute d^2 (gap(u))[v, w] / du^2
 !
-        d2Gap = d2Gap_du2(geom, norm_slav, norm_mast, gap, H_mast, dNs, dGap_, dZetaM)
+        d2Gap = d2Gap_du2(geom, norm_slav, norm_mast, gap, H_mast, dNs, dGap_, dZetaM, dTm_nm)
 
     end if
 !

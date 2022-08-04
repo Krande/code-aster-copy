@@ -831,14 +831,14 @@ contains
 !
 !===================================================================================================
 !
-    function d2Gap_du2(geom, norm_slav, norm_mast, gap, H, dNs, dGap, dZetaM)
+    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, dNs, dGap, dZetaM, dTm_nm)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3), H(2,2), gap
+        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3), Hm(2,2), gap
         real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS,3), dGap(MAX_LAGA_DOFS)
-        real(kind=8), intent(in) :: dZetaM(MAX_LAGA_DOFS, 2)
+        real(kind=8), intent(in) :: dZetaM(MAX_LAGA_DOFS, 2), dTm_nm(MAX_LAGA_DOFS, 2)
         real(kind=8) :: d2Gap_du2(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -846,18 +846,18 @@ contains
 !   Evaluate second derivative of gap
 !   D^2 gap(u)[v,w] =
 !   - ( D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s] + gap(u) D^2 n^s[v^s, w^s] ).n^m/(n^m.n^s)
-!   + ( D dy/de[v] * De[w] + D dy/de[w] * De[v] + d^2y/de^2 * De[v]*De[w] ).n^m/(n^m.n^s)
-!
+!   + ( D tau^m[v] .n^m * De[w] + D tau^m[w] .n^m * De[v] + H^m * De[v]*De[w] )/(n^m.n^s)
+!   whit H^m = d tau^m / de .n^m
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS,2), ns_nm
+        real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS,2), inv_ns_nm
 !
         d2Gap_du2 = 0.d0
 !
 ! --- Term: n^m/(n^m.n^s)
 !
-        ns_nm = dot_product(norm_mast, norm_slav)
-        norm = norm_mast / ns_nm
+        inv_ns_nm = 1.d0 / dot_product(norm_mast, norm_slav)
+        norm = norm_mast * inv_ns_nm
 !
 ! --- Term: D(n^s[v^s]).n^m/(n^m.n^s)
 !
@@ -874,15 +874,22 @@ contains
 !
 
 !
-! --- Term: ( D dy/de[v] * De[w] + D dy/de[w] * De[v] ).n^m/(n^m.n^s)
+! --- Term: ( D tau^m[v] .n^m * De[w] + D tau^m[w] .n^m * De[v] )/(n^m.n^s)
 !
-
+        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, inv_ns_nm, &
+                    dTm_nm, MAX_LAGA_DOFS, dZetaM, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
+        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, inv_ns_nm, &
+                    dZetaM, MAX_LAGA_DOFS, dTm_nm, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
 !
-! --- Term: ((d^2y/de^2*n^m) * De[v])*De[w] / (n^m.n^s)
+! --- Term: H^m * De[v]
 !
+        dZetaM_H = 0.d0
         call dgemm("N", "N", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, 1.d0, &
-                    dZetaM, MAX_LAGA_DOFS, H, 2, 0.d0, dZetaM_H, MAX_LAGA_DOFS)
-        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0/ns_nm, &
+                    dZetaM, MAX_LAGA_DOFS, Hm, 2, 0.d0, dZetaM_H, MAX_LAGA_DOFS)
+!
+! --- Term: (H^m * De[v])*De[w] / (n^m.n^s)
+!
+        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, inv_ns_nm, &
                     dZetaM, MAX_LAGA_DOFS, dZetaM_H, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
 !
     end function
