@@ -514,7 +514,7 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      PRECISION=5.0E-3,
                      TYPE_TEST='MAX',
                      CHAM_GD=dicResu['DIFFUN'],
-                     VALE_CALC=6.628049986912021E-07,
+                     VALE_CALC=6.62805002035749E-07,
                      VALE_REFE=6.62799356621E-07,),
           )
 
@@ -524,7 +524,7 @@ BIDON = DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0., 1.,
                             1., PenteL2U))
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.0049424206621,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.004942424256,
                         VALE_REFE=3.0,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
@@ -541,7 +541,7 @@ BIDONP = DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(0., 1.,
                              1., PenteL2P))
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.803565624464,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.803565754347,
                         VALE_REFE=2.5,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',

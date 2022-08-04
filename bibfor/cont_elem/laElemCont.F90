@@ -66,13 +66,14 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     real(kind=8) :: shape_func_sl(9), dshape_func_sl(2,9), ddshape_func_sl(3,9)
     real(kind=8) :: shape_func_ma(9), dshape_func_ma(2,9), ddshape_func_ma(3,9)
     real(kind=8) :: shape_func_lagr(4)
-    real(kind=8) :: norm_slav(3), norm_mast(3), tau_slav(3,2), tau_mast(3,2), norm(3)
+    real(kind=8) :: norm_slav(3), norm_mast(3), tau_slav(3,2), tau_mast(3,2)
     real(kind=8) :: H, coor_qp_ma(2), lagrc_gap, lagr_v(3)
     real(kind=8) :: metricTens(2,2), invMetricTens(2,2)
     real(kind=8) :: metricTens_mast(2,2), invMetricTens_mast(2,2), H_mast(2,2)
     real(kind=8) :: thres_qp, speed(3), projBsVal3(3)
     real(kind=8) :: dNs(MAX_LAGA_DOFS,3), dGap_(MAX_LAGA_DOFS)
     real(kind=8) :: jump_v(MAX_LAGA_DOFS,3), dZetaM(MAX_LAGA_DOFS,2)
+    real(kind=8) :: dTs_ns(MAX_LAGA_DOFS,2)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -110,14 +111,14 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Evaluate contact derivative
 !
-    norm = norm_mast / dot_product(norm_mast, norm_slav)
     metricTens_mast = metricTensor(tau_mast)
     invMetricTens_mast = invMetricTensor(geom, metricTens_mast)
     H_mast = secondFundForm(geom%elem_dime, geom%nb_node_mast, geom%coor_mast_pair, &
                             ddshape_func_ma, norm_mast)
 !
     jump_v = jump(geom, shape_func_sl, shape_func_ma)
-    dNs    = dNs_du(geom, shape_func_sl, dshape_func_sl)
+    dTs_ns = dTs_du_ns(geom, dshape_func_sl, norm_slav)
+    dNs    = dNs_du(geom, tau_slav, dTs_ns)
     call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dGap_, dZetaM)
 !
 ! ----- Evaluate Lagr_f and gamma_f at quadrature point

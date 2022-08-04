@@ -28,16 +28,10 @@ private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
-#include "asterfort/subac1.h"
-#include "asterfort/subaco.h"
-#include "asterfort/subacv.h"
-#include "asterfort/sumetr.h"
-#include "blas/daxpy.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
 #include "contact_module.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +41,7 @@ private
 !
     public :: Heaviside, jump_norm, jump_tang, jump
     public :: dGap_du, d2Gap_du2, dZetaM_du, dPi_du
+    public :: dTs_du_ns, dTm_du_nm
     public :: projBs, projRm, projTn, dNs_du, otimes, Iden3
     public :: dProjBs_dx, dprojBs_ds, dprojBs_dn
     public :: metricTensor, invMetricTensor, cmpTang, secondFundForm
@@ -456,65 +451,230 @@ contains
 !
 !===================================================================================================
 !
-    function dNs_du(geom, func_slav, dfunc_slav)
+    function dNs_du(geom, tau_slav, dTs_ns)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_slav(2,9), func_slav(9)
+        real(kind=8), intent(in) :: tau_slav(3,2)
+        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS,2)
         real(kind=8) :: dNs_du(MAX_LAGA_DOFS,3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Evaluate first derivative of slave normal using differential geometry
-!   D n^s(u^s)[v^s] = sum_{i=1, d-1}[dv_di.g^i * n^s - dv_di.n^s * g^i]
-!   with g^i - controvariant basis
+!   Evaluate first derivative of slave normal
+!   D n^s(u^s)[v^s] = -tau^s * invMetricTens^s * D tau^s(u^s)[v^s]  * n^s
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2), acv(2, 2)
-        real(kind=8) :: t1(3), t2(3), t3(3), norm_slav(3), ta(3)
-        integer :: i_node_slav, i_elem_dime, index
+        real(kind=8) :: lhs_inv(3,2), metricTens(2,2), invMetricTens(2,2)
 !
-! ----- Covariant basis
+        metricTens = metricTensor(tau_slav)
+        invMetricTens = invMetricTensor(geom, metricTens)
 !
-        if(geom%elem_dime == 3) then
-            call subaco(geom%nb_node_slav, dfunc_slav, geom%coor_slav_pair, cova)
-        else
-            call subac1(geom%l_axis, geom%nb_node_slav, func_slav, dfunc_slav(1,:), &
-                        geom%coor_slav_pair(1:2,:), cova)
-        end if
+! ----- Term: -tau_slav * invMetricTens_slav
 !
-! ----- Metric tensor
+        lhs_inv = -matmul(tau_slav, invMetricTens)
 !
-        call sumetr(cova, metr, jac)
+! --- Compute solution: Dns = lhs^-1 * dTs_ns
 !
-! ----- Contra-variant basis
+        dNs_du = 0.d0
+        call dgemm("N", "T", geom%nb_dofs, geom%elem_dime, geom%elem_dime-1, 1.d0, &
+                    dTs_ns, MAX_LAGA_DOFS, lhs_inv, 3, 0.d0, dNs_du, MAX_LAGA_DOFS)
 !
-        call subacv(cova, metr, jac, cnva, acv)
+    end function
 !
-        norm_slav(1:3) = cova(1:3,3)
+!===================================================================================================
 !
-! ----- Tangent matrix
+!===================================================================================================
+!
+    function dT_du(elem_dime, nb_node, dfunc)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime, nb_node
+        real(kind=8), intent(in) :: dfunc(2,9)
+        real(kind=8) :: dT_du(27,3,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of  tangent
+!
+!   D t^a = dfunc_dzeta^a * e_j
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dim, index, i_tau
+!
+        dT_du = 0.d0
 !
         index = 0
-        dNs_du = 0.d0
-        ta = 0.d0
-        do i_node_slav = 1, geom%nb_node_slav
-            do i_elem_dime = 1, geom%elem_dime
+        do i_node = 1, nb_node
+            do i_dim = 1, elem_dime
                 index = index + 1
-                t1 = (dfunc_slav(1,i_node_slav)*cnva(i_elem_dime,1) + &
-                      dfunc_slav(2,i_node_slav)*cnva(i_elem_dime,2)) * norm_slav
-                t2 = dfunc_slav(1,i_node_slav)*norm_slav(i_elem_dime) * cnva(1:3,1)
-                t3 = dfunc_slav(2,i_node_slav)*norm_slav(i_elem_dime) * cnva(1:3,2)
-                if(geom%l_axis .and. i_elem_dime == 1) then
-                    ta = func_slav(i_node_slav)*cnva(3,2)*norm_slav
-                end if
-                dNs_du(index, 1:3) = dNs_du(index, 1:3) + (t1 - t2 - t3 + ta)
-
-            enddo
-            index = index + geom%indi_lagc(i_node_slav)
-        enddo
+                do i_tau = 1, elem_dime - 1
+                    dT_du(index, i_dim, i_tau) = dfunc(i_tau, i_node)
+                end do
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dTs_du(geom, dfunc_slav)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_slav(2,9)
+        real(kind=8) :: dTs_du(MAX_LAGA_DOFS,3,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of slave tangent
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: dT(27,3,2)
+        integer:: i_node, i_dim, index, index2
+!
+        dTs_du = 0.d0
+!
+        dT = dT_du(geom%elem_dime, geom%nb_node_slav, dfunc_slav)
+!
+! --- Slave side
+!
+        index = 0
+        index2 = 0
+        do i_node = 1, geom%nb_node_slav
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                index2 = index2 + 1
+                dTs_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = &
+                    dT(index2, 1:geom%elem_dime, 1:geom%elem_dime-1)
+            end do
+!
+            index = index + geom%indi_lagc(i_node)
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dTm_du(geom, dfunc_mast)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_mast(2,9)
+        real(kind=8) :: dTm_du(MAX_LAGA_DOFS,3,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of master tangent
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: dT(27,3,2)
+        integer:: i_node, i_dim, index, index2
+!
+        dTm_du = 0.d0
+!
+        dT = dT_du(geom%elem_dime, geom%nb_node_mast, dfunc_mast)
+!
+! --- Master side
+!
+        index = geom%nb_dofs - geom%nb_node_mast * geom%elem_dime
+        index2 = 0
+        do i_node = 1, geom%nb_node_mast
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                index2 = index2 + 1
+                dTm_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = &
+                    dT(index2, 1:geom%elem_dime, 1:geom%elem_dime-1)
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dT_du_norm(elem_dime, nb_node, dfunc, norm)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime, nb_node
+        real(kind=8), intent(in) :: dfunc(2,9), norm(3)
+        real(kind=8) :: dT_du_norm(27,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of tangent dot with normal
+!
+!   D t^a . n = dfunc_dzeta^a * e_j . norm
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dim, index, i_tau
+!
+        dT_du_norm = 0.d0
+!
+        index = 0
+        do i_node = 1, nb_node
+            do i_dim = 1, elem_dime
+                index = index + 1
+                do i_tau = 1, elem_dime - 1
+                    dT_du_norm(index, i_tau) = dfunc(i_tau, i_node) * norm(i_dim)
+                end do
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dTs_du_ns(geom, dfunc_slav, norm_slav)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_slav(2,9), norm_slav(3)
+        real(kind=8) :: dTs_du_ns(MAX_LAGA_DOFS,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of slave tangent
+!   D tau^s (u)[v] . n^s
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: dT_n(27,2)
+        integer:: i_node, i_dim, index, index2
+!
+        dTs_du_ns = 0.d0
+!
+        dT_n = dT_du_norm(geom%elem_dime, geom%nb_node_slav, dfunc_slav, norm_slav)
+!
+! --- Slave side
+!
+        index = 0
+        index2 = 0
+        do i_node = 1, geom%nb_node_slav
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                index2 = index2 + 1
+                dTs_du_ns(index, 1:geom%elem_dime-1) = &
+                    dT_n(index2, 1:geom%elem_dime-1)
+            end do
+!
+            index = index + geom%indi_lagc(i_node)
+        end do
 !
     end function
 !
@@ -528,17 +688,33 @@ contains
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: dfunc_mast(2,9), norm_mast(3)
-        real(kind=8) :: dTm_du_nm(MAX_LAGA_DOFS,3)
+        real(kind=8) :: dTm_du_nm(MAX_LAGA_DOFS,2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate first derivative of master tangent
 !
-!
 ! --------------------------------------------------------------------------------------------------
 !
+        real(kind=8) :: dT_n(27,2)
+        integer:: i_node, i_dim, index, index2
 !
         dTm_du_nm = 0.d0
+!
+        dT_n = dT_du_norm(geom%elem_dime, geom%nb_node_mast, dfunc_mast, norm_mast)
+!
+! --- Master side
+!
+        index = geom%nb_dofs - geom%nb_node_mast * geom%elem_dime
+        index2 = 0
+        do i_node = 1, geom%nb_node_mast
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                index2 = index2 + 1
+                dTm_du_nm(index, 1:geom%elem_dime-1) = &
+                    dT_n(index2, 1:geom%elem_dime-1)
+            end do
+        end do
 !
     end function
 !
