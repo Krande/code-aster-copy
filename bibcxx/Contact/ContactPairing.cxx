@@ -352,7 +352,9 @@ void ContactPairing::buildFiniteElementDescriptor() {
             }
         }
         if ( !listContElemZone.empty() ) {
+#ifdef ASTER_DEBUG_CXX
             std::cout << "Not paired nodes: " << listContElemZone.size() << std::endl;
+#endif
             listContElem.push_back( listContElemZone );
         }
     }

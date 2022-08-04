@@ -32,6 +32,7 @@ private
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/mmnonf.h"
+#include "asterfort/mm2onf.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/reerel.h"
 #include "asterfort/subac1.h"
@@ -251,7 +252,7 @@ contains
 !===================================================================================================
 !
     subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, &
-                             shape_, dshape_)
+                             shape_, dshape_, ddshape_)
 !
     implicit none
 !
@@ -261,6 +262,7 @@ contains
         real(kind=8), intent(in) :: coor_qp(2)
         real(kind=8), intent(out), optional :: shape_(9)
         real(kind=8), intent(out), optional  :: dshape_(2,9)
+        real(kind=8), intent(out), optional  :: ddshape_(3,9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -274,6 +276,10 @@ contains
 !
         if(present(dshape_)) then
             call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), dshape_)
+        end if
+!
+        if(present(ddshape_)) then
+            call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), ddshape_)
         end if
     end subroutine
 !

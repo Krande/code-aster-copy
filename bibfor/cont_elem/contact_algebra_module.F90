@@ -27,10 +27,13 @@ private
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/matinv.h"
 #include "asterfort/subac1.h"
 #include "asterfort/subaco.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
+#include "blas/daxpy.h"
+#include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
 #include "contact_module.h"
@@ -42,11 +45,11 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: Heaviside, jump_norm, jump_tang
-    public :: dGap_du, d2Gap_du2
+    public :: Heaviside, jump_norm, jump_tang, jump
+    public :: dGap_du, d2Gap_du2, dZetaM_du, dPi_du
     public :: projBs, projRm, projTn, dNs_du, otimes, Iden3
     public :: dProjBs_dx, dprojBs_ds, dprojBs_dn
-    public :: metricTensor, invMetricTensor, cmpTang
+    public :: metricTensor, invMetricTensor, cmpTang, secondFundForm
 !
 contains
 !
@@ -205,7 +208,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Metric tensor: m[i,j] = tau_i . tau_j
+!   Metric tensor: invm[i,j] = m^-1[i,j]
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -222,6 +225,51 @@ contains
         else
             invMetricTensor(1,1) = 1.d0 / metricTens(1,1)
          end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function secondFundForm(elem_dime, nb_node, elem_coor, ddff, norm)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime, nb_node
+        real(kind=8), intent(in) :: elem_coor(3,9), norm(3), ddff(3,9)
+        real(kind=8) :: secondFundForm(2,2)
+!
+! --------------------------------------------------------------------------------------------------
+!   Eval second fondamental form
+!   H[i,j] = d^2 x / de_i de_j * norm
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: idim, ino
+        real(kind=8) :: ddgeo1(3), ddgeo2(3), ddgeo3(3)
+!
+        secondFundForm = 0.d0
+        ddgeo1 = 0.d0
+        ddgeo2 = 0.d0
+        ddgeo3 = 0.d0
+!
+! - CALCUL DE DDGEOMM
+!
+        do idim = 1, elem_dime
+            do ino = 1, nb_node
+                ddgeo1(idim) = ddgeo1(idim) + ddff(1,ino)*elem_coor(idim, ino)
+                ddgeo2(idim) = ddgeo2(idim) + ddff(2,ino)*elem_coor(idim, ino)
+                ddgeo3(idim) = ddgeo3(idim) + ddff(3,ino)*elem_coor(idim, ino)
+            enddo
+        end do
+!
+! --- Evaluate H
+!
+        secondFundForm(1,1) = ddgeo1(1)*norm(1)+ddgeo1(2)*norm(2)+ddgeo1(3)*norm(3)
+        secondFundForm(1,2) = ddgeo3(1)*norm(1)+ddgeo3(2)*norm(2)+ddgeo3(3)*norm(3)
+        secondFundForm(2,1) = secondFundForm(1,2)
+        secondFundForm(2,2) = ddgeo2(1)*norm(1)+ddgeo2(2)*norm(2)+ddgeo2(3)*norm(3)
 !
     end function
 !
@@ -408,13 +456,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine dNs_du(geom, func_slav, dfunc_slav, dNs)
+    function dNs_du(geom, func_slav, dfunc_slav)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: dfunc_slav(2,9), func_slav(9)
-        real(kind=8), intent(out) :: dNs(MAX_LAGA_DOFS,3)
+        real(kind=8) :: dNs_du(MAX_LAGA_DOFS,3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -450,7 +498,7 @@ contains
 ! ----- Tangent matrix
 !
         index = 0
-        dNs = 0.d0
+        dNs_du = 0.d0
         ta = 0.d0
         do i_node_slav = 1, geom%nb_node_slav
             do i_elem_dime = 1, geom%elem_dime
@@ -462,66 +510,160 @@ contains
                 if(geom%l_axis .and. i_elem_dime == 1) then
                     ta = func_slav(i_node_slav)*cnva(3,2)*norm_slav
                 end if
-                dNs(index, 1:3) = dNs(index, 1:3) + (t1 - t2 - t3 + ta)
+                dNs_du(index, 1:3) = dNs_du(index, 1:3) + (t1 - t2 - t3 + ta)
 
             enddo
             index = index + geom%indi_lagc(i_node_slav)
         enddo
 !
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dTm_du_nm(geom, dfunc_mast, norm_mast)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_mast(2,9), norm_mast(3)
+        real(kind=8) :: dTm_du_nm(MAX_LAGA_DOFS,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of master tangent
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        dTm_du_nm = 0.d0
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dGap, dZetaM)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3,2), gap
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS), dZetaM(MAX_LAGA_DOFS,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of raytracing operator
+!   (De^m(u)[v], Dgap(u)[v]) = (tau^m, -n^s )^{-1}(v^s - v^m  + g*Dn^s)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: det, rhs(MAX_LAGA_DOFS, 3), lhs(3,3), lhs_inv(3,3), sol(3, MAX_LAGA_DOFS)
+!
+        dZetaM = 0.d0
+        dGap = 0.d0
+        sol = 0.d0
+!
+! --- lhs : (tau^m, -n^s )
+!
+        if(geom%elem_dime == 2) then
+            lhs(1:3,1) = tau_mast(1:3,1)
+            lhs(1:3,2) = -norm_slav
+            lhs(1:3,3) = [0.d0, 0.d0, 1.d0]
+        else
+            lhs(1:3,1:2) = tau_mast
+            lhs(1:3,3) = -norm_slav
+        end if
+!
+        call matinv("S", 3, lhs, lhs_inv, det)
+!
+! --- rhs : (v^s - v^m  + g*Dn^s)
+!
+        rhs = jump_v + gap *  dNs
+!
+! --- Compute solution: (De^m(u)[v], Dgap(u)[v]) = lhs^-1 * rhs
+!
+        call dgemm("N", "T", 3, geom%nb_dofs, 3, 1.d0, &
+                    lhs_inv, 3, rhs, MAX_LAGA_DOFS, 0.d0, sol, 3)
+!
+! --- Extract terms
+!
+        if(present(dZetaM)) then
+            dZetaM(1:geom%nb_dofs, 1:geom%elem_dime-1) = &
+                transpose(sol(1:geom%elem_dime-1, 1:geom%nb_dofs))
+        end if
+!
+        if(present(dGap)) then
+            dGap(1:geom%nb_dofs) = sol(geom%elem_dime, 1:geom%nb_dofs)
+        end if
+!
     end subroutine
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine dGap_du(geom, func_slav, dfunc_slav, func_mast, &
-                       norm_slav, norm_mast, gap, dGap)
+    function dZetaM_du(geom, norm_slav, tau_mast, gap, jump_v, dNs)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: func_slav(9), func_mast(9), dfunc_slav(2,9), gap
-        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
-        real(kind=8), intent(out) :: dGap(MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3,2), gap
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8) :: dZetaM_du(MAX_LAGA_DOFS, 2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   First derivative of projected master convertive coordinates
+!   dZetaM_du = invMetricTensor^m * tau^m^T*(v^s - v^m + Dgn * n^s + gn*Dn^s)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dZetaM = dZetaM_du)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dGap_du(geom, norm_slav, tau_mast, gap, jump_v, dNs)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3,2), gap
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8) :: dGap_du(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate first derivative of gap for raytracing
 !   D gap(u)[v] = -(v^s - v^m + gap*Dn^s[v^s]).n^m/(n^m.n^s)
-!   ou
-!   D gap(u)[v] = -(v^s - v^m + dy_de * De[v]).n^s
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm(3), dNs(MAX_LAGA_DOFS,3)
+        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dGap=dGap_du)
 !
-        norm = norm_mast / dot_product(norm_mast, norm_slav)
-!
-! --- normal jump : -(v^s - v^m ).norm
-!
-        call jump_norm(geom, func_slav, func_mast, norm, dGap)
-!
-! --- Compute term: -g*Dn^s.norm (= 0 if norm = n^s)
-!
-        call dNs_du(geom, func_slav, dfunc_slav, dNs)
-        call dgemv('N', geom%nb_dofs, geom%elem_dime, -gap, dNs, MAX_LAGA_DOFS, &
-                        norm, 1, 1.d0, dGap, 1)
-!
-    end subroutine
+    end function
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine d2Gap_du2(geom, func_slav, dfunc_slav, func_mast, &
-                         norm_slav, norm_mast, gap, d2Gap)
+    function d2Gap_du2(geom, norm_slav, norm_mast, gap, H, dNs, dGap, dZetaM)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: func_slav(9), func_mast(9), dfunc_slav(2,9), gap
-        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
-        real(kind=8), intent(out) :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3), H(2,2), gap
+        real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS,3), dGap(MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: dZetaM(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: d2Gap_du2(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -530,89 +672,115 @@ contains
 !   - ( D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s] + gap(u) D^2 n^s[v^s, w^s] ).n^m/(n^m.n^s)
 !   + ( D dy/de[v] * De[w] + D dy/de[w] * De[v] + d^2y/de^2 * De[v]*De[w] ).n^m/(n^m.n^s)
 !
-!   ou
-!   D^2 gap(u)[v,w] =
-!   - gap(u) D^2 n^s[v^s, w^s].n^s
-!   + ( D dy/de[v] * De[w] + D dy/de[w] * De[v] + d^2y/de^2 * De[v]*De[w] + dy_de * D^2 e[v,w]).n^s
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical, parameter :: vers1 = ASTER_TRUE
-        real(kind=8) :: norm(3), dNs(MAX_LAGA_DOFS,3), dGap(MAX_LAGA_DOFS), dNs_n(MAX_LAGA_DOFS)
+        real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS,2), ns_nm
 !
-        d2Gap = 0.d0
+        d2Gap_du2 = 0.d0
 !
 ! --- Term: n^m/(n^m.n^s)
 !
-        if(vers1) then
-            norm = norm_mast / dot_product(norm_mast, norm_slav)
-        else
-            norm = norm_slav
-        end if
+        ns_nm = dot_product(norm_mast, norm_slav)
+        norm = norm_mast / ns_nm
 !
-        if(vers1) then
+! --- Term: D(n^s[v^s]).n^m/(n^m.n^s)
 !
-! --- Term: D gap(u)[v]
-!
-            call dGap_du(geom, func_slav, dfunc_slav, func_mast, norm_slav, norm_mast, gap, dGap)
-!
-! --- Term: D( n^s[v^s]).n^m/(n^m.n^s)
-!
-            dNs_n = 0.d0
-            call dNs_du(geom, func_slav, dfunc_slav, dNs)
-            call dgemv('N', geom%nb_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
+        dNs_n = 0.d0
+        call dgemv('N', geom%nb_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
                     norm, 1, 1.d0, dNs_n, 1)
 !
 ! --- Term: -(D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s]).n^m/(n^m.n^s)
 !
-            call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dGap, 1, dNs_n, 1, d2Gap, MAX_LAGA_DOFS)
-            call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dNs_n, 1, dGap, 1, d2Gap, MAX_LAGA_DOFS)
-        else
+        call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dGap, 1, dNs_n, 1, d2Gap_du2, MAX_LAGA_DOFS)
+        call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dNs_n, 1, dGap, 1, d2Gap_du2, MAX_LAGA_DOFS)
 !
-! --- Term: dy_de * D^2 e[v,w]
-!
-        end if
-!
-! --- Term: D^2 n^s[v^s, w^s]
+! --- Term: gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
 !
 
 !
-! --- Term: D dy/de[v]
+! --- Term: ( D dy/de[v] * De[w] + D dy/de[w] * De[v] ).n^m/(n^m.n^s)
 !
 
 !
-! --- Term: De[v]
+! --- Term: ((d^2y/de^2*n^m) * De[v])*De[w] / (n^m.n^s)
 !
-
+        call dgemm("N", "N", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, 1.d0, &
+                    dZetaM, MAX_LAGA_DOFS, H, 2, 0.d0, dZetaM_H, MAX_LAGA_DOFS)
+        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0/ns_nm, &
+                    dZetaM, MAX_LAGA_DOFS, dZetaM_H, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
 !
-! --- Il manque les autres termes mais pas facile à calculer.
-!
-    end subroutine
+    end function
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine jump_tang(geom, func_slav, func_mast, &
-                       norm_slav, jump_t)
+    function jump(geom, func_slav, func_mast)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: func_slav(9), func_mast(9)
+        real(kind=8) :: jump(MAX_LAGA_DOFS,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate  jump of test function:
+!   jump = (v^s - v^m)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dim, index
+!
+        jump = 0.d0
+        index = 0
+!
+! --- Slave side
+!
+        do i_node = 1, geom%nb_node_slav
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                jump(index, i_dim) = func_slav(i_node)
+            end do
+!
+            index = index + geom%indi_lagc(i_node)
+        end do
+!
+! --- Master side
+!
+        do i_node = 1, geom%nb_node_mast
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                jump(index, i_dim) = -func_mast(i_node)
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function jump_tang(geom, func_slav, func_mast, norm_slav)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9)
         real(kind=8), intent(in) :: norm_slav(3)
-        real(kind=8), intent(out) :: jump_t(MAX_LAGA_DOFS, 3)
+        real(kind=8) :: jump_tang(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate tangential jum of test function:
-!   jump_tang = (v^s - v^m).tau_i_slav
+!   jump_tang = Tn * jump
 !
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: i_node, i_dim, index, j_dim
         real(kind=8) :: Tn(3,3)
 !
-        jump_t = 0.d0
+        jump_tang = 0.d0
         index = 0
         Tn = projTn(norm_slav)
 !
@@ -622,7 +790,7 @@ contains
             do i_dim = 1, geom%elem_dime
                 index = index + 1
                 do j_dim = 1, geom%elem_dime
-                    jump_t(index, j_dim) = func_slav(i_node) * Tn(j_dim, i_dim)
+                    jump_tang(index, j_dim) = func_slav(i_node) * Tn(j_dim, i_dim)
                 end do
             end do
 !
@@ -635,59 +803,38 @@ contains
             do i_dim = 1, geom%elem_dime
                 index = index + 1
                 do j_dim = 1, geom%elem_dime
-                    jump_t(index, j_dim) = -func_mast(i_node) * Tn(j_dim, i_dim)
+                    jump_tang(index, j_dim) = -func_mast(i_node) * Tn(j_dim, i_dim)
                 end do
             end do
         end do
 !
-    end subroutine
+    end function
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine jump_norm(geom, func_slav, func_mast, norm_slav, jump_n)
+    function jump_norm(geom, jump_v, norm_)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: func_slav(9), func_mast(9)
-        real(kind=8), intent(in) :: norm_slav(3)
-        real(kind=8), intent(out) :: jump_n(MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(in) :: norm_(3)
+        real(kind=8) :: jump_norm(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate normal jump of test function:
-!   jump_norm = -(v^s - v^m).norm^s
+!   jump_norm = jump.norm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index
+        jump_norm = 0.d0
+        call dgemv("N", geom%nb_dofs, geom%elem_dime, 1.d0, jump_v, MAX_LAGA_DOFS, norm_, 1, 0.d0,&
+                    jump_norm, 1)
 !
-        jump_n = 0.d0
-        index = 0
-!
-! --- Slave side
-!
-        do i_node = 1, geom%nb_node_slav
-            do i_dim = 1, geom%elem_dime
-                index = index + 1
-                jump_n(index) = -func_slav(i_node) * norm_slav(i_dim)
-            end do
-!
-            index = index + geom%indi_lagc(i_node)
-        end do
-!
-! --- Master side
-!
-        do i_node = 1, geom%nb_node_mast
-            do i_dim = 1, geom%elem_dime
-                index = index + 1
-                jump_n(index) = func_mast(i_node) * norm_slav(i_dim)
-            end do
-        end do
-!
-    end subroutine
+    end function
 !
 !===================================================================================================
 !

@@ -63,10 +63,16 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: shape_func_sl(9), shape_func_ma(9), shape_func_lagr(4), dshape_func_sl(2,9)
-    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagrc_gap, lagr_v(3)
-    real(kind=8) :: thres_qp, tau_slav(3,2), tau_mast(3,2), speed(3), projBsVal3(3)
+    real(kind=8) :: shape_func_sl(9), dshape_func_sl(2,9), ddshape_func_sl(3,9)
+    real(kind=8) :: shape_func_ma(9), dshape_func_ma(2,9), ddshape_func_ma(3,9)
+    real(kind=8) :: shape_func_lagr(4)
+    real(kind=8) :: norm_slav(3), norm_mast(3), tau_slav(3,2), tau_mast(3,2), norm(3)
+    real(kind=8) :: H, coor_qp_ma(2), lagrc_gap, lagr_v(3)
     real(kind=8) :: metricTens(2,2), invMetricTens(2,2)
+    real(kind=8) :: metricTens_mast(2,2), invMetricTens_mast(2,2), H_mast(2,2)
+    real(kind=8) :: thres_qp, speed(3), projBsVal3(3)
+    real(kind=8) :: dNs(MAX_LAGA_DOFS,3), dGap_(MAX_LAGA_DOFS)
+    real(kind=8) :: jump_v(MAX_LAGA_DOFS,3), dZetaM(MAX_LAGA_DOFS,2)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -76,9 +82,9 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 ! ----- Evaluate shape function for displacement (slave and master)
 !
     call shapeFuncDisp(geom%elem_dime, geom%nb_node_slav, geom%elem_slav_code, coor_qp_sl, &
-                        shape_func_sl, dshape_func_sl)
+                        shape_func_sl, dshape_func_sl, ddshape_func_sl)
     call shapeFuncDisp(geom%elem_dime, geom%nb_node_mast, geom%elem_mast_code, coor_qp_ma, &
-                        shape_func_ma)
+                        shape_func_ma, dshape_func_ma, ddshape_func_ma)
 !
 ! ----- Evaluate shape function for Lagrange (slave)
 !
@@ -101,6 +107,18 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
         projRmVal = lagrc_gap
     end if
     l_cont_qp = (H > 0.5d0)
+!
+! ----- Evaluate contact derivative
+!
+    norm = norm_mast / dot_product(norm_mast, norm_slav)
+    metricTens_mast = metricTensor(tau_mast)
+    invMetricTens_mast = invMetricTensor(geom, metricTens_mast)
+    H_mast = secondFundForm(geom%elem_dime, geom%nb_node_mast, geom%coor_mast_pair, &
+                            ddshape_func_ma, norm_mast)
+!
+    jump_v = jump(geom, shape_func_sl, shape_func_ma)
+    dNs    = dNs_du(geom, shape_func_sl, dshape_func_sl)
+    call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dGap_, dZetaM)
 !
 ! ----- Evaluate Lagr_f and gamma_f at quadrature point
 !
@@ -133,17 +151,15 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Compute d (gap(u))[v] / du
 !
-        call dGap_du(geom, shape_func_sl, dshape_func_sl, &
-                    shape_func_ma, norm_slav, norm_mast, gap, dGap)
-
+        dGap = dGap_
+!
     end if
 !
     if(present(d2Gap)) then
 !
 ! ----- Compute d^2 (gap(u))[v, w] / du^2
 !
-        call d2Gap_du2(geom, shape_func_sl, dshape_func_sl, &
-                        shape_func_ma, norm_slav, norm_mast, gap, d2Gap)
+        d2Gap = d2Gap_du2(geom, norm_slav, norm_mast, gap, H_mast, dNs, dGap_, dZetaM)
 
     end if
 !
@@ -165,9 +181,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Compute tangential jump
 !
-         call jump_tang(geom, shape_func_sl, shape_func_ma, norm_slav, jump_t)
+        jump_t = jump_tang(geom, shape_func_sl, shape_func_ma, norm_slav)
     end if
-!
-!    print*, "VAL: ", lagr_c, gamma_c, gap, H, projRmVal, hF
 !
 end subroutine
