@@ -28,14 +28,14 @@ class TimeStepper:
     @property
     def null_increment(self):
         return -1.e150
-    
+
     def __init__(self, times):
         self.current = 0
         self.level = 0
         assert(sorted(times) == times)
         self.times = list(times)
 
-    def updateTimes(self, time):
+    def setInitialStep(self, time, prec=1e-6):
         """Update the sequence of times by keeping only the times greater
         than `time`.
 
@@ -46,6 +46,18 @@ class TimeStepper:
         times = self.times
         index = next(i for i in range(size) if times[i] > time)
         self.times = times[index:]
+
+    def setFinalStep(self, time, prec=1e-6):
+        """Update the sequence of times by keeping only the times lower
+        than `time`.
+
+        Arguments:
+            time (float): All values gretter or equal to `time` are removed.
+        """
+        size = len(self.times)
+        times = self.times
+        index = next(i for i in range(size) if times[i] >= time + prec)
+        self.times = times[:index]
 
     def hasFinished(self):
         """Tell if there are steps to be computed.

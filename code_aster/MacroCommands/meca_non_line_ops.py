@@ -42,7 +42,6 @@ def _contact_check(CONTACT):
         for zone in defi.getContactZones():
             assert not zone.hasSmoothing
             assert zone.getPairingParameter().getInitialState() == InitialState.Interpenetrated
-            assert zone.getPairingParameter().getPairingDistance() < 0
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
 
@@ -69,7 +68,8 @@ def meca_non_line_ops(self, **args):
 
     snl = NonLinearSolver()
     snl.setLoggingLevel(args["INFO"])
-    snl.setPhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+    snl.setPhysicalProblem(
+        args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
 
     # Add parameters
     snl.setKeywords(
@@ -103,14 +103,23 @@ def meca_non_line_ops(self, **args):
 
     # Add contact
     if args["CONTACT"] is not None:
-        fed_defi = args["CONTACT"].get("DEFINITION").getFiniteElementDescriptor()
+        fed_defi = args["CONTACT"].get(
+            "DEFINITION").getFiniteElementDescriptor()
         snl.phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
     # Add linear solver
     snl.setLinearSolver(keywords=args["SOLVEUR"])
 
     # Add stepper
-    tini = None
+    timeStepper = TimeStepper(args["INCREMENT"]["LIST_INST"].getValues()[1::])
+    if "INST_INIT" in args["INCREMENT"]:
+        timeStepper.setInitialStep(args["INCREMENT"]["INST_INIT"],
+                                   args["INCREMENT"]["PRECISION"])
+
+    if "INST_FIN" in args["INCREMENT"]:
+        timeStepper.setFinalStep(args["INCREMENT"]["INST_FIN"],
+                                 args["INCREMENT"]["PRECISION"])
+
     if args["ETAT_INIT"] is not None:
         if "EVOL_NOLI" in args["ETAT_INIT"]:
             resu = args["ETAT_INIT"].get("EVOL_NOLI")
@@ -118,9 +127,8 @@ def meca_non_line_ops(self, **args):
             tini = resu.getTimeValue(resu.getNumberOfRanks() - 1)
             if "INST_ETAT_INIT" in args["ETAT_INIT"]:
                 tini = args["ETAT_INIT"].get("INST_ETAT_INIT")
-    timeStepper = TimeStepper(args["INCREMENT"]["LIST_INST"].getValues()[1::])
-    if tini is not None:
-        timeStepper.updateTimes(tini)
+            timeStepper.setInitialStep(tini)
+
     snl.setStepper(timeStepper)
 
     # Run computation
