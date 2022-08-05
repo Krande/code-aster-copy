@@ -148,7 +148,7 @@ test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0, 0.0])
 
 IMPR_RESU(FORMAT="MED",RESU=(_F(CHAM_GD=gap,)))
 
-data = CD.contactData(pair)
+data = CD.contactData(pair, False)
 test.assertEqual(data.size() , 60 * len(nema))
 
 FIN()

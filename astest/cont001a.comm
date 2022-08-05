@@ -109,7 +109,7 @@ DEFICO = DEFI_CONT(
             VARIANTE="RAPIDE",
             ALGO_CONT="NITSCHE",
             CONTACT_INIT="INTERPENETRE",
-            DIST_APPA=10,
+            DIST_APPA=100,
         ),
     ),
 )

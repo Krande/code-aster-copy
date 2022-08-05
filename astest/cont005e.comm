@@ -38,8 +38,8 @@ Mail = LIRE_MAILLAGE(UNITE=20,
                      FORMAT='MED',)
 Mail = MODI_MAILLAGE(reuse=Mail,
                      MAILLAGE=Mail,
-                     ORIE_PEAU_2D=_F(GROUP_MA=('Group_2', 'Group_1', 'Base', 'Sym',
-                                               'Pres_lat', 'Pres_sup'),),)
+                     ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2', 'Group_1', 'Symy', 'Symx',
+                                               'Press_lat', 'Press_sup'),),)
 
 mat1 = DEFI_MATERIAU(ELAS=_F(E=2000,
                              NU=0.0,),)
@@ -47,7 +47,7 @@ mat1 = DEFI_MATERIAU(ELAS=_F(E=2000,
 MODI = AFFE_MODELE(MAILLAGE=Mail,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
+                           MODELISATION='3D',),)
 
 
 AFFE = AFFE_MATERIAU(MAILLAGE=Mail,
@@ -63,15 +63,17 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                            ALGO_CONT='LAGRANGIEN',),)
 
 CHAR1 = AFFE_CHAR_CINE(MODELE=MODI,
-                       MECA_IMPO=(_F(GROUP_MA='Sym',
+                       MECA_IMPO=(_F(GROUP_MA='Symx',
                                      DX=0,
                                      ),
+                                  _F(GROUP_MA='Symy',
+                                     DY=0,),
                                   _F(GROUP_MA='Base',
-                                     DY=0,),),)
+                                     DZ=0),),)
 CHAR2 = AFFE_CHAR_MECA(MODELE=MODI,
-                       PRES_REP=(_F(GROUP_MA='Pres_lat',
+                       PRES_REP=(_F(GROUP_MA='Press_lat',
                                     PRES=7.5,),
-                                 _F(GROUP_MA='Pres_sup',
+                                 _F(GROUP_MA='Press_sup',
                                     PRES=30,),),)
 
 RES = MECA_NON_LINE(
@@ -82,8 +84,7 @@ RES = MECA_NON_LINE(
            _F(CHARGE=CHAR2,
               FONC_MULT=RAMPE,),),
     CONTACT=_F(DEFINITION=DEFICO,
-               RESI_GEOM=1e-8,
-               ALGO_RESO_GEOM="POINT_FIXE"),
+               ALGO_RESO_GEOM="NEWTON"),
     NEWTON=_F(REAC_ITER=1,),
     COMPORTEMENT=_F(RELATION='ELAS',
                     DEFORMATION='PETIT',
@@ -92,9 +93,8 @@ RES = MECA_NON_LINE(
     SOLVEUR=_F(METHODE='MUMPS',
                RESI_RELA=1.E-6,
                PCENT_PIVOT=30,),
-    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,
-                   ITER_GLOB_MAXI=25,))
-
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                   ITER_GLOB_MAXI=10,))
 RES = CALC_CHAMP(reuse=RES,
                  RESULTAT=RES,
                  CONTRAINTE=('SIEF_NOEU',),
