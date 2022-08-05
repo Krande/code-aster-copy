@@ -74,6 +74,8 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     real(kind=8) :: dNs(MAX_LAGA_DOFS,3), dGap_(MAX_LAGA_DOFS)
     real(kind=8) :: jump_v(MAX_LAGA_DOFS,3), dZetaM(MAX_LAGA_DOFS,2)
     real(kind=8) :: dTs_ns(MAX_LAGA_DOFS,2), dTm_nm(MAX_LAGA_DOFS,2)
+    real(kind=8) :: dTs(MAX_LAGA_DOFS,3,2)
+    real(kind=8) :: d2Ns_nm(MAX_LAGA_DOFS,MAX_LAGA_DOFS), dTs_nm(MAX_LAGA_DOFS,2)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -115,7 +117,6 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     invMetricTens_mast = invMetricTensor(geom, metricTens_mast)
     H_mast = secondFundForm(geom%elem_dime, geom%nb_node_mast, geom%coor_mast_pair, &
                             ddshape_func_ma, norm_mast)
-    dTm_nm = dTm_du_nm(geom, dshape_func_ma, norm_mast)
 !
     jump_v = jump(geom, shape_func_sl, shape_func_ma)
     dTs_ns = dTs_du_ns(geom, dshape_func_sl, norm_slav)
@@ -161,7 +162,12 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Compute d^2 (gap(u))[v, w] / du^2
 !
-        d2Gap = d2Gap_du2(geom, norm_slav, norm_mast, gap, H_mast, dNs, dGap_, dZetaM, dTm_nm)
+        dTs = dTs_du(geom, dshape_func_sl)
+        dTs_nm = dTs_du_nm(geom, dshape_func_sl, norm_mast)
+        dTm_nm = dTm_du_nm(geom, dshape_func_ma, norm_mast)
+        d2Ns_nm = d2Ns_du2_nm(geom, tau_slav, norm_mast, dNs, dTs, dTs_ns, dTs_nm)
+        d2Gap = d2Gap_du2(geom, norm_slav, norm_mast, gap, H_mast, &
+                    dNs, dGap_, dZetaM, dTm_nm, d2Ns_nm)
 
     end if
 !
@@ -176,14 +182,22 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
 ! ----- Compute mu_f
 !
-        call testLagrF(geom, shape_func_lagr, mu_f)
+        if(parameters%l_fric) then
+            call testLagrF(geom, shape_func_lagr, mu_f)
+        else
+            mu_f = 0.d0
+        end if
     end if
 !
     if(present(jump_t)) then
 !
 ! ----- Compute tangential jump
 !
-        jump_t = jump_tang(geom, shape_func_sl, shape_func_ma, norm_slav)
+        if(parameters%l_fric) then
+            jump_t = jump_tang(geom, shape_func_sl, shape_func_ma, norm_slav)
+        else
+            jump_t = 0.d0
+        end if
     end if
 !
 end subroutine

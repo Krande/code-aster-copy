@@ -41,8 +41,9 @@ private
 !
     public :: Heaviside, jump_norm, jump_tang, jump
     public :: dGap_du, d2Gap_du2, dZetaM_du, dPi_du
-    public :: dTs_du_ns, dTm_du_nm
-    public :: projBs, projRm, projTn, dNs_du, otimes, Iden3
+    public :: dTs_du_ns, dTs_du_nm, dTm_du_nm, dTs_du, dTm_du
+    public :: dNs_du, d2Ns_du2_ns, d2Ns_du2_nm
+    public :: projBs, projRm, projTn, otimes, Iden3
     public :: dProjBs_dx, dprojBs_ds, dprojBs_dn
     public :: metricTensor, invMetricTensor, cmpTang, secondFundForm
 !
@@ -488,6 +489,112 @@ contains
 !
 !===================================================================================================
 !
+    function d2Ns_du2_ns(geom, tau_slav, dTs_ns)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: tau_slav(3,2)
+        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS,2)
+        real(kind=8) :: d2Ns_du2_ns(MAX_LAGA_DOFS,MAX_LAGA_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate second derivative of slave normal
+!   D^2 n^s(u^s)[v^s, dv^s] . n^s =
+!      - (D tau^s(u^s)[v^s]  * n^s)^T * invMetricTens^s * (D tau^s(u^s)[v^s]  * n^s)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS,2), metricTens(2,2), invMetricTens(2,2)
+!
+        metricTens = metricTensor(tau_slav)
+        invMetricTens = invMetricTensor(geom, metricTens)
+!
+! ----- Term: -invMetricTens_slav * (D tau^s(u^s)[v^s]  * n^s)
+!
+        invA_dT_ns =  0.d0
+        call dgemm("N", "T", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, -1.d0, &
+                    dTs_ns, MAX_LAGA_DOFS, invMetricTens, 2, 0.d0, invA_dT_ns, MAX_LAGA_DOFS)
+!
+! --- Compute D2 ns . n^s
+!
+        d2Ns_du2_ns = 0.d0
+        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0, &
+            dTs_ns, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_ns, MAX_LAGA_DOFS)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function d2Ns_du2_nm(geom, tau_slav, norm_mast, dNs, dTs, dTs_ns, dTs_nm)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: tau_slav(3,2), norm_mast(3)
+        real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS,3), dTs(MAX_LAGA_DOFS,3,2)
+        real(kind=8), intent(in) :: dTs_nm(MAX_LAGA_DOFS,2), dTs_ns(MAX_LAGA_DOFS,2)
+        real(kind=8) :: d2Ns_du2_nm(MAX_LAGA_DOFS,MAX_LAGA_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate second derivative of slave normal
+!   D^2 {n^s}(u^s)[v^s, du^s] . n^m  =
+!       -( D tau^s(u^s)[v^s](u^s)[v^s] n^s)^T * invMetricTens^s * ( D tau^s(u^s)[v^s] n^m)
+!       + (tau^s)^T n^m ( D invMetricTens^s(u^s){\vdu} D tau^s(u^s)[v^s] n^s
+!                        -  invMetricTens^s D tau^s(u^s)[v^s] D n^s(u^s)[du^s] )
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS,2), metricTens(2,2), invMetricTens(2,2)
+        real(kind=8) :: ts_nm(2), invA_ts_nm(2), dinvMetric(MAX_LAGA_DOFS,3,2)
+        integer :: i_tau
+!
+        d2Ns_du2_nm = 0.d0
+        metricTens = metricTensor(tau_slav)
+        invMetricTens = invMetricTensor(geom, metricTens)
+        ts_nm = matmul(transpose(tau_slav), norm_mast)
+        invA_ts_nm = matmul(invMetricTens, ts_nm)
+!
+! --- Term: D invMetricTens^s(u^s){\vdu} -> not implemented
+!
+        dinvMetric = 0.d0
+!
+! --- Term: -invMetricTens_slav * (D tau^s(u^s)[v^s]  * n^s)
+!
+        invA_dT_ns =  0.d0
+        call dgemm("N", "T", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, -1.d0, &
+                    dTs_ns, MAX_LAGA_DOFS, invMetricTens, 2, 0.d0, invA_dT_ns, MAX_LAGA_DOFS)
+!
+! --- Term: -( D tau^s(u^s)[v^s](u^s)[v^s] n^s)^T * invMetricTens^s * ( D tau^s(u^s)[v^s] n^m)
+!
+        call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0, &
+            dTs_nm, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+!
+! --- Term: -((tau^s)^T n^m  invMetricTens^s ) . D tau^s(u^s)[v^s] D n^s(u^s)[du^s]
+!
+        do i_tau = 1, geom%elem_dime - 1
+            call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime, -invA_ts_nm(i_tau), &
+                        dTs(:,:,i_tau), MAX_LAGA_DOFS, dNs, MAX_LAGA_DOFS, &
+                        1.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+        end do
+!
+! --- Term: (tau^s)^T n^m ( D invMetricTens^s(u^s){\vdu} D tau^s(u^s)[v^s] n^s )
+!
+        do i_tau = 1, geom%elem_dime - 1
+            call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, -invA_ts_nm(i_tau), &
+                        dinvMetric(:,:,i_tau), MAX_LAGA_DOFS, dTs_ns, MAX_LAGA_DOFS, &
+                        1.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     function dT_du(elem_dime, nb_node, dfunc)
 !
     implicit none
@@ -682,6 +789,28 @@ contains
 !
 !===================================================================================================
 !
+    function dTs_du_nm(geom, dfunc_slav, norm_mast)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_slav(2,9), norm_mast(3)
+        real(kind=8) :: dTs_du_nm(MAX_LAGA_DOFS,2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of slave tangent
+!   D tau^s (u)[v] . n^m
+! --------------------------------------------------------------------------------------------------
+!
+        dTs_du_nm = dTs_du_ns(geom, dfunc_slav, norm_mast)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     function dTm_du_nm(geom, dfunc_mast, norm_mast)
 !
     implicit none
@@ -831,13 +960,14 @@ contains
 !
 !===================================================================================================
 !
-    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, dNs, dGap, dZetaM, dTm_nm)
+    function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, dNs, dGap, dZetaM, dTm_nm, d2Ns_nm)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: norm_slav(3), norm_mast(3), Hm(2,2), gap
         real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS,3), dGap(MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: d2Ns_nm(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         real(kind=8), intent(in) :: dZetaM(MAX_LAGA_DOFS, 2), dTm_nm(MAX_LAGA_DOFS, 2)
         real(kind=8) :: d2Gap_du2(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
@@ -870,9 +1000,10 @@ contains
         call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dGap, 1, dNs_n, 1, d2Gap_du2, MAX_LAGA_DOFS)
         call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dNs_n, 1, dGap, 1, d2Gap_du2, MAX_LAGA_DOFS)
 !
-! --- Term: gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
+! --- Term: -gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
 !
-
+        d2Gap_du2(1:geom%nb_dofs,1:geom%nb_dofs) = d2Gap_du2(1:geom%nb_dofs,1:geom%nb_dofs) &
+            - (gap * inv_ns_nm) * d2Ns_nm(1:geom%nb_dofs,1:geom%nb_dofs)
 !
 ! --- Term: ( D tau^m[v] .n^m * De[w] + D tau^m[w] .n^m * De[v] )/(n^m.n^s)
 !
