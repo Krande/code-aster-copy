@@ -80,8 +80,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
+        integer :: iret, elem_mast_line_nbnode
         real(kind=8) :: coor_qp_sl_re(3), tau1_mast(3), tau2_mast(3), coor_qp_ma_re(3)
+        real(kind=8) :: ksi1_line, ksi2_line
+        character(len=8) :: elem_mast_line_code
 !
         coor_qp_ma = 0.d0
         norm_slav = 0.d0
@@ -107,7 +109,35 @@ contains
                     coor_qp_sl_re, 75, proj_tole, norm_slav, &
                     coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, &
                     iret)
-        ASSERT(iret == 0)
+!
+! ----- Initialize with linearized cell
+!
+        if(iret == 1) then
+            if(geom%elem_mast_code(1:2) == "SE") then
+                elem_mast_line_code = "SE2"
+                elem_mast_line_nbnode = 2
+            elseif(geom%elem_mast_code(1:2) == "TR") then
+                elem_mast_line_code = "TR3"
+                elem_mast_line_nbnode = 3
+            elseif(geom%elem_mast_code(1:2) == "QU") then
+                elem_mast_line_code = "QU4"
+                elem_mast_line_nbnode = 4
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+
+            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime, &
+                        geom%coor_mast_curr, coor_qp_sl_re, 75, proj_tole, norm_slav, &
+                        ksi1_line, ksi2_line, tau1_mast, tau2_mast, iret)
+            ASSERT(iret==0)
+!
+            call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
+                        geom%coor_mast_curr, coor_qp_sl_re, 75, proj_tole, norm_slav, &
+                        coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, iret, &
+                        ksi1_init=ksi1_line, ksi2_init= ksi2_line)
+            ASSERT(iret==0)
+!
+        end if
 !
 ! ----- Return in real master space
 !
@@ -117,7 +147,6 @@ contains
 !
 ! ------ Compute outward master normal (pairing configuration)
 !
-
         call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair, &
                     coor_qp_ma(1), coor_qp_ma(2), norm_mast, tau_mast(1:3,1), tau_mast(1:3,2))
 !
