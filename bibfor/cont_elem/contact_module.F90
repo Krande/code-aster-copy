@@ -53,7 +53,7 @@ private
 ! --------------------------------------------------------------------------------------------------
 !
     public :: projQpSl2Ma, shapeFuncDisp, shapeFuncLagr, evalPoly
-    public :: diameter, testLagrC, gapEval, testLagrF
+    public :: diameter, testLagrC, gapEval, testLagrF, barycenter
     public :: speedEval, thresEval
 !
 contains
@@ -149,6 +149,19 @@ contains
 !
         call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair, &
                     coor_qp_ma(1), coor_qp_ma(2), norm_mast, tau_mast(1:3,1), tau_mast(1:3,2))
+!
+! ------ Check
+!
+        if(dot_product(norm_slav, norm_mast) > 0.1d0) then
+            print*, "Normals have the same direction: ", dot_product(norm_slav, norm_mast)
+            print*, "Slave normal: ", norm_slav
+            print*, "Master normal: ", norm_mast
+            print*, "Distance: ", norm2(barycenter(geom%nb_node_mast, geom%coor_mast_curr) - &
+                barycenter(geom%nb_node_slav, geom%coor_slav_curr))
+            print*, "Diameter slave / master: ", diameter(geom%nb_node_slav, geom%coor_slav_curr), &
+                diameter(geom%nb_node_mast, geom%coor_mast_curr)
+            ASSERT(ASTER_FALSE)
+        end if
 !
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s
 !
@@ -484,6 +497,36 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function barycenter(nb_nodes, coor_nodes)
+!
+    implicit none
+!
+        integer, intent(in) :: nb_nodes
+        real(kind=8), intent(in) :: coor_nodes(3,nb_nodes)
+        real(kind=8)  :: barycenter(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute barycenter
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node
+!
+        barycenter = 0.d0
+!
+        do i_node = 1, nb_nodes
+            barycenter = barycenter + coor_nodes(:, i_node)
+        end do
+!
+        barycenter = barycenter / real(nb_nodes, kind=8)
+!
+    end function
 !
 !===================================================================================================
 !

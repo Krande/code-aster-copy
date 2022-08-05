@@ -21,6 +21,7 @@
  */
 
 #include "Contact/ContactPairing.h"
+#include "Messages/Messages.h"
 
 ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont )
     : DataStructure( name, 8, "PAIRING_SD" ), _contDefi( cont ), _mesh( cont->getMesh() ) {
@@ -73,6 +74,11 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
         pair_method = ljust( "RAPIDE", 24, ' ' );
     } else {
         AS_ABORT( "Not expected" );
+    }
+
+    auto dist_pairing = zone->getPairingParameter()->getPairingDistance();
+    if(dist_pairing >= 0.0){
+        UTMESS( "F", "CONTACT1_6" );
     }
 
     // tolerence
