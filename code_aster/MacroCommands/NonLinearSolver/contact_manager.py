@@ -27,6 +27,7 @@ class ContactManager:
     """Solve contact problem."""
 
     defi = pair = comp = None
+    first_pairing = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, definition, geom):
@@ -36,6 +37,7 @@ class ContactManager:
             definition (ContactNew): contact definition
             geom (MeshCoordinatesField) : initial geometry
         """
+        self.first_pairing = True
         self.defi = definition
         if self.defi is not None:
             self.pair = ContactPairing(self.defi)
@@ -92,7 +94,7 @@ class ContactManager:
         """
 
         if self.enable:
-            return self.comp.contactData(self.pair)
+            return self.comp.contactData(self.pair, self.first_pairing)
 
         return None
 
@@ -117,5 +119,6 @@ class ContactManager:
         """
 
         if self.enable:
+            self.first_pairing = False
             primal_curr = phys_state.primal + phys_state.primal_step
             self.pair.updateCoordinates(primal_curr)

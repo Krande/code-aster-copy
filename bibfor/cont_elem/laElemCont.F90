@@ -103,8 +103,18 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 ! ----- Contact activate at quadrature point ( H = 0 or 1 )
 !
     if(parameters%type_cont == CONT_TYPE_UNIL) then
-        H = Heaviside(-lagrc_gap)
-        projRmVal = projRm(lagrc_gap)
+        if(parameters%cont_init == PAIR_CONT_INTE) then
+            H = Heaviside(-lagrc_gap)
+            projRmVal = projRm(lagrc_gap)
+        elseif(parameters%cont_init == FRIC_ALGO_FALSE) then
+            H = 0.d0
+            projRmVal = 0.d0
+        elseif(parameters%cont_init == FRIC_ALGO_TRUE) then
+            H = 1.d0
+            projRmVal = lagrc_gap
+        else
+            ASSERT(ASTER_FALSE)
+        end if
     else
         H = 1.d0
         projRmVal = lagrc_gap

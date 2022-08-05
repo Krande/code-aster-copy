@@ -52,6 +52,7 @@ type ContactParameters
 
     !! Other
     real(kind=8)                        :: proj_tole = 0.d0
+    integer                             :: cont_init = PAIR_CONT_INTE
 end type
 !
 type ContactGeom

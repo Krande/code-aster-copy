@@ -41,7 +41,6 @@ def _contact_check(CONTACT):
 
         for zone in defi.getContactZones():
             assert not zone.hasSmoothing
-            assert zone.getPairingParameter().getInitialState() == InitialState.Interpenetrated
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None
 

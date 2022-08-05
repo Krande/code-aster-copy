@@ -59,5 +59,6 @@ type(ContactParameters), intent(out) :: parameters
 ! - Other
 !
     parameters%proj_tole = zr(jcont+40)
+    parameters%cont_init = nint(zr(jcont+41))
 !
 end subroutine

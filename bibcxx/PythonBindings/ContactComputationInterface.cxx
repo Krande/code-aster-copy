@@ -43,6 +43,14 @@ Returns:
         )",
               py::arg( "coordinates" ) )
         .def( "contactData", &ContactComputation::contactData, R"(
-Compute contact data (MMCHML)
-        )");
+Compute contact data (cf. MMCHML) as input to compute contact forces and matrices.
+
+Arguments:
+    pairing (ContactPairing): pairing object
+    initial_contact (bool): True to use value in contact definition (CONTACT_INIT).
+
+Returns:
+    FieldOnCellsReal: contact data
+        )",
+              py::arg( "pairing" ), py::arg( "initial_contact" ) );
 };

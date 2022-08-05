@@ -49,3 +49,8 @@
 #define FRIC_TYPE_TRES 1
 #define FRIC_TYPE_COUL 2
 #define FRIC_TYPE_STIC 3
+
+! Pairing
+#define PAIR_CONT_INTE 0
+#define FRIC_ALGO_FALSE 1
+#define FRIC_ALGO_TRUE 2

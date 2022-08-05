@@ -99,7 +99,8 @@ ContactComputation::geometricGap( const ContactPairingPtr pairing ) const {
 /**
  * @brief Compute contact mortar matrix
  */
-FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pairing ) const {
+FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pairing,
+                                                     const bool &initial_contact ) const {
 
     CALL_JEMARQ();
 
@@ -175,8 +176,16 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                 }
 
                 /// Other
-                // Value for projection tolerance
+                auto pair = zone->getPairingParameter();
+                // Value for projection tolerancetolerance
                 ( *data )[shift + 40] = 1.e-8;
+                // Status to impose to contact
+                if(initial_contact){
+                    ( *data )[shift + 41] = double(pair->getInitialState());
+                }
+                else{
+                    ( *data )[shift + 41] = double(InitialState::Interpenetrated);
+                }
 
                 nbPair++;
             }
