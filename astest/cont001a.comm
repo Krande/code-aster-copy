@@ -100,6 +100,7 @@ DEFICO = DEFI_CONT(
             SANS_GROUP_MA="Group_3",
             ALGO_CONT="LAGRANGIEN",
             CONTACT_INIT="OUI",
+            DIST_APPA=-1,
         ),
         _F(
             APPARIEMENT="MORTAR",
@@ -108,6 +109,7 @@ DEFICO = DEFI_CONT(
             VARIANTE="RAPIDE",
             ALGO_CONT="NITSCHE",
             CONTACT_INIT="INTERPENETRE",
+            DIST_APPA=10,
         ),
     ),
 )

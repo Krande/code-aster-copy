@@ -60,6 +60,7 @@ DEFICO_BAS = DEFI_CONT(
             ALGO_CONT="LAGRANGIEN",
             # VARIANTE="ROBUSTE",
             CONTACT_INIT="OUI",
+            DIST_APPA=-1,
         ),
     ),
 )
@@ -114,6 +115,7 @@ DEFICO_HAUT = DEFI_CONT(
             ALGO_CONT="LAGRANGIEN",
             # VARIANTE="ROBUSTE",
             CONTACT_INIT="OUI",
+            DIST_APPA=100000.,
         ),
     ),
 )

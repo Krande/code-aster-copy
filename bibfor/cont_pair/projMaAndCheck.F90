@@ -16,10 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projMaAndCheck(proj_tole       , elem_dime     , &
+subroutine projMaAndCheck(proj_tole, dist_appa       , elem_dime     , &
                        elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                        elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                        proj_coor       , nb_node_proj, iret)
+!
+use contact_module
 !
 implicit none
 !
@@ -30,7 +32,7 @@ implicit none
 #include "asterfort/apinte_prma_n.h"
 #include "asterc/r8prem.h"
 !
-real(kind=8), intent(in) :: proj_tole
+real(kind=8), intent(in) :: proj_tole, dist_appa
 integer, intent(in) :: elem_dime
 integer, intent(in) :: elem_mast_nbnode
 real(kind=8), intent(in) :: elem_mast_coor(3,9)
@@ -63,6 +65,7 @@ integer, intent(out) :: iret, nb_node_proj
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: mast_norm(3), slav_norm(3), ps
+    real(kind=8) :: bar_ma(3), bar_sl(3), hf_ma, hf_sl
 !
     iret = 0
     proj_coor = 0.d0
@@ -81,6 +84,20 @@ integer, intent(out) :: iret, nb_node_proj
     if(abs(ps) <= proj_tole) then
         iret = 1
         go to 99
+    end if
+!
+! - If distance between barycenter is to high -> exit
+!
+    if(dist_appa > 0) then
+        hf_ma = diameter(elem_mast_nbnode, elem_mast_coor)
+        bar_ma = barycenter(elem_mast_nbnode, elem_mast_coor)
+        hf_sl = diameter(elem_slav_nbnode, elem_slav_coor)
+        bar_sl = barycenter(elem_slav_nbnode, elem_slav_coor)
+    !
+        if(norm2(bar_ma-bar_sl) >= 2 * dist_appa * max(hf_ma, hf_sl)) then
+            iret = 1
+            go to 99
+        end if
     end if
 !
 ! - Project slave nodes in master cell parametric space using raytracing

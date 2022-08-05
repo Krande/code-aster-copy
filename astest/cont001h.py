@@ -60,6 +60,7 @@ DEFICO_BAS = DEFI_CONT(
             GROUP_MA_ESCL="CONT_BAS",
             ALGO_CONT="LAGRANGIEN",
             CONTACT_INIT="OUI",
+            DIST_APPA=-1,
         ),
     ),
 )
@@ -119,6 +120,7 @@ DEFICO_HAUT = DEFI_CONT(
             GROUP_MA_ESCL="CONT_HAUT",
             ALGO_CONT="LAGRANGIEN",
             CONTACT_INIT="OUI",
+            DIST_APPA=10e6,
         ),
     ),
 )

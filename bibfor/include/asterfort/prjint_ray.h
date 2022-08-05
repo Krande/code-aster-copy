@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine prjint_ray(proj_tole       , elem_dime     ,&
+    subroutine prjint_ray(proj_tole, dist_appa       , elem_dime     ,&
                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                       poin_inte       , inte_weight   , nb_poin_inte  ,&
                       inte_neigh_     , ierror_)
-        real(kind=8), intent(in) :: proj_tole
+        real(kind=8), intent(in) :: proj_tole, dist_appa
         integer, intent(in) :: elem_dime
         real(kind=8), intent(in) :: elem_slav_coor(3,9)
         integer, intent(in) :: elem_slav_nbnode

@@ -47,10 +47,4 @@ Certains noeuds sont projetés dans plus de deux mailles différentes.
 
 Il y a probablement un problème avec la projection.
 """),
-
-    6 : _("""
-DIST_APPA est supérieur à 0. Cette valeur n'est pas encore disponible.
-
-"""),
-
 }

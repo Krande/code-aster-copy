@@ -21,14 +21,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine aplcpgn(mesh, newgeo, zone,  pair_method,  pair_tole,&
+    subroutine aplcpgn(mesh, newgeo, zone,  pair_method,  pair_tole, dist_appa, &
                       nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, list_node_mast,&
                       nb_node_mast , nb_pair_zone, list_pair_zone, list_nbptit_zone,&
                        list_ptitsl_zone)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         character(len=19), intent(in) :: zone
-        real(kind=8), intent(in) :: pair_tole
+        real(kind=8), intent(in) :: pair_tole, dist_appa
         integer, intent(in) :: nb_elem_slav
         integer, intent(in) :: nb_elem_mast
         integer, intent(in) :: nb_node_mast

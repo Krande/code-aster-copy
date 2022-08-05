@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 !
-subroutine aplcpgn(mesh , newgeo , zone,  pair_method   , pair_tole,&
+subroutine aplcpgn(mesh , newgeo , zone,  pair_method   , pair_tole, dist_appa, &
     nb_elem_mast    , list_elem_mast, nb_elem_slav    , list_elem_slav, list_node_mast, &
     nb_node_mast , nb_pair_zone    , list_pair_zone, list_nbptit_zone, list_ptitsl_zone)
 !
@@ -58,7 +58,7 @@ implicit none
 character(len=8), intent(in) :: mesh
 character(len=19), intent(in) :: newgeo
 character(len=19), intent(in) :: zone
-real(kind=8), intent(in) :: pair_tole
+real(kind=8), intent(in) :: pair_tole, dist_appa
 integer, intent(in) :: nb_elem_slav
 integer, intent(in) :: nb_elem_mast
 integer, intent(in) :: nb_node_mast
@@ -188,12 +188,12 @@ integer, pointer :: elem_mast_start(:) => null()
     do while (pair_exist)
         if (pair_method == "RAPIDE") then
             ! - Search by computing the minimum distance between the barycenters
-            call ap_infast_n(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
+            call ap_infast_n(mesh           , newgeo       , pair_tole, dist_appa, nb_elem_mast  ,&
                              list_elem_mast , nb_elem_slav , list_elem_slav ,elem_slav_flag ,&
                              nb_mast_start, elem_mast_start, nb_slav_start  ,elem_slav_start,&
                              zone, list_node_mast, nb_node_mast)
         elseif (pair_method == "ROBUSTE") then
-            call apprin_n(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
+            call apprin_n(mesh           , newgeo       , pair_tole, dist_appa, nb_elem_mast  ,&
                           list_elem_mast , nb_elem_slav , list_elem_slav , elem_slav_flag ,&
                           nb_mast_start, elem_mast_start, nb_slav_start  , elem_slav_start)
         endif
@@ -334,7 +334,7 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! --------- Projection/intersection of elements in slave parametric space
 !
-                call prjint_ray(pair_tole      , elem_slav_dime,&
+                call prjint_ray(pair_tole      , dist_appa, elem_slav_dime,&
                                 elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                                 elem_slav_nbnode   , elem_slav_coor, elem_slav_code,&
                                 poin_inte_sl       , inte_weight, nb_poin_inte  ,&

@@ -207,14 +207,14 @@ extern void DEFSPSSSS( VTGPLD, vtgpld, const char *, STRING_SIZE, ASTERDOUBLE *,
                        STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                        const char *, STRING_SIZE );
 
-#define CALLO_APLCPGN( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o )                               \
-    CALLOOOOPPPPPPPPOOO( APLCPGN, aplcpgn, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o )
-extern void DEFSSSSPPPPPPPPSSS( APLCPGN, aplcpgn, const char *, STRING_SIZE, const char *,
-                                STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                                ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                                const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                const char *, STRING_SIZE );
+#define CALLO_APLCPGN( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p )                            \
+    CALLOOOOPPPPPPPPPOOO( APLCPGN, aplcpgn, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p )
+extern void DEFSSSSPPPPPPPPPSSS( APLCPGN, aplcpgn, const char *, STRING_SIZE, const char *,
+                                 STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                 ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *,
+                                 ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                 ASTERINTEGER *, const char *, STRING_SIZE, const char *,
+                                 STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_MMELEM_DATA_C( a, b, c, d, e, f, g, h, i, j )                                        \
     CALLPPOOPPPPPP( MMELEM_DATA_C, mmelem_data_c, a, b, c, d, e, f, g, h, i, j )
@@ -223,12 +223,11 @@ extern void DEFPPSSPPPPPP( MMELEM_DATA_C, mmelem_data_c, ASTERLOGICAL *, ASTERIN
                            ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
                            ASTERINTEGER * );
 
-#define CALLO_MMELEM_DATA_LAGA( a, b, c, d, e, f, g, h, i )                                     \
+#define CALLO_MMELEM_DATA_LAGA( a, b, c, d, e, f, g, h, i )                                        \
     CALLPOOPPPPPP( MMELEM_DATA_LAGA, mmelem_data_laga, a, b, c, d, e, f, g, h, i )
-extern void DEFPSSPPPPPP( MMELEM_DATA_LAGA, mmelem_data_laga, ASTERLOGICAL *,
-                           const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *,
-                           ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                           ASTERINTEGER * );
+extern void DEFPSSPPPPPP( MMELEM_DATA_LAGA, mmelem_data_laga, ASTERLOGICAL *, const char *,
+                          STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
+                          ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * );
 
 #ifdef __cplusplus
 }

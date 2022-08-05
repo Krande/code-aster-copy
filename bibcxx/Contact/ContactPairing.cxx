@@ -21,6 +21,7 @@
  */
 
 #include "Contact/ContactPairing.h"
+
 #include "Messages/Messages.h"
 
 ContactPairing::ContactPairing( const std::string name, const ContactNewPtr cont )
@@ -77,9 +78,6 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     }
 
     auto dist_pairing = zone->getPairingParameter()->getPairingDistance();
-    if(dist_pairing >= 0.0){
-        UTMESS( "F", "CONTACT1_6" );
-    }
 
     // tolerence
     ASTERDOUBLE pair_tole = 1e-8;
@@ -93,9 +91,9 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     auto interSlavePoints = JeveuxVectorReal( "&&INTERSLPTS" );
 
     CALLO_APLCPGN( _mesh->getName(), _newCoordinates->getName(), zone->getName(), pair_method,
-                   &pair_tole, &nbCellMaster, eleMaster.data(), &nbCellSlave, eleSlave.data(),
-                   NodesMaster.data(), &nbNodeMaster, &nb_pairs, ljust( pairs->getName(), 19, ' ' ),
-                   ljust( nbInterPoints->getName(), 19, ' ' ),
+                   &pair_tole, &dist_pairing, &nbCellMaster, eleMaster.data(), &nbCellSlave,
+                   eleSlave.data(), NodesMaster.data(), &nbNodeMaster, &nb_pairs,
+                   ljust( pairs->getName(), 19, ' ' ), ljust( nbInterPoints->getName(), 19, ' ' ),
                    ljust( interSlavePoints->getName(), 19, ' ' ) );
 
     // clearZone
@@ -368,7 +366,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
     slaveCellPaired.clear();
 
     /*FED building*/
-    _fed->setNumberOfVirtualNodes(0);
+    _fed->setNumberOfVirtualNodes( 0 );
 
     /*NEMA building*/
     auto ContactResFEDNema = _fed->getVirtualCellsDescriptor();

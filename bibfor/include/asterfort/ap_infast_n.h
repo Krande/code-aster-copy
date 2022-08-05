@@ -19,13 +19,13 @@
 !
 !
 interface
-    subroutine ap_infast_n(mesh          , newgeo        , pair_tole   ,nb_elem_mast  ,&
+    subroutine ap_infast_n(mesh          , newgeo     , pair_tole, dist_appa   ,nb_elem_mast  ,&
                          list_elem_mast, nb_elem_slav  , list_elem_slav , elem_slav_flag,&
                          nb_mast_start , elem_mast_start,nb_slav_start ,elem_slav_start,&
                          sdappa, list_node_mast, nb_node_mast )
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
-        real(kind=8), intent(in) :: pair_tole
+        real(kind=8), intent(in) :: pair_tole, dist_appa
         integer, intent(in) :: nb_elem_mast
         integer, intent(in) :: list_elem_mast(nb_elem_mast)
         integer, intent(in) :: nb_elem_slav

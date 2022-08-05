@@ -177,8 +177,8 @@ class PairingParameter {
      */
     PairingParameter()
         : _algo( PairingAlgo::Mortar ),
-          _dist_appa( -1.0 ),
           _cont_init( InitialState::Interpenetrated ),
+          _dist_appa( -1.0 ),
           _seuil( -1.0 ),
           _beam( false ),
           _dist_supp( nullptr ),
