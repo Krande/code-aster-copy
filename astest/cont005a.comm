@@ -86,6 +86,7 @@ RES = MECA_NON_LINE(
            _F(CHARGE=CHAR2,
               FONC_MULT=RAMPE,),),
     CONTACT=_F(DEFINITION=DEFICO,
+               RESI_GEOM=1e-8,
                ALGO_RESO_GEOM="POINT_FIXE"),
     NEWTON=_F(REAC_ITER=1,),
     COMPORTEMENT=_F(RELATION='ELAS',
@@ -95,8 +96,9 @@ RES = MECA_NON_LINE(
     SOLVEUR=_F(METHODE='MUMPS',
                RESI_RELA=1.E-6,
                PCENT_PIVOT=30,),
-    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                   ITER_GLOB_MAXI=10,))
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,
+                   ITER_GLOB_MAXI=25,))
+
 RES = CALC_CHAMP(reuse=RES,
                  RESULTAT=RES,
                  CONTRAINTE=('SIEF_NOEU',),
