@@ -34,6 +34,7 @@ private
 #include "asterfort/mmnonf.h"
 #include "asterfort/mm2onf.h"
 #include "asterfort/mmnorm.h"
+#include "asterfort/projInsideCell.h"
 #include "asterfort/reerel.h"
 #include "asterfort/subac1.h"
 #include "asterfort/subaco.h"
@@ -97,15 +98,15 @@ contains
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_pair, &
                     coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3,1), tau_slav(1:3,2))
 !
-! ----- Return in real slave space (current configuration)
+! ----- Return in real slave space (pairing configuration)
 !
         coor_qp_sl_re = 0.d0
-        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl, &
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_pair, coor_qp_sl, &
                     coor_qp_sl_re)
 !
 ! ----- Projection of node on master cell (master parametric space)
 !
-        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_curr,&
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_pair,&
                     coor_qp_sl_re, 75, proj_tole, norm_slav, &
                     coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, &
                     iret)
@@ -127,23 +128,22 @@ contains
             end if
 
             call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime, &
-                        geom%coor_mast_curr, coor_qp_sl_re, 75, proj_tole, norm_slav, &
+                        geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
                         ksi1_line, ksi2_line, tau1_mast, tau2_mast, iret)
             ASSERT(iret==0)
 !
             call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
-                        geom%coor_mast_curr, coor_qp_sl_re, 75, proj_tole, norm_slav, &
+                        geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
                         coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, iret, &
                         ksi1_init=ksi1_line, ksi2_init= ksi2_line)
             ASSERT(iret==0)
 !
         end if
 !
-! ----- Return in real master space
+! ----- Check that projected node is inside cell
 !
-        coor_qp_ma_re = 0.d0
-        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma, &
-                    coor_qp_ma_re)
+        call projInsideCell(proj_tole, geom%elem_dime, geom%elem_mast_code, coor_qp_ma, iret)
+        ASSERT(iret==0)
 !
 ! ------ Compute outward master normal (pairing configuration)
 !
@@ -163,8 +163,14 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
-! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s
+! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s (current configuration)
 !
+        coor_qp_sl_re = 0.d0
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl, &
+                    coor_qp_sl_re)
+        coor_qp_ma_re = 0.d0
+        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma, &
+                    coor_qp_ma_re)
         gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
 
         ! print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
