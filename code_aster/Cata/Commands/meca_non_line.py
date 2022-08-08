@@ -50,17 +50,14 @@ MECA_NON_LINE = MACRO(nom="MECA_NON_LINE",
                       # -------------------------------------------------------------------
                       CONTACT=C_CONTACT(),
                       # -------------------------------------------------------------------
-                      SCHEMA_THM=C_SCHEMA_THM(),
-                      # -------------------------------------------------------------------
                       COMPORTEMENT=C_COMPORTEMENT('STAT_NON_LINE'),
                       # -------------------------------------------------------------------
                       ETAT_INIT=C_ETAT_INIT('STAT_NON_LINE', 'f'),
                       # -------------------------------------------------------------------
                       INCREMENT=C_INCREMENT('MECANIQUE'),
                       # -------------------------------------------------------------------
-                      METHODE=SIMP(statut='f', typ='TXM', defaut="NEWTON", into=(
-                          "NEWTON", "NEWTON_KRYLOV")),
-                      b_meth_newton=BLOC(condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
+                      METHODE=SIMP(statut='f', typ='TXM', defaut="NEWTON", into=("NEWTON",)),
+                      b_meth_newton=BLOC(condition="""equal_to("METHODE", 'NEWTON')""",
                                          NEWTON=C_NEWTON("MECA_NON_LINE"),
                                          ),
                       # -------------------------------------------------------------------

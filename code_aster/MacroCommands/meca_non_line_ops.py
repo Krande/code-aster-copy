@@ -51,6 +51,26 @@ def _contact_check(CONTACT):
             assert CONTACT["ALGO_RESO_FROT"] == "NEWTON"
 
 
+def _keywords_check(keywords):
+    """ To forbid unsupported keywords."""
+
+    if "EXCIT" in keywords:
+        for load in keywords["EXCIT"]:
+            if load["TYPE_CHARGE"] != "FIXE_CSTE":
+                raise RuntimeError("TYPE_CHARGE not supported")
+
+    if "INCREMENT" in keywords:
+        if "NUME_INST_INIT" in keywords["INCREMENT"] or "NUME_INST_FIN" in keywords["INCREMENT"]:
+            raise RuntimeError("unsupported value in INCREMENT")
+    if "CONVERGENCE" in keywords:
+        for key in keywords["CONVERGENCE"]:
+            if key in ("RESI_REFE_RELA", "RESI_COMP_RELA",):
+                raise RuntimeError("unsupported value in CONVERGENCE: %s"%key)
+
+    if keywords["METHODE"] != "NEWTON":
+        raise RuntimeError("unsupported value in METHODE")
+
+
 def meca_non_line_ops(self, **args):
     """Execute the command.
 
@@ -64,6 +84,7 @@ def meca_non_line_ops(self, **args):
 
     # add contact check:
     _contact_check(args["CONTACT"])
+    _keywords_check(args)
 
     snl = NonLinearSolver()
     snl.setLoggingLevel(args["INFO"])
