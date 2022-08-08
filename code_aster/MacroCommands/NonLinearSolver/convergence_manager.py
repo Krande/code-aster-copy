@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from math import sqrt
+
 from ...Utilities import no_new_attributes, profile, MPI
 from ...Objects import DiscreteComputation
 
@@ -150,14 +152,21 @@ class ConvergenceManager:
             self.values["RESI_GLOB_RELA"] = self.values["RESI_GLOB_MAXI"] / scaling
 
     @profile
-    def evalGeometricResidual(self, displ_incr):
+    def evalGeometricResidual(self, displ_delta):
         """Evaluate criteria
 
         Arguments:
-            displ_incr (FieldOnNodesReal): incremental displacement.
+            displ_dela (FieldOnNodesReal): variation of displacement.
         """
 
-        self.values["RESI_GEOM"] = displ_incr.norm("NORM_INFINITY", ["DX", "DY", "DZ"])
+        # scaling with diagonal of bounding box
+        TABG = self.phys_pb.getMesh().getTable('CARA_GEOM')
+        x_diag = TABG['X_MAX', 1] - TABG['X_MIN', 1]
+        y_diag = TABG['Y_MAX', 1] - TABG['Y_MIN', 1]
+        z_diag = TABG['Z_MAX', 1] - TABG['Z_MIN', 1]
+        diag = sqrt(pow(x_diag, 2) + pow(y_diag, 2) + pow(z_diag, 2))
+
+        self.values["RESI_GEOM"] = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
     @profile
     def hasConverged(self):

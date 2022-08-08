@@ -81,10 +81,7 @@ class CodedMaterial : public DataStructure {
     /**
      * @brief Get the .MATE_CODE
      */
-    ConstantFieldOnCellsLongPtr getCodedMaterialField() const {
-        _field->updateValuePointers();
-        return _field;
-    };
+    ConstantFieldOnCellsLongPtr getCodedMaterialField() const { return _field; };
 
     /**
      * @brief Function membre

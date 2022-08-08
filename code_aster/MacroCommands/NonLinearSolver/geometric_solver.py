@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from libaster import deleteTemporaryObjects
-
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager

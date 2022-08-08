@@ -31,5 +31,6 @@ void exportCodedMaterialToPython( py::module_ &mod ) {
         .def(
             py::init( &initFactoryPtr< CodedMaterial, std::string, MaterialFieldPtr, ModelPtr > ) )
         .def( "allocate", &CodedMaterial::allocate, py::arg( "force" ) = false )
+        .def( "getCodedMaterialField", &CodedMaterial::getCodedMaterialField )
         .def( "constant", &CodedMaterial::constant );
 };

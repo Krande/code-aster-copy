@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from libaster import deleteTemporaryObjects
-
 from ...Objects import DiscreteComputation, AssemblyMatrixDisplacementReal
 from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
@@ -385,8 +383,5 @@ class IncrementalSolver:
             primal_incr = self.lineSearch(solution)
         else:
             primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
-
-        # clean temporary memory - too many objects are not destroyed in fortran
-        deleteTemporaryObjects()
 
         return primal_incr, internVar, stress, stiffness

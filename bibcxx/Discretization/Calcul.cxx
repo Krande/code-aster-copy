@@ -66,11 +66,13 @@ void Calcul::setGroupsOfCells( const ModelPtr &model, const VectorString &groupO
 
 /** @brief Add input field */
 void Calcul::addInputField( const std::string &parameterName, const DataFieldPtr field ) {
+    AS_ASSERT(field);
     _inputFields.insert( listFields::value_type( parameterName, field ) );
 }
 
 /** @brief Add output field */
 void Calcul::addOutputField( const std::string &parameterName, const DataFieldPtr field ) {
+    AS_ASSERT(field);
     _outputFields.insert( listFields::value_type( parameterName, field ) );
     _outputFieldsExist.insert( listExists::value_type( parameterName, false ) );
 }
