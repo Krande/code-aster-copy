@@ -21,6 +21,7 @@ from libaster import deleteTemporaryObjects
 
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
+from .contact_manager import ContactManager
 from .convergence_manager import ConvergenceManager
 from .geometric_solver import GeometricSolver
 from .logging_manager import LoggingManager
@@ -31,7 +32,7 @@ class StepSolver:
     """
 
     current_incr = phys_state = None
-    phys_pb = linear_solver = None
+    phys_pb = linear_solver = contact_manager = None
     param = None
     geom = geom_step = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -72,6 +73,14 @@ class StepSolver:
             PhysicalState: Currently used Physical state
         """
         return self.phys_state
+
+    def setContactManager(self, contact_manager):
+        """ Set contact manager.
+
+        Arguments:
+            contact_manager (ContactManager): contact manager
+        """
+        self.contact_manager = contact_manager
 
     def setLinearSolver(self, linear_solver):
         """Set the linear solver to be used.
@@ -128,7 +137,9 @@ class StepSolver:
         geom_solver.setPhysicalProblem(self.phys_pb)
         geom_solver.setPhysicalState(self.phys_state)
         geom_solver.setLinearSolver(self.linear_solver)
-        geom_solver.setCoordinates(self.geom)
+        geom_solver.setContactManager(self.contact_manager)
+
+        self.contact_manager.setPairingCoordinates(self.geom)
 
         return geom_solver
 
@@ -147,8 +158,11 @@ class StepSolver:
 
         return logManager
 
-    def hasFinished(self):
+    def hasFinished(self, convManager):
         """Tell if there are iterations to be computed.
+
+        Arguments:
+            convManager (ConvergenceManager): convergence manager.
 
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
@@ -166,7 +180,10 @@ class StepSolver:
         else:
             nb_iter = 1
 
-        return self.current_incr >= nb_iter
+        if self.current_incr >= nb_iter:
+            return True
+
+        return convManager.hasConverged()
 
     @profile
     def solve(self):
@@ -182,7 +199,7 @@ class StepSolver:
 
         self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
 
-        while not self.hasFinished() and not convManager.hasConverged():
+        while not self.hasFinished(convManager):
             geometric = self.createGeometricSolver()
             geometric.setLoggingManager(logManager)
 

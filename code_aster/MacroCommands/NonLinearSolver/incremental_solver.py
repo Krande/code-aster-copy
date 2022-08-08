@@ -49,7 +49,7 @@ class IncrementalSolver:
     """Solve an iteration."""
 
     phys_state = phys_pb = convManager = None
-    linear_solver = contManager = None
+    linear_solver = contact_manager = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def setPhysicalProblem(self, phys_pb):
@@ -68,8 +68,8 @@ class IncrementalSolver:
         """
         self.phys_state = phys_state
 
-    def setConvergenceCriteria(self, convManager):
-        """Set the convergence criteria to be used.
+    def setConvergenceManager(self, convManager):
+        """Set the convergence manager to be used.
 
         Arguments:
             convManager (ConvergenceManager): object to be used.
@@ -84,13 +84,13 @@ class IncrementalSolver:
         """
         self.linear_solver = solver
 
-    def setContactManager(self, contManager):
+    def setContactManager(self, contact_manager):
         """Set the contact solver to be used.
 
         Arguments:
-            contManager (ContactManager): a contact solver object
+            contact_manager (ContactManager): a contact solver object
         """
-        self.contManager = contManager
+        self.contact_manager = contact_manager
 
     @profile
     def computeInternalResidual(self, scaling=1.0):
@@ -176,17 +176,17 @@ class IncrementalSolver:
             FieldOnNodesReal: contact residual.
         """
 
-        if self.contManager.enable:
+        if self.contact_manager.enable:
             disc_comp = DiscreteComputation(self.phys_pb)
 
             # Compute contact forces
             contact_forces = disc_comp.contactForces(
-                self.contManager.getPairingCoordinates(),
+                self.contact_manager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
                 self.phys_state.time,
                 self.phys_state.time_step,
-                self.contManager.data())
+                self.contact_manager.data())
         else:
             contact_forces = self.phys_state.createPrimal(
                 self.phys_pb, 0.0)
@@ -220,9 +220,6 @@ class IncrementalSolver:
         # Compute residual
         resi_state.resi = -(resi_state.resi_int +
                             resi_state.resi_cont - resi_state.resi_ext)
-
-        # clean temporary memory - too many objects are not destroyed in fortran
-        deleteTemporaryObjects()
 
         return resi_state, internVar, stress
 
@@ -279,17 +276,17 @@ class IncrementalSolver:
            ElementaryMatrixDisplacementReal: Contact matrix.
         """
 
-        if self.contManager.enable:
+        if self.contact_manager.enable:
             # Main object for discrete computation
             disc_comp = DiscreteComputation(self.phys_pb)
 
             matr_elem_cont = disc_comp.contactMatrix(
-                self.contManager.getPairingCoordinates(),
+                self.contact_manager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
                 self.phys_state.time,
                 self.phys_state.time_step,
-                self.contManager.data()
+                self.contact_manager.data()
             )
 
             return matr_elem_cont
@@ -324,9 +321,6 @@ class IncrementalSolver:
         jacobian.addElementaryMatrix(matr_elem_cont)
 
         jacobian.assemble()
-
-        # clean temporary memory - too many objects are not destroyed in fortran
-        deleteTemporaryObjects()
 
         return jacobian
 

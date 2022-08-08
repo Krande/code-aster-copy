@@ -102,9 +102,7 @@ def meca_non_line_ops(self, **args):
 
     # Add contact
     if args["CONTACT"] is not None:
-        fed_defi = args["CONTACT"].get(
-            "DEFINITION").getFiniteElementDescriptor()
-        snl.phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
+        snl.createContactManager(args["CONTACT"]["DEFINITION"])
 
     # Add linear solver
     snl.setLinearSolver(keywords=args["SOLVEUR"])

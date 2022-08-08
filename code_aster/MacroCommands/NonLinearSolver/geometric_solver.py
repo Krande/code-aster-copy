@@ -34,8 +34,8 @@ class GeometricSolver:
     """
 
     current_incr = phys_state = prediction = None
-    phys_pb = linear_solver = coordinates =None
-    param = geom = logManager = None
+    phys_pb = linear_solver = coordinates = None
+    param = logManager = contact_manager = None
     matr_update_incr = current_matrix = step_rank = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -95,15 +95,15 @@ class GeometricSolver:
         """
         self.linear_solver = linear_solver
 
-    def setCoordinates(self, coordinates):
-        """Set the current coordinates to be used.
+    def setContactManager(self, contact_manager):
+        """ Set contact manager.
 
         Arguments:
-            coordinates (MeshCoordinatesField): current coordinates.
+            contact_manager (ContactManager): contact manager
         """
-        self.geom = coordinates
+        self.contact_manager = contact_manager
 
-    def update(self, primal_incr, internVar, sigma, convManager, contManager):
+    def update(self, primal_incr, internVar, sigma, convManager):
         """Update the physical state.
 
         Arguments:
@@ -122,8 +122,8 @@ class GeometricSolver:
             self.phys_state.internVar = internVar
             self.phys_state.stress = sigma
         elif self._get("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
-            contManager.update(self.phys_state)
-            contManager.pairing(self.phys_pb)
+            self.contact_manager.update(self.phys_state)
+            self.contact_manager.pairing(self.phys_pb)
 
     def createConvergenceManager(self):
         """Return an object that holds convergence criteria.
@@ -149,8 +149,11 @@ class GeometricSolver:
 
         return convMana
 
-    def createIncrementalSolver(self):
+    def createIncrementalSolver(self, convManager):
         """Return a solver for the next iteration.
+
+        Arguments:
+            convManager (ConvergenceManager) : convergence manager
 
         Returns:
             IncrementalSolver: object to solve the next iteration.
@@ -160,18 +163,30 @@ class GeometricSolver:
         is_solver.setPhysicalProblem(self.phys_pb)
         is_solver.setPhysicalState(self.phys_state)
         is_solver.setLinearSolver(self.linear_solver)
+        is_solver.setContactManager(self.contact_manager)
+        is_solver.setConvergenceManager(convManager)
 
         return is_solver
 
-    def hasFinished(self):
+    def hasFinished(self, convManager):
         """Tell if there are iterations to be computed.
+
+        Arguments:
+            convManager (ConvergenceManager): convergence manager.
 
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
-        return self.current_incr > self._get("CONVERGENCE", "ITER_GLOB_MAXI")
 
-    def _setMatrixType(self, contManager):
+        if self.current_incr > self._get("CONVERGENCE", "ITER_GLOB_MAXI"):
+            return True
+
+        if self.current_incr < 2:
+            return False
+
+        return convManager.hasConverged()
+
+    def _setMatrixType(self):
         """Set matrix type.
 
         Returns:
@@ -181,7 +196,7 @@ class GeometricSolver:
             matrix_type = "PRED_" + self.prediction
         else:
             matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-            if self.current_incr % self.matr_update_incr == 0 or contManager.enable:
+            if self.current_incr % self.matr_update_incr == 0 or self.contact_manager.enable:
                 # make unavailable the current tangent matrix
                 self.current_matrix = None
         return matrix_type
@@ -195,16 +210,14 @@ class GeometricSolver:
         """
         self.current_matrix = current_matrix
         convManager = self.createConvergenceManager()
-        contManager = ContactManager(self._get("CONTACT", "DEFINITION"), self.geom)
-        contManager.pairing(self.phys_pb)
 
-        while not self.hasFinished() and not convManager.hasConverged():
-            iteration = self.createIncrementalSolver()
-            iteration.setConvergenceCriteria(convManager)
-            iteration.setContactManager(contManager)
+        self.contact_manager.pairing(self.phys_pb)
+
+        while not self.hasFinished(convManager):
+            iteration = self.createIncrementalSolver(convManager)
 
             # Select type of matrix
-            matrix_type = self._setMatrixType(contManager)
+            matrix_type = self._setMatrixType()
 
             # Solve current iteration
             primal_incr, internVar, sigma, self.current_matrix = iteration.solve(
@@ -212,27 +225,27 @@ class GeometricSolver:
             )
 
             # Update
-            self.update(primal_incr, internVar, sigma, convManager, contManager)
+            self.update(primal_incr, internVar, sigma, convManager)
 
-            self.logManager.printConvTableRow(
-                [
-                    self.current_incr,
-                    convManager.getCriteria("RESI_GLOB_RELA"),
-                    convManager.getCriteria("RESI_GLOB_MAXI"),
-                    convManager.getCriteria("RESI_GEOM"),
-                    matrix_type,
-                ]
-            )
+            if self.current_incr > 0:
+                self.logManager.printConvTableRow(
+                    [
+                        self.current_incr-1,
+                        convManager.getCriteria("RESI_GLOB_RELA"),
+                        convManager.getCriteria("RESI_GLOB_MAXI"),
+                        convManager.getCriteria("RESI_GEOM"),
+                        matrix_pred,
+                    ]
+                )
 
             self.current_incr += 1
+            matrix_pred = matrix_type
 
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
-        if self.current_incr % self.matr_update_incr == 0 or contManager.enable:
+        if self.current_incr % self.matr_update_incr == 0 or self.contact_manager.enable:
             self.current_matrix = None
-
-        deleteTemporaryObjects()
 
         return self.current_matrix
 

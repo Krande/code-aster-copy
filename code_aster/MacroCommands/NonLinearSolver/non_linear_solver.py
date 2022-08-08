@@ -22,6 +22,7 @@ from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortra
 from ...Objects import NonLinearResult, PhysicalProblem, LinearSolver
 from ...Supervis import ConvergenceError, ExecuteCommand, IntegrationError
 from ...Utilities import logger, no_new_attributes, profile, logger
+from .contact_manager import ContactManager
 from .physical_state import PhysicalState
 from .step_solver import StepSolver
 from .storage_manager import StorageManager
@@ -58,13 +59,14 @@ class NonLinearSolver:
     step_rank = stepper = param = phys_state = None
     phys_pb = None
     linear_solver = None
-    storage_manager = None
+    storage_manager = contact_manager = None
     current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
         self.phys_state = PhysicalState()
         self.storage_manager = StorageManager(NonLinearResult())
+        self.contact_manager = ContactManager(None)
 
     def setPhysicalProblem(self, model, material, carael=None):
         """Define the physical problem properties.
@@ -91,6 +93,17 @@ class NonLinearSolver:
             stepper (:py:class:`.stepper.TimeStepper`): object to be used.
         """
         self.stepper = stepper
+
+    def createContactManager(self, definition):
+        """Create contact manager.
+
+        Arguments:
+            definition (ContactNew): .
+        """
+        self.contact_manager = ContactManager(definition)
+
+        fed_defi = definition.getFiniteElementDescriptor()
+        self.phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
     def setBehaviourProperty(self, keywords):
         """Set keywords for behaviour
@@ -131,6 +144,7 @@ class NonLinearSolver:
         solv.setPhysicalState(self.phys_state)
         solv.setLinearSolver(self.linear_solver)
         solv.setParameters(self.param)
+        solv.setContactManager(self.contact_manager)
 
         matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
         if step_rank % matr_update_step != 0:

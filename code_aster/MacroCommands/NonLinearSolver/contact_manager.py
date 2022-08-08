@@ -30,18 +30,16 @@ class ContactManager:
     first_pairing = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, definition, geom):
+    def __init__(self, definition):
         """Initialize contact solver.
 
         Arguments:
             definition (ContactNew): contact definition
-            geom (MeshCoordinatesField) : initial geometry
         """
         self.first_pairing = True
         self.defi = definition
         if self.defi is not None:
             self.pair = ContactPairing(self.defi)
-            self.pair.setCoordinates(geom)
             self.comp = ContactComputation(self.defi)
 
     @profile
@@ -69,7 +67,21 @@ class ContactManager:
             MeshCoordinatesField: coordinates of nodes used for pairing:
         """
 
-        return self.pair.getCoordinates()
+        if self.enable:
+            return self.pair.getCoordinates()
+
+        return None
+
+    @profile
+    def setPairingCoordinates(self, coor):
+        """ Set the coordinates field used for pairing.
+
+        Returns:
+            coor (MeshCoordinatesField): coordinates of nodes used for pairing:
+        """
+
+        if self.enable:
+            self.pair.setCoordinates(coor)
 
     @profile
     def gap(self):
