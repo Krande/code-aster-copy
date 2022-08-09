@@ -28,17 +28,31 @@ from cataelem.Options.options import OP
 
 # ELEMENTARY TREATMENT OF 2D FRICTIONLESS ELEMENT WITH DEFI_CONTACT OPERATOR
 # MORTAR LAGRANGIEN AUGMENTED METHOD
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',('DX','DY','LAGS_C',)),
-    ('EN2',('DX','DY',)),))
+                             components=(
+                                 ('EN1', ('DX', 'DY', 'LAGS_C',)),
+                                 ('EN2', ('DX', 'DY',)),))
 
 
-##------------------------------------------------------------
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),
+                               ('EN2', ()),)
+                           )
+
+ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_F',)),
+                               ('EN2', ()),)
+                           )
+
+# ------------------------------------------------------------
+
+
 class CMS22D(Element):
     """
       THE CMS22D CLASS ELEMENT : SEG2/SEG2
@@ -52,16 +66,20 @@ class CMS22D(Element):
     """
     meshType = MT.SEG2
     nodes = (
-            SetOfNodes('EN1', (1,2)),
-        )
+        SetOfNodes('EN1', (1, 2)),
+    )
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-            para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-        ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
+                      ),
     )
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
+
+
 class CMS32D(CMS22D):
     """
       THE CMS22D CLASS ELEMENT : SEG2/SEG2
@@ -75,12 +93,5 @@ class CMS32D(CMS22D):
     """
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN1', (1,2,3)),
-        )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-            para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-        ),
-
+        SetOfNodes('EN1', (1, 2, 3)),
     )

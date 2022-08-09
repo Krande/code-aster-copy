@@ -54,6 +54,11 @@ class ContactComputation {
 
     FieldOnCellsRealPtr contactData( const ContactPairingPtr pairing,
                                      const bool &initial_contact ) const;
+
+    /**
+     * @brief Compute contact coefficient field (COEF_CONT)
+     */
+    std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr > contactCoefficient() const;
 };
 
 /**

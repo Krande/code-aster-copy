@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,12 +27,18 @@ import cataelem.Commons.attributes as AT
 
 PDEPL_R  = OutputParameter(phys=PHY.DEPL_R, type='ELNO')
 
+PCCONT_R  = OutputParameter(phys=PHY.CONT_R, type='ELNO')
+
+PCFROT_R  = OutputParameter(phys=PHY.CONT_R, type='ELNO')
+
 
 EXISTE_DDL = Option(
     para_in=(
     ),
     para_out=(
            PDEPL_R,
+           PCCONT_R,
+           PCFROT_R,
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),)),

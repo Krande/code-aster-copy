@@ -40,8 +40,21 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                                   'LAGS_C', 'LAGS_F1', 'LAGS_F2',)),
                                  ('EN2', ('DX', 'DY', 'DZ',)),))
 
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),
+                               ('EN2', ()),)
+                           )
+
+ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_F',)),
+                               ('EN2', ()),)
+                           )
 
 # ------------------------------------------------------------
+
+
 class FMT33D(Element):
     """
       THE FMT33D CLASS ELEMENT :
@@ -60,7 +73,9 @@ class FMT33D(Element):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT), ),
                       ),
 
     )
@@ -84,13 +99,6 @@ class FMT63D(FMT33D):
         SetOfNodes('EN1', (1, 2, 3)),
         SetOfNodes('EN2', (4, 5, 6)),
     )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
-    )
 
 # ------------------------------------------------------------
 
@@ -111,13 +119,6 @@ class FMQ93D(FMT33D):
         SetOfNodes('EN1', (1, 2, 3, 4,)),
         SetOfNodes('EN2', (5, 6, 7, 8, 9)),
     )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
-    )
 
 
 # ------------------------------------------------------------
@@ -137,13 +138,6 @@ class FMQ83D(FMT33D):
         SetOfNodes('EN1', (1, 2, 3, 4)),
         SetOfNodes('EN2', (5, 6, 7, 8)),
     )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
-    )
 
 
 # ------------------------------------------------------------
@@ -161,11 +155,4 @@ class FMQ43D(FMT33D):
     meshType = MT.QUAD4
     nodes = (
         SetOfNodes('EN1', (1, 2, 3, 4,)),
-    )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
     )

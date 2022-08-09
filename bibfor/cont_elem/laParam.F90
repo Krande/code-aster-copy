@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "jeveux.h"
 !
-type(ContactParameters), intent(out) :: parameters
+type(ContactParameters), intent(inout) :: parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,14 +46,12 @@ type(ContactParameters), intent(out) :: parameters
     parameters%algo_cont = nint(zr(jcont+23))
     parameters%type_cont = nint(zr(jcont+24))
     parameters%vari_cont = zr(jcont+25)
-    parameters%coef_cont = zr(jcont+26)
 !
 ! - Friction
 !
     parameters%l_fric = (zr(jcont+30) > 0.5d0)
     parameters%algo_fric = nint(zr(jcont+31))
     parameters%type_fric = nint(zr(jcont+32))
-    parameters%coef_fric = zr(jcont+33)
     parameters%threshold_given = zr(jcont+34)
 !
 ! - Other

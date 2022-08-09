@@ -649,6 +649,16 @@ COMPOR   = PhysicalQuantity(type='K16',
 """)
 
 
+CONT_R   = PhysicalQuantity(type='R',
+    components=(
+       'COEF_C',
+       'COEF_F',
+    ),
+    comment="""  CONT_R  Type:R Coefficient pour le contact-frottement
+       COEF_C : coefficient pour le contact
+       COEF_F : coefficient pour le frottement
+""")
+
 CORR_R   = PhysicalQuantity(type='R',
     components=(
        'CORR',

@@ -21,6 +21,6 @@
 interface
     subroutine laParam(parameters)
         use contact_type
-        type(ContactParameters), intent(out) :: parameters
+        type(ContactParameters), intent(inout) :: parameters
     end subroutine laParam
 end interface

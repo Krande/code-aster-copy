@@ -27,6 +27,7 @@ class ContactManager:
     """Solve contact problem."""
 
     defi = pair = comp = None
+    coef_cont = coef_frot = None
     first_pairing = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -41,6 +42,7 @@ class ContactManager:
         if self.defi is not None:
             self.pair = ContactPairing(self.defi)
             self.comp = ContactComputation(self.defi)
+            self.coef_cont, self.coef_frot = self.comp.contactCoefficient()
 
     @profile
     def pairing(self, phys_pb):

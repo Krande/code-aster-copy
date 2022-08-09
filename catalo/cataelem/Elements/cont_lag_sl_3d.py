@@ -39,8 +39,21 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                                  ('EN1', ('DX', 'DY', 'DZ', 'LAGS_C',)),
                                  ('EN2', ('DX', 'DY', 'DZ',)),))
 
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),
+                               ('EN2', ()),)
+                           )
+
+ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_F',)),
+                               ('EN2', ()),)
+                           )
 
 # ------------------------------------------------------------
+
+
 class CMT33D(Element):
     """
       THE CMT33D CLASS ELEMENT :
@@ -59,7 +72,9 @@ class CMT33D(Element):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
 
     )
@@ -83,13 +98,6 @@ class CMT63D(CMT33D):
         SetOfNodes('EN1', (1, 2, 3)),
         SetOfNodes('EN2', (4, 5, 6)),
     )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
-    )
 
 # ------------------------------------------------------------
 
@@ -110,13 +118,6 @@ class CMQ93D(CMT33D):
         SetOfNodes('EN1', (1, 2, 3, 4,)),
         SetOfNodes('EN2', (5, 6, 7, 8, 9)),
     )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
-    )
 
 
 # ------------------------------------------------------------
@@ -136,13 +137,6 @@ class CMQ83D(CMT33D):
         SetOfNodes('EN1', (1, 2, 3, 4)),
         SetOfNodes('EN2', (5, 6, 7, 8)),
     )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
-    )
 
 
 # ------------------------------------------------------------
@@ -160,11 +154,4 @@ class CMQ43D(CMT33D):
     meshType = MT.QUAD4
     nodes = (
         SetOfNodes('EN1', (1, 2, 3, 4,)),
-    )
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-                      ),
-
     )

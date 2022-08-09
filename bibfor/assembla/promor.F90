@@ -159,21 +159,25 @@ subroutine promor(nuz, base, printz)
 !---- QUEL TYPE DE PARTITION ?
 !     LDIST=.TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
 !     LDGREL=.TRUE. : DISTRIBUTION DE TYPE 'GROUP_ELEM'
-    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=nomlig)
-    call dismoi('PARTITION', nomlig, 'LIGREL', repk=partit)
+    ldist=.false.
+    ldgrel=.false.
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    ldist=.false.
-    ldgrel=.false.
-    if (partit .ne. ' ') then
-        ldist=.true.
-        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
-        if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPR', 'L', vi=maille)
+
+    if(mo .ne. ' ') then
+        call dismoi('NOM_LIGREL', mo, 'MODELE', repk=nomlig)
+        call dismoi('PARTITION', nomlig, 'LIGREL', repk=partit)
+!
+        if (partit .ne. ' ') then
+            ldist=.true.
+            call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+            ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
+            if (.not.ldgrel) then
+                call jeveuo(partit//'.NUPR', 'L', vi=maille)
+            endif
         endif
-    endif
+    end if
 !
     call jeexin(ma//'.CONNEX', iret)
     if (iret .gt. 0) then

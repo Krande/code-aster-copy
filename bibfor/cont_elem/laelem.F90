@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laelem(nomte, geom)
+subroutine laelem(nomte, geom, param)
 !
 use contact_type
 !
@@ -29,7 +29,8 @@ implicit none
 #include "contact_module.h"
 !
 character(len=16), intent(in) :: nomte
-type(ContactGeom), intent(out) :: geom
+type(ContactGeom), intent(inout) :: geom
+type(ContactParameters), intent(inout) :: param
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -174,6 +175,6 @@ type(ContactGeom), intent(out) :: geom
     ASSERT(geom%nb_dofs .le. MAX_LAGA_DOFS)
     ASSERT((geom%elem_dime .eq. 2).or.(geom%elem_dime .eq. 3))
 !
-    call laQuantities(geom)
+    call laQuantities(geom, param)
 !
 end subroutine

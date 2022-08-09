@@ -61,6 +61,19 @@ CSTATR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
                                ('EN2', ('X1',)),
                                ('EN3', ()),))
 
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),
+                               ('EN2', ()),
+                               ('EN3', ()),)
+                           )
+
+ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_F',)),
+                               ('EN2', ()),
+                               ('EN3', ()),)
+                           )
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
                             components=('X', 'Y',))
@@ -123,7 +136,9 @@ class FMS2S2(Element):
                                    (SP.PINSTMR, CTEMPSR),
                                    (SP.PINSTPR, CTEMPSR),
                                    (SP.PGEOMER, NGEOMER),
-                                   (SP.PGEOMCR, NGEOMER), ),
+                                   (SP.PGEOMCR, NGEOMER),
+                                   (SP.PCCONTR, ECCONT),
+                                   (SP.PCFROTR, ECFROT),),
                           para_out=((SP.PVECTCR, MVECTUR),
                                     (SP.PVECTFR, MVECTUR),),
                           ),
@@ -135,7 +150,9 @@ class FMS2S2(Element):
                               (SP.PINSTMR, CTEMPSR),
                               (SP.PINSTPR, CTEMPSR),
                               (SP.PGEOMER, NGEOMER),
-                              (SP.PGEOMCR, NGEOMER), ),
+                              (SP.PGEOMCR, NGEOMER),
+                              (SP.PCCONTR, ECCONT),
+                              (SP.PCFROTR, ECFROT), ),
                      para_out=((SP.PMATUUR, MMATUUR),
                                (SP.PMATUNS, MMATUNS),
                                ),

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laQuantities(geom)
+subroutine laQuantities(geom, param)
 !
 use contact_type
 !
@@ -29,6 +29,7 @@ implicit none
 #include "jeveux.h"
 !
 type(ContactGeom), intent(inout) :: geom
+type(ContactParameters), intent(inout) :: param
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,6 +42,7 @@ type(ContactGeom), intent(inout) :: geom
     aster_logical :: l_fric
     integer :: i_node_slav, i_node_mast, i_dime, nb_lagr, nb_lagr_c, elem_dime, nb_node_slav
     integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c, index, j_time
+    integer :: jv_cont, jv_frot
     real(kind=8) :: depl_mast_incr(3, 9), depl_slav_incr(3, 9)
     real(kind=8) :: depl_mast_prev(3, 9), depl_slav_prev(3, 9)
 !
@@ -119,5 +121,19 @@ type(ContactGeom), intent(inout) :: geom
     geom%time_prev = zr(j_time)
     call jevech('PINSTPR', 'L', j_time)
     geom%time_curr = zr(j_time)
+!
+! - COEF_CONT and COEF_FROT
+!
+    call jevech('PCCONTR', 'L', jv_cont)
+    if(l_fric) then
+        call jevech('PCFROTR', 'L', jv_frot)
+    end if
+!
+    do i_node_slav = 1, geom%nb_lagr_c
+        param%coef_cont(i_node_slav) = zr(jv_cont-1+i_node_slav)
+        if(l_fric) then
+            param%coef_fric(i_node_slav) = zr(jv_frot-1+i_node_slav)
+        end if
+    end do
 !
 end subroutine

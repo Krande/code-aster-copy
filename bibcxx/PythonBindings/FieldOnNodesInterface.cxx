@@ -117,6 +117,14 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Returns:
                 list[float]: List of values.
+            )" )
+        .def( "getNodesAndComponentsNumberFromDOF",
+              &FieldOnNodesReal::getNodesAndComponentsNumberFromDOF, R"(
+            Return a list of values such that for each DOF, it gives the node id and component id
+            as [dof1=[node_1, comp_1], dof2=[node_1, comp_2], ....]
+
+            Returns:
+                list[[int, int]]: List of values (node, component) for each DOF.
             )" );
     /**
      * Object FieldOnNodesComplex

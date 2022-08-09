@@ -193,12 +193,11 @@ bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
     return true;
 }
 
-FieldOnNodesRealPtr DiscreteComputation::contactForces( const MeshCoordinatesFieldPtr geom,
-                                                        const FieldOnNodesRealPtr displ,
-                                                        const FieldOnNodesRealPtr displ_step,
-                                                        const ASTERDOUBLE &time_prev,
-                                                        const ASTERDOUBLE &time_step,
-                                                        const FieldOnCellsRealPtr data ) const {
+FieldOnNodesRealPtr DiscreteComputation::contactForces(
+    const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
+    const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
+    const FieldOnNodesRealPtr coef_cont, const FieldOnNodesRealPtr coef_frot ) const {
     // Select option for matrix
     std::string option = "CHAR_MECA_CONT";
 
@@ -214,6 +213,8 @@ FieldOnNodesRealPtr DiscreteComputation::contactForces( const MeshCoordinatesFie
     calcul->addInputField( "PDEPL_M", displ );
     calcul->addInputField( "PDEPL_P", displ_step );
     calcul->addInputField( "PCONFR", data );
+    calcul->addInputField( "PCCONTR", coef_cont );
+    calcul->addInputField( "PCFROTR", coef_frot );
 
     // Add time fields
     calcul->addTimeField( "PINSTMR", time_prev );

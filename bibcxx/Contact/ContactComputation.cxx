@@ -153,8 +153,6 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                 ( *data )[shift + 24] = double( cont->getType() );
                 //  Value for VARIANTE
                 ( *data )[shift + 25] = double( cont->getVariant() );
-                //  Value for COEF_CONT
-                ( *data )[shift + 26] = cont->getCoefficient();
 
                 /// Friction parameter
                 auto fric = zone->getFrictionParameter();
@@ -164,8 +162,6 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                 ( *data )[shift + 31] = double( fric->getAlgorithm() );
                 //  Value for TYPE_FROT
                 ( *data )[shift + 32] = double( fric->getType() );
-                //  Value for COEF_FROT
-                ( *data )[shift + 33] = fric->getCoefficient();
                 // Value for threshold
                 if ( fric->getType() == FrictionType::Tresca ) {
                     //  Value for TRESCA
@@ -180,11 +176,10 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                 // Value for projection tolerancetolerance
                 ( *data )[shift + 40] = 1.e-8;
                 // Status to impose to contact
-                if(initial_contact){
-                    ( *data )[shift + 41] = double(pair->getInitialState());
-                }
-                else{
-                    ( *data )[shift + 41] = double(InitialState::Interpenetrated);
+                if ( initial_contact ) {
+                    ( *data )[shift + 41] = double( pair->getInitialState() );
+                } else {
+                    ( *data )[shift + 41] = double( InitialState::Interpenetrated );
                 }
 
                 nbPair++;
@@ -196,4 +191,43 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
     CALL_JEDEMA();
 
     return data;
+};
+
+/**
+ * @brief Compute contact mortar matrix
+ */
+std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr >
+ContactComputation::contactCoefficient() const {
+
+    // Create FieldOnNodes
+    auto ccont =
+        std::make_shared< FieldOnNodesReal >( _contact->getFiniteElementDescriptor(), "ECCONT" );
+    ccont->updateValuePointers();
+
+    auto cfrot =
+        std::make_shared< FieldOnNodesReal >( _contact->getFiniteElementDescriptor(), "ECFROT" );
+    cfrot->updateValuePointers();
+
+    auto dof2nodes = ccont->getNodesAndComponentsNumberFromDOF();
+    std::map< ASTERINTEGER, ASTERINTEGER > nodes2dof;
+    for ( ASTERINTEGER i_eq = 0; i_eq < dof2nodes.size(); i_eq++ ) {
+        auto [node, cmp] = dof2nodes[i_eq];
+        nodes2dof[node] = i_eq;
+    }
+
+    // Set values
+    auto zones = _contact->getContactZones();
+
+    for ( auto &zone : zones ) {
+        auto coef_cont = zone->getContactParameter()->getCoefficient();
+
+        auto coef_frot = zone->getFrictionParameter()->getCoefficient();
+        auto nodes = zone->getSlaveNodes();
+        for ( auto &node : nodes ) {
+            ( *ccont )[nodes2dof[node]] = coef_cont;
+            ( *cfrot )[nodes2dof[node]] = coef_frot;
+        }
+    }
+
+    return std::make_pair( ccont, cfrot );
 };

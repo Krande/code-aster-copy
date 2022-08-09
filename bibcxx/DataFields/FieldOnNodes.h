@@ -188,6 +188,26 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Constructor with DOFNumbering
      */
+    FieldOnNodes( const FiniteElementDescriptorPtr &fed, const std::string &localMode )
+        : FieldOnNodes() {
+
+        // Create numbering from Local mode (see Cata)
+        auto dofNume = std::make_shared< DOFNumbering >();
+
+        dofNume->addFiniteElementDescriptor( fed );
+        dofNume->computeNumberingWithLocalMode( localMode );
+
+        _dofDescription = dofNume->getDescription();
+        _mesh = dofNume->getMesh();
+
+        const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
+        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
+                           dofNume->getName() );
+    };
+
+    /**
+     * @brief Constructor with DOFNumbering
+     */
     FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
 
         _dofDescription = dofNum->getDescription();

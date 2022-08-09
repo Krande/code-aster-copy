@@ -536,7 +536,8 @@ DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr d
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
     const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
-    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data ) const {
+    const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
+    const FieldOnNodesRealPtr coef_cont, const FieldOnNodesRealPtr coef_frot ) const {
     // Select option for matrix
     std::string option = "RIGI_CONT";
 
@@ -552,6 +553,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
     calcul->addInputField( "PDEPL_M", displ );
     calcul->addInputField( "PDEPL_P", displ_step );
     calcul->addInputField( "PCONFR", data );
+    calcul->addInputField( "PCCONTR", coef_cont );
+    calcul->addInputField( "PCFROTR", coef_frot );
 
     // Add time fields
     calcul->addTimeField( "PINSTMR", time_prev );

@@ -59,6 +59,13 @@ CSTATR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
                                ('EN2', ('X1',)),
                                ('EN3', ()),))
 
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),
+                               ('EN2', ()),
+                               ('EN3', ()),)
+                           )
+
 CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
                             components=('INST',))
 
@@ -117,7 +124,8 @@ class CMQ4Q4(Element):
                                    (SP.PINSTMR, CTEMPSR),
                                    (SP.PINSTPR, CTEMPSR),
                                    (SP.PGEOMER, NGEOMER),
-                                   (SP.PGEOMCR, NGEOMER), ),
+                                   (SP.PGEOMCR, NGEOMER),
+                                   (SP.PCCONTR, ECCONT),),
                           para_out=((SP.PVECTCR, MVECTUR), ),
                           ),
 
@@ -128,7 +136,9 @@ class CMQ4Q4(Element):
                               (SP.PINSTMR, CTEMPSR),
                               (SP.PINSTPR, CTEMPSR),
                               (SP.PGEOMER, NGEOMER),
-                              (SP.PGEOMCR, NGEOMER), ),
+                              (SP.PGEOMCR, NGEOMER),
+                              (SP.PCCONTR, ECCONT),
+                              ),
                      para_out=((SP.PMATUUR, MMATUUR),
                                ),
                      ),

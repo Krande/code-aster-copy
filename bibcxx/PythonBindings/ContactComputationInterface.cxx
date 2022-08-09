@@ -52,5 +52,13 @@ Arguments:
 Returns:
     FieldOnCellsReal: contact data
         )",
-              py::arg( "pairing" ), py::arg( "initial_contact" ) );
+              py::arg( "pairing" ), py::arg( "initial_contact" ) )
+        .def( "contactCoefficient", &ContactComputation::contactCoefficient, R"(
+Compute contact coefficient at the nodes of the slave surface based on values of COEF_CONT
+and COEF_FROT
+
+Returns:
+    FieldOnNodesReal: contact coefficient (= COEF_CONT)
+    FieldOnNodesReal: friction coefficient (= COEF_FROT)
+        )" );
 };

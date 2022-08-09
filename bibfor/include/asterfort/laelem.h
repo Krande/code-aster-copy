@@ -19,9 +19,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine laelem(nomte, geom)
+    subroutine laelem(nomte, geom, param)
         use contact_type
         character(len=16), intent(in) :: nomte
-        type(ContactGeom), intent(out) :: geom
+        type(ContactGeom), intent(inout) :: geom
+        type(ContactParameters), intent(inout) :: param
     end subroutine laelem
 end interface

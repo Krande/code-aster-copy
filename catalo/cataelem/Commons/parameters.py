@@ -763,6 +763,10 @@ PGEOMCR = InputParameter(
     phys=PHY.GEOM_R, comment=""" Current coordinates of nodes (from pairing)"""
 )
 
+PCCONTR = InputParameter(phys=PHY.CONT_R, comment=""" Field for COEF_CONT""")
+
+PCFROTR = InputParameter(phys=PHY.CONT_R, comment=""" Field for COEF_FROT""")
+
 PGLISS = InputParameter(phys=PHY.NEUT_I, comment="""""")
 
 PGRADLN = InputParameter(phys=PHY.NEUT_R, comment="""""")

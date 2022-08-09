@@ -19,8 +19,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine laQuantities(geom)
+    subroutine laQuantities(geom, param)
         use contact_type
         type(ContactGeom), intent(inout) :: geom
+        type(ContactParameters), intent(inout) :: param
     end subroutine laQuantities
 end interface

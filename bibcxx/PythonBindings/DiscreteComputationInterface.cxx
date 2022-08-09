@@ -337,14 +337,17 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ_step (FieldOnNodes): field of increment of displacement
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
-                data (FieldOnCells): contact data
+                data (FieldOnCellsReal): contact data
+                coef_cont (FeildOnNodesReal) : contact coefficient
+                coef_frot (FeildOnNodesReal) : friction coefficient
 
             Returns:
                 FieldOnNodesReal: contact and friction forces
 
         )",
               py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ),
-              py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ) )
+              py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
+              py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
         .def( "contactMatrix", &DiscreteComputation::contactMatrix, R"(
             Compute contact matrix
 
@@ -354,11 +357,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 displ_step (FieldOnNodes): field of increment of displacement
                 time_prev (float): time at begin of the step
                 time_curr (float): delta time between begin and end of the step
-                data (FieldOnCells): contact data
+                data (FieldOnCellsReal): contact data
+                coef_cont (FeildOnNodesReal) : contact coefficient
+                coef_frot (FeildOnNodesReal) : friction coefficient
 
             Returns:
                 ElementaryMatrixDisplacementReal: contact and friction elementary matrix
         )",
               py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ),
-              py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ) );
+              py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
+              py::arg( "coef_cont" ), py::arg( "coef_frot" ) );
 };

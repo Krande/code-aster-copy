@@ -51,7 +51,7 @@ use contact_type
 !
 ! - Informations about finite element
 !
-    call laelem(nomte, geom)
+    call laelem(nomte, geom, parameters)
 !
 ! - Get Parameters
 !

@@ -184,7 +184,10 @@ class IncrementalSolver:
                 self.phys_state.primal_step,
                 self.phys_state.time,
                 self.phys_state.time_step,
-                self.contact_manager.data())
+                self.contact_manager.data(),
+                self.contact_manager.coef_cont,
+                self.contact_manager.coef_frot
+            )
         else:
             contact_forces = self.phys_state.createPrimal(
                 self.phys_pb, 0.0)
@@ -284,7 +287,9 @@ class IncrementalSolver:
                 self.phys_state.primal_step,
                 self.phys_state.time,
                 self.phys_state.time_step,
-                self.contact_manager.data()
+                self.contact_manager.data(),
+                self.contact_manager.coef_cont,
+                self.contact_manager.coef_frot
             )
 
             return matr_elem_cont

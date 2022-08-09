@@ -20,7 +20,6 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -73,16 +72,15 @@ PHEA_NO = InputParameter(phys=PHY.N120_I,
 PHEA_FA = InputParameter(phys=PHY.N240_I,
                          comment=""" XFEM """)
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-                          comment=""" UTILE POUR HM-XFEM """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR,
+                         comment=""" UTILE POUR HM-XFEM """)
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
-PBASLOC  = InputParameter(phys=PHY.N480_R)
+PBASLOC = InputParameter(phys=PHY.N480_R)
 
-PLSNGG     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
-
+PLSNGG = InputParameter(phys=PHY.NEUT_R,
+                        comment=""" XFEM """)
 
 CHAR_MECA_CONT = Option(
     para_in=(
@@ -124,6 +122,8 @@ CHAR_MECA_CONT = Option(
         PBASLOR,
         PBASLOC,
         PLSNGG,
+        SP.PCCONTR,
+        SP.PCFROTR,
     ),
     para_out=(
         SP.PVECTCR,
