@@ -126,9 +126,10 @@ class ContactZone : public DataStructure {
     void setSlaveGroupOfCells( const std::string &slave );
 
     void setMasterGroupOfCells( const std::string &master );
-    ;
 
     void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave );
+
+    void setExcludedSlaveGroupOfNodes( const VectorString &excluded_slave );
 
     VectorLong getExcludedSlaveCells() const { return _slaveCellsExcluded; };
 

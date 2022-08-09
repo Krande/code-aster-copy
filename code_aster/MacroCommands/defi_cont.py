@@ -90,6 +90,8 @@ DEFI_CONT_CATA = MACRO(
               b_cl=BLOC(condition="""is_in("ALGO_CONT", ('LAGRANGIEN',))""",
                         SANS_GROUP_MA=SIMP(
                                   statut='f', typ=grma, validators=NoRepeat(), max='**'),
+                        SANS_GROUP_NO=SIMP(
+                                  statut='f', typ=grno, validators=NoRepeat(), max='**'),
                         ),
               CONTACT_INIT=SIMP(statut='f', typ='TXM', defaut="INTERPENETRE",
                                 into=("OUI", "INTERPENETRE", "NON"),),

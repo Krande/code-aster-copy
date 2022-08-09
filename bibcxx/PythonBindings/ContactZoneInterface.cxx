@@ -135,13 +135,20 @@ Arguments:
     str: master's name
         )",
               py::arg( "master_name" ) )
+        .def( "setExcludedSlaveGroupOfNodes", &ContactZone::setExcludedSlaveGroupOfNodes, R"(
+Set excluded groups of nodes on slave side
+
+Arguments:
+    str: excluded groups' names
+        )",
+              py::arg( "groups" ) )
         .def( "setExcludedSlaveGroupOfCells", &ContactZone::setExcludedSlaveGroupOfCells, R"(
 Set excluded groups of cells on slave side
 
 Arguments:
     str: excluded groups' names
         )",
-              py::arg( "master_name" ) )
+              py::arg( "groups" ) )
         .def( "getExcludedSlaveCells", &ContactZone::getExcludedSlaveCells, R"(
 Get excluded groups of cells on slave side
 

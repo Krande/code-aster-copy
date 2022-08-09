@@ -73,9 +73,32 @@ void ContactZone::setExcludedSlaveGroupOfCells( const VectorString &excluded_sla
             throw std::runtime_error( "The group " + name + " doesn't exist in mesh" );
         }
 
-        auto it = _slaveCellsExcluded.end();
         VectorLong sans_gr_i = mesh->getCells( name );
+        auto it = _slaveCellsExcluded.end();
         _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
+    }
+
+    _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
+    AS_ASSERT( _slaveCells.size() > 0 );
+    _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+};
+
+void ContactZone::setExcludedSlaveGroupOfNodes( const VectorString &excluded_slave ) {
+    auto mesh = getMesh();
+    // build inverse connvectivity
+    buildInverseConnectivity();
+
+    for ( auto &name : excluded_slave ) {
+        if ( !( getMesh()->hasGroupOfNodes( name ) ) ) {
+            throw std::runtime_error( "The group " + name + " doesn't exist in mesh" );
+        }
+
+        VectorLong sans_gr_i = mesh->getNodes( name );
+        for ( auto &node : sans_gr_i ) {
+            auto cellsToExclude = this->getSlaveCellsFromNode( node );
+            auto it = _slaveCellsExcluded.end();
+            _slaveCellsExcluded.insert( it, cellsToExclude.begin(), cellsToExclude.end() );
+        }
     }
 
     _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
@@ -136,8 +159,12 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
 
     VectorLong masterCells;
     masterCells.reserve( _masterCells.size() );
+
+    //shifting for fortran
     for ( auto cell : _masterCells )
         masterCells.push_back( cell + 1 );
+
+    _masterInverseConnectivity->deallocate();
     CALL_CNCINV( getMesh()->getName().c_str(), masterCells.data(), &nbMaster, base.c_str(),
                  _masterInverseConnectivity->getName().c_str() );
     _masterInverseConnectivity->build();
@@ -149,9 +176,12 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
     slaveCells.reserve( _slaveCells.size() );
     for ( auto cell : _slaveCells )
         slaveCells.push_back( cell + 1 );
+
+    _slaveInverseConnectivity->deallocate();
     CALL_CNCINV( getMesh()->getName().c_str(), slaveCells.data(), &nbSlave, base.c_str(),
                  _slaveInverseConnectivity->getName().c_str() );
     _slaveInverseConnectivity->build();
+
     return true;
 }
 
@@ -171,6 +201,8 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
         masterCells.reserve( _masterCells.size() );
         for ( auto cell : _masterCells )
             masterCells.push_back( cell + 1 );
+
+        _masterNeighbors->deallocate();
         CALL_CNVOIS( getMesh()->getName(), masterCells.data(), invmcn_name, &nbMaster, &ind_min,
                      &ind_max, mn_name );
 

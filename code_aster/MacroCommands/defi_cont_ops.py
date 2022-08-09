@@ -94,12 +94,16 @@ def defi_cont_ops(self, **keywords):
     list_zones = keywords["ZONE"]
     for zone in list_zones:
         contZone = ContactZone(model)
+
         contZone.checkNormals = zone["VERI_NORM"] == "OUI"
         contZone.setVerbosity(verbosity)
         contZone.setSlaveGroupOfCells(zone["GROUP_MA_ESCL"])
         contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])
+
         if zone.get("SANS_GROUP_MA") is not None:
             contZone.setExcludedSlaveGroupOfCells(zone["SANS_GROUP_MA"])
+        if zone.get("SANS_GROUP_NO") is not None:
+            contZone.setExcludedSlaveGroupOfNodes(zone["SANS_GROUP_NO"])
 
         if zone["LISSAGE"] == "OUI":
             contZone.hasSmoothing = True
@@ -107,10 +111,12 @@ def defi_cont_ops(self, **keywords):
         # contact parameters
         contParam = ContactParameter()
         contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
+
         if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
             contParam.setVariant(_vari_cont[zone["VARIANTE"]])
         else:
             contParam.setVariant(ContactVariant.Empty)
+
         contParam.setType(_type_cont[zone["TYPE_CONT"]])
         contParam.setCoefficient(zone["COEF_CONT"])
         contZone.setContactParameter(contParam)
@@ -121,10 +127,12 @@ def defi_cont_ops(self, **keywords):
             fricParam.hasFriction = True
             fricParam.setAlgorithm(_algo_frot[zone["ALGO_FROT"]])
             fricParam.setType(_type_frot[zone["TYPE_FROT"]])
+
             if fricParam.getType() == FrictionType.Tresca:
                 fricParam.setTresca(zone["TRESCA"])
             elif fricParam.getType() == FrictionType.Coulomb:
                 fricParam.setCoulomb(zone["COULOMB"])
+
             fricParam.setCoefficient(zone["COEF_FROT"])
             contZone.setFrictionParameter(fricParam)
 
@@ -134,12 +142,15 @@ def defi_cont_ops(self, **keywords):
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
         pairParam.setPairingDistance(zone["DIST_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
+
         if zone.get("CARA_ELEM") is not None:
             pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
             pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
             pairParam.hasShellDistance = zone["DIST_COQUE"] == "OUI"
+
         if zone.get("SEUIL_INIT") is not None:
             pairParam.setThreshold(zone["SEUIL_INIT"])
+
         if zone.get("DIST_SUPP") is not None:
             pairParam.setDistanceFunction(zone["DIST_SUPP"])
 
