@@ -44,5 +44,6 @@ class StaticModeCalculation(ExecuteCommand):
         matrRigi = keywords["MATR_RIGI"]
         dofNum = matrRigi.getDOFNumbering()
         self._result.setModel(dofNum.getModel())
+        self._result.setDOFNumbering(dofNum)
 
 MODE_STATIQUE = StaticModeCalculation.run
