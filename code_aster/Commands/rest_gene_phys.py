@@ -103,10 +103,19 @@ class RestGenePhys(ExecuteCommand):
             matrRigi = resu_gene.getStiffnessMatrix()
             if matrRigi is not None:
                 modalBasis = matrRigi.getModalBasis()
+                if modalBasis is None:
+                    dofNum = matrRigi.getGeneralizedDOFNumbering()
+                    if dofNum:
+                        modalBasis = dofNum.getModalBasis()
                 if modalBasis is not None:
                     dofNum = modalBasis.getDOFNumbering()
                     if dofNum is not None:
                         self._result.setDOFNumbering(dofNum)
+            else:
+                # resultat issue de proj_mesu_modal
+                dofNum = resu_gene.getDOFNumbering()
+                if dofNum is not None:
+                    self._result.setDOFNumbering(dofNum)
         else:
             raise Exception("Unknown result type")
 
