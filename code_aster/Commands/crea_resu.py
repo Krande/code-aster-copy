@@ -127,13 +127,26 @@ class ResultCreator(ExecuteCommand):
         if keywords.get("ECLA_PG"):
             self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
         if keywords.get("CONV_CHAR"):
-            self._result.setModel(
-                keywords["CONV_CHAR"]["MATR_RIGI"].getModel())
+            matr_rigi = keywords["CONV_CHAR"]["MATR_RIGI"]
+            self._result.setModel(matr_rigi.getModel())
+            dofNum = matr_rigi.getDOFNumbering()
+            if dofNum:
+                fnds.append(dofNum.getDescription())
         if keywords.get("CONV_RESU"):
             self._result.setModel(
                 keywords["CONV_RESU"]["RESU_INIT"].getModel())
+            matr_rigi = keywords["CONV_RESU"].get("MATR_RIGI")
+            if matr_rigi is not None:
+                dofNum = matr_rigi.getDOFNumbering()
+            else:
+                dofNum = keywords["CONV_RESU"]["NUME_DDL"]
+            if dofNum:
+                fnds.append(dofNum.getDescription())
         if keywords.get("KUCV"):
             self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
+            dofNum = keywords["KUCV"]["MATR_AMOR"].getDOFNumbering()
+            if dofNum:
+                fnds.append(dofNum.getDescription())
         if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 
