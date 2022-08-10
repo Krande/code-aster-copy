@@ -49,9 +49,19 @@ class RestCondTran(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        modele = keywords["RESULTAT"].getModel()
-        if modele is not None:
-            self._result.setModel(modele)
-            self._result.build()
+        if keywords.get("BASE_MODALE"):
+            modeMeca = keywords["BASE_MODALE"]
+        else:
+            modeMeca = keywords["MACR_ELEM_DYNA"].getMechanicalMode()
+        dofNum = modeMeca.getDOFNumbering()
+        fnds=[]
+        if dofNum:
+            if keywords["TYPE_RESU"] == "DYNA_TRANS":
+                self._result.setDOFNumbering(dofNum)
+            else:
+                self._result.setModel(dofNum.getModel())
+                fnds.append(dofNum.getDescription())
+            
+        self._result.build(fnds=fnds)
 
 REST_COND_TRAN = RestCondTran.run
