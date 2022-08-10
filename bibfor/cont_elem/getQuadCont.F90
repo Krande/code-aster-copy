@@ -26,8 +26,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcptga.h"
-#include "asterfort/lctrco.h"
-#include "asterfort/lctria.h"
+#include "asterfort/latrco.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmmjac.h"
 #include "asterfort/mmnonf.h"
@@ -61,7 +60,6 @@ integer, intent(out) :: nb_qp
     aster_logical :: l_slav_line, l_mast_line
     integer :: i_node, i_dime, i_tria, i_gauss, jcont
     integer :: nb_tria, nb_poin_inte, nb_gauss
-    integer :: tria_node(6,3)
     real(kind=8) :: tria_coot_sl(2,3), tria_coor_sl(16), poin_inte_sl(16)
     real(kind=8) :: gauss_weight_sl(12), gauss_coor_sl(2,12)
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9), jacobian_sl
@@ -84,7 +82,12 @@ integer, intent(out) :: nb_qp
 !
 ! - Triangulation of convex polygon defined by intersection points
     if (elem_dime .eq. 3) then
-        call lctria(nb_poin_inte, nb_tria, tria_node)
+        if(nb_poin_inte == 3) then
+            nb_tria = 1
+        else
+            nb_tria = nb_poin_inte
+        end if
+!
         if(l_slav_line .and. l_mast_line) then
             ! order 3 by triangle
             elga_fami = 'FPG4'
@@ -109,7 +112,7 @@ integer, intent(out) :: nb_qp
 ! ----- Coordinates of current triangle (slave)
         tria_coor_sl(:) = 0.d0
         if (elem_dime .eq. 3) then
-            call lctrco(i_tria, tria_node, poin_inte_sl, tria_coor_sl)
+            call latrco(i_tria, nb_poin_inte, poin_inte_sl, tria_coor_sl)
         elseif (elem_dime .eq. 2) then
             tria_coor_sl(1:16) = poin_inte_sl(1:16)
         endif
