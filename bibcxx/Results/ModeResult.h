@@ -320,7 +320,10 @@ class ModeResult : public FullResult {
         _structureInterface = structureInterface;
     };
 
-    bool build() {
+    bool build( const std::vector< FiniteElementDescriptorPtr > feds =
+                    std::vector< FiniteElementDescriptorPtr >(),
+                const std::vector< FieldOnNodesDescriptionPtr > fnds =
+                    std::vector< FieldOnNodesDescriptionPtr >() ) {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _rigidityDispDMatrix != nullptr )
             numeDdl = _rigidityDispDMatrix->getDOFNumbering();
@@ -331,12 +334,9 @@ class ModeResult : public FullResult {
         if ( _rigidityPressDMatrix != nullptr )
             numeDdl = _rigidityPressDMatrix->getDOFNumbering();
 
-        if ( numeDdl ) {
-            const auto model = numeDdl->getModel();
-            if ( model )
-                setMesh( model->getMesh() );
-        }
-        return Result::build();
+        if ( numeDdl )
+            setDOFNumbering( numeDdl );
+        return Result::build(feds, fnds);
     };
 };
 

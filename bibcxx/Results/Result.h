@@ -495,7 +495,7 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir l'agrandissement de dictOfMapOfFieldOnNodesReal et
      *  dictOfMapOfFieldOnCellsReal
      */
-    bool build( const std::vector< FiniteElementDescriptorPtr > feds =
+    virtual bool build( const std::vector< FiniteElementDescriptorPtr > feds =
                     std::vector< FiniteElementDescriptorPtr >(),
                 const std::vector< FieldOnNodesDescriptionPtr > fnds =
                     std::vector< FieldOnNodesDescriptionPtr >() );
