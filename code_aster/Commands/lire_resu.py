@@ -85,6 +85,11 @@ class ResultsReader(ExecuteCommand):
         if "CARA_ELEM" in keywords:
             self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
 
+        if "MATR_RIGI" in keywords:
+            dofNum = keywords["MATR_RIGI"].getDOFNumbering()
+            if dofNum:
+                self._result.setDOFNumbering( dofNum )
+
         self._result.build()
 
 
