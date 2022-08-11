@@ -36,6 +36,7 @@ from .contact_ext import Contact
 from .dirichletbc_ext import MechanicalDirichletBC, ThermalDirichletBC, AcousticDirichletBC
 from .discretecomputation_ext import DiscreteComputation
 from .dofnumbering_ext import DOFNumbering
+from .generalizeddofnumbering_ext import GeneralizedDOFNumbering
 from .dynamicmacroelement_ext import DynamicMacroElement
 from .dynamicresults_ext import TransientGeneralizedResult
 from .elementarycharacteristics_ext import ElementaryCharacteristics
@@ -87,6 +88,6 @@ from .result_ext import Result
 from .table_ext import Table
 from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
 from .thermalresult_ext import ThermalResult
-from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
+from .generalizedresults_ext import TransientGeneralizedResult, HarmoGeneralizedResult
 from .xfemcrack_ext import XfemCrack
 from .parallelthermalload_ext import ParallelThermalLoadReal, ParallelThermalLoadFunction

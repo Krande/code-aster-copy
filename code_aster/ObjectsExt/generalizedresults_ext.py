@@ -24,14 +24,50 @@
 """
 
 import aster
-from libaster import TransientGeneralizedResult
+from libaster import TransientGeneralizedResult, HarmoGeneralizedResult
 
 from ..Utilities import injector
+from ..Objects.Serialization import InternalStateBuilder
 
+class GeneralizedResultStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *GeneralizedResult*."""
+
+    def save(self, result):
+        """Return the internal state of a *GeneralizedResult* to be pickled.
+
+        Arguments:
+            result (*GeneralizedResult*): The *GeneralizedResult* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(result)
+        self._st["numbering"] = result.getDOFNumbering()
+        self._st["generalized_numbering"] = result.getGeneralizedDOFNumbering()
+
+        return self
+
+    def restore(self, result):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            result (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(result)
+        result.setDOFNumbering(self._st["numbering"])
+        result.setGeneralizedDOFNumbering(self._st["generalized_numbering"])
+
+
+@injector(HarmoGeneralizedResult)
+class ExtendedHarmoGeneralizedResult:
+    cata_sdj = "SD.sd_dyna_gene.sd_dyna_gene"
+    internalStateBuilder = GeneralizedResultStateBuilder
 
 @injector(TransientGeneralizedResult)
 class ExtendedTransientGeneralizedResult:
     cata_sdj = "SD.sd_dyna_gene.sd_dyna_gene"
+    internalStateBuilder = GeneralizedResultStateBuilder
 
     def _check_input_inoli(self, inoli):
         if (inoli==-1) :
