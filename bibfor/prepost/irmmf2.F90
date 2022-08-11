@@ -250,7 +250,7 @@ character(len=*) :: nomamd
 !         DE GROUPES
 !
             jaux = iaux - 1
-            call mdnofa(numfam, jaux, nofaex, nomfam)
+            call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
 !
 ! 2.3.2. ==> INFORMATION EVENTUELLE
 !

@@ -116,22 +116,26 @@ character(len=8) :: nosdfu
     parameter (edfuin=0)
     integer :: codret
     integer :: iaux, jaux, kaux
-    integer :: numfam, nfam, cmpt
+    integer :: numfam, nfam, cmpt, ii
     integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
     integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer :: jgren,  jtest4
+    integer :: jgren,  jtest4, i_fama, kfama
     integer :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
     character(len=9) :: saux09
     character(len=80) :: nomfam
+    aster_logical :: lfamtr
     real(kind=8) :: start_time, end_time, start1, end1, start2, end2
     mpi_int :: mrank, msize, world, taille, one4
     character(len=80), pointer :: v_nomfag(:) => null()
     character(len=80), pointer :: v_nomgfag(:) => null()
+    character(len=80), pointer :: v_fama(:) => null()
     integer, pointer :: v_nbgrg(:) => null()
     mpi_int, pointer :: v_count(:) => null()
     mpi_int, pointer :: v_displ(:) => null()
+    mpi_int, pointer :: v_count2(:) => null()
+    mpi_int, pointer :: v_displ2(:) => null()
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -287,14 +291,14 @@ character(len=8) :: nosdfu
                 numgrp = numgrp + nbgnof
             end do
 !
-            call wkvect('&&IRMMF2.NOGRFA', 'V V K80', numgrp, jgrou)
+            call wkvect('&&IRMMF2.NOGRFA', 'V V K80', max(1, numgrp), jgrou)
             call wkvect('&&IRMMF2.NOMFAM', 'V V K80', max(1, nfam), jnofa)
             call wkvect('&&IRMMF2.NBGRFA', 'V V I', max(1, nfam), jnbgr)
             call wkvect('&&IRMMF2.NUMFAM', 'V V I', max(1, nfam), jnufa)
 !
             call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
             call wkvect('&&IRMMF2.COUNT', 'V V S', nbproc, vi4=v_count)
-            call wkvect('&&IRMMF2.DISPL', 'V V S', nbproc, vi4=v_displ)
+            call wkvect('&&IRMMF2.DISPL', 'V V S', nbproc+1, vi4=v_displ)
 !
             one4 = to_mpi_int(1)
             call asmpi_allgather_i([nfam], one4, zi(jtest), one4, world)
@@ -304,9 +308,7 @@ character(len=8) :: nosdfu
             do jaux = 0, nbproc-1
                 nbfam_tot = nbfam_tot + zi(jtest+jaux)
                 v_count(jaux+1) = to_mpi_int(zi(jtest+jaux))
-                if(jaux < nbproc-1) then
-                    v_displ(jaux+2) = to_mpi_int(nbfam_tot)
-                end if
+                v_displ(jaux+2) = to_mpi_int(nbfam_tot)
             enddo
 !
 ! On a plus de famille en HPC qu'en std car les familles sont redécoupés par sous-domaine
@@ -344,7 +346,7 @@ character(len=8) :: nosdfu
 !         NOM DE LA FAMILLE : ON LE CONSTRUIT A PARTIR DU NUMERO DE FAMILLE
 !
                 jaux = iaux - 1
-                call mdnofa(numfam, jaux, nofaex, nomfam)
+                call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
 !
                 ! nb de groupe de la famille
                 zi(jnbgr+iaux-1) = nbgnof
@@ -364,12 +366,7 @@ character(len=8) :: nosdfu
             endif
             call cpu_time(start1)
 !
-            call wkvect('&&IRMMF2.TEST4', 'V V I', nfam, jtest4)
-!
-            do iaux = 1, nfam
-                zi(jtest4+iaux-1) = v_displ(rang+1) + iaux
-            end do
-!
+            call wkvect('&&IRMMF2.TEST4', 'V V I', max(1, nfam), jtest4)
             call wkvect('&&IRMMF2.NBGRG', 'V V I', nbfam_tot, vi=v_nbgrg)
             call wkvect('&&IRMMF2.NOMFAG', 'V V K80', nbfam_tot, vk80=v_nomfag)
 !
@@ -379,6 +376,8 @@ character(len=8) :: nosdfu
             call asmpi_allgatherv_char80(zk80(jnofa), taille, v_nomfag, v_count, v_displ, world)
 
             call wkvect('&&IRMMF2.TEST12', 'V V I', nbproc, jtest12)
+            call wkvect('&&IRMMF2.COUNT2', 'V V S', nbproc, vi4=v_count2)
+            call wkvect('&&IRMMF2.DISPL2', 'V V S', nbproc+1, vi4=v_displ2)
             one4 = to_mpi_int(1)
             call asmpi_allgather_i([numgrp], one4, zi(jtest12), one4, world)
 !
@@ -386,16 +385,14 @@ character(len=8) :: nosdfu
             nbgr_tot = 0
             do jaux = 0, nbproc-1
                 nbgr_tot = nbgr_tot + zi(jtest12+jaux)
-                v_count(jaux+1) = to_mpi_int(zi(jtest12+jaux))
-                if(jaux < nbproc-1) then
-                    v_displ(jaux+2) = to_mpi_int(nbgr_tot)
-                end if
+                v_count2(jaux+1) = to_mpi_int(zi(jtest12+jaux))
+                v_displ2(jaux+2) = to_mpi_int(nbgr_tot)
             enddo
 
             call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
             ! Allgather des groupes
             taille = to_mpi_int(numgrp)
-            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count, v_displ, world)
+            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, v_displ2, world)
 !
             call cpu_time(end1)
             if (infmed .gt. 1) then
@@ -405,30 +402,51 @@ character(len=8) :: nosdfu
 !
            ! boucle sur les familles
             call cpu_time(start1)
+            call wkvect('&&IRMMF2.FAMA', 'V V K80', nbfam_tot, vk80=v_fama)
             nbgr = 0
+            i_fama = 0
+            ii = 0
             do iaux = 1, nbfam_tot
                 nomfam = v_nomfag(iaux)
                 nbgnof = v_nbgrg(iaux)
-                do kaux = 1, nbgnof
-                    nogrfa(kaux) = v_nomgfag(nbgr+kaux)
+!
+                lfamtr = ASTER_FALSE
+                do kaux = 1, i_fama
+                    if(v_fama(kaux).eq.nomfam) then
+                        lfamtr = ASTER_TRUE
+                        kfama = kaux
+                        exit
+                    endif
                 enddo
+!
+                if(.not.lfamtr) then
+                    do kaux = 1, nbgnof
+                        nogrfa(kaux) = v_nomgfag(nbgr+kaux)
+                    enddo
 !
 ! 2.3.2. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 !
-                if (typent .ne. tygeno) then
-                    call as_mfacre(fid, nomamd, nomfam, -iaux, nbgnof, nogrfa, codret)
-                else
-                    call as_mfacre(fid, nomamd, nomfam, iaux, nbgnof, nogrfa, codret)
-                endif
-                if (codret .ne. 0) then
-                    saux08='mfacre'
-                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
-                ! if(jaux.eq.rang) then
-                !     zi(jtest4+iaux-1) = iaux
-                ! endif
+                    i_fama = i_fama + 1
+                    if (typent .ne. tygeno) then
+                        call as_mfacre(fid, nomamd, nomfam, -i_fama, nbgnof, nogrfa, codret)
+                    else
+                        call as_mfacre(fid, nomamd, nomfam, i_fama, nbgnof, nogrfa, codret)
+                    endif
+                    if (codret .ne. 0) then
+                        saux08='mfacre'
+                        call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                    endif
+                    kfama = i_fama
+                    v_fama(i_fama) = nomfam
+                end if
                 nbgr = nbgr + nbgnof
+!
+                if(iaux > v_displ(rang+1) .and. iaux <= v_displ(rang+2)) then
+                    ii = ii + 1
+                    zi(jtest4+ii-1) = kfama
+                end if
             enddo
+            ASSERT(ii == nfam)
 !
             call jedetr('&&IRMMF2.NOGRFA')
             call jedetr('&&IRMMF2.NOMFAM')
@@ -438,9 +456,12 @@ character(len=8) :: nosdfu
             call jedetr('&&IRMMF2.TEST12')
             call jedetr('&&IRMMF2.COUNT')
             call jedetr('&&IRMMF2.DISPL')
+            call jedetr('&&IRMMF2.COUNT2')
+            call jedetr('&&IRMMF2.DISPL2')
             call jedetr('&&IRMMF2.NBGRG')
             call jedetr('&&IRMMF2.NOMFAG')
             call jedetr('&&IRMMF2.NOMGFAG')
+            call jedetr('&&IRMMF2.FAMA')
         endif
         if (typent .ne. tygeno) then
             do ient = 1, nbrent

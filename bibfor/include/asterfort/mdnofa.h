@@ -19,9 +19,11 @@
 !
 !
 interface
-    subroutine mdnofa(numfam, nbfaex, nofaex, nomfam)
+    subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex, nomfam)
         integer :: numfam
+        integer :: nbgf
         integer :: nbfaex
+        character(len=*) :: nogrf(*)
         character(len=*) :: nofaex(*)
         character(len=*) :: nomfam
     end subroutine mdnofa
