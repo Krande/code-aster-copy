@@ -52,28 +52,25 @@ class ModalBasisDef(ExecuteCommand):
         elif ritz is not None:
             if "INTERF_DYNA" in ritz[0]:
                 self._result.setStructureInterface(ritz[0]["INTERF_DYNA"])
+            if keywords.get("MATRICE") is not None:
+                self._result.setDOFNumbering(keywords.get("MATRICE").getDOFNumbering())
+            elif keywords.get("NUME_REF") is not None:
+                self._result.setDOFNumbering(keywords.get("NUME_REF"))
+            elif "BASE_MODALE" in ritz[0]:
+                nume_ddl = ritz[0]["BASE_MODALE"].getDOFNumbering()
+                self._result.setDOFNumbering(nume_ddl)
             if "MODE_MECA" in ritz[0]:
                 self._result.setMesh(ritz[0]["MODE_MECA"][0].getMesh())
-                nume_ddl = ritz[0]["MODE_MECA"][0].getDOFNumbering()
-                if nume_ddl is not None:
+                if self._result.getDOFNumbering() is None:
+                    nume_ddl = ritz[0]["MODE_MECA"][0].getDOFNumbering()
                     self._result.setDOFNumbering(nume_ddl)
         elif diag is not None:
-            if "MODE_MECA" in diag[0]:
-                self._result.setMesh(diag[0]["MODE_MECA"][0].getMesh())
-                nume_ddl = diag[0]["MODE_MECA"][0].getDOFNumbering()
-                if nume_ddl is not None:
-                    self._result.setDOFNumbering(nume_ddl)
+            self._result.setMesh(diag[0]["MODE_MECA"][0].getMesh())
+            nume_ddl = diag[0]["MODE_MECA"][0].getDOFNumbering()
+            self._result.setDOFNumbering(nume_ddl)
         elif ortho is not None:
-            if "BASE" in ortho[0]:
-                self._result.setMesh(ortho[0]["BASE"].getMesh())
-
-        if self._result.getDOFNumbering() is not None:
-            self._result.setMesh(self._result.getDOFNumbering().getMesh())
-        else:
-            if keywords.get("NUME_REF") is not None:
-                self._result.setDOFNumbering(keywords.get("NUME_REF"))
-                self._result.setMesh(keywords.get("NUME_REF").getMesh())
-
+            self._result.setDOFNumbering(ortho[0]["MATRICE"].getDOFNumbering())
+            self._result.setMesh(ortho[0]["BASE"].getMesh())
         self._result.build()
 
 
