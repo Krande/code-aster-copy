@@ -969,6 +969,77 @@ void DEFPPPPP( ASMPI_ALLGATHER_I, asmpi_allgather_i, ASTERINTEGER *sendbuf, ASTE
 }
 
 /*
+ * Wrappers around MPI_Allgatherv
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPPP( ASMPI_ALLGATHERV_I, asmpi_allgatherv_i, ASTERINTEGER *sendbuf,
+                ASTERINTEGER4 *sendcnt, ASTERINTEGER *recvbuf, ASTERINTEGER4 *recvcnt,
+                ASTERINTEGER4 *displs, MPI_Fint *comm ) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Allgatherv: %d gather integer values by all ...%s\n", *sendcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Allgatherv( (void *)sendbuf, *sendcnt, MPI_INTEGER8, (void *)recvbuf, recvcnt,
+                                 displs, MPI_INTEGER8, mpicom ) );
+
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Allgatherv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+void DEFPPPPPP( ASMPI_ALLGATHERV_R, asmpi_allgatherv_r, ASTERDOUBLE *sendbuf,
+                ASTERINTEGER4 *sendcnt, ASTERDOUBLE *recvbuf, ASTERINTEGER4 *recvcnt,
+                ASTERINTEGER4 *displs, MPI_Fint *comm ) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Allgatherv: %d gather double values by all ...%s\n", *sendcnt, " " );
+    double start = MPI_Wtime();
+    AS_MPICHECK( MPI_Allgatherv( (void *)sendbuf, *sendcnt, MPI_DOUBLE_PRECISION, (void *)recvbuf,
+                                 recvcnt, displs, MPI_DOUBLE_PRECISION, mpicom ) );
+
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Allgatherv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+void DEFSPSPPP( ASMPI_ALLGATHERV_CHAR80, asmpi_allgatherv_char80, char *sendbuf, STRING_SIZE sbuff,
+                 ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
+                 ASTERINTEGER4 *displs, MPI_Fint *comm ) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c( *comm );
+    DEBUG_MPI( "MPI_Allgatherv: %d gather char80 values by all ...%s\n", *sendcnt, " " );
+    double start = MPI_Wtime();
+    // We have to change size because of size of K80
+    ASTERINTEGER4 size = 0;
+    AS_MPICHECK( MPI_Comm_size( mpicom, &size ) );
+    ASTERINTEGER4 *recvcnt_k80, *displs_k80;
+    recvcnt_k80 = (ASTERINTEGER4 *)malloc( sizeof( ASTERINTEGER4 ) * size );
+    displs_k80 = (ASTERINTEGER4 *)malloc( sizeof( ASTERINTEGER4 ) * size );
+
+    ASTERINTEGER4 i;
+    for ( i = 0; i < size; i++ ) {
+        recvcnt_k80[i] = 80 * recvcnt[i];
+        displs_k80[i] = 80 * displs[i];
+    }
+
+    AS_MPICHECK( MPI_Allgatherv( (void *)sendbuf, ( *sendcnt ) * 80, MPI_CHAR, (void *)recvbuf,
+                                 recvcnt_k80, displs_k80, MPI_CHAR, mpicom ) );
+
+    free( recvcnt_k80 );
+    free( displs_k80 );
+
+    double end = MPI_Wtime();
+    DEBUG_MPI( "MPI_Allgatherv: ... in %f sec %s\n", ( end - start ), " " );
+#endif
+    return;
+}
+
+/*
  * Wrappers around MPI_Scan
  * Do not check returncode because all errors raise
  */

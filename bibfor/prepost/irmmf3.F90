@@ -30,6 +30,9 @@ implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_bcast_char80.h"
 #include "asterc/asmpi_bcast_i.h"
+#include "asterc/asmpi_allgatherv_i.h"
+#include "asterc/asmpi_allgatherv_char80.h"
+#include "asterc/asmpi_allgather_i.h"
 #include "asterfort/as_mfacre.h"
 #include "asterfort/as_mfrall.h"
 #include "asterfort/as_mfrblc.h"
@@ -116,14 +119,20 @@ character(len=8) :: nosdfu
     integer :: numfam, nfam, cmpt
     integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
     integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer :: jgren, compt, jtest4, jtest5, jtest6
-    integer :: nbgr, nbgrp, nfam_max, nbbloc, nbfam_j
-    integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest2
+    integer :: jgren,  jtest4
+    integer :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
+    integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
     character(len=9) :: saux09
     character(len=80) :: nomfam
-    real(kind=8) :: start_time, end_time, start1, end1, start2, end2, start3, end3
-    mpi_int :: mrank, msize, world, proc, taille
+    real(kind=8) :: start_time, end_time, start1, end1, start2, end2
+    mpi_int :: mrank, msize, world, taille, one4
+    character(len=80), pointer :: v_nomfag(:) => null()
+    character(len=80), pointer :: v_nomgfag(:) => null()
+    integer, pointer :: v_nbgrg(:) => null()
+    mpi_int, pointer :: v_count(:) => null()
+    mpi_int, pointer :: v_displ(:) => null()
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -279,25 +288,33 @@ character(len=8) :: nosdfu
             end do
 !
             call wkvect('&&IRMMF2.NOGRFA', 'V V K80', numgrp, jgrou)
-            call wkvect('&&IRMMF2.NOMFAM', 'V V K80', nfam_max, jnofa)
-            call wkvect('&&IRMMF2.NBGRFA', 'V V I', nfam_max, jnbgr)
-            call wkvect('&&IRMMF2.NUMFAM', 'V V I', nfam_max, jnufa)
+            call wkvect('&&IRMMF2.NOMFAM', 'V V K80', max(1, nfam), jnofa)
+            call wkvect('&&IRMMF2.NBGRFA', 'V V I', max(1, nfam), jnbgr)
+            call wkvect('&&IRMMF2.NUMFAM', 'V V I', max(1, nfam), jnufa)
 !
-            compt = 0
             call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
-            zi(jtest+rang) = nfam
-            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=zi(jtest))
+            call wkvect('&&IRMMF2.COUNT', 'V V S', nbproc, vi4=v_count)
+            call wkvect('&&IRMMF2.DISPL', 'V V S', nbproc, vi4=v_displ)
+!
+            one4 = to_mpi_int(1)
+            call asmpi_allgather_i([nfam], one4, zi(jtest), one4, world)
+!
+            nbfam_tot = 0
             ! on compte le nb de famille totale
             do jaux = 0, nbproc-1
-                compt = compt + zi(jtest+jaux)
+                nbfam_tot = nbfam_tot + zi(jtest+jaux)
+                v_count(jaux+1) = to_mpi_int(zi(jtest+jaux))
+                if(jaux < nbproc-1) then
+                    v_displ(jaux+2) = to_mpi_int(nbfam_tot)
+                end if
             enddo
 !
 ! On a plus de famille en HPC qu'en std car les familles sont redécoupés par sous-domaine
 ! donc 1 famille en std peut donner jusqu'à nb_sous_domaine familles dans le maillage de fin
 !
             if (infmed .gt. 1) then
-                write (ifm,*) '<',nompro,'> ** Nombre de familles locales/globales: ', nfam, compt,&
-                numgrp
+                write (ifm,*) '<',nompro,'> ** Nombre de familles locales/globales: ', &
+                nfam, nbfam_tot, numgrp
             endif
 !
             numfam = 0
@@ -346,102 +363,84 @@ character(len=8) :: nosdfu
                 ' sec'
             endif
             call cpu_time(start1)
-            call cpu_time(start2)
 !
-            call wkvect('&&IRMMF2.TEST4', 'V V I', compt, jtest4)
-            compt = 0
-            ! boucle sur les sous-domaines
-            do jaux = 0, nbproc-1
-                call cpu_time(start2)
-                nbfam_j = zi(jtest+jaux)
-                ! noms des familles du proc courant
-                call wkvect('&&IRMMF2.TEST2', 'V V K80', max(1,nbfam_j), jtest2)
-                ! nombre de groupes des familles du proc courant
-                call wkvect('&&IRMMF2.TEST5', 'V V I', max(1,nbfam_j), jtest5)
-                ! Prepare les familles et nb groupe à envoyer du proc courant
-                if(jaux.eq.rang) then
-                    do iaux = 1, nbfam_j
-                        zk80(jtest2+iaux-1) = zk80(jnofa+iaux-1)
-                        zi(jtest5+iaux-1) = zi(jnbgr+iaux-1)
-                    enddo
-                endif
-                proc = to_mpi_int(jaux)
-                taille = to_mpi_int(nbfam_j)
-                ! Envoie le nom des familles aux autres
-                call asmpi_bcast_char80(zk80(jtest2), taille, proc, world)
-                ! Envoie le nombre de groupes par famille aux autres
-                call asmpi_bcast_i(zi(jtest5), taille, proc, world)
+            call wkvect('&&IRMMF2.TEST4', 'V V I', nfam, jtest4)
+!
+            do iaux = 1, nfam
+                zi(jtest4+iaux-1) = v_displ(rang+1) + iaux
+            end do
+!
+            call wkvect('&&IRMMF2.NBGRG', 'V V I', nbfam_tot, vi=v_nbgrg)
+            call wkvect('&&IRMMF2.NOMFAG', 'V V K80', nbfam_tot, vk80=v_nomfag)
+!
+            ! AllGather des noms et nb groupe par famille
+            taille = to_mpi_int(nfam)
+            call asmpi_allgatherv_i(zi(jnbgr), taille, v_nbgrg, v_count, v_displ, world)
+            call asmpi_allgatherv_char80(zk80(jnofa), taille, v_nomfag, v_count, v_displ, world)
 
-                ! Nombre de groupe du proc courant
-                nbgr = 0
-                do iaux = 1, taille
-                    nbgr = nbgr + zi(jtest5+iaux-1)
+            call wkvect('&&IRMMF2.TEST12', 'V V I', nbproc, jtest12)
+            one4 = to_mpi_int(1)
+            call asmpi_allgather_i([numgrp], one4, zi(jtest12), one4, world)
+!
+            ! on compte le nb de grp
+            nbgr_tot = 0
+            do jaux = 0, nbproc-1
+                nbgr_tot = nbgr_tot + zi(jtest12+jaux)
+                v_count(jaux+1) = to_mpi_int(zi(jtest12+jaux))
+                if(jaux < nbproc-1) then
+                    v_displ(jaux+2) = to_mpi_int(nbgr_tot)
+                end if
+            enddo
+
+            call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
+            ! Allgather des groupes
+            taille = to_mpi_int(numgrp)
+            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count, v_displ, world)
+!
+            call cpu_time(end1)
+            if (infmed .gt. 1) then
+                write (ifm,*)'<',nompro,'> ** Partage des familles en ', &
+                end1-start1, "sec."
+            endif
+!
+           ! boucle sur les familles
+            call cpu_time(start1)
+            nbgr = 0
+            do iaux = 1, nbfam_tot
+                nomfam = v_nomfag(iaux)
+                nbgnof = v_nbgrg(iaux)
+                do kaux = 1, nbgnof
+                    nogrfa(kaux) = v_nomgfag(nbgr+kaux)
                 enddo
-                ! nom des groupes des familles
-                call wkvect('&&IRMMF2.TEST6', 'V V K80', max(1,nbgr), jtest6)
-                if(jaux.eq.rang) then
-                    nbgrp = 0
-                    ! boucle famille locale
-                    do iaux = 1, nfam
-                        ! boucle groupe de la famille
-                        do kaux = 1, zi(jnbgr+iaux-1)
-                            ! nom des groupes de la famille
-                            zk80(jtest6+nbgrp) = zk80(jgrou+nbgrp)
-                            nbgrp = nbgrp + 1
-                        enddo
-                    enddo
-                    ASSERT(nbgrp.eq.nbgr)
-                endif
-                taille = to_mpi_int(nbgr)
-                call asmpi_bcast_char80(zk80(jtest6), taille, proc, world)
-!
-                call cpu_time(end2)
-                if (infmed .gt. 1) then
-                    write (ifm,*)'<',nompro,'> *** Partage des familles du proc', jaux, ' en ', &
-                        end2-start2, "sec."
-                endif
-!
-                call cpu_time(start3)
-                nbgr = 0
-                do iaux = 1, nbfam_j
-                    compt = compt + 1
-                    nomfam = zk80(jtest2+iaux-1)
-                    nbgnof = zi(jtest5+iaux-1)
-                    do kaux = 1, nbgnof
-                        nogrfa(kaux) = zk80(jtest6+nbgr+kaux-1)
-                    enddo
 !
 ! 2.3.2. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 !
-                    if (typent .ne. tygeno) then
-                        call as_mfacre(fid, nomamd, nomfam, -compt, nbgnof, nogrfa, codret)
-                    else
-                        call as_mfacre(fid, nomamd, nomfam, compt, nbgnof, nogrfa, codret)
-                    endif
-                    if (codret .ne. 0) then
-                        saux08='mfacre'
-                        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                    endif
-                    if(jaux.eq.rang) then
-                        zi(jtest4+iaux-1) = compt
-                    endif
-                    nbgr = nbgr + zi(jtest5+iaux-1)
-                enddo
-                call cpu_time(end3)
-                if (infmed .gt. 1) then
-                    write (ifm,*)'<',nompro,'> *** Ecriture des caractéristique des familles ', &
-                        'du proc', jaux, ' en ', end3-start3, "sec."
+                if (typent .ne. tygeno) then
+                    call as_mfacre(fid, nomamd, nomfam, -iaux, nbgnof, nogrfa, codret)
+                else
+                    call as_mfacre(fid, nomamd, nomfam, iaux, nbgnof, nogrfa, codret)
                 endif
-!
-                call jedetr('&&IRMMF2.TEST2')
-                call jedetr('&&IRMMF2.TEST5')
-                call jedetr('&&IRMMF2.TEST6')
+                if (codret .ne. 0) then
+                    saux08='mfacre'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                endif
+                ! if(jaux.eq.rang) then
+                !     zi(jtest4+iaux-1) = iaux
+                ! endif
+                nbgr = nbgr + nbgnof
             enddo
+!
             call jedetr('&&IRMMF2.NOGRFA')
             call jedetr('&&IRMMF2.NOMFAM')
             call jedetr('&&IRMMF2.NBGRFA')
             call jedetr('&&IRMMF2.NUMFAM')
             call jedetr('&&IRMMF2.TEST')
+            call jedetr('&&IRMMF2.TEST12')
+            call jedetr('&&IRMMF2.COUNT')
+            call jedetr('&&IRMMF2.DISPL')
+            call jedetr('&&IRMMF2.NBGRG')
+            call jedetr('&&IRMMF2.NOMFAG')
+            call jedetr('&&IRMMF2.NOMGFAG')
         endif
         if (typent .ne. tygeno) then
             do ient = 1, nbrent
@@ -469,7 +468,8 @@ character(len=8) :: nosdfu
     endif
     call cpu_time(end1)
     if (infmed .gt. 1) then
-        write (ifm,*)'<',nompro,'> ** Partage des familles en ', end1-start1, "sec."
+        write (ifm,*)'<',nompro,'> ** Ecriture caractéristiques des familles en ', &
+        end1-start1, "sec."
     endif
 !
 !====
