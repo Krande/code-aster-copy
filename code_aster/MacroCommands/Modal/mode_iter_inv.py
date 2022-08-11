@@ -175,8 +175,11 @@ class ModalCalculationInv(ExecuteCommand):
         if matrAmor is not None:
             self._result.setDampingMatrix(matrAmor)
 
-        if keywords.get("MATR_A") is not None and self._result.getMesh() is None:
-            self._result.setMesh(keywords["MATR_A"].getMesh())
+        matrA = keywords.get("MATR_A")
+        if matrA is not None:
+            if self._result.getMesh() is None:
+                self._result.setMesh(matrA.getMesh())
+            self._result.setDOFNumbering(matrA.getDOFNumbering())
 
         self._result.build()
 
