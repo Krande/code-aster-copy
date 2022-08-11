@@ -47,7 +47,7 @@ class DynamicMacroElementDefinition(ExecuteCommand):
         self._result.setMechanicalMode(keywords["BASE_MODALE"])
         dofNum = keywords["BASE_MODALE"].getDOFNumbering()
         if dofNum is not None:
-            self._result.setDOFNumbering(dofNum)
+            self._result.getDOFNumbering().setModel(dofNum.getModel())
         matrRigi = keywords.get("MATR_RIGI")
         if matrRigi is not None:
             self._result.setStiffnessMatrix(matrRigi)

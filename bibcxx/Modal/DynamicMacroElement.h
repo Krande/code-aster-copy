@@ -137,7 +137,7 @@ class DynamicMacroElement : public DataStructure {
           _maelAmorVale( JeveuxVectorReal( getName() + ".MAEL_AMOR_VALE" ) ),
           _maelInerRefe( JeveuxVectorChar24( getName() + ".MAEL_INER_REFE" ) ),
           _maelInterVale( JeveuxVectorReal( getName() + ".MAEL_INER_VALE" ) ),
-          _mechanicalMode( ModeResultPtr() ),
+          _mechanicalMode( nullptr ),
           _rigidityDMatrix( nullptr ),
           _rigidityCMatrix( nullptr ),
           _massMatrix( nullptr ),
@@ -195,16 +195,16 @@ class DynamicMacroElement : public DataStructure {
     AssemblyMatrixDisplacementRealPtr getStiffnessMatrixReal() { return _rigidityDMatrix; };
 
     /**
+     * @brief Get mechanical mode
+     */
+    ModeResultPtr getMechanicalMode() { return _mechanicalMode; };
+
+    /**
      * @brief Set damping matrix
      * @param matrix AssemblyMatrixDisplacementRealPtr object
      */
     bool setDampingMatrix( const AssemblyMatrixDisplacementRealPtr &matrix ) {
         _dampingMatrix = matrix;
-        return true;
-    };
-
-    bool setDOFNumbering( const DOFNumberingPtr &dofNum ) {
-        _numeDdl->setModel( dofNum->getModel() );
         return true;
     };
 

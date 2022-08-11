@@ -22,6 +22,7 @@
 from ..Objects import (FullHarmonicResult,
                        FullTransientResult, ModeResult,
                        NonLinearResult)
+from ..Objects import DOFNumbering
 from ..Supervis import ExecuteCommand
 
 
@@ -64,7 +65,9 @@ class RestSousStrucOper(ExecuteCommand):
         sousStruc = keywords.get("SOUS_STRUC")
         resuGene = keywords.get("RESU_GENE")
         squelette = keywords.get("SQUELETTE")
+        modeMeca = keywords.get("MODE_MECA")
 
+        fnds = []
         if sousStruc is not None:
             if resuGene is not None:
                 geneDofNum = resuGene.getGeneralizedDOFNumbering()
@@ -73,6 +76,8 @@ class RestSousStrucOper(ExecuteCommand):
                 if modeleGene is not None:
                     macroElem = modeleGene.getDynamicMacroElementFromName(
                         sousStruc)
+                    modeMeca = macroElem.getMechanicalMode()
+                    self._result.setDOFNumbering(modeMeca.getDOFNumbering())
                     mat = macroElem.getDampingMatrix()
                     if mat is None:
                         mat = macroElem.getImpedanceDampingMatrix()
@@ -115,10 +120,16 @@ class RestSousStrucOper(ExecuteCommand):
                         self._result.setMesh(mesh)
 
         elif squelette is not None:
+            dofNum = DOFNumbering(self._result.getName()+".PROFC")
+            self._result.setDOFNumbering(dofNum)
+            if modeMeca is not None:
+                dofNum = modeMeca.getDOFNumbering()
+                if dofNum:
+                    fnds.append(dofNum.getDescription())
             self._result.setMesh(squelette)
 
         if self._result.getMesh():
-            self._result.build()
+            self._result.build(fnds=fnds)
 
 
 REST_SOUS_STRUC = RestSousStrucOper.run
