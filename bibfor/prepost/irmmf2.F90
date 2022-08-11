@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -250,7 +250,7 @@ character(len=*) :: nomamd
 !         DE GROUPES
 !
             jaux = iaux - 1
-            call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
+            call mdnofa(numfam, jaux, nofaex, nomfam)
 !
 ! 2.3.2. ==> INFORMATION EVENTUELLE
 !

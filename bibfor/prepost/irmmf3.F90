@@ -116,14 +116,13 @@ character(len=8) :: nosdfu
     integer :: numfam, nfam, cmpt
     integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
     integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer :: jgren, compt, jtest3, jtest4, jtest5, jtest6
-    integer :: nbgr, nbgrp, nfam_max, nbbloc
+    integer :: jgren, compt, jtest4, jtest5, jtest6
+    integer :: nbgr, nbgrp, nfam_max, nbbloc, nbfam_j
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest2
     character(len=8) :: saux08
     character(len=9) :: saux09
     character(len=80) :: nomfam
-    real(kind=8) :: start_time, end_time, start1, end1
-    aster_logical :: lfamtr
+    real(kind=8) :: start_time, end_time, start1, end1, start2, end2, start3, end3
     mpi_int :: mrank, msize, world, proc, taille
 !
 ! --------------------------------------------------------------------------------------------------
@@ -264,16 +263,55 @@ character(len=8) :: nosdfu
         nfam_max = nfam
         call asmpi_comm_vect('MPI_MAX', 'I', sci=nfam_max)
         if(nfam_max.ne.0) then
-            call wkvect('&&IRMMF2.NOGRFA', 'V V K80', nbgrou*nbgrou, jgrou)
+            call cpu_time(start2)
+!
+            ! On cherche le nombre de groupe en local
+            numgrp = 0
+            ! boucle sur famille locale
+            do iaux = 1 , nfam
+!
+!         NUMERO DE LA 1ERE ENTITE FAISANT REFERENCE A CETTE FAMILLE
+                ient = nufacr(iaux)
+!
+!         NB ET NOMS+NUMS DES GROUPES ASSOCIES A LA FAMILLE
+                call nomgfa(nomgen, nbgrou, tabaux(1+(ient-1)*nbec), nogrfa, nbgnof)
+                numgrp = numgrp + nbgnof
+            end do
+!
+            call wkvect('&&IRMMF2.NOGRFA', 'V V K80', numgrp, jgrou)
             call wkvect('&&IRMMF2.NOMFAM', 'V V K80', nfam_max, jnofa)
             call wkvect('&&IRMMF2.NBGRFA', 'V V I', nfam_max, jnbgr)
             call wkvect('&&IRMMF2.NUMFAM', 'V V I', nfam_max, jnufa)
+!
+            compt = 0
+            call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
+            zi(jtest+rang) = nfam
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=zi(jtest))
+            ! on compte le nb de famille totale
+            do jaux = 0, nbproc-1
+                compt = compt + zi(jtest+jaux)
+            enddo
+!
+! On a plus de famille en HPC qu'en std car les familles sont redécoupés par sous-domaine
+! donc 1 famille en std peut donner jusqu'à nb_sous_domaine familles dans le maillage de fin
+!
+            if (infmed .gt. 1) then
+                write (ifm,*) '<',nompro,'> ** Nombre de familles locales/globales: ', nfam, compt,&
+                numgrp
+            endif
+!
+            numfam = 0
+            do jaux = 0, rang
+                numfam = numfam + zi(jtest+jaux)
+            enddo
+!
             numgrp = 0
+            ! boucle sur famille locale
             do iaux = 1 , nfam
 !
 ! 2.3.1. ==> DETERMINATION DE LA FAMILLE : NOM, NOMS ET NUMEROS DES
 !              GROUPES ASSOCIES
-                numfam = iaux
+                numfam = numfam + iaux
                 if (typent .ne. tygeno) then
                     numfam = -numfam
                 endif
@@ -286,51 +324,68 @@ character(len=8) :: nosdfu
                 call nomgfa(nomgen, nbgrou, tabaux(1+(ient-1)*nbec), nogrfa, nbgnof)
                 zi(jnufa+iaux-1) = tabaux(1+(ient-1)*nbec)
 !
-!         NOM DE LA FAMILLE : ON LE CONSTRUIT A PARTIR DES NOMS
-!         DE GROUPES
+!         NOM DE LA FAMILLE : ON LE CONSTRUIT A PARTIR DU NUMERO DE FAMILLE
 !
                 jaux = iaux - 1
-                call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
+                call mdnofa(numfam, jaux, nofaex, nomfam)
+!
+                ! nb de groupe de la famille
                 zi(jnbgr+iaux-1) = nbgnof
+                ! nom de la famille
                 zk80(jnofa+iaux-1) = nomfam
+                ! noms des groupes de la famille
                 do jaux = 1, nbgnof
                     zk80(jgrou+numgrp) = nogrfa(jaux)
                     numgrp = numgrp + 1
                 enddo
             end do
-            compt = 0
-            call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
-            zi(jtest+rang) = nfam
-            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=zi(jtest))
-            do jaux = 0, nbproc-1
-                compt = compt + zi(jtest+jaux)
-            enddo
-            call wkvect('&&IRMMF2.TEST3', 'V V K80', compt, jtest3)
+!
+            call cpu_time(end2)
+            if (infmed .gt. 1) then
+                write (ifm,*) '<',nompro,'> ** Création des noms de familles en ', end2-start2, &
+                ' sec'
+            endif
+            call cpu_time(start1)
+            call cpu_time(start2)
+!
             call wkvect('&&IRMMF2.TEST4', 'V V I', compt, jtest4)
             compt = 0
+            ! boucle sur les sous-domaines
             do jaux = 0, nbproc-1
-                call wkvect('&&IRMMF2.TEST2', 'V V K80', max(1,zi(jtest+jaux)), jtest2)
-                call wkvect('&&IRMMF2.TEST5', 'V V I', max(1,zi(jtest+jaux)), jtest5)
+                call cpu_time(start2)
+                nbfam_j = zi(jtest+jaux)
+                ! noms des familles du proc courant
+                call wkvect('&&IRMMF2.TEST2', 'V V K80', max(1,nbfam_j), jtest2)
+                ! nombre de groupes des familles du proc courant
+                call wkvect('&&IRMMF2.TEST5', 'V V I', max(1,nbfam_j), jtest5)
+                ! Prepare les familles et nb groupe à envoyer du proc courant
                 if(jaux.eq.rang) then
-                    do iaux = 1, zi(jtest+jaux)
+                    do iaux = 1, nbfam_j
                         zk80(jtest2+iaux-1) = zk80(jnofa+iaux-1)
                         zi(jtest5+iaux-1) = zi(jnbgr+iaux-1)
                     enddo
                 endif
                 proc = to_mpi_int(jaux)
-                taille = to_mpi_int(zi(jtest+jaux))
+                taille = to_mpi_int(nbfam_j)
+                ! Envoie le nom des familles aux autres
                 call asmpi_bcast_char80(zk80(jtest2), taille, proc, world)
+                ! Envoie le nombre de groupes par famille aux autres
                 call asmpi_bcast_i(zi(jtest5), taille, proc, world)
 
+                ! Nombre de groupe du proc courant
                 nbgr = 0
                 do iaux = 1, taille
                     nbgr = nbgr + zi(jtest5+iaux-1)
                 enddo
+                ! nom des groupes des familles
                 call wkvect('&&IRMMF2.TEST6', 'V V K80', max(1,nbgr), jtest6)
                 if(jaux.eq.rang) then
                     nbgrp = 0
+                    ! boucle famille locale
                     do iaux = 1, nfam
+                        ! boucle groupe de la famille
                         do kaux = 1, zi(jnbgr+iaux-1)
+                            ! nom des groupes de la famille
                             zk80(jtest6+nbgrp) = zk80(jgrou+nbgrp)
                             nbgrp = nbgrp + 1
                         enddo
@@ -340,45 +395,44 @@ character(len=8) :: nosdfu
                 taille = to_mpi_int(nbgr)
                 call asmpi_bcast_char80(zk80(jtest6), taille, proc, world)
 !
+                call cpu_time(end2)
+                if (infmed .gt. 1) then
+                    write (ifm,*)'<',nompro,'> *** Partage des familles du proc', jaux, ' en ', &
+                        end2-start2, "sec."
+                endif
+!
+                call cpu_time(start3)
                 nbgr = 0
-                do iaux = 1, zi(jtest+jaux)
-                    lfamtr = .false._1
-                    do kaux = 1, compt
-                        if(zk80(jtest3+kaux-1).eq.zk80(jtest2+iaux-1)) then
-                            lfamtr = .true._1
-                            exit
-                        endif
+                do iaux = 1, nbfam_j
+                    compt = compt + 1
+                    nomfam = zk80(jtest2+iaux-1)
+                    nbgnof = zi(jtest5+iaux-1)
+                    do kaux = 1, nbgnof
+                        nogrfa(kaux) = zk80(jtest6+nbgr+kaux-1)
                     enddo
-                    if(.not.lfamtr) then
-                        zk80(jtest3+compt) = zk80(jtest2+iaux-1)
-                        compt = compt + 1
-                        nomfam = zk80(jtest2+iaux-1)
-                        nbgnof = zi(jtest5+iaux-1)
-                        do kaux = 1, nbgnof
-                            nogrfa(kaux) = zk80(jtest6+nbgr+kaux-1)
-                        enddo
 !
 ! 2.3.2. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 !
-                        if (typent .ne. tygeno) then
-                            call as_mfacre(fid, nomamd, nomfam, -compt, nbgnof, nogrfa, codret)
-                        else
-                            call as_mfacre(fid, nomamd, nomfam, compt, nbgnof, nogrfa, codret)
-                        endif
-                        if (codret .ne. 0) then
-                            saux08='mfacre'
-                            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                        endif
-                        if(jaux.eq.rang) then
-                            zi(jtest4+iaux-1) = compt
-                        endif
+                    if (typent .ne. tygeno) then
+                        call as_mfacre(fid, nomamd, nomfam, -compt, nbgnof, nogrfa, codret)
                     else
-                        if(jaux.eq.rang) then
-                            zi(jtest4+iaux-1) = kaux
-                        endif
+                        call as_mfacre(fid, nomamd, nomfam, compt, nbgnof, nogrfa, codret)
+                    endif
+                    if (codret .ne. 0) then
+                        saux08='mfacre'
+                        call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                    endif
+                    if(jaux.eq.rang) then
+                        zi(jtest4+iaux-1) = compt
                     endif
                     nbgr = nbgr + zi(jtest5+iaux-1)
                 enddo
+                call cpu_time(end3)
+                if (infmed .gt. 1) then
+                    write (ifm,*)'<',nompro,'> *** Ecriture des caractéristique des familles ', &
+                        'du proc', jaux, ' en ', end3-start3, "sec."
+                endif
+!
                 call jedetr('&&IRMMF2.TEST2')
                 call jedetr('&&IRMMF2.TEST5')
                 call jedetr('&&IRMMF2.TEST6')
@@ -388,7 +442,6 @@ character(len=8) :: nosdfu
             call jedetr('&&IRMMF2.NBGRFA')
             call jedetr('&&IRMMF2.NUMFAM')
             call jedetr('&&IRMMF2.TEST')
-            call jedetr('&&IRMMF2.TEST3')
         endif
         if (typent .ne. tygeno) then
             do ient = 1, nbrent
