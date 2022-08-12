@@ -791,27 +791,35 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
     
-    def contactForces(self, geom, displ, displ_step, data):
+    def contactForces(self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
         """Compute contact and friction forces
         
         Arguments:
             geom (MeshCoordinatesField): coordinates of mesh used to compute normal
             displ (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
-            data (FieldOnCells): contact data
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+            data (FieldOnCellsReal): contact data
+            coef_cont (FeildOnNodesReal) : contact coefficient
+            coef_frot (FeildOnNodesReal) : friction coefficient
         
         Returns:
             FieldOnNodesReal: contact and friction forces
         """
     
-    def contactMatrix(self, geom, displ, displ_step, data):
+    def contactMatrix(self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
         """Compute contact matrix
         
         Arguments:
             geom (MeshCoordinatesField): coordinates of mesh used to compute normal
             displ (FieldOnNodes): displacement field at begin of current time
             displ_step (FieldOnNodes): field of increment of displacement
-            data (FieldOnCells): contact data
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+            data (FieldOnCellsReal): contact data
+            coef_cont (FeildOnNodesReal) : contact coefficient
+            coef_frot (FeildOnNodesReal) : friction coefficient
         
         Returns:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
@@ -1983,6 +1991,8 @@ class FieldOnNodesReal(DataField):
         3. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.FieldOnNodesReal) -> None
         
         4. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+        
+        5. __init__(self: libaster.FieldOnNodesReal, arg0: MeshCoordinatesField) -> None
         """
     
     def __isub__(self, arg0):
@@ -2038,6 +2048,14 @@ class FieldOnNodesReal(DataField):
         1. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
         
         2. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
+        """
+    
+    def getNodesAndComponentsNumberFromDOF(self):
+        """Return a list of values such that for each DOF, it gives the node id and component id
+        as [dof1=[node_1, comp_1], dof2=[node_1, comp_2], ....]
+        
+        Returns:
+            list[[int, int]]: List of values (node, component) for each DOF.
         """
     
     def getNumberOfComponents(self):
@@ -2329,6 +2347,31 @@ class ConstantFieldOnCellsChar16(DataField):
         1. __init__(self: libaster.ConstantFieldOnCellsChar16, arg0: libaster.BaseMesh) -> None
         
         2. __init__(self: libaster.ConstantFieldOnCellsChar16, arg0: str, arg1: libaster.BaseMesh) -> None
+        """
+    
+    def getMesh(self):
+        pass
+
+# class ConstantFieldOnCellsLong in libaster
+
+class ConstantFieldOnCellsLong(DataField):
+    pass
+    
+    # Method resolution order:
+    #     ConstantFieldOnCellsLong
+    #     DataField
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __init__(self: libaster.ConstantFieldOnCellsLong, arg0: libaster.BaseMesh) -> None
+        
+        2. __init__(self: libaster.ConstantFieldOnCellsLong, arg0: str, arg1: libaster.BaseMesh) -> None
         """
     
     def getMesh(self):
@@ -4409,8 +4452,15 @@ class ContactZone(DataStructure):
             ContactParameter: contact parameters
         """
     
-    def setExcludedSlaveGroupOfCells(self, master_name):
+    def setExcludedSlaveGroupOfCells(self, groups):
         """Set excluded groups of cells on slave side
+        
+        Arguments:
+            str: excluded groups' names
+        """
+    
+    def setExcludedSlaveGroupOfNodes(self, groups):
+        """Set excluded groups of nodes on slave side
         
         Arguments:
             str: excluded groups' names
@@ -4595,8 +4645,24 @@ class ContactComputation:
     def __init__(self, arg0):
         pass
     
-    def contactData(self, arg0):
-        """Compute contact data (MMCHML)
+    def contactCoefficient(self):
+        """Compute contact coefficient at the nodes of the slave surface based on values of COEF_CONT
+        and COEF_FROT
+        
+        Returns:
+            FieldOnNodesReal: contact coefficient (= COEF_CONT)
+            FieldOnNodesReal: friction coefficient (= COEF_FROT)
+        """
+    
+    def contactData(self, pairing, initial_contact):
+        """Compute contact data (cf. MMCHML) as input to compute contact forces and matrices.
+        
+        Arguments:
+            pairing (ContactPairing): pairing object
+            initial_contact (bool): True to use value in contact definition (CONTACT_INIT).
+        
+        Returns:
+            FieldOnCellsReal: contact data
         """
     
     def geometricGap(self, coordinates):
@@ -10283,9 +10349,11 @@ class MeshCoordinatesField(DataStructure):
     def __add__(self, *args, **kwargs):
         """Overloaded function.
         
-        1. __add__(self: libaster.MeshCoordinatesField, arg0: libaster.FieldOnNodesReal) -> libaster.MeshCoordinatesField
+        1. __add__(self: libaster.MeshCoordinatesField, arg0: libaster.MeshCoordinatesField) -> libaster.MeshCoordinatesField
         
-        2. __add__(self: libaster.FieldOnNodesReal, arg0: libaster.MeshCoordinatesField) -> libaster.MeshCoordinatesField
+        2. __add__(self: libaster.MeshCoordinatesField, arg0: libaster.FieldOnNodesReal) -> libaster.MeshCoordinatesField
+        
+        3. __add__(self: libaster.FieldOnNodesReal, arg0: libaster.MeshCoordinatesField) -> libaster.MeshCoordinatesField
         """
     
     def __getitem__(self, idx):
@@ -10297,7 +10365,28 @@ class MeshCoordinatesField(DataStructure):
             float: Values of the *idx*-th coordinate.
         """
     
+    def __iadd__(self, arg0):
+        pass
+    
+    def __imul__(self, arg0):
+        pass
+    
     def __init__(self, arg0):
+        pass
+    
+    def __isub__(self, arg0):
+        pass
+    
+    def __mul__(self, arg0):
+        pass
+    
+    def __neg__(self):
+        pass
+    
+    def __rmul__(self, arg0):
+        pass
+    
+    def __sub__(self, arg0):
         pass
     
     def duplicate(self):
@@ -11330,6 +11419,9 @@ class CodedMaterial:
         pass
     
     def constant(self):
+        pass
+    
+    def getCodedMaterialField(self):
         pass
 
 # built-in function setFortranLoggingLevel in libaster

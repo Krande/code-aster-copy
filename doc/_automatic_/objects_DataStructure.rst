@@ -209,6 +209,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ConstantFieldOnCellsLong` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ConstantFieldOnCellsLong
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ConstantFieldOnCellsReal` object
 ********************************************************************************
 
