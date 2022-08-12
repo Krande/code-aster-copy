@@ -53,6 +53,9 @@ class ExtrMode(ExecuteCommand):
             pass
         if isinstance(mode, ModeResult):
             self._result.setMesh(mode.getMesh())
+            model = mode.getModel()
+            if model is not None:
+                self._result.setModel(model)
             stiffMat = mode.getStiffnessMatrix()
             if stiffMat is not None:
                 self._result.setStiffnessMatrix(stiffMat)
