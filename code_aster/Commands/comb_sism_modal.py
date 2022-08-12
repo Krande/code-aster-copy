@@ -41,6 +41,12 @@ class ModalSeismicCombination(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+        feds = []
+        for option in keywords["OPTION"]:
+            if option.endswith("_ELGA") or option.endswith("_ELNO"):
+                feds = keywords["MODE_MECA"].getFiniteElementDescriptors()
+                break
+
         dofNum = keywords["MODE_MECA"].getDOFNumbering()
         if dofNum is not None:
             self._result.setDOFNumbering(dofNum)
@@ -49,6 +55,6 @@ class ModalSeismicCombination(ExecuteCommand):
             self._result.setModel(model)
         else:
             self._result.setMesh(keywords["MODE_MECA"].getMesh())
-        self.build()
+        self._result.build(feds=feds)
 
 COMB_SISM_MODAL = ModalSeismicCombination.run
