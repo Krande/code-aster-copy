@@ -44,6 +44,11 @@ class ModalSeismicCombination(ExecuteCommand):
         dofNum = keywords["MODE_MECA"].getDOFNumbering()
         if dofNum is not None:
             self._result.setDOFNumbering(dofNum)
-
+        model = keywords["MODE_MECA"].getModel()
+        if model:
+            self._result.setModel(model)
+        else:
+            self._result.setMesh(keywords["MODE_MECA"].getMesh())
+        self.build()
 
 COMB_SISM_MODAL = ModalSeismicCombination.run
