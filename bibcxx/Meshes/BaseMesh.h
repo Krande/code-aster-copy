@@ -174,7 +174,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     const NamesMapChar8 &getNameOfNodesMap() const { return _nameOfNodes; };
 
-    const NamesMapChar8 &getCellNameMap() const{ return _nameOfCells; };
+    const NamesMapChar8 &getCellNameMap() const { return _nameOfCells; };
 
     std::string getNodeName( const ASTERINTEGER &index ) const;
 
@@ -183,7 +183,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     ASTERINTEGER getCellType( const ASTERINTEGER &index ) const;
 
     std::string getCellTypeName( const ASTERINTEGER &index ) const;
-
 
     /**
      * @brief Recuperation de la dimension du maillage
@@ -256,7 +255,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return {};
     }
 
-    virtual VectorLong getNodesFromCells( const VectorLong& cells, const bool localNumbering = true,
+    virtual VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
                                           const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
@@ -338,11 +337,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
-    bool build() {
-        _groupsOfNodes->build();
-        _groupsOfCells->build();
-        return update_tables();
-    }
+    bool build();
 };
 
 /**

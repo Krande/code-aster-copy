@@ -247,3 +247,9 @@ std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
     CALLO_JENUNO( objName, charName );
     return trim( charName.toString() );
 };
+
+bool BaseMesh::build() {
+    _groupsOfNodes->build();
+    _groupsOfCells->build();
+    return update_tables();
+}
