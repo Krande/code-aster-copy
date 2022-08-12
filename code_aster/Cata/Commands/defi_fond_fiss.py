@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,28 +41,20 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
 
                      # possibilite d'ordonnencement automatique du fond si groupe de mailles
                      b_grma = BLOC(condition = """exists("GROUP_MA") and not equal_to("TYPE_FOND", 'FERME')""",
-                                   NOEUD_ORIG    =SIMP(statut='c',typ=no,  max=1),
                                    GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
-                                   regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
 
                                    # si ordo
-                                   b_ordo = BLOC(condition = """exists("NOEUD_ORIG") or exists("GROUP_NO_ORIG")""",
-                                                 NOEUD_EXTR    = SIMP(statut='c',typ=no,  max=1),
+                                   b_ordo = BLOC(condition = """exists("GROUP_NO_ORIG")""",
                                                  GROUP_NO_EXTR = SIMP(statut='f',typ=grno,max=1),
-                                                 regles=(EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
                                                 ),
                                   ),
                      # possibilite d'ordonnencement automatique du fond si groupe de mailles
                      b_grma_ferme= BLOC(condition = """exists("GROUP_MA") and equal_to("TYPE_FOND", 'FERME')""",
-                                        NOEUD_ORIG    =SIMP(statut='c',typ=no,  max=1),
                                         GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
-                                        regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
 
                                         # si ordo
-                                        b_ordo_ferme = BLOC(condition = """exists("NOEUD_ORIG") or exists("GROUP_NO_ORIG")""",
-                                                            MAILLE_ORIG   = SIMP(statut='c',typ=ma,  max=1),
-                                                            GROUP_MA_ORIG = SIMP(statut='f',typ=grma,  max=1),
-                                                            regles=(UN_PARMI('MAILLE_ORIG','GROUP_MA_ORIG'),),
+                                        b_ordo_ferme = BLOC(condition = """exists("GROUP_NO_ORIG")""",
+                                                           GROUP_MA_ORIG = SIMP(statut='f',typ=grma,  max=1),
                                                            ),
                                        ),
                     ),

@@ -49,7 +49,7 @@ consécutifs, le deuxième noeud sommet du premier segment soit le même que le 
 sommet du deuxième segment.
 
 Conseil : Pour ordonner les mailles du fond de fissure, veuillez
-utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR).
+utiliser GROUP_NO_ORIG et GROUP_NO_EXTR.
 """
     ),
     17: _(

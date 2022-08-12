@@ -107,23 +107,17 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
     if (typfon .eq. 'FERME') then
 !
         numma = 0
-        call getvtx(motfac, 'MAILLE_ORIG', iocc=1, nbval=0, nbret=n1)
+        call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvtx(motfac, 'MAILLE_ORIG', iocc=1, scal=nomma, nbret=n1)
-            call jenonu(jexnom(nommai, nomma), numma)
-        else
-            call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, nbval=0, nbret=n1)
-            if (n1 .ne. 0) then
-                call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, scal=nogrp, nbret=n1)
-                call utnono(' ', nomail, 'MAILLE', nogrp, nomma,&
-                            iret)
-                if (iret .eq. 10) then
-                    call utmess('F', 'RUPTURE0_41', sk=nogrp)
-                else if (iret .eq. 1) then
-                    call utmess('F', 'RUPTURE0_45', sk=ndorig)
-                endif
-                call jenonu(jexnom(nommai, nomma), numma)
+            call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, scal=nogrp, nbret=n1)
+            call utnono(' ', nomail, 'MAILLE', nogrp, nomma,&
+                        iret)
+            if (iret .eq. 10) then
+                call utmess('F', 'RUPTURE0_41', sk=nogrp)
+            else if (iret .eq. 1) then
+                call utmess('F', 'RUPTURE0_45', sk=ndorig)
             endif
+            call jenonu(jexnom(nommai, nomma), numma)
         endif
 !
         if (numma .eq. 0) then

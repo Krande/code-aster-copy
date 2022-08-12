@@ -60,8 +60,8 @@ subroutine op0060()
     integer :: n1, n2
     character(len=6) :: nompro
     character(len=8) :: resu, noma, typfon, confin, typmp, typm
-    character(len=9) :: entit(8)
-    character(len=13) :: motcl(8)
+    character(len=9) :: entit(4)
+    character(len=13) :: motcl(4)
     character(len=16) :: typres, oper
     character(len=19) :: basnof, basloc, cnxinv, lnno, ltno
     character(len=24) :: valk(2), entnom, abscur, fonoeu, absfon, coorfond
@@ -117,24 +117,18 @@ subroutine op0060()
 !
         entit(1) = '.GROUPENO'
         entit(2) = '.GROUPEMA'
-        entit(3) = '.NOMNOE'
-        entit(4) = '.GROUPENO'
+        entit(3) = '.GROUPENO'
         motcl(1) = 'GROUP_NO'
         motcl(2) = 'GROUP_MA'
-        motcl(3) = 'NOEUD_ORIG'
-        motcl(4) = 'GROUP_NO_ORIG'
+        motcl(3) = 'GROUP_NO_ORIG'
         if (typfon .eq. 'OUVERT') then
-            entit(5) = '.NOMNOE'
-            entit(6) = '.GROUPENO'
-            motcl(5) = 'NOEUD_EXTR'
-            motcl(6) = 'GROUP_NO_EXTR'
-            ndonn = 6
+            entit(4) = '.GROUPENO'
+            motcl(4) = 'GROUP_NO_EXTR'
+            ndonn = 4
         else if (typfon.eq.'FERME') then
-            entit(5) = '.NOMMAI'
-            entit(6) = '.GROUPEMA'
-            motcl(5) = 'MAILLE_ORIG'
-            motcl(6) = 'GROUP_MA_ORIG'
-            ndonn = 6
+            entit(4) = '.GROUPEMA'
+            motcl(4) = 'GROUP_MA_ORIG'
+            ndonn = 4
         else
             ASSERT(.FALSE.)
         endif

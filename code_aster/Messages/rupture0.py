@@ -253,16 +253,16 @@ Le groupe de mailles %(k1)s défini sous le mot-clé GROUP_MA n'existe pas.
 """),
 
     42 : _("""
-Dans le cas où le fond est une courbe fermée, les mots-clés MAILLE_ORIG ou GROUP_MA_ORIG doivent accompagner le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG.
+Dans le cas où le fond est une courbe fermée, le mots-clé GROUP_MA_ORIG doit accompagner le mot-clé GROUP_NO_ORIG.
 """),
 
     43 : _("""
-Le noeud défini le mot-clé NOEUD_ORIG ou GROUP_NO_ORIG n'appartient pas à la maille définie
-sous le mot-clé MAILLE_ORIG ou GROUP_MA_ORIG.
+Le noeud défini par le mot-clé GROUP_NO_ORIG n'appartient pas à la maille définie
+sous le mot-clé GROUP_MA_ORIG.
 """),
 
     44 : _("""
-La maille %(k1)s définie sous le mot-clé MAILLE_ORIG ou GROUP_MA_ORIG n'appartient pas au fond de fissure.
+La maille %(k1)s définie sous le mot-clé GROUP_MA_ORIG n'appartient pas au fond de fissure.
 """),
 
     45 : _("""
