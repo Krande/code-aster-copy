@@ -129,7 +129,7 @@ RESU = MECA_NON_LINE(MODELE=MO,
                                 ALGO_RESO_GEOM="NEWTON",),
                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
                                      DEFORMATION='SIMO_MIEHE',),
-                     INCREMENT=_F(LIST_INST=LINST,),
+                     INCREMENT=_F(LIST_INST=LINST, INST_FIN=0.4,),
                      NEWTON=_F(PREDICTION='ELASTIQUE',
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),
@@ -190,6 +190,14 @@ IMPR_TABLE(TABLE=TAB_T)
 
 # Tests de la force normale
 TEST_TABLE(
+    VALE_CALC=-55536086.36144244,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=0.4,),
+)
+"""
+TEST_TABLE(
     VALE_CALC=-90865326.24180996,
     NOM_PARA='DY',
     TABLE=TAB_N,
@@ -236,7 +244,7 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA='INST',
               VALE=1.0,),
 )
-"""
+
 TEST_TABLE(
            VALE_CALC=-3.3240504054728E+08,
            NOM_PARA='DY',
