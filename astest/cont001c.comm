@@ -175,7 +175,7 @@ DEFICO2 = DEFI_CONT(
         COEF_CONT=312.0,
         TYPE_CONT="BILATERAL",
         APPARIEMENT="MORTAR",
-        DIST_APPA=-1,
+        COEF_MULT_APPA=-1,
         GROUP_MA_MAIT="Group_2",
         GROUP_MA_ESCL="Group_1",
         CONTACT_INIT="INTERPENETRE",
@@ -265,7 +265,7 @@ DEFICO3 = DEFI_CONT(
         GROUP_MA_MAIT="Group_2",
         GROUP_MA_ESCL="Group_1",
         APPARIEMENT="MORTAR",
-        DIST_APPA=-1,
+        COEF_MULT_APPA=-1,
         CONTACT_INIT="INTERPENETRE",
         # ALGO_FROT='NITSCHE',
         # TYPE_FROT='COULOMB',
@@ -296,8 +296,8 @@ for i in range(DEFICO3.getNumberOfContactZones()):
 
     pairParam = zone.getPairingParameter()  # setPairingParameter ??
     test.assertEqual(pairParam.getAlgorithm(), code_aster.PairingAlgo.Mortar)
-    pairParam.setPairingDistance(0.1)
-    test.assertEqual(pairParam.getPairingDistance(), 0.1)
+    pairParam.setDistanceRatio(0.1)
+    test.assertEqual(pairParam.getDistanceRatio(), 0.1)
 
     test.assertEqual(pairParam.getInitialState(),
                      code_aster.InitialState.Interpenetrated)
@@ -320,7 +320,7 @@ DEFICO4 = DEFI_CONT(
         TYPE_FROT="COULOMB",
         COULOMB=200.0,
         APPARIEMENT="MORTAR",
-        DIST_APPA=-1,
+        COEF_MULT_APPA=-1,
         DIST_POUTRE="OUI",
         CARA_ELEM=CARAMECA,
         DIST_SUPP=DF1,

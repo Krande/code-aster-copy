@@ -148,8 +148,8 @@ class PairingParameter {
   private:
     /** @brief Pairing algorithm = APPARIEMENT */
     PairingAlgo _algo;
-    /** @brief Additional pairing distance = DIST_APPA */
-    ASTERDOUBLE _dist_appa;
+    /** @brief Additional pairing distance = COEF_MULT_APPA */
+    ASTERDOUBLE _dist_ratio;
     /** @brief initial contact state = CONTACT_INIT */
     InitialState _cont_init;
     /** @brief initial threshold distance = SEUIL_INIT */
@@ -178,7 +178,7 @@ class PairingParameter {
     PairingParameter()
         : _algo( PairingAlgo::Mortar ),
           _cont_init( InitialState::Interpenetrated ),
-          _dist_appa( -1.0 ),
+          _dist_ratio( -1.0 ),
           _seuil( -1.0 ),
           _beam( false ),
           _dist_supp( nullptr ),
@@ -187,7 +187,7 @@ class PairingParameter {
 
     PairingAlgo getAlgorithm() const { return _algo; };
 
-    ASTERDOUBLE getPairingDistance() const { return _dist_appa; };
+    ASTERDOUBLE getDistanceRatio() const { return _dist_ratio; };
 
     InitialState getInitialState() const { return _cont_init; };
 
@@ -199,7 +199,7 @@ class PairingParameter {
 
     void setAlgorithm( const PairingAlgo &algo ) { _algo = algo; };
 
-    void setPairingDistance( const ASTERDOUBLE &dist_appa ) { _dist_appa = dist_appa; };
+    void setDistanceRatio( const ASTERDOUBLE &dist_ratio ) { _dist_ratio = dist_ratio; };
 
     void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
 

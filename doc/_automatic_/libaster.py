@@ -4111,6 +4111,13 @@ class PairingParameter:
             GenericFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
         """
     
+    def getDistanceRatio(self):
+        """Return the pairing distance ratio used. It is a value of a float
+        
+        Returns:
+            float: pairing distance.
+        """
+    
     def getElementaryCharacteristics(self):
         """Return the elementary characteristics. It is a value of a pointer
         
@@ -4123,13 +4130,6 @@ class PairingParameter:
         
         Returns:
             InitialState: Initial contact state.
-        """
-    
-    def getPairingDistance(self):
-        """Return the pairing distance used. It is a value of a float
-        
-        Returns:
-            float: pairing distance.
         """
     
     def getThreshold(self):
@@ -4153,6 +4153,13 @@ class PairingParameter:
             GenericFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
         """
     
+    def setDistanceRatio(self, dist_ratio):
+        """Set the pairing distance ratio used. It is a value of a float
+        
+        Arguments:
+            float: pairing distance ratio.
+        """
+    
     def setElementaryCharacteristics(self, cara):
         """Set the elementary characteristics. It is a value of a pointer
         
@@ -4165,13 +4172,6 @@ class PairingParameter:
         
         Arguments:
             InitialState: Initial contact state.
-        """
-    
-    def setPairingDistance(self, dist_appa):
-        """Set the pairing distance used. It is a value of a float
-        
-        Arguments:
-            float: pairing distance.
         """
     
     def setThreshold(self, seuil):

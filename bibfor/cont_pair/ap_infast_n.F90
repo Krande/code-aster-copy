@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine ap_infast_n(mesh          , newgeo        , pair_tole, dist_appa    ,nb_elem_mast  ,&
+subroutine ap_infast_n(mesh          , newgeo        , pair_tole, dist_ratio    ,nb_elem_mast  ,&
                      list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_slav_flag,&
                      nb_mast_start , elem_mast_start,nb_slav_start  ,elem_slav_start,&
                      sdappa, list_node_mast, nb_node_mast)
@@ -45,7 +45,7 @@ implicit none
 !
 character(len=8), intent(in) :: mesh
 character(len=19), intent(in) :: newgeo
-real(kind=8), intent(in) :: pair_tole, dist_appa
+real(kind=8), intent(in) :: pair_tole, dist_ratio
 integer, intent(in) :: nb_elem_mast
 integer, intent(in) :: list_elem_mast(nb_elem_mast)
 integer, intent(in) :: nb_elem_slav
@@ -252,7 +252,7 @@ integer, intent(in) ::  nb_node_mast
 !
 ! ----------------- Projection/intersection of elements in slave parametric space
 !
-                    call prjint_ray(pair_tole, dist_appa     , elem_mast_dime,&
+                    call prjint_ray(pair_tole, dist_ratio     , elem_mast_dime,&
                                     elin_slav_nbnode, elem_slav_coor, elin_slav_code,&
                                     elin_mast_nbnode, elem_mast_coor, elin_mast_code,&
                                     poin_inte     , inte_weight   , nb_poin_inte)

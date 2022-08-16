@@ -140,7 +140,7 @@ def defi_cont_ops(self, **keywords):
         pairParam = PairingParameter()
         contZone.setPairingParameter(pairParam)
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
-        pairParam.setPairingDistance(zone["DIST_APPA"])
+        pairParam.setDistanceRatio(zone["COEF_MULT_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
 
         if zone.get("CARA_ELEM") is not None:

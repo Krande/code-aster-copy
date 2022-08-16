@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prjint_ray(proj_tole, dist_appa       , elem_dime     , &
+subroutine prjint_ray(proj_tole, dist_ratio       , elem_dime     , &
                   elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                   elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                   poin_inte       , inte_weight   , nb_poin_inte  ,&
@@ -35,7 +35,7 @@ implicit none
 #include "asterfort/interNodesInside.h"
 #include "asterfort/interNodesEdge.h"
 !
-real(kind=8), intent(in) :: proj_tole, dist_appa
+real(kind=8), intent(in) :: proj_tole, dist_ratio
 integer, intent(in) :: elem_dime
 integer, intent(in) :: elem_mast_nbnode
 real(kind=8), intent(in) :: elem_mast_coor(3,9)
@@ -98,7 +98,7 @@ integer, optional, intent(inout) :: ierror_
 !
 ! - Projection on master cell
 !
-    call projMaAndCheck(proj_tole, dist_appa, elem_dime, &
+    call projMaAndCheck(proj_tole, dist_ratio, elem_dime, &
                         elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                         elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
                         proj_coop, nb_node_proj, iret)

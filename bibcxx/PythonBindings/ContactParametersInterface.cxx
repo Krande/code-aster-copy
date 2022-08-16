@@ -171,19 +171,19 @@ Arguments:
     PairingAlgo: Pairing algorithm.
         )",
               py::arg( "algo" ) )
-        .def( "getPairingDistance", &PairingParameter::getPairingDistance, R"(
-Return the pairing distance used. It is a value of a float
+        .def( "getDistanceRatio", &PairingParameter::getDistanceRatio, R"(
+Return the pairing distance ratio used. It is a value of a float
 
 Returns:
     float: pairing distance.
         )" )
-        .def( "setPairingDistance", &PairingParameter::setPairingDistance, R"(
-Set the pairing distance used. It is a value of a float
+        .def( "setDistanceRatio", &PairingParameter::setDistanceRatio, R"(
+Set the pairing distance ratio used. It is a value of a float
 
 Arguments:
-    float: pairing distance.
+    float: pairing distance ratio.
         )",
-              py::arg( "dist_appa" ) )
+              py::arg( "dist_ratio" ) )
         .def( "getInitialState", &PairingParameter::getInitialState, R"(
 Return the initial contact state. It is a value of an enum
 

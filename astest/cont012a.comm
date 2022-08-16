@@ -73,10 +73,7 @@ MAILL1=MODI_MAILLAGE(reuse =MAILL1,
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU='LC1D',),
-                     )
-
-MAILL1=MODI_MAILLAGE(reuse =MAILL1,
-                     MAILLAGE=MAILL1,
+                     )src%
                      ORIE_PEAU=_F(GROUP_MA_PEAU='LEA2',),
                      )
 
@@ -142,10 +139,7 @@ SI=DEFI_FONCTION(NOM_PARA='EPSI',
                         0.1761675 , 404.2640312 ,
                         0.1811675 , 406.7300469 ,
                         0.1861675 , 409.1429585 ,
-                        0.1911675 , 411.5052990 ,
-                        0.1961675 , 413.8194174 ,
-                        0.2011675 , 416.0874970 ,
-                        0.2111675 , 420.4935341 ,
+                        0.1911675 , 411.5052990 ,src%
                         0.2211675 , 424.7381039 ,
                         0.2311675 , 428.8340725 ,
                         0.2411675 , 432.7927743 ,
@@ -279,12 +273,12 @@ CH2 =DEFI_CONT(MODELE       = MODEL,
                         _F(
                           GROUP_MA_MAIT='LFC2',
                           GROUP_MA_ESCL='LC1D',
-                          DIST_APPA = 4.,
+                          COEF_MULT_APPA = 4.,
                          ),
                         _F(
                           GROUP_MA_MAIT='LEA2',
                           GROUP_MA_ESCL='LA1B',
-                          DIST_APPA = 4.,
+                          COEF_MULT_APPA = 4.,
                          ),
                        ),
                   )

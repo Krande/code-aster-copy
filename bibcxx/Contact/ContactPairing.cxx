@@ -77,7 +77,7 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
         AS_ABORT( "Not expected" );
     }
 
-    auto dist_pairing = zone->getPairingParameter()->getPairingDistance();
+    auto dist_pairing = zone->getPairingParameter()->getDistanceRatio();
 
     // tolerence
     ASTERDOUBLE pair_tole = 1e-8;

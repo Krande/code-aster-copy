@@ -81,7 +81,7 @@ DEFI_CONT_CATA = MACRO(
               # Pairing options (for segment to segment contact)
               APPARIEMENT=SIMP(statut='f', typ='TXM',
                                defaut="MORTAR", into=("MORTAR")),
-              DIST_APPA=SIMP(statut='f', typ='R', defaut=-1.0),
+              COEF_MULT_APPA=SIMP(statut='f', typ='R', defaut=-1.0),
 
               GROUP_MA_MAIT=SIMP(statut='o', typ=grma, max=1),
               GROUP_MA_ESCL=SIMP(statut='o', typ=grma, max=1),

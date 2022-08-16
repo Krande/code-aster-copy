@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apprin_n(mesh          , newgeo        , pair_tole, dist_appa  ,nb_elem_mast  ,&
+subroutine apprin_n(mesh          , newgeo        , pair_tole, dist_ratio  ,nb_elem_mast  ,&
                     list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_slav_flag,&
                     nb_mast_start , elem_mast_start,nb_slav_start ,elem_slav_start)
 !
@@ -34,7 +34,7 @@ implicit none
 !
 character(len=8), intent(in) :: mesh
 character(len=19), intent(in) :: newgeo
-real(kind=8), intent(in) :: pair_tole, dist_appa
+real(kind=8), intent(in) :: pair_tole, dist_ratio
 integer, intent(in) :: nb_elem_mast
 integer, intent(in) :: list_elem_mast(nb_elem_mast)
 integer, intent(in) :: nb_elem_slav
@@ -213,7 +213,7 @@ integer, intent(out) :: elem_slav_start(nb_elem_slav)
 !
 ! ----------------- Projection/intersection of elements in slave parametric space
 !
-                    call prjint_ray(pair_tole, dist_appa     , elem_mast_dime,&
+                    call prjint_ray(pair_tole, dist_ratio     , elem_mast_dime,&
                                     elin_mast_nbnode, elem_mast_coor, elin_mast_code,&
                                     elin_slav_nbnode, elem_slav_coor, elin_slav_code,&
                                     poin_inte     , inte_weight        , nb_poin_inte)
