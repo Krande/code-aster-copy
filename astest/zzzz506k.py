@@ -79,7 +79,6 @@ RES = STAT_NON_LINE(
         PREDICTION="TANGENTE",
         REAC_INCR=1,
         REAC_ITER=1,
-        REAC_ITER_ELAS=0,
     ),
     SOLVEUR=_F(METHODE="MUMPS"),
 )
@@ -100,7 +99,6 @@ RES_NEW = MECA_NON_LINE(
         PREDICTION="TANGENTE",
         REAC_INCR=1,
         REAC_ITER=1,
-        REAC_ITER_ELAS=0,
     ),
     SOLVEUR=_F(METHODE="MUMPS"),
 )

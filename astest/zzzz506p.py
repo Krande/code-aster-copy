@@ -102,8 +102,7 @@ RES = STAT_NON_LINE(CHAM_MATER=AFFE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               PREDICTION='TANGENTE',
                               REAC_INCR=2,
-                              REAC_ITER=2,
-                              REAC_ITER_ELAS=0),
+                              REAC_ITER=2,),
                     SOLVEUR=_F(METHODE='MUMPS',
                                ))
 

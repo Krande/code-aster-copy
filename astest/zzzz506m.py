@@ -108,8 +108,7 @@ RES = STAT_NON_LINE(CHAM_MATER=AFFE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               PREDICTION='ELASTIQUE',
                               REAC_INCR=1,
-                              REAC_ITER=1,
-                              REAC_ITER_ELAS=0),
+                              REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='PETSC', PRE_COND="GAMG", RESI_RELA=1e-10,
                                ))
 
@@ -133,8 +132,7 @@ RES_NEW = MECA_NON_LINE(CHAM_MATER=AFFE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               PREDICTION='ELASTIQUE',
                               REAC_INCR=1,
-                              REAC_ITER=1,
-                              REAC_ITER_ELAS=0),
+                              REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='PETSC', PRE_COND="GAMG", RESI_RELA=1e-10,
                                ))
 
