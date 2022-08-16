@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,16 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
             call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=prof_chno, arret='F')
             call jeveuo(prof_chno//".DEEQ", 'L', vi=v_deeq)
             do i = 1, neq
-                if( v_noex(v_deeq(2*(i-1)+1)) == rank ) then
+                if(v_deeq(2*(i-1)+1) <= 0) then
+                    ! On s'arrete en erreur dès que noeud = 0 car on ne sait pas comment le
+                    ! sommer
+                    ASSERT(v_deeq(2*(i-1)+1) == 0)
+                    if(typtes(1:4) == "SOMM") then
+                        call utmess('F', 'TEST0_21', sk=typtes)
+                    end if
+                end if
+!
+                if( v_deeq(2*(i-1)+1) > 0 .and. v_noex(v_deeq(2*(i-1)+1)) == rank ) then
                     neq2 = neq2 + 1
                     if(type == 'I' ) then
                         zi(jvale2-1+neq2) = zi(jvale-1+i)
