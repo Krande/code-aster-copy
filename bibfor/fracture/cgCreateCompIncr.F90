@@ -76,7 +76,8 @@ use Behaviour_type
                 rela_new = "ELAS_VMIS_"//rela_comp(11:16)
                 v_compor_vale(nb_cmp_max*(i_zone-1)+RELA_NAME) = rela_new
                 if(l_etat_init) then
-                    v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS)  = "COMP_INCR"
+                    ! v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS)  = "COMP_INCR"
+                    call utmess("F", "RUPTURE3_11")
                 else
                     v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS)  = "COMP_ELAS"
                 end if

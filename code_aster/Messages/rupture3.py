@@ -76,4 +76,14 @@ en sortie de CALC_G par la distance du fond de fissure à l'axe d’axis-symétr
 Cette division est réalisée automatiquement par CALC_G.
 """),
 
+    11: _("""
+Seule la relation ELAS du calcul mécanique est supportée avec le mot-clé ETAT_INIT.
+"""),
+
+    12: _("""
+Valeur de G ou G_EPSI négative au noeud %(i1)d. On ne peut pas calculer K avec la formule d'Irwin.
+
+G   =   %(r1)f
+"""),
+
 }

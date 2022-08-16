@@ -119,10 +119,11 @@ CALC_G=OPER(nom="CALC_G", op=27, sd_prod=calcg_prod,
                                into=("G","G_EPSI","K","KJ","KJ_EPSI"),
                              ),
 
-         ETAT_INIT       =FACT(statut='f',
-           SIGM           =SIMP(statut='o', typ=(cham_no_sdaster,cham_elem)),
-#           DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
-         ),
+        b_option = BLOC(condition = """(not equal_to("OPTION", 'G_EPSI') )""",
+                ETAT_INIT   =FACT(statut='f',
+                                SIGM  =SIMP(statut='o', typ=(cham_no_sdaster,cham_elem)),
+#               DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
+         ),),
 
 
          TITRE           =SIMP(statut='f',typ='TXM'),
