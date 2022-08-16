@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,6 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
     character(len=24) :: repk
     character(len=24) :: valk(2), nume
     character(len=8) :: modgen, nommcl, basmod, nomsst
-    character(len=14) :: llref2
     character(len=*) :: mdgenz, nmsstz, repkz
     integer, pointer :: desc(:) => null()
 !
@@ -126,8 +125,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=nume)
-        call jenuno(jexnum(nume(1:14)//'.NUME.LILI', 2), llref2)
-        repk(1:8)=llref2(1:8)
+        call dismoi('NOM_MODELE', nume, 'NUME_DDL', repk=repk)
     else if (questi(1:15).eq.'NOM_LIST_INTERF') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl=zk8(llmcl)

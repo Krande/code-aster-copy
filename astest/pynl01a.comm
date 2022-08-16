@@ -328,6 +328,7 @@ DIF_VAR=CREA_CHAMP(OPERATION='ASSE',
                             COEF_R=-1.),
                         ))
 
+print(FORCAS.getDescription().getName(), FOR_REF.getDescription().getName())
 DIF_FOR = FORCAS - FOR_REF
 
 

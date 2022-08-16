@@ -448,11 +448,21 @@ class BaseDOFNumbering : public DataStructure {
     ModelPtr getModel() const {
         if ( _model != nullptr )
             return _model;
-        else {
-            if ( _matrix.size() != 0 )
-                return std::visit( ElementaryMatrixGetModel(), _matrix[0] );
+
+        for ( auto &matr : _matrix ) {
+            auto model = std::visit( ElementaryMatrixGetModel(), matr );
+            if ( model != nullptr ) {
+                return model;
+            }
         }
-        return ModelPtr( nullptr );
+
+        for ( auto &FED : _FEDVector ) {
+            if ( FED && FED->getModel() ) {
+                return FED->getModel();
+            }
+        }
+
+        return nullptr;
     };
 
     /**
@@ -463,10 +473,9 @@ class BaseDOFNumbering : public DataStructure {
         const auto model = this->getModel();
         if ( model != nullptr ) {
             return model->getMesh();
-        }
-        else{
-            for(auto& FED : _FEDVector){
-                if(FED && FED->getMesh()){
+        } else {
+            for ( auto &FED : _FEDVector ) {
+                if ( FED && FED->getMesh() ) {
                     return FED->getMesh();
                 }
             }

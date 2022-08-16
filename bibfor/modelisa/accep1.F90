@@ -83,7 +83,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
             call jeveuo(matas//'.LIME', 'L', vk24=lime)
             call jeveuo(lime(1)(1:8)//'           .RELR', 'L', vk24=resu)
             call jeveuo(resu(1)(1:19)//'.NOLI', 'L', vk24=noli)
-            modele = noli(1) (1:8)
+            call dismoi('NOM_MODELE', noli(1), "LIGREL", repk=modele)
         else
 !         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION
 !             N'EST PRESENTE SUR LE MODELE EF...

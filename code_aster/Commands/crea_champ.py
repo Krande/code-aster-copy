@@ -111,20 +111,12 @@ class FieldCreator(ExecuteCommand):
             if model is None:
                 if resultat is not None:
                     if isinstance(resultat, (FullResult, ModeResult)):
-                        try:
-                            dofNum = resultat.getDOFNumbering()
-                            if dofNum is not None:
+                        dofNum = resultat.getDOFNumbering()
+                        if dofNum is not None:
+                            model = dofNum.getModel()
+                            if model is not None:
                                 self._result.setDescription(
-                                    dofNum.getFiniteElementDescriptors()[0])
-                        except:
-                            pass
-                        if self._result.getDescription() is None:
-                            try:
-                                dofNum = resultat.getDOFNumbering()
-                                if (dofNum is not None) and (dofNum.getModel() is not None):
-                                    model = dofNum.getModel()
-                            except:
-                                pass
+                                    model.getFiniteElementDescriptor())
 
                     if resultat.getModel() is not None:
                         model = resultat.getModel()

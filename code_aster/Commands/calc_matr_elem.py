@@ -127,19 +127,21 @@ class ComputeElementaryMatrix(ExecuteCommand):
                 group_ma = force_list(group_ma)
 
             if myOption == "RIGI_MECA":
-                self._result = disc_comp.dualStiffnessMatrix()
-
                 if keywords["CALC_ELEM_MODELE"] == "OUI":
                     if hasExternalStateVariable:
                         externVar = disc_comp.createExternalStateVariablesField(
                             time)
                     else:
                         externVar = None
-                    matr_rigi_meca = disc_comp.elasticStiffnessMatrix(
+                    self._result = disc_comp.elasticStiffnessMatrix(
                         time, fourier, group_ma, externVarField=externVar
                     )
-                    self._result.addElementaryTerm(matr_rigi_meca.getElementaryTerms())
+
+                    matr_rigi_dual = disc_comp.dualStiffnessMatrix()
+                    self._result.addElementaryTerm(matr_rigi_dual.getElementaryTerms())
                     self._result.build()
+                else:
+                    self._result = disc_comp.dualStiffnessMatrix()
 
             elif myOption == "MASS_MECA":
                 if hasExternalStateVariable:
