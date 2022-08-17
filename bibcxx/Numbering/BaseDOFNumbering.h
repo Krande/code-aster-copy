@@ -16,9 +16,6 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef BASEDOFNUMBERING_H_
-#define BASEDOFNUMBERING_H_
-
 /**
  * @file BaseDOFNumbering.h
  * @brief Fichier entete de la classe BaseDOFNumbering
@@ -55,6 +52,21 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Numbering/FieldOnNodesDescription.h"
+
+#pragma once
+
+// Forward declaration
+template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
+class ElementaryMatrix;
+
+using ElementaryMatrixDisplacementRealPtr =
+    std::shared_ptr< ElementaryMatrix< ASTERDOUBLE, Displacement > >;
+using ElementaryMatrixDisplacementComplexPtr =
+    std::shared_ptr< ElementaryMatrix< ASTERCOMPLEX, Displacement > >;
+using ElementaryMatrixTemperatureRealPtr =
+    std::shared_ptr< ElementaryMatrix< ASTERDOUBLE, Temperature > >;
+using ElementaryMatrixPressureComplexPtr =
+    std::shared_ptr< ElementaryMatrix< ASTERCOMPLEX, Pressure > >;
 
 /**
  * @class BaseDOFNumbering
@@ -279,8 +291,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Constructeur
      */
-    BaseDOFNumbering( const std::string &type )
-        : BaseDOFNumbering( ResultNaming::getNewResultName(), type ){};
+    BaseDOFNumbering( const std::string &type );
 
   public:
     /**
@@ -293,31 +304,13 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Add a FiniteElementDescriptor to elementary matrix
      * @param FiniteElementDescriptorPtr FiniteElementDescriptor
      */
-    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
-        if ( curFED ) {
-            const auto name = trim( curFED->getName() );
-            if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-                _FEDVector.push_back( curFED );
-                _FEDNames.insert( name );
-                return true;
-            }
-        }
-        return false;
-    };
+    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED );
 
     /**
      * @brief Add a FiniteElementDescriptor to elementary matrix
      * @param FiniteElementDescriptorPtr FiniteElementDescriptor
      */
-    bool addFiniteElementDescriptors( const std::vector< FiniteElementDescriptorPtr > &curFEDs ) {
-        for ( auto &curFED : curFEDs ) {
-            const bool ret = this->addFiniteElementDescriptor( curFED );
-            if ( !ret )
-                return false;
-        }
-
-        return true;
-    };
+    bool addFiniteElementDescriptors( const std::vector< FiniteElementDescriptorPtr > &curFEDs );
 
     /**
      * @brief Function d'ajout d'un chargement
@@ -445,43 +438,13 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get model
      */
-    ModelPtr getModel() const {
-        if ( _model != nullptr )
-            return _model;
-
-        for ( auto &matr : _matrix ) {
-            auto model = std::visit( ElementaryMatrixGetModel(), matr );
-            if ( model != nullptr ) {
-                return model;
-            }
-        }
-
-        for ( auto &FED : _FEDVector ) {
-            if ( FED && FED->getModel() ) {
-                return FED->getModel();
-            }
-        }
-
-        return nullptr;
-    };
+    ModelPtr getModel() const;
 
     /**
      * @brief Get mesh
      * @return Internal mesh
      */
-    BaseMeshPtr getMesh() const {
-        const auto model = this->getModel();
-        if ( model != nullptr ) {
-            return model->getMesh();
-        } else {
-            for ( auto &FED : _FEDVector ) {
-                if ( FED && FED->getMesh() ) {
-                    return FED->getMesh();
-                }
-            }
-        }
-        return nullptr;
-    };
+    BaseMeshPtr getMesh() const;
 
     /**
      * @brief Methode permettant de savoir si la numerotation est vide
@@ -499,53 +462,25 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    virtual void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix )
-
-    {
-        if ( _model )
-            throw std::runtime_error(
-                "It is not allowed to defined Model and ElementaryMatrix together" );
-        _matrix.push_back( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    virtual void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix )
-
-    {
-        if ( _model )
-            throw std::runtime_error(
-                "It is not allowed to defined Model and ElementaryMatrix together" );
-        _matrix.push_back( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    virtual void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix )
-
-    {
-        if ( _model )
-            throw std::runtime_error(
-                "It is not allowed to defined Model and ElementaryMatrix together" );
-        _matrix.push_back( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    virtual void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix )
-
-    {
-        if ( _model )
-            throw std::runtime_error(
-                "It is not allowed to defined Model and ElementaryMatrix together" );
-        _matrix.push_back( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir la liste de charge
@@ -561,13 +496,7 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Methode permettant de definir le modele
      * @param currentModel Modele de la numerotation
      */
-    virtual void setModel( const ModelPtr &currentModel ) {
-        if ( _matrix.size() != 0 )
-            throw std::runtime_error(
-                "It is not allowed to defined Model and ElementaryMatrix together" );
-        _model = currentModel;
-        this->addFiniteElementDescriptor( _model->getFiniteElementDescriptor() );
-    };
+    virtual void setModel( const ModelPtr &currentModel );
 
     bool hasDirichletBC() const { return _listOfLoads->hasDirichletBC(); }
 };
@@ -578,5 +507,3 @@ class BaseDOFNumbering : public DataStructure {
  * @author Nicolas Sellenet
  */
 typedef std::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
-
-#endif /* BASEDOFNUMBERING_H_ */

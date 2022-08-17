@@ -41,11 +41,12 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
+    const std::string option( "RIGI_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >();
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
 
     // Get main parameters
-    const std::string option( "RIGI_THER" );
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
@@ -58,11 +59,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
         }
     }
 
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
-
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
@@ -70,7 +66,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     } else {
         calcul->setGroupsOfCells( currModel, groupOfCells );
     }
-    elemMatr->prepareCompute( option );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
@@ -116,9 +111,12 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
     const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >();
-    // Get main parameters
     const std::string option( "MASS_THER" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
@@ -131,11 +129,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
         }
     }
 
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
-
     // Prepare computing
     auto calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
@@ -143,8 +136,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
     } else {
         calcul->setGroupsOfCells( currModel, groupOfCells );
     }
-
-    elemMatr->prepareCompute( option );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );

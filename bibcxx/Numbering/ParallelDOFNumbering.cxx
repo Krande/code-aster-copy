@@ -203,4 +203,38 @@ VectorString ParallelDOFNumbering::getComponentsAssociatedToNode( const ASTERINT
     return stringVector;
 };
 
+void ParallelDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixDisplacementRealPtr &currentMatrix ) {
+    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void ParallelDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixDisplacementComplexPtr &currentMatrix ) {
+    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void ParallelDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixTemperatureRealPtr &currentMatrix ) {
+    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void ParallelDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixPressureComplexPtr &currentMatrix ) {
+    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void ParallelDOFNumbering::setModel( const ModelPtr &currentModel ) {
+    if ( !currentModel->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must be parallel" );
+    BaseDOFNumbering::setModel( currentModel );
+};
+
 #endif /* ASTER_HAVE_MPI */

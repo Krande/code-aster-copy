@@ -55,6 +55,10 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     /** @brief Constructor with automatic name */
     ElementaryMatrix() : ElementaryMatrix( ResultNaming::getNewResultName() ){};
 
+    ElementaryMatrix( const PhysicalProblemPtr phys_pb ) : ElementaryMatrix() {
+        this->setPhysicalProblem( phys_pb );
+    };
+
     /**
      * @brief Function to update ElementaryTerm
      */

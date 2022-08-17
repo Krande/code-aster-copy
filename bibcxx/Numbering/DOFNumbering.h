@@ -54,6 +54,7 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Numbering/BaseDOFNumbering.h"
+#include "Numbering/FieldOnNodesDescription.h"
 
 /**
  * @class DOFNumbering
@@ -87,59 +88,31 @@ class DOFNumbering : public BaseDOFNumbering {
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix )
-
-    {
-        if ( currentMatrix->getModel()->getMesh()->isParallel() )
-            throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix )
-
-    {
-        if ( currentMatrix->getModel()->getMesh()->isParallel() )
-            throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix )
-
-    {
-        if ( currentMatrix->getModel()->getMesh()->isParallel() )
-            throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentMatrix objet ElementaryMatrix
      */
-    void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix )
-
-    {
-        if ( currentMatrix->getModel()->getMesh()->isParallel() )
-            throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-    };
+    void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix );
 
     /**
      * @brief Methode permettant de definir le modele
      * @param currentModel Modele de la numerotation
      */
-    void setModel( const ModelPtr &currentModel ) {
-        if ( currentModel->getMesh()->isParallel() )
-            throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumbering::setModel( currentModel );
-    };
+    void setModel( const ModelPtr &currentModel );
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
@@ -199,13 +172,6 @@ class DOFNumbering : public BaseDOFNumbering {
      */
     VectorString getComponents() const;
 };
-
-/**
- * @typedef BaseDOFNumberingPtr
- * @brief Enveloppe d'un pointeur intelligent vers un BaseDOFNumbering
- * @author Nicolas Sellenet
- */
-typedef std::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
 /**
  * @typedef DOFNumberingPtr

@@ -25,6 +25,7 @@
 #include "aster_pybind.h"
 
 #include "Numbering/ParallelDOFNumbering.h"
+#include "Numbering/DOFNumbering.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 

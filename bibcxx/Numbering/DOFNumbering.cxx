@@ -173,3 +173,34 @@ VectorString DOFNumbering::getComponentsAssociatedToNode( const ASTERINTEGER nod
     FreeStr( stringArray );
     return stringVector;
 };
+
+void DOFNumbering::setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix ) {
+    if ( currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must not be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void DOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixDisplacementComplexPtr &currentMatrix ) {
+    if ( currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must not be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void DOFNumbering::setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix ) {
+    if ( currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must not be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void DOFNumbering::setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix ) {
+    if ( currentMatrix->getModel()->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must not be parallel" );
+    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
+};
+
+void DOFNumbering::setModel( const ModelPtr &currentModel ) {
+    if ( currentModel->getMesh()->isParallel() )
+        throw std::runtime_error( "Mesh must not be parallel" );
+    BaseDOFNumbering::setModel( currentModel );
+};

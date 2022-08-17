@@ -56,6 +56,9 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
       _isEmpty( true ){};
 
+BaseDOFNumbering::BaseDOFNumbering( const std::string &type )
+    : BaseDOFNumbering( ResultNaming::getNewResultName(), type ){};
+
 bool BaseDOFNumbering::computeNumbering() {
     if ( _model ) {
         if ( _model->isEmpty() )
@@ -123,7 +126,7 @@ bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMo
     _isEmpty = false;
 
     return true;
-}
+};
 
 std::string BaseDOFNumbering::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();
@@ -140,4 +143,117 @@ VectorLong BaseDOFNumbering::getDirichletBCDOFs( void ) const {
 
     ccid->updateValuePointer();
     return ccid->toVector();
+};
+
+ModelPtr BaseDOFNumbering::getModel() const {
+    if ( _model != nullptr )
+        return _model;
+
+    for ( auto &matr : _matrix ) {
+        auto model = std::visit( ElementaryMatrixGetModel(), matr );
+        if ( model != nullptr ) {
+            return model;
+        }
+    }
+
+    for ( auto &FED : _FEDVector ) {
+        if ( FED && FED->getModel() ) {
+            return FED->getModel();
+        }
+    }
+
+    return nullptr;
+};
+
+/**
+ * @brief Get mesh
+ * @return Internal mesh
+ */
+BaseMeshPtr BaseDOFNumbering::getMesh() const {
+    const auto model = this->getModel();
+    if ( model != nullptr ) {
+        return model->getMesh();
+    } else {
+        for ( auto &FED : _FEDVector ) {
+            if ( FED && FED->getMesh() ) {
+                return FED->getMesh();
+            }
+        }
+    }
+    return nullptr;
+};
+
+void BaseDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixDisplacementRealPtr &currentMatrix ) {
+    if ( _model )
+        throw std::runtime_error(
+            "It is not allowed to defined Model and ElementaryMatrix together" );
+    _matrix.push_back( currentMatrix );
+};
+
+/**
+ * @brief Methode permettant de definir les matrices elementaires
+ * @param currentMatrix objet ElementaryMatrix
+ */
+void BaseDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixDisplacementComplexPtr &currentMatrix ) {
+    if ( _model )
+        throw std::runtime_error(
+            "It is not allowed to defined Model and ElementaryMatrix together" );
+    _matrix.push_back( currentMatrix );
+};
+
+/**
+ * @brief Methode permettant de definir les matrices elementaires
+ * @param currentMatrix objet ElementaryMatrix
+ */
+void BaseDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixTemperatureRealPtr &currentMatrix ) {
+    if ( _model )
+        throw std::runtime_error(
+            "It is not allowed to defined Model and ElementaryMatrix together" );
+    _matrix.push_back( currentMatrix );
+};
+
+/**
+ * @brief Methode permettant de definir les matrices elementaires
+ * @param currentMatrix objet ElementaryMatrix
+ */
+void BaseDOFNumbering::setElementaryMatrix(
+    const ElementaryMatrixPressureComplexPtr &currentMatrix ) {
+    if ( _model )
+        throw std::runtime_error(
+            "It is not allowed to defined Model and ElementaryMatrix together" );
+    _matrix.push_back( currentMatrix );
+};
+
+void BaseDOFNumbering::setModel( const ModelPtr &currentModel ) {
+    if ( !_matrix.empty() )
+        throw std::runtime_error(
+            "It is not allowed to defined Model and ElementaryMatrix together" );
+    _model = currentModel;
+    this->addFiniteElementDescriptor( _model->getFiniteElementDescriptor() );
+};
+
+bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
+    if ( curFED ) {
+        const auto name = trim( curFED->getName() );
+        if ( _FEDNames.find( name ) == _FEDNames.end() ) {
+            _FEDVector.push_back( curFED );
+            _FEDNames.insert( name );
+            return true;
+        }
+    }
+    return false;
+};
+
+bool BaseDOFNumbering::addFiniteElementDescriptors(
+    const std::vector< FiniteElementDescriptorPtr > &curFEDs ) {
+    for ( auto &curFED : curFEDs ) {
+        const bool ret = this->addFiniteElementDescriptor( curFED );
+        if ( !ret )
+            return false;
+    }
+
+    return true;
 };

@@ -36,6 +36,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
+#include "Studies/PhysicalProblem.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -61,17 +62,12 @@ class BaseElementaryMatrix : public DataStructure {
 
   public:
     /** @brief Constructor with a name */
-    BaseElementaryMatrix( const std::string name, const std::string type = "MATR_ELEM" )
-        : DataStructure( name, 19, type ),
-          _isEmpty( true ),
-          _model( nullptr ),
-          _materialField( nullptr ),
-          _elemChara( nullptr ),
-          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ){};
+    BaseElementaryMatrix( const std::string name, const std::string type = "MATR_ELEM" );
 
     /** @brief Constructor with automatic name */
-    BaseElementaryMatrix( const std::string type = "MATR_ELEM" )
-        : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ){};
+    BaseElementaryMatrix( const std::string type = "MATR_ELEM" );
+
+    BaseElementaryMatrix( const PhysicalProblemPtr phys_pb );
 
     /** @brief Get the field of material parameters */
     MaterialFieldPtr getMaterialField() const { return _materialField; };
@@ -82,20 +78,7 @@ class BaseElementaryMatrix : public DataStructure {
     ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _elemChara; };
 
     /** @brief Get the mesh */
-    BaseMeshPtr getMesh( void ) const {
-        if ( _model )
-            return _model->getMesh();
-
-        if ( _elemChara ) {
-            return _elemChara->getMesh();
-        }
-
-        if ( _materialField ) {
-            return _materialField->getMesh();
-        }
-
-        return nullptr;
-    };
+    BaseMeshPtr getMesh( void ) const;
 
     /** @brief Get option */
     std::string getOption() const { return _elemComp->getOption(); };
@@ -134,35 +117,14 @@ class BaseElementaryMatrix : public DataStructure {
      */
     void setModel( const ModelPtr &currModel ) { _model = currModel; };
 
+    void setPhysicalProblem( const PhysicalProblemPtr phys_pb );
+
     /** @brief  Prepare compute */
-    void prepareCompute( const std::string option ) {
-        _elemComp->setOption( option );
-        if ( _elemComp->getOption() != "WRAP_FORTRAN" ) {
-            _elemComp->createDescriptor( _model, _materialField, _elemChara );
-        }
-    };
+    void prepareCompute( const std::string option );
 
-    bool isSymmetric() const {
-        const std::string typeco( "MATR_ELEM" );
-        ASTERINTEGER repi = 0, ier = 0;
-        JeveuxChar32 repk( " " );
-        const std::string arret( "F" );
-        const std::string questi( "TYPE_MATRICE" );
-        CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-        return trim( repk.toString() ) == "SYMETRI";
-    }
+    bool isSymmetric() const;
 
-    ASTERINTEGER numberOfSuperElement() const {
-        const std::string typeco( "MATR_ELEM" );
-        ASTERINTEGER repi = 0, ier = 0;
-        JeveuxChar32 repk( " " );
-        const std::string arret( "C" );
-        const std::string questi( "NB_SS_ACTI" );
-
-        CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-
-        return repi;
-    };
+    ASTERINTEGER numberOfSuperElement() const;
 
     bool existsSuperElement() const { return this->numberOfSuperElement() > 0; }
 };

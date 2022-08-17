@@ -32,7 +32,12 @@
 #include "Loads/ListOfLoads.h"
 #include "Materials/CodedMaterial.h"
 #include "Materials/MaterialField.h"
-#include "Numbering/DOFNumbering.h"
+//#include "Numbering/BaseDOFNumbering.h" not include because forward declaration
+
+
+// Forward declaration
+class BaseDOFNumbering;
+using BaseDOFNumberingPtr = std::shared_ptr< BaseDOFNumbering >;
 
 /**
  * @class PhysicalProblem
@@ -80,7 +85,7 @@ class PhysicalProblem {
 
     /** @brief Add a load (mechanical or dirichlet) with function, formula */
     template < typename... Args >
-    void addLoad( const Args &... a ) {
+    void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 

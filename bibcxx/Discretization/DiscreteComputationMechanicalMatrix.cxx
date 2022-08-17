@@ -38,10 +38,14 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     const ASTERDOUBLE &time_value, const ASTERINTEGER &modeFourier,
     const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    const std::string option( "RIGI_MECA" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
 
     // Get main parameters
-    const std::string option( "RIGI_MECA" );
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
@@ -53,11 +57,6 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
             AS_ABORT( "External state variables vector is missing" )
         }
     }
-
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -72,7 +71,6 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     } else {
         calcul->setGroupsOfCells( currModel, groupOfCells );
     }
-    elemMatr->prepareCompute( option );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
@@ -112,9 +110,15 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
                                  const FieldOnCellsRealPtr _externVarField ) const {
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
-    // Get main parameters
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
     const std::string option( "MASS_MECA" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
@@ -126,11 +130,6 @@ DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorStri
             AS_ABORT( "External state variables vector is missing" )
         }
     }
-
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -145,8 +144,6 @@ DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorStri
     } else {
         calcul->setGroupsOfCells( currModel, groupOfCells );
     }
-
-    elemMatr->prepareCompute( option );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
@@ -187,9 +184,14 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
                                     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
                                     const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
                                     const FieldOnCellsRealPtr _externVarField ) const {
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
-    // Get main parameters
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
     const std::string option( "AMOR_MECA" );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
@@ -201,11 +203,6 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
             AS_ABORT( "External state variables vector is missing" )
         }
     }
-
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -220,8 +217,6 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     } else {
         calcul->setGroupsOfCells( currModel, groupOfCells );
     }
-
-    elemMatr->prepareCompute( option );
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
@@ -282,6 +277,7 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
 
     return elemMatr;
 };
+
 void DiscreteComputation::baseDualStiffnessMatrix(
     CalculPtr &calcul, ElementaryMatrixDisplacementRealPtr &elemMatr ) const {
 
@@ -320,23 +316,15 @@ void DiscreteComputation::baseDualStiffnessMatrix(
 };
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    const std::string option( "MECA_DDLM_R" );
 
-    // Get main parameters
-    ModelPtr currModel = _phys_problem->getModel();
-    MaterialFieldPtr currMater = _phys_problem->getMaterialField();
-    ElementaryCharacteristicsPtr currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
 
     // Prepare computing
-    const std::string option( "MECA_DDLM_R" );
     CalculPtr calcul = std::make_unique< Calcul >( option );
-    elemMatr->prepareCompute( option );
 
     // Compute elementary matrices
     DiscreteComputation::baseDualStiffnessMatrix( calcul, elemMatr );
@@ -354,13 +342,13 @@ DiscreteComputation::computeTangentStiffnessMatrix( const FieldOnNodesRealPtr di
                                                     const ASTERDOUBLE &time_prev,
                                                     const ASTERDOUBLE &time_step,
                                                     const VectorString &groupOfCells ) const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto currBehaviour = _phys_problem->getBehaviourProperty();
 
@@ -385,17 +373,11 @@ DiscreteComputation::computeTangentStiffnessMatrix( const FieldOnNodesRealPtr di
     calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
     elemMatr->prepareCompute( option );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-    elemVect->setModel( currModel );
-    elemVect->setMaterialField( currMater );
-    elemVect->setElementaryCharacteristics( currElemChara );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
     elemVect->prepareCompute( option );
 
     // Create output fields
@@ -449,13 +431,13 @@ DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr d
                                                      const ASTERDOUBLE &time_prev,
                                                      const ASTERDOUBLE &time_step,
                                                      const VectorString &groupOfCells ) const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto currBehaviour = _phys_problem->getBehaviourProperty();
 
@@ -480,17 +462,11 @@ DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr d
     calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
     elemMatr->prepareCompute( option );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-    elemVect->setModel( currModel );
-    elemVect->setMaterialField( currMater );
-    elemVect->setElementaryCharacteristics( currElemChara );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
     elemVect->prepareCompute( option );
 
     // Create output fields
@@ -538,6 +514,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
     const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
     const FieldOnNodesRealPtr coef_cont, const FieldOnNodesRealPtr coef_frot ) const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
     // Select option for matrix
     std::string option = "RIGI_CONT";
 
@@ -561,8 +539,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
     calcul->addTimeField( "PINSTPR", time_prev + time_step );
 
     // Create output vector
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
-    elemMatr->setModel( _phys_problem->getModel() );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
     elemMatr->prepareCompute( option );
 
     // Add output elementary

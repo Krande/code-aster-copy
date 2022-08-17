@@ -22,6 +22,7 @@
  */
 
 #include "PythonBindings/PhysicalProblemInterface.h"
+#include "PythonBindings/BaseDOFNumberingInterface.h"
 
 #include "aster_pybind.h"
 

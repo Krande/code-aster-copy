@@ -35,6 +35,7 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "getElementaryCharacteristics", &BaseElementaryMatrix::getElementaryCharacteristics )
         .def( "getModel", &BaseElementaryMatrix::getModel )
         .def( "getMesh", &BaseElementaryMatrix::getMesh )
+        .def( "setPhysicalProblem", &BaseElementaryMatrix::setPhysicalProblem )
         .def( "setMaterialField", &BaseElementaryMatrix::setMaterialField )
         .def( "setElementaryCharacteristics", &BaseElementaryMatrix::setElementaryCharacteristics )
         .def( "setModel", &BaseElementaryMatrix::setModel );
