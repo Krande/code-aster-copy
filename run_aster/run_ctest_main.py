@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,43 +122,78 @@ def parse_args(argv):
         argv (list): List of command line arguments.
     """
     # command arguments parser
-    parser = argparse.ArgumentParser(
-        usage=USAGE)
+    parser = argparse.ArgumentParser(usage=USAGE)
     jobs = max(1, get_nbcores() - 2)
-    parser.add_argument('-j', '--jobs', action='store',
-                        type=int, default=jobs,
-                        help="run the tests in parallel using the given "
-                             f"number of jobs (default: {jobs})")
-    parser.add_argument('--testlist', action='store',
-                        metavar="FILE",
-                        help="list of testcases to run")
-    parser.add_argument('--resutest', action='store',
-                        metavar="DIR",
-                        help="directory to write the results of the testcases "
-                             "(relative to the current directory)")
-    parser.add_argument('--no-resutest', action='store_const',
-                        dest="resutest", const="none",
-                        help="do not keep result files")
-    parser.add_argument('--clean', action='store_true', default='auto',
-                        help="remove the content of 'resutest' directory "
-                             "before starting")
-    parser.add_argument('--no-clean', action='store_false', default='auto',
-                        dest="clean",
-                        help="do not remove the content of 'resutest' "
-                             "directory at startup")
-    parser.add_argument('--timefactor', action='store', type=float, default=1.0,
-                        help="multiplicative factor applied to the time limit, "
-                             "passed through environment to run_aster "
-                             "(default: 1.0)")
-    group = parser.add_argument_group('ctest options')
-    group.add_argument('--rerun-failed', action='store_true',
-                       help="run only the tests that failed previously")
-    group.add_argument('-L', '--label-regex', action='append', metavar="regex",
-                       default=[],
-                       help="run tests with labels matching regular "
-                            "expression.")
-    group.add_argument('--print-labels', action='store_true',
-                       help="print all available test labels")
+    parser.add_argument(
+        "-j",
+        "--jobs",
+        action="store",
+        type=int,
+        default=jobs,
+        help="run the tests in parallel using the given " f"number of jobs (default: {jobs})",
+    )
+    parser.add_argument(
+        "--testlist", action="store", metavar="FILE", help="list of testcases to run"
+    )
+    parser.add_argument(
+        "--resutest",
+        action="store",
+        metavar="DIR",
+        help="directory to write the results of the testcases "
+        "(relative to the current directory)",
+    )
+    parser.add_argument(
+        "--no-resutest",
+        action="store_const",
+        dest="resutest",
+        const="none",
+        help="do not keep result files",
+    )
+    parser.add_argument(
+        "--clean",
+        action="store_true",
+        default="auto",
+        help="remove the content of 'resutest' directory " "before starting",
+    )
+    parser.add_argument(
+        "--no-clean",
+        action="store_false",
+        default="auto",
+        dest="clean",
+        help="do not remove the content of 'resutest' " "directory at startup",
+    )
+    parser.add_argument(
+        "--timefactor",
+        action="store",
+        type=float,
+        default=1.0,
+        help="multiplicative factor applied to the time limit, "
+        "passed through environment to run_aster "
+        "(default: 1.0)",
+    )
+    group = parser.add_argument_group("ctest options")
+    group.add_argument(
+        "--rerun-failed", action="store_true", help="run only the tests that failed previously"
+    )
+    group.add_argument(
+        "-L",
+        "--label-regex",
+        action="append",
+        metavar="regex",
+        default=[],
+        help="run tests with labels matching regular " "expression.",
+    )
+    group.add_argument(
+        "-LE",
+        "--label-exclude",
+        action="append",
+        metavar="regex",
+        default=[],
+        help="exclude tests with labels matching regular " "expression.",
+    )
+    group.add_argument(
+        "--print-labels", action="store_true", help="print all available test labels"
+    )
 
     args, others = parser.parse_known_args(argv)
     # resutest needed or not?
@@ -190,17 +225,17 @@ def main(argv=None):
     """
     args, ctest_args = parse_args(argv or sys.argv[1:])
 
-    use_tmp = args.resutest.lower() == 'none'
+    use_tmp = args.resutest.lower() == "none"
     if use_tmp:
-        resutest = tempfile.mkdtemp(prefix='resutest_')
+        resutest = tempfile.mkdtemp(prefix="resutest_")
     else:
         resutest = osp.join(os.getcwd(), args.resutest)
 
-    if not use_tmp and args.clean and not args.rerun_failed: # clean = True or 'auto'
+    if not use_tmp and args.clean and not args.rerun_failed:  # clean = True or 'auto'
         if args.clean == "auto" and osp.exists(resutest):
             print(f"{resutest} will be removed.")
             answ = input("do you want to continue (y/n) ?")
-            if answ.lower() not in ('y', 'o'):
+            if answ.lower() not in ("y", "o"):
                 print("interrupt by user")
                 sys.exit(1)
         _run(["rm", "-rf", resutest])
@@ -211,8 +246,7 @@ def main(argv=None):
     testlist = osp.abspath(args.testlist) if args.testlist else ""
     if not args.rerun_failed:
         # create CTestTestfile.cmake
-        create_ctest_file(testlist,
-                          osp.join(resutest, "CTestTestfile.cmake"))
+        create_ctest_file(testlist, osp.join(resutest, "CTestTestfile.cmake"))
     parallel = CFG.get("parallel", 0)
     labels = set()
     if not parallel:
@@ -220,6 +254,8 @@ def main(argv=None):
     if labels or args.label_regex:
         labels.update(args.label_regex)
         ctest_args.extend(["-L", ".*".join(sorted(labels))])
+    if args.label_exclude:
+        ctest_args.extend(["-LE", "|".join(sorted(args.label_exclude))])
 
     # options passed through environment
     os.environ["FACMTPS"] = str(args.timefactor)
@@ -229,7 +265,7 @@ def main(argv=None):
     if not use_tmp:
         legend = ""
         if testlist:
-            legend += " from "  + osp.join(*testlist.split(osp.sep)[-2:])
+            legend += " from " + osp.join(*testlist.split(osp.sep)[-2:])
         report = XUnitReport(resutest, legend)
         report.read_ctest()
         report.write_xml("run_testcases.xml")
@@ -260,8 +296,7 @@ def create_ctest_file(testlist, filename):
         lexport = glob(osp.join(testdir, "*.export"))
 
     tag = CFG.get("version_tag", "")
-    text = [f"set(COMPONENT_NAME ASTER_{tag})",
-            _build_def(bindir, datadir, lexport)]
+    text = [f"set(COMPONENT_NAME ASTER_{tag})", _build_def(bindir, datadir, lexport)]
     with open(filename, "w") as fobj:
         fobj.write("\n".join(text))
 
@@ -284,6 +319,7 @@ zzzz200b
 zzzz218a
 zzzz401a
 """
+
 
 def _build_def(bindir, datadir, lexport):
     re_list = re.compile("P +testlist +(.*)$", re.M)
@@ -317,13 +353,17 @@ def _build_def(bindir, datadir, lexport):
         lab.append(f"nodes={nod:02d}")
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
-        text.append(CTEST_DEF.format(testname=testname,
-                                     labels=" ".join(sorted(lab)),
-                                     processors=mpi * thr,
-                                     ASTERDATADIR=datadir,
-                                     BINDIR=bindir))
+        text.append(
+            CTEST_DEF.format(
+                testname=testname,
+                labels=" ".join(sorted(lab)),
+                processors=mpi * thr,
+                ASTERDATADIR=datadir,
+                BINDIR=bindir,
+            )
+        )
     return "\n".join(text)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
