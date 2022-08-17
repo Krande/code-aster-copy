@@ -3,7 +3,7 @@ P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist ci verification sequential
+P testlist need_data ci verification sequential
 
 F comm hplv107a.comm D 1
 
