@@ -75,10 +75,7 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-    elemVect->setModel( currModel );
-    elemVect->setMaterialField( currMater );
-    elemVect->setElementaryCharacteristics( currElemChara );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
     elemVect->prepareCompute( option );
 
     // Create output fields

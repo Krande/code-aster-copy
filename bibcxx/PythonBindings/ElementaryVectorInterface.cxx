@@ -28,6 +28,7 @@
 #include "aster_pybind.h"
 
 #include "PythonBindings/FieldOnCellsInterface.h"
+#include "PythonBindings/PhysicalProblemInterface.h"
 
 void exportElementaryVectorToPython( py::module_ &mod ) {
 
@@ -35,11 +36,19 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         mod, "BaseElementaryVector" )
         .def( py::init( &initFactoryPtr< BaseElementaryVector > ) )
         .def( py::init( &initFactoryPtr< BaseElementaryVector, std::string > ) )
+        .def( py::init( &initFactoryPtr< BaseElementaryVector, PhysicalProblemPtr > ) )
         .def( "addLoad", &BaseElementaryVector::addLoad< const MechanicalLoadRealPtr & > )
         .def( "assembleWithLoadFunctions", &BaseElementaryVector::assembleWithLoadFunctions,
               py::arg( "dofNume" ), py::arg( "time" ) = 0. )
         .def( "assembleWithMask", &BaseElementaryVector::assembleWithMask )
         .def( "setType", &BaseElementaryVector::setType )
+        .def( "setPhysicalProblem", &BaseElementaryVector::setPhysicalProblem, R"(
+            Set the physical problem
+
+            Arguments:
+                phys_pb (PhysicalProblem): the physical problem.
+            )",
+              py::arg( "phys_pb" ) )
         .def( "setListOfLoads", &BaseElementaryVector::setListOfLoads )
         .def( "setMaterialField", &BaseElementaryVector::setMaterialField )
         .def( "setModel", &BaseElementaryVector::setModel )
@@ -50,28 +59,33 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         mod, "ElementaryVectorReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorReal, PhysicalProblemPtr > ) )
         .def( "getVeass", &ElementaryVectorReal::getVeass )
         .def( "assemble", &ElementaryVectorReal::assemble );
 
-    py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr,
-                BaseElementaryVector >( mod, "ElementaryVectorComplex" )
+    py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr, BaseElementaryVector >(
+        mod, "ElementaryVectorComplex" )
         .def( py::init( &initFactoryPtr< ElementaryVectorComplex > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorComplex, PhysicalProblemPtr > ) )
         .def( "getVeass", &ElementaryVectorComplex::getVeass )
         .def( "assemble", &ElementaryVectorComplex::assemble );
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorDisplacementReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) );
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, PhysicalProblemPtr > ) );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorTemperatureReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) );
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, PhysicalProblemPtr > ) );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
                 ElementaryVectorComplex >( mod, "ElementaryVectorPressureComplex" )
         .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) );
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, PhysicalProblemPtr > ) );
 };

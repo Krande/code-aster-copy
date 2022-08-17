@@ -40,12 +40,7 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_v
 
     bool has_load = false;
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-
-    elemVect->setModel( _phys_problem->getModel() );
-    elemVect->setMaterialField( _phys_problem->getMaterialField() );
-    elemVect->setElementaryCharacteristics( _phys_problem->getElementaryCharacteristics() );
-    elemVect->setListOfLoads( _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         has_load = this->addTherImposedTerms( elemVect, time_value, time_delta, time_theta );
@@ -75,12 +70,7 @@ DiscreteComputation::neumann( const ASTERDOUBLE time_value, const ASTERDOUBLE ti
 
     bool has_load = false;
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-
-    elemVect->setModel( _phys_problem->getModel() );
-    elemVect->setMaterialField( _phys_problem->getMaterialField() );
-    elemVect->setElementaryCharacteristics( _phys_problem->getElementaryCharacteristics() );
-    elemVect->setListOfLoads( _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         has_load = this->addTherNeumannTerms( elemVect, time_value, time_delta, time_theta,
@@ -105,7 +95,7 @@ DiscreteComputation::neumann( const ASTERDOUBLE time_value, const ASTERDOUBLE ti
 
 FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -131,8 +121,6 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
 
     // Construct vect_elem object
-    elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _phys_problem->getModel() );
     elemVect->build();
 
     // Assemble
@@ -142,7 +130,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
 FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                            ASTERDOUBLE scaling ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -163,8 +151,6 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     CALLO_VEBUME( modelName, dispName, listLoadsName, vectElemName, &const_scaling, base );
 
     // Construct vect_elem object
-    elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _phys_problem->getModel() );
     elemVect->build();
 
     // Assemble
@@ -266,13 +252,9 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
     }
 
     // Create elementary vectors
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-    elemVect->setModel( currModel );
-    elemVect->setMaterialField( currMater );
-    if ( currElemChara ) {
-        elemVect->setElementaryCharacteristics( currElemChara );
-    }
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
     elemVect->prepareCompute( "CHAR_VARC" );
+
     int nbExternVar = static_cast< int >( externVarEnumInt::NumberOfExternVarTypes );
     for ( auto iExternVar = 0; iExternVar < nbExternVar; iExternVar++ ) {
         externVarEnumInt numeExternVar = static_cast< externVarEnumInt >( iExternVar );

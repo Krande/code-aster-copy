@@ -110,12 +110,7 @@ FieldOnNodesRealPtr DiscreteComputation::transientThermalLoad(
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-
-    elemVect->setModel( _phys_problem->getModel() );
-    elemVect->setMaterialField( _phys_problem->getMaterialField() );
-    elemVect->setElementaryCharacteristics( _phys_problem->getElementaryCharacteristics() );
-    elemVect->setListOfLoads( _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     // Setup
     const std::string calcul_option( "CHAR_THER_EVOL" );

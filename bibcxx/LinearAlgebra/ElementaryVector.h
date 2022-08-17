@@ -44,6 +44,10 @@ class ElementaryVector : public GenericElementaryVector< ValueType > {
 
     /** @brief Constructor with automatic name */
     ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ){};
+
+    ElementaryVector( const PhysicalProblemPtr phys_pb ) : ElementaryVector() {
+        this->setPhysicalProblem( phys_pb );
+    };
 };
 
 /** @typedef Elementary vector for displacement-double */

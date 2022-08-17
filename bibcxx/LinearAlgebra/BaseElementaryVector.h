@@ -33,6 +33,7 @@
 #include "Loads/ListOfLoads.h"
 #include "Materials/MaterialField.h"
 #include "Numbering/DOFNumbering.h"
+#include "Studies/PhysicalProblem.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -79,6 +80,11 @@ class BaseElementaryVector : public DataStructure {
     /** @brief Constructor with automatic name */
     BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ){};
 
+    /** @brief Constructor with automatic name */
+    BaseElementaryVector( const PhysicalProblemPtr phys_pb ) : BaseElementaryVector() {
+        this->setPhysicalProblem(phys_pb);
+    };
+
   public:
     /** @brief Add a load to elementary vector */
     template < typename... Args >
@@ -123,6 +129,16 @@ class BaseElementaryVector : public DataStructure {
      * @param bEmpty flag for state of datastructure
      */
     void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
+
+    /**
+     * @brief Set physical problem
+     */
+    void setPhysicalProblem( const PhysicalProblemPtr phys_pb ) {
+        _model = phys_pb->getModel();
+        _materialField = phys_pb->getMaterialField();
+        _elemChara = phys_pb->getElementaryCharacteristics();
+        _listOfLoads = phys_pb->getListOfLoads();
+    };
 
     /**
      * @brief Set list of loads

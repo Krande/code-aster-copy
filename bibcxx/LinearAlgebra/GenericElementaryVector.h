@@ -37,7 +37,7 @@
 
 template < typename ValueType >
 class GenericElementaryVector : public BaseElementaryVector {
-  private:
+  protected:
     /** @brief Vectors of RESUELEM */
     std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
 
@@ -62,6 +62,10 @@ class GenericElementaryVector : public BaseElementaryVector {
 
     /** @brief Constructor with automatic name */
     GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ){};
+
+    GenericElementaryVector( const PhysicalProblemPtr phys_pb ) : GenericElementaryVector() {
+        this->setPhysicalProblem( phys_pb );
+    };
 
     /**
      * @brief Return MODE_LOCAL
@@ -220,7 +224,7 @@ class GenericElementaryVector : public BaseElementaryVector {
     void addElementaryTerm( const std::shared_ptr< ElementaryTerm< ValueType > > &elemTerm,
                             const ASTERINTEGER iload ) {
         CALLO_CORICHWRITE( elemTerm->getName(), &iload );
-        _elemComp->addElementaryTerm( elemTerm->getName());
+        _elemComp->addElementaryTerm( elemTerm->getName() );
         _elemTerm.push_back( elemTerm );
     };
 
