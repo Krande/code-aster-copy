@@ -232,17 +232,12 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @return true si la mise a jour s'est bien passee
      */
     void updateValuePointer() {
-        _valuePtr = NULL;
-        bool ok = true;
-        if ( !exists() )
-            ok = false;
-
-        if ( ok ) {
+        if ( !_valuePtr || hasMoved() ) {
+            _valuePtr = NULL;
             const std::string read( "L" );
             std::string charJeveuxName = getJeveuxName();
             CALLO_JEVEUOC( charJeveuxName, read, (void *)( &_valuePtr ) );
-            if ( _valuePtr == NULL )
-                ok = false;
+            AS_ASSERT( _valuePtr );
 
             ASTERINTEGER valTmp;
             JeveuxChar8 param( "IADM" );
@@ -250,8 +245,6 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
             CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
             _jeveuxAdress = valTmp;
         }
-
-        AS_ASSERT( ok );
     };
 
     inline const ValueType &operator[]( const ASTERINTEGER &i ) const {

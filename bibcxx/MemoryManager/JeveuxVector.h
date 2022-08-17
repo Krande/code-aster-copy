@@ -45,6 +45,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
   private:
     /** @brief Pointeur vers la premiere position du vecteur Jeveux */
     ValueType *_valuePtr;
+    /** @brief Adresse du vecteur Jeveux */
+    ASTERINTEGER _jeveuxAdress;
 
   public:
     /**
@@ -53,7 +55,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      *   Attention, le pointeur est mis a zero. Avant d'utiliser ce vecteur,
      *   il faut donc faire appel a JeveuxVectorClass::updateValuePointer
      */
-    JeveuxVectorClass( const std::string &nom ) : JeveuxObjectClass( nom ), _valuePtr( nullptr ){};
+    JeveuxVectorClass( const std::string &nom )
+        : JeveuxObjectClass( nom ), _valuePtr( nullptr ), _jeveuxAdress( 0 ){};
 
     /**
      * @brief Destructeur
@@ -178,6 +181,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _valuePtr != nullptr );
+        AS_ASSERT( !this->hasMoved() );
         if ( i < 0 && i >= this->size() ) {
             std::string error = "Out of range of JeveuxVector '" + _name +
                                 "', index = " + std::to_string( i ) +
@@ -196,6 +200,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     inline ValueType &operator[]( const ASTERINTEGER &i ) {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _valuePtr != nullptr );
+        AS_ASSERT( !this->hasMoved() );
         if ( i < 0 && i >= this->size() ) {
             std::string error = "Out of range of JeveuxVector '" + _name +
                                 "', index = " + std::to_string( i ) +
@@ -340,19 +345,36 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @return true si la mise a jour s'est bien passee
      */
     void updateValuePointer() {
-        _valuePtr = NULL;
-        bool ok = true;
-        if ( !exists() )
-            ok = false;
+        if ( !_valuePtr || hasMoved() ) {
+            _valuePtr = NULL;
 
-        if ( ok ) {
             const std::string read( "L" );
             CALLO_JEVEUOC( _name, read, (void *)( &_valuePtr ) );
-            if ( _valuePtr == NULL )
-                ok = false;
+            AS_ASSERT( _valuePtr );
+
+            JeveuxChar8 param( "IADM" );
+            JeveuxChar32 dummy( " " );
+            CALLO_JELIRA( _name, param, &_jeveuxAdress, dummy );
+        }
+    };
+
+    /**
+     * @brief Est-ce que le pointeur est toujours bon ?
+     * @return true si pointeur toujours valide
+     */
+    bool hasMoved() const {
+        if ( !_valuePtr ) {
+            return true;
         }
 
-        AS_ASSERT( ok );
+        ASTERINTEGER valTmp;
+        JeveuxChar8 param( "IADM" );
+        JeveuxChar32 dummy( " " );
+        CALLO_JELIRA( _name, param, &valTmp, dummy );
+        if ( valTmp != _jeveuxAdress )
+            return true;
+
+        return false;
     };
 
     /** @brief Convert to std::vector */
@@ -754,9 +776,20 @@ class JeveuxVector {
         return *this;
     };
 
-    const JeveuxVectorTypePtr &operator->( void ) const { return _jeveuxVectorPtr; };
+    const JeveuxVectorTypePtr &operator->( void ) const {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _jeveuxVectorPtr );
+#endif
 
-    JeveuxVectorClass< ValueType > &operator*( void ) const { return *_jeveuxVectorPtr; };
+        return _jeveuxVectorPtr;
+    };
+
+    JeveuxVectorClass< ValueType > &operator*( void ) const {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _jeveuxVectorPtr );
+#endif
+        return *_jeveuxVectorPtr;
+    };
 
     bool isEmpty() const {
         if ( _jeveuxVectorPtr == nullptr )
