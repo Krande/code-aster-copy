@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -189,7 +189,7 @@ subroutine compBCovaMatrHexa(kineHexa)
 ! - Parameters
     type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 ! - Local
-    integer, parameter :: nbNodeGeom = SSH_NBNODE_HEXA
+    integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
     integer :: iNodeGeom, EH, AD, JM, C1, C2
     real(kind=8) :: aux13(3), aux23(3), aux12(3), aux11(3), aux22(3), aux33(3)
     real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA), dN_dZeta(SSH_NBNODEG_HEXA)
