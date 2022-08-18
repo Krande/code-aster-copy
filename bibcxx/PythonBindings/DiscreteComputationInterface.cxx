@@ -189,7 +189,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )" )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(
-            Return elementary matrices for dual BC
+            Return elementary matrices for dual mechanical BC
+
+            Returns:
+                ElementaryMatrix: elementary matrices
+        )" )
+        .def( "dualMobilityMatrix", &DiscreteComputation::dualMobilityMatrix,
+              R"(
+            Return elementary matrices for dual acoustic BC
 
             Returns:
                 ElementaryMatrix: elementary matrices
@@ -213,6 +220,17 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
               py::arg( "fourierMode" ) = 0, py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
+
+        .def( "linearMobilityMatrix", &DiscreteComputation::linearMobilityMatrix,
+              R"(
+            Return the elementary matices for linear mobility acoustic matrix
+
+            Arguments:
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+            Returns:
+                ElementaryMatrix: elementary linear acoustic matrices
+        )",
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
             Return the elementary matrices for mechanical mass matrix

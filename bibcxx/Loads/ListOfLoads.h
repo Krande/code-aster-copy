@@ -33,8 +33,8 @@
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
-#include "Loads/ThermalLoad.h"
 #include "Loads/ParallelThermalLoad.h"
+#include "Loads/ThermalLoad.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 
@@ -427,7 +427,6 @@ class ListOfLoads : public DataStructure {
 
 #ifdef ASTER_HAVE_MPI
 
-
     /**
      * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
@@ -639,8 +638,9 @@ class ListOfLoads : public DataStructure {
      * @brief Function de récupération de la liste des charges thermiques
      * @return _listOfThermalLoadsReal
      */
-    const ListParaTherLoadReal &getParallelThermalLoadsReal() const { 
-        return _listOfParallelThermalLoadsReal; };
+    const ListParaTherLoadReal &getParallelThermalLoadsReal() const {
+        return _listOfParallelThermalLoadsReal;
+    };
 
     /**
      * @brief Function de récupération de la liste des charges thermiques
@@ -650,6 +650,14 @@ class ListOfLoads : public DataStructure {
         return _listOfParallelThermalLoadsFunction;
     };
 #endif /* ASTER_HAVE_MPI */
+
+    /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoadsReal
+     */
+    const ListAcouLoadComplex &getAcousticLoadsComplex() const {
+        return _listOfAcousticLoadsComplex;
+    };
 
     /**
      * @brief Function de récupération de la liste des charges
@@ -681,8 +689,7 @@ class ListOfLoads : public DataStructure {
 #ifdef ASTER_HAVE_MPI
                _listOfParallelMechanicalLoadsReal.size() +
                _listOfParallelMechanicalLoadsFunction.size() +
-               _listOfParallelThermalLoadsReal.size() + 
-               _listOfParallelThermalLoadsFunction.size() +
+               _listOfParallelThermalLoadsReal.size() + _listOfParallelThermalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
                _listOfThermalLoadsReal.size() + _listOfThermalLoadsFunction.size() +
                _listOfAcousticLoadsComplex.size() + _listOfDirichletBCs.size();
@@ -696,8 +703,8 @@ class ListOfLoads : public DataStructure {
 #ifdef ASTER_HAVE_MPI
                  _listOfParallelMechanicalLoadsReal.size() +
                  _listOfParallelMechanicalLoadsFunction.size() +
-               _listOfParallelThermalLoadsReal.size() + 
-               _listOfParallelThermalLoadsFunction.size() +
+                 _listOfParallelThermalLoadsReal.size() +
+                 _listOfParallelThermalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
                  _listOfThermalLoadsReal.size() + _listOfThermalLoadsFunction.size() +
                  _listOfAcousticLoadsComplex.size() ) > 0;

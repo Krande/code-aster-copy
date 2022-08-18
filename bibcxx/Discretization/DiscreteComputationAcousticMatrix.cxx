@@ -25,6 +25,93 @@
 #include "Discretization/Calcul.h"
 #include "Discretization/DiscreteComputation.h"
 
+void DiscreteComputation::baseDualAcousticMatrix(
+    CalculPtr &calcul, ElementaryMatrixPressureComplexPtr &elemMatr ) const {
+
+    // Prepare loads
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+
+    // Select option
+    calcul->setOption( "ACOU_DDLM_C" );
+
+    auto impl = [calcul, elemMatr]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto FEDesc = load->getFiniteElementDescriptor();
+            auto field = load->getMultiplicativeField();
+            if ( field && field->exists() && FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( FEDesc );
+                calcul->addInputField( "PDDLMUC", field );
+                calcul->addOutputElementaryTerm( "PMATTTC",
+                                                 std::make_shared< ElementaryTermComplex >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PMATTTC" ) ) {
+                    elemMatr->addElementaryTerm(
+                        calcul->getOutputElementaryTermComplex( "PMATTTC" ) );
+                }
+            }
+        }
+    };
+
+    impl( listOfLoads->getAcousticLoadsComplex() );
+};
+
+ElementaryMatrixPressureComplexPtr
+DiscreteComputation::linearMobilityMatrix( const VectorString &groupOfCells ) const {
+    AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
+
+    const std::string option( "RIGI_ACOU" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+
+    // Prepare computing
+    auto calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PMATTTC", std::make_shared< ElementaryTermComplex >() );
+
+    // Compute elementary matrices for mass
+    calcul->compute();
+    if ( calcul->hasOutputElementaryTerm( "PMATTTC" ) )
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATTTC" ) );
+
+    elemMatr->build();
+    return elemMatr;
+};
+
+ElementaryMatrixPressureComplexPtr DiscreteComputation::dualMobilityMatrix() const {
+    AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
+
+    const std::string option( "ACOU_DDLM_C" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Prepare computing
+    auto calcul = std::make_shared< Calcul >( option );
+    calcul->setModel( _phys_problem->getModel() );
+
+    DiscreteComputation::baseDualAcousticMatrix( calcul, elemMatr );
+
+    elemMatr->build();
+    return elemMatr;
+};
+
 ElementaryMatrixPressureComplexPtr
 DiscreteComputation::compressibilityMatrix( const VectorString &groupOfCells ) const {
 

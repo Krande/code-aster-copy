@@ -76,6 +76,14 @@ class AcousticLoad : public DataStructure {
         return _acouLoadDesc->getFiniteElementDescriptor();
     };
 
+    AcousticLoadDescriptionPtr< ConstantFieldOnCellsType > getAcousticLoadDescription() const {
+        return _acouLoadDesc;
+    };
+
+    ConstantFieldOnCellsComplexPtr getMultiplicativeField() const {
+        return getAcousticLoadDescription()->getMultiplicativeField();
+    }
+
     /**
      * @brief Get the model
      */

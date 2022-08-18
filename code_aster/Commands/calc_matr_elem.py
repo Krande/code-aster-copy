@@ -46,7 +46,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
-                            "MASS_ACOU",):
+                            "MASS_ACOU", "RIGI_ACOU", ):
             return False
 
         strucElem = keywords.get("CARA_ELEM")
@@ -127,7 +127,8 @@ class ComputeElementaryMatrix(ExecuteCommand):
             externVar = None
             if phys_pb.getMaterialField() is not None:
                 if phys_pb.getMaterialField().hasExternalStateVariable():
-                    externVar = disc_comp.createExternalStateVariablesField(time)
+                    externVar = disc_comp.createExternalStateVariablesField(
+                        time)
 
             if myOption == "RIGI_MECA":
                 if keywords["CALC_ELEM_MODELE"] == "OUI":
@@ -136,7 +137,8 @@ class ComputeElementaryMatrix(ExecuteCommand):
                     )
 
                     matr_rigi_dual = disc_comp.dualStiffnessMatrix()
-                    self._result.addElementaryTerm(matr_rigi_dual.getElementaryTerms())
+                    self._result.addElementaryTerm(
+                        matr_rigi_dual.getElementaryTerms())
                     self._result.build()
                 else:
                     self._result = disc_comp.dualStiffnessMatrix()
@@ -168,6 +170,15 @@ class ComputeElementaryMatrix(ExecuteCommand):
                                                                   externVarField=externVar)
             elif myOption == "MASS_ACOU":
                 self._result = disc_comp.compressibilityMatrix(group_ma)
+
+            elif myOption == "RIGI_ACOU":
+                self._result = disc_comp.linearMobilityMatrix(group_ma)
+
+                matr_rigi_dual = disc_comp.dualMobilityMatrix()
+                self._result.addElementaryTerm(
+                    matr_rigi_dual.getElementaryTerms())
+                self._result.build()
+
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))
         else:

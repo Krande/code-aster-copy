@@ -64,6 +64,11 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixDisplacementComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementComplex::getFiniteElementDescriptors )
+        .def( "addElementaryTerm", py::overload_cast< const ElementaryTermComplexPtr & >(
+                                       &ElementaryMatrixDisplacementComplex::addElementaryTerm ) )
+        .def( "addElementaryTerm",
+              py::overload_cast< const std::vector< ElementaryTermComplexPtr > & >(
+                  &ElementaryMatrixDisplacementComplex::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixDisplacementComplex::getElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixDisplacementComplex::hasElementaryTerms );
 
@@ -75,6 +80,11 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixTemperatureReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixTemperatureReal::getFiniteElementDescriptors )
+        .def( "addElementaryTerm", py::overload_cast< const ElementaryTermRealPtr & >(
+                                       &ElementaryMatrixTemperatureReal::addElementaryTerm ) )
+        .def( "addElementaryTerm",
+              py::overload_cast< const std::vector< ElementaryTermRealPtr > & >(
+                  &ElementaryMatrixTemperatureReal::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixTemperatureReal::getElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixTemperatureReal::hasElementaryTerms );
 
@@ -86,6 +96,11 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixPressureComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixPressureComplex::getFiniteElementDescriptors )
+        .def( "addElementaryTerm", py::overload_cast< const ElementaryTermComplexPtr & >(
+                                       &ElementaryMatrixPressureComplex::addElementaryTerm ) )
+        .def( "addElementaryTerm",
+              py::overload_cast< const std::vector< ElementaryTermComplexPtr > & >(
+                  &ElementaryMatrixPressureComplex::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixPressureComplex::getElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixPressureComplex::hasElementaryTerms );
 };

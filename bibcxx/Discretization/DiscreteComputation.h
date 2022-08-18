@@ -48,10 +48,6 @@ class DiscreteComputation {
     /** @brief Physical problem */
     PhysicalProblemPtr _phys_problem;
 
-    /** @brief Compute B elementary matrices fo dualized boundary conditions */
-    void baseDualStiffnessMatrix( CalculPtr &calcul,
-                                  ElementaryMatrixDisplacementRealPtr &elemMatr ) const;
-
     /** @brief Create time field */
     ConstantFieldOnCellsRealPtr createTimeField( const ASTERDOUBLE time_value,
                                                  const ASTERDOUBLE time_delta = 0.0,
@@ -64,9 +60,17 @@ class DiscreteComputation {
                                         const FieldOnCellsRealPtr _externVarFieldCurr,
                                         const VectorString &groupOfCells = VectorString() ) const;
 
+    /** @brief Compute B elementary matrices fo dualized boundary conditions */
+    void baseDualStiffnessMatrix( CalculPtr &calcul,
+                                  ElementaryMatrixDisplacementRealPtr &elemMatr ) const;
+
     /** @brief Compute B elementary matrices fo dualized thermal boundary conditions */
     void baseDualThermalMatrix( CalculPtr &calcul,
                                 ElementaryMatrixTemperatureRealPtr &elemMatr ) const;
+
+    /** @brief Compute B elementary matrices fo dualized acoustic boundary conditions */
+    void baseDualAcousticMatrix( CalculPtr &calcul,
+                                 ElementaryMatrixPressureComplexPtr &elemMatr ) const;
 
     /** @brief Compute echange contributions to thermal matrix */
     void baseExchangeThermalMatrix( CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr,
@@ -165,6 +169,15 @@ class DiscreteComputation {
                               const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
+     * @brief Compute elementary matrices for acoustic model (RIGI_ACOU)
+     * @param time_value Time
+     * @param groupofCells GROUP_MA
+     * @return Elementary matrices for acoustic model (RIGI_ACOU)
+     */
+    ElementaryMatrixPressureComplexPtr
+    linearMobilityMatrix( const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)
      * @param time Time
      * @param groupofCells GROUP_MA
@@ -238,6 +251,8 @@ class DiscreteComputation {
      * @return Elementary matrices for dualized boundary conditions
      */
     ElementaryMatrixDisplacementRealPtr dualStiffnessMatrix() const;
+
+    ElementaryMatrixPressureComplexPtr dualMobilityMatrix() const;
 
     /**
      * @brief Get physical problem

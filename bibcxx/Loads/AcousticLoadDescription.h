@@ -115,6 +115,8 @@ class AcousticLoadDescription : public DataStructure {
      */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 
+    ConstantFieldOnCellsComplexPtr getMultiplicativeField() const { return _multiplier; };
+
     /**
      * @brief Get the model
      */
