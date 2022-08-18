@@ -124,8 +124,8 @@ class AcousticLoadDescription : public DataStructure {
      */
     ModelPtr getModel() { return _model; };
 
-    bool hasLoad( const std::string &load_name ) const {
-        if ( load_name == "IMPE_FACE" ) {
+    bool hasLoadField( const std::string &load_name ) const {
+        if ( load_name == "IMPED" ) {
             return _impedanceValues->exists();
         } else {
             AS_ASSERT( false );

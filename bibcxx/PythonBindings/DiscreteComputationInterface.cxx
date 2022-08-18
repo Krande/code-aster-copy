@@ -168,7 +168,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time_value" ), py::arg( "disp" ) )
         .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix, R"(
-            Return the elementary matrices for elastic Stiffness matrix
+            Return the elementary matrices for elastic Stiffness matrix.
+            Option RIGI_MECA.
 
             Arguments:
                   time_value (float): Current time (default: 0.0)
@@ -205,7 +206,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
         .def( "linearConductivityMatrix", &DiscreteComputation::linearConductivityMatrix,
               R"(
-            Return the elementary matices for linear thermal matrix
+            Return the elementary matices for linear thermal matrix.
+            Option RIGI_THER.
 
             Arguments:
                 time_value (float): Current time
@@ -225,6 +227,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         .def( "linearMobilityMatrix", &DiscreteComputation::linearMobilityMatrix,
               R"(
             Return the elementary matices for linear mobility acoustic matrix
+            Option RIGI_ACOU.
 
             Arguments:
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -235,6 +238,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
         .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
             Return the elementary matrices for mechanical mass matrix
+            Option MASS_MECA.
 
             Arguments:
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -246,7 +250,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "compressibilityMatrix", &DiscreteComputation::compressibilityMatrix, R"(
-            Return the elementary matrices for compressibility acoustic matrix
+            Return the elementary matrices for compressibility acoustic matrix.
+            Option MASS_ACOU.
 
             Arguments:
                 groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -257,7 +262,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "linearCapacityMatrix", &DiscreteComputation::linearCapacityMatrix, R"(
-            Return the elementary matrices for linear Capacity matrix in thermal computation
+            Return the elementary matrices for linear Capacity matrix in thermal computation.
+            Option MASS_THER.
 
             Arguments:
                 time_value (float): Current time
@@ -273,7 +279,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(
-            Return the elementary matrices for damping matrix
+            Return the elementary matrices for damping matrix.
+            Option AMOR_MECA.
 
             Arguments:
                 massMatrix : elementary mass matrix
@@ -288,14 +295,16 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "impedanceMatrix", &DiscreteComputation::impedanceMatrix, R"(
-            Return the elementary matrices for impedance (acoustic) damping matrix
+            Return the elementary matrices for impedance (acoustic) damping matrix.
+            Option AMOR_ACOU.
 
             Returns:
                 ElementaryMatrixReal: elementary damping matrix
             )" )
 
         .def( "complexStiffnessMatrix", &DiscreteComputation::complexStiffnessMatrix, R"(
-            Return the elementary matrices for viscoelastic Stiffness matrix
+            Return the elementary matrices for viscoelastic Stiffness matrix.
+            Option RIGI_MECA_HYST.
 
             Arguments:
                 stiffnessMatrix : elementary stiffness matrix
@@ -307,6 +316,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "stiffnessMatrix" ), py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
+
+        .def( "gyroscopicStiffnessMatrix", &DiscreteComputation::gyroscopicStiffnessMatrix, R"(
+            Return the elementary matrices for gyroscopic Stiffness matrix.
+            Option RIGI_GYRO.
+
+            Arguments:
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                ElementaryMatrixReal: elementary gyroscopic rigidity matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
               R"(

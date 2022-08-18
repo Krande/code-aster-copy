@@ -164,14 +164,28 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; }
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
 
-    bool hasLoad( const std::string load_name ) const {
-        if ( load_name == "IMPE_FACE" ) {
-            return _imped->exists();
+    bool hasLoadField( const std::string load_name ) const {
+        if ( load_name == "IMPED" ) {
+            return ( _imped && _imped->exists() );
+        } else if ( load_name == "ROTAT" ) {
+            return ( _rotat && _rotat->exists() );
         } else {
             AS_ASSERT( false );
         }
 
         return false;
+    }
+
+    ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
+        if ( name == "IMPED" ) {
+            return _imped;
+        } else if ( name == "ROTAT" ) {
+            return _rotat;
+        } else {
+            AS_ASSERT( false );
+        }
+
+        return nullptr;
     }
 
     /**

@@ -128,8 +128,13 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
 
     JeveuxVectorChar8 getType() const { return _type; }
 
-    bool hasLoad( const std::string &load_name ) const {
-        return _mecaLoadDesc->hasLoad( load_name );
+    bool hasLoadField( const std::string &load_name ) const {
+        return _mecaLoadDesc->hasLoadField( load_name );
+    }
+
+    std::shared_ptr< ConstantFieldOnCellsType >
+    getConstantLoadField( const std::string name ) const {
+        return _mecaLoadDesc->getConstantLoadField( name );
     }
 
     /**

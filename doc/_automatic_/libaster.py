@@ -717,6 +717,30 @@ class DiscreteComputation:
     def __init__(self, arg0):
         pass
     
+    def complexStiffnessMatrix(self, stiffnessMatrix, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for viscoelastic Stiffness matrix.
+        Option RIGI_MECA_HYST.
+        
+        Arguments:
+            stiffnessMatrix : elementary stiffness matrix
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+            ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
+        """
+    
+    def compressibilityMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for compressibility acoustic matrix.
+        Option MASS_ACOU.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary mass matrix
+        """
+    
     def computeExternalStateVariablesLoad(self, time_value, externVarField):
         """Compute load from external state variables
         
@@ -835,18 +859,18 @@ class DiscreteComputation:
               FieldOnCells: field of external state variables at current time
         """
     
-    def dampingMatrix(self, massMatrix= None, stiffnessMatrix= None, time_value= 0.0, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for elastic Stiffness matrix
+    def dampingMatrix(self, massMatrix= None, stiffnessMatrix= None, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for damping matrix.
+        Option AMOR_MECA.
         
         Arguments:
             massMatrix : elementary mass matrix
             stiffnessMatrix : elementary stiffness matrix
-            time_value (float): current time (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-            ElementaryMatrix: elementary damping matrix
+            ElementaryMatrixReal: elementary damping matrix
         """
     
     def dirichletBC(self, time):
@@ -869,6 +893,13 @@ class DiscreteComputation:
               FieldOnNodes: Dirichlet load vector
         """
     
+    def dualMobilityMatrix(self):
+        """Return elementary matrices for dual acoustic BC
+        
+        Returns:
+            ElementaryMatrix: elementary matrices
+        """
+    
     def dualReaction(self, disp_curr):
         """Return the imposed displacement assembled vector
         
@@ -880,14 +911,15 @@ class DiscreteComputation:
         """
     
     def dualStiffnessMatrix(self):
-        """Return elementary matrices for dual BC
+        """Return elementary matrices for dual mechanical BC
         
         Returns:
             ElementaryMatrix: elementary matrices
         """
     
     def elasticStiffnessMatrix(self, time_value= 0.0, fourierMode= -1, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for elastic Stiffness matrix
+        """Return the elementary matrices for elastic Stiffness matrix.
+        Option RIGI_MECA.
         
         Arguments:
               time_value (float): Current time (default: 0.0)
@@ -904,6 +936,26 @@ class DiscreteComputation:
         
         Returns:
               PhysicalProblem: physical problem
+        """
+    
+    def gyroscopicStiffnessMatrix(self, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for gyroscopic Stiffness matrix.
+        Option RIGI_GYRO.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+            ElementaryMatrixReal: elementary gyroscopic rigidity matrix
+        """
+    
+    def impedanceMatrix(self):
+        """Return the elementary matrices for impedance (acoustic) damping matrix.
+        Option AMOR_ACOU.
+        
+        Returns:
+            ElementaryMatrixReal: elementary damping matrix
         """
     
     def imposedDualBC(self, *args, **kwargs):
@@ -950,7 +1002,8 @@ class DiscreteComputation:
         """
     
     def linearCapacityMatrix(self, time_value, time_delta, time_theta, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for linear Capacity matrix in thermal computation
+        """Return the elementary matrices for linear Capacity matrix in thermal computation.
+        Option MASS_THER.
         
         Arguments:
             time_value (float): Current time
@@ -964,7 +1017,8 @@ class DiscreteComputation:
         """
     
     def linearConductivityMatrix(self, time_value, time_delta, time_theta, fourierMode= 0, groupOfCells= [], externVarField= None):
-        """Return the elementary matices for linear thermal matrix
+        """Return the elementary matices for linear thermal matrix.
+        Option RIGI_THER.
         
         Arguments:
             time_value (float): Current time
@@ -978,11 +1032,21 @@ class DiscreteComputation:
             ElementaryMatrix: elementary linear thermal matrices
         """
     
-    def massMatrix(self, time_value= 0.0, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for elastic Stiffness matrix
+    def linearMobilityMatrix(self, groupOfCells= []):
+        """Return the elementary matices for linear mobility acoustic matrix
+        Option RIGI_ACOU.
         
         Arguments:
-            time_value (float): current time (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+        Returns:
+            ElementaryMatrix: elementary linear acoustic matrices
+        """
+    
+    def massMatrix(self, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for mechanical mass matrix
+        Option MASS_MECA.
+        
+        Arguments:
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             externVarField (fieldOnCellsReal): external state variable at current time
@@ -5428,6 +5492,14 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
         2. __init__(self: libaster.ElementaryMatrixDisplacementComplex, arg0: str) -> None
         """
     
+    def addElementaryTerm(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementComplex, arg0: libaster.ElementaryTermComplex) -> None
+        
+        2. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementComplex, arg0: List[libaster.ElementaryTermComplex]) -> None
+        """
+    
     def build(self):
         pass
     
@@ -5462,6 +5534,14 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
         2. __init__(self: libaster.ElementaryMatrixTemperatureReal, arg0: str) -> None
         """
     
+    def addElementaryTerm(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. addElementaryTerm(self: libaster.ElementaryMatrixTemperatureReal, arg0: libaster.ElementaryTermReal) -> None
+        
+        2. addElementaryTerm(self: libaster.ElementaryMatrixTemperatureReal, arg0: List[libaster.ElementaryTermReal]) -> None
+        """
+    
     def build(self):
         pass
     
@@ -5494,6 +5574,14 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
         1. __init__(self: libaster.ElementaryMatrixPressureComplex) -> None
         
         2. __init__(self: libaster.ElementaryMatrixPressureComplex, arg0: str) -> None
+        """
+    
+    def addElementaryTerm(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. addElementaryTerm(self: libaster.ElementaryMatrixPressureComplex, arg0: libaster.ElementaryTermComplex) -> None
+        
+        2. addElementaryTerm(self: libaster.ElementaryMatrixPressureComplex, arg0: List[libaster.ElementaryTermComplex]) -> None
         """
     
     def build(self):
@@ -6429,7 +6517,7 @@ class MechanicalLoadReal(DataStructure):
             Table: Table stored with the given identifier.
         """
     
-    def hasLoad(self, arg0):
+    def hasLoadField(self, arg0):
         pass
     
     def updateValuePointers(self):
@@ -6475,7 +6563,7 @@ class MechanicalLoadFunction(DataStructure):
             Table: Table stored with the given identifier.
         """
     
-    def hasLoad(self, arg0):
+    def hasLoadField(self, arg0):
         pass
     
     def updateValuePointers(self):
@@ -6521,7 +6609,7 @@ class MechanicalLoadComplex(DataStructure):
             Table: Table stored with the given identifier.
         """
     
-    def hasLoad(self, arg0):
+    def hasLoadField(self, arg0):
         pass
     
     def updateValuePointers(self):
@@ -9873,6 +9961,14 @@ class PhysicalProblem:
         35. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Formula) -> None
         
         36. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function2D) -> None
+        
+        37. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex) -> None
+        
+        38. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function) -> None
+        
+        39. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Formula) -> None
+        
+        40. addLoad(self: libaster.PhysicalProblem, arg0: libaster.AcousticLoadComplex, arg1: libaster.Function2D) -> None
         """
     
     def computeBehaviourProperty(self, COMPORTEMENT, SIGM_INIT= 'NON', INFO= 1):

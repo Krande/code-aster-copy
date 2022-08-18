@@ -281,8 +281,8 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
 };
 
 ElementaryMatrixDisplacementComplexPtr DiscreteComputation::complexStiffnessMatrix(
-    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
-    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
+    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix, const VectorString &groupOfCells,
+    const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -364,7 +364,7 @@ void DiscreteComputation::baseDualStiffnessMatrix(
     CalculPtr &calcul, ElementaryMatrixDisplacementRealPtr &elemMatr ) const {
 
     // Prepare loads
-    const auto &_listOfLoads = _phys_problem->getListOfLoads();
+    const auto &listOfLoads = _phys_problem->getListOfLoads();
 
     // Select option
     calcul->setOption( "MECA_DDLM_R" );
@@ -388,12 +388,12 @@ void DiscreteComputation::baseDualStiffnessMatrix(
         }
     };
 
-    impl( _listOfLoads->getMechanicalLoadsReal() );
-    impl( _listOfLoads->getMechanicalLoadsFunction() );
+    impl( listOfLoads->getMechanicalLoadsReal() );
+    impl( listOfLoads->getMechanicalLoadsFunction() );
 
 #ifdef ASTER_HAVE_MPI
-    impl( _listOfLoads->getParallelMechanicalLoadsReal() );
-    impl( _listOfLoads->getParallelMechanicalLoadsFunction() );
+    impl( listOfLoads->getParallelMechanicalLoadsReal() );
+    impl( listOfLoads->getParallelMechanicalLoadsFunction() );
 #endif
 };
 
@@ -640,3 +640,72 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
 
     return elemMatr;
 }
+
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells,
+                                                const FieldOnCellsRealPtr _externVarField ) const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+    const std::string option = "RIGI_GYRO";
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Prepare loads
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto model = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Get gyroscopic fields
+    std::vector< DataFieldPtr > rotat;
+    auto impl = [&rotat]( auto loads ) {
+        for ( const auto &load : loads ) {
+            if ( load->hasLoadField( "ROTAT" ) ) {
+                rotat.push_back( load->getConstantLoadField( "ROTAT" ) );
+            }
+        }
+    };
+
+    impl( listOfLoads->getMechanicalLoadsReal() );
+    impl( listOfLoads->getMechanicalLoadsFunction() );
+
+    if ( rotat.empty() ) {
+        rotat.push_back( nullptr );
+    }
+
+    for ( const auto &gyro : rotat ) {
+        // Prepare computing
+        auto calcul = std::make_unique< Calcul >( option );
+        if ( groupOfCells.empty() ) {
+            calcul->setModel( model );
+        } else {
+            calcul->setGroupsOfCells( model, groupOfCells );
+        }
+
+        // Add input fields
+        calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
+        if ( currMater ) {
+            calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+            calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+        }
+        if ( _externVarField ) {
+            calcul->addInputField( "PVARCPR", _externVarField );
+        }
+        if ( currElemChara ) {
+            calcul->addElementaryCharacteristicsField( currElemChara );
+        }
+
+        if ( gyro ) {
+            calcul->addInputField( "PROTATR", gyro );
+        }
+        calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) ) {
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+};

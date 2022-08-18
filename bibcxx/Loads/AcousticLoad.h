@@ -88,8 +88,8 @@ class AcousticLoad : public DataStructure {
         return _acouLoadDesc->getImpedanceField();
     };
 
-    bool hasLoad( const std::string &load_name ) const {
-        return _acouLoadDesc->hasLoad( load_name );
+    bool hasLoadField( const std::string &load_name ) const {
+        return _acouLoadDesc->hasLoadField( load_name );
     };
 
     /**

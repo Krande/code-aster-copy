@@ -45,6 +45,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
+                            "RIGI_GYRO",
                             "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
             return False
@@ -142,6 +143,10 @@ class ComputeElementaryMatrix(ExecuteCommand):
                     self._result.build()
                 else:
                     self._result = disc_comp.dualStiffnessMatrix()
+
+            elif myOption == "RIGI_GYRO":
+                self._result = disc_comp.gyroscopicStiffnessMatrix(
+                    group_ma, externVarField=externVar)
 
             elif myOption == "MASS_MECA":
                 self._result = disc_comp.massMatrix(

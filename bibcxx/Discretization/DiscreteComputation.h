@@ -157,6 +157,16 @@ class DiscreteComputation {
                             const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
+     * @brief Compute elementary matrices for rotational mechanical stiffness (RIGI_GYRO)
+     * @param time_value Time
+     * @param groupofCells GROUP_MA
+     * @return Elementary matrices for mechanical stiffness (RIGI_GYRO)
+     */
+    ElementaryMatrixDisplacementRealPtr
+    gyroscopicStiffnessMatrix( const VectorString &groupOfCells = VectorString(),
+                               const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+
+    /**
      * @brief Compute elementary matrices for thermal model (RIGI_THER)
      * @param time_value Time
      * @param groupofCells GROUP_MA
