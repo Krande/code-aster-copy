@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
                   nompf)
     implicit none
@@ -40,7 +40,7 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 !             0 POUR 'C', 1 POUR 'F',2 POUR 'N',  N POUR 'I'
 ! OUT NOMPF :NOMS DE CES PARAMETRES
 !     ------------------------------------------------------------------
-    integer ::  ipa
+    integer :: ipa
     integer :: vali(2)
     character(len=24) :: valk
     character(len=19) :: nomfon
@@ -71,9 +71,9 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
         nomfon = nomf
         call jelira(nomfon//'.NOVA', 'LONUTI', nbpf)
         call jeveuo(nomfon//'.NOVA', 'L', vk24=nova)
-        do 12 ipa = 1, nbpf
+        do ipa = 1, nbpf
             nompf(ipa) = nova(ipa)
-12      continue
+        end do
 !
     else
         ASSERT(.false.)

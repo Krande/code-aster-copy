@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ascima(infcha, nu, matass, cumul)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/asschc.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -30,6 +29,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: infcha
     character(len=*) :: nu, matass
     integer :: nchci
@@ -53,43 +53,43 @@ subroutine ascima(infcha, nu, matass, cumul)
 !----------------------------------------------------------------------
     character(len=4) :: cumul
     character(len=19) :: infch2
-    integer :: iret, iret1, iret2, iret3, ich, ncharg,   jlchci
+    integer :: iret, iret1, iret2, iret3, ich, ncharg, jlchci
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
     infch2=infcha
-    if (infch2 .eq. ' ') goto 9999
+    if (infch2 .eq. ' ') goto 999
 !
     call jeexin(infch2//'.LCHA', iret1)
     call jeexin(infch2//'.INFC', iret2)
     call jeexin(infcha, iret3)
-    if (iret1+iret2+iret3 .eq. 0) goto 9999
+    if (iret1+iret2+iret3 .eq. 0) goto 999
 !
 !
 !     -- CAS SD_INFCHA :
     if (iret1+iret2 .gt. 0) then
         call jeexin(infch2//'.LCHA', iret)
-        if (iret .eq. 0) goto 9999
+        if (iret .eq. 0) goto 999
 !
         call jeveuo(infch2//'.LCHA', 'L', vk24=lcha)
         call jeveuo(infch2//'.INFC', 'L', vi=infc)
 !
         ncharg = infc(1)
-        if (ncharg .eq. 0) goto 9999
+        if (ncharg .eq. 0) goto 999
         call wkvect('&&ASCIMA.LCHCI', 'V V K24', ncharg, jlchci)
 !
         nchci = 0
-        do 1 ich = 1, ncharg
+        do ich = 1, ncharg
 !
 !         -- CAS DES SD_CHAR_CINE :
             if (infc(ich+1) .lt. 0) then
                 nchci = nchci+1
                 zk24(jlchci-1+nchci) = lcha(ich)
             endif
- 1      continue
-        if (nchci .eq. 0) goto 9999
+        end do
+        if (nchci .eq. 0) goto 999
         call asschc(matass, nchci, zk24(jlchci), nu, cumul)
 !
 !
@@ -104,7 +104,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !
 !
 !
-9999  continue
+999 continue
     call jedetr('&&ASCIMA.LCHCI')
     call jedema()
 end subroutine

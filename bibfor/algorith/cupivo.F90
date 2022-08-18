@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
                   spavan, deficu, resocu)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cudisi.h"
 #include "asterfort/cuimp2.h"
 #include "asterfort/cutabl.h"
@@ -35,6 +34,7 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: resocu
     character(len=24) :: deficu
     real(kind=8) :: xjvmax
@@ -73,13 +73,13 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
 !
     character(len=1) :: typesp
     character(len=19) :: liac, liot, matr, stoc, ouvert
-    integer :: jliac, jliot, jvale, jva,  jouv
+    integer :: jliac, jliot, jvale, jva, jouv
     integer :: nbbloc
     real(kind=8) :: copmax
     integer :: kk1, kk2, kk1f, kk2f
     integer :: nbote, pivot, nbliai, lliac, ii
     integer :: niv, ifm
-    integer :: bloc,   dercol
+    integer :: bloc, dercol
     integer :: nnocu
     integer, pointer :: scbl(:) => null()
     integer, pointer :: scib(:) => null()
@@ -114,8 +114,8 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
     ouvert='&&ELPIV2.TRAV'
     call wkvect(ouvert, 'V V L', nbbloc, jouv)
 !
-    do 10 kk1 = spavan+1, nbliac
-        do 20 kk2 = 1, nbliac
+    do kk1 = spavan+1, nbliac
+        do kk2 = 1, nbliac
             if (kk2 .gt. kk1) then
                 kk1f = kk2
                 kk2f = kk1
@@ -143,7 +143,7 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
                 pivot = 0
                 goto 10
             endif
-20      continue
+        end do
         if (pivot .eq. 1) then
 !
             lliac = zi(jliac-1+kk1)
@@ -157,9 +157,10 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
             call cuimp2(ifm, lliac, typesp, 'PIV', resocu)
             goto 40
         endif
-10  end do
+ 10     continue
+    end do
 !
-40  continue
+ 40 continue
     call jedetr(ouvert)
     call jedema()
 !

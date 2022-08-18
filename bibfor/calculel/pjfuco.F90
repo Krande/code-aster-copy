@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pjfuco(c1, c2, base, c3)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jelira.h"
@@ -26,8 +28,6 @@ subroutine pjfuco(c1, c2, base, c3)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=16) :: c1, c2, c3
     character(len=1) :: base
@@ -49,7 +49,7 @@ subroutine pjfuco(c1, c2, base, c3)
     character(len=8) :: ma1, ma2
     character(len=24) :: valk(2)
     integer :: i1, i2, i3, j1, j2, j3, k
-    integer :: ino2,  deca1, deca2, deca3, nbno, lont, nbno2
+    integer :: ino2, deca1, deca2, deca3, nbno, lont, nbno2
     integer :: i1nb, i2nb, i3nb, i1nu, i2nu, i3nu, i1cf, i2cf, i3cf, i1ou2
     integer, pointer :: tmp1(:) => null()
 !
@@ -63,15 +63,15 @@ subroutine pjfuco(c1, c2, base, c3)
 !     ----------------------
     call jeveuo(c1//'.PJXX_K1', 'L', i1)
     call jeveuo(c2//'.PJXX_K1', 'L', i2)
-    do 10,k = 1,2
-    ma1 = zk24(i1-1+k)
-    ma2 = zk24(i2-1+k)
-    if (ma1 .ne. ma2) then
-        valk(1) = ma1
-        valk(2) = ma2
-        call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
-    endif
-    10 end do
+    do k = 1, 2
+        ma1 = zk24(i1-1+k)
+        ma2 = zk24(i2-1+k)
+        if (ma1 .ne. ma2) then
+            valk(1) = ma1
+            valk(2) = ma2
+            call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
+        endif
+    end do
     call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false._1)
 !
 !
@@ -90,18 +90,18 @@ subroutine pjfuco(c1, c2, base, c3)
 !     ----------------------------------------------------------------
     AS_ALLOCATE(vi=tmp1, size=nbno2)
 !
-    do 20,ino2 = 1,nbno2
-    if (zi(i1-1+ino2) .ne. 0) then
-        tmp1(ino2) = 1
-        zi(i3-1+ino2) = zi(i1-1+ino2)
-        zi(j3-1+ino2) = zi(j1-1+ino2)
-    endif
-    if (zi(i2-1+ino2) .ne. 0) then
-        tmp1(ino2) = 2
-        zi(i3-1+ino2) = zi(i2-1+ino2)
-        zi(j3-1+ino2) = zi(j2-1+ino2)
-    endif
-    20 end do
+    do ino2 = 1, nbno2
+        if (zi(i1-1+ino2) .ne. 0) then
+            tmp1(ino2) = 1
+            zi(i3-1+ino2) = zi(i1-1+ino2)
+            zi(j3-1+ino2) = zi(j1-1+ino2)
+        endif
+        if (zi(i2-1+ino2) .ne. 0) then
+            tmp1(ino2) = 2
+            zi(i3-1+ino2) = zi(i2-1+ino2)
+            zi(j3-1+ino2) = zi(j2-1+ino2)
+        endif
+    end do
 !
 !
 !     -- OBJETS '.PJEF_NU' ET '.PJEF_CF' :
@@ -114,34 +114,34 @@ subroutine pjfuco(c1, c2, base, c3)
     call jeveuo(c1//'.PJEF_CF', 'L', i1cf)
     call jeveuo(c2//'.PJEF_CF', 'L', i2cf)
     lont = 0
-    do 30,k = 1,nbno2
-    lont = lont + zi(i3nb-1+k)
-    30 end do
+    do k = 1, nbno2
+        lont = lont + zi(i3nb-1+k)
+    end do
     call wkvect(c3//'.PJEF_NU', base//' V I', lont, i3nu)
     call wkvect(c3//'.PJEF_CF', base//' V R', lont, i3cf)
 !
     deca1 = 0
     deca2 = 0
     deca3 = 0
-    do 60,ino2 = 1,nbno2
-    i1ou2 = tmp1(ino2)
-    if (i1ou2 .eq. 1) then
-        nbno = zi(i3nb-1+ino2)
-        do 40,k = 1,nbno
-        zi(i3nu-1+deca3+k) = zi(i1nu-1+deca1+k)
-        zr(i3cf-1+deca3+k) = zr(i1cf-1+deca1+k)
-40      continue
-    else if (i1ou2.eq.2) then
-        nbno = zi(i3nb-1+ino2)
-        do 50,k = 1,nbno
-        zi(i3nu-1+deca3+k) = zi(i2nu-1+deca2+k)
-        zr(i3cf-1+deca3+k) = zr(i2cf-1+deca2+k)
-50      continue
-    endif
-    deca1 = deca1 + zi(i1nb-1+ino2)
-    deca2 = deca2 + zi(i2nb-1+ino2)
-    deca3 = deca3 + zi(i3nb-1+ino2)
-    60 end do
+    do ino2 = 1, nbno2
+        i1ou2 = tmp1(ino2)
+        if (i1ou2 .eq. 1) then
+            nbno = zi(i3nb-1+ino2)
+            do k = 1, nbno
+                zi(i3nu-1+deca3+k) = zi(i1nu-1+deca1+k)
+                zr(i3cf-1+deca3+k) = zr(i1cf-1+deca1+k)
+            end do
+        else if (i1ou2.eq.2) then
+            nbno = zi(i3nb-1+ino2)
+            do k = 1, nbno
+                zi(i3nu-1+deca3+k) = zi(i2nu-1+deca2+k)
+                zr(i3cf-1+deca3+k) = zr(i2cf-1+deca2+k)
+            end do
+        endif
+        deca1 = deca1 + zi(i1nb-1+ino2)
+        deca2 = deca2 + zi(i2nb-1+ino2)
+        deca3 = deca3 + zi(i3nb-1+ino2)
+    end do
 !
 !
 !

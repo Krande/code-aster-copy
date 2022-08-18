@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mdgepc(neq, nbmode, bmodal, xgene, u)
 !     CONVERTIT EN BASE PHYSIQUE MODE VECTEUR
 !     REM U EST INITIALISE A 0.
@@ -36,10 +36,11 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u)
     complex(kind=8) :: xgene(nbmode), u(neq)
     real(kind=8) :: bmodal(neq, nbmode)
 !-----------------------------------------------------------------------
-    do 10 i = 1, neq
+    do i = 1, neq
         u(i)=dcmplx(0.d0,0.d0)
 !        U(I)=0.D0
-        do 10 j = 1, nbmode
+        do j = 1, nbmode
             u(i) = u(i) + bmodal(i,j)*xgene(j)
-10      continue
+        end do
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine stati1(nval, serie, moyenn, ectype)
     implicit none
 #include "asterfort/assert.h"
@@ -37,17 +37,17 @@ subroutine stati1(nval, serie, moyenn, ectype)
 !
 !     -- MOYENNE :
     moyenn=0.d0
-    do 1, k=1,nval
-    moyenn=moyenn+serie(k)
-    1 end do
+    do k = 1, nval
+        moyenn=moyenn+serie(k)
+    end do
     moyenn=moyenn/nval
 !
 !
 !     -- ECART-TYPE :
     ectype=0.d0
-    do 2, k=1,nval
-    ectype=ectype+(serie(k)-moyenn)**2
-    2 end do
+    do k = 1, nval
+        ectype=ectype+(serie(k)-moyenn)**2
+    end do
     ectype=sqrt(ectype/nval)
 !
 end subroutine

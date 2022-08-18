@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pccoef(n, in, ip, ac, icpl,&
                   icpc, acpc, cx)
 !
@@ -31,8 +31,8 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 !--------------------------------------------------------
     implicit none
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
     real(kind=8) :: ac(*)
     integer :: n
     integer :: in(n)
@@ -44,35 +44,35 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 ! AC ---> ACPC
 ! ==========================
 !-----------------------------------------------------------------------
-    integer :: i, j,  k, k1, k2
+    integer :: i, j, k, k1, k2
     integer :: kk, kk1, kk2
     integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
     kk2 = icpl(n-1)
-    do 10 kk = 1, kk2
+    do kk = 1, kk2
         acpc(kk) = 0.d0
-10  end do
+    end do
     AS_ALLOCATE(vi=ind, size=n)
 !
     acpc(1) = ac(1)
-    do 40 i = 2, n
+    do i = 2, n
 !  LIGNE CREUSE I DE AC --> LIGNE PLEINE IND-CX
 !                          (ICPL(I-1)=FIN LIGNE I)
         k1 = in(i-1) + 1
         k2 = in(i)
-        do 20 k = k1, k2 - 1
+        do k = k1, k2 - 1
             j = ip(k)
             ind(j) = i
             cx(j) = ac(k)
-20      continue
+        end do
         kk1 = icpl(i-2) + 1
         kk2 = icpl(i-1)
-        do 30 kk = kk1, kk2 - 1
+        do kk = kk1, kk2 - 1
             j = icpc(kk)
             if (ind(j) .eq. i) acpc(kk) = cx(j)
-30      continue
+        end do
         acpc(kk2) = ac(k2)
-40  end do
+    end do
 !
     AS_DEALLOCATE(vi=ind)
 !

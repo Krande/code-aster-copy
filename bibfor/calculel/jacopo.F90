@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jacopo(long, tpscaz, iad1, iad2)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -49,41 +49,41 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
 !     -- RECOPIE SELON LE TYPE DE SCALAIRE:
 !
     if (t .eq. 'I  ') then
-        do 10,i = 1,long
-        zi(iad2-1+i) = zi(iad1-1+i)
-10      continue
+        do i = 1, long
+            zi(iad2-1+i) = zi(iad1-1+i)
+        end do
     else if (t.eq.'R  ') then
-        do 20,i = 1,long
-        zr(iad2-1+i) = zr(iad1-1+i)
-20      continue
+        do i = 1, long
+            zr(iad2-1+i) = zr(iad1-1+i)
+        end do
     else if (t.eq.'C  ') then
-        do 30,i = 1,long
-        zc(iad2-1+i) = zc(iad1-1+i)
-30      continue
+        do i = 1, long
+            zc(iad2-1+i) = zc(iad1-1+i)
+        end do
     else if (t.eq.'L  ') then
-        do 40,i = 1,long
-        zl(iad2-1+i) = zl(iad1-1+i)
-40      continue
+        do i = 1, long
+            zl(iad2-1+i) = zl(iad1-1+i)
+        end do
     else if (t.eq.'K8 ') then
-        do 50,i = 1,long
-        zk8(iad2-1+i) = zk8(iad1-1+i)
-50      continue
+        do i = 1, long
+            zk8(iad2-1+i) = zk8(iad1-1+i)
+        end do
     else if (t.eq.'K16') then
-        do 60,i = 1,long
-        zk16(iad2-1+i) = zk16(iad1-1+i)
-60      continue
+        do i = 1, long
+            zk16(iad2-1+i) = zk16(iad1-1+i)
+        end do
     else if (t.eq.'K24') then
-        do 70,i = 1,long
-        zk24(iad2-1+i) = zk24(iad1-1+i)
-70      continue
+        do i = 1, long
+            zk24(iad2-1+i) = zk24(iad1-1+i)
+        end do
     else if (t.eq.'K32') then
-        do 80,i = 1,long
-        zk32(iad2-1+i) = zk32(iad1-1+i)
-80      continue
+        do i = 1, long
+            zk32(iad2-1+i) = zk32(iad1-1+i)
+        end do
     else if (t.eq.'K80') then
-        do 90,i = 1,long
-        zk80(iad2-1+i) = zk80(iad1-1+i)
-90      continue
+        do i = 1, long
+            zk80(iad2-1+i) = zk80(iad1-1+i)
+        end do
     else
         ASSERT(.false.)
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgran(resoco, nbliac, kkliai, kkliac)
 !
 !
@@ -70,13 +70,13 @@ subroutine cfgran(resoco, nbliac, kkliai, kkliac)
 !
 ! --- MU MINIMUM
 !
-    do 10 iliac = 1, nbliac
+    do iliac = 1, nbliac
         valmu = zr(jmu+iliac-1)
         if (rminmu .gt. valmu) then
             rminmu = valmu
             index = iliac
         endif
-10  end do
+    end do
 !
 ! --- ON REPERE LA LIAISON KKMIN AYANT LE MU LE PLUS NEGATIF
 !

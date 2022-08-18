@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefger(ndim, som, xint, yint, rint,&
                   sgn, orig, beta)
     implicit none
@@ -71,26 +71,26 @@ subroutine mefger(ndim, som, xint, yint, rint,&
 !
 ! --- INITIALISATIONS
 !
-    do 1 i = 1, nbtot
+    do i = 1, nbtot
         beta(i) = 0.d0
         sgn(i) = 0
         orig(i) = 0
- 1  end do
+    end do
 !
 ! --- CONSTRUCTION DES IMAGES
 !
-    do 2 i = 1, nbcyl
+    do i = 1, nbcyl
         orig(i) = i
         sgn(i) = 1
         beta(i) = 0.0d0
- 2  end do
+    end do
 !
     if (iencei .eq. 2) then
 !
-        do 3 i = 1, 4
+        do i = 1, 4
             xsom(i) = som(2*i-1)
             ysom(i) = som(2*i)
- 3      continue
+        end do
 !
 ! ---    DEFINITION DES DROITES DE SYMETRIES
 !
@@ -133,8 +133,8 @@ subroutine mefger(ndim, som, xint, yint, rint,&
     x0 = xsom(1)
     y0 = ysom(1)
 !
-    do 9 i = 1, nima
-        do 91 j = 1, nbcyl
+    do i = 1, nima
+        do j = 1, nbcyl
             nj = nj+1
             if (i .eq. 1) then
                 np = nj-nbcyl
@@ -148,15 +148,15 @@ subroutine mefger(ndim, som, xint, yint, rint,&
             sgn(nj) = (-1)**i
             rint(nj) = rint(np)
             orig(nj) = orig(np)
-91      continue
+        end do
 !
         x0 = x0-x23
         y0 = y0-y23
 !
-        do 92 j = 1, i
+        do j = 1, i
             x0 = x0+x12
             y0 = y0+y12
-            do 921 k = 1, nbcyl
+            do k = 1, nbcyl
                 nj = nj+1
                 np = nj-nbcyl
                 xint(nj) = xint(np)-2.d0*x12/long12* (x12*(xint(np)- x0)+y12*(yint(np)-y0))
@@ -166,16 +166,16 @@ subroutine mefger(ndim, som, xint, yint, rint,&
                 sgn(nj) = -sgn(np)
                 rint(nj) = rint(np)
                 orig(nj) = orig(np)
-921          continue
-92      continue
+            end do
+        end do
 !
         x0 = x0+x12
         y0 = y0+y12
 !
-        do 93 j = 1, 2*i
+        do j = 1, 2*i
             x0 = x0+x23
             y0 = y0+y23
-            do 931 k = 1, nbcyl
+            do k = 1, nbcyl
                 nj = nj+1
                 np = nj-nbcyl
                 xint(nj) = xint(np)-2.d0*x23/long23* (x23*(xint(np)- x0)+y23*(yint(np)-y0))
@@ -185,16 +185,16 @@ subroutine mefger(ndim, som, xint, yint, rint,&
                 sgn(nj) = -sgn(np)
                 rint(nj) = rint(np)
                 orig(nj) = orig(np)
-931          continue
-93      continue
+            end do
+        end do
 !
         x0 = x0+x23
         y0 = y0+y23
 !
-        do 94 j = 1, 2*i
+        do j = 1, 2*i
             x0 = x0-x12
             y0 = y0-y12
-            do 941 k = 1, nbcyl
+            do k = 1, nbcyl
                 nj = nj+1
                 np = nj-nbcyl
                 xint(nj) = xint(np)-2.d0*x12/long12* (x12*(xint(np)- x0)+y12*(yint(np)-y0))
@@ -204,16 +204,16 @@ subroutine mefger(ndim, som, xint, yint, rint,&
                 sgn(nj) = -sgn(np)
                 rint(nj) = rint(np)
                 orig(nj) = orig(np)
-941          continue
-94      continue
+            end do
+        end do
 !
         x0 = x0-x12
         y0 = y0-y12
 !
-        do 95 j = 1, 2*i
+        do j = 1, 2*i
             x0 = x0-x23
             y0 = y0-y23
-            do 951 k = 1, nbcyl
+            do k = 1, nbcyl
                 nj = nj+1
                 np = nj-nbcyl
                 xint(nj) = xint(np)-2.d0*x23/long23* (x23*(xint(np)- x0)+y23*(yint(np)-y0))
@@ -223,16 +223,16 @@ subroutine mefger(ndim, som, xint, yint, rint,&
                 sgn(nj) = -sgn(np)
                 rint(nj) = rint(np)
                 orig(nj) = orig(np)
-951          continue
-95      continue
+            end do
+        end do
 !
         x0 = x0-x23
         y0 = y0-y23
 !
-        do 96 j = 1, i-1
+        do j = 1, i-1
             x0 = x0+x12
             y0 = y0+y12
-            do 961 k = 1, nbcyl
+            do k = 1, nbcyl
                 nj = nj+1
                 np = nj-nbcyl
                 xint(nj) = xint(np)-2.d0*x12/long12* (x12*(xint(np)- x0)+y12*(yint(np)-y0))
@@ -242,18 +242,18 @@ subroutine mefger(ndim, som, xint, yint, rint,&
                 sgn(nj) = -sgn(np)
                 rint(nj) = rint(np)
                 orig(nj) = orig(np)
-961          continue
-96      continue
+            end do
+        end do
 !
         x0 = x0+x12
         y0 = y0+y12
 !
- 9  end do
+    end do
 !
 !
     nj = nbtot
 !
-    do 10 i = 1, nima2
+    do i = 1, nima2
         nj = nj+1
         xint(nj) = xcent-(nima+i)*x23
         yint(nj) = ycent-(nima+i)*y23
@@ -265,7 +265,7 @@ subroutine mefger(ndim, som, xint, yint, rint,&
         beta(nj) = beta(nj)-int(beta(nj)/2.d0/pi)*2.d0*pi
         sgn(nj) = (-1)**(nima+i)
 !
-        do 101 j = 1, nima+i
+        do j = 1, nima+i
 !
             nj = nj+1
             xint(nj) = xint(nj-1)+x12
@@ -273,45 +273,45 @@ subroutine mefger(ndim, som, xint, yint, rint,&
             beta(nj) = -beta(nj-1)+2.d0*alph23
             beta(nj) = beta(nj)-int(beta(nj)/2.d0/pi)*2.d0*pi
             sgn(nj) = -sgn(nj-1)
-101      continue
+        end do
 !
-        do 102 j = 1, 2*(nima+i)
+        do j = 1, 2*(nima+i)
             nj = nj+1
             xint(nj) = xint(nj-1)+x23
             yint(nj) = yint(nj-1)+y23
             beta(nj) = -beta(nj-1)+2.d0*alph12
             beta(nj) = beta(nj)-int(beta(nj)/2.d0/pi)*2.d0*pi
             sgn(nj) = -sgn(nj-1)
-102      continue
+        end do
 !
-        do 103 j = 1, 2*(nima+i)
+        do j = 1, 2*(nima+i)
             nj = nj+1
             xint(nj) = xint(nj-1)-x12
             yint(nj) = yint(nj-1)-y12
             beta(nj) = -beta(nj-1)+2.d0*alph23
             beta(nj) = beta(nj)-int(beta(nj)/2.d0/pi)*2.d0*pi
             sgn(nj) = -sgn(nj-1)
-103      continue
+        end do
 !
-        do 104 j = 1, 2*(nima+i)
+        do j = 1, 2*(nima+i)
             nj = nj+1
             xint(nj) = xint(nj-1)-x23
             yint(nj) = yint(nj-1)-y23
             beta(nj) = -beta(nj-1)+2.d0*alph12
             beta(nj) = beta(nj)-int(beta(nj)/2.d0/pi)*2.d0*pi
             sgn(nj) = -sgn(nj-1)
-104      continue
+        end do
 !
-        do 105 j = 1, nima+i-1
+        do j = 1, nima+i-1
             nj = nj+1
             xint(nj) = xint(nj-1)+x12
             yint(nj) = yint(nj-1)+y12
             beta(nj) = -beta(nj-1)+2.d0*alph23
             beta(nj) = beta(nj)-int(beta(nj)/2.d0/pi)*2.d0*pi
             sgn(nj) = -sgn(nj-1)
-105      continue
+        end do
 !
-10  end do
+    end do
 !
 !
 end subroutine

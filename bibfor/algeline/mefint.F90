@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                   irot, numnog, nbnog, zint, defm,&
                   phix, phiy, z, num)
@@ -74,56 +74,56 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
 !-----------------------------------------------------------------------
     zmax = zint(1,1)
     zmin = zint(1,1)
-    do 10 j = 2, nbnog(1)
+    do j = 2, nbnog(1)
         if (zint(j,1) .gt. zmax) zmax = zint(j,1)
         if (zint(j,1) .lt. zmin) zmin = zint(j,1)
-10  end do
-    do 30 i = 2, nbgrp
+    end do
+    do i = 2, nbgrp
         wmax = zint(1,i)
         wmin = zint(1,i)
-        do 20 j = 2, nbnog(i)
+        do j = 2, nbnog(i)
             if (zint(j,i) .gt. wmax) wmax = zint(j,i)
             if (zint(j,i) .lt. wmin) wmin = zint(j,i)
-20      continue
+        end do
         if (wmin .gt. zmin) zmin = wmin
         if (wmax .lt. zmax) zmax = wmax
-30  end do
-    do 40 i = 1, nbz
+    end do
+    do i = 1, nbz
         z(i) = zmin + (zmax-zmin)*(i-1)/(nbz-1)
-40  end do
+    end do
 !
 !
 ! --- INTERPOLATION DES DEFORMEES MODALES
 !
 ! --- DEBUT BES BOUCLES SUR LES CYLINDRES OU GROUPES DE CYLINDRES
-    do 200 i = 1, nbgrp
+    do i = 1, nbgrp
 !
 ! ---    CLASSEMENT POUR LE CYLINDRE I DES NOEUDS PAR ORDRE DE COTE
         icomp = 0
-        do 115 j = 1, nbnog(i)
+        do j = 1, nbnog(i)
             num(j) = j
-115      continue
-        do 120 j = 1, nbnog(i)
+        end do
+        do j = 1, nbnog(i)
             z0 = zint(num(j),i)
             ind = j
             icomp = icomp + 1
-            do 100 k = icomp+1, nbnog(i)
+            do k = icomp+1, nbnog(i)
                 if (z0 .gt. zint(num(k),i)) then
                     z0 = zint(num(k),i)
                     ind = k
                 endif
-100          continue
+            end do
             if (ind .ne. j) then
                 nn = num(ind)
-                do 110 k = 1, (ind-icomp)
+                do k = 1, (ind-icomp)
                     num(ind-k+1) = num(ind-k)
-110              continue
+                end do
                 num(icomp) = nn
             endif
-120      continue
+        end do
 !
 ! ---    BOUCLE SUR LES POINTS DE DISCRETISATION DU CYLINDRE I
-        do 190 j = 1, nbz
+        do j = 1, nbz
 ! ---       RECHERCHE DU NOEUDS REEL LE PLUS PROCHE DU POINT DE
 ! ---       DISCRETISATION DE COTE J
             if (zint(num(1),i) .gt. z(j)) then
@@ -131,7 +131,7 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                 ind2 = num(1+1)
                 goto 140
             endif
-            do 130 k = 2, nbnog(i)
+            do k = 2, nbnog(i)
                 if (zint(num(k),i) .gt. z(j)) then
                     if (k .gt. 1) then
                         ind1 = num(k-1)
@@ -142,7 +142,7 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                     endif
                     goto 140
                 endif
-130         continue
+            end do
             ind1 = num(nbnog(i)-1)
             ind2 = num(nbnog(i))
 140         continue
@@ -152,7 +152,7 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
 !
 ! ---       INTERPOLATION DES DEFORMEES MODALES
 ! ---       DEBUT BES BOUCLES SUR LES MODES
-            do 150 nm = 1, nbmod
+            do nm = 1, nbmod
                 phix(j,i,nm) = defm(&
                                nbddl*(nno1-1)+irot(1),&
                                nm) +(&
@@ -174,13 +174,13 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
 !
 !
 ! ---       FIN BES BOUCLES SUR LES MODES
-150          continue
+            end do
 !
 ! ---    FIN BES BOUCLES SUR LES POINTS DE DISCRETISATION
-190      continue
+        end do
 !
 ! --- FIN BES BOUCLES SUR LES CYLINDRES
-200  end do
+    end do
 !
 !
 end subroutine

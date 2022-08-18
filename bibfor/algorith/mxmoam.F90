@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mxmoam(sddyna, nbmodp)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -37,8 +39,6 @@ subroutine mxmoam(sddyna, nbmodp)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 !
     character(len=19) :: sddyna
@@ -135,11 +135,11 @@ subroutine mxmoam(sddyna, nbmodp)
 ! --- NOMBRE DE MODES
 !
     call getvis('PROJ_MODAL', 'NB_MODE', iocc=1, scal=nbmax, nbret=ibid)
-
+!
     if (ibid .eq. 0) then
         nbmax = nbmodp
     endif
-
+!
     if (nbmax .ne. nbmodp) then
         vali(1) = nbmodp
         vali(2) = nbmax
@@ -166,21 +166,21 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! ---   ON RECUPERE MODES DANS MODE_MECA
 !
-        do 61 imode = 1, nbmodp
+        do imode = 1, nbmodp
             call rsexch('F', modmec, 'DEPL', imode, nomcha,&
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
             call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
             call zerlag(neq, zi( iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
-61      continue
+        end do
 !
 ! ---   ON RECUPERE MASSES GENERALISEES DANS MODE_MECA
 !
-        do 10 imode = 1, nbmodp
+        do imode = 1, nbmodp
             call rsadpa(modmec, 'L', 1, 'MASS_GENE', imode,&
                         0, sjv=lpar, styp=k8bid)
             zr(jmasge+imode-1) = zr(lpar)
-10      continue
+        end do
 !
 ! --- CREATION ACCELERATION DE REFERENCE
 !
@@ -198,13 +198,13 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! --- ON RECUPERE MODES DANS MODE_MECA
 !
-        do 67 imode = 1, nbmodp
+        do imode = 1, nbmodp
             call rsexch('F', modmec, 'DEPL', imode, nomcha,&
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
             call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
             call zerlag(neq, zi( iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
-67      continue
+        end do
 !
 ! --- CREATION RIGIDITES GENERALISEES
 !
@@ -232,47 +232,46 @@ subroutine mxmoam(sddyna, nbmodp)
 ! --- RECUPERATION MASSES GENERALISEES
 !
         call jeveuo(jexnum(magene//'           .VALM', 1), 'L', ldblo)
-        do 20 imode = 1, nbmodp
+        do imode = 1, nbmodp
             zr(jmasge+imode-1) = zr(ldblo+imode-1)
-20      continue
+        end do
 !
 ! --- RECUPERATION RIGIDITES GENERALISEES
 !
         call jeveuo(jexnum(rigene//'           .VALM', 1), 'L', ldblo1)
-        do 30 imode = 1, nbmodp
-            do 40 imode2 = 1, imode
+        do imode = 1, nbmodp
+            do imode2 = 1, imode
                 zr(jrigge+(imode-1)*nbmodp+imode2-1) = zr( ldblo1+ imode*(imode-1 )/2+imode2-1 )
                 zr(jrigge+(imode2-1)*nbmodp+imode-1) = zr( ldblo1+ imode*(imode-1 )/2+imode2-1 )
-40          continue
-30      continue
+            end do
+        end do
 !
 ! --- RECUPERATION AMORTISSEMENTS GENERALISES
 !
         call jeveuo(jexnum(amgene//'           .VALM', 1), 'L', ldblo2)
-        do 31 imode = 1, nbmodp
-            do 41 imode2 = 1, imode
+        do imode = 1, nbmodp
+            do imode2 = 1, imode
                 if (nbag .ne. 0) then
                     zr(jamoge+(imode-1)*nbmodp+imode2-1) = zr(ldblo2+ imode*( imode-1)/2+imode2-1&
                                                            )
                     zr(jamoge+(imode2-1)*nbmodp+imode-1) = zr(ldblo2+ imode*( imode-1)/2+imode2-1&
                                                            )
                 endif
-41          continue
-31      continue
+            end do
+        end do
 !
 ! --- RECUPERATION FORCES/FONC_MULT GENERALISEES
 !
         if (nbgene .ne. 0) then
-            do 11 ifonc = 1, nbgene
+            do ifonc = 1, nbgene
                 call getvid('EXCIT_GENE', 'FONC_MULT', iocc=ifonc, scal=zk24(jfonge+ifonc-1),&
                             nbret=nf)
-                call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=lifoge(ifonc),&
-                            nbret=nf)
+                call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=lifoge(ifonc), nbret=nf)
                 call jeveuo(lifoge(ifonc)(1:19)//'.VALE', 'L', vr=fge)
-                do 12 imode = 1, nbmodp
+                do imode = 1, nbmodp
                     zr(jforge+(ifonc-1)*nbmodp+imode-1) = fge(imode)
-12              continue
-11          continue
+                end do
+            end do
         endif
     endif
 !

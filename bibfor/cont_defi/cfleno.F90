@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cfleno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+!
+subroutine cfleno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
                   nb_cont_node)
 !
-implicit none
+    implicit none
 !
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/jeveuo.h"
@@ -79,7 +79,7 @@ implicit none
     do i_surf = 1, nb_cont_surf
         v_poin_node(i_surf+1) = v_poin_node(i_surf)
         call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
-        do 20 i_node = 1, nb_node
+        do i_node = 1, nb_node
             node_nume_1 = v_sdcont_noeuco(jdecno+i_node)
             do ii = 1, i_node - 1
                 node_nume_2 = v_sdcont_noeuco(jdecno+ii)
@@ -90,7 +90,8 @@ implicit none
                     goto 20
                 endif
             end do
-20      continue
+ 20         continue
+        end do
     end do
 !
 ! - Non-suppressed nodes vector

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
                   limail, indicf, permuf, maxfa)
     implicit none
@@ -211,17 +211,17 @@ subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
 !
 ! --> FIN DES DONNEES POUR LA RENUMEROTATION
 !
-    do 1 j = 1, maxnod
+    do j = 1, maxnod
         limail(j)=0
- 1  end do
+    end do
 !
-    do 2 i = 1, maxnod
+    do i = 1, maxnod
         indic(i)=-1
- 2  end do
+    end do
 !
-    do 3 i = 1, 8
+    do i = 1, 8
         indic(i)=0
- 3  end do
+    end do
 !
 ! JMP 2/5/90
 !
@@ -242,45 +242,45 @@ subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
     indic(16)=0
     indic(19)=0
 !
-    do 4 i = 29, 34
+    do i = 29, 34
         indic(i)=0
- 4  end do
+    end do
 !
     nbtyma=35
 !
-    do 5 i = 3, nbtyma
+    do i = 3, nbtyma
         if (indic(i) .eq. 1) then
 !
-            do 6 j = 1, nbnoma(i)
+            do j = 1, nbnoma(i)
                 permut(j,i)=permu2(j,i)
- 6          continue
+            end do
 !
         endif
- 5  end do
+    end do
 !
-    do 10 i = 1, maxnod
+    do i = 1, maxnod
         indicf(i)=-1
-10  end do
+    end do
 !
-    do 20 i = 1, 13
+    do i = 1, 13
         indicf(i)=0
-20  end do
+    end do
 !
-    do 30 i = 14, 21
+    do i = 14, 21
         indicf(i)=1
-30  end do
+    end do
 !
-    do 40 i = 29, nbtyma
+    do i = 29, nbtyma
         indicf(i)=0
-40  end do
+    end do
 !
-    do 50 i = 14, nbtyma
+    do i = 14, nbtyma
         if (indicf(i) .eq. 1) then
-            do 60 j = 1, nbnomf(i)
+            do j = 1, nbnomf(i)
                 permuf(j,i)=permu3(j,i)
-60          continue
+            end do
         endif
-50  end do
+    end do
 !
     nomail( 1)='SEG2'
     nomail( 2)='TRIA3'

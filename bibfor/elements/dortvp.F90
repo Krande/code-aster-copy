@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dortvp(ndim, nomrc, d, modeli)
 !.======================================================================
     implicit none
@@ -62,9 +62,9 @@ subroutine dortvp(ndim, nomrc, d, modeli)
     type = 0
     iordre = 0
 !
-    do 10 i = 1, 6
+    do i = 1, 6
         valp(i) = zero
-10  end do
+    end do
 !
 ! --- CONSTRUCTION DU VECTEUR TR QUI CONTIENT LES VECTEURS COLONNES
 ! --- DE LA DEMI-MATRICE INFERIEURE DE LA MATRICE DONT ON RECHERCHE
@@ -109,15 +109,15 @@ subroutine dortvp(ndim, nomrc, d, modeli)
 !
 ! ---   TABLEAU TU :
 !       ----------
-        do 20 i = 1, 21
+        do i = 1, 21
             tu(i) = zero
-20      continue
+        end do
 !
         k = 1
-        do 30 i = 1, 6
+        do i = 1, 6
             tu(k) = un
             k = k+7-i
-30      continue
+        end do
 !
 ! --- CAS 2D :
 !     ------
@@ -143,15 +143,15 @@ subroutine dortvp(ndim, nomrc, d, modeli)
 !
 ! ---   TABLEAU TU :
 !       ----------
-        do 40 i = 1, 10
+        do i = 1, 10
             tu(i) = zero
-40      continue
+        end do
 !
         k = 1
-        do 50 i = 1, 4
+        do i = 1, 4
             tu(k) = un
             k = k+5-i
-50      continue
+        end do
 !
     endif
 !
@@ -172,11 +172,11 @@ subroutine dortvp(ndim, nomrc, d, modeli)
     call infniv(ifm, niv)
 !
     ineg = 0
-    do 60 i = 1, nbvec
+    do i = 1, nbvec
         if (valp(i) .lt. zero) then
             ineg = ineg + 1
         endif
-60  end do
+    end do
 !
     if (ineg .gt. 1) then
 !
@@ -211,9 +211,9 @@ subroutine dortvp(ndim, nomrc, d, modeli)
         write(ifm,1050)
         write(ifm,1060)
 !
-        do 70 i = 1, nbvec
+        do i = 1, nbvec
             write(ifm,1070) i,valp(i)
-70      continue
+        end do
 !
         write(ifm,1060)
         write(ifm,1040)

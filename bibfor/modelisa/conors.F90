@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine conors(i1, i2, i3, macoc, nbcoc,&
                   macor, nbcor, loreor, mailla)
     implicit none
@@ -132,12 +132,12 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
     xg=0.d0
     yg=0.d0
     zg=0.d0
-    do 10 inor = 1, nbcor
+    do inor = 1, nbcor
         call jenonu(jexnom(nonoma, macor(2+inor)), no)
         xg=xg+zr(jcoor+3*(no-1)+0)
         yg=yg+zr(jcoor+3*(no-1)+1)
         zg=zg+zr(jcoor+3*(no-1)+2)
- 10 end do
+    end do
     xg=xg/nbcor
     yg=yg/nbcor
     zg=zg/nbcor

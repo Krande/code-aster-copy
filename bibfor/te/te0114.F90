@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0114(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -43,8 +43,8 @@ subroutine te0114(option, nomte)
     integer :: nno, kp, iharmo, i, idefo, idepl, idpg, igau, isig
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
@@ -53,30 +53,30 @@ subroutine te0114(option, nomte)
     xh = dble(nh)
     call jevech('PDEFOPG', 'E', idefo)
 !
-    do 112 i = 1, 6*npg
+    do i = 1, 6*npg
         depg (i) = 0.0d0
-112  continue
+    end do
 !
-    do 113 i = 1, nno
+    do i = 1, nno
         u(1,i) = zr(idepl + 3 * i - 3)
         u(2,i) = zr(idepl + 3 * i - 2)
         u(3,i) = zr(idepl + 3 * i - 1)
-113  continue
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
 !
         idpg = (kp-1) * 6
         kdec = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdr, dfdz)
         r = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+kdec+i-1)
-102      continue
+        end do
 !
-        do 106 i = 1, nno
+        do i = 1, nno
             wi = zr(ivf+kdec+i-1)/r
 !
             depg(idpg+1) = depg(idpg+1) + u(1,i) * dfdr(i)
@@ -92,14 +92,14 @@ subroutine te0114(option, nomte)
 !
             depg(idpg+6) = depg(idpg+6) - u(2,i) * 0.5d0 * xh * wi + u(3,i) * 0.5d0 * dfdz(i)
 !
-106      continue
+        end do
 !
-101  end do
+    end do
 !
-    do 120 igau = 1, npg
-        do 121 isig = 1, 6
+    do igau = 1, npg
+        do isig = 1, 6
             zr(idefo+6*(igau-1)+isig-1) = depg(6*(igau-1)+isig)
-121      continue
-120  continue
+        end do
+    end do
 !
 end subroutine

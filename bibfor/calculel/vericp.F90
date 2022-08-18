@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vericp(cmpglo, cmp, nbcmp, iret)
     implicit none
 !
@@ -34,15 +34,16 @@ subroutine vericp(cmpglo, cmp, nbcmp, iret)
     integer :: i, iret, nbcmp
 !-----------------------------------------------------------------------
 !
-    do 1 i = 1, nbcmp
+    do i = 1, nbcmp
         if (cmp .ne. cmpglo(i)) then
             goto 1
         else
             iret=0
-            goto 9999
+            goto 999
         endif
- 1  continue
+  1     continue
+    end do
 !
     iret=1
-9999  continue
+999 continue
 end subroutine

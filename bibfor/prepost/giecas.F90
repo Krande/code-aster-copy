@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine giecas(nfic, ndim, nbobj)
     implicit none
 !
@@ -136,7 +136,7 @@ subroutine giecas(nfic, ndim, nbobj)
         nbnoto=ncoo/ndim
     endif
 !
-    do 1 ino = 1, nbnoto
+    do ino = 1, nbnoto
         if (indir) then
             nono = zi(inutri-1+ino)
         else
@@ -145,7 +145,7 @@ subroutine giecas(nfic, ndim, nbobj)
         call codent(nono, 'G', k7bid)
         write(nfic,1001) 'N'//k7bid, (coordo(ndim*(nono-1)+j),j=&
         1,ndim)
-  1 end do
+    end do
 !
     write(nfic,*) 'FINSF'
     write(nfic,*) '%'
@@ -165,35 +165,35 @@ subroutine giecas(nfic, ndim, nbobj)
     call wkvect('&&GILIRE.ECRMAIL', 'V V L', itot, iecrma)
 !
 !
-    do 18 il = 1, nbobj
+    do il = 1, nbobj
         zl(iecrit+il-1)=.false.
- 18 end do
+    end do
     imb = 1
-    do 14 ima = 1, nbobno
+    do ima = 1, nbobno
         ii = objet_num(ima)
         if (.not.(zl(iecrit+ii-1))) then
             zi(itrnu+imb-1) = ii
             imb =imb + 1
             zl(iecrit+ii-1)=.true.
         endif
- 14 end do
+    end do
 !
-    do 15 i = 1, nbobno
+    do i = 1, nbobno
         ii = objet_num(i)
         nbsoob = descobj(4*(ii-1)+1)
         nomobj=vnomobj(2*(ii-1)+1)
         if (nbsoob .ne. 0) then
             call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', vi=soob)
-            do 16 kk = 1, nbsoob
+            do kk = 1, nbsoob
                 jj = soob(kk)
                 if (.not.(zl(iecrit+jj-1))) then
                     zi(itrnu+imb-1)= jj
                     zl(iecrit+jj-1)=.true.
                     imb =imb + 1
                 endif
- 16         continue
+            end do
         endif
- 15 continue
+    end do
 !
 ! ON SUPPRIME UN IMB CAR ON EN COMPTE UN DE PLUS DANS LA FIN DE BOUCLE
 !
@@ -209,15 +209,15 @@ subroutine giecas(nfic, ndim, nbobj)
     nbelt = 0
     nbelc = 0
 !
-    do 2 i = 1, nbobj
+    do i = 1, nbobj
         trouve =.false.
-        do 12 jj = 1, imb
+        do jj = 1, imb
             ii = zi(itrnu+jj-1)
             if (i .eq. ii) then
                 trouve = .true.
                 goto 13
             endif
- 12     continue
+        end do
  13     continue
 !
         nbno =descobj(4*(i-1)+3)
@@ -232,7 +232,7 @@ subroutine giecas(nfic, ndim, nbobj)
             call giecma(nfic, trouve, nbele, nomobj, tymail,&
                         nbno, zl( iecrma), icoma)
         endif
-  2 end do
+    end do
     if (nbelc .gt. 9999999) then
         vali = nbelc
         call utmess('F', 'PREPOST6_2', si=vali)
@@ -256,7 +256,7 @@ subroutine giecas(nfic, ndim, nbobj)
         nbnono=0
     endif
 !
-    do 3 i = 1, nbnono
+    do i = 1, nbnono
         nomno =point_nom(i)
         if (nomno(1:1) .eq. '#') goto 3
         numno =point_num(i)
@@ -265,16 +265,17 @@ subroutine giecas(nfic, ndim, nbobj)
         write(nfic,1002) nomno,'N'//k7bid
         write(nfic,*) 'FINSF'
         write(nfic,*) '%'
-  3 end do
+  3     continue
+    end do
 !
 !     -----------------------------------------------------------------
 !     --ECRITURE DES GROUP_MA:
 !     -----------------------------------------------------------------
 !
     call jelira('&&GILIRE.OBJET_NOM', 'LONMAX', nbobno)
-    do 4 ii = 1, nbobj
+    do ii = 1, nbobj
         trouve =.false.
-        do 21 inu = 1, nbobno
+        do inu = 1, nbobno
             if (objet_num(inu) .eq. ii) then
                 trouve = .true.
                 nomobg=objet_nom(inu)
@@ -292,7 +293,7 @@ subroutine giecas(nfic, ndim, nbobj)
                     nomobj=vnomobj(2*(ii-1)+1)
                     call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', vi=ssob)
                 endif
-                do 5 j = 1, nbsoob
+                do j = 1, nbsoob
 !
 !        -- L'OBJET EST 1 OBJET COMPOSE, ON ECRIT SES MAILLES:
                     if (magoui) then
@@ -307,29 +308,30 @@ subroutine giecas(nfic, ndim, nbobj)
                     nbrest= nbele-7*nbfois
                     icok= cumul_ele(jj)
 !
-                    do 6 k = 1, nbfois
-                        do 7 kk = 1, 7
+                    do k = 1, nbfois
+                        do kk = 1, 7
                             icok=icok+1
                             call codent(zi(ianema-1+icok), 'G', k7nom( kk))
                             k8nom(kk)='M'//k7nom(kk)
-  7                     continue
+                        end do
                         write(nfic,1003) (k8nom(l),l=1,7)
-  6                 continue
+                    end do
 !
-                    do 8 kk = 1, nbrest
+                    do kk = 1, nbrest
                         icok=icok+1
                         call codent(zi(ianema-1+icok), 'G', k7nom(kk))
                         k8nom(kk)='M'//k7nom(kk)
-  8                 continue
+                    end do
                     write(nfic,1003) (k8nom(l),l=1,nbrest)
 !
-  5             continue
+                end do
                 write(nfic,*) 'FINSF'
                 write(nfic,*) '%'
             endif
- 21     continue
+ 21         continue
+        end do
 !
-  4 end do
+    end do
 !
 !     -- ON ECRIT LE "FIN" FINAL ET ON REMBOBINE LE FICHIER:
 !     ------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jedupo(schin, claout, schout, dupcol)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -189,7 +189,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
 ! ----- RECOPIE DES OBJETS ATTRIBUTS DE COLLECTION
 !
         idenba = icin .eq. icout
-        do 1 k = 1, idnum
+        do k = 1, idnum
             idat = iszon ( jiszon + ibacol + k )
             if (idat .gt. 0) then
                 nomin = rnom(jrnom(icin)+idat)
@@ -246,7 +246,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
                 endif
                 iszon(jiszon+ibaout+k) = idatos
             endif
-  1     continue
+        end do
 !
 ! ----- POUR UNE COLLECTION DISPERSEE, RECOPIE DES SEGMENTS DE VALEURS
 ! ----- ASSOCIES AUX OBJETS DE COLLECTION
@@ -267,7 +267,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
             genri = genr(jgenr(icin)+ixdeso)
             typei = type(jtype(icin)+ixdeso)
             ltypi = ltyp(jltyp(icin)+ixdeso)
-            do 2 k = 1, nmax
+            do k = 1, nmax
                 iadmi = iszon(jiszon+ibiadm-1+2*k-1)
                 iaddi(1) = iszon(jiszon+ibiadd-1+2*k-1)
                 iaddi(2) = iszon(jiszon+ibiadd-1+2*k )
@@ -308,7 +308,8 @@ subroutine jedupo(schin, claout, schout, dupcol)
                     call utmess('F', 'JEVEUX1_65', sk=nomin, si=k)
                 endif
                 call jjlide('JELIBE', nomout(1:24)//'$$XNUM  ', 2)
-  2         continue
+  2             continue
+            end do
         endif
         if (libcol) call jjlide('JELIBE', nomin(1:24), iret1)
         call jjlide('JELIBE', nomout(1:24), iret2)

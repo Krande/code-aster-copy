@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trmail(ific, nocc)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/getvid.h"
-#include "asterfort/tresu_tole.h"
-#include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_mail.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_tole.h"
     integer, intent(in) :: ific
     integer, intent(in) :: nocc
 !     COMMANDE:  TEST_RESU
@@ -41,7 +41,7 @@ subroutine trmail(ific, nocc)
     aster_logical :: lref
 !     ------------------------------------------------------------------
 !
-    do 100 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvid('MAILLAGE', 'MAILLAGE', iocc=iocc, scal=nommai, nbret=n1)
         call getvtx('MAILLAGE', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
         call tresu_tole(epsi, mcf='MAILLAGE', iocc=iocc)
@@ -62,17 +62,17 @@ subroutine trmail(ific, nocc)
 !
         call getvis('MAILLAGE', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
-            call tresu_mail(nommai, tbtxt, refi, iocc,&
-                           epsi, crit, .true._1, ssigne)
+            call tresu_mail(nommai, tbtxt, refi, iocc, epsi,&
+                            crit, .true._1, ssigne)
             if (lref) then
                 call getvis('MAILLAGE', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
                 ASSERT(n2.eq.n2r)
-                call tresu_mail(nommai, tbref, refir, iocc,&
-                               epsir, crit, .false._1, ssigne)
+                call tresu_mail(nommai, tbref, refir, iocc, epsir,&
+                                crit, .false._1, ssigne)
             endif
         endif
         write (ific,*)' '
-100 end do
+    end do
 !
 !
 end subroutine

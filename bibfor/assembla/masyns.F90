@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine masyns(matas)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -29,7 +29,6 @@ subroutine masyns(matas)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -41,10 +40,11 @@ subroutine masyns(matas)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=*) :: matas
     character(len=1) :: base, ktyp
     character(len=19) :: mat19
-    integer ::  i, nbloc, lgbloc, jvalmi, jvalms, jvalma
+    integer :: i, nbloc, lgbloc, jvalmi, jvalms, jvalma
     character(len=24), pointer :: refa(:) => null()
 !
 !---------------------------------------------------------------------
@@ -77,15 +77,15 @@ subroutine masyns(matas)
 !
     call jeveuo(jexnum('&&MASYNS.VALM', 1), 'L', jvalma)
     if (ktyp .eq. 'R') then
-        do 20 i = 1, lgbloc
+        do i = 1, lgbloc
             zr(jvalms+i-1) = zr(jvalma+i-1)
             zr(jvalmi+i-1) = zr(jvalma+i-1)
-20      continue
+        end do
     else
-        do 21 i = 1, lgbloc
+        do i = 1, lgbloc
             zc(jvalms+i-1) = zc(jvalma+i-1)
             zc(jvalmi+i-1) = zc(jvalma+i-1)
-21      continue
+        end do
     endif
     call jedetr('&&MASYNS.VALM')
 !

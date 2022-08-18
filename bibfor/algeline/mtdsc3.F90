@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtdsc3(nommat)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/ismaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jecreo.h"
@@ -31,6 +30,7 @@ subroutine mtdsc3(nommat)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nommat
 !     ALLOCATION DES DESCRIPTEURS D'UNE MATRICE de CONTACT-FROTTEMENT
 !     PLEINE SYMETRIQUE, REELLE SANS DDLS ELIMINES
@@ -62,7 +62,7 @@ subroutine mtdsc3(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  ier,   k, lmat
+    integer :: ier, k, lmat
     integer :: lnom
     integer, pointer :: scde(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -79,9 +79,9 @@ subroutine mtdsc3(nommat)
     endif
 !
     call jeveuo(mat19//'.&INT', 'E', lmat)
-    do 10,k = 1,19
-    zi(lmat-1+k) = ismaem()
-    10 end do
+    do k = 1, 19
+        zi(lmat-1+k) = ismaem()
+    end do
 !
     call jeexin(mat19//'.&IN2', ier)
     if (ier .eq. 0) then

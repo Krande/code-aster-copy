@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
                   idfde, idfde2, geom, dimdef, dimuel,&
                   ndim, nddls, nddlm, nno, nnos,&
@@ -42,7 +42,7 @@ subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION ------------------------------
 ! ======================================================================
-    do 100 kpi = 1, npi
+    do kpi = 1, npi
 ! ======================================================================
 ! --- DEFINITION DE L'OPERATEUR B (DEFINI PAR E=B.U) -------------------
 ! ======================================================================
@@ -68,12 +68,12 @@ subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
 ! ======================================================================
-        do 10 i = 1, dimdef
+        do i = 1, dimdef
             defgep((kpi-1)*dimdef+i)=0.0d0
-            do 20 n = 1, dimuel
+            do n = 1, dimuel
                 defgep((kpi-1)*dimdef+i) = defgep( (kpi-1)*dimdef+i)+ b(i,n)*deplp(n)
- 20         continue
- 10     continue
-100 end do
+            end do
+        end do
+    end do
 ! ======================================================================
 end subroutine

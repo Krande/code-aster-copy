@@ -15,23 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0300(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
+#include "asterfort/coor_cyl.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/provec.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xdeffk.h"
-#include "asterfort/provec.h"
-#include "asterfort/coor_cyl.h"
 #include "blas/ddot.h"
 !
     character(len=16) :: option, nomte
@@ -64,8 +64,8 @@ subroutine te0300(option, nomte)
     real(kind=8) :: the, dfxde, dfyde, presno, cisano, fxno, fyno
 !                                            2*NNO     2*NNO
     real(kind=8) :: presg(2), forcg(2), presn(6), forcn(6)
-    real(kind=8) :: basloc(9*6), p(3, 3), invp(3,3), e1(3), e2(3), e3(3)
-    real(kind=8) :: fkpo(3,3), ffp(9), mu, pt_ree(2), pt_loc(2)
+    real(kind=8) :: basloc(9*6), p(3, 3), invp(3, 3), e1(3), e2(3), e3(3)
+    real(kind=8) :: fkpo(3, 3), ffp(9), mu, pt_ree(2), pt_loc(2)
     real(kind=8) :: xno1, xno2, yno1, yno2, d1, d2
 !
     integer :: icodre(3)
@@ -94,13 +94,13 @@ subroutine te0300(option, nomte)
 ! PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
 !
     compt = 0
-    do 10 i = 1, nno
+    do i = 1, nno
         thx = zr(ithet+2* (i-1))
         thy = zr(ithet+2* (i-1)+1)
         if ((abs(thx).lt.eps) .and. (abs(thy).lt.eps)) then
             compt = compt + 1
         endif
- 10 end do
+    end do
     if (compt .eq. nno) goto 110
 !
 ! RECUPERATION CHARGE, MATER...
@@ -131,22 +131,22 @@ subroutine te0300(option, nomte)
 ! - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
 !
     if (fonc) then
-        do 40 i = 1, nno
-            do 20 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 valpar(j) = zr(igeom+2* (i-1)+j-1)
- 20         continue
-            do 30 j = 1, 2
+            end do
+            do j = 1, 2
                 call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
                             presn(2* (i-1)+j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcn(2* (i-1)+j), icode)
- 30         continue
- 40     continue
+            end do
+        end do
     endif
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 100 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         xg = 0.d0
         yg = 0.d0
@@ -162,7 +162,7 @@ subroutine te0300(option, nomte)
         divthe = 0.d0
 !
 !
-        do 50 i = 1, nno
+        do i = 1, nno
             vf = zr(ivf+k+i-1)
             dfde = zr(idfdk+k+i-1)
             xg = xg + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
@@ -175,28 +175,28 @@ subroutine te0300(option, nomte)
             thy = thy + vf*zr(ithet+2* (i-1)+1)
             dthxde = dthxde + dfde*zr(ithet+2* (i-1))
             dthyde = dthyde + dfde*zr(ithet+2* (i-1)+1)
- 50     continue
+        end do
 !
         if (fonc) then
             valpar(1) = xg
             valpar(2) = yg
-            do 60 j = 1, 2
+            do j = 1, 2
                 call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
                             presg( j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcg( j), icode)
- 60         continue
+            end do
         else
             presg(1) = 0.d0
             presg(2) = 0.d0
             forcg(1) = 0.d0
             forcg(2) = 0.d0
-            do 80 i = 1, nno
-                do 70 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     presg(j) = presg(j) + zr(ipres+2* (i-1)+j-1)*zr( ivf+k+i-1)
                     forcg(j) = forcg(j) + zr(iforc+2* (i-1)+j-1)*zr( ivf+k+i-1)
- 70             continue
- 80         continue
+                end do
+            end do
         endif
 !
         call rcvad2(fami, kp, 1, '+', zi(imate),&
@@ -228,14 +228,14 @@ subroutine te0300(option, nomte)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    CALCUL DES COOR. CYL.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
-         p(:,:)=0.d0
-         invp(:,:)=0.d0
-         do ino = 1, nno
-           ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
-           basloc((6*(ino-1)+1):(6*(ino-1)+6))=zr((ifond-1+1):(ifond-1+6))
-         enddo
-         call coor_cyl(2, nno, basloc, zr(igeom), ffp,&
-                       p, invp, rpol, phi, l_not_zero)
+        p(:,:)=0.d0
+        invp(:,:)=0.d0
+        do ino = 1, nno
+            ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
+            basloc((6*(ino-1)+1):(6*(ino-1)+6))=zr((ifond-1+1):(ifond-1+6))
+        enddo
+        call coor_cyl(2, nno, basloc, zr(igeom), ffp,&
+                      p, invp, rpol, phi, l_not_zero)
 ! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
         e1(:)=0.d0
         e1(1:2)=p(1:2,1)
@@ -263,10 +263,18 @@ subroutine te0300(option, nomte)
             yno1 = zr(igeom + 1)
             xno2 = zr(igeom + 2)
             yno2 = zr(igeom + 3)
-            d1 = ((xno1-zr(ifond-1+1)) * (xno1-zr(ifond-1+1))) + &
-                 ((yno1-zr(ifond-1+2)) * (yno1-zr(ifond-1+2)))
-            d2 = ((xno2-zr(ifond-1+1)) * (xno2-zr(ifond-1+1))) + &
-                 ((yno2-zr(ifond-1+2)) * (yno2-zr(ifond-1+2)))
+            d1 = (&
+                 (&
+                 xno1-zr(ifond-1+1)) * (xno1-zr(ifond-1+1))) + ((yno1-zr(ifond-1+2)) * (yno1-zr(i&
+                 &fond-1+2)&
+                 )&
+                 )
+            d2 = (&
+                 (&
+                 xno2-zr(ifond-1+1)) * (xno2-zr(ifond-1+1))) + ((yno2-zr(ifond-1+2)) * (yno2-zr(i&
+                 &fond-1+2)&
+                 )&
+                 )
             if (d2 .gt. d1) then
                 phi = -1.0d0 * phi
             else
@@ -279,7 +287,8 @@ subroutine te0300(option, nomte)
         endif
 !
 ! --------- champs singuliers
-        call xdeffk(ck, mu, rpol, phi, 2, fkpo(1:2,1:2))
+        call xdeffk(ck, mu, rpol, phi, 2,&
+                    fkpo(1:2, 1:2))
 !
         u1s(:)=0.d0
         u2s(:)=0.d0
@@ -306,7 +315,7 @@ subroutine te0300(option, nomte)
         fy = forcg(2) + (dxde*pres+dyde*cisa)/dsde
 !
         if (fonc) then
-            do 90 i = 1, nno
+            do i = 1, nno
                 dfde = zr(idfdk+k+i-1)
                 presno = presn(2* (i-1)+1)
                 cisano = presn(2* (i-1)+2)
@@ -314,7 +323,7 @@ subroutine te0300(option, nomte)
                 fyno = forcn(2* (i-1)+2) + (dxde*presno+dyde*cisano)/ dsde
                 dfxde = dfxde + dfde*fxno
                 dfyde = dfyde + dfde*fyno
- 90         continue
+            end do
         endif
 !
         poids = zr(ipoids+kp-1)
@@ -327,7 +336,7 @@ subroutine te0300(option, nomte)
         tcla2 = tcla2 + poids* ( (divthe*fx+dfxde*the)*u2s(1)+ (divthe* fy+dfyde*the)*u2s(2))
         tcla = tcla + poids* ( (divthe*fx+dfxde*the)*ux+ (divthe*fy+ dfyde*the)*uy)
 !
-100 end do
+    end do
 !
     g = tcla
     k1 = tcla1*coefk/2.d0

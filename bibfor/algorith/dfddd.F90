@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfddd(eps, endo, ndim, lambda, mu,&
                  ecrod, dfd)
 !
@@ -62,9 +62,9 @@ subroutine dfddd(eps, endo, ndim, lambda, mu,&
 !
     dfd=0.d0
     treps=0.d0
-    do 5 i = 1, ndim
+    do i = 1, ndim
         treps=treps+eps(t(i,i))
- 5  end do
+    end do
     if (treps .lt. 0.d0) then
         dfd=dfd+phid*lambda/2.d0*treps**2
     endif
@@ -72,13 +72,13 @@ subroutine dfddd(eps, endo, ndim, lambda, mu,&
     call diago3(eps, veceps, valeps)
     call r8inir(3, 0.d0, vpe, 1)
 !
-    do 19 i = 1, ndim
+    do i = 1, ndim
         if (valeps(i) .lt. 0.d0) then
             vpe(i)=valeps(i)
         else
             vpe(i)=0.d0
         endif
-19  end do
+    end do
 !
     dfd=dfd+mu*phid*(vpe(1)**2+vpe(2)**2+vpe(3)**2)-2.d0*ecrod
 !

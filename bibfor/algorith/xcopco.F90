@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
                   ndim, nummae, iface, ksi1, ksi2,&
                   npte, geom)
@@ -70,41 +70,41 @@ subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
 !
 ! --- INITIALISATIONS
 !
-    do 100 i = 1, ndim
+    do i = 1, ndim
         geom(i) = 0.d0
-100  end do
+    end do
 !
 ! --- RECUPERATION DES NUMEROS LOCAUX DES POINTS D'INTERSECTIONS
 !     DE LA FACETTE DANS LA MAILLE
 !
-    do 150 i = 1, npte
+    do i = 1, npte
         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                     ifiss, (iface-1)* ndim+i, iad)
         ASSERT(iad.gt.0)
         numpi(i) = zi(jcesv(4)-1+iad)
-150  end do
+    end do
 !
 ! --- RECUPERATION DES COORDONNES REELLES DES POINTS D'INTERSECTION
 !     DE LA FACETTE ESCLAVE
 !
-    do 200 i = 1, npte
-        do 210 j = 1, ndim
+    do i = 1, npte
+        do j = 1, ndim
             call cesexi('S', jcesd(5), jcesl(5), nummae, 1,&
                         ifiss, ndim*( numpi(i)-1)+j, iad)
             ASSERT(iad.gt.0)
             coor(ndim*(i-1)+j)=zr(jcesv(5)-1+iad)
-210      continue
-200  end do
+        end do
+    end do
 !
 ! --- CALCUL DU POINT
 !
     call mmnonf(ndim, npte, alias, ksi1, ksi2,&
                 ff)
-    do 300 i = 1, ndim
-        do 310 j = 1, npte
+    do i = 1, ndim
+        do j = 1, npte
             geom(i) = ff(j)*coor((j-1)*ndim+i) + geom(i)
-310      continue
-300  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

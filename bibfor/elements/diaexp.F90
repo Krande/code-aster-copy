@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diaexp(nno, nddl, ldim, masco, masdi)
     implicit none
 #include "asterfort/r8inir.h"
@@ -35,15 +35,15 @@ subroutine diaexp(nno, nddl, ldim, masco, masdi)
     integer :: idiag, i, k, i0, k0
 !
     call r8inir(ldim*(ldim+1)/2, 0.d0, masdi, 1)
-    do 10 i = 1, ldim
+    do i = 1, ldim
         i0 = i*(i-1)/2
         idiag = i*(i+1)/2
         masdi(idiag) = masco(idiag)
-        do 20 k = (i0+1), idiag-1
+        do k = (i0+1), idiag-1
             masdi(idiag) = masdi(idiag) + masco(k)
             k0 = k - i0
             k0 = k0*(k0+1)/2
             masdi(k0) = masdi(k0) + masco(k)
-20      continue
-10  end do
+        end do
+    end do
 end subroutine

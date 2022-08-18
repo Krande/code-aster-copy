@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xdecov(ndim, elp, nnop, nnose, it,&
                   pintt, cnset, heavt, ncomp, lsn,&
                   fisco, igeom, nfiss, ifiss, pinter,&
@@ -93,11 +93,11 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
 !     NDIME = 2 ALORS QUE NDIM = 3
 !
-    do 10 in = 1, 6
-        do 20 j = 1, 6
+    do in = 1, 6
+        do j = 1, 6
             cnse(in,j)=0
- 20     continue
- 10 end do
+        end do
+    end do
 !
     typma=elrese(ndime)
     call conare(typma, ar, nbar)
@@ -115,18 +115,18 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
-            do 90 in = 1, nnose
+            do in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
- 90         continue
+            end do
         else if (ninter .eq. 2) then
             a1=nint(ainter(zxain*(1-1)+1))
             a2=nint(ainter(zxain*(2-1)+1))
             if (npts .eq. 2) then
 !           1 SEUL ELEMENT
                 nse=1
-                do 91 in = 1, nnose
+                do in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
- 91             continue
+                end do
             else if (npts .eq. 1) then
 !           2 ELEMENTS
                 nse=2
@@ -143,15 +143,15 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                 ASSERT(a1.ne.0)
 !           101 ET 102 LES 2 POINTS D'INTERSECTION
 !           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
-                do 93 i = 1, 2
-                    do 94 j = 1, 2
+                do i = 1, 2
+                    do j = 1, 2
                         if (ar(a1,i) .eq. ar(a2,j)) then
                             a=ar(a1,i)
                             b=ar(a1,3-i)
                             c=ar(a2,3-j)
                         endif
- 94                 continue
- 93             continue
+                    end do
+                end do
                 cnse(1,1)=101
                 cnse(1,2)=102
                 cnse(1,3)=cnset(nnose*(it-1)+a)
@@ -167,9 +167,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
-            do 92 in = 1, nnose
+            do in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
- 92         continue
+            end do
         else
 !         TROP DE POINTS D'INTERSECTION
             ASSERT(ninter.le.3)
@@ -182,17 +182,17 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
-            do 95 in = 1, 2
+            do in = 1, 2
                 cnse(1,in)=cnset(nnose*(it-1)+in)
- 95         continue
+            end do
         else if (ninter .eq. 1) then
             a1=nint(ainter(zxain*(1-1)+1))
             if (npts .eq. 1) then
 !           1 SEUL ELEMENT
                 nse=1
-                do 96 in = 1, 2
+                do in = 1, 2
                     cnse(1,in)=cnset(nnose*(it-1)+in)
- 96             continue
+                end do
             else if (npts .eq. 0) then
 !           2 ELEMENTS
                 nse=2
@@ -212,9 +212,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
-            do 97 in = 1, 2
+            do in = 1, 2
                 cnse(1,in)=cnset(nnose*(it-1)+in)
- 97         continue
+            end do
         else
 !         TROP DE POINTS D'INTERSECTION
             ASSERT(ninter.le.2)
@@ -224,9 +224,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
     else if (ndime.eq.3) then
 !
-        do 98 i = 1, 18
+        do i = 1, 18
             npent(i)=0
- 98     continue
+        end do
         if (ninter .lt. 3) then
 !
 !       1Â°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
@@ -236,9 +236,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             ASSERT(npts.eq.ninter)
 !         ON A UN SEUL ELEMENT
             nse=1
-            do 100 in = 1, nnose
+            do in = 1, nnose
                 cnse(1,in)=cnset(nnose*(it-1)+in)
-100         continue
+            end do
 !
         else if (ninter.eq.3) then
 !
@@ -251,9 +251,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             if (npts .eq. 3) then
 !           ON A UN SEUL ELEMENT
                 nse=1
-                do 110 in = 1, nnose
+                do in = 1, nnose
                     cnse(1,in)=cnset(nnose*(it-1)+in)
-110             continue
+                end do
 !
             else if (npts.eq.2) then
 !           ON A DEUX SOUS-ELEMENTS
@@ -279,15 +279,15 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                 ASSERT(a1.eq.0.and.a2.ne.0)
                 ASSERT(nint(ainter(2)).gt.0)
 !           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
-                do 30 i = 1, 2
-                    do 40 j = 1, 2
+                do i = 1, 2
+                    do j = 1, 2
                         if (ar(a2,i) .eq. ar(a3,j)) then
                             a=ar(a2,i)
                             b=ar(a2,3-i)
                             c=ar(a3,3-j)
                         endif
- 40                 continue
- 30             continue
+                    end do
+                end do
 !           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPÉ
                 cnse(1,1)=nint(ainter(2))
                 cnse(1,2)=102
@@ -309,20 +309,20 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                 b=0
                 c=0
                 d=0
-                do 38 i = 1, 2
-                    do 48 j = 1, 2
+                do i = 1, 2
+                    do j = 1, 2
                         if (ar(a1,i) .eq. ar(a2,j)) then
                             a=ar(a1,i)
                             b=ar(a1,3-i)
                             c=ar(a2,3-j)
                         endif
- 48                 continue
- 38             continue
-                do 39 i = 1, 2
+                    end do
+                end do
+                do i = 1, 2
                     if (ar(a3,i) .ne. a) then
                         d=ar(a3,i)
                     endif
- 39             continue
+                end do
                 ASSERT((a*b*c*d).gt.0)
 !
                 cnse(1,1)=101
@@ -355,8 +355,8 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             b=0
             c=0
             d=0
-            do 78 i = 1, 2
-                do 88 j = 1, 2
+            do i = 1, 2
+                do j = 1, 2
                     if (ar(a1,i) .eq. ar(a2,j)) then
                         a=ar(a1,i)
                         b=ar(a1,3-i)
@@ -365,8 +365,8 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                     if (ar(a3,i) .eq. ar(a4,j)) then
                         d=ar(a3,i)
                     endif
- 88             continue
- 78         continue
+                end do
+            end do
             ASSERT((a*b*c*d).gt.0)
             npent(1)=104
             npent(2)=102
@@ -392,29 +392,29 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
     if (ndime .eq. 3) then
 !
-        do 200 ise = 1, nse
-            do 210 in = 1, 4
+        do ise = 1, nse
+            do in = 1, 4
                 inh=cnse(ise,in)
                 if (inh .lt. 100) then
-                    do 220 j = 1, 3
+                    do j = 1, 3
                         xyz(in,j)=zr(igeom-1+ndim*(inh-1)+j)
-220                 continue
+                    end do
                 else if (inh.gt.100.and.inh.lt.1000) then
-                    do 221 j = 1, 3
+                    do j = 1, 3
                         xyz(in,j)=pinter(ndim*(inh-100-1)+j)
-221                 continue
+                    end do
                 else
-                    do 222 j = 1, 3
+                    do j = 1, 3
                         xyz(in,j)=pintt(ndim*(inh-1001)+j)
-222                 continue
+                    end do
                 endif
-210         continue
+            end do
 !
-            do 230 j = 1, 3
+            do j = 1, 3
                 ab(j)=xyz(2,j)-xyz(1,j)
                 ac(j)=xyz(3,j)-xyz(1,j)
                 ad(j)=xyz(4,j)-xyz(1,j)
-230         continue
+            end do
 !
             call provec(ab, ac, vn)
             ps=ddot(3,vn,1,ad,1)
@@ -426,7 +426,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                 cnse(ise,4)=inh
             endif
 !
-200     continue
+        end do
 !
 !
     endif
@@ -436,30 +436,30 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !             ALGO BOOK III (28/04/04)
 !-----------------------------------------------------------------------
     ASSERT(nse.le.nsemax)
-    do 300 ise = 1, nse
-        do 310 i = 1, ifiss-1
+    do ise = 1, nse
+        do i = 1, ifiss-1
 ! ----- ON RECOPIE LES VALEURS PRÉCÉDENTES
             heav(ifiss*(ise-1)+i)=heavt(ncomp*(i-1)+it)
-310     continue
+        end do
 ! ----- ON TRAITE LA FISSURE COURANTE
         somlsn(:) = 0.d0
-        do 320 in = 1, nnose
+        do in = 1, nnose
             inh=cnse(ise,in)
             if (inh .lt. 100) then
-                do 325 i = 1, nfisc
+                do i = 1, nfisc
                     somlsn(i) = somlsn(i)+lsn((inh-1)*nfiss+fisco(2*i- 1))
-325             continue
+                end do
                 somlsn(nfisc+1) = somlsn(nfisc+1)+lsn((inh-1)*nfiss+ ifiss)
             else
 !           RECUP DE LA GÉOMETRIE
                 if (inh .gt. 1000) then
-                    do 330 j = 1, ndim
+                    do j = 1, ndim
                         geom(j) = pintt(ndim*(inh-1001)+j)
-330                 continue
+                    end do
                 else if (inh.lt.1000) then
-                    do 340 j = 1, ndim
+                    do j = 1, ndim
                         geom(j) = pinter(ndim*(inh-101)+j)
-340                 continue
+                    end do
                 endif
 !           CALCUL DES FF
 !
@@ -467,21 +467,21 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                 call reeref(elp, nnop, zr(igeom), geom, ndim,&
                             rbid2, ff)
 !
-                do 350 j = 1, nnop
-                    do 355 i = 1, nfisc
+                do j = 1, nnop
+                    do i = 1, nfisc
                         somlsn(i)=somlsn(i)+ff(j)*lsn((j-1)*nfiss+&
                         fisco(2*i-1))
-355                 continue
+                    end do
                     somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j) *lsn((j-1) *nfiss+ifiss)
-350             continue
+                end do
             endif
-320     continue
+        end do
 !
 !       MISE À ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
 !
-        do 360 i = 1, nfisc
+        do i = 1, nfisc
             if (fisco(2*i)*somlsn(i) .gt. 0.d0) goto 300
-360     continue
+        end do
 !
         if (somlsn(nfisc+1) .lt. 0.d0) then
             heav(ifiss*ise) = -1.d0
@@ -500,6 +500,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             heav(ifiss*ise) = 99.d0
         endif
 !
-300 end do
+300     continue
+    end do
 !
 end subroutine

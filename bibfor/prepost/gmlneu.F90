@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gmlneu(igmsh, nbnode)
 !.======================================================================
     implicit none
@@ -70,7 +70,7 @@ subroutine gmlneu(igmsh, nbnode)
 ! --- LECTURE DES NUMEROS DE NOEUDS ET DE LEURS COORDONNEES :
 !     -----------------------------------------------------
     ndmax = 0
-    do 10 inode = 1, nbnode
+    do inode = 1, nbnode
 !        READ(IGMSH,'(I10,3(E25.16))') NODE,X,Y,Z
         read(igmsh,*) node,x,y,z
         ndmax = max(node,ndmax)
@@ -80,14 +80,14 @@ subroutine gmlneu(igmsh, nbnode)
         zr(jcoor-1+3*(inode-1)+2) = y
         zr(jcoor-1+3*(inode-1)+3) = z
 !
-10  end do
+    end do
 !
 !
 !    LISTE DES NOEUDS A DETRUIRE (0: A DETRUIRE, 1: A CONSERVER)
     call wkvect('&&PREGMS.DETR.NOEUDS', 'V V I', ndmax+1, jdetr)
-    do 12 node = 0, ndmax
+    do node = 0, ndmax
         zi(jdetr+node) = 0
-12  end do
+    end do
 !
 !
     write(imes,*) 'NOMBRE DE NOEUDS : ',nbnode

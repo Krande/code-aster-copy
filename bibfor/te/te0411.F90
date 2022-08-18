@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0411(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dffno.h"
 #include "asterfort/elref1.h"
@@ -30,6 +29,7 @@ subroutine te0411(option, nomte)
 #include "asterfort/provec.h"
 #include "asterfort/pscvec.h"
 #include "asterfort/tecael.h"
+!
     character(len=16) :: option, nomte
 !
 !                 CALCUL DE ROSETTE, OPTION : SIRO_ELEM
@@ -54,8 +54,8 @@ subroutine te0411(option, nomte)
 !
     call tecael(iadzi, iazk24, noms=0)
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PSIG3D', 'L', isig)
     call jevech('PGEOMER', 'L', igeom)
@@ -70,25 +70,25 @@ subroutine te0411(option, nomte)
 !        VNO = VECTEUR NORMAL A L'ELEMENT
 !
 !     INITIALISATION
-    do 9 i = 1, 3
+    do i = 1, 3
         vt1(i) = 0.d0
         vt2(i) = 0.d0
         vno(i) = 0.d0
-        do 8 j = i, 3
+        do j = i, 3
             sigg(i,j)=0.d0
- 8      continue
- 9  end do
+        end do
+    end do
 !
 ! --- ------------------------------------------------------------------
 ! --- BOUCLE SUR LES NOEUDS DE L'ELEMENT
-    do 10 ino = 1, nnop
+    do ino = 1, nnop
 !
-        do 12 i = 1, 3
+        do i = 1, 3
             vtan1(i) = 0.d0
             vtan2(i) = 0.d0
-12      continue
+        end do
 !
-        do 20 ifonc = 1, nnop
+        do ifonc = 1, nnop
             iaux1 = igeom-1+3*(ifonc-1)
             iaux2 = (ino-1)*nnop*2 + ifonc
             vtan1(1) = vtan1(1) + zr(iaux1+1)*dff(iaux2)
@@ -97,7 +97,7 @@ subroutine te0411(option, nomte)
             vtan2(1) = vtan2(1) + zr(iaux1+1)*dff(iaux2+nnop)
             vtan2(2) = vtan2(2) + zr(iaux1+2)*dff(iaux2+nnop)
             vtan2(3) = vtan2(3) + zr(iaux1+3)*dff(iaux2+nnop)
-20      continue
+        end do
 !
         vt1(1)=vt1(1)+vtan1(1)
         vt1(2)=vt1(2)+vtan1(2)
@@ -113,7 +113,7 @@ subroutine te0411(option, nomte)
         sigg(1,3)=sigg(1,3)+zr(isig+6*(ino-1)+4)
         sigg(2,3)=sigg(2,3)+zr(isig+6*(ino-1)+5)
 !
-10  end do
+    end do
 ! --- ------------------------------------------------------------------
 ! --- VECTEURS TANGENTS PAR MOYENNE DE CHAQUE COMPOSANTE
     vt1(1)=vt1(1)/nnop

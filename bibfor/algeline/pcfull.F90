@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pcfull(n, icpl, icpc, icpd, icplp,&
                   icpcp, ind, lca, ier)
 !                    S.P. PCFULL
@@ -106,9 +106,9 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
     integer :: k, k1, k2, kp1, kp2, l, lca
     integer :: ncremx, nzero
 !-----------------------------------------------------------------------
-    do 10 i = 1, n
+    do i = 1, n
         ind(i)=0
-10  end do
+    end do
     ic1=0
     ic2=0
     k1=1
@@ -116,7 +116,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !
 !     FACTORISATION LOGIQUE : LIGNE PAR LIGNE
 !     ---------------------------------------
-    do 50 i = 1, n
+    do i = 1, n
 !
 !       TEST DE DEPASSEMENT DE DIMENSION (PROTECTION DES TABLEAUX)
 !       REMARQUE JP : LA FICHE 12292 MONTRE QUE CE TEST EST INSUFFISANT
@@ -130,17 +130,17 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !
 !       MISE A JOUR DU TABLEAU IND
         k2=icpl(i)
-        do 20 k = k1, k2
+        do k = k1, k2
             j=icpc(k)
             ind(j)=i
-20      continue
+        end do
         ind(i)=i
 !
 !       RECHERCHE DANS LA LIGNE I DES L(I,J) NON NULS
-        do 40 k = k1, icpd(i)
+        do k = k1, icpd(i)
             j=icpc(k)
 !         RECHERCHE DANS LA LIGNE J DES U(J,JJ) NON NULS
-            do 30 l = icpd(j)+1, icpl(j)
+            do l = icpd(j)+1, icpl(j)
                 jj=icpc(l)
 !           LE COEFFICIENT L(I,JJ) OU U(JJ,I) EXISTE-T-IL ?
                 if (ind(jj) .ne. i) then
@@ -155,8 +155,8 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !             MISE A JOUR DU TABLEAU IND
                     ind(jj)=i
                 endif
-30          continue
-40      continue
+            end do
+        end do
 !
 !       RECLASSEMENT DES INDICES DE COLONNE PAR ORDRE CROISSANT
         call pctrii(icpcp(ic2+1), ic1-ic2)
@@ -165,7 +165,7 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
         icplp(i)=ic1
         ic2=ic1
         k1=k2+1
-50  end do
+    end do
     icplp(0)=0
 !
 !
@@ -183,11 +183,11 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !     POUR LA MATRICE FACTORISEE : REUNION DES TABLEAUX ICPC ET ICPCP
 !     ---------------------------------------------------------------
     k=nzero
-    do 80 i = n, 1, -1
+    do i = n, 1, -1
         icpl(i)=k
         kp2=icplp(i-1)
         k2=icpl(i-1)
-60      continue
+ 60     continue
 !
         if (k1 .gt. k2) then
 !          LIGNE DE L EN COURS
@@ -221,23 +221,23 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
         k=k-1
         goto 60
 !
-70      continue
-80  end do
+ 70     continue
+    end do
     goto 140
 !
 !
-90  continue
+ 90 continue
 !     DEPASSEMENT DE DIMENSION ON CALCULE IC1= PLACE A AJOUTER
-    do 130 i = istop, n
+    do i = istop, n
         k2=icpl(i)
-        do 100 k = k1, k2
+        do k = k1, k2
             j=icpc(k)
             ind(j)=i
-100      continue
+        end do
         ind(i)=i
-        do 120 k = k1, icpd(i)
+        do k = k1, icpd(i)
             j=icpc(k)
-            do 110 l = icpd(j)+1, icpl(j)
+            do l = icpd(j)+1, icpl(j)
                 jj=icpc(l)
                 if (jj .ge. i) goto 110
 !
@@ -246,15 +246,16 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
                     ic1=ic1+1
                     ind(jj)=i
                 endif
-110          continue
-120      continue
+110             continue
+            end do
+        end do
         k1=k2+1
-130  end do
+    end do
 !
 !
 !     NZERO=TAILLE MAT INI. + TAILLE MAT REMPLIE
     nzero=icpl(n)+ic1
     ier=nzero
-140  continue
+140 continue
 !
 end subroutine

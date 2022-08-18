@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevfu(cnoc, cfat, fut)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     real(kind=8) :: fut
     character(len=24) :: cnoc, cfat
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
@@ -56,25 +56,25 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
     AS_ALLOCATE(vi=nb_occ_k, size=nbinst)
     AS_ALLOCATE(vi=nb_occ_l, size=nbinst)
-    do 10 i1 = 1, nbinst
+    do i1 = 1, nbinst
         nb_occ_k(i1) = zi(jnocr+i1-1)
         nb_occ_l(i1) = zi(jnocr+i1-1)
- 10 end do
+    end do
 !
     AS_ALLOCATE(vr=matr_fu, size=nbinst*nbinst)
     ind = 0
-    do 20 i1 = 1, nbinst
+    do i1 = 1, nbinst
         indi = nbinst*(i1-1) + i1
         ind = ind + 1
         matr_fu(indi) = zr(jfu-1+5*(ind-1)+4)
-        do 22 i2 = i1+1, nbinst
+        do i2 = i1+1, nbinst
             inds = nbinst*(i1-1) + i2
             indi = nbinst*(i2-1) + i1
             ind = ind + 1
             matr_fu(inds) = zr(jfu-1+5*(ind-1)+4)
             matr_fu(indi) = zr(jfu-1+5*(ind-1)+4)
- 22     continue
- 20 end do
+        end do
+    end do
 !
     ifm = 6
     ind = 0
@@ -89,21 +89,21 @@ subroutine rcevfu(cnoc, cfat, fut)
             write(ifm,*) 'MATRICE FACTEUR D''USAGE MODIFIEE'
         endif
         write(ifm,1010) ( nb_occ_l(l), l=1,nbinst )
-        do 700 k = 1, nbinst
+        do k = 1, nbinst
             i1 = nbinst*(k-1)
             write(ifm,1000) nb_occ_k(k), (matr_fu(i1+l), l=1,&
             nbinst)
-700     continue
+        end do
     endif
 !
     fum = 0.d0
 !
-    do 110 i1 = 1, nbinst
+    do i1 = 1, nbinst
         noc1 = nb_occ_k(i1)
         if (noc1 .eq. 0) goto 110
         k = nbinst*(i1-1)
 !
-        do 112 i2 = 1, nbinst
+        do i2 = 1, nbinst
             noc2 = nb_occ_l(i2)
             if (noc2 .eq. 0) goto 112
             l = i2
@@ -118,9 +118,11 @@ subroutine rcevfu(cnoc, cfat, fut)
                 fum = fukl
             endif
 !
-112     continue
+112         continue
+        end do
 !
-110 end do
+110     continue
+    end do
     nbcycl = min( noc1m , noc2m )
 !
     if (fum .lt. r8prem()) goto 999
@@ -140,40 +142,40 @@ subroutine rcevfu(cnoc, cfat, fut)
         nb_occ_l(i2m) = 0
         nb_occ_k(i1m) = 0
         nb_occ_k(i2m) = 0
-        do 120 k = 1, nbinst
+        do k = 1, nbinst
             matr_fu((k-1)*nbinst+i2m) = 0.d0
             matr_fu((i2m-1)*nbinst+k) = 0.d0
             matr_fu((k-1)*nbinst+i1m) = 0.d0
             matr_fu((i1m-1)*nbinst+k) = 0.d0
-120     continue
+        end do
     else if (noc1m .lt. noc2m) then
         nb_occ_l(i2m) = nb_occ_l(i2m) - noc1m
         nb_occ_k(i2m) = nb_occ_k(i2m) - noc1m
         nb_occ_k(i1m) = 0
         nb_occ_l(i1m) = 0
-        do 122 k = 1, nbinst
+        do k = 1, nbinst
             matr_fu((i1m-1)*nbinst+k) = 0.d0
             matr_fu((k-1)*nbinst+i1m) = 0.d0
-122     continue
+        end do
     else
         nb_occ_l(i2m) = 0
         nb_occ_k(i2m) = 0
         nb_occ_l(i1m) = nb_occ_l(i1m) - noc2m
         nb_occ_k(i1m) = nb_occ_k(i1m) - noc2m
-        do 124 k = 1, nbinst
+        do k = 1, nbinst
             matr_fu((k-1)*nbinst+i2m) = 0.d0
             matr_fu((i2m-1)*nbinst+k) = 0.d0
-124     continue
+        end do
     endif
 !
 ! --- EXISTE-T-IL DES ETATS TELS QUE NB_OCCUR > 0
 !
     encore = .false.
-    do 200 i1 = 1, nbinst
+    do i1 = 1, nbinst
         if (nb_occ_k(i1) .gt. 0) then
             encore = .true.
         endif
-200 continue
+    end do
     if (encore) goto 100
 !
 999 continue

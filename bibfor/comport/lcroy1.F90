@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function lcroy1()
     implicit none
     real(kind=8) :: lcroy1
@@ -44,7 +44,7 @@ function lcroy1()
 #include "asterfort/utmess.h"
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
      &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
      &               itemax, jprolp, jvalep, nbvalp
@@ -83,8 +83,8 @@ function lcroy1()
 ! LCROTY RESOUD UNE EQUATION DU TYPE Y*EXP(Y)=CONSTANTE
 !
         call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                    e = young, nu = nu, p = pm, rp = rp,&
-                    rprim = pente, airerp = aire, sieleq = 2.d0*mu*eqetr, dp = dp)
+                    e = young, nu = nu, p = pm, rp = rp, rprim = pente,&
+                    airerp = aire, sieleq = 2.d0*mu*eqetr, dp = dp)
         yinf = lcroty(dp*unk*fonc/sig1, prec, itemax)
     endif
 !
@@ -102,7 +102,7 @@ function lcroy1()
 ! 3 - RESOLUTION PAR UNE METHODE DE NEWTON ENTRE LES BORNES
 !
     y = ysup
-    do 10 iter = 1, itemax
+    do iter = 1, itemax
         if (abs(seuil)/sigy .le. prec) goto 100
 !
         y = y - seuil/dseuil
@@ -113,10 +113,10 @@ function lcroy1()
         if (seuil .ge. 0) yinf = y
         if (seuil .le. 0) ysup = y
 !
-10  end do
+    end do
     call utmess('F', 'ALGORITH3_55')
 !
 !
-100  continue
+100 continue
     lcroy1 = y
 end function

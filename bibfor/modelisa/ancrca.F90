@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ancrca(icabl, nbno, s, alpha, f0,&
                   delta, ea, frco, frli, sa,&
                   d, f)
@@ -79,7 +79,7 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
 !
     if (delta .eq. 0.0d0) then
         d = 0.0d0
-        goto 9999
+        goto 999
     endif
 !
     epsw = 1.0d-04
@@ -94,16 +94,16 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
         d = s(nbno)
         if (wcr/wdef .lt. epsw) then
             df = wdef / d
-            do 10 ino = 1, nbno
+            do ino = 1, nbno
                 f(ino) = f(ino) - df
-10          continue
+            end do
         else
             df = ( wdef - wcr ) / d
             f2 = f(nbno)
             f2 = f2 * f2
-            do 20 ino = 1, nbno
+            do ino = 1, nbno
                 f(ino) = f2/f(ino) - df
-20          continue
+            end do
         endif
 !
     else if (wcr.eq.wdef) then
@@ -114,15 +114,15 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
         d = s(nbno)
         f2 = f(nbno)
         f2 = f2 * f2
-        do 30 ino = 1, nbno
+        do ino = 1, nbno
             f(ino) = f2/f(ino)
-30      continue
+        end do
 !
     else
 !
         iinf = 1
         isup = nbno
-40      continue
+ 40     continue
         ino = (iinf+isup)/2
         if (wdefca(ino,s,alpha,f0,frco,frli) .gt. wdef) then
             isup = ino
@@ -144,13 +144,13 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
 !
         f2 = f0 * dble ( exp ( - frco * alphad - frli * d ) )
         f2 = f2 * f2
-        do 50 ino = 1, iinf
+        do ino = 1, iinf
             f(ino) = f2/f(ino)
-50      continue
+        end do
 !
     endif
 !
-9999  continue
+999 continue
 !
 ! --- FIN DE ANCRCA.
 end subroutine

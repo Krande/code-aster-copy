@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0022(option, nomte)
     implicit none
     character(len=16) :: option, nomte
@@ -41,15 +41,15 @@ subroutine te0022(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: idim
     integer :: i, icont, idepl, igeom, imate, nbsig
-
+!
     real(kind=8) :: sigma(162), repere(7), instan, nharm
     real(kind=8) :: bary(3)
     real(kind=8) :: zero
 !
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !   -----------------------------------------
@@ -61,9 +61,9 @@ subroutine te0022(option, nomte)
     instan = r8vide()
     nharm = zero
 !
-    do 10 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         sigma(i) = zero
-10  end do
+    end do
 !
 ! - RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !   ----------------------------------------------
@@ -80,11 +80,11 @@ subroutine te0022(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 30 i = 1, nno
-        do 20 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-20      continue
-30  end do
+        end do
+    end do
     call ortrep(ndim, bary, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
@@ -101,8 +101,8 @@ subroutine te0022(option, nomte)
 !      --------------------------------------------------------
     call jevech('PCONTRR', 'E', icont)
 !
-    do 40 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         zr(icont+i-1) = sigma(i)
-40  end do
+    end do
 !
 end subroutine

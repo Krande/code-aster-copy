@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
                   nnose, it, ainter, ip1, ip2,&
                   pm2, typma, pinref, pmiref, ksi,&
@@ -24,7 +24,6 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/reeref.h"
@@ -33,6 +32,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 #include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
+!
     integer :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
     real(kind=8) :: pinref(*), geom(*), milfa(ndim), ainter(*)
     real(kind=8) :: pmiref(*), ksi(ndime), pintt(*), pmitt(*)
@@ -78,17 +78,17 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     d=0
 !
     do i = 1, 2
-        do 31 j = 1, 2
+        do j = 1, 2
             if (ar(a1,i) .eq. ar(a2,j)) then
                 a=ar(a1,3-i)
                 b=ar(a2,3-j)
             endif
- 31     continue
+        end do
     end do
     do i = 1, nbar
-        do 41 j = 1, 2
+        do j = 1, 2
             if ((ar(i,j).eq.a) .and. (ar(i,3-j).eq.b)) d=ar(i,3)
- 41     continue
+        end do
     end do
     ASSERT((a*b*d).gt.0)
 !   INDICE CORRECPONDANT DANS L ELEMENT PARENT
@@ -98,40 +98,40 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     call xelrex(elrefp, nno, xref)
 !
-    if (ib.lt.1000) then
-       do j = 1, ndime
-          ptb(j) = xref(ndime*(ib-1)+j)
-       end do
+    if (ib .lt. 1000) then
+        do j = 1, ndime
+            ptb(j) = xref(ndime*(ib-1)+j)
+        end do
     else
-       do j = 1, ndim
-          newpt(j) = pintt(ndim*(ib-1001)+j)
-       end do
-       call reeref(elrefp, nno, geom, newpt, ndim,&
-                   ptb, ff)
+        do j = 1, ndim
+            newpt(j) = pintt(ndim*(ib-1001)+j)
+        end do
+        call reeref(elrefp, nno, geom, newpt, ndim,&
+                    ptb, ff)
     endif
 !
-    if (id.lt.2000) then
-       do j = 1, ndime
-          ptd(j) = xref(ndime*(id-1)+j)
-       end do
+    if (id .lt. 2000) then
+        do j = 1, ndime
+            ptd(j) = xref(ndime*(id-1)+j)
+        end do
     else
-       do j = 1, ndim
-          newpt(j) = pmitt(ndim*(id-2001)+j)
-       end do
-       call reeref(elrefp, nno, geom, newpt, ndim,&
-                   ptd, ff)
+        do j = 1, ndim
+            newpt(j) = pmitt(ndim*(id-2001)+j)
+        end do
+        call reeref(elrefp, nno, geom, newpt, ndim,&
+                    ptd, ff)
     endif
 !
-    if (ia.lt.1000) then
-       do j = 1, ndime
-          pta(j) = xref(ndime*(ia-1)+j)
-       end do
+    if (ia .lt. 1000) then
+        do j = 1, ndime
+            pta(j) = xref(ndime*(ia-1)+j)
+        end do
     else
-       do j = 1, ndim
-          newpt(j) = pintt(ndim*(ia-1001)+j)
-       end do
-       call reeref(elrefp, nno, geom, newpt, ndim,&
-                   pta, ff)
+        do j = 1, ndim
+            newpt(j) = pintt(ndim*(ia-1001)+j)
+        end do
+        call reeref(elrefp, nno, geom, newpt, ndim,&
+                    pta, ff)
     endif
 !
     do i = 1, ndime
@@ -141,8 +141,8 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     courbe=.false.
     do i = 1, ndime
         t1(i) = ksi(i)-pinref(ndime*(ip1-1)+i)
-        t2(i) = -1.5d0*pinref(ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+&
-                2.d0*pmiref(ndime*(pm2-1)+i)
+        t2(i) = -1.5d0*pinref(&
+                ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+ 2.d0*pmiref(ndime*(pm2-1)+i)
         t3(i) = pta(i)-pinref(ndime*(ip1-1)+i)
     end do
     call xnormv(ndime, t1, rbid)
@@ -153,16 +153,16 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !   ON CHOISIT UNE CONVENTION DE SIGNE
     cosv = ddot(ndime, t3, 1, t2, 1)
     cosw = ddot(ndime, t3, 1, t1, 1)
-    if (cosv.gt.cosw) sinu = -sinu
+    if (cosv .gt. cosw) sinu = -sinu
 !
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
-    if (sinu.lt.1.d-3) courbe = .true.
+    if (sinu .lt. 1.d-3) courbe = .true.
 !
     if (courbe) then
 !   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
 !
         do i = 1, ndime
-           ksi(i)=(pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
+            ksi(i)=(pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
         enddo
     endif
 !
@@ -170,8 +170,8 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     do i = 1, ndime
         ASSERT(abs(ksi(i)) .le. 1.d0+1.d-12)
-        if (ksi(i).gt.1.d0) ksi(i) =1.d0
-        if (ksi(i).lt.-1.d0) ksi(i) =-1.d0
+        if (ksi(i) .gt. 1.d0) ksi(i) =1.d0
+        if (ksi(i) .lt. -1.d0) ksi(i) =-1.d0
     enddo
     call reerel(elrefp, nno, ndim, geom, ksi,&
                 milfa)

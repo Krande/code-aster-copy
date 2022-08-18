@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcecli(fami, kpg, ksp, ndim, mate,&
                   option, lamb, saut, sigma, dsidep,&
                   vim, vip, r)
@@ -100,7 +100,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 ! --- CALCUL DE LA FORCE COHESIVE AUGMENTEE
 !
-    do i=1,ndim
+    do i = 1, ndim
         laug(i) = lamb(i) + r*saut(i)
     end do
 !
@@ -141,7 +141,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 !     CONTRAINTE DE FISSURATION
 !
-    if ( (na.ge.(lc*r)) .or. (ka.ge.(lc*r)) ) then
+    if ((na.ge.(lc*r)) .or. (ka.ge.(lc*r))) then
 !
         diss = 0
         cass = 2
@@ -157,9 +157,9 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
                 cass = 0
             endif
             sigma(1) = sigma(1) + rk*max(zero,laug(1))
-            do 20 i = 2, ndim
+            do i = 2, ndim
                 sigma(i) = sigma(i) + rk*laug(i)
-20          continue
+            end do
 !
         else
 !
@@ -167,9 +167,9 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
             cass = 1
             ra = sc/na + ( 1.d0/(r*lc/sc-1.d0) ) * (sc/na-1.d0)
             sigma(1) = sigma(1) + ra*max(zero,laug(1))
-            do 30 i = 2, ndim
+            do i = 2, ndim
                 sigma(i) = sigma(i) + ra*laug(i)
-30          continue
+            end do
 !
         endif
 !
@@ -187,7 +187,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 ! -- MATRICE TANGENTE
 !
-500  continue
+500 continue
     if (.not. rigi) goto 999
 !
     call r8inir(36, 0.d0, dsidep, 1)
@@ -202,9 +202,9 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
     if (cass .eq. 2) then
         if (laug(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) - 1.d-8
-        do 39 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i) = dsidep(i,i) - 1.d-8
-39      continue
+        end do
         goto 999
     endif
 !
@@ -213,9 +213,9 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
         if (laug(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) + rk
 !
-        do 40 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i) = dsidep(i,i) + rk
-40      continue
+        end do
 !
     else
 !
@@ -224,9 +224,9 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
         if (laug(1) .le. 0.d0) then
 !
-            do 42 i = 2, ndim
+            do i = 2, ndim
                 dsidep(i,i) = dsidep(i,i) + coef + coef2*laug(i)*laug(i)
-42          continue
+            end do
 !
             if (ndim .eq. 3) then
                 dsidep(2,3) = dsidep(2,3) + coef2*laug(2)*laug(3)
@@ -235,21 +235,21 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
         else
 !
-            do 44 i = 1, ndim
+            do i = 1, ndim
                 dsidep(i,i) = dsidep(i,i) + coef + coef2*laug(i)*laug(i)
-44          continue
+            end do
 !
-            do 46 j = 1, ndim-1
-                do 47 i = j+1, ndim
+            do j = 1, ndim-1
+                do i = j+1, ndim
                     dsidep(j,i) = dsidep(j,i) + coef2*laug(j)*laug(i)
                     dsidep(i,j) = dsidep(i,j) + coef2*laug(i)*laug(j)
-47              continue
-46          continue
+                end do
+            end do
 !
         endif
 !
     endif
-999  continue
+999 continue
 !
 !
 end subroutine

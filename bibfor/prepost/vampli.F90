@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                   numini, nbp, tspaq, nomopt, cxsr)
 ! person_in_charge: jean-michel.proix at edf.fr
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rvinvt.h"
+!
     integer :: tdisp, nbp, liste(nbp), nbt, nbordr, numini
     integer :: tspaq
     real(kind=8) :: vwork(tdisp)
@@ -112,7 +112,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
 !  BOUCLE SUR LES NOEUDS
 !
-        do 10 inop = nnoini, nnoini+(nbnop-1)
+        do inop = nnoini, nnoini+(nbnop-1)
 !
             nunoe = liste(inop)
 !
@@ -134,9 +134,9 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
             decal = 18
 !
 !
-            do 30 i = 1, (nbordr-1)
+            do i = 1, (nbordr-1)
 !
-                do 40 j = (i+1), nbordr
+                do j = (i+1), nbordr
 !
                     adrsi = (i-1)*tspaq + kwork*somnow*decal + ( ibidno-1)*decal
 !
@@ -160,9 +160,9 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                     tensj(6) = vwork(adrsj + 6)
 !
 !
-                    do 50 k = 1, 6
+                    do k = 1, 6
                         dtens(k) = tensi(k) - tensj(k)
-50                  continue
+                    end do
 !
                     call rvinvt(dtens, vmis, tres, trac, detr)
 !
@@ -176,26 +176,26 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                         vatres = tres
                     endif
 !
-40              continue
+                end do
 !
-30          continue
+            end do
 !
 !
-            do 60 icmp = 1, 24
+            do icmp = 1, 24
                 vresu(icmp) = 0.0d0
-60          continue
+            end do
             vresu(23) = vavmis
             vresu(24) = vatres
 !
 !  AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
-            do 70 icmp = 1, 24
+            do icmp = 1, 24
                 jad = 24*(nunoe-1) + icmp
                 zl(jcnrl - 1 + jad) = .true.
                 cnsv(jad) = vresu(icmp)
-70          continue
+            end do
 !
-10      continue
+        end do
 !
 !
 !  POUR LES GROUPES DE MAILLES
@@ -227,7 +227,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
 ! BOUCLE SUR LES MAILLES
 !
-        do 100 imap = nmaini, nmaini+(nbmap-1)
+        do imap = nmaini, nmaini+(nbmap-1)
             if (imap .gt. nmaini) then
                 kwork = 1
                 sompgw = sompgw + liste(imap-1)
@@ -247,7 +247,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
 !  BOUCLE SUR LES POINTS DE GAUSS
 !
-            do 110 ipg = 1, nbpg
+            do ipg = 1, nbpg
 !
 !  CALCUL DE LA VARIATION D'AMPLITUDE
 !
@@ -257,9 +257,9 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
 !  BOUCLE SUR LES NUMEROS D'ORDRES
 !
-                do 130 i = 1, (nbordr-1)
+                do i = 1, (nbordr-1)
 !
-                    do 140 j = (i+1), nbordr
+                    do j = (i+1), nbordr
 !
                         adrsi = (i-1)*tspaq + kwork*sompgw*decal + (ipg-1)*decal
 !
@@ -284,9 +284,9 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                         tensj(6) = vwork(adrsj + 6)
 !
 !
-                        do 150 k = 1, 6
+                        do k = 1, 6
                             dtens(k) = tensi(k) - tensj(k)
-150                      continue
+                        end do
 !
                         call rvinvt(dtens, vmis, tres, trac, detr)
 !
@@ -299,23 +299,23 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                             vatres = tres
                         endif
 !
-140                  continue
+                    end do
 !
-130              continue
+                end do
 !
 ! 11. CONSTRUCTION D'UN CHAM_ELEM SIMPLE PUIS D'UN CHAM_ELEM CONTENANT
 !     POUR CHAQUE POINT DE GAUSS DE CHAQUE MAILLE LE DOMMAGE_MAX ET LE
 !     VECTEUR NORMAL ASSOCIE.
 !
-                do 160 icmp = 1, 24
+                do icmp = 1, 24
                     vresu(icmp) = 0.0d0
-160              continue
+                end do
                 vresu(23) = vavmis
                 vresu(24) = vatres
 !
 ! 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
-                do 170 icmp = 1, 24
+                do icmp = 1, 24
                     call cesexi('C', jcerd, jcerl, imap, ipg,&
                                 1, icmp, jad)
 !
@@ -324,11 +324,12 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                     zl(jcerl - 1 + jad) = .true.
                     cesv(jad) = vresu(icmp)
 !
-170              continue
+                end do
 !
-110          continue
+            end do
 !
-100      continue
+100         continue
+        end do
 !
     endif
 !

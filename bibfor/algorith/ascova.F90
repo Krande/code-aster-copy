@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ascova(detr, vachar, fomulz, npara, vpara,&
                   typres, cnchar, basez)
     implicit none
@@ -88,7 +88,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     fomult = fomulz
     dgrd = r8dgrd()
 !
-    if(present(basez)) then
+    if (present(basez)) then
         base = basez
     else
         base = 'V'
@@ -122,7 +122,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     if (typres(1:1) .eq. 'R') then
         call wkvect('&&ASCOVA.COEF', 'V V R8', nbvec, jcoef)
         call wkvect('&&ASCOVA.TYPE', 'V V K8', nbvec, jtype)
-        do 10 k = 1, nbvec
+        do k = 1, nbvec
 !
             chamno = zk24(jvec+k-1) (1:19)
             call corich('L', chamno, ichout_ = icha)
@@ -146,7 +146,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !
             zr(jcoef+k-1) = valres
             zk8(jtype+k-1) = 'R'
- 10     continue
+        end do
 !
 !
 !     -- CAS DES CHAM_NO COMPLEXES :
@@ -156,7 +156,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
         kk = 0
         call wkvect('&&ASCOVA.COEF', 'V V R8', 2*nbvec, jcoef)
         call wkvect('&&ASCOVA.TYPE', 'V V K8', nbvec, jtype)
-        do 20 k = 1, nbvec
+        do k = 1, nbvec
 !
             phase = 0.d0
             call getvr8('EXCIT', 'PHAS_DEG', iocc=k, scal=phase, nbret=n1)
@@ -189,7 +189,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
             zr(jcoef+kk-1) = valre*dble(calpha)-valim*dimag(calpha)
             kk = kk + 1
             zr(jcoef+kk-1) = valim*dble(calpha)+valre*dimag(calpha)
- 20     continue
+        end do
     endif
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0493(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -96,32 +96,32 @@ subroutine te0493(option, nomte)
 !
 ! --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ ---
 !
-    do 20 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 22 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
- 22     continue
- 20 end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES CMP
-    do 100 ifl = 1, nbflux
+    do ifl = 1, nbflux
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
-        do 40 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nno
 ! CALCUL DES FLUX AU POINT DE GAUSS KP A PARTIR DES FLUX AUX NOEUDS
             s = 0.d0
             t = 0.d0
             u = 0.d0
-            do 10 i = 1, nno
+            do i = 1, nno
                 iad = iflux+3*(ifl-1)+3*nbflux*(i-1)
                 s = s + zr(iad )*zr(ivf+k+i-1)
                 t = t + zr(iad+1)*zr(ivf+k+i-1)
                 u = u + zr(iad+2)*zr(ivf+k+i-1)
- 10         continue
+            end do
             flx = s
             fly = t
             flz = u
@@ -130,18 +130,19 @@ subroutine te0493(option, nomte)
             ny = 0.0d0
             nz = 0.0d0
             kdec = (kp-1)*nno*ndim
-            do 102 i = 1, nno
+            do i = 1, nno
                 idec = (i-1)*ndim
-                do 102 j = 1, nno
+                do j = 1, nno
                     jdec = (j-1)*ndim
                     nx = nx + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sx(i,j)
                     ny = ny + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sy(i,j)
                     nz = nz + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sz(i,j)
-102             continue
+                end do
+            end do
             jac = sqrt(nx*nx+ny*ny+nz*nz)
             flun = (nx*flx + ny*fly + nz*flz)/jac
             zr(ivectu+nbflux*(kp-1)+ifl-1) = flun
- 40     continue
-100 end do
+        end do
+    end do
 !
 end subroutine

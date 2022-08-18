@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 !     RETOURNE LA LISTE DES GROUPES DE MAILLES CONTENANT UNE MAILLE
 !     PARTICULIERE DONT ON DONNE LE NOM OU LE NUMERO
@@ -34,7 +34,6 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -42,6 +41,7 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: sdmail, nomma
     integer :: lgrma(*), nbgrma, codret
 !
@@ -81,17 +81,17 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 !====
 !
     call jelira(grpmai, 'NOMUTI', nbg)
-    do 200 i = 1, nbg
+    do i = 1, nbg
         call jeveuo(jexnum(grpmai, i), 'L', jgrma)
         call jelira(jexnum(grpmai, i), 'LONUTI', nbmag)
 !     --- BCLE SUR LES MAILLES DU GROUP_MA
-        do 210 j = 1, nbmag
+        do j = 1, nbmag
             if (zi(jgrma-1+j) .eq. num) then
                 nbgrma = nbgrma + 1
                 lgrma(nbgrma) = i
             endif
-210      continue
-200  end do
+        end do
+    end do
 !
 !====
 ! 99. SORTIE

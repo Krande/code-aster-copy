@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0294(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -74,7 +74,7 @@ subroutine te0294(option, nomte)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
-    do 10 kp = 1, npg
+    do kp = 1, npg
         k=(kp-1)*nno
         if (ndim .eq. 2) then
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -86,13 +86,13 @@ subroutine te0294(option, nomte)
 !
         if (laxi) then
             r = 0.d0
-            do 20 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
- 20         continue
+            end do
             poids = poids*r
         endif
 !
-        do 30 i = 1, nno
+        do i = 1, nno
             k=(kp-1)*nno
             zr(ivect1+i-1) = zr(ivect1+i-1) + poids * zr(ivf+k+i-1) * zr(isief+nbcmp*(kp-1))
             zr(ivect2+i-1) = zr(ivect2+i-1) + poids * zr(ivf+k+i-1) * zr(isief+nbcmp*(kp-1)+1)
@@ -104,7 +104,7 @@ subroutine te0294(option, nomte)
                 zr(ivect6+i-1) = zr(ivect6+i-1) + poids * zr(ivf+k+i- 1) * zr(isief+nbcmp*(kp-1)+&
                                  &5)
             endif
- 30     continue
- 10 end do
+        end do
+    end do
 !
 end subroutine

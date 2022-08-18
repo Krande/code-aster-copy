@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine uttrir(nbvale, vale, eps)
     implicit none
     integer :: nbvale
@@ -42,17 +42,17 @@ subroutine uttrir(nbvale, vale, eps)
 !        --- CHOIX DE L'INCREMENT ---
         incrs = 1
         is9 = nbvale / 9
-10      continue
+ 10     continue
         if (incrs .lt. is9) then
             incrs = 3*incrs+1
             goto 10
         endif
 !
 !        --- REMONTEE DES BULLES ---
-120      continue
-        do 150 j = incrs+1, nbvale
+120     continue
+        do j = incrs+1, nbvale
             l = j-incrs
-130          continue
+130         continue
             if (l .gt. 0) then
                 if (vale(l) .gt. vale(l+incrs)) then
 !                 --- PERMUTATION ---
@@ -63,20 +63,20 @@ subroutine uttrir(nbvale, vale, eps)
                     goto 130
                 endif
             endif
-150      continue
+        end do
         incrs = incrs/3
         if (incrs .ge. 1) goto 120
 !
 !        --- SUPPRESSION DES VALEURS MULTIPLES ---
         if (eps .ge. 0.d0) then
             j=1
-            do 301 i = 2, nbvale
+            do i = 2, nbvale
                 diff = vale(i)-vale(j)
                 if (diff .gt. eps) then
                     j = j + 1
                     vale(j) = vale(i)
                 endif
-301          continue
+            end do
             nbvale = j
         endif
     endif

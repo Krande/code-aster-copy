@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
                   dg, ncmpmx, vale, nomcmp, nomnoe,&
                   lcor, ndim, coor, numnoe, nbcmpt,&
@@ -91,7 +91,7 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
     lgr = lxlgut( format )
     id = 0
     if = 0
-    do 2 i = 1, lgr-1
+    do i = 1, lgr-1
         if (format(i:i) .eq. 'D' .or. format(i:i) .eq. 'E' .or. format(i:i) .eq. 'F' .or.&
             format(i:i) .eq. 'G') then
             id = i+1
@@ -101,7 +101,8 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
             if = i-1
             goto 2
         endif
-  2 end do
+  2     continue
+    end do
     if (id .ne. 0 .and. if .ge. id) then
         forcmp = 'A'//format(id:if)
     else
@@ -117,9 +118,9 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
     if (nec .gt. 0) then
         call jedetr('&&IRCNRL.ENT')
         call wkvect('&&IRCNRL.ENT', 'V V I', nec, inec)
-        do 16 iec = 1, nec
+        do iec = 1, nec
             zi(inec-1+iec)=0
- 16     continue
+        end do
     endif
     if (lmax) then
         call jedetr('&&IRCNRL.MAX')
@@ -128,9 +129,9 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
         call wkvect('&&IRCNRL.NOEMAX', 'V V K8', ncmpmx, inmax)
         call jedetr('&&IRCNRL.NBVMAX')
         call wkvect('&&IRCNRL.NBVMAX', 'V V I', ncmpmx, ivmax)
-        do 70 i = 1, ncmpmx
+        do i = 1, ncmpmx
             zr(imax-1+i)=rundf
- 70     continue
+        end do
     endif
     if (lmin) then
         call jedetr('&&IRCNRL.MIN')
@@ -139,16 +140,16 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
         call wkvect('&&IRCNRL.NOEMIN', 'V V K8', ncmpmx, inmin)
         call jedetr('&&IRCNRL.NBVMIN')
         call wkvect('&&IRCNRL.NBVMIN', 'V V I', ncmpmx, ivmin)
-        do 71 i = 1, ncmpmx
+        do i = 1, ncmpmx
             zr(imin-1+i)=rundf
- 71     continue
+        end do
     endif
 !
-    do 11 inno = 1, nbno
+    do inno = 1, nbno
         ino = numnoe(inno)
-        do 17 iec = 1, nec
+        do iec = 1, nec
             dg(iec)= prno((ino-1)*(nec+2)+2+iec)
- 17     continue
+        end do
 !
 !        NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !        IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -157,74 +158,75 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
         ncmp = prno((ino-1)* (nec+2)+2)
         if (ncmp .eq. 0) goto 11
 !
-        do 21 i = 1, ncmpmx
+        do i = 1, ncmpmx
             zi(ipos-1+i) = 0
- 21     continue
+        end do
         icompt = 0
         impre = 0
         ipres = 0
-        do 12 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(dg,icmp)) then
                 ipres = ipres + 1
                 ieq = nueq(ival-1+ipres)
                 if (nbcmpt .ne. 0) then
-                    do 13 icm = 1, nbcmpt
+                    do icm = 1, nbcmpt
                         icmp2=nucmpu(icm)
                         if (icmp .eq. icmp2) then
                             zr(irval-1+icm) = vale(ieq)
                             zi(ipos-1+icm) = icmp
                             goto 12
                         endif
- 13                 continue
+                    end do
                 else
                     icompt=ipres
                     zr(irval-1+icompt) = vale(ieq)
                     zi(ipos-1+icompt) = icmp
                 endif
             endif
- 12     continue
+ 12         continue
+        end do
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES ORDRE UTILISATEUR---
 !
         if (nbcmpt .ne. 0) then
             icompt=0
-            do 14 i = 1, nbcmpt
+            do i = 1, nbcmpt
                 if (zi(ipos-1+i) .ne. 0) then
                     icompt=icompt+1
                     zi(ipos-1+icompt)=zi(ipos-1+i)
                     zr(irval-1+icompt)=zr(irval-1+i)
                 endif
- 14         continue
+            end do
         endif
-        do 15 iec = 1, nec
+        do iec = 1, nec
             if (dg(iec) .ne. zi(inec-1+iec)) then
                 impre=1
                 zi(inec-1+iec) =dg(iec)
             endif
- 15     continue
+        end do
 !
 ! --  TRI DES COMPOSANTES DANS L'INTERVALLE BORINF,BORSUP
 !
         if (lsup .or. linf) then
-            do 35 iva = 1, icompt
+            do iva = 1, icompt
                 if (lsup) then
                     if ((zr(irval-1+iva)-borsup) .gt. 0.d0) zi(ipos-1+ iva)=0
                 endif
                 if (linf) then
                     if ((zr(irval-1+iva)-borinf) .lt. 0.d0) zi(ipos-1+ iva)=0
                 endif
- 35         continue
+            end do
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
             icomp2=0
-            do 36 i = 1, icompt
+            do i = 1, icompt
                 if (zi(ipos-1+i) .ne. 0) then
                     icomp2=icomp2+1
                     zi(ipos-1+icomp2)=zi(ipos-1+i)
                     zr(irval-1+icomp2)=zr(irval-1+i)
                 endif
- 36         continue
+            end do
             icompt=icomp2
         endif
         if (icompt .eq. 0) then
@@ -234,7 +236,7 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
 ! -- RECHERCHE DE LA VALEURE MAXIMALE ---
 !
         if (lmax) then
-            do 90 i = 1, icompt
+            do i = 1, icompt
                 if (zr(imax-1+zi(ipos-1+i)) .eq. rundf) then
                     zr(imax-1+zi(ipos-1+i)) = zr(irval-1+i)
                     zk8(inmax-1+zi(ipos-1+i)) = nomnoe(inno)
@@ -247,13 +249,13 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
                     zi(ivmax-1+zi(ipos-1+i))=zi(ivmax-1+zi(ipos-1+i))+&
                     1
                 endif
- 90         continue
+            end do
         endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
 !
         if (lmin) then
-            do 91 i = 1, icompt
+            do i = 1, icompt
                 if (zr(imin-1+zi(ipos-1+i)) .eq. rundf) then
                     zr(imin-1+zi(ipos-1+i)) = zr(irval-1+i)
                     zk8(inmin-1+zi(ipos-1+i)) = nomnoe(inno)
@@ -266,7 +268,7 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
                     zi(ivmin-1+zi(ipos-1+i))=zi(ivmin-1+zi(ipos-1+i))+&
                     1
                 endif
- 91         continue
+            end do
         endif
 !
 ! - IMPRESSION DES VALEURS ---
@@ -325,33 +327,34 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec,&
             endif
             write (ifi,fmt) nomnoe(inno), (zr(irval-1+i),i=1,icompt)
         endif
- 11 end do
+ 11     continue
+    end do
     write (ifi,'(A)') ' '
 !
 ! --- IMPRESSION DE LA VALEUR MAXIMALE ---
 !
     if (lmax) then
-        do 95 i = 1, ncmpmx
+        do i = 1, ncmpmx
             if (zr(imax-1+i) .ne. rundf) then
                 form1 = '(1X,3A,1X,'//format//',A,I4,A,A8)'
                 write(ifi,form1) 'LA VALEUR MAXIMALE DE ', nomcmp(i),&
      &       ' EST',zr(imax-1+i),&
      &       ' EN ',zi(ivmax-1+i),' NOEUD(S) : ',zk8(inmax-1+i)
             endif
- 95     continue
+        end do
     endif
 !
 ! --- IMPRESSION DE LA VALEUR MINIMALE ---
 !
     if (lmin) then
-        do 96 i = 1, ncmpmx
+        do i = 1, ncmpmx
             if (zr(imin-1+i) .ne. rundf) then
                 form1 = '(1X,3A,1X,'//format//',A,I4,A,A8)'
                 write(ifi,form1) 'LA VALEUR MINIMALE DE ',nomcmp(i),&
      &       ' EST',zr(imin-1+i),&
      &       ' EN ',zi(ivmin-1+i),' NOEUD(S) : ',zk8(inmin-1+i)
             endif
- 96     continue
+        end do
     endif
 !
     call jedetr('&&IRCNRL.VAL')

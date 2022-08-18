@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mbcine(nno, geom, dff, alpha, beta,&
                   b, jac)
 !
@@ -66,18 +66,18 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
     vdirec(3) = -sin(beta)
 !
     projn = 0.d0
-    do 10 i = 1, 3
+    do i = 1, 3
         projn = projn + vdirec(i)*cova(i,3)
-10  end do
+    end do
 !
     if (abs( 1.d0 - projn*projn ) .le. r8prem()) then
         call utmess('F', 'ELEMENTS_3')
     endif
 !
     denomi = sqrt(1.d0 - projn*projn)
-    do 20 i = 1, 3
+    do i = 1, 3
         vdirec(i) = (vdirec(i) - projn*cova(i,3))/denomi
-20  end do
+    end do
 !
 ! - CALCUL DU VECTEUR TANGENT ORTHOGONAL AU VECTEUR DIRECTION
 !
@@ -95,21 +95,24 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
 ! - ON PRECALCULE CERTAINS PRODUITS SCALAIRES
     call r8inir(2, 0.d0, dicnva, 1)
     call r8inir(2, 0.d0, orcnva, 1)
-    do 30 gamma = 1, 2
-        do 30 i = 1, 3
+    do gamma = 1, 2
+        do i = 1, 3
             dicnva(gamma) = dicnva(gamma) + vdirec(i)*cnva(i,gamma)
             orcnva(gamma) = orcnva(gamma) + vortho(i)*cnva(i,gamma)
-30      continue
+        end do
+    end do
 !
 !
 ! - ON BOUCLE SUR LES DEGRES DE LIBERTE
-    do 40 n = 1, nno
-        do 40 i = 1, 3
-            do 40 gamma = 1, 2
+    do n = 1, nno
+        do i = 1, 3
+            do gamma = 1, 2
                 b(1,i,n) = b(1,i,n) + dff(gamma,n)*dicnva(gamma)* vdirec(i)
                 b(2,i,n) = b(2,i,n) + dff(gamma,n)*orcnva(gamma)* vortho(i)
                 b(3,i,n) = b(3,i,n) + factor*dff(gamma,n) *(dicnva( gamma)*vortho(i)+orcnva(gamma&
                            &)*vdirec(i))
-40          continue
+            end do
+        end do
+    end do
 !
 end subroutine

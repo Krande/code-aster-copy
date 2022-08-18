@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
                   zmin, zmax)
     implicit none
@@ -46,20 +46,20 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
     integer :: ig, jg
     real(kind=8) :: z1, z1ig, z1jg, z2, z2ig, z2jg
 !-----------------------------------------------------------------------
-    do 10 ig = 1, nbgtot
+    do ig = 1, nbgtot
         z1 = zg(ig) - hg(itypg(ig))/2.0d0
         z2 = zg(ig) + hg(itypg(ig))/2.0d0
         if ((z1.lt.zmin) .or. (z2.gt.zmax)) then
             write(k3ig,'(I3.3)') ig
             call utmess('F', 'ALGELINE_83', sk=k3ig)
         endif
- 10 end do
+    end do
 !
     if (nbgtot .gt. 1) then
-        do 20 ig = 1, nbgtot-1
+        do ig = 1, nbgtot-1
             z1ig = zg(ig) - hg(itypg(ig))/2.0d0
             z2ig = zg(ig) + hg(itypg(ig))/2.0d0
-            do 21 jg = ig+1, nbgtot
+            do jg = ig+1, nbgtot
                 z1jg = zg(jg) - hg(itypg(jg))/2.0d0
                 z2jg = zg(jg) + hg(itypg(jg))/2.0d0
                 intnul = ((z2ig.lt.z1jg).or.(z2jg.lt.z1ig))
@@ -70,8 +70,8 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
                     valk(2) = k3jg
                     call utmess('F', 'ALGELINE_84', nk=2, valk=valk)
                 endif
- 21         continue
- 20     continue
+            end do
+        end do
     endif
 !
 ! --- FIN DE MEFGRI.

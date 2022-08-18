@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0152()
     implicit none
 ! AUTEUR : G.ROUSSEAU
@@ -26,6 +26,7 @@ subroutine op0152()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/cal152.h"
 #include "asterfort/calmdg.h"
 #include "asterfort/chpver.h"
@@ -41,6 +42,7 @@ subroutine op0152()
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -55,8 +57,6 @@ subroutine op0152()
 #include "asterfort/ualfva.h"
 #include "asterfort/ver152.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/assert.h"
-#include "asterfort/jelira.h"
 !
     aster_logical :: vrai
     integer :: ldblo, hc, ibid
@@ -154,20 +154,20 @@ subroutine op0152()
 !
         call wkvect(stomor//'.SMDI', 'G V I', nbmode, jsmdi)
         nterm=0
-        do 120 i = 1, nbmode
+        do i = 1, nbmode
             nterm=nterm+i
             zi(jsmdi+i-1)=nterm
-120     continue
+        end do
 !
         call wkvect(stomor//'.SMHC', 'G V S', nterm, jsmhc)
         kterm=0
-        do 200 i = 1, nbmode
-            do j=1,i
-              kterm=kterm+1
-              zi4(jsmhc-1+kterm)=int(j,4)
+        do i = 1, nbmode
+            do j = 1, i
+                kterm=kterm+1
+                zi4(jsmhc-1+kterm)=int(j,4)
             end do
-200     continue
-
+        end do
+!
         call wkvect(stomor//'.SMDE', 'G V I', 6, jsmde)
         zi(jsmde-1+1)=nbmode
         zi(jsmde-1+2)=nterm
@@ -193,7 +193,8 @@ subroutine op0152()
 !--------CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE---------
 !
     call rigflu(moflui, time, nomcmp, tps, n2,&
-                char, materi, mateco, solveu, ma, nu)
+                char, materi, mateco, solveu, ma,&
+                nu)
 !
 !=====================================================================
 !---------------- ALTERNATIVE CHAMNO OU MODE_MECA OU---------
@@ -245,9 +246,9 @@ subroutine op0152()
 ! ET AUX EFFETS D'AMORTISSEMENT ET DE RAIDEUR DU FLUIDE
 ! SUR LA STRUCTURE
 !================================================================
-    call phi152(model, option, materi, mateco, phib24, ma,&
-                nu, num, nbmode, solveu, indice,&
-                tabad)
+    call phi152(model, option, materi, mateco, phib24,&
+                ma, nu, num, nbmode, solveu,&
+                indice, tabad)
 !
 ! VERIFICATION D EXISTENCE DE VECTEUR DE CHAMPS AUX NOEUDS CREES
 ! DS PHI152 ILS SERONT ENSUITE EXPLOITES DS CAL152 ENTRE AUTRES
@@ -349,7 +350,7 @@ subroutine op0152()
 !
 !     BOUCLE SUR LES BLOCS DE LA MATRICE ASSEMBLEE GENE
 !
-        do 40 iblo = 1, nbloc
+        do iblo = 1, nbloc
             call jecroc(jexnum(nomr19//'.UALF', iblo))
             call jeveuo(jexnum(nomr19//'.UALF', iblo), 'E', ldblo)
 !----------------------------------------------------------------
@@ -359,12 +360,12 @@ subroutine op0152()
             n1bloc=1
             n2bloc=zi(jsmde)
 !
-            do 10 i = n1bloc, n2bloc
+            do i = n1bloc, n2bloc
 !
                 hc = zi(jsmdi-1+i)
                 if (i .gt. 1) hc = hc - zi(jsmdi-1+i-1)
 !
-                do 30 j = (i-hc+1), i
+                do j = (i-hc+1), i
 !
 !----------------------------------------------------------------
 ! ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE
@@ -424,9 +425,9 @@ subroutine op0152()
                             550 format(18x,'K',2 i 4,1x,'=',1x, d 12.5)
                         endif
                     endif
- 30             continue
- 10         continue
- 40     continue
+                end do
+            end do
+        end do
     endif
 !
     if (niv .gt. 1) then

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     implicit none
 !    M. CORUS     DATE 05/02/10
@@ -39,18 +39,18 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !
 !-- VARIABLES EN ENTREES / SORTIE
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: nnoint, nbsst
     character(len=24) :: coint, noddli, ddlsst
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: i1, j1, k1, n1, l1,   lconnc
-    integer ::  nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
+    integer :: i1, j1, k1, n1, l1, lconnc
+    integer :: nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
     real(kind=8), pointer :: defi_ss_lib(:) => null()
     integer, pointer :: numero_noeuds(:) => null()
     integer, pointer :: vect_ind_mat(:) => null()
@@ -72,23 +72,23 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     AS_ALLOCATE(vr=defi_ss_lib, size=nnoint**2)
     call jeveuo(coint, 'L', lconnc)
 !
-    do 10 i1 = 1, nnoint
+    do i1 = 1, nnoint
         nbvois=zi(lconnc+i1-1)
-        do 20 k1 = 1, nbvois
+        do k1 = 1, nbvois
             no=zi(lconnc+nnoint*k1+i1-1)
             j1=ind_noeud(no)
             defi_ss_lib(1+(j1-1)*nnoint+i1-1)=1.d0
             defi_ss_lib(1+(j1-1)*nnoint+j1-1)=1.d0
             defi_ss_lib(1+(i1-1)*nnoint+i1-1)=1.d0
             defi_ss_lib(1+(i1-1)*nnoint+j1-1)=1.d0
-20      continue
-10  end do
+        end do
+    end do
 !
     AS_ALLOCATE(vi=numero_noeuds, size=nnoint)
 !
-    do 30 i1 = 1, nnoint
+    do i1 = 1, nnoint
         numero_noeuds(i1)=i1
-30  end do
+    end do
 !
     AS_ALLOCATE(vr=vect_temp, size=nnoint)
     AS_ALLOCATE(vi=vect_ind_mat, size=nnoint)
@@ -104,11 +104,11 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !-- RECHERCHE DES PARTIES DISJOINTES
 !
 !      DO WHILE (NBNO .LT. NNOINT)
-666  continue
+666 continue
     nz0=0
     k1=1
 !        DO WHILE (NZ0 .EQ. 0)
-667  continue
+667 continue
     if (numero_noeuds(k1) .gt. 0) then
         nz0=1
         vect_ind_mat(decal+1)=k1
@@ -121,24 +121,24 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !
     nz1=1
 !        DO WHILE (NZ1 .GT. NZ0)
-668  continue
+668 continue
     nz0=nz1
-    do 40 j1 = 1, nz1
-        do 50 i1 = 1, nnoint
+    do j1 = 1, nz1
+        do i1 = 1, nnoint
             vect_temp(i1)=vect_temp(i1)+ defi_ss_lib(1+(vect_ind_mat(1+decal+j1-&
             1)-1)*nnoint+i1-1)
-50      continue
-40  continue
+        end do
+    end do
 !
     nz1=0
-    do 60 i1 = 1, nnoint
+    do i1 = 1, nnoint
         if (vect_temp(i1) .gt. 0.d0) then
             nz1=nz1+1
             vect_ind_mat(1+decal+nz1-1)=i1
             numero_noeuds(i1)=0
             vect_temp(i1)=0.d0
         endif
-60  continue
+    end do
 !
     if (nz1 .gt. nz0) then
         goto 668
@@ -158,17 +158,17 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !
     call jeveuo(noddli, 'L', lnddli)
     call wkvect(ddlsst, 'V V I', nbsst*6*nnoint, lindin)
-    do 70 i1 = 1, nbsst
+    do i1 = 1, nbsst
         k1=vect_indsst(1+2*(i1-1))
         l1=vect_indsst(1+2*(i1-1)+1)
 !
-        do 80 j1 = k1, l1
-            do 90 n1 = 1, 6
+        do j1 = k1, l1
+            do n1 = 1, 6
                 zi(lindin+6*nnoint*(i1-1)+ 6*(vect_ind_mat(j1)-1)+n1-1 )&
                 = 1
-90          continue
-80      continue
-70  end do
+            end do
+        end do
+    end do
 !
 !----------------------------------------C
 !--                                    --C

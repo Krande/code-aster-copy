@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkd2fs(nmat, materf, para, vara, varh,&
                   i1, devsig, ds2hds, d2shds, d2fds2,&
                   iret)
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE F PAR RAPPORT A SIGMA
 !     IN  NMAT   : DIMENSION TABLE DES PARAMETRES MATERIAU
@@ -70,14 +70,14 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 !
 ! --- CONSTRUCTION VECTEUR IDENTITE
     vident(:) = zero
-    do 10 i = 1, ndi
+    do i = 1, ndi
         vident(i) = un
-10  end do
+    end do
 !
 ! --- CONSTRUCTION (A*DS2HDS+B*VIDENT)
-    do 20 i = 1, ndt
+    do i = 1, ndt
         vect1(i) = vara(1)*ds2hds(i)+vara(2)*vident(i)
-20  end do
+    end do
 ! --- CONSTRUCTION PRODUIT TENSORIEL COEF1*(VECT1 X VECT1)
     call lcprte(vect1, vect1, mat1)
     mat2(1:ndt,1:ndt) = coef1 * mat1(1:ndt,1:ndt)

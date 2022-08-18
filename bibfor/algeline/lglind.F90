@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lglind(nbmat, mater, parame, ge, q,&
                   vecn, deps, devg, devgii, traceg,&
                   dy)
 !
-    implicit      none
+    implicit none
 #include "asterfort/calcg.h"
 #include "asterfort/drfdrs.h"
 #include "asterfort/drudrs.h"
@@ -91,9 +91,9 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
 ! --- CALCUL DU PREMIER INCREMENT DE GAMP ------------------------------
 ! ======================================================================
     gammax = 0.0d0
-    do 10 ii = 1, ndt
+    do ii = 1, ndt
         if (abs(deps(ii)) .gt. gammax) gammax = abs(deps(ii))
-10  end do
+    end do
     dgamp = gammax / dix
 ! ======================================================================
 ! --- CALCUL DU PREMIER DELTA ------------------------------------------
@@ -102,9 +102,9 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
 ! ======================================================================
 ! --- CALCUL DU PREMIER INCREMENT DU DEVIATEUR DES CONTRAINTES ---------
 ! ======================================================================
-    do 20 ii = 1, ndt
+    do ii = 1, ndt
         ds(ii) = mun * deux * mu * ddelta * devg(ii)
-20  end do
+    end do
 ! ======================================================================
 ! --- CALCUL DU PREMIER INCREMENT DU PREMIER INVARIANT DES CONTRAINTES -
 ! ======================================================================

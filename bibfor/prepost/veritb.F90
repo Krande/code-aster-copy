@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 !
     implicit none
@@ -94,7 +94,7 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 ! ======================================================================
 ! --- ITERATIONS SUR LES OCCURENCES DE K1D -----------------------------
 ! ======================================================================
-    do 10 i = 2, nk1d
+    do i = 2, nk1d
 ! ======================================================================
 ! --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 ! ======================================================================
@@ -134,13 +134,13 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
         call jedetr(tabrev)
         call jedetr(tabmdb)
         call jedetr(tabthr)
- 10 end do
+    end do
     call jedetr(tbins1)
 ! ======================================================================
 ! --- VERIFICATION DE LA PRESENCE DES BONNES COMPOSANTES POUR LE -------
 ! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTE --------------------
 ! ======================================================================
-    do 20 i = 1, nk1d
+    do i = 1, nk1d
 ! ======================================================================
 ! --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 ! ======================================================================
@@ -197,7 +197,7 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
         call jedetr(tabrev)
         call jedetr(tabmdb)
         call jedetr(tabthr)
- 20 end do
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

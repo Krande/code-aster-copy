@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcdq(proj, nub, nu, d, pqx,&
                   pqy, pqz, dq)
     implicit none
@@ -40,7 +40,7 @@ subroutine calcdq(proj, nub, nu, d, pqx,&
 !         QUAS4 SANS PROJECTION
 !         ---------------------
     if (proj .eq. 0) then
-        do 1 i = 1, 6
+        do i = 1, 6
             ii = 12*(i-1)
             dq(ii+1) = d(i,1)*pqx(1)+ d(i,4)*pqy(1) + d(i,5)*pqz(1)
             dq(ii+2) = d(i,4)*pqx(1)+ d(i,2)*pqy(1) + d(i,6)*pqz(1)
@@ -54,12 +54,12 @@ subroutine calcdq(proj, nub, nu, d, pqx,&
             dq(ii+10) = d(i,1)*pqx(4)+ d(i,4)*pqy(4) + d(i,5)*pqz(4)
             dq(ii+11) = d(i,4)*pqx(4)+ d(i,2)*pqy(4) + d(i,6)*pqz(4)
             dq(ii+12) = d(i,5)*pqx(4)+ d(i,6)*pqy(4) + d(i,3)*pqz(4)
- 1      continue
+        end do
 !
 !         ADS
 !         ---
     else if (proj.eq.1) then
-        do 2 i = 1, 6
+        do i = 1, 6
             ii = 12*(i-1)
             dx(i) = (2.0d0*d(i,1) -d(i,2) -d(i,3))/3.0d0
             dy(i) = ( -d(i,1) +2.0d0*d(i,2) -d(i,3))/3.0d0
@@ -76,12 +76,12 @@ subroutine calcdq(proj, nub, nu, d, pqx,&
             dq(ii+10) = dx(i)*pqx(4)
             dq(ii+11) = dy(i)*pqy(4)
             dq(ii+12) = dz(i)*pqz(4)
- 2      continue
+        end do
 !
 !         ASBQI
 !         -----
     else if (proj.eq.2) then
-        do 4 i = 1, 6
+        do i = 1, 6
             ii = 12*(i-1)
             dx(i) = d(i,1) -nu*d(i,2) -nu*d(i,3)
             dy(i) = -nu*d(i,1) +d(i,2) -nu*d(i,3)
@@ -98,7 +98,7 @@ subroutine calcdq(proj, nub, nu, d, pqx,&
             dq(ii+10) = dx(i)*pqx(4)
             dq(ii+11) = dy(i)*pqy(4)
             dq(ii+12) = dz(i)*pqz(4)
- 4      continue
+        end do
 !
     endif
 end subroutine

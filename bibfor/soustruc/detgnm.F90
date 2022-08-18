@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine detgnm(ma)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
@@ -37,8 +39,6 @@ subroutine detgnm(ma)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma
 !
@@ -50,7 +50,7 @@ subroutine detgnm(ma)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: n1, iocc, maxval, nbval,  iret, nbtgp, numgm, nbgmde
+    integer :: n1, iocc, maxval, nbval, iret, nbtgp, numgm, nbgmde
     integer :: nbgp, nbmagp, jgm, i, j, j1, j2, ngp, ig
     parameter(ngp=2)
     character(len=8) :: k8b
@@ -63,7 +63,7 @@ subroutine detgnm(ma)
 !
     call jemarq()
 !
-    do 100 ig = 1, ngp
+    do ig = 1, ngp
         call getfac(detr(ig), n1)
         grp='&&DETGNM'//group(ig)
         gpptnm = '&&DETGNM'//ptrn(ig)
@@ -72,10 +72,10 @@ subroutine detgnm(ma)
             if (iret .eq. 0) goto 100
             call jelira(ma//group(ig), 'NUTIOC', nbtgp)
             call wkvect('&&DETGNM.GROUP', 'V V I', nbtgp, jgm)
-            do 5 i = 1, nbtgp
+            do i = 1, nbtgp
                 zi(jgm+i-1)=0
- 5          continue
-            do 10 iocc = 1, n1
+            end do
+            do iocc = 1, n1
                 maxval=0
                 call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=maxval, vect=k8b,&
                             nbret=nbval)
@@ -84,21 +84,21 @@ subroutine detgnm(ma)
                 call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=nbval, vect=group_detr,&
                             nbret=iret)
 !              ON RECUPERE LES NUMEROS DES GROUPES A DETRUIRE
-                do 15 i = 1, nbval
+                do i = 1, nbval
                     call jenonu(jexnom(ma//group(ig), group_detr(i)), numgm)
                     if (numgm .ne. 0) then
                         zi(jgm+numgm-1)=numgm
                     endif
-15              continue
+                end do
                 AS_DEALLOCATE(vk24=group_detr)
-10          continue
+            end do
 !           ON COMPTE LE NOMBRE DE GROUPES A DETRUIRE
             nbgmde=0
-            do 20 i = 1, nbtgp
+            do i = 1, nbtgp
                 if (zi(jgm+i-1) .ne. 0) then
                     nbgmde=nbgmde+1
                 endif
-20          continue
+            end do
 !           REACTUALISATION DE L'OBJET .GROUPEMA (OU .GROUPENO)
             nbgp=nbtgp-nbgmde
             if (nbgp .eq. 0) then
@@ -109,7 +109,7 @@ subroutine detgnm(ma)
             call jeecra(gpptnm, 'NOMMAX', nbgp)
             call jecrec(grp, 'V V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                         nbgp)
-            do 25 i = 1, nbtgp
+            do i = 1, nbtgp
                 if (zi(jgm+i-1) .eq. 0) then
                     call jenuno(jexnum(ma//group(ig), i), nomgp)
                     call jecroc(jexnom(grp, nomgp))
@@ -118,11 +118,11 @@ subroutine detgnm(ma)
                     call jeecra(jexnom(grp, nomgp), 'LONUTI', nbmagp)
                     call jeveuo(jexnom(grp, nomgp), 'E', j2)
                     call jeveuo(jexnom(ma//group(ig), nomgp), 'L', j1)
-                    do 30 j = 1, nbmagp
+                    do j = 1, nbmagp
                         zi(j2+j-1)=zi(j1+j-1)
-30                  continue
+                    end do
                 endif
-25          continue
+            end do
             call jedetr(ma//group(ig))
             call jedetr(ma//ptrn(ig))
             call cpclma('&&DETGNM', ma, group(ig)(2:9), 'G')
@@ -130,7 +130,8 @@ subroutine detgnm(ma)
         call jedetr('&&DETGNM.GROUP')
         call jedetr(grp)
         call jedetr(gpptnm)
-100  end do
+100     continue
+    end do
 !
     call jedema()
 !

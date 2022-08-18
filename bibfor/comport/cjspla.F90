@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjspla(mod, crit, mater, seuili, seuild,&
                   nvi, epsd, deps, sigd, vind,&
                   sigf, vinf, mecani, nivcjs, niter,&
@@ -145,15 +145,15 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     sigd(1:ndt) = sigd0(1:ndt)
     vind(1:nvi) = vind0(1:nvi)
 !
-    do 10 i = 1, ndt
+    do i = 1, ndt
         deps(i) = deps0(i)/ndec
         sigf(i) = sigd0(i)+(predi0(i)-sigd(i))/ndec
- 10 continue
+    end do
 !
 !
 !  BOUCLE SUR LES DECOUPAGES
 !  -------------------------
-    do 400 idec = 1, ndec
+    do idec = 1, ndec
 !
 !
 ! SAUVEGARDE PREDIC ELASTIQUE POUR EVENTUEL CHANGEMENT
@@ -162,9 +162,9 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         predic(1:ndt)= sigf(1:ndt)
 !
         i1f = zero
-        do 20 i = 1, ndi
+        do i = 1, ndi
             i1f = i1f + sigf(i)
- 20     continue
+        end do
 !
         if ((i1f+qinit) .eq. 0.d0) then
             i1f = -qinit+1.d-12 * pa
@@ -189,9 +189,9 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         endif
 !
 !
-        do 21 i = 1, nvi-1
+        do i = 1, nvi-1
             vinf(i) = vind(i)
- 21     continue
+        end do
 !
 !
 100     continue
@@ -209,7 +209,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
             if (noconv .and. (.not.aredec)) goto 500
             if (noconv) then
                 iret=1
-                goto 9999
+                goto 999
             endif
         endif
 !
@@ -223,12 +223,12 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
                         noconv, aredec, stopnc, niter0, epscon,&
                         trac)
             niter = niter + niter0
-            if (trac) goto 9999
+            if (trac) goto 999
 !
             if (noconv .and. (.not.aredec)) goto 500
             if (noconv) then
                 iret=1
-                goto 9999
+                goto 999
             endif
         endif
 !
@@ -243,7 +243,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
             if (noconv .and. (.not.aredec)) goto 500
             if (noconv) then
                 iret=1
-                goto 9999
+                goto 999
             endif
         endif
 !
@@ -255,9 +255,9 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         call cjssmd(mater, sigf, vinf, seuild)
 !
         i1f = zero
-        do 22 i = 1, ndi
+        do i = 1, ndi
             i1f = i1f + sigf(i)
- 22     continue
+        end do
         if ((i1f+qinit) .eq. 0.d0) then
             i1f = -qinit + 1.d-12 * pa
             pref = abs(pa)
@@ -287,15 +287,15 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         else
             if (idec .lt. ndec) then
                 sigd(1:ndt) = sigf(1:ndt)
-                do 32 i = 1, nvi-1
+                do i = 1, nvi-1
                     vind(i) = vinf(i)
- 32             continue
-                do 33 i = 1, ndt
+                end do
+                do i = 1, ndt
                     sigf(i) = sigd(i)+(predi0(i)-sigd(i))/ndec
- 33             continue
+                end do
             endif
         endif
-400 continue
+    end do
 !
 !
 !--->   CALCUL DE LA VARIABLE INTERNE CORRESPONDANT AU MECANISME PLASTIC
@@ -305,5 +305,5 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     if (mecani .eq. 'DEVIAT') vinf(nvi) = 2.d0
     if (mecani .eq. 'ISODEV') vinf(nvi) = 3.d0
 !
-9999 continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsbary(lr8, nr8, tous, lexi, x,&
                   i1, i2, iposit)
     implicit none
@@ -79,7 +79,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
 !
 !     -- CAS DE LA LISTE VIDE:
 !     ------------------------
-    do 100 i = 1, nr8
+    do i = 1, nr8
         if (tous) then
             afaire = .true.
         else
@@ -96,13 +96,13 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
             xmin = lr8(i)
             goto 101
         endif
-100 end do
+    end do
     iposit = -2
-    goto 9999
+    goto 999
 101 continue
 !
 !     RECHERCHE DE XMAX ET XMIN:
-    do 1 i = 1, nr8
+    do i = 1, nr8
         if (tous) then
             afaire = .true.
         else
@@ -122,7 +122,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
                 xmin = lr8(i)
             endif
         endif
-  1 end do
+    end do
 !
 !
     inter=epsi*(xmax-xmin)
@@ -135,7 +135,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
         is = imax
         xp = xmin
         xs = xmax
-        do 2 i = 1, nr8
+        do i = 1, nr8
             if (tous) then
                 afaire = .true.
             else
@@ -155,10 +155,10 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
                     xp = lr8(i)
                 endif
             endif
-  2     continue
+        end do
         i1 = ip
         i2 = is
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -169,7 +169,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
         xp = xmax
         ipp = imin
         xpp = xmin
-        do 31 i = 1, nr8
+        do i = 1, nr8
             if (tous) then
                 afaire = .true.
             else
@@ -186,10 +186,11 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
                     xpp = lr8(i)
                 endif
             endif
- 31     continue
+ 31         continue
+        end do
         i1 = ipp
         i2 = ip
-        goto 9999
+        goto 999
     endif
 !
 !     -- 3EME CAS X EST A GAUCHE DE L'INTERVALLE DE LA LISTE:
@@ -199,7 +200,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
         xs = xmin
         iss = imax
         xss = xmax
-        do 41 i = 1, nr8
+        do i = 1, nr8
             if (tous) then
                 afaire = .true.
             else
@@ -216,13 +217,14 @@ subroutine rsbary(lr8, nr8, tous, lexi, x,&
                     xss = lr8(i)
                 endif
             endif
- 41     continue
+ 41         continue
+        end do
         i1 = is
         i2 = iss
-        goto 9999
+        goto 999
     endif
 !
 !
 !
-9999 continue
+999 continue
 end subroutine

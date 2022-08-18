@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
                   bca, an, am)
-    implicit  none
+    implicit none
 #include "asterfort/dstbfa.h"
 #include "asterfort/dstbfb.h"
 #include "asterfort/dxtbm.h"
@@ -104,32 +104,37 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
     qsi(2) = -qsi(1)
     eta = zero
 !
-    do 10 i = 1, 3
-        do 10 j = 1, 6
+    do i = 1, 3
+        do j = 1, 6
             am(i,j) = zero
             dmctbm(i,j) = zero
-10      continue
+        end do
+    end do
 !
-    do 20 i = 1, 3
-        do 20 j = 1, 9
+    do i = 1, 3
+        do j = 1, 9
             an(i,j) = zero
             aw(i,j) = zero
-20      continue
+        end do
+    end do
 !
-    do 30 i = 1, 2
-        do 30 j = 1, 9
+    do i = 1, 2
+        do j = 1, 9
             dfcbfb(i,j) = zero
-30      continue
+        end do
+    end do
 !
-    do 40 i = 1, 2
-        do 40 j = 1, 3
+    do i = 1, 2
+        do j = 1, 3
             bca(i,j) = zero
-40      continue
+        end do
+    end do
 !
-    do 50 i = 1, 6
-        do 50 j = 1, 3
+    do i = 1, 6
+        do j = 1, 3
             ta(i,j) = zero
-50      continue
+        end do
+    end do
 !
     c(1) = carat3(16)
     c(2) = carat3(17)
@@ -160,11 +165,12 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
 ! --- CALCUL DU PRODUIT HFT2.TA :
 !     -------------------------
-    do 60 j = 1, 3
-        do 60 k = 1, 6
+    do j = 1, 3
+        do k = 1, 6
             bca(1,j) = bca(1,j) + hft2(1,k) * ta(k,j)
             bca(2,j) = bca(2,j) + hft2(2,k) * ta(k,j)
-60      continue
+        end do
+    end do
 !
 !================================================================
 ! --- DETERMINATION DE LA MATRICE AA QUI EST TELLE QUE          =
@@ -179,18 +185,19 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
 ! --- BOUCLE SUR LES COTES DU TRIANGLE :
 !      --------------------------------
-    do 70 ic = 1, 3
+    do ic = 1, 3
 !
 ! ---     INITIALISATION DE DFCBFA :
 !         ------------------------
-        do 80 i = 1, 2
-            do 80 j = 1, 3
+        do i = 1, 2
+            do j = 1, 3
                 dfcbfa(i,j) = zero
-80          continue
+            end do
+        end do
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION DU COTE COURANT :
 !       ---------------------------------------------------
-        do 90 int = 1, 2
+        do int = 1, 2
 !
 ! ---     CALCUL DE LA MATRICE BFA AU POINT D'INTEGRATION COURANT
 ! ---     RELIANT LES COURBURES AUX INCONNUES ALPHA
@@ -200,40 +207,42 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
 ! ---     CALCUL DU PRODUIT DFC_T*BFA :
 !         ---------------------------
-            do 100 j = 1, 3
-                do 100 k = 1, 3
+            do j = 1, 3
+                do k = 1, 3
                     dfcbfa(1,j) = dfcbfa(1,j) + dfc(k,1)*bfa(k,j)
                     dfcbfa(2,j) = dfcbfa(2,j) + dfc(k,2)*bfa(k,j)
-100              continue
+                end do
+            end do
 !
-            do 110 i = 1, 2
-                do 110 j = 1, 3
+            do i = 1, 2
+                do j = 1, 3
                     dfcbfa(i,j) = undemi*dfcbfa(i,j)
-110              continue
+                end do
+            end do
 !
-90      continue
+        end do
 !     -------------------------------------------------------------
 ! --  FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION DU COTE COURANT
 !     -------------------------------------------------------------
 !
 ! ---   CALCUL DU PRODUIT DCI*(BCA - DFC_T*BFA) :
 !       --------------------------------------
-        do 120 j = 1, 3
+        do j = 1, 3
             db(1,j) = dci(1,1) * (bca(1,j)-dfcbfa(1,j)) + dci(1,2) * ( bca(2,j)-dfcbfa(2,j))
             db(2,j) = dci(2,1) * (bca(1,j)-dfcbfa(1,j)) + dci(2,2) * ( bca(2,j)-dfcbfa(2,j))
-120      continue
+        end do
 !
 ! ---               |L4 0  0|   |L4C4 L4S4|
 ! --- CALCUL DE 2/3*|0 L5  0| - |L5C5 L5S5|*DCI*(BCA - DFC_T*BFA) :
 ! ---               |0  0 L6|   |L6C6 L6S6|
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y :
 !     -------------------------------------------
-        do 130 j = 1, 3
+        do j = 1, 3
             aa(ic,j) = - (x(ic) * db(1,j) + y(ic) * db(2,j))
-130      continue
+        end do
         aa(ic,ic) = aa(ic,ic) + deux/trois * l(ic)
 !
-70  end do
+    end do
 !     -------------------------------------------
 ! --  FIN DE LA BOUCLE SUR LES COTES DE L'ELEMENT
 !     -------------------------------------------
@@ -256,18 +265,19 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
 ! --- CALCUL DU PRODUIT DFC_T*BFB :
 !     ---------------------------
-    do 140 j = 1, 9
-        do 140 k = 1, 3
+    do j = 1, 9
+        do k = 1, 3
             dfcbfb(1,j) = dfcbfb(1,j) + dfc(k,1)*bfb(k,j)
             dfcbfb(2,j) = dfcbfb(2,j) + dfc(k,2)*bfb(k,j)
-140      continue
+        end do
+    end do
 !
 ! --- CALCUL DU PRODUIT DCI*DFC_T*BFB :
 !     -------------------------------
-    do 150 j = 1, 9
+    do j = 1, 9
         dcidfb(1,j) = dci(1,1)*dfcbfb(1,j) + dci(1,2)*dfcbfb(2,j)
         dcidfb(2,j) = dci(2,1)*dfcbfb(1,j) + dci(2,2)*dfcbfb(2,j)
-150  end do
+    end do
 !
 ! ---  CALCUL DE :
 ! ---          |L4C4 L4S4|
@@ -275,10 +285,11 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! ---          |L6C6 L6S6|
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y :
 !     -------------------------------------------
-    do 160 i = 1, 3
-        do 160 j = 1, 9
+    do i = 1, 3
+        do j = 1, 9
             ab(i,j) = - (x(i)*dcidfb(1,j) + y(i)*dcidfb(2,j))
-160      continue
+        end do
+    end do
 !
 !================================================================
 ! --- DETERMINATION DE LA MATRICE AL QUI EST TELLE QUE          =
@@ -298,18 +309,19 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
 ! --- CALCUL DU PRODUIT DMC_T*BM :
 !     --------------------------
-    do 170 j = 1, 6
-        do 170 k = 1, 3
+    do j = 1, 6
+        do k = 1, 3
             dmctbm(1,j) = dmctbm(1,j) + dmc(k,1)*bm(k,j)
             dmctbm(2,j) = dmctbm(2,j) + dmc(k,2)*bm(k,j)
-170      continue
+        end do
+    end do
 !
 ! --- CALCUL DU PRODUIT DCI*DMC_T*BM :
 !     ------------------------------
-    do 180 j = 1, 6
+    do j = 1, 6
         dcidmc(1,j) = dci(1,1)*dmctbm(1,j) + dci(1,2)*dmctbm(2,j)
         dcidmc(2,j) = dci(2,1)*dmctbm(1,j) + dci(2,2)*dmctbm(2,j)
-180  end do
+    end do
 !
 ! ---  CALCUL DE :
 ! ---          |L4C4 L4S4|
@@ -317,22 +329,24 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! ---          |L6C6 L6S6|
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y :
 !     -------------------------------------------
-    do 190 i = 1, 3
-        do 190 j = 1, 6
+    do i = 1, 3
+        do j = 1, 6
             al(i,j) = - (x(i)*dcidmc(1,j) + y(i)*dcidmc(2,j))
-190      continue
+        end do
+    end do
 !
 !=================================
 ! --- INVERSION DE LA MATRICE AA =
 !=================================
 !
-    do 200 i = 1, 3
-        do 200 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             aai(i,j) = zero
-200      continue
-    do 210 i = 1, 3
+        end do
+    end do
+    do i = 1, 3
         aai(i,i) = un
-210  end do
+    end do
     call mgauss('NFVP', aa, aai, 3, 3,&
                 3, det, iret)
 !
@@ -374,11 +388,13 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! --- UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)              =
 !===================================================================
 !
-    do 220 i = 1, 3
-        do 220 k = 1, 3
-            do 220 j = 1, 9
+    do i = 1, 3
+        do k = 1, 3
+            do j = 1, 9
                 an(i,j) = an(i,j) + aai(i,k) * (aw(k,j)+ab(k,j))
-220          continue
+            end do
+        end do
+    end do
 !
 !===================================================================
 ! --- DETERMINATION DE LA MATRICE AM QUI EST TELLE QUE             =
@@ -386,10 +402,12 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! --- SOIT AM = AAI*AL                                             =
 !===================================================================
 !
-    do 230 i = 1, 3
-        do 230 k = 1, 3
-            do 230 j = 1, 6
+    do i = 1, 3
+        do k = 1, 3
+            do j = 1, 6
                 am(i,j) = am(i,j) + aai(i,k) * al(k,j)
-230          continue
+            end do
+        end do
+    end do
 !
 end subroutine

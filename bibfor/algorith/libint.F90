@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine libint(imped, nume91, nbint, lisint, nbeq1)
     implicit none
 !
@@ -65,15 +65,15 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/ddllag.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=19) :: imped, nume91
     character(len=24) :: indin1
     integer :: j1, k1, l1, m1, n1, nbeq1, llint1, nbddl1, lintf, nbint, lklibr
-    integer ::  lag1, lag2, ind, lsmhc
+    integer :: lag1, lag2, ind, lsmhc
     real(kind=8) :: abs
     character(len=24) :: lisint
     integer, pointer :: smdi(:) => null()
@@ -89,29 +89,29 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
     call jeveuo(nume91(1:14)//'.NUME.DELG', 'L', vi=delg)
 !
 !
-    do 180 k1 = 1, nbint
+    do k1 = 1, nbint
 !
         indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
         call jeveuo(indin1, 'L', llint1)
         call jelira(indin1, 'LONMAX', nbddl1)
 !
-        do 190 m1 = 1, nbddl1
+        do m1 = 1, nbddl1
             if (zi(llint1+m1-1) .gt. 0) then
                 call ddllag(nume91, zi(llint1+m1-1), nbeq1, lag1, lag2)
 !-- SUPRESSION DES COUPLAGES L1 / L2
                 if (lag1 .gt. 1) then
                     l1=smdi(lag1)-smdi(1+lag1-2)-1
                     ind=smdi(1+lag1-2)
-                    do 230 n1 = 1, l1
+                    do n1 = 1, l1
                         zr(lklibr+ind+n1-1)=0.d0
-230                  continue
+                    end do
                 endif
                 if (lag2 .gt. 1) then
                     l1=smdi(lag2)-smdi(1+lag2-2)-1
                     ind=smdi(1+lag2-2)
-                    do 240 n1 = 1, l1
+                    do n1 = 1, l1
                         zr(lklibr+ind+n1-1)=0.d0
-240                  continue
+                    end do
                 endif
 !
 !-- SUPPRESSION DES COUPLAGES EQ / L1
@@ -119,12 +119,12 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
                     l1=smdi(1+zi(llint1+m1-1)-1)- smdi(1+zi(&
                     llint1+m1-1)-2)-1
                     ind=smdi(1+zi(llint1+m1-1)-2)
-                    do 250 j1 = 1, l1
+                    do j1 = 1, l1
 !-- ON TESTE DANS LE NUME.DELG SI LA VALEUR EST NEGATIVE
                         if (delg(1+zi4(lsmhc+ind+j1-1)-1) .lt. 0) then
                             zr(lklibr+ind+j1-1)=0.d0
                         endif
-250                  continue
+                    end do
                 endif
 !-- ON REND LA DIAGONALE POSITIVE
                 zr(lklibr+smdi(lag1)-1)= abs(zr(lklibr+smdi(1+&
@@ -133,8 +133,8 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
                 lag2-1)-1))
             endif
 !
-190      continue
+        end do
 !
-180  end do
+    end do
 !
 end subroutine

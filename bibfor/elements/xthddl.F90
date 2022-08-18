@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xthddl(nfh, nddlno, nno, stano, option,&
                   nomte, mat, vect)
 ! person_in_charge: sam.cuvilliez at edf.fr
@@ -107,14 +107,14 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
     nddl = nddlno*nno
     ASSERT(nddl.le.ddlmax)
-    do 99 ino = 1, ddlmax
+    do ino = 1, ddlmax
         posddl(ino)=0
- 99 end do
+    end do
 !
 !     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
     lelim=.false.
 !
-    do 100 ino = 1, nno
+    do ino = 1, nno
 !
         call indent(ino, nddlno, 0, nno, in)
 !
@@ -165,7 +165,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
         endif
 !
-100 end do
+    end do
 !
     if (lelim) then
 !
@@ -175,35 +175,36 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
         if (lmat) then
             dmin=r8maem()
             dmax=-r8maem()
-            do 110 i = 1, nddl
+            do i = 1, nddl
                 codia=mat((i-1)*i/2+i)
                 if (codia .gt. dmax) then
                     dmax=codia
                 else if (codia.lt.dmin) then
                     dmin=codia
                 endif
-110         continue
+            end do
             codia=(dmax+dmin)/2.0d0
             if (codia .eq. 0) codia = 1
         endif
 !
-        do 200 i = 1, nddl
+        do i = 1, nddl
             if (posddl(i) .eq. 0) goto 200
 !         POUR LES OPTIONS CONCERNANT DES MATRICES :
 !           MISE A ZERO DES TERMES HORS DIAGONAUX (I,J)
 !           ET MISE A UN DES TERMES DIAGONAUX (I,I)
 !           (ATTENTION AU STOCKAGE SYMETRIQUE)
             if (lmat) then
-                do 210 j = 1, nddl
+                do j = 1, nddl
                     if (j .lt. i) mat((i-1)*i/2+j) = 0.d0
                     if (j .eq. i) mat((i-1)*i/2+j) = codia
                     if (j .gt. i) mat((j-1)*j/2+i) = 0.d0
-210             continue
+                end do
             endif
 !         POUR LES OPTIONS CONCERNANT DES VECTEURS :
 !           MISE A ZERO DES TERMES I
             if (lvec) vect(i) = 0.d0
-200     continue
+200         continue
+        end do
 !
     endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvgacc(iocc, typac, nival, nrval, nbval)
     implicit none
 #include "jeveux.h"
@@ -129,9 +129,9 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             call jelira(nlist, 'LONMAX', nbval)
             call jeveuo(nlist, 'L', alist)
             call wkvect(nival, 'V V I', nbval, aival)
-            do 10, i = 1, nbval, 1
-            zi(aival + i-1) = zi(alist + i-1)
-10          continue
+            do i = 1, nbval, 1
+                zi(aival + i-1) = zi(alist + i-1)
+            end do
         endif
     else if (nbr8 .ne. 0) then
         call wkvect(nival, 'V V I', 1, aival)
@@ -160,9 +160,9 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             call jelira(nlist, 'LONMAX', nbval)
             call jeveuo(nlist, 'L', alist)
             call wkvect(nrval, 'V V R', nbval, arval)
-            do 20, i = 1, nbval, 1
-            zr(arval + i-1) = zr(alist + i-1)
-20          continue
+            do i = 1, nbval, 1
+                zr(arval + i-1) = zr(alist + i-1)
+            end do
         endif
     else
         call wkvect(nrval, 'V V R', 1, arval)

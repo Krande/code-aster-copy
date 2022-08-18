@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine d0mpfn(zimat, nmnbn, nmdpla)
     implicit none
 !
@@ -44,22 +44,22 @@ subroutine d0mpfn(zimat, nmnbn, nmdpla)
     domres(3) = 'DFMEY1'
     domres(4) = 'DFMEY2'
 !
-    do 10, i=1,2
-    call cdnfon(zimat, domres(2*(i-1)+1), nmnbn(i), 0, nmdpla(1, i),&
-                ier0)
+    do i = 1, 2
+        call cdnfon(zimat, domres(2*(i-1)+1), nmnbn(i), 0, nmdpla(1, i),&
+                    ier0)
 !
-    if (ier0 .gt. 0) then
-        call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 1, nmdpla(1, i),&
-                    ier1)
-    endif
+        if (ier0 .gt. 0) then
+            call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 1, nmdpla(1, i),&
+                        ier1)
+        endif
 !
-    call cdnfon(zimat, domres(2*i), nmnbn(i), 0, nmdpla(2, i),&
-                ier0)
+        call cdnfon(zimat, domres(2*i), nmnbn(i), 0, nmdpla(2, i),&
+                    ier0)
 !
-    if (ier0 .gt. 0) then
-        call cdnfon(zimat, nomres(2*i), nmnbn(i), 1, nmdpla(2, i),&
-                    ier1)
-    endif
-    10 end do
+        if (ier0 .gt. 0) then
+            call cdnfon(zimat, nomres(2*i), nmnbn(i), 1, nmdpla(2, i),&
+                        ier1)
+        endif
+    end do
 !
 end subroutine

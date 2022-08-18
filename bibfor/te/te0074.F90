@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0074(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -28,6 +27,7 @@ subroutine te0074(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -64,41 +64,41 @@ subroutine te0074(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i) = 0.d0
- 10 end do
+    end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    do 70 ise = 1, nse
+    do ise = 1, nse
 !
-        do 30 i = 1, nno
-            do 20 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
- 20         continue
- 30     continue
+            end do
+        end do
 !
-        do 60 kp = 1, npg
+        do kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         coorse, nx, ny, poids)
             if (laxi) then
                 r = 0.d0
-                do 40 i = 1, nno
+                do i = 1, nno
                     l = (kp-1)*nno + i
                     r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
- 40             continue
+                end do
                 poids = poids*r
             endif
-            do 50 i = 1, nno
+            do i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)*zr( iflu)
- 50         continue
- 60     continue
+            end do
+        end do
 !
- 70 end do
+    end do
 !
-    do 80 i = 1, nnop2
+    do i = 1, nnop2
         zr(ivectt-1+i) = vectt(i)
- 80 end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gidoma(nbnoto)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -28,6 +27,7 @@ subroutine gidoma(nbnoto)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbnoto
 !
 ! ----------------------------------------------------------------------
@@ -70,10 +70,10 @@ subroutine gidoma(nbnoto)
 !        CET OBJET INDIQUE POUR CHAQUE NOEUD COMBIEN DE MAILLES
 !        ONT UNE CONNECTIVITE QUI COMMENCE PAR CE NOEUD:
     call wkvect('&&GILIRE.OBJET_WK1', 'V V I', nbnoto, iawk1)
-    do 20 ima = 1, nbmato
+    do ima = 1, nbmato
         nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
         zi(iawk1-1+nuno1) =zi(iawk1-1+nuno1) +1
- 20 end do
+    end do
 !
 !     -- CREATION ET REMPLISSAGE DE L'OBJET &&GILIRE.OBJET_WK2
 !        CET OBJET CONTIENT LA LISTE DES MAILLES QUI COMMENCENT
@@ -88,37 +88,38 @@ subroutine gidoma(nbnoto)
 !
 !     -- CALCUL DE OBJET_WK3:
     ico=1
-    do 21 ino = 1, nbnoto
+    do ino = 1, nbnoto
         nbma = zi(iawk1-1+ino)
         if (nbma .eq. 0) goto 21
         zi(iawk3-1+ino) = ico
         ico = ico + nbma
- 21 end do
+ 21     continue
+    end do
 !
 !     -- CALCUL DE OBJET_WK2: (ON MODIFIE _WK3 A CHAQUE MAILLE TRAITEE)
-    do 22 ima = 1, nbmato
+    do ima = 1, nbmato
         nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
         ipos = zi(iawk3-1+nuno1)
         ASSERT(ipos.ne.0)
         ASSERT(zi(iawk2-1+ipos).eq.0)
         zi(iawk2-1+ipos) = ima
         zi(iawk3-1+nuno1) = ipos + 1
- 22 end do
+    end do
 !
 !     -- ON DECLARE IDENTIQUES 2 MAILLES AYANT MEME CONNECTIVITE:
     ico=0
-    do 1 ino = 1, nbnoto
+    do ino = 1, nbnoto
         nbma= zi(iawk1-1+ino)
         if (nbma .eq. 0) goto 1
-        do 2 j = 1, nbma
+        do j = 1, nbma
             iden=.false.
             imaj= zi(iawk2-1+ico+j)
             nbnoj=zi(ilcnx2-1+imaj+1)-zi(ilcnx2-1+imaj)
-            do 3 k = 1, j-1
+            do k = 1, j-1
                 imak= zi(iawk2-1+ico+k)
                 nbnok=zi(ilcnx2-1+imak+1)-zi(ilcnx2-1+imak)
                 if (nbnoj .ne. nbnok) goto 3
-                do 4 l = 1, nbnoj
+                do l = 1, nbnoj
                     nunoj= connex2(zi(ilcnx2-1+imaj)-1+l )
                     nunok= connex2(zi(ilcnx2-1+imak)-1+l )
                     if (nunoj .ne. nunok) goto 3
@@ -126,8 +127,9 @@ subroutine gidoma(nbnoto)
                         iden=.true.
                         goto 5
                     endif
-  4             continue
-  3         continue
+                end do
+  3             continue
+            end do
   5         continue
             if (iden) then
                 zi(ianema-1+imaj) =zi(ianema-1+imak)
@@ -135,9 +137,11 @@ subroutine gidoma(nbnoto)
             else
                 zi(ianema-1+imaj) =imaj
             endif
-  2     continue
+  2         continue
+        end do
         ico = ico + nbma
-  1 end do
+  1     continue
+    end do
 !
     call jedema()
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine afva01(typsd, nomsd, nomsym, lautr)
     implicit none
 #include "asterf_types.h"
@@ -36,7 +36,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 ! BUT : DIRE SI DANS LA SD NOMSD DE TYPE TYPSD=CHAMP/EVOL+NOMSYM
 !       ON TROUVE DES COMPOSANTES AUTRES QUE 'TEMP' ET 'LAGR'
 ! ----------------------------------------------------------------------
-
+!
     integer :: nb_cmp, k, jordr, j, iret, nbordr(1), ibid
     character(len=19) :: ch19, kbid, res19
     real(kind=8) :: r8b
@@ -55,7 +55,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 ! ----- Create objects for global components (catalog) <=> local components (field)
 !
         call cmpcha(ch19, cmp_name, cata_to_field, field_to_cata, nb_cmp)
-        do k=1,nb_cmp
+        do k = 1, nb_cmp
             if (cmp_name(k) .ne. 'TEMP' .and. cmp_name(k) .ne. 'LAGR') then
                 goto 7
             endif
@@ -75,7 +75,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
                     c16b, r8b, kbid, zi(jordr), nbordr(1),&
                     ibid)
 !
-        do 20 j = 1, nbordr(1)
+        do j = 1, nbordr(1)
             call rsexch('F', res19, nomsym, zi(jordr-1+j), ch19,&
                         iret)
             if (iret .eq. 0) then
@@ -83,7 +83,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 ! ------------- Create objects for global components (catalog) <=> local components (field)
 !
                 call cmpcha(ch19, cmp_name, cata_to_field, field_to_cata, nb_cmp)
-                do k=1,nb_cmp
+                do k = 1, nb_cmp
                     if (cmp_name(k) .ne. 'TEMP' .and. cmp_name(k) .ne. 'LAGR') then
                         goto 7
                     endif
@@ -92,7 +92,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
                 AS_DEALLOCATE(vi = field_to_cata)
                 AS_DEALLOCATE(vk8 = cmp_name)
             endif
-20      continue
+        end do
         call jedetr('&&AFVA01.NUME_ORDRE')
         lautr=.false.
         goto 8

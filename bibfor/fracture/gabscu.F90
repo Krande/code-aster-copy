@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
                   absgam)
     implicit none
@@ -40,7 +40,6 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -49,6 +48,7 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: nomno, coorn, numgam, absgam, fond
 !
     integer :: lobj2, iadrco, iadrno, iadnum, iadabs
@@ -70,12 +70,12 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
 !
     numgam = '&&LEGEND.NUMGAMM0'
     call wkvect(numgam, 'V V I', lobj2, iadnum)
-    do 2 j = 1, lobj2
+    do j = 1, lobj2
         call jenonu(jexnom(nomno, zk8(iadrno+j-1)), zi(iadnum+j-1))
- 2  end do
+    end do
 !
     xl = 0.d0
-    do 3 j = 1, lobj2-1
+    do j = 1, lobj2-1
         xi1 = zr(iadrco+(zi(iadnum+j-1) -1)*3+1-1)
         yi1 = zr(iadrco+(zi(iadnum+j-1) -1)*3+2-1)
         zi1 = zr(iadrco+(zi(iadnum+j-1) -1)*3+3-1)
@@ -86,7 +86,7 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
         yij = yj1-yi1
         zij = zj1-zi1
         xl = xl + sqrt(xij*xij + yij *yij +zij*zij)
- 3  end do
+    end do
 !
 !  CALCUL DE L'ABSCISSE CURVILIGNE DE CHAQUE NOEUD DE GAMM0
 !
@@ -96,7 +96,7 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
         call wkvect(absgam, 'V V R', lobj2, iadabs)
 !
         zr(iadabs) = 0.d0
-        do 4 i = 1, lobj2-1
+        do i = 1, lobj2-1
             xi1 = zr(iadrco+(zi(iadnum+i-1) -1)*3+1-1)
             yi1 = zr(iadrco+(zi(iadnum+i-1) -1)*3+2-1)
             zi1 = zr(iadrco+(zi(iadnum+i-1) -1)*3+3-1)
@@ -107,7 +107,7 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
             yij = yj1-yi1
             zij = zj1-zi1
             zr(iadabs+i+1-1) = zr(iadabs+i-1)+ sqrt(xij*xij + yij * yij + zij*zij)
- 4      continue
+        end do
     endif
 !
 ! DESTRUCTION DES OBJETS DE TRAVAIL

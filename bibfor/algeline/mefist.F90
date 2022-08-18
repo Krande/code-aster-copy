@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefist(melflu, ndim, som, alpha, ru,&
                   promas, provis, matma, numgrp, nuor,&
                   freq, masg, fact, facpar, vite,&
@@ -323,13 +323,13 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 ! --- CALCUL DES CARACTERISTIQUES MODALES EN FLUIDE AU REPOS
 !
     nv0 = 0
-    do 10 nv = 1, nbv
+    do nv = 1, nbv
         if (vite(nv) .eq. 0.0d0) then
             nv0 = nv
             goto 11
         endif
-10  end do
-11  continue
+    end do
+ 11 continue
 !
     vit0 = 0.0d0
     write (ifm,6001) '<MEFIST> TRAITEMENT DE LA VITESSE D '&
@@ -385,7 +385,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !.....MATRICES DE MASSES GENERALISEES, FREQUENCE, AMORTISSEMENT
     if (nv0 .ne. 0) then
 !
-        do 20 n = 1, nbmod
+        do n = 1, nbmod
             nn = zi(iind+n-1)
             ii = (nn-1)*2*nbmod
             jj = n + nbmod*(nv0-1)
@@ -395,32 +395,32 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
             fact(kk+1) = ddot(nbmod,zr(ivec),1,facpar,1)
             fact(kk+2) = ddot(nbmod,zr(ivec),1,facpar(nbmod+1),1)
             fact(kk+3) = ddot(nbmod,zr(ivec),1,facpar(2*nbmod+1),1)
-20      continue
+        end do
 !
-        do 30 j = 1, nbmod
+        do j = 1, nbmod
             ind = 2*nbmod*(nv0-1) + 2*(j-1) +1
             freq(ind) = zr(ifre+j-1)
             freq(ind+1) = zr(iksi+j-1)
-30      continue
+        end do
 !
 !........STOCKAGE DES DEFORMEES MODALES APRES REPROJECTION SUR BASE
 !........PHYSIQUE
         nomcha(1:13) = melflu(1:8)//'.C01.'
         nomcha(20:24) = '.VALE'
-        do 40 k = 1, nbmod
+        do k = 1, nbmod
             kk = zi(iind+k-1)
             write(nomcha(14:16),'(I3.3)') nuor(k)
             write(nomcha(17:19),'(I3.3)') nv0
             call jeveuo(nomcha, 'E', icham)
-            do 41 j = 1, nbnoe*6
+            do j = 1, nbnoe*6
                 ind = icham+j-1
                 zr(ind) = 0.d0
-                do 42 m = 1, nbmod
+                do m = 1, nbmod
                     zr(ind) = zr(ind) + defm(j+(m-1)*nbnoe*6) * zr( imatv+m-1+(kk-1)*2*nbmod)
-42              continue
-41          continue
+                end do
+            end do
             call jelibe(nomcha)
-40      continue
+        end do
 !
 !........IMPRESSIONS
 !
@@ -437,10 +437,10 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
      &     ,'     ( % )        *'
         write (ifm,*) ' ************************************************'&
      &     ,'*******************'
-        do 50 i = 1, nbmod
+        do i = 1, nbmod
             write (ifm,7002) ' *      ',nuor(i),'         *    ',&
      &           zr(ifre+i-1),'     *    ',100.d0*zr(iksi+i-1),'     *'
-50      end do
+        end do
         write (ifm,*) ' ************************************************'&
      &     ,'*******************'
         write (ifm,*)
@@ -451,7 +451,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 ! --- BOUCLE SUR LES VITESSES D'ECOULEMENT
 !
-    do 100 nv = 1, nbv
+    do nv = 1, nbv
 !
         if (nv .eq. nv0) goto 100
 !
@@ -493,7 +493,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 !........STOCKAGE DES RESULTATS POUR LA VITESSE D'ECOULEMENT COURANTE
 !........MATRICES DE MASSES GENERALISEES, FREQUENCE, AMORTISSEMENT
-        do 60 n = 1, nbmod
+        do n = 1, nbmod
             nn = zi(iind+n-1)
             ii = (nn-1)*2*nbmod
             jj = n + nbmod*(nv-1)
@@ -503,32 +503,32 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
             fact(kk+1) = ddot(nbmod,zr(ivec),1,facpar,1)
             fact(kk+2) = ddot(nbmod,zr(ivec),1,facpar(nbmod+1),1)
             fact(kk+3) = ddot(nbmod,zr(ivec),1,facpar(2*nbmod+1),1)
-60      continue
+        end do
 !
-        do 70 j = 1, nbmod
+        do j = 1, nbmod
             ind = 2*nbmod*(nv-1) + 2*(j-1) +1
             freq(ind) = zr(ifre+j-1)
             freq(ind+1) = zr(iksi+j-1)
-70      continue
+        end do
 !
 !........STOCKAGE DES DEFORMEES MODALES APRES REPROJECTION SUR BASE
 !........PHYSIQUE
         nomcha(1:13) = melflu(1:8)//'.C01.'
         nomcha(20:24) = '.VALE'
-        do 80 k = 1, nbmod
+        do k = 1, nbmod
             kk = zi(iind+k-1)
             write(nomcha(14:16),'(I3.3)') nuor(k)
             write(nomcha(17:19),'(I3.3)') nv
             call jeveuo(nomcha, 'E', icham)
-            do 81 j = 1, nbnoe*6
+            do j = 1, nbnoe*6
                 ind = icham+j-1
                 zr(ind) = 0.d0
-                do 82 m = 1, nbmod
+                do m = 1, nbmod
                     zr(ind) = zr(ind) + defm(j+(m-1)*nbnoe*6) * zr( imatv+m-1+(kk-1)*2*nbmod)
-82              continue
-81          continue
+                end do
+            end do
             call jelibe(nomcha)
-80      continue
+        end do
 !
 !........IMPRESSIONS
 !
@@ -545,10 +545,10 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
      &     ,'     ( % )        *'
         write (ifm,*) ' ************************************************'&
      &     ,'*******************'
-        do 90 i = 1, nbmod
+        do i = 1, nbmod
             write (ifm,7002) ' *      ',nuor(i),'         *    ',&
      &           zr(ifre+i-1),'     *    ',100.d0*zr(iksi+i-1),'     *'
-90      end do
+        end do
         write (ifm,*) ' ************************************************'&
      &     ,'*******************'
         write (ifm,*)
@@ -579,7 +579,8 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
                     [c16b], valek, 0)
 !
 ! --- FIN DE BOUCLE SUR LES VITESSES D ECOULEMENT
-100  end do
+100     continue
+    end do
 !
 ! --- FORMATS D'IMPRESSION
 !

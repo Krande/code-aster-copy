@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismte(questi, nomobz, repi, repkz, ierd)
     implicit none
 !     --     DISMOI(TYPE_ELEM)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismtm.h"
 #include "asterfort/indiis.h"
@@ -35,6 +34,7 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -56,7 +56,7 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
     character(len=8) :: nomtm
     character(len=16) :: nophen, nomodl
     integer :: ite, nbphen, nbtm, ico, iphen, nbmodl, imodl, iamodl, ii
-    integer ::  nbopt, iopt, ioptte, nrig, irig
+    integer :: nbopt, iopt, ioptte, nrig, irig
     parameter(nrig=5)
     character(len=16) :: optrig(nrig)
     integer, pointer :: optte(:) => null()
@@ -81,31 +81,31 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
         call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
         ico=0
-        do 20,iphen=1,nbphen
-        call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
-        do 10,imodl=1,nbmodl
-        call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
-        ii=indiis(zi(iamodl),ite,1,nbtm)
-        if (ii .gt. 0) then
-            repk=nophen
-            goto 30
+        do iphen = 1, nbphen
+            call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
+            call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
+            do imodl = 1, nbmodl
+                call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
+                ii=indiis(zi(iamodl),ite,1,nbtm)
+                if (ii .gt. 0) then
+                    repk=nophen
+                    goto 30
 !
-        endif
-10      continue
-20      continue
+                endif
+            end do
+        end do
         ierd=1
-30      continue
+ 30     continue
 !
     else if (questi.eq.'FORMULATION') then
-
+!
         call teattr('C', 'FORMULATION', repk, ierd, typel = nomob)
         if (ierd .eq. 1) then
             repk = ' '
             ierd = 0
         endif
-
-
+!
+!
 !
     else if (questi.eq.'MODELISATION') then
 !     --------------------------------------
@@ -113,31 +113,31 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
         call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
         ico=0
-        do 50,iphen=1,nbphen
-        call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
-        do 40,imodl=1,nbmodl
-        call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
-        ii=indiis(zi(iamodl),ite,1,nbtm)
-        if (ii .gt. 0) then
-            call jenuno(jexnum('&CATA.'//nophen(1:13)// '.MODL', imodl), nomodl)
-            repk=nomodl
-            ico=ico+1
-        endif
-40      continue
-        if (ico .gt. 0) then
-            if (ico .eq. 1) then
-                goto 60
+        do iphen = 1, nbphen
+            call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
+            call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
+            do imodl = 1, nbmodl
+                call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
+                ii=indiis(zi(iamodl),ite,1,nbtm)
+                if (ii .gt. 0) then
+                    call jenuno(jexnum('&CATA.'//nophen(1:13)// '.MODL', imodl), nomodl)
+                    repk=nomodl
+                    ico=ico+1
+                endif
+            end do
+            if (ico .gt. 0) then
+                if (ico .eq. 1) then
+                    goto 60
 !
-            else if (ico.gt.1) then
-                repk='#PLUSIEURS'
-                goto 60
+                else if (ico.gt.1) then
+                    repk='#PLUSIEURS'
+                    goto 60
 !
+                endif
             endif
-        endif
-50      continue
+        end do
         ierd=1
-60      continue
+ 60     continue
 !
 !
     else if ((questi.eq.'PHEN_MODE')) then
@@ -146,19 +146,19 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
         call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
         ico=0
-        do 80,iphen=1,nbphen
-        call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
-        do 70,imodl=1,nbmodl
-        call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
-        ii=indiis(zi(iamodl),ite,1,nbtm)
-        if (ii .gt. 0) then
-            call jenuno(jexnum('&CATA.'//nophen(1:13)// '.MODL', imodl), nomodl)
-            repk=nophen//nomodl
-            ico=ico+1
-        endif
-70      continue
-80      continue
+        do iphen = 1, nbphen
+            call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
+            call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
+            do imodl = 1, nbmodl
+                call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
+                ii=indiis(zi(iamodl),ite,1,nbtm)
+                if (ii .gt. 0) then
+                    call jenuno(jexnum('&CATA.'//nophen(1:13)// '.MODL', imodl), nomodl)
+                    repk=nophen//nomodl
+                    ico=ico+1
+                endif
+            end do
+        end do
         if (ico .gt. 1) then
             repk='#PLUSIEURS'
         else if (ico.eq.0) then
@@ -198,16 +198,17 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
         repk='NON'
         call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
         call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
-        do 90,irig=1,nrig
-        call jenonu(jexnom('&CATA.OP.NOMOPT', optrig(irig)), iopt)
-        ASSERT(iopt.gt.0)
-        ioptte=optte((ite-1)*nbopt+iopt)
-        if (ioptte .eq. 0) goto 90
-        repk='OUI'
-        goto 100
+        do irig = 1, nrig
+            call jenonu(jexnom('&CATA.OP.NOMOPT', optrig(irig)), iopt)
+            ASSERT(iopt.gt.0)
+            ioptte=optte((ite-1)*nbopt+iopt)
+            if (ioptte .eq. 0) goto 90
+            repk='OUI'
+            goto 100
 !
-90      continue
-100      continue
+ 90         continue
+        end do
+100     continue
 !
 !
     else

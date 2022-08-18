@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
                   iord, iorg, iora, cmode, vecmod,&
                   neq, beta)
@@ -70,9 +70,9 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
 !
 ! --- MISE A ZERO DU MODE PROPRES RESULTAT
 !
-    do 10 i = 1, neq
+    do i = 1, neq
         vecmod(i) = dcmplx( 0.d0,0.d0 )
-10  end do
+    end do
 !
     abeta = cos(beta)
     bbeta = sin(beta)
@@ -80,64 +80,64 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
 !
 ! --- CONTRIBUTION DES MODES PROPRES
 !
-    do 20 i = 1, nbmod
+    do i = 1, nbmod
         call dcapno(basmod, 'DEPL    ', i, chaval)
         call jeveuo(chaval, 'L', llcham)
-        do 22 j = 1, neq
+        do j = 1, neq
             cfact = dcmplx( zr(llcham+j-1),0.d0 )
             vecmod(j) = vecmod(j) + cmode(i)*cfact
-22      continue
+        end do
         call jelibe(chaval)
-20  end do
+    end do
 !
 ! --- CONTRIBUTION DES DEFORMEES DE DROITE
 !
-    do 30 i = 1, nbddr
+    do i = 1, nbddr
         call dcapno(basmod, 'DEPL    ', iord(i), chaval)
         call jeveuo(chaval, 'L', llcham)
-        do 32 j = 1, neq
+        do j = 1, neq
             cfact = dcmplx( zr(llcham+j-1),0.d0 )
             vecmod(j) = vecmod(j) + cmode(i+nbmod)*cfact
-32      continue
+        end do
         call jelibe(chaval)
-30  end do
+    end do
 !
 ! --- CONTRIBUTION DES DEFORMEES DE GAUCHE
 !
     call jeveuo(tetgd, 'L', lltgd)
 !
-    do 40 i = 1, nbddr
+    do i = 1, nbddr
         call dcapno(basmod, 'DEPL    ', iorg(i), chaval)
         call jeveuo(chaval, 'L', llcham)
 !
         cmult = dcmplx( 0.d0,0.d0 )
-        do 42 j = 1, nbddr
+        do j = 1, nbddr
             iad = lltgd + ((j-1)*nbddr) + i - 1
             cfact = dcmplx( zr(iad),0.d0 )*cmode(j+nbmod)
             cmult = cmult + cfact
-42      continue
+        end do
 !
-        do 44 j = 1, neq
+        do j = 1, neq
             cfact = dcmplx( zr(llcham+j-1),0.d0 )
             vecmod(j) = vecmod(j) + dephc*cfact*cmult
-44      continue
+        end do
 !
         call jelibe(chaval)
-40  end do
+    end do
     call jelibe(tetgd)
 !
 ! --- EVENTUELLE CONTRIBUTION DE L'AXE
 !
     if (nbdax .gt. 0) then
-        do 50 i = 1, nbdax
+        do i = 1, nbdax
             call dcapno(basmod, 'DEPL    ', iora(i), chaval)
             call jeveuo(chaval, 'L', llcham)
-            do 52 j = 1, neq
+            do j = 1, neq
                 cfact = dcmplx( 2*zr(llcham+j-1),0.d0 )
                 vecmod(j) = vecmod(j) + cfact*cmode(i+nbmod+nbddr)
-52          continue
+            end do
             call jelibe(chaval)
-50      continue
+        end do
     endif
 !
     call jedema()

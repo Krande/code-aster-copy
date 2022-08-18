@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ulimpr(impr)
     implicit none
     integer :: impr
@@ -37,7 +37,7 @@ subroutine ulimpr(impr)
 !
     write(impr,999) 'LA TABLE A CONTENU JUSQU''A ',nbfile,&
      &                ' ASSOCIATION(S)'
-    do 1 i = 1, nbfile
+    do i = 1, nbfile
         write(impr,1000) namefi(i)
         ktyp='?'
         if (typefi(i) .eq. 'A') then
@@ -64,7 +64,7 @@ subroutine ulimpr(impr)
             keta='RESERVE '
         endif
         write(impr,1001) ddname(i),unitfi(i),ktyp,kacc,keta,modifi(i)
- 1  end do
+    end do
 !
     999 format (a,i4,a)
     1000 format (1x,a)

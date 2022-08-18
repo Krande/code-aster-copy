@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine pipedp(BEHinteg,&
-                  kpg, ksp, ndim, typmod, mate,&
-                  epsm, sigm, vim, epsp, epsd,&
-                  a0, a1)
 !
-use Behaviour_type
+subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod,&
+                  mate, epsm, sigm, vim, epsp,&
+                  epsd, a0, a1)
 !
-implicit none
+    use Behaviour_type
+!
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/matfpe.h"
@@ -116,8 +115,7 @@ implicit none
 !
     pc = vim(1)
     pt = vim(2)
-    call betfpp(BEHinteg,&
-                materf, nmat, pc, pt,&
+    call betfpp(BEHinteg, materf, nmat, pc, pt,&
                 3, fc, ft, rbid, rbid,&
                 kuc, kut, ke)
 !
@@ -140,18 +138,18 @@ implicit none
 ! ======================================================================
 !
 !     COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
-    do 10 k = 1, ndimsi
+    do k = 1, ndimsi
         sigelp(k) = sigm(k) + (lambda*kron(k)+deuxmu)* (epsp(k)-epsm( k))
         sigeld(k) = (lambda*kron(k)+deuxmu)*epsd(k)
- 10 end do
+    end do
 !
     trsigp = sigelp(1) + sigelp(2) + sigelp(3)
     trsigd = sigeld(1) + sigeld(2) + sigeld(3)
 !
-    do 20 k = 1, ndimsi
+    do k = 1, ndimsi
         pp(k) = sigelp(k)-d13*trsigp*kron(k)
         dd(k) = sigeld(k)-d13*trsigd*kron(k)
- 20 end do
+    end do
 !
 !     CRITERE DE TRACTION
     p0 = d13*ddot(ndimsi,pp,1,pp,1)-(d*ft)**2+d23*c*d*ft*trsigp -c**2/neuf*trsigp**2
@@ -191,10 +189,10 @@ implicit none
 !     ---------------------------------------------------------
     if (notrac) then
         if (nrac2 .ne. 0) then
-            do 30 k = 1, ndimsi
+            do k = 1, ndimsi
                 eps1(k) = epsp(k) + rac2(1) * epsd(k) - epsm(k)
                 eps2(k) = epsp(k) + rac2(2) * epsd(k) - epsm(k)
- 30         continue
+            end do
             d1 = dnrm2(ndimsi, eps1,1)
             d2 = dnrm2(ndimsi, eps2,1)
             if (d1 .le. d2) then
@@ -214,10 +212,10 @@ implicit none
 !     ---------------------------------------------------------
     if (nocomp) then
         if (nrac1 .ne. 0) then
-            do 40 k = 1, ndimsi
+            do k = 1, ndimsi
                 eps1(k) = epsp(k) + rac1(1) * epsd(k) - epsm(k)
                 eps2(k) = epsp(k) + rac1(2) * epsd(k) - epsm(k)
- 40         continue
+            end do
             d1 = dnrm2(ndimsi, eps1,1)
             d2 = dnrm2(ndimsi, eps2,1)
             if (d1 .le. d2) then
@@ -243,10 +241,10 @@ implicit none
             g2 = q0 + deux * rac1(2)*q1 + rac1(2)**2*q2
             trac = .true.
             if ((g1.lt.0) .and. (g2.lt.0)) then
-                do 50 k = 1, ndimsi
+                do k = 1, ndimsi
                     eps1(k) = epsp(k) + rac1(1) * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + rac1(2) * epsd(k) - epsm(k)
- 50             continue
+                end do
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then
@@ -273,10 +271,10 @@ implicit none
             g4 = p0 + deux * rac2(2)*p1 + rac2(2)**2*p2
             comp = .true.
             if ((g3.lt.0) .and. (g4.lt.0)) then
-                do 60 k = 1, ndimsi
+                do k = 1, ndimsi
                     eps1(k) = epsp(k) + rac2(1) * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + rac2(2) * epsd(k) - epsm(k)
- 60             continue
+                end do
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then
@@ -299,10 +297,10 @@ implicit none
 !
         if (trac) then
             if (comp) then
-                do 70 k = 1, ndimsi
+                do k = 1, ndimsi
                     eps1(k) = epsp(k) + eta1 * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + eta2 * epsd(k) - epsm(k)
- 70             continue
+                end do
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then
@@ -325,10 +323,10 @@ implicit none
                 a0 = - q2 * eta**2 + q0
                 a1 = 2*(eta*q2+q1)
             else
-                do 80 k = 1, ndimsi
+                do k = 1, ndimsi
                     eps1(k) = epsp(k) + eta1 * epsd(k) - epsm(k)
                     eps2(k) = epsp(k) + eta2 * epsd(k) - epsm(k)
- 80             continue
+                end do
                 d1 = dnrm2(ndimsi, eps1,1)
                 d2 = dnrm2(ndimsi, eps2,1)
                 if (d1 .le. d2) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
                   epm, dp, sp, xi, g,&
                   iret)
@@ -57,7 +57,7 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
                 epm, dp, sp, xi, f,&
                 g, fds, gds, fdp, gdp,&
                 fdx, gdx, dpmax, sig, tang)
-    if (f .gt. 0.d0) goto 9999
+    if (f .gt. 0.d0) goto 999
     x(1) = xi
     y(1) = f
     gg(1) = g
@@ -84,19 +84,19 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
     y(4) = y(2)
     gg(4) = gg(2)
 !
-    do 100 niter = 1, int(crit(1))
+    do niter = 1, int(crit(1))
         if (abs(y(4))/mat(4) .lt. crit(3) .and. x(4) .ne. 0.d0) goto 110
         call zeroco(x, y)
         call nmtacr(1, ndimsi, mat, sigel, vim,&
                     epm, dp, sp, x(4), y(4),&
                     gg(4), fds, gds, fdp, gdp,&
                     fdx, gdx, dpmax, sig, tang)
-100  end do
+    end do
     iret = 1
-    goto 9999
-110  continue
+    goto 999
+110 continue
     xi = x(4)
     g = gg(4)
 !
-9999  continue
+999 continue
 end subroutine

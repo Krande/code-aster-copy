@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsmis(mod, crit, mater, nvi, epsd,&
                   deps, sigd, sigf, vind, vinf,&
                   noconv, aredec, stopnc, niter, epscon)
@@ -91,12 +91,12 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> MISE A ZERO DES DATAS
 !
-    do 10 i = 1, nr
+    do i = 1, nr
         ddy(i) = 0.d0
         dy(i) = 0.d0
         yd(i) = 0.d0
         yf(i) = 0.d0
- 10 continue
+    end do
 !
 !
 ! -> INITIALISATION DE YD PAR LA PREDICTION ELASTIQUE (SIGF, VIND, ZERO)
@@ -128,12 +128,12 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 ! -> CALCUL DU SECOND MEMBRE A T+DT :  -R(DY)
 !    ET CALCUL DU JACOBIEN DU SYSTEME A T+DT :  DRDY(DY)
 !
-    do 50 i = 1, nr
+    do i = 1, nr
         r(i) = 0.d0
-        do 60 j = 1, nr
+        do j = 1, nr
             drdy(i,j) = 0.d0
- 60     continue
- 50 continue
+        end do
+    end do
 !
     call cjsjis(mod, mater, deps, yd, yf,&
                 r, drdy)

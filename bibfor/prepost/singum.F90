@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                   xy)
 ! aslint: disable=W1306
@@ -114,9 +114,9 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 ! 2 - INITIALISATION DE NOMILI(NNOEM)
 !     TOUS LES NOEUDS SONT SOMMETS A L INTERIEUR
 !
-    do 10 inno = 1, nnoem
+    do inno = 1, nnoem
         nomili(inno)=1
- 10 end do
+    end do
 !
 ! 3 - ON REMPLIT LES OBJETS '&&SINGUM.CONN' ET '&&SINGUM.MESU'
 !     '&&SINGUE.CONN' (DIM=NELEM*(NSOMMX+2)) CONTIENT
@@ -136,7 +136,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     ordre=0
     typma2=' '
     complet=.false.
-    do 20 inel = 1, nelem
+    do inel = 1, nelem
         call jenuno(jexnum('&CATA.TM.NOMTM', itype(inel)), typema(inel))
         if (typema(inel)(1:4) .eq. 'HEXA' .or. typema(inel)(1:5) .eq. 'PENTA' .or.&
             typema(inel)(1:5) .eq. 'PYRAM') then
@@ -162,10 +162,10 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                 zi(adress+2-1)=1
             endif
         endif
-        do 30 inno = 1, zi(adress+1-1)
+        do inno = 1, zi(adress+1-1)
             nuno=connex(zi(jconn2+inel-1)+inno-1)
             zi(adress+inno+2-1)=nuno
- 30     continue
+        end do
 !
 ! OBJET '&&SINGUM.MESU' + RECHERCHE NOEUD BORD
 !
@@ -273,7 +273,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
         endif
 !
         if (zi(adress+2-1) .ne. 1) goto 70
-        do 40 ifac = 1, nfac
+        do ifac = 1, nfac
             if (ndim .eq. 2) then
                 n1=pt1(ifac)
                 n2=pt1(ifac+1)
@@ -283,7 +283,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                 n3=pt1(nbpt*(ifac-1)+3)
                 if (typema(inel)(1:4) .eq. 'HEXA') n4=pt1(nbpt*(ifac-1)+ 4)
             endif
-            do 50 jel = 1, nelem
+            do jel = 1, nelem
                 if (jel .eq. inel) goto 50
                 call jenuno(jexnum('&CATA.TM.NOMTM', itype(jel)), typema(jel))
                 if (ndim .eq. 2) then
@@ -348,7 +348,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                         goto 50
                     endif
                 endif
-                do 60 isur = 1, nsur
+                do isur = 1, nsur
                     if (ndim .eq. 2) then
                         test=(n1.eq.pt2(isur).or.n2.eq.pt2(isur))&
                         .and. (n1.eq.pt2(isur+1).or.n2.eq.pt2(isur+1))
@@ -378,15 +378,17 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                         endif
                     endif
                     if (test) goto 40
- 60             continue
- 50         continue
+                end do
+ 50             continue
+            end do
             nomili(n1)=2
             nomili(n2)=2
             if (ndim .eq. 3) then
                 nomili(n3)=2
                 if (typema(inel)(1:4) .eq. 'HEXA') nomili(n4)=2
             endif
- 40     continue
+ 40         continue
+        end do
 !
  70     continue
 !
@@ -442,7 +444,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
             endif
         endif
 !
- 20 end do
+    end do
 !
 ! 5 - CALCUL DE NELCOM ET NBEF(INNO)
 ! NELCOM     : NBRE MAX D EFS UTILES CONNECTES AUX NOEUDS SOMMETS
@@ -450,11 +452,11 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 ! NBEF(INNO) : NBRE D EFS UTILES CONNECTES AU NOEUD INNO SOMMET
 !
     nelcom=0
-    do 80 inno = 1, nnoem
+    do inno = 1, nnoem
         nbef(inno)=0
         if (nomili(inno) .ne. 0) then
             nbre=zi(jcinv2+inno)-zi(jcinv2+inno-1)
-            do 90 inel = 1, nbre
+            do inel = 1, nbre
                 nuef = zi(jcinv1-1+zi(jcinv2+inno-1)+inel-1)
                 if (ndim .eq. 2) then
                     if (typema(nuef)(1:4) .eq. 'TRIA' .or. typema(nuef)( 1:4) .eq. 'QUAD') then
@@ -465,10 +467,10 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                         nbef(inno)=nbef(inno)+1
                     endif
                 endif
- 90         continue
+            end do
             nelcom=max(nelcom,nbef(inno))
         endif
- 80 end do
+    end do
 !
 ! 5 - OBJET '&&SINGUM.DIME'
 !
@@ -488,13 +490,13 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     chcinv='&&SINGUM.CINV           '
     call wkvect(chcinv, 'V V I', nnoem*(nelcom+2), jcinv)
 !
-    do 100 inno = 1, nnoem
+    do inno = 1, nnoem
         nbre=zi(jcinv2+inno)-zi(jcinv2+inno-1)
         adress=jcinv+(nelcom+2)*(inno-1)
         zi(adress+1-1)=nbef(inno)
         zi(adress+2-1)=0
         i=1
-        do 110 inel = 1, nbre
+        do inel = 1, nbre
             nuef = zi(jcinv1-1+zi(jcinv2+inno-1)+inel-1)
             if (ndim .eq. 2) then
                 if (typema(nuef)(1:4) .eq. 'TRIA' .or. typema(nuef)(1:4) .eq. 'QUAD') then
@@ -509,12 +511,12 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                     i=i+1
                 endif
             endif
-110     continue
-100 end do
+        end do
+    end do
 !
-    do 120 inno = 1, nnoem
+    do inno = 1, nnoem
         adress=jcinv+(nelcom+2)*(inno-1)
-120 end do
+    end do
 !
     call jedetr(cinv)
     call jedema()

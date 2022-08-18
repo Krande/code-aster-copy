@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0131()
-    implicit   none
+    implicit none
 !     CALCUL DE REPONSE DYNAMIQUE SOUS FORME D INTERSPECTRE
 !     EXCITATION ET REPONSES SONT DES INTERSPECTRES.
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/r8depi.h"
 #include "asterfort/caldis.h"
@@ -49,9 +48,10 @@ subroutine op0131()
 #include "asterfort/transf.h"
 #include "asterfort/vriale.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iderex, iderre, iret, ilnoex, ilcpex, i1, ilvaex, napexc, nindex
     integer :: nnoeex, ncmpex, nvasex, i2, nbptmd, iadfrq, ilamor, ij1, igim
-    integer :: igre, ilmode, ilamsc, nmost1,  iadsc3, n1, iadhii, imoddy
+    integer :: igre, ilmode, ilamsc, nmost1, iadsc3, n1, iadhii, imoddy
     integer :: ifreq2, ifreq1, nmost3, ndimre, ni, itail1, iexp, isign, iadj, j
     integer :: iadjs, iadg, iadjg, iadjgj, nj, ni1, ni2, i, nk, ij, nbmode
     integer :: nbddl, nbamor, npdsc3
@@ -172,17 +172,17 @@ subroutine op0131()
 !---6.1---CALCUL ET STOCKAGE DE HII
 !
     call wkvect('&&OP0131.HII', 'V V C', nbmode*npdsc3, iadhii)
-    do 601 imoddy = 1, nbmode
+    do imoddy = 1, nbmode
         r8amor = zr(ilamor+imoddy-1)
         ifreq2 = iadfrq-1+zi(ilmode+imoddy-1)
-        do 602 ifreq1 = 1, npdsc3
+        do ifreq1 = 1, npdsc3
             r8freq = zr(iadsc3+ifreq1-1)
             r8bid1 = r8freq / zr(ifreq2)
             call transf(r8bid1, r8amor, xch)
             xch = xch / (depi*zr(ifreq2))**2
             zc(iadhii-1+npdsc3*(imoddy-1)+ifreq1) = xch
-602      continue
-601  end do
+        end do
+    end do
 !
 !---6.2---CREATION DE LA MATRICE DE RETOUR DANS L ESPACE PHYSIQUE
 !
@@ -222,8 +222,8 @@ subroutine op0131()
     call wkvect(chfreq, 'G V R', npdsc3, lfreq)
 !
     ij1 = 0
-    do 401 i1 = 1, ndimre
-        do 402 i2 = i1, ndimre
+    do i1 = 1, ndimre
+        do i2 = i1, ndimre
             ij1=ij1+1
             zi(lnumi-1+ij1) = i1
             zi(lnumj-1+ij1) = i2
@@ -239,8 +239,8 @@ subroutine op0131()
             call jecroc(jexnum(chvale, ij1))
             call jeecra(jexnum(chvale, ij1), 'LONMAX', nbabs)
             call jeecra(jexnum(chvale, ij1), 'LONUTI', nbabs)
-402      continue
-401  end do
+        end do
+    end do
 !
 !---6.5---COEFFICIENT EN PUISSANCE DE W : IEXP
 !
@@ -272,7 +272,7 @@ subroutine op0131()
     ni2 = nbmode
     ni = ni1 + ni2
 !
-    do 607 ifreq1 = 1, npdsc3
+    do ifreq1 = 1, npdsc3
 !
         r8freq = zr(iadsc3+ifreq1-1)
         zr(lfreq-1+ifreq1) = r8freq
@@ -290,25 +290,25 @@ subroutine op0131()
 !
 !---------REMPLISSAGE DE LA MATRICE J ET DE JS
 !
-        do 611 j = 1, nj
+        do j = 1, nj
 !  MATRICES DES MODES STATIQUES EST L IDENTITE
             if (j .le. ni1) then
                 xcj = dcmplx(1.d0,0.d0)
                 zc(iadj -1+ni*(j-1)+j) = xcj
                 zc(iadjs-1+nj*(j-1)+j) = dconjg(xcj)
             endif
-            do 612 i = 1, ni2
+            do i = 1, ni2
                 pim = vpim(1+(j-1)*ni2+i-1)
                 xcj = r8bid1*pim*zc(iadhii-1+npdsc3*(i-1)+ifreq1)
                 zc(iadj -1+ni*(j-1)+ni1+i) = xcj
                 zc(iadjs-1+nj*(i+ni1-1)+j) = dconjg(xcj)
-612          continue
-611      continue
+            end do
+        end do
 !
 !---------STOCKAGE GEXC A LA FREQUENCE IFREQ1
 !
-        do 613 i = 1, napexc
-            do 614 j = 1, napexc
+        do i = 1, napexc
+            do j = 1, napexc
                 if (j .ge. i) then
                     ij1=(j*(j-1))/2+i
                     igre=zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+1
@@ -321,8 +321,8 @@ subroutine op0131()
                     xcg=dcmplx(zr(igre),-zr(igim))
                 endif
                 zc(iadg-1+(j-1)*napexc+i)=xcg
-614          continue
-613      continue
+            end do
+        end do
 !
 !---------CALCUL JG A LA FREQUENCE IFREQ1
 !
@@ -336,13 +336,13 @@ subroutine op0131()
 !
 !----------SI REPONSE MODALE ON SORT ICI LES RESULTATS
 !
-        do 640 i = 1, ndimre
+        do i = 1, ndimre
             if (typopt .eq. 'DIAG ') then
                 nk = i
             else
                 nk = ndimre
             endif
-            do 641 j = i, nk
+            do j = i, nk
                 ij = 0
                 do num = 1, itail1
                     if ((i .eq. zi(lnumi-1+num)) .and. (j .eq. zi( lnumj-1+num))) then
@@ -359,15 +359,15 @@ subroutine op0131()
                     zr(ispec-1+2*(ifreq1-1)+1) = dble(xcgrep)
                     zr(ispec-1+2*(ifreq1-1)+2) = dimag(xcgrep)
                 endif
-641          continue
-640      continue
+            end do
+        end do
 !
-607  end do
+    end do
 !
     if (typopt .eq. 'DIAG') then
         ij = 0
-        do 630 i = 1, ndimre
-            do 631 j = i+1, ndimre
+        do i = 1, ndimre
+            do j = i+1, ndimre
                 ij = ij+1
                 call jeveuo(jexnum(chvale, ij), 'E', ispec)
                 zr(ispec ) = 0.d0
@@ -376,8 +376,8 @@ subroutine op0131()
                 zr(ispec+3) = 0.d0
                 zr(ispec+4) = 0.d0
                 zr(ispec+5) = 0.d0
-631          continue
-630      continue
+            end do
+        end do
     endif
 !
     call titre()

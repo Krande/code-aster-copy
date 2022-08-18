@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irrcvg(dy, ddy, nr, nmat, mater,&
                   itmax, toler, iter, r, rini,&
                   irteti)
@@ -51,9 +51,9 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 !
 !     CALCUL DE LA NORME DE RINI ET DE R(Y)
     er = 0.0d0
-    do 10 ii = 1, nr
+    do ii = 1, nr
         er = er + r(ii)*r(ii)
-10  end do
+    end do
     er = sqrt(er)
 !     ER < TOLER , ON A CONVERGE
     if (er .lt. toler) then
@@ -64,10 +64,10 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
             call utmess('I', 'COMPOR1_58', nr=2, valr=valrm)
 !           REDECOUPAGE
             irteti = 3
-            goto 9999
+            goto 999
         endif
         irteti = 0
-        goto 9999
+        goto 999
     endif
 !
     if (iter .lt. itmax) then
@@ -87,7 +87,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 !         ENDIF
 ! -      NON CONVERGENCE ITERATION SUIVANTE
         irteti = 1
-        goto 9999
+        goto 999
 !      ELSE
 ! -      EVALUATION DE :  ERRR(1)  = MAX( ABS(R(I)/RINI(I)) )
 !         CALL LCVERR(RINI,R,NR,0,ERREUR)
@@ -107,5 +107,5 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 ! -   NON CONVERGENCE ET ITMAX ATTEINT
     irteti = 3
 !
-9999  continue
+999 continue
 end subroutine

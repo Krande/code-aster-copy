@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine statpu(nbobst, nbpt, temps, fcho, vgli,&
                   iadh, wk1, wk2, wk3, iwk4,&
                   idebut, nbloc, nbval, ifires, inoe,&
@@ -49,17 +49,17 @@ subroutine statpu(nbobst, nbpt, temps, fcho, vgli,&
     call dcopy(nbpt, vgli(3*(inoe-1)+2), 3*nbobst, wk2, 1)
     call dcopy(nbpt, vgli(3*(inoe-1)+3), 3*nbobst, wk3, 1)
 !     CALL DCOPY(NBPT,IADH(1*(INOE-1)+1),NBOBST,IWK4,1)
-    do 5 i = 1, nbpt
+    do i = 1, nbpt
         iwk4(i) = iadh(1*(inoe-1)+1+(i-1)*nbobst)
- 5  end do
-    do 10 ibl = 1, nbloc
+    end do
+    do ibl = 1, nbloc
         call pusure(nbval, wk1((ibl-1)*nbval+idebut), wk2((ibl-1)* nbval+idebut),&
                     wk3((ibl-1)*nbval+idebut), iwk4((ibl-1)*nbval+ idebut),&
                     temps((ibl-1)*nbval+idebut), pusee)
         pusurn = pusurn + pusee
 !C       --- IMPRESSION DE LA PUISSANCE D USURE ---
         if (impr .eq. 2) call impus(ifires, ibl, pusee)
-10  end do
+    end do
     pusurn = pusurn / nbloc
     if (ibl .gt. 1 .and. impr .eq. 2) call impus(ifires, 0, pusurn)
 !

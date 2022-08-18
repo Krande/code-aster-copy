@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
                   lilig, nblig, licol, nbcol, cmat,&
                   ndim, ideb, jdeb, x)
@@ -72,7 +72,7 @@ subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
     nomob = nomobz
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), iret)
 !
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), ibid)
     call jeveuo(jexnum(nomcol, ibid), 'L', llob)
@@ -82,8 +82,8 @@ subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
 ! SI ASSEMBLAGE PARTIEL ON TRAITE LIGNE PAR LIGNE
 !        ET COLONNE PAR COLONNE
 !
-        do 10 j = 1, nbcol
-            do 20 i = 1, nblig
+        do j = 1, nbcol
+            do i = 1, nblig
                 iad=llob+(licol(j)-1)*nobl+lilig(i)-1
                 call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
                             1, ideb+i-1, jdeb+ j-1, x, 1,&
@@ -91,8 +91,8 @@ subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
                 call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
                             1, jdeb+j-1, ideb+ i-1, x, 1,&
                             1)
- 20         continue
- 10     continue
+            end do
+        end do
 !
     else
         call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
@@ -105,6 +105,6 @@ subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
     endif
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cuadu(deficu, resocu, neq, nbliac)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/caladu.h"
 #include "asterfort/jedema.h"
@@ -71,14 +71,14 @@ subroutine cuadu(deficu, resocu, neq, nbliac)
     call jeveuo(mu, 'E', jmu)
     call jeveuo(poinoe, 'L', jpoi)
 ! ======================================================================
-    do 10 iliac = 1, nbliac
+    do iliac = 1, nbliac
         lliac = zi(jliac-1+iliac)
         jdecal = zi(jpoi+lliac-1)
         nbddl = zi(jpoi+lliac) - zi(jpoi+lliac-1)
         call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr( jdelt0),&
                     val)
         zr(jmu+iliac-1) = zr(japjeu+lliac-1) - val
-10  continue
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbajva(table, nbpara, nompar, vi, livi,&
                   vr, livr, vc, livc, vk,&
                   livk)
@@ -50,7 +50,7 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
 ! ----------------------------------------------------------------------
 !
     integer :: iret, nbcol
-    integer ::  i, ki, kr, kc, kk
+    integer :: i, ki, kr, kc, kk
     character(len=19) :: nomtab
     character(len=24) :: type, nomcol
     character(len=24), pointer :: tblp(:) => null()
@@ -80,7 +80,7 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
     kr = 0
     kc = 0
     kk = 0
-    do 10 i = 1, nbcol
+    do i = 1, nbcol
         nomcol = tblp(4*(i-1)+1)
         type = tblp(4*(i-1)+2)
         if (type(1:1) .eq. 'I') then
@@ -108,9 +108,9 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
                 goto 20
             endif
         endif
-10  continue
+    end do
     call utmess('F', 'TABLE0_1', sk=nompar)
-20  continue
+ 20 continue
 !
     call jedema()
 !

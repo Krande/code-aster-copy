@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, reac, jac, nfh,&
                   saut, singu, fk, nd, cpenco,&
-                  ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
-                  jheafa, ncomph, ifa, vtmp)
+                  ddls, ddlm, jheavn, ncompn, nfiss,&
+                  ifiss, jheafa, ncomph, ifa, vtmp)
 !
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, nnol
     integer :: pla(27), nfh
     integer :: singu, ddls, ddlm, nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: vtmp(400), cpenco, saut(3), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac, reac
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 !
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
@@ -81,48 +81,49 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
     coefi = xcalc_saut(1,0,1)
     lmultc = nfiss.gt.1
     if (.not.lmultc) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+        hea_fa(1)=xcalc_code(1,he_inte=[-1])
+        hea_fa(2)=xcalc_code(1,he_inte=[+1])
     endif
     dn = 0.d0
-    do 143 j = 1, ndim
+    do j = 1, ndim
         dn = dn + saut(j)*nd(j)
-143 end do
+    end do
 !
 ! --- TERME LN1
 !
-    do 153 i = 1, nno
+    do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
-        do 156 ifh = 1, nfh
+        do ifh = 1, nfh
             if (lmultc) then
-                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
-                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
-                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
-                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+                coefi = xcalc_saut(&
+                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
+                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                        )
             else
-                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
-                                   hea_fa(1), &
-                                   hea_fa(2),&
-                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+                coefi = xcalc_saut(&
+                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
+                        zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                        )
             endif
-            do 154 j = 1, ndim
+            do j = 1, ndim
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + reac* coefi*ffp(i)*nd(j)*jac
-154         continue
-156     continue
-        do 155 j = 1, singu*ndim
-          do alpi = 1, ndim
-            vtmp(in+ndim*(1+nfh)+alpi) = vtmp( in+ndim*(1+nfh)+alpi) + &
-                                        reac*2.d0*fk(i,alpi,j)*nd(j )*jac
-          enddo
-155     continue
-153 end do
+            end do
+        end do
+        do j = 1, singu*ndim
+            do alpi = 1, ndim
+                vtmp(in+ndim*(1+nfh)+alpi) = vtmp(&
+                                             in+ndim*(1+nfh)+alpi) + reac*2.d0*fk(i,alpi,j)*nd(j&
+                                             )*jac
+            enddo
+        end do
+    end do
 !
 ! --- TERME LN2
 !
-    do 160 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         vtmp(pli) = vtmp(pli) - dn * ffi * jac
         vtmp(pli) = vtmp(pli) - reac*ffi*jac/cpenco
-160 continue
+    end do
 end subroutine

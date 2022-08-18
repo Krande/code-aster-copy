@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
                   iarret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -27,8 +27,8 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rcvals.h"
 #include "asterfort/rccome.h"
+#include "asterfort/rcvals.h"
 #include "asterfort/tbexlr.h"
     character(len=*) :: nommaz, phenom, nomres
     integer :: icodre, iarret
@@ -43,7 +43,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 !       ICODRE : 0 SI ON A TROUVE, 1 SINON
 ! ----------------------------------------------------------------------
 !
-    integer :: iret,  nbr, nbc, nbk, nbco, ik,  nbcb1, nbcb2, nblb2
+    integer :: iret, nbr, nbc, nbk, nbco, ik, nbcb1, nbcb2, nblb2
     integer :: nbhist, nbtrc
     character(len=11) :: k11
     character(len=8) :: nommat
@@ -61,13 +61,13 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
     if (iret .eq. 1) then
         icodre = 1
-        goto 9999
+        goto 999
     endif
     noobrc = nommat//k11
     call jeexin(noobrc//'.VALR', iret)
     if (iret .eq. 0) then
         icodre = 1
-        goto 9999
+        goto 999
     else
         call jelira(noobrc//'.VALR', 'LONUTI', nbr)
     endif
@@ -75,7 +75,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     call jeexin(noobrc//'.VALC', iret)
     if (iret .eq. 0) then
         icodre = 1
-        goto 9999
+        goto 999
     else
         call jelira(noobrc//'.VALC', 'LONUTI', nbc)
     endif
@@ -83,14 +83,14 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     call jeexin(noobrc//'.VALK', iret)
     if (iret .eq. 0) then
         icodre = 1
-        goto 9999
+        goto 999
     else
         call jeveuo(noobrc//'.VALK', 'L', vk16=valk)
         call jelira(noobrc//'.VALK', 'LONUTI', nbk)
     endif
 !
     nbco = ( nbk - nbr - nbc ) / 2
-    do 150 ik = 1, nbk
+    do ik = 1, nbk
         if (nomres .eq. valk(ik)) then
             icodre = 0
             ch19 = valk(1+nbco+ik-1)
@@ -109,11 +109,11 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 ! ---       MENAGE
             call detrsd('LISTR8', listr)
 !
-            goto 9999
+            goto 999
         endif
-150  end do
+    end do
 !
-9999  continue
+999 continue
 !
     call rcvals(iarret, [icodre], 1, nomres)
 !

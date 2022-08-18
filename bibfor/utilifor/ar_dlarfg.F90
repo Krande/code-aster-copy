@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -143,7 +143,7 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !
             rsafmn = one / safmin
             knt = 0
-10          continue
+ 10         continue
             knt = knt + 1
             call dscal(n-1, rsafmn, x, incx)
             beta = beta*rsafmn
@@ -160,9 +160,9 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !           IF ALPHA IS SUBNORMAL, IT MAY LOSE RELATIVE ACCURACY
 !
             alpha = beta
-            do 20 j = 1, knt
+            do j = 1, knt
                 alpha = alpha*safmin
-20          continue
+            end do
         else
             tau = ( beta-alpha ) / beta
             call dscal(n-1, one / ( alpha-beta ), x, incx)
@@ -170,7 +170,7 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
         endif
     endif
 !
-1000  continue
+1000 continue
     call matfpe(1)
 !
 !     END OF DLARFG

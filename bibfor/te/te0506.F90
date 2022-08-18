@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0506(option, nomte)
 !
 !
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -62,24 +62,24 @@ subroutine te0506(option, nomte)
     if (coef(1:7) .eq. '&FOZERO') goto 40
 !
 !
-    do 30 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         tpg = 0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
             tpg = tpg + zr(itempi+i-1)*zr(ivf+k+i-1)
- 10     continue
+        end do
         call foderi(coef, tpg, alpha, alphap)
         if (laxi) poids = poids*r
 !
 !
-        do 20 i = 1, nno
+        do i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) + poids*zr(ivf+k+i-1)* ( alpha-alphap*tpg)
- 20     continue
- 30 end do
+        end do
+    end do
  40 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

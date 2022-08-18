@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                   nbocc)
     implicit none
@@ -96,14 +96,14 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     lcartf = .false.
     if (iret .eq. 0) then
 ! ------ DOIT-ON CREER LA CARTE DE FONCTION
-        do 100 ioc = 1, nbocc
+        do ioc = 1, nbocc
             call getvid('COQUE', 'EPAIS_FO', iocc=ioc, scal=epaf, nbret=nvf)
             call getvid('COQUE', 'EXCENTREMENT_FO', iocc=ioc, scal=excf, nbret=nexf)
             if (nvf+nexf .ne. 0) then
                 lcartf = .true.
                 goto 110
             endif
-100     continue
+        end do
 110     continue
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
@@ -128,7 +128,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     call wkvect('&&TMPCOQUE2', 'V V K8', lmax, jdls2)
 !
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS : CARTCO OU CARTCF
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
         ang(1) = 0.d0
         ang(2) = 0.d0
         correc = 0.d0
@@ -187,13 +187,13 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
-            do 20 i = 1, ng
+            do i = 1, ng
                 call nocart(cartco, 2, 8, groupma=zk24(jdls+i-1))
- 20         continue
+            end do
             if (lcartf) then
-                do 25 i = 1, ng
+                do i = 1, ng
                     call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
- 25             continue
+                end do
             endif
         endif
 !
@@ -207,7 +207,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
             endif
         endif
 !
- 10 end do
+    end do
 !
     call jedetr('&&TMPCOQUE')
     call jedetr('&&TMPCOQUE2')

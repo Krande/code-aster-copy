@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                   t, nomaz, liso1z, liso2z)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8gaem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -34,8 +36,6 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 #include "asterfort/parotr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: lonlis
     character(len=*) :: lisi1z, lisi2z, nomaz, liso1z, liso2z
@@ -68,7 +68,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 !
     integer :: i, i1, i2, iageom, idlin1, idlin2, idlinv
     integer :: idlou1, idlou2, idlou3, idlou4, ier, iexcor, iret
-    integer :: ino1, ino2, j, j1, j2,   k
+    integer :: ino1, ino2, j, j1, j2, k
     integer :: nuno1, nuno2
 !
     real(kind=8) :: d, dmin
@@ -131,16 +131,16 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 !     -- DES NOEUDS DE LISIN1 ET LISIN2 :
     AS_ALLOCATE(vi=num_lisin1, size=lonlis)
     AS_ALLOCATE(vi=num_lisin2, size=lonlis)
-    do 1,k=1,lonlis
-    call jenonu(jexnom(noeuma, zk8(idlin1-1+k)), num_lisin1(k))
-    call jenonu(jexnom(noeuma, zk8(idlin2-1+k)), num_lisin2(k))
-    1 end do
+    do k = 1, lonlis
+        call jenonu(jexnom(noeuma, zk8(idlin1-1+k)), num_lisin1(k))
+        call jenonu(jexnom(noeuma, zk8(idlin2-1+k)), num_lisin2(k))
+    end do
 !
 ! --- CONSTITUTION DE LA PREMIERE CORRESPONDANCE ENTRE LES LISTES
 ! --- DE NOEUDS LISIN1 ET LISIN2 ENTRE NO1 DONNE ET NO2 SELON LE
 ! --- CRITERE : NO2 = NO DANS LISIN2 / D(NO1,NO2) = MIN D(NO1,NO)
 !
-    do 10 i1 = 1, lonlis
+    do i1 = 1, lonlis
         nomno1 = zk8(idlin1+i1-1)
 !       CALL JENONU(JEXNOM(NOEUMA,NOMNO1),NUNO1)
         nuno1=num_lisin1(i1)
@@ -148,7 +148,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                     mrot, t, x1)
         dmin = r8gaem()
         j2 = 0
-        do 20 i2 = 1, lonlis
+        do i2 = 1, lonlis
             nomo2 = zk8(idlin2+i2-1)
 !         CALL JENONU(JEXNOM(NOEUMA,NOMO2),INO2)
             ino2=num_lisin2(i2)
@@ -163,7 +163,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                 nuno2 = ino2
                 j2 = i2
             endif
-20      continue
+        end do
 !
         if (j2 .eq. 0) then
             call utmess('F', 'MODELISA6_3', sk=nomno1)
@@ -181,15 +181,15 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             call utmess('E', 'MODELISA8_77', nk=3, valk=valk)
         endif
 !
-10  end do
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA6_4')
     endif
 !
-    do 30 i = 1, lonlis
+    do i = 1, lonlis
         zk8(idlinv+i-1) = m8blan
-30  end do
+    end do
 !
 ! --- CONSTITUTION DE LA SECONDE CORRESPONDANCE ENTRE LES LISTES
 ! --- DE NOEUDS LISIN1 ET LISIN2 ENTRE NO2 DONNE ET NO1 SELON LE
@@ -197,7 +197,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 ! --- LA CORRESPONDANCE EST DEFINIE PAR LA CONSTITUTION DES LISTES
 ! --- LISOU3 ET LISOU4.
 !
-    do 40 i2 = 1, lonlis
+    do i2 = 1, lonlis
         nomno2 = zk8(idlin2+i2-1)
         nuno2=num_lisin2(i2)
         x2(1)=zr(iageom-1+3*(nuno2-1)+1)
@@ -205,7 +205,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
         x2(3)=zr(iageom-1+3*(nuno2-1)+3)
         dmin = r8gaem()
         j1 = 0
-        do 50 i1 = 1, lonlis
+        do i1 = 1, lonlis
             nomo1 = zk8(idlin1+i1-1)
             ino1=num_lisin1(i1)
             call parotr(noma, iageom, ino1, 0, centre,&
@@ -217,7 +217,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                 nuno1 = ino1
                 j1 = i1
             endif
-50      continue
+        end do
 !
         if (j1 .eq. 0) then
             call utmess('F', 'MODELISA6_3', sk=nomno2)
@@ -235,7 +235,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             call utmess('E', 'MODELISA8_77', nk=3, valk=valk)
         endif
 !
-40  end do
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA6_4')
@@ -245,9 +245,9 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 ! --- PAR LISOU1 ET LISOU2 ET D'AUTRE-PART DES COUPLES 'INVERSES'
 ! --- FORMES PAR LISOU3 ET LISOU4
 !
-    do 60 i = 1, lonlis
+    do i = 1, lonlis
         iexcor = 0
-        do 70 j = 1, lonlis
+        do j = 1, lonlis
             if (zk8(idlou1+i-1) .eq. zk8(idlou3+j-1)) then
                 iexcor = 1
                 if (zk8(idlou2+i-1) .ne. zk8(idlou4+j-1)) then
@@ -260,7 +260,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                     call utmess('E', 'MODELISA8_87', nk=5, valk=valk)
                 endif
             endif
-70      continue
+        end do
 !
         if (iexcor .eq. 0) then
             ier = ier + 1
@@ -272,7 +272,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             call utmess('E', 'MODELISA8_88', nk=5, valk=valk)
         endif
 !
-60  end do
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA6_4')

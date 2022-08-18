@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipel2(mat, sup, sud, mup, mud,&
                   vim, tau, copilo)
 !
@@ -73,7 +73,7 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
     tpa = max(vim,sc) + (r*dc-sc)*tau
 !
 ! -- CAS DE L'ENDOMMAGEMENT SATURE
-    if (tpa .gt. r*dc) goto 9999
+    if (tpa .gt. r*dc) goto 999
 !
 !   CALCUL DU SEUIL (EN CONTRAINTE)
     tt2 = (tpa)**2.d0
@@ -107,7 +107,7 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
     n2 = tdn*tdn
 !
 !    SI LE POINT N'EST PAS PILOTABLE :
-    if (c2+n2 .eq. 0.d0) goto 9999
+    if (c2+n2 .eq. 0.d0) goto 999
 !
 !
 ! -- RESOLUTION DES EQUATIONS
@@ -128,7 +128,7 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
 ! -- SELECTION DES SOLUTIONS CONFORMES AVEC LE SIGNE SUR L'OUVERTURE
 !
     nrac = 0
-    do 100 i = 1, 4
+    do i = 1, 4
         if (rac(i) .ne. r8vide()) then
             eta = rac(i)
 !
@@ -149,8 +149,8 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
             endif
 !
         endif
-100  end do
+    end do
     if (nrac .eq. 0) copilo(5) = 0.d0
 !
-9999  continue
+999 continue
 end subroutine

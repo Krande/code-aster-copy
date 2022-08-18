@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0114()
     implicit none
 !  ----- OPERATEUR RECU_PARA_YACS             --------------------------
@@ -97,10 +97,10 @@ subroutine op0114()
         ti4 = 0.d0
         tf4 = 0.d0
 !
-        do 10 i = 1, nbvale-1
+        do i = 1, nbvale-1
             zr(jpas+i-1) = 0.1d0
             zi(jnbp+i-1) = 1
-10      continue
+        end do
         zr(jpas) = 0.1d0
         zi(jnbp) = 1
 !  RECEPTION NOMBRE DE PAS DE TEMPS

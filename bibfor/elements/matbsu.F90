@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
                   b2mnc, b1mni, b2mni, b1mri, b2mri,&
                   b1src, b2src, b1su, b2su)
@@ -66,8 +66,8 @@ subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
 !
 !---- REMPLISSAGE
 !
-    do 100 j = 1, 6 * nb1 + 3
-        do 110 i = 1, 3
+    do j = 1, 6 * nb1 + 3
+        do i = 1, 3
 !
 !---------- OPERATEURS DE FLEXION
 !
@@ -76,7 +76,7 @@ subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
 !
 !---------- EXTRAPOLATION
 !
-            do 120 k = 1, npgsr
+            do k = 1, npgsr
 !
 !---------- OPERATEURS DE MEMBRANE
 !
@@ -86,8 +86,8 @@ subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
                 b2su ( i , j ) = b2su ( i , j ) + xr ( i1 + k ) *&
                 b2mri ( i , j , k )
 !
-120         continue
-110     continue
+            end do
+        end do
         do i = 1, 2
             do k = 1, npgsr
 !
@@ -99,11 +99,11 @@ subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
                 b2su ( i + 3 , j ) = b2su ( i + 3 , j ) + xr ( i1&
                 + k ) * b2src ( i , j , k )
 !
-             end do
-         end do
-
-
-100  end do
+            end do
+        end do
+!
+!
+    end do
 !
 !
 !

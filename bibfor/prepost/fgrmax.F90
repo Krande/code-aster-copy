@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
 !      COMPTAGE DES CYCLES PAR LA METHODE RAINFLOW AVEC LE CYCLE MAX
 !      AU DEBUT DE CHARGEMENT
@@ -41,17 +41,17 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
     cycmax = 1
     ampmax = sigmax(1) - sigmin(1)
 !
-    do 10 i = 2, ncyc
+    do i = 2, ncyc
         if ((sigmax(i) - sigmin(i)) .gt. ampmax) then
             ampmax = sigmax(i) - sigmin(i)
             cycmax = i
         endif
-10  continue
+    end do
 !
     smin(1) = sigmin(cycmax)
     smax(1) = sigmax(cycmax)
 !
-    do 20 i = 2, ncyc
+    do i = 2, ncyc
         if (i .lt. cycmax) then
             smin(i) = sigmin(i-1)
             smax(i) = sigmax(i-1)
@@ -59,7 +59,7 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
             smin(i) = sigmin(i)
             smax(i) = sigmax(i)
         endif
-20  continue
+    end do
     if (cycmax .eq. ncyc) then
         smin(ncyc) = sigmin(ncyc-1)
         smax(ncyc) = sigmax(ncyc-1)

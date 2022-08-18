@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ptka01(sk, e, a, xl, xiy,&
                   xiz, xjx, g, alfay, alfaz,&
                   ey, ez, ist)
@@ -78,13 +78,13 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     parameter  (zero=0.d0)
     data        ip/0,1,3,6,10,15,21,28,36,45,55,66/
 !--- -------------------------------------------------------------------
-    do 10,i = 1,78
-    sk(i) = zero
-    10 end do
+    do i = 1, 78
+        sk(i) = zero
+    end do
 !
 ! --- SI G ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
-        if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
+        if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
     endif
 !
@@ -93,7 +93,7 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     sk(ip(7)+1) = -sk(1)
     sk(ip(7)+7) = sk(1)
 !
-    if ((ist.eq.2) .or. (ist.eq.5)) goto 9999
+    if ((ist.eq.2) .or. (ist.eq.5)) goto 999
 !
 !     2/ FLEXION
 !     2.1) CALCUL DES CONSTANTES
@@ -117,7 +117,7 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     sk(ip(12)+8) = -sk(ip(6)+2)
     sk(ip(12)+12) = sk(ip(6)+6)
 !
-    if ((ist.eq.3) .or. (ist.eq.6)) goto 9999
+    if ((ist.eq.3) .or. (ist.eq.6)) goto 999
 !
 !     3/ FLEXION DANS LE PLAN XOZ
     sk(ip(3)+3) = 12.d0*eiy/((1.d0+phiz)*xl3)
@@ -136,7 +136,7 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     sk(ip(10)+4) = -sk(ip(4)+4)
     sk(ip(10)+10) = sk(ip(4)+4)
 !
-    if ((ez.eq.zero) .and. (ey.eq.zero)) goto 9999
+    if ((ez.eq.zero) .and. (ey.eq.zero)) goto 999
 !
 !     5/ AVEC EXCENTREMENT
 !     RECTIFICATION POUR LA TORSION
@@ -160,5 +160,5 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     sk(ip(10)+9) = sk(ip(4)+3)
     sk(ip(11)+10) = sk(ip(10)+5)
     sk(ip(12)+10) = sk(ip(10)+6)
-9999  continue
+999 continue
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                   nr, nvi, deps, sigd, vind,&
                   seuil, icomp, sigf, vinf, devg,&
@@ -113,12 +113,12 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- LA PROJECTION AU SOMMET DU DOMAINE EST RETENUE -------------------
 ! ======================================================================
-        do 10 ii = 1, ndt
+        do ii = 1, ndt
             sigf(ii) = 0.0d0
-10      continue
-        do 20 ii = 1, ndi
+        end do
+        do ii = 1, ndi
             sigf(ii) = invars / trois
-20      continue
+        end do
         call lcopil('ISOTROPE', mod, mater(1, 1), dkooh)
         epsf(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigf(1:ndt))
         if (mod .eq. 'C_PLAN') then
@@ -140,7 +140,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                     codret)
         if (codret .ne. 0) goto 100
         iter = 0
- 1      continue
+  1     continue
 ! ======================================================================
 ! --- ITERATION ITER ---------------------------------------------------
 ! ======================================================================
@@ -189,12 +189,12 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
             i1  =yf(ndt+1)
             gamp=yf(ndt+2)
             evp =yf(ndt+3)
-            do 30 ii = 1, ndt
+            do ii = 1, ndt
                 sigf(ii) = s(ii)
-30          continue
-            do 40 ii = 1, ndi
+            end do
+            do ii = 1, ndi
                 sigf(ii) = sigf(ii) + i1/trois
-40          continue
+            end do
             call lcopil('ISOTROPE', mod, mater(1, 1), dkooh)
             epsf(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigf(1:ndt))
             if (mod .eq. 'C_PLAN') then
@@ -249,12 +249,12 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- MISE A JOUR DES VARIABLES INTERNES -------------------------------
 ! ======================================================================
-                    do 50 ii = 1, ndt
+                    do ii = 1, ndt
                         sigf(ii) = s(ii)
-50                  continue
-                    do 60 ii = 1, ndi
+                    end do
+                    do ii = 1, ndi
                         sigf(ii) = invars/trois
-60                  continue
+                    end do
                     call lcopil('ISOTROPE', mod, mater(1, 1), dkooh)
                     epsf(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigf(1:ndt))
                     if (mod .eq. 'C_PLAN') then
@@ -289,7 +289,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
         endif
         if (irteti .eq. 1) goto 1
     endif
-100  continue
+100 continue
     if (irteti .eq. 3) then
         irtet = 1
     else

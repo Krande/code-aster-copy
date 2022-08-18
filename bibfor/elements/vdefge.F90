@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
                   sigma, effgt)
     implicit none
@@ -32,11 +32,11 @@ subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
 !     DANS LE CAS DE EFGE_ELNO, ON CALCULE AUX NB1 NOEUDS
 !     ON NE CALCULE PAS AU NOEUD INTERNE
 !
-    do 5 i = 1, nb1
-        do 6 j = 1, 8
+    do i = 1, nb1
+        do j = 1, 8
             effgt(j,i)=0.d0
- 6      end do
- 5  end do
+        end do
+    end do
 !
     l1 =1452
 !
@@ -124,9 +124,9 @@ subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
         effgtg(8,4)=demiep*(wnc1*sigma(6,4)+wnc2*sigma(6,8) +wnc3*&
         sigma(6,12))
 !
-        do 15 i = 1, nb1
+        do i = 1, nb1
             i1=l1+4*(i-1)
-            do 20 k = 1, npgsr
+            do k = 1, npgsr
                 effgt(1,i)=effgt(1,i)+effgtg(1,k)*xr(i1+k)
                 effgt(2,i)=effgt(2,i)+effgtg(2,k)*xr(i1+k)
                 effgt(3,i)=effgt(3,i)+effgtg(3,k)*xr(i1+k)
@@ -136,8 +136,8 @@ subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
                 effgt(7,i)=effgt(7,i)+effgtg(7,k)*xr(i1+k)
                 effgt(8,i)=effgt(8,i)+effgtg(8,k)*xr(i1+k)
 !
-20          continue
-15      continue
+            end do
+        end do
 !
 !     VALEURS AU NOEUD INTERNE OBTENUE PAR MOYENNE DES AUTRES
 !
@@ -208,9 +208,9 @@ subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
         effgtg(8,3)=demiep*(wnc1*sigma(6,3)+wnc2*sigma(6,6) +wnc3*&
         sigma(6,9))
 !
-        do 35 i = 1, nb1
+        do i = 1, nb1
             i1=l1+4*(i-1)
-            do 40 k = 1, npgsr
+            do k = 1, npgsr
                 effgt(1,i)=effgt(1,i)+effgtg(1,k)*xr(i1+k)
                 effgt(2,i)=effgt(2,i)+effgtg(2,k)*xr(i1+k)
                 effgt(3,i)=effgt(3,i)+effgtg(3,k)*xr(i1+k)
@@ -220,8 +220,8 @@ subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
                 effgt(7,i)=effgt(7,i)+effgtg(7,k)*xr(i1+k)
                 effgt(8,i)=effgt(8,i)+effgtg(8,k)*xr(i1+k)
 !
-40          continue
-35      continue
+            end do
+        end do
 !
 !     VALEURS AU NOEUD INTERNE OBTENUE PAR MOYENNE DES AUTRES
 !

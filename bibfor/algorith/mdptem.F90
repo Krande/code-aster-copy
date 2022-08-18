@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
                   dtmax, dtmin, tinit, tfin, nbpas,&
                   ier, lisins)
@@ -55,7 +55,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
 ! OUT : LISINS : LISTE DES INSTANTS POUR L'ARCHIVAGE
 ! ----------------------------------------------------------------------
     integer :: ic, i, j, iveri, ibid, iret
-    integer :: jbint,  jvale, jvalr, jinst
+    integer :: jbint, jvale, jvalr, jinst
     integer :: n1, n2, n3, n4, n5, n6, nr, nt, nni
     integer :: nbgrpa, nbinst, nbinsr, numef, nbordr
     integer :: vali
@@ -70,11 +70,11 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
     integer :: k, n7, nume, nbcomps, nbno
     integer, pointer :: ordr(:) => null()
     real(kind=8), pointer :: lpas(:) => null()
-
+!
     real(kind=8), pointer :: dplmod(:) => null()
     real(kind=8), pointer :: dplmod1(:) => null()
     real(kind=8), pointer :: dplmod2(:) => null()
-
+!
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
     sd_nl = '&&OP29NL'
@@ -113,11 +113,11 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
         else
             call jeveuo(tran//'           .ORDR', 'L', vi=ordr)
             call jelira(tran//'           .ORDR', 'LONUTI', nbordr)
-            do 100 i = 1, nbordr
+            do i = 1, nbordr
                 if (ordr(i) .eq. nume) goto 101
-100          continue
+            end do
             call utmess('F', 'ALGORITH3_36', sk=tran)
-101          continue
+101         continue
             call jeveuo(tran//'           .DISC', 'L', jinst)
             tinit = zr(jinst+i-1)
         endif
@@ -149,15 +149,15 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
         else
 !              CHOIX DTU PLUS PETIT DE LA LISTE
             dtu = lpas(1)
-            do 32 j = 1, nbgrpa-1
+            do j = 1, nbgrpa-1
                 dtu = min(dtu,lpas(1+j))
-32          continue
+            end do
 !              TEST PAS DE TEMPS CONSTANT SI PLUSIEURS INTERVALLES
-            do 33 i = 1, nbgrpa-1
+            do i = 1, nbgrpa-1
                 if ((abs(lpas(1+i)-dtu)) .ge. (1.d-6*dtu)) then
                     call utmess('F', 'ALGORITH3_18')
                 endif
-33          continue
+            end do
             tfin = zr (jbint+nbgrpa)
         endif
         call getvis('INCREMENT', 'NUME_FIN', iocc=1, scal=numef, nbret=n1)
@@ -173,16 +173,16 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
     else
         call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=n3)
         call getvr8('INCREMENT', 'PAS', iocc=1, scal=dtu, nbret=n4)
-        if (abs(dtu).le.eps) then
+        if (abs(dtu) .le. eps) then
             call utmess('F', 'DYNALINE1_12')
         endif
     endif
-99  continue
+ 99 continue
     call getvtx('INCREMENT', 'VERI_PAS', iocc=1, scal=veripa, nbret=n5)
     if (veripa .eq. 'OUI') iveri = 1
 !
     do i = 1, nbmode
-        if (abs(pulsat(i)).gt.eps) then
+        if (abs(pulsat(i)) .gt. eps) then
             dti = deuxpi / pulsat(i)
             dts = min( dts , dti )
         endif
@@ -190,58 +190,66 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
 !
     if (nbchoc .gt. 0) then
 !
-        do 20 i = 1, nbchoc
+        do i = 1, nbchoc
             knorm = 0.d0
             ktang = 0.d0
-
+!
             call nlget(sd_nl, _STIF_NORMAL, iocc=i, lonvec=iret)
-            if (iret.gt.0) call nlget(sd_nl, _STIF_NORMAL, iocc=i, rscal=knorm)
+            if (iret .gt. 0) call nlget(sd_nl, _STIF_NORMAL, iocc=i, rscal=knorm)
             call nlget(sd_nl, _RIGI_TANGENTIAL, iocc=i, lonvec=iret)
-            if (iret.gt.0) call nlget(sd_nl, _RIGI_TANGENTIAL, iocc=i, rscal=ktang)
-
+            if (iret .gt. 0) call nlget(sd_nl, _RIGI_TANGENTIAL, iocc=i, rscal=ktang)
+!
             call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=i, vr=dplmod1)
-
+!
             nbno = 1
             call nlget(sd_nl, _MODAL_DEPL_NO2, iocc=i, lonvec=iret)
-            if (iret.gt.0) then
+            if (iret .gt. 0) then
                 nbno = 2
                 call nlget(sd_nl, _MODAL_DEPL_NO2, iocc=i, vr=dplmod2)
             end if
-
+!
             nbcomps = size(dplmod1)/nbmode
-
+!
             ic = 1
             dplmod => dplmod1
-24          continue
-            do 22 j = 1, nbmode
-                if (abs(pulsat(j)).le.eps) goto 22
-                if (abs(masgen(j)).le.eps) goto 22
+ 24         continue
+            do j = 1, nbmode
+                if (abs(pulsat(j)) .le. eps) goto 22
+                if (abs(masgen(j)) .le. eps) goto 22
 !
-                if (abs(knorm).gt.eps) then
-                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+1)**2 / masgen(j))
+                if (abs(knorm) .gt. eps) then
+                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+1)**2 / masgen(j)&
+                          )
                     dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+2)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+2)**2 / masgen(j)&
+                          )
                     dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+3)**2 / masgen(j))
-                    dts = min(dts, dti)
-                endif
-                if (abs(ktang).gt.eps) then
-                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+1)**2 / masgen(j))
-                    dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+2)**2 / masgen(j))
-                    dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+3)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+3)**2 / masgen(j)&
+                          )
                     dts = min(dts, dti)
                 endif
-22          continue
+                if (abs(ktang) .gt. eps) then
+                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+1)**2 / masgen(j)&
+                          )
+                    dts = min(dts, dti)
+                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+2)**2 / masgen(j)&
+                          )
+                    dts = min(dts, dti)
+                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+3)**2 / masgen(j)&
+                          )
+                    dts = min(dts, dti)
+                endif
+ 22             continue
+            end do
             if (ic .eq. 5) goto 20
-            if (nbno.eq.2) then
+            if (nbno .eq. 2) then
                 ic = 5
                 nullify(dplmod)
                 dplmod => dplmod2
                 goto 24
             endif
-20      continue
+ 20         continue
+        end do
     endif
 !
     if (method .eq. 'DEVOGE') then
@@ -261,7 +269,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
     nbpas = nint( ( tfin - tinit ) / dt )
 !
     if (dtu .gt. dt) then
-        if (method .eq. 'NEWMARK'.or.method.eq.'TRBDF2') then
+        if (method .eq. 'NEWMARK' .or. method .eq. 'TRBDF2') then
             valr (1) = dtu
             valr (2) = dt
             call utmess('A', 'ALGORITH16_14', nr=2, valr=valr)
@@ -286,7 +294,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
             nbpas = nint( ( tfin - tinit ) / dt )
         endif
     endif
-
+!
 !
 !     SI LA METHODE N'EST PAS ADAPT, RUNGE-KUTTA OU ITMI:
 !     SI LIST_INST DANS ARCHIVAGE ALORS:
@@ -299,14 +307,15 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
         call wkvect(lisins, 'V V R', nbpas+1, jvale)
         j=0
         zr(jvale)=tinit
-        do 30 k = 1, nbpas
+        do k = 1, nbpas
             j = j + 1
             zr(jvale+j) = tinit + k*dt
-30      continue
+        end do
     endif
 !
 !     GESTION DU PAS MAXIMAL POUR SCHEMA ADAPT OU RUNGE-KUTTA
-    if (method(1:5) .eq. 'ADAPT' .or. (method(1:5).eq.'RUNGE') .or. (method(1:6).eq.'DEVOGE') ) then
+    if (method(1:5) .eq. 'ADAPT' .or. (method(1:5).eq.'RUNGE') .or.&
+        (method(1:6).eq.'DEVOGE')) then
         call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=r8bid, nbret=n6)
         if (n6 .ne. 0) then
             call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=n6)

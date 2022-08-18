@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sleneu(iunv, nbnode, ama, bma, cma,&
                   ami, bmi, cmi, mix, man,&
                   ites, datset)
@@ -131,8 +131,8 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
         isyst = 0
     endif
 !
- 1  continue
-    do 10 iter = 1, niter
+  1 continue
+    do iter = 1, niter
         read (iunv,'(A)') cbuf
         read (unit=cbuf,fmt='(4X,I2)') ind
         if (ind .eq. -1) goto 99
@@ -202,7 +202,7 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
         zr(jcoor-1+ndeca+(iter-1)*3+1) = x
         zr(jcoor-1+ndeca+(iter-1)*3+2) = y
         zr(jcoor-1+ndeca+(iter-1)*3+3) = z
-10  end do
+    end do
     ntail = ntail + niter
     ndeca = ndeca + 3000
     call juveca('&&PRESUP.INFO.NOEUDS', 3*ntail)
@@ -210,7 +210,7 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
     call juveca('&&PRESUP.COOR.NOEUDS', 3*ntail)
     call jeveuo('&&PRESUP.COOR.NOEUDS', 'E', jcoor)
     goto 1
-99  continue
+ 99 continue
 !
     write (imes,*) 'NOMBRE DE NOEUDS :',nbnode
     call jedema()

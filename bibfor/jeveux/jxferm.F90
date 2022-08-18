@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxferm(iclas)
 ! aslint: disable=W1303
 ! for the path name
@@ -48,12 +48,12 @@ subroutine jxferm(iclas)
     integer :: ier
 ! DEB ------------------------------------------------------------------
     ier = 0
-    do 1 k = 1, iext(iclas)
+    do k = 1, iext(iclas)
         call get_jvbasename(nomfic(iclas)(1:4), k, nom512)
         call closdr(nom512, ier)
         if (ier .ne. 0) then
             call utmess('F', 'JEVEUX_11', sk=nombas(iclas))
         endif
- 1  end do
+    end do
 !
 end subroutine

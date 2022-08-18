@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     implicit none
 #include "jeveux.h"
@@ -59,8 +59,8 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: n1, iret, iad, ichs, nbchs, isp, ipt,  jcesvi
-    integer :: k, k2, nbma, ncmp, icmp, jcesl2,  jcesd2
+    integer :: n1, iret, iad, ichs, nbchs, isp, ipt, jcesvi
+    integer :: k, k2, nbma, ncmp, icmp, jcesl2, jcesd2
     integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc
     integer :: jdcld, jdcll
     character(len=16) :: tysd1, tysd2, nosd1, nosd2, nosy1, nosy2
@@ -98,8 +98,8 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     dceli='&&VRCIN2.DCELI'
     celmod='&&VRCIN2.CELMOD'
     call cesvar(carele, ' ', ligrmo, dceli)
-
-
+!
+!
 !
 !     -- MODIFICATION DE DCELI : TOUTES LES MAILLES ONT
 !        NBCVRC COMPOSANTES.
@@ -108,7 +108,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     call jeveuo(dceli//'.CESV', 'E', vi=dclv)
     nbma = zi(jdcld-1+1)
 !
-    do 170,ima = 1,nbma
+    do ima = 1, nbma
         nbpt = zi(jdcld-1+5+4* (ima-1)+1)
         nbsp = max(1,zi(jdcld-1+5+4* (ima-1)+2))
         ASSERT(nbpt.eq.1)
@@ -116,7 +116,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
         call cesexi('C', jdcld, jdcll, ima, 1,&
                     1, 2, iad)
         if (iad .gt. 0) dclv(iad)=nbcvrc
-    170 end do
+    end do
 !
     call alchml(ligrmo, 'INIT_VARC', nompar, 'V', celmod,&
                 iret, dceli)
@@ -132,7 +132,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     call jeveuo(chvars//'.CESD', 'L', jcesd)
     call jeveuo(chvars//'.CESL', 'E', jcesl)
     call jelira(chvars//'.CESL', 'LONMAX', n1)
-    do k=1,n1
+    do k = 1, n1
         zl(jcesl-1+k)=.false.
     end do
 !
@@ -145,7 +145,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 !        POUR CELA ON BOUCLE SUR LES CVRC ET ON "SAUTE"
 !        LES CVRC SUIVANTES (DE LA MEME VARC)
     varc=' '
-    do 1, k=1,nbcvrc
+    do k = 1, nbcvrc
         if (cvrcvarc(k) .eq. varc) goto 1
 !
         varc=cvrcvarc(k)
@@ -170,11 +170,11 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 !
 !           -- CALCUL DE NCMP (NOMBRE DE CVRC DANS VARC)
         ncmp=0
-        do k2=k,nbcvrc
+        do k2 = k, nbcvrc
             if (cvrcvarc(k2) .eq. varc) ncmp=ncmp+1
         enddo
 !
-        do 70,ima = 1,nbma
+        do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
 !
@@ -186,18 +186,18 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
             tysd1=cesv2(iad+1)
             nosd1=cesv2(iad+2)
             nosy1=cesv2(iad+3)
-            do 71, ichs=1,nbchs
+            do ichs = 1, nbchs
                 tysd2=liste_sd(7*(ichs-1)+1)(1:8)
                 nosd2=liste_sd(7*(ichs-1)+2)(1:8)
                 nosy2=liste_sd(7*(ichs-1)+3)
                 if ((tysd1.eq.tysd2) .and. (nosd1.eq.nosd2) .and. ( nosy1.eq.nosy2)) goto 72
-71          continue
+            end do
             ASSERT(.false.)
-72          continue
+ 72         continue
 !
-            do 60,ipt = 1,nbpt
-                do 50,isp = 1,nbsp
-                    do 51,icmp = 1,ncmp
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
+                    do icmp = 1, ncmp
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     isp, k-1+ icmp, iad)
 !                                   LA FORMULE K-1+ICMP PEUT PARAITRE CURIEUSE MAIS
@@ -208,12 +208,15 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
                         iad=-iad
                         zl(jcesl-1+iad)=.true.
                         zi(jcesvi-1+iad)=ichs
-51                  continue
-50              continue
-60          continue
-70      continue
+ 51                     continue
+                    end do
+                end do
+            end do
+ 70         continue
+        end do
         call detrsd('CHAMP', ces2)
-1   end do
+  1     continue
+    end do
 !
 !
     call jedema()

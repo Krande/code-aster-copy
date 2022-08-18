@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpzbal(mat, neq, mxeq, d, k,&
                   l)
     implicit none
@@ -42,85 +42,85 @@ subroutine vpzbal(mat, neq, mxeq, d, k,&
 !     --- CAS DES LIGNES ---
     l1 = 1
     k1 = neq
- 5  continue
-    do 30 j = k1, 1, -1
+  5 continue
+    do j = k1, 1, -1
         r = -abs(mat(j,j))
-        do 10 i = 1, k1
+        do i = 1, k1
             r = r + abs(mat(j,i))
-10      continue
+        end do
         if (r .eq. 0.d0) then
             d(k1) = j
             if (j .ne. k1) then
-                do 15 i = 1, k1
+                do i = 1, k1
                     f = mat(i,j)
                     mat(i,j) = mat(i,k1)
                     mat(i,k1) = f
-15              continue
-                do 20 i = l1, neq
+                end do
+                do i = l1, neq
                     f = mat(j,i)
                     mat(j,i) = mat(k1,i)
                     mat(k1,i) = f
-20              continue
+                end do
             endif
             k1 = k1-1
             goto 5
         endif
-30  end do
+    end do
 !
 !     ---RECHERCHE DES VALEURS PROPRES ISOLEES (ON LES METS A GAUCHE)---
 !     --- CAS DES COLONNES -
-35  continue
+ 35 continue
     ll = l1
-    do 60 j = ll, k1
+    do j = ll, k1
         c = -abs(mat(j,j))
-        do 40 i = l1, k1
+        do i = l1, k1
             c = c + abs(mat(i,j))
-40      continue
+        end do
         if (c .eq. 0.d0) then
             d(l1) = j
             if (j .ne. l1) then
-                do 45 i = 1, k1
+                do i = 1, k1
                     f = mat(i,j)
                     mat(i,j) = mat(i,l1)
                     mat(i,l1) = f
-45              continue
-                do 50 i = l1, neq
+                end do
+                do i = l1, neq
                     f = mat(j,i)
                     mat(j,i) = mat(l1,i)
                     mat(l1,i) = f
-50              continue
+                end do
             endif
             l1 = l1+1
             goto 35
         endif
-60  end do
+    end do
 !
 !     EQUILIBRER LA SOUS-MATRICE DE LA LIGNES L1 A K1
     k = l1
     l = k1
-    do 70 i = l1, k1
+    do i = l1, k1
         d(i) = 1.d0
-70  end do
-75  continue
+    end do
+ 75 continue
     noconv = 0
-    do 115 i = l1, k1
+    do i = l1, k1
         c = -abs(mat(i,i))
         r = c
-        do 80 j = l1, k1
+        do j = l1, k1
             c = c + abs(mat(j,i))
             r = r + abs(mat(i,j))
-80      continue
+        end do
         g = r/b
         f = 1.d0
         s = c+r
-85      continue
+ 85     continue
         if (c .lt. g) then
             f = f*b
             c = c*b2
             goto 85
         endif
         g = r*b
-95      continue
+ 95     continue
         if (c .ge. g) then
             f = f/b
             c = c/b2
@@ -132,13 +132,13 @@ subroutine vpzbal(mat, neq, mxeq, d, k,&
             g = 1.d0/f
             d(i) = d(i)*f
             noconv = 1
-            do 105 j = l1, neq
+            do j = l1, neq
                 mat(i,j) = mat(i,j)*g
-105          continue
-            do 110 j = 1, k1
+            end do
+            do j = 1, k1
                 mat(j,i) = mat(j,i)*f
-110          continue
+            end do
         endif
-115  end do
+    end do
     if (noconv .eq. 1) goto 75
 end subroutine

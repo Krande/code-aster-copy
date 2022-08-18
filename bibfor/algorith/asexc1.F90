@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
                   corfre, ndir, valspe, asyspe, nopara,&
                   nordr)
@@ -87,8 +87,8 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
         fcoup = uns2pi * sqrt(zr(ival))
     endif
 !
-
-    do 10 ioc = 1, nbocc
+!
+    do ioc = 1, nbocc
 !
         echspe(1) = un
         echspe(2) = un
@@ -168,7 +168,8 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
             endif
         end do
 !
- 10 end do
+ 10     continue
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
@@ -209,9 +210,9 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
                     if (ii .eq. 0) then
                         ii = 1
                         call utmess('I', 'SEISME_54', si=im, sk=dir(id), nr=3,&
-                               valr=[freq,amor,valspe(id,im)])
+                                    valr=[freq, amor, valspe(id, im)])
                     else
-                        call utmess('I', 'SEISME_55', sk=dir(id), sr=valspe(id,im))
+                        call utmess('I', 'SEISME_55', sk=dir(id), sr=valspe(id, im))
                     endif
                 endif
             endif

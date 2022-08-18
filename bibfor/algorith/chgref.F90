@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chgref(geomi, x, y, bidim)
     implicit none
 !
@@ -69,12 +69,12 @@ subroutine chgref(geomi, x, y, bidim)
             x(3)=x(3)/r1
             y(1)=(-1.d0)*x(2)
             y(2)=x(1)
-            do 10 i = 1, n1
+            do i = 1, n1
                 p(1)=zr(iadcoo+3*(i-1)+1)
                 p(2)=zr(iadcoo+3*(i-1)+2)
                 zr(iadcoo+3*(i-1)+1)=ddot(2,x,1,p,1)
                 zr(iadcoo+3*(i-1)+2)=ddot(2,y,1,p,1)
- 10         continue
+            end do
         else
             call utmess('F', 'ALGORITH_96')
         endif
@@ -89,14 +89,14 @@ subroutine chgref(geomi, x, y, bidim)
             y(2)=y(2)/r2
             y(3)=y(3)/r2
             call provec(x, y, z)
-            do 20 i = 1, n1
+            do i = 1, n1
                 p(1)=zr(iadcoo+3*(i-1)+1)
                 p(2)=zr(iadcoo+3*(i-1)+2)
                 p(3)=zr(iadcoo+3*(i-1)+3)
                 zr(iadcoo+3*(i-1)+1)=ddot(3,x,1,p,1)
                 zr(iadcoo+3*(i-1)+2)=ddot(3,y,1,p,1)
                 zr(iadcoo+3*(i-1)+3)=ddot(3,z,1,p,1)
- 20         continue
+            end do
         else
             call utmess('F', 'ALGORITH_97')
         endif

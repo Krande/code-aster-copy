@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine codent(entier, cadre, chaine, kstop)
     implicit none
 #include "asterf_types.h"
@@ -102,9 +102,9 @@ subroutine codent(entier, cadre, chaine, kstop)
         if (len(cadre) .gt. 1) then
             if (cadre(2:2) .eq. '0') then
                 if (neg) chaine(il:il) = '0'
-                do 20 i = il-1, 1, -1
+                do i = il-1, 1, -1
                     chaine(i:i) = '0'
- 20             continue
+                end do
                 if (neg) chaine(1:1) = '-'
             endif
         endif
@@ -112,9 +112,9 @@ subroutine codent(entier, cadre, chaine, kstop)
     else if (cadre(1:1) .eq. 'G') then
 !        --- CADRAGE A GAUCHE ---
         il1 = il-1
-        do 30 i = 1, lg-il1
+        do i = 1, lg-il1
             chaine(i:i) = chaine(i+il1:i+il1)
- 30     continue
+        end do
         chaine(lg-il1+1:) = ' '
     else
         ier = 1
@@ -123,7 +123,7 @@ subroutine codent(entier, cadre, chaine, kstop)
 !     SORTIE -----------------------------------------------------------
 99000 continue
     if (ier .ne. 0) then
-        if (kstop.eq.' ') then
+        if (kstop .eq. ' ') then
             do i = 1, lg
                 chaine(i:i) = '*'
             end do

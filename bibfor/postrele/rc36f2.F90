@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
                   isl, nk, nl, n0)
     implicit none
@@ -53,55 +53,55 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
     endif
 !
     if (colona) then
-        do 30 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isl-1)+1) = 0.d0
             saltij(i1+4*(isl-1)+2) = 0.d0
- 30     continue
+        end do
         i1 = 4*nbsigr*(isl-1)
-        do 32 l = 1, nbsigr
+        do l = 1, nbsigr
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
- 32     continue
+        end do
     endif
 !
     if (colonb) then
-        do 40 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isl-1)+3) = 0.d0
             saltij(i1+4*(isl-1)+4) = 0.d0
- 40     continue
+        end do
         i1 = 4*nbsigr*(isl-1)
-        do 42 l = 1, nbsigr
+        do l = 1, nbsigr
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
- 42     continue
+        end do
     endif
 !
     if (lignea) then
-        do 50 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isk-1)+1) = 0.d0
             saltij(i1+4*(isk-1)+2) = 0.d0
- 50     continue
+        end do
         i1 = 4*nbsigr*(isk-1)
-        do 52 l = 1, nbsigr
+        do l = 1, nbsigr
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
- 52     continue
+        end do
     endif
 !
     if (ligneb) then
-        do 60 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
             saltij(i1+4*(isk-1)+3) = 0.d0
             saltij(i1+4*(isk-1)+4) = 0.d0
- 60     continue
+        end do
         i1 = 4*nbsigr*(isk-1)
-        do 62 l = 1, nbsigr
+        do l = 1, nbsigr
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
- 62     continue
+        end do
     endif
 !
 end subroutine

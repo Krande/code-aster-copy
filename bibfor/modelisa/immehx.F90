@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                   immer)
     implicit none
@@ -268,14 +268,14 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
     if (ii .lt. 12) then
 !
         immer=-1
-        goto 9999
+        goto 999
 !
     else
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ktest=0
-        do 10 j = 1, 12
+        do j = 1, 12
             ktest=ktest+id(j)
- 10     continue
+        end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD IMMERGE DANS LE VOLUME DE LA MAILLE
@@ -286,28 +286,28 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
         if (ktest .gt. 6) then
 !
             if (nbcnx .eq. 20) then
-                do 20 j = 9, 20, 1
+                do j = 9, 20, 1
                     dx = xyzma(1,j) - x3dca(1)
                     dy = xyzma(2,j) - x3dca(2)
                     dz = xyzma(3,j) - x3dca(3)
                     d = dx*dx + dy*dy + dz*dz
                     if (d .lt. r8prem()) then
                         immer=2
-                        goto 9999
+                        goto 999
                     endif
- 20             continue
+                end do
             endif
             if (nbcnx .eq. 27) then
-                do 30 j = 21, 27, 1
+                do j = 21, 27, 1
                     dx = xyzma(1,j) - x3dca(1)
                     dy = xyzma(2,j) - x3dca(2)
                     dz = xyzma(3,j) - x3dca(3)
                     d = dx*dx + dy*dy + dz*dz
                     if (d .lt. r8prem()) then
                         immer=2
-                        goto 9999
+                        goto 999
                     endif
- 30             continue
+                end do
             endif
 !
 !     TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE PAR DETERMINATION
@@ -318,35 +318,35 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
             itetra = 1
             call tstbar(4, xyzma(1, 6), xyzma(1, 3), xyzma(1, 8), xyzma(1, 1),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !.... TETRAEDRE 1-3-8-4
 !
             itetra = 2
             call tstbar(4, xyzma(1, 1), xyzma(1, 3), xyzma(1, 8), xyzma(1, 4),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !.... TETRAEDRE 6-8-1-5
 !
             itetra = 3
             call tstbar(4, xyzma(1, 6), xyzma(1, 8), xyzma(1, 1), xyzma(1, 5),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !.....TETRAEDRE 1-3-6-2
 !
             itetra = 4
             call tstbar(4, xyzma(1, 1), xyzma(1, 3), xyzma(1, 6), xyzma(1, 2),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !.... TETRAEDRE 6-8-3-7
 !
             itetra = 5
             call tstbar(4, xyzma(1, 6), xyzma(1, 8), xyzma(1, 3), xyzma(1, 7),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !  DANS LE CAS DE FACES REORIENTEE (FACNP VRAI) ON TESTE LA PRESENCE
 !  DANS LES PETITS TETRAEDRES DEFINIS PAR CHAQUE FACE.
@@ -357,7 +357,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 6
                 call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 3-4-8-7
@@ -366,7 +366,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 7
                 call tstbar(4, xyzma(1, 3), xyzma(1, 4), xyzma(1, 8), xyzma(1, 7),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 6-7-8-5
@@ -375,7 +375,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 8
                 call tstbar(4, xyzma(1, 6), xyzma(1, 7), xyzma(1, 8), xyzma(1, 5),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 6-5-1-2
@@ -384,7 +384,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 9
                 call tstbar(4, xyzma(1, 6), xyzma(1, 5), xyzma(1, 1), xyzma(1, 2),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 6-2-3-7
@@ -393,7 +393,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 10
                 call tstbar(4, xyzma(1, 6), xyzma(1, 2), xyzma(1, 3), xyzma(1, 7),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 1-5-8-4
@@ -402,7 +402,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 11
                 call tstbar(4, xyzma(1, 1), xyzma(1, 5), xyzma(1, 8), xyzma(1, 4),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
             if (immer .lt. 0) then
@@ -417,13 +417,13 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
         else
 !
             immer=2
-            goto 9999
+            goto 999
 !
         endif
     endif
 !
 !
-9999 continue
+999 continue
 !
 ! --- FIN DE IMMEHX.
 end subroutine

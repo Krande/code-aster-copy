@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcdpli(mod, nvi, option, materf, sigm,&
                   deps, vim, vip, sig, dsidep,&
                   iret)
-    implicit      none
+    implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dplitg.h"
@@ -100,9 +100,9 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
         call resdp1(materf, seq, i1e, pmoins, dp,&
                     plas)
         if (plas .eq. 0.0d0) then
-            do 10 ii = 1, ndt
+            do ii = 1, ndt
                 sig(ii) = sige(ii)
-10          continue
+            end do
         else
             call majsig(materf, se, seq, i1e, alpha,&
                         dp, plas, sig)

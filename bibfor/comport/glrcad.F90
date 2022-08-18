@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                   dmax1, dmax2, dam1, dam2, curvcu,&
                   c1, c2, nbackn, deps, depsp,&
@@ -113,10 +113,10 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
     zerode = zero * norrm6(deps)
 !
-    do 10 i = 1, 6
+    do i = 1, 6
 !     COPIE DU TENSEUR DES EFFORT - EFFORT DE RAPPEL
         nmnbn(i) = nbackn(i)
- 10 end do
+    end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
 !     ET DES ZEROS DES CRITERES
@@ -134,82 +134,82 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
     ASSERT(nmief.le.0)
 !
-    do 30 j = 1, 6
-        do 20 i = 1, 6
+    do j = 1, 6
+        do i = 1, 6
 !     DTG : MATRICE TANGENTE
             dtg(i,j) = delas(i,j)
- 20     continue
- 30 end do
+        end do
+    end do
 !
     ddiss=0.d0
     call r8inir(6, 0.0d0, df, 1)
     call r8inir(6, 0.0d0, depsp, 1)
 !
-    do 40 i = 1, 3
+    do i = 1, 3
         curcup(i) = curvcu(i)
- 40 end do
+    end do
 !
 !     METHODE MIXTE POUR S ASSURER
 !     D AVOIR f(m,backm)<= 0 A CHAQUE PAS DE TEMPS
 !
-    do 50 i = 1, 6
+    do i = 1, 6
 !     REPS EST LE RESIDU DE L INCREMENT DE DEFORMATION
         reps(i) = deps(i)
- 50 end do
+    end do
 !
-    do 502 j = 1, 6
-        do 501 i = 1, 6
+    do j = 1, 6
+        do i = 1, 6
 !     DC1 : MATRICE ELASTIQUE + CONSTANTES DE PRAGER
 !     DC2 : MATRICE ELASTIQUE + CONSTANTES DE PRAGER
             dc1(i,j) = dtg(i,j)+c1(i,j)
             dc2(i,j) = dtg(i,j)+c2(i,j)
-501     continue
-502 end do
+        end do
+    end do
 !
-    do 229 kk = 1, kmax
+    do kk = 1, kmax
         if (norrm6(reps) .le. zerode) then
 !     TEST DE CV DE L ALGO D INTEGRATION
             goto 230
         endif
 !
-        do 60 i = 1, 6
+        do i = 1, 6
 !     AFFECTATION DE L INCREMENT DE DEFORMATION TEST
             depste(i) = reps(i)
- 60     continue
+        end do
 !
 !     CALCUL DE L ENDOMMAGEMENT ET DE LA MATRICE TANGENTE
         call tanmat(alpha, beta, gamma, k1, k2,&
                     dmax1, dmax2, dam1, dam2, curcup,&
                     depste(4), dff)
 !
-        do 63 j = 1, 3
-            do 62 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 dtg(i+3,j+3) = dff(i,j)
- 62         continue
- 63     continue
+            end do
+        end do
 !
-        do 80 j = 1, 6
-            do 70 i = 1, 6
+        do j = 1, 6
+            do i = 1, 6
                 dc1(i,j) = dtg(i,j)+c1(i,j)
                 dc2(i,j) = dtg(i,j)+c2(i,j)
- 70         continue
- 80     continue
+            end do
+        end do
 !
 !     CALCUL DU PREDICTEUR ELASTIQUE ET DU NOMBRE DE CRITERE ATTEINT
         ncrit = critnu(zimat,nmnbn,depste,dtg,normm)
 !
-        do 122 kkk = 1, kmax
-            do 90 j = 1, 6
+        do kkk = 1, kmax
+            do j = 1, 6
                 depst2(j) = 0.5d0*depste(j)
- 90         continue
+            end do
 !
 !     CALCUL DU PREDICTEUR ELASTIQUE ET DU NOMBRE DE CRITERE ATTEINT
             ncrit2 = critnu(zimat,nmnbn,depst2,dtg,normm)
 !
             if (ncrit2 .ne. ncrit) then
-                do 100 j = 1, 6
+                do j = 1, 6
                     depste(j) = depst2(j)
-100             continue
+                end do
                 ncrit=ncrit2
             else
                 newzfg(1) = newzef
@@ -234,9 +234,9 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                 newzeg = newzfg(2)
 !
                 if (ier .gt. 0) then
-                    do 110 j = 1, 6
+                    do j = 1, 6
                         depste(j) = depst2(j)
-110                 continue
+                    end do
                     ncrit=ncrit2
                 else
 !     LE POINT EST DANS LA ZONE G < 0
@@ -258,9 +258,9 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                         if (bbok) goto 123
 !
 !     BRINGBACK NOK : DICHOTOMIE
-                        do 120 j = 1, 6
+                        do j = 1, 6
                             depste(j) = depst2(j)
-120                     continue
+                        end do
 !
                         ncrit = ncrit2
                     else
@@ -268,7 +268,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                     endif
                 endif
             endif
-122     continue
+        end do
 !
 !     NON CONVERGENCE DE L ALGO DE DICHOTOMIE
         codret = 1
@@ -277,71 +277,71 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
 !     L INCREMENT EST VALIDE : MISE A JOUR DES VARIABLES
 !
-        do 125 j = 1, 6
+        do j = 1, 6
             nmnbn(j) = newnbn(j)
-125     continue
+        end do
 !
-        do 140 j = 1, 3
-            do 130 i = 1, 2
+        do j = 1, 3
+            do i = 1, 2
                 nmplas(i,j) = newpla(i,j)
-130         continue
-140     continue
+            end do
+        end do
 !
-        do 160 j = 1, 2
-            do 150 i = 1, 2
+        do j = 1, 2
+            do i = 1, 2
                 nmdpla(i,j) = newdpl(i,j)
                 nmddpl(i,j) = newddp(i,j)
-150         continue
-160     continue
+            end do
+        end do
 !
         nmzef = newzef
         nmzeg = newzeg
         nmief = newief
 !
-        do 170 j = 1, 2
+        do j = 1, 2
             nmprox(j) = newpro(j)
-170     continue
+        end do
 !
-        do 180 j = 1, 6
+        do j = 1, 6
             depsp(j) = depsp(j) + depspt(j)
-180     continue
+        end do
 !
         ddiss = ddiss + ddisst
 !
-        do 190 j = 1, 3
+        do j = 1, 3
             curcup(j) = curcup(j) + depste(j+3) - depspt(j+3)
-190     continue
+        end do
 !
-        do 200 j = 1, 6
+        do j = 1, 6
             dfp2(j) = depste(j) - depspt(j)
-200     continue
+        end do
 !
         dfp = matmul(dtg, dfp2)
 !
-        do 210 j = 1, 6
+        do j = 1, 6
             df(j) = df(j) + dfp(j)
-210     continue
+        end do
 !
-        do 220 j = 1, 6
+        do j = 1, 6
             reps(j) = reps(j) - depste(j)
-220     continue
-229 end do
+        end do
+    end do
 !
 !     NON CONVERGENCE DE L ALGO D INTEGRATION
     codret = 1
 !
 230 continue
 !
-    do 240 j = 1, 6
+    do j = 1, 6
         nbackn(j) = nmnbn(j)
-240 end do
+    end do
 !
-    do 270 i = 1, 3
-        do 260 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             dcc1(j,i) = dc1(3+j,3+i)
             dcc2(j,i) = dc2(3+j,3+i)
-260     continue
-270 end do
+        end do
+    end do
 !
     call dcopy(36, delas, 1, dsidep, 1)
 !

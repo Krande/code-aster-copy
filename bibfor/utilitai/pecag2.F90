@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
                   vale, valpar)
     implicit none
@@ -64,9 +64,9 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         valpar(5) = iyy
         valpar(6) = ixy
     else if (ndim .eq. 3) then
-        do 10 i = 1, 10
+        do i = 1, 10
             valpar(i) = vale(i)
- 10     continue
+        end do
     endif
 !
     if (nsymx .and. .not. nsymy) then

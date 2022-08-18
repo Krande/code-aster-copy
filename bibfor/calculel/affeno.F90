@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
                   ncmpmx, val, kval, desc, valglo,&
                   kvalgl, type, nec)
@@ -51,7 +51,7 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
     integer :: vali(3)
 !
     nocoaf = 0
-    do 10 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         j = indik8 ( ncmpgd, nocmp(icmp), 1, ncmpmx )
         if (j .ne. 0) then
             iec = ( j - 1 ) / 30 + 1
@@ -68,7 +68,7 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
         else
             kvalgl(ind) = kval(icmp)
         endif
-10  end do
+    end do
 !
     if (nocoaf .ne. nbcmp) then
         vali (1) = ioc

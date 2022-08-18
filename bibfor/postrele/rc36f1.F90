@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                   nk, nl, n0, nbp12, nbp23,&
                   nbp13, sigr, yapass, typass, nsitup)
@@ -66,19 +66,19 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
     if (numg1 .eq. numg2) then
 ! ------ MEME GROUPE
         n0 = min ( nk , nl )
-        goto 9999
+        goto 999
     else if (numg1 .eq. ig2) then
 ! ------ MEME GROUPE
         n0 = min ( nk , nl )
-        goto 9999
+        goto 999
     else if (numg2 .eq. ig1) then
 ! ------ MEME GROUPE
         n0 = min ( nk , nl )
-        goto 9999
+        goto 999
     else if (ig1 .eq. ig2) then
 ! ------ MEME GROUPE
         n0 = min ( nk , nl )
-        goto 9999
+        goto 999
     endif
 !
     if (( numg1.eq.1 .and. numg2.eq.2 ) .or. ( numg1.eq.2 .and. numg2.eq.1 )) then
@@ -134,14 +134,14 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
     chemin = .false.
     salmia = 1.d+50
     salmib = 1.d+50
-    do 10 i = 1, nbsips
+    do i = 1, nbsips
         sipass = zi(jnpass+i-1)
-        do 12 k = 1, nbsigr
+        do k = 1, nbsigr
             if (sigr(k) .eq. sipass) then
                 ioc1 = k
                 goto 14
             endif
- 12     continue
+        end do
         call utmess('F', 'POSTRCCM_36')
  14     continue
         npass = max(nocc(2*(ioc1-1)+1),nocc(2*(ioc1-1)+2))
@@ -150,7 +150,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
 ! --------- ON RECHERCHE LE MIN DES SALT MAX
         saltam = 0.d0
         saltbm = 0.d0
-        do 16 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
 !            COLONNE _A
             salt1 = saltij(i1+4*(ioc1-1)+1)
@@ -174,7 +174,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                 saltbm = salt4
                 nsitu = ioc1
             endif
- 16     continue
+        end do
 !
         if (saltam .lt. salmia) then
             salmia = saltam
@@ -185,7 +185,8 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
             nsitup = nsitu
         endif
 !
- 10 end do
+ 10     continue
+    end do
     if (chemin) then
         npass = max(nocc(2*(nsitup-1)+1),nocc(2*(nsitup-1)+2))
         n0 = min ( nk , nl, npass )
@@ -194,6 +195,6 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
         n0 = min ( nk , nl )
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

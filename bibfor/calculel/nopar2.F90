@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
+!
+subroutine nopar2(nomopt, nomgd, statut, nompar, istop,&
+                  iret)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
@@ -27,11 +28,11 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    character(len=*), intent(in)   :: nomopt, nomgd, statut
-    character(len=8), intent(out)  :: nompar
-    integer, intent(in), optional  :: istop
+    character(len=*), intent(in) :: nomopt, nomgd, statut
+    character(len=8), intent(out) :: nompar
+    integer, intent(in), optional :: istop
     integer, intent(out), optional :: iret
-    
+!
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     NOMOPT   : NOM D'1 OPTION
@@ -50,7 +51,7 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
 !     SI NOMGD=' ' ET SI STATUT='OUT' :
 !         - SI L'OPTION N'A QU'UN PARAMETRE 'OUT', ON LE REND
 !         - SI L'OPTION A PLUSIEURS PARAMETRES 'OUT' => ERREUR <F>
-!     
+!
 !     IRET : 0 si paramètre trouvé, 1 sinon
 !
 ! ----------------------------------------------------------------------
@@ -70,7 +71,7 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
     nomgd2=nomgd
     statu2=statut
     istop2 = 1
-    if (present(istop))then
+    if (present(istop)) then
         istop2 = istop
     endif
 !
@@ -80,7 +81,7 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
     call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iaoppa)
     nbin = zi(iadesc-1+2)
     nbout = zi(iadesc-1+3)
-
+!
     nbtrou=0
     outrou=' '
 !
@@ -92,52 +93,52 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
             itrou=1
             outrou='OUT'
         else
-            do 1,kk=1,nbout
-            gd2 = zi(iadesc-1+4+nbin+kk)
-            if (gd .eq. gd2) then
-                nbtrou=nbtrou+1
-                itrou=kk
-                outrou='OUT'
-            endif
- 1          continue
+            do kk = 1, nbout
+                gd2 = zi(iadesc-1+4+nbin+kk)
+                if (gd .eq. gd2) then
+                    nbtrou=nbtrou+1
+                    itrou=kk
+                    outrou='OUT'
+                endif
+            end do
         endif
 !
     else if (statu2.eq.'IN') then
-        do 2,kk=1,nbin
-        gd2 = zi(iadesc-1+4+kk)
-        if (gd .eq. gd2) then
-            nbtrou=nbtrou+1
-            itrou=kk
-            outrou='IN'
-        endif
- 2      continue
-!
-    else if (statu2.eq.'INOUT') then
-        do 11,kk=1,nbout
-        gd2 = zi(iadesc-1+4+nbin+kk)
-        if (gd .eq. gd2) then
-            nbtrou=nbtrou+1
-            itrou=kk
-            outrou='OUT'
-        endif
-11      continue
-!
-        if (nbtrou .eq. 0) then
-            do 12,kk=1,nbin
+        do kk = 1, nbin
             gd2 = zi(iadesc-1+4+kk)
             if (gd .eq. gd2) then
                 nbtrou=nbtrou+1
                 itrou=kk
                 outrou='IN'
             endif
-12          continue
+        end do
+!
+    else if (statu2.eq.'INOUT') then
+        do kk = 1, nbout
+            gd2 = zi(iadesc-1+4+nbin+kk)
+            if (gd .eq. gd2) then
+                nbtrou=nbtrou+1
+                itrou=kk
+                outrou='OUT'
+            endif
+        end do
+!
+        if (nbtrou .eq. 0) then
+            do kk = 1, nbin
+                gd2 = zi(iadesc-1+4+kk)
+                if (gd .eq. gd2) then
+                    nbtrou=nbtrou+1
+                    itrou=kk
+                    outrou='IN'
+                endif
+            end do
         endif
 !
     else
         ASSERT(.false.)
     endif
 !
-    if (nbtrou.eq.1)then
+    if (nbtrou .eq. 1) then
         if (outrou .eq. 'OUT') then
             nompar=zk8(iaoppa-1+nbin+itrou)
 !
@@ -148,7 +149,7 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
             ASSERT(.false.)
         endif
 !
-    elseif(istop2.eq.1)then
+    else if (istop2.eq.1) then
         if (nbtrou .eq. 0) then
             valk(1) = statu2
             valk(2) = nomgd2
@@ -162,10 +163,10 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
             call utmess('F', 'CALCULEL3_85', nk=3, valk=valk)
         endif
     endif
-
-    if (present(iret))then
+!
+    if (present(iret)) then
         iret = 0
-        if (nbtrou.ne.1) iret = 1
+        if (nbtrou .ne. 1) iret = 1
     else
         ASSERT(istop2.eq.1)
     endif

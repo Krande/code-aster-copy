@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltdrb(nbloc, ncbloc, decal, seq, nbsn,&
                   nbnd, supnd, adress, global, lgsn,&
                   factol, factou, x, temp, invp,&
@@ -23,10 +23,9 @@ subroutine mltdrb(nbloc, ncbloc, decal, seq, nbsn,&
                   s)
 !
 ! aslint: disable=W1504
-use superv_module
+    use superv_module
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/llbloc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
@@ -35,6 +34,7 @@ use superv_module
 #include "asterfort/jexnum.h"
 #include "asterfort/mlfmlt.h"
 #include "asterfort/mlfmul.h"
+!
     integer :: nbsn, nbnd, nbloc, ncbloc(nbnd), decal(nbsn)
     integer(kind=4) :: global(*)
     integer :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)
@@ -54,47 +54,47 @@ use superv_module
     nproc=asthread_getmax()
     tranch = (nbsm + nproc - 1) /nproc
     seuil = nproc - mod(tranch*nproc-nbsm,nproc)
-    do 130 ism = 1, nbsm
-        do 110 j = 1, nbnd
+    do ism = 1, nbsm
+        do j = 1, nbnd
             temp(invp(j)) = x(j,ism)
-110      continue
-        do 120 j = 1, nbnd
+        end do
+        do j = 1, nbnd
             x(j,ism) = temp(j)
-120      continue
-130  end do
+        end do
+    end do
 !
 !     DESCENTE  L * Y = B
     isnd = 0
-    do 180 ib = 1, nbloc
+    do ib = 1, nbloc
         call jeveuo(jexnum(factol, ib), 'L', ifac)
-        do 170 nc = 1, ncbloc(ib)
+        do nc = 1, ncbloc(ib)
             isnd = isnd + 1
             sni = seq(isnd)
             long = adress(sni+1) - adress(sni)
             l = lgsn(sni)
-            do 135 ism = 1, nbsm
+            do ism = 1, nbsm
                 k = 1
-                do 125 i = adress(sni), adress(sni+1) - 1
+                do i = adress(sni), adress(sni+1) - 1
                     trav(k,ism) = x(global(i),ism)
                     k = k + 1
-125              continue
-135          continue
+                end do
+            end do
             ad(1) = decal(sni)
             ndj = supnd(sni) - 1
-            do 150 j = 1, l - 1
+            do j = 1, l - 1
                 ndj = ndj + 1
 !     CALCUL DU BLOC  DIAGONAL
                 temp(ndj) = zr(ifac-1+ad(j))
-                do 145 ism = 1, nbsm
+                do ism = 1, nbsm
                     k = 1
-                    do 140 i = j + 1, l
+                    do i = j + 1, l
                         trav(i,ism) = trav(i,ism) - zr(ifac-1+ad(j)+k) *trav(j,ism)
                         k = k + 1
-140                  continue
-145              continue
+                    end do
+                end do
                 ad(j+1) = ad(j) + long + 1
                 ad(j) = ad(j) + l - j + 1
-150          continue
+            end do
             ndj = ndj + 1
 !     RANGEMENT DU TERME DIAGONAL
             temp(ndj) = zr(ifac-1+ ad(l))
@@ -102,7 +102,7 @@ use superv_module
             if (long .gt. l) then
                 p = l
                 opta=1
-                do 152 ism = 1, nproc
+                do ism = 1, nproc
                     if (ism .gt. seuil) then
                         larg=tranch - 1
                         deb = seuil*tranch + (ism -seuil-1)*larg+ 1
@@ -113,18 +113,18 @@ use superv_module
 ! APPEL AU PRODUIT PAR BLOCS
                     call mlfmul(trav(p+1, deb), zr(ifac+ad(1)-1), trav(1, deb), nbnd, long,&
                                 p, larg, opta, optb, nb)
-152              continue
+                end do
             endif
-            do 153 ism = 1, nbsm
+            do ism = 1, nbsm
                 k = 1
-                do 160 i = adress(sni), adress(sni+1) - 1
+                do i = adress(sni), adress(sni+1) - 1
                     x(global(i),ism) = trav(k,ism)
                     k = k + 1
-160              continue
-153          continue
-170      continue
+                end do
+            end do
+        end do
         call jelibe(jexnum(factol, ib))
-180  end do
+    end do
 !
     if (typsym .ne. 0) then
         factor = factol
@@ -136,30 +136,30 @@ use superv_module
     endif
 !=======================================================================
 !     D * Z = Y
-    do 194 ism = 1, nbsm
-        do 190 j = deb1, nbnd
+    do ism = 1, nbsm
+        do j = deb1, nbnd
             x(j,ism) = x(j,ism)/temp(j)
-190      continue
-194  end do
+        end do
+    end do
 !=======================================================================
 !     REMONTEE  U * X = Z
     isnd = nbsn + 1
     opta=0
-    do 260 ib = nbloc, 1, -1
+    do ib = nbloc, 1, -1
         call jeveuo(jexnum(factor, ib), 'L', ifac)
-        do 250 nc = 1, ncbloc(ib)
+        do nc = 1, ncbloc(ib)
             isnd = isnd - 1
             sni = seq(isnd)
             l = lgsn(sni)
             long = adress(sni+1) - adress(sni)
             deb = adress(sni) + lgsn(sni)
-            do 205 ism = 1, nbsm
+            do ism = 1, nbsm
                 k = 1
-                do 200 i = adress(sni), adress(sni+1) - 1
+                do i = adress(sni), adress(sni+1) - 1
                     trav(k,ism) = x(global(i),ism)
                     k = k + 1
-200              continue
-205          continue
+                end do
+            end do
             p=l
             larg=nbsm
             deb=1
@@ -171,45 +171,45 @@ use superv_module
             endif
 !     PARTIE DIAGONALE
             ad(1)=decal(sni)
-            do 300 j = 1, l-1
+            do j = 1, l-1
                 ad(j+1) = ad(j)+ long+1
-300          continue
-            do 350 j = l, 1, -1
+            end do
+            do j = l, 1, -1
 !
-                do 345 ism = 1, nbsm
+                do ism = 1, nbsm
                     k = 1
                     s(ism) =0.d0
-                    do 340 i = j + 1, l
+                    do i = j + 1, l
                         s(ism) =s(ism) + zr(ifac-1+ad(j)+k) *trav(i,&
                         ism)
                         k = k + 1
-340                  continue
+                    end do
                     trav(j,ism) = trav(j,ism) - s(ism)
                     if (typsym .eq. 0) then
                         trav(j,ism)= trav(j,ism)/zr(ifac-1+ad(j))
                     endif
-345              continue
-350          continue
-            do 221 ism = 1, nbsm
+                end do
+            end do
+            do ism = 1, nbsm
                 k = 1
-                do 240 i = adress(sni), adress(sni+1) - 1
+                do i = adress(sni), adress(sni+1) - 1
                     x(global(i),ism) = trav(k,ism)
                     k = k + 1
-240              continue
-221          continue
-250      continue
+                end do
+            end do
+        end do
         call jelibe(jexnum(factor, ib))
-260  end do
+    end do
 !     ON RANGE DANS SM  LA SOLUTION DANS LA NUMEROTATION INITIALE
-    do 265 ism = 1, nbsm
-        do 270 j = 1, nbnd
+    do ism = 1, nbsm
+        do j = 1, nbnd
 !
             temp(perm(j)) = x(j,ism)
-270      continue
+        end do
 !
-        do 275 j = 1, nbnd
+        do j = 1, nbnd
             x(j,ism) = temp(j)
-275      continue
-265  end do
+        end do
+    end do
     call jedema()
 end subroutine

@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
                   lmoda, nbpara, linopa, litypa)
 !
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/cgajpa.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/cgajpa.h"
-#include "asterfort/assert.h"
     integer :: nbpara, nxpara, ndim
     aster_logical :: lmoda
     character(len=*) :: litypa(nxpara), linopa(nxpara)
@@ -57,18 +57,17 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
 ! ----------------------------------------------
 !
     integer :: i
-
+!
     aster_logical :: debug
-
+!
     nbpara = 0
     debug = .false.
-
+!
 !   --------------------
 !   EXCLUSION DES OPTIONS A SUPPRIMER G_BILI(_GLOB) et G_MAX(_GLOB) et CALC_K_MAX
 !   ---------------------
-    if ((option.ne.'G_BILI').and.(option.ne.'G_BILI_GLOB')&
-        .and.(option.ne.'G_MAX').and.(option.ne.'G_MAX_GLOB')&
-        .and.(option.ne.'CALC_K_MAX')) then
+    if ((option.ne.'G_BILI') .and. (option.ne.'G_BILI_GLOB') .and. (option.ne.'G_MAX')&
+        .and. (option.ne.'G_MAX_GLOB') .and. (option.ne.'CALC_K_MAX')) then
 !-------------------------------------------------------------------------
 !   --------------------
 !   1. IDENTIFICATEURS
@@ -76,32 +75,42 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
 !   --------------------
 !   1.1 FOND DE FISSURE
 !   ---------------------
-        if (typfis.ne.'THETA') then
-            call cgajpa('NUME_FOND', 'I', nbpara, linopa, litypa, nxpara)
+        if (typfis .ne. 'THETA') then
+            call cgajpa('NUME_FOND', 'I', nbpara, linopa, litypa,&
+                        nxpara)
         endif
 !   --------------------
 !   1.2 TEMPOREL/CHARGEMENT
 !   ---------------------
         if (lmoda) then
-            call cgajpa('NUME_MODE', 'I', nbpara, linopa, litypa, nxpara)
+            call cgajpa('NUME_MODE', 'I', nbpara, linopa, litypa,&
+                        nxpara)
         else
-            call cgajpa('NUME_ORDRE', 'I', nbpara, linopa, litypa, nxpara)
-            call cgajpa('INST', 'R', nbpara, linopa, litypa, nxpara)
+            call cgajpa('NUME_ORDRE', 'I', nbpara, linopa, litypa,&
+                        nxpara)
+            call cgajpa('INST', 'R', nbpara, linopa, litypa,&
+                        nxpara)
         endif
 !   --------------------
 !   1.3 POINT DU FOND DE FISSURE
 !   ---------------------
-        if (typfis.ne.'THETA') then
-            if (typfis.eq.'FONDFISS') then
-                call cgajpa('NOEUD', 'K8', nbpara, linopa, litypa, nxpara)
+        if (typfis .ne. 'THETA') then
+            if (typfis .eq. 'FONDFISS') then
+                call cgajpa('NOEUD', 'K8', nbpara, linopa, litypa,&
+                            nxpara)
             endif
 !            if (typfis.ne.'THETA') then
-            call cgajpa('COOR_X', 'R', nbpara, linopa, litypa, nxpara)
-            call cgajpa('COOR_Y', 'R', nbpara, linopa, litypa, nxpara)
-            if (ndim.eq.3) then
-                call cgajpa('COOR_Z', 'R', nbpara, linopa, litypa, nxpara)
-                call cgajpa('NUM_PT', 'I', nbpara, linopa, litypa, nxpara)
-                call cgajpa('ABSC_CURV', 'R', nbpara, linopa, litypa, nxpara)
+            call cgajpa('COOR_X', 'R', nbpara, linopa, litypa,&
+                        nxpara)
+            call cgajpa('COOR_Y', 'R', nbpara, linopa, litypa,&
+                        nxpara)
+            if (ndim .eq. 3) then
+                call cgajpa('COOR_Z', 'R', nbpara, linopa, litypa,&
+                            nxpara)
+                call cgajpa('NUM_PT', 'I', nbpara, linopa, litypa,&
+                            nxpara)
+                call cgajpa('ABSC_CURV', 'R', nbpara, linopa, litypa,&
+                            nxpara)
             endif
 !            endif
         endif
@@ -111,23 +120,28 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
 !   --------------------
 !   2.1 G COMMUN A TOUTES LES OPTIONS
 !   ---------------------
-        call cgajpa('G', 'R', nbpara, linopa, litypa, nxpara)
+        call cgajpa('G', 'R', nbpara, linopa, litypa,&
+                    nxpara)
 !   --------------------
 !   2.2 CALC_K_G
 !   ---------------------
-        if (option.eq.'CALC_K_G') then
-            call cgajpa('K1', 'R', nbpara, linopa, litypa, nxpara)
-            call cgajpa('K2', 'R', nbpara, linopa, litypa, nxpara)
-            call cgajpa('G_IRWIN', 'R', nbpara, linopa, litypa, nxpara)
-            if (ndim.eq.3) then
-                call cgajpa('K3', 'R', nbpara, linopa, litypa, nxpara)
+        if (option .eq. 'CALC_K_G') then
+            call cgajpa('K1', 'R', nbpara, linopa, litypa,&
+                        nxpara)
+            call cgajpa('K2', 'R', nbpara, linopa, litypa,&
+                        nxpara)
+            call cgajpa('G_IRWIN', 'R', nbpara, linopa, litypa,&
+                        nxpara)
+            if (ndim .eq. 3) then
+                call cgajpa('K3', 'R', nbpara, linopa, litypa,&
+                            nxpara)
             endif
         endif
 !-------------------------------------------------------------------------
 !   --------------------
 !   2.3 OPTIONS A SUPPRIMER (G_BILI(_GLOB) et G_MAX(_GLOB) et CALC_K_MAX)
 !   ---------------------
-    elseif (option.eq.'CALC_K_MAX') then
+    else if (option.eq.'CALC_K_MAX') then
         nbpara = 14
         linopa(1) = 'NUME_FOND'
         litypa(1) = 'I'
@@ -135,8 +149,8 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
         litypa(2) = 'I'
         linopa(3) = 'INST'
         litypa(3) = 'R'
-
-        if (typfis.eq.'FONDFISS') then
+!
+        if (typfis .eq. 'FONDFISS') then
             linopa(4) = 'NOEUD'
             litypa(4) = 'K8'
         endif
@@ -160,7 +174,7 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
         litypa(13) = 'R'
         linopa(14) = 'G_IRWIN'
         litypa(14) = 'R'
-    elseif ((option.eq.'G_BILI').or.(option.eq.'G_MAX')) then
+    else if ((option.eq.'G_BILI').or.(option.eq.'G_MAX')) then
         nbpara = 6
         linopa(1) = 'INST'
         litypa(1) = 'R'
@@ -174,7 +188,7 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
         litypa(5) = 'R'
         linopa(6) = 'G_BILI_LOCAL'
         litypa(6) = 'R'
-    elseif ((option.eq.'G_BILI_GLOB').or.(option.eq.'G_MAX_GLOB')) then
+    else if ((option.eq.'G_BILI_GLOB').or.(option.eq.'G_MAX_GLOB')) then
         nbpara = 3
         linopa(1) = 'NUME_CMP_I'
         litypa(1) = 'I'
@@ -183,13 +197,13 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
         linopa(3) = 'G_BILIN'
         litypa(3) = 'R'
     endif
-
+!
 !   --------------------
 !   3. CREATION DE LA TABLE
 !   --------------------
     call tbcrsd(table, 'G')
     call tbajpa(table, nbpara, linopa, litypa)
-
+!
 !   --------
 !   4. DEBUG
 !   --------
@@ -197,9 +211,9 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
         write(6,*)'OPTION = ', option
         write(6,*)'NOMBRE DE PARAMETRES DE LA TABLE = ', nbpara
         write(6,*)'NO_PARA, NOM_PARA, TYP_PARA'
-        do 10 i = 1, nbpara
+        do i = 1, nbpara
             write(6,*)i, linopa(i), litypa(i)
-        10 continue
+        end do
     endif
-
+!
 end subroutine

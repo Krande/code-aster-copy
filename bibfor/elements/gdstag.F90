@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdstag(stoudy, kp, nno, ajacob, en,&
                   enprim, x0k, tetak, qim, qikm1,&
                   qik, x0pg, tetag, tetapg, rotm,&
@@ -60,37 +60,37 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en,&
     zero = 0.d0
     demi = 5.d-1
     un = 1.d0
-    do 1 ic = 1, 3
+    do ic = 1, 3
         x0pg(ic) = zero
         tetag(ic) = zero
         tetapg(ic) = zero
         qigk(ic) = zero
- 1  end do
+    end do
     unsurj = un / ajacob
-    do 3 ic = 1, 3
-        do 2 ne = 1, nno
+    do ic = 1, 3
+        do ne = 1, nno
             x0pg(ic) = x0pg(ic) + unsurj*enprim(ne,kp)*x0k(ic,ne)
             tetag(ic) = tetag(ic) + en(ne,kp)*tetak(ic,ne)
             tetapg(ic) = tetapg(ic) + unsurj*enprim(ne,kp)*tetak(ic, ne)
             qigk(ic) = qigk(ic) + en(ne,kp)*qik(ic,ne)
- 2      end do
- 3  end do
+        end do
+    end do
     call marota(qigk, rotk)
 !
-    if (stoudy .lt. demi) goto 9999
+    if (stoudy .lt. demi) goto 999
 !
-    do 11 ic = 1, 3
+    do ic = 1, 3
         qigm (ic) = zero
         qigkm1 (ic) = zero
-11  end do
-    do 13 ic = 1, 3
-        do 12 ne = 1, nno
+    end do
+    do ic = 1, 3
+        do ne = 1, nno
             qigm (ic) = qigm (ic) + en(ne,kp)*qim (ic,ne)
             qigkm1 (ic) = qigkm1 (ic) + en(ne,kp)*qikm1 (ic,ne)
-12      end do
-13  end do
+        end do
+    end do
     call marota(qigm, rotm)
     call marota(qigkm1, rotkm1)
 !
-9999  continue
+999 continue
 end subroutine

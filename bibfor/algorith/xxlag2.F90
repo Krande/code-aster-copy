@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xxlag2(ffc, idepl, idepm, lact, ndim,&
                   nnol, pla, lamb, nvec)
     implicit none
@@ -47,16 +47,17 @@ subroutine xxlag2(ffc, idepl, idepm, lact, ndim,&
 ! --- RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 ! --- (DEPDEL+DEPMOI)
     lamb(:) = 0.d0
-    do 1 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
         if (nli .eq. 0) goto 1
-        do 2 j = 1, ndim
+        do j = 1, ndim
             lamb(j) = lamb(j) + ffi * zr(idepl-1+pli-1+j)
             if (nvec .eq. 2) then
                 lamb(j) = lamb(j) + ffi * zr(idepm-1+pli-1+j)
             endif
- 2      continue
- 1  end do
+        end do
+  1     continue
+    end do
 end subroutine

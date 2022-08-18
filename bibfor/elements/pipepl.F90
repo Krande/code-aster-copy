@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipepl(ndim, compor, typmod, tau, mate,&
                   sigm, vim, epsp, epsd, a0,&
                   a1, a2, a3, etas)
@@ -67,7 +67,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     parameter   (nbres=4)
     integer :: icodre(nbres)
     character(len=16) :: nomres(nbres)
-    character(len=8) ::fami, poum
+    character(len=8) :: fami, poum
     real(kind=8) :: valres(nbres)
 !
     aster_logical :: cplan
@@ -140,10 +140,10 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
 !
     s0h = deuxmu*epsph + sigmh
     s1h = deuxmu*epsdh
-    do 10 k = 1, ndimsi
+    do k = 1, ndimsi
         s0(k) = sigm(k) + deuxmu*epsp(k) - s0h*kron(k)
         s1(k) = deuxmu*epsd(k) - s1h*kron(k)
- 10 end do
+    end do
 !
 !
 !    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
@@ -160,7 +160,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         a1 = 0.d0
         a2 = 0.d0
         a3 = 0.d0
-        goto 9999
+        goto 999
     endif
 !
 !    RECHERCHE DES INTERSECTIONS ELLIPSE / DROITE
@@ -186,5 +186,5 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         a2 = tau - a3*eta
     endif
 !
-9999 continue
+999 continue
 end subroutine

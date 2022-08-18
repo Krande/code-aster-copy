@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crsdfi(linoch, nbnoch, noidez)
     implicit none
 #include "jeveux.h"
@@ -66,15 +66,15 @@ subroutine crsdfi(linoch, nbnoch, noidez)
 !           '.FID_NOM' , '.FID_NUM'
 !           '.FID_PAR' , '.FID_CMP'
 !
-    do 10 i = 1, nbnoch
+    do i = 1, nbnoch
         zk16(lfinom-1+i) = blanc
-10  end do
-    do 20 i = 1, nbnoch
+    end do
+    do i = 1, nbnoch
         zi(lfinum-1+i) = 9999
-20  end do
-    do 30 i = 1, 800*nbnoch
+    end do
+    do i = 1, 800*nbnoch
         zi(lfipar-1+i) = 9999
-30  end do
+    end do
 !
     call getfac('FORMAT_IDEAS', nbocc)
 !--------------------------------------------------------------------
@@ -84,9 +84,9 @@ subroutine crsdfi(linoch, nbnoch, noidez)
 !--------------------------------------------------------------------
     if (nbocc .ne. 0) then
 !
-        do 90 ich = 1, nbnoch
+        do ich = 1, nbnoch
 !
-            do 80 iocc = 1, nbocc
+            do iocc = 1, nbocc
                 call getvtx('FORMAT_IDEAS', 'NOM_CHAM', iocc=iocc, scal=nocham, nbret=nch)
                 if (nocham .eq. linoch(ich)) then
 !- NOM_CHAM
@@ -102,9 +102,9 @@ subroutine crsdfi(linoch, nbnoch, noidez)
                     call getvis('FORMAT_IDEAS', 'RECORD_3', iocc=iocc, nbval=nval, vect=rec,&
                                 nbret=nb)
                     if (nval .ne. 0) then
-                        do 40 i = 1, nval
+                        do i = 1, nval
                             zi(lfipar-1+ (ich-1)*800+80+i) = rec(i)
-40                      continue
+                        end do
                     endif
 !- RECORD 6
                     call getvis('FORMAT_IDEAS', 'RECORD_6', iocc=iocc, nbval=0, nbret=nb)
@@ -112,9 +112,9 @@ subroutine crsdfi(linoch, nbnoch, noidez)
                     call getvis('FORMAT_IDEAS', 'RECORD_6', iocc=iocc, nbval=nval, vect=rec,&
                                 nbret=nb)
                     if (nval .ne. 0) then
-                        do 50 i = 1, nval
+                        do i = 1, nval
                             zi(lfipar-1+ (ich-1)*800+200+i) = rec(i)
-50                      continue
+                        end do
                     endif
 !- RECORD 9
                     call getvis('FORMAT_IDEAS', 'RECORD_9', iocc=iocc, nbval=0, nbret=nb)
@@ -122,9 +122,9 @@ subroutine crsdfi(linoch, nbnoch, noidez)
                     call getvis('FORMAT_IDEAS', 'RECORD_9', iocc=iocc, nbval=nval, vect=rec,&
                                 nbret=nb)
                     if (nval .ne. 0) then
-                        do 60 i = 1, nval
+                        do i = 1, nval
                             zi(lfipar-1+ (ich-1)*800+320+i) = rec(i)
-60                      continue
+                        end do
                     endif
 !- POSI_ORDRE
                     param='POSI_ORDRE'
@@ -180,14 +180,14 @@ subroutine crsdfi(linoch, nbnoch, noidez)
                     call getvtx('FORMAT_IDEAS', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=cmp,&
                                 nbret=nb)
                     if (nb .ne. 0) then
-                        do 70 i = 1, nbcmp
+                        do i = 1, nbcmp
                             zk8(lficmp-1+ (ich-1)*1000+i) = cmp(i)
-70                      continue
+                        end do
                         zi(lfinbc-1+ich) = nbcmp
                     endif
                 endif
-80          continue
-90      continue
+            end do
+        end do
     endif
 !
 !---------------------------------------------------------------------
@@ -195,7 +195,7 @@ subroutine crsdfi(linoch, nbnoch, noidez)
 !- REMPLISSAGE DES OBJETS A PARTIR DES VALEURS PAR DEFAUT
 !
 !---------------------------------------------------------------------
-    do 100 ich = 1, nbnoch
+    do ich = 1, nbnoch
         if (zk16(lfinom-1+ich) .eq. blanc) then
             nocham = linoch(ich)
 !
@@ -476,7 +476,7 @@ subroutine crsdfi(linoch, nbnoch, noidez)
             endif
         endif
 !
-100  end do
+    end do
 !
     call jedema()
 !

@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -143,9 +143,9 @@ subroutine ar_dlartg(f, g, cs, sn, r)
             r = sqrt( f1**2+g1**2 )
             cs = f1 / r
             sn = g1 / r
-            do 20 i = 1, count
+            do i = 1, count
                 r = r*safmx2
- 20         continue
+            end do
         else if (scale.le.safmn2) then
             count = 0
  30         continue
@@ -157,9 +157,9 @@ subroutine ar_dlartg(f, g, cs, sn, r)
             r = sqrt( f1**2+g1**2 )
             cs = f1 / r
             sn = g1 / r
-            do 40 i = 1, count
+            do i = 1, count
                 r = r*safmn2
- 40         continue
+            end do
         else
             r = sqrt( f1**2+g1**2 )
             cs = f1 / r

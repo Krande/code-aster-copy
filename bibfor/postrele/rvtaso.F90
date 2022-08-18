@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                   nomtab, iocc, ncheff, i1)
     implicit none
@@ -110,7 +110,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
             call rsnopa(nomres, 0, nomjv, nbacc, nbpr)
             if (nbacc .ne. 0) then
                 call jeveuo(nomjv, 'L', jaces)
-                do 10 iac = 1, nbacc
+                do iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
                                 1, sjv=iadr, styp=ctype, istop=0)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
@@ -141,7 +141,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                         ik = ik + 1
                         valek(ik) = zk8(iadr)
                     endif
- 10             continue
+                end do
                 call jedetr(nomjv)
             endif
         else if (acces(1:1) .eq. 'M') then
@@ -193,10 +193,10 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
         nopara(nbpar) = 'NUME_GAUSS'
     endif
 !
-    do 20 icp = 1, nbcmp, 1
+    do icp = 1, nbcmp, 1
         nbpar = nbpar + 1
         nopara(nbpar) = nomcmp(icp)
- 20 end do
+    end do
 !
     ASSERT(nbpar .le. 15)
     ASSERT(ii+2 .le. 10)
@@ -207,22 +207,22 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     lc = nbsp * ls
     ilign = 0
 !
-    do 200 ico = 1, nbco, 1
+    do ico = 1, nbco, 1
         valei(ii+1) = ico
 !
-        do 204 isp = 1, nbsp, 1
+        do isp = 1, nbsp, 1
             valei(ii+2) = isp
 !
-            do 206 icp = 1, nbcmp, 1
+            do icp = 1, nbcmp, 1
                 valer(ir+icp) = releve(icp+lc*(ico-1)+ls*(isp-1))
-206         continue
+            end do
 !
             call tbajli(nomtab, nbpar, nopara, valei, valer,&
                         [c16b], valek, ilign)
 !
-204     continue
+        end do
 !
-200 end do
+    end do
 !
     call jedema()
 end subroutine

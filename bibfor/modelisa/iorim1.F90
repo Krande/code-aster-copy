@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function iorim1(num1, num2, reorie)
     implicit none
 #include "asterf_types.h"
@@ -37,7 +37,7 @@ function iorim1(num1, num2, reorie)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- BOUCLES SUR LES SOMMETS
-    do 10 i1 = 1, 2
+    do i1 = 1, 2
         j1 = 3-i1
         if (egal(i1,i1)) then
             iorim1 = -1
@@ -47,7 +47,7 @@ function iorim1(num1, num2, reorie)
             iorim1 = 1
             goto 100
         endif
- 10 end do
+    end do
     iorim1 = 0
 100 continue
 !

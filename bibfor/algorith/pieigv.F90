@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pieigv(neps, tau, imate, vim, epsm,&
                   epspc, epsdc, typmod, etamin, etamax,&
                   copilo)
@@ -71,7 +71,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     real(kind=8) :: epsvp
     integer :: icodre(3), kpg, spt
     character(len=16) :: nomres(3)
-    character(len=8)  :: fami, poum
+    character(len=8) :: fami, poum
     real(kind=8) :: valres(3)
 !
     real(kind=8) :: epsmax, etasup, etainf, epsnor
@@ -161,9 +161,9 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                 k1=valres(3)*(1.d0+gamma)*nu**2/(1.d0+nu)/(1.d0-2.d0*&
                 nu) -k0*e/(1.d0-2.d0*nu)/valres(3)
                 trepsm=0.d0
-                do 1 k = 1, ndim
+                do k = 1, ndim
                     trepsm=trepsm+epsm(k)
-  1             continue
+                end do
                 if (trepsm .gt. 0.d0) then
                     trepsm=0.d0
                 endif
@@ -205,22 +205,22 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     endif
 !
 !
-    do 44 k = 1, 3
+    do k = 1, 3
         epsp(k) = epsm(k)+epspc(k)
         epsd(k) = epsdc(k)
- 44 end do
+    end do
 !
 !
-    do 45 k = 4, ndimsi
+    do k = 4, ndimsi
         epsp(k) = epsm(k)+epspc(k)
         epsd(k) = epsdc(k)
- 45 end do
+    end do
 !
     if (ndimsi .lt. 6) then
-        do 46 k = ndimsi+1, 6
+        do k = ndimsi+1, 6
             epsp(k)=0.d0
             epsd(k)=0.d0
- 46     continue
+        end do
     endif
 !
     phim = epsm(ndimsi+2) + r*epsm(ndimsi+1)
@@ -262,15 +262,15 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 ! on "normalise" les deformations pilotees
 !
     trepsd = epsd(1)+epsd(2)+epsd(3)
-    do 60 k = 1, ndimsi
+    do k = 1, ndimsi
         sigeld(k) = lambda*trepsd*kron(k) + deuxmu*epsd(k)
- 60 end do
+    end do
 !
     epsnor = 1.d0/sqrt(0.5d0 * ddot(ndimsi,epsd,1,sigeld,1))
 !
-    do 678 k = 1, 7
+    do k = 1, 7
         epsd(k)=epsd(k)*epsnor
-678 end do
+    end do
 !
 !
 !
@@ -360,7 +360,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
         y(3)=y(1)
         z(3)=z(1)
 !
-        do 200 iter = 1, nitmax
+        do iter = 1, nitmax
 !
             if (abs(y(3)) .le. epstol*seuil) goto 201
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
@@ -373,7 +373,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 !
-200     continue
+        end do
         call utmess('F', 'PILOTAGE_87')
 201     continue
 !
@@ -382,7 +382,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
         copilo(1,2) = r8vide()
         copilo(2,2) = r8vide()
 !
-        goto 9999
+        goto 999
 !
     endif
 !
@@ -398,7 +398,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
         x(3)=x(1)
         y(3)=y(1)
         z(3)=z(1)
-        do 202 iter = 1, nitmax
+        do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuil) goto 203
 !
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
@@ -410,7 +410,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
-202     continue
+        end do
         call utmess('F', 'PILOTAGE_87')
 203     continue
 !
@@ -419,7 +419,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
         copilo(1,2) = r8vide()
         copilo(2,2) = r8vide()
 !
-        goto 9999
+        goto 999
 !
     endif
 !
@@ -501,7 +501,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
         y(3)=y(1)
         z(3)=z(1)
 !
-        do 204 iter = 1, nitmax
+        do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuil) goto 205
 !
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
@@ -514,7 +514,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 !
-204     continue
+        end do
         call utmess('F', 'PILOTAGE_87')
 205     continue
 !
@@ -534,7 +534,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
         y(3)=y(1)
         z(3)=z(1)
 !
-        do 206 iter = 1, nitmax
+        do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuil) goto 207
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
                 x(3)=(-y(3)+z(3)*x(3))/z(3)
@@ -546,14 +546,14 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 !
-206     continue
+        end do
         call utmess('F', 'PILOTAGE_87')
 207     continue
 !
         copilo(2,2) =z(3)/epsnor
         copilo(1,2) = tau-x(3)*copilo(2,2)*epsnor
 !
-        goto 9999
+        goto 999
 !
 !
     endif
@@ -565,6 +565,6 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     copilo(2,2) = r8vide()
 !
 !
-9999 continue
+999 continue
 !
 end subroutine

@@ -15,29 +15,29 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matrq9(mat)
     implicit none
 ! person_in_charge: xavier.desroches at edf.fr
 !
 ! CALCUL DE LA MATRICE DE PASSAGE GAUSS NOEUDS POUR LES MECQQU9
 !
-    real(kind=8) :: mat(9,9), a, b1, b2, c1, c2, d1, d2
+    real(kind=8) :: mat(9, 9), a, b1, b2, c1, c2, d1, d2
     integer :: i, j
 !
     a = sqrt(3.d0)/3.d0
     b1 = 2.25d0*(a+1.d0)**2
     b2 = 2.25d0*(a-1.d0)**2
     c1 = -3.d0*(a+1.d0)
-    c2 =  3.d0*(a-1.d0)
-    d1 =  1.5d0*(1.d0+a)
-    d2 =  1.5d0*(1.d0-a)
+    c2 = 3.d0*(a-1.d0)
+    d1 = 1.5d0*(1.d0+a)
+    d2 = 1.5d0*(1.d0-a)
 !
-    do 1 i=1,9
-        do 2 j=1,9
+    do i = 1, 9
+        do j = 1, 9
             mat(i,j)=0.d0
-2       continue
-1   continue
+        end do
+    end do
 !
     mat(1,1) = b1
     mat(2,1) = 1.5d0
@@ -98,4 +98,3 @@ subroutine matrq9(mat)
     mat(9,9) = 1.d0
 !
 end subroutine
-            

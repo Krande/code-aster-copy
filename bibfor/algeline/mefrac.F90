@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
     implicit none
 !
@@ -64,7 +64,7 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
     if (nomrac(1:1) .eq. '*') then
         ipre = 1
     endif
-    do 10 i = 2, 8
+    do i = 2, 8
         if (nomrac(i:i) .eq. '*') then
             isuf = 1
             icar = i - 1 - ipre
@@ -73,25 +73,25 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
             icar = i - 1 - ipre
             goto 20
         endif
-10  end do
-20  continue
+    end do
+ 20 continue
 !
     if (isuf .eq. 0 .and. ipre .eq. 0) then
         call utmess('F', 'ALGELINE_86', sk=nomrac)
     endif
 !
     if (ipre .eq. 0) then
-        do 40 i = 1, nbgrmx
+        do i = 1, nbgrmx
             call jenuno(jexnum(mailla//'.GROUPEMA', i), nomgri)
             if (nomrac(1:icar) .eq. nomgri(1:icar)) then
                 nbgrma = nbgrma + 1
                 nomcyl(nbgrma) = nomgri
             endif
-40      continue
+        end do
     else if (ipre.eq.1.and.isuf.eq.0) then
-        do 70 i = 1, nbgrmx
+        do i = 1, nbgrmx
             call jenuno(jexnum(mailla//'.GROUPEMA', i), nomgri)
-            do 50 j = 2, 8-icar
+            do j = 2, 8-icar
                 if (nomrac(2:2) .eq. nomgri(j:j)) then
                     if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1)) .and.&
                         nomgri((j+icar):(j+icar)) .eq. ' ') then
@@ -100,7 +100,7 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
                         goto 60
                     endif
                 endif
-50          continue
+            end do
             j = 8-icar+1
             if (nomrac(2:2) .eq. nomgri(j:j)) then
                 if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1))) then
@@ -108,12 +108,12 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
                     nomcyl(nbgrma) = nomgri
                 endif
             endif
-60          continue
-70      continue
+ 60         continue
+        end do
     else if (ipre.eq.1.and.isuf.ne.0) then
-        do 100 i = 1, nbgrmx
+        do i = 1, nbgrmx
             call jenuno(jexnum(mailla//'.GROUPEMA', i), nomgri)
-            do 80 j = 1, 8-icar
+            do j = 1, 8-icar
                 if (nomrac(2:2) .eq. nomgri(j:j)) then
                     if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1))) then
                         nbgrma = nbgrma + 1
@@ -121,9 +121,9 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
                         goto 90
                     endif
                 endif
-80          continue
-90          continue
-100      continue
+            end do
+ 90         continue
+        end do
     endif
     if (nbgrma .eq. 0) then
         call utmess('F', 'ALGELINE_87')
@@ -137,11 +137,11 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
     write (ifm,*) '==============================================='&
      &   ,'================================='
     nt = int(nbgrma/8)
-    do 200 i = 1, nt
+    do i = 1, nt
         ndeb = nt*(i-1)+1
         nfin = nt*(i-1)+8
         write (ifm,6001) (nomcyl(j), j=ndeb,nfin)
-200  end do
+    end do
     if ((nt*8) .lt. nbgrma) then
         ndeb = nt*8+1
         nfin = nbgrma

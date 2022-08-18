@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                   tabl, tabv, partie, jtype, nbno,&
                   listno, icmp, ifi, iwri, iadmax,&
@@ -85,7 +85,7 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
     isp=1
     iadmax=0
     ch19=' '
-    do 11 ior = 1, nbord2
+    do ior = 1, nbord2
         if (lresu) then
             call rsexch(' ', nomco2, chams2, ordr(ior), ch19,&
                         iret)
@@ -101,10 +101,10 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
         endif
         itrou=0
         if (zk8(jtype-1+ior) .eq. 'R') then
-            do 14 j = 1, nbno
+            do j = 1, nbno
                 ino=listno(j)
                 itrou=0
-                do 13 ipt = 1, nbpt
+                do ipt = 1, nbpt
                     inold=zi(jcnold-1+ipt)
                     if (ino .eq. inold) then
                         itrou=1
@@ -119,18 +119,18 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                         endif
                         goto 15
                     endif
- 13             continue
+                end do
  15             continue
                 if (iwri) write(ifi,1000) vale
- 14         continue
+            end do
             if (itrou .eq. 0) then
                 call utmess('F', 'PREPOST2_58')
             endif
         else if (zk8(jtype-1+ior).eq.'C') then
-            do 24 j = 1, nbno
+            do j = 1, nbno
                 ino=listno(j)
                 itrou=0
-                do 23 ipt = 1, nbpt
+                do ipt = 1, nbpt
                     inold=zi(jcnold-1+ipt)
                     if (ino .eq. inold) then
                         itrou=1
@@ -149,18 +149,19 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                         endif
                         goto 25
                     endif
- 23             continue
+                end do
                 if (itrou .eq. 0) then
                     call utmess('F', 'PREPOST2_58')
                 endif
  25             continue
                 if (iwri) write(ifi,1000) vale
- 24         continue
+            end do
             if (itrou .eq. 0) then
                 call utmess('F', 'PREPOST2_58')
             endif
         endif
- 11 end do
+ 11     continue
+    end do
 !
     call jedema()
 !

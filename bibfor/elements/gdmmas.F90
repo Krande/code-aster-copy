@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdmmas(kp, nno, pjacob, en, grani,&
                   rot0, mass)
 !
@@ -46,34 +46,34 @@ subroutine gdmmas(kp, nno, pjacob, en, grani,&
     real(kind=8) :: coef, pjacob, zero
 !-----------------------------------------------------------------------
     zero = 0.d0
-    do 2 j = 1, 6
-        do 1 i = 1, 6
+    do j = 1, 6
+        do i = 1, 6
             imas(i,j) = zero
- 1      end do
- 2  end do
+        end do
+    end do
 !
-    do 3 i = 1, 3
+    do i = 1, 3
         imas(i,i) = grani(4)
- 3  end do
+    end do
 !
-    do 5 j = 1, 3
-        do 4 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat1(i,j) = grani(i) * rot0(j,i)
- 4      end do
- 5  end do
+        end do
+    end do
     call promat(rot0, 3, 3, 3, amat1,&
                 3, 3, 3, iro)
 !
-    do 7 j = 1, 3
-        do 6 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             imas(3+i,3+j) = iro(i,j)
- 6      end do
- 7  end do
+        end do
+    end do
 !
-    do 52 j = 1, nno
-        do 51 i = 1, nno
+    do j = 1, nno
+        do i = 1, nno
             coef = pjacob * en(i,kp) * en(j,kp)
             call cumuma(i, j, imas, coef, mass)
-51      end do
-52  end do
+        end do
+    end do
 end subroutine

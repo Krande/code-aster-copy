@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ajlagr(rigid, masse, masinv)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
@@ -32,8 +34,6 @@ subroutine ajlagr(rigid, masse, masinv)
 #include "asterfort/mtdscr.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: rigid, masse, masinv
 !     AJOUTE LES "LAGRANGE" DANS LA MATRICE DE MASSE A PARTIR DES
@@ -56,7 +56,7 @@ subroutine ajlagr(rigid, masse, masinv)
 !
 !-----------------------------------------------------------------------
     integer :: i, imati, imatm, imatr, imtrer, j, jconl
-    integer :: jmass, jraid,     nbmat
+    integer :: jmass, jraid, nbmat
     integer, pointer :: lagr(:) => null()
     integer, pointer :: smde(:) => null()
     character(len=24), pointer :: refa1(:) => null()
@@ -119,30 +119,30 @@ subroutine ajlagr(rigid, masse, masinv)
     if (typmat .eq. 'R') then
         mmax = zero
         kmax = zero
-        do 10 i = 1, nbbloc
+        do i = 1, nbbloc
             call jeveuo(jexnum(raid//'           .VALM', i), 'L', jraid)
             call jeveuo(jexnum(mass//'           .VALM', i), 'L', jmass)
-            do 12 j = 0, hbloc-1
+            do j = 0, hbloc-1
                 mmax = max(zr(jmass+j),mmax)
                 kmax = max(zr(jraid+j),kmax)
-12          continue
+            end do
             call jelibe(jexnum(mass//'           .VALM', i))
             call jelibe(jexnum(raid//'           .VALM', i))
-10      continue
+        end do
         coef = mmax / kmax
     else
         cmmax = zero
         ckmax = zero
-        do 20 i = 1, nbbloc
+        do i = 1, nbbloc
             call jeveuo(jexnum(raid//'           .VALM', i), 'L', jraid)
             call jeveuo(jexnum(mass//'           .VALM', i), 'L', jmass)
-            do 22 j = 0, hbloc-1
+            do j = 0, hbloc-1
                 cmmax = max(abs(zc(jmass+j)),abs(cmmax))
                 ckmax = max(abs(zc(jraid+j)),abs(ckmax))
-22          continue
+            end do
             call jelibe(jexnum(mass//'           .VALM', i))
             call jelibe(jexnum(raid//'           .VALM', i))
-20      continue
+        end do
         ccoef = cmmax / ckmax
     endif
 !
@@ -175,24 +175,24 @@ subroutine ajlagr(rigid, masse, masinv)
     mxddl = 1
     AS_ALLOCATE(vi=lagr, size=neq*mxddl)
     call pteddl('NUME_DDL', numddl, mxddl, nomddl, neq,&
-                 tabl_equa = lagr)
+                tabl_equa = lagr)
     call jeveuo(masi//'           .CONL', 'E', jconl)
     if (typmat .eq. 'R') then
-        do 30 i = 0, neq-1
+        do i = 0, neq-1
             if (lagr(1+i) .ne. 0) then
                 zr(jconl+i) = mmax
             else
                 zr(jconl+i) = un
             endif
-30      continue
+        end do
     else
-        do 32 i = 0, neq-1
+        do i = 0, neq-1
             if (lagr(1+i) .ne. 0) then
                 zc(jconl+i) = cmmax
             else
                 zc(jconl+i) = cun
             endif
-32      continue
+        end do
     endif
 !
 !

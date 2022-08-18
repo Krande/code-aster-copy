@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxlirb(ic, iaddi, iadmo, lso)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=W1303
@@ -78,7 +78,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     nblent = lso / lgbl
     lrab = ( mod (lso,lgbl) .ne. 0 )
 !
-    do 10 i = 1, nblent
+    do i = 1, nblent
         numext = (iaddi+i-2)/nbenrg(ic)
         iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
         call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
@@ -91,7 +91,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
             call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
         endif
         nbacce(2*ic-1) = nbacce(2*ic-1) + 1
- 10 continue
+    end do
     iacce (jiacce(ic)+iaddi)=iacce(jiacce(ic)+iaddi) + 1
     if (lrab) then
         numext = (iaddi+nblent-1)/nbenrg(ic)

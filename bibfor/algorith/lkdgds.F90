@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdgds(nmat, materf, para, vara, devsig,&
                   i1, val, ds2hds, vecn, dfds,&
                   bprimp, nvi, vint, dhds, dgds,&
                   iret)
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE DE G PAR RAPPORT A SIGMA
 !     POUR G PLASTIQUE OU VISQUEUX
@@ -88,21 +88,21 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
                 nvi, vint, val, para, dndsig)
 !
 ! --- CONSTRUCTION DE (D2FDS2:N)*N
-    do 10 i = 1, ndt
+    do i = 1, ndt
         d2fdsn(i) = zero
-        do 20 j = 1, ndt
+        do j = 1, ndt
             d2fdsn(i) = d2fdsn(i) + vecn(j)*d2fds2(j,i)
-20      continue
-10  end do
+        end do
+    end do
     call lcprte(vecn, d2fdsn, d2fn2)
 !
 ! --- CONSTRUCTION DE (DFDS*DNDSIG)*VECN
-    do 30 i = 1, ndt
+    do i = 1, ndt
         dfdsdn(i) = zero
-        do 40 j = 1, ndt
+        do j = 1, ndt
             dfdsdn(i) = dfdsdn(i)+dfds(j)*dndsig(j,i)
-40      continue
-30  end do
+        end do
+    end do
     call lcprte(vecn, dfdsdn, dfdnpn)
 !
 ! --- CONSTRUCTION DE (DFDS:VECN)*DNDSIG
@@ -110,10 +110,10 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
     dfpndn(1:ndt,1:ndt) = dfdsvn * dndsig(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DE DGDS
-    do 50 i = 1, ndt
-        do 60 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             dgds(i,j) = d2fds2(i,j)-d2fn2(i,j)-dfdnpn(i,j)-dfpndn(i,j)
-60      continue
-50  end do
+        end do
+    end do
 !
 end subroutine

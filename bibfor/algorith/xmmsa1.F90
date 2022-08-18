@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
                   pla, ffc, ffp, idepd, idepm,&
                   nfh, nd, tau1, tau2, singu,&
@@ -30,8 +30,8 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 #include "asterfort/indent.h"
 #include "asterfort/promat.h"
 #include "asterfort/xadher.h"
-#include "asterfort/xmafr1.h"
 #include "asterfort/xcalc_saut.h"
+#include "asterfort/xmafr1.h"
     integer :: algofr, ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8), idepd, idepm
@@ -39,7 +39,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
     real(kind=8) :: ffc(8), ffp(27), tau1(3), tau2(3), ptknp(3, 3)
     real(kind=8) :: knp(3, 3), nd(3)
     aster_logical :: adher
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 !
 !
 !
@@ -103,35 +103,36 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
     call xmafr1(ndim, nd, p)
 !
-    do 154 ino = 1, nno
+    do ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
 !
-        do 155 j = 1, ndim
-          do ig = 1, nfh
-            saut(j) = saut(j) - coefj * ffp(ino) * zr(idepd-1+in+ndim*(1+ig-1)+j)
-          enddo
-155     continue
-        do 156 j = 1, ndim*singu
-          do alpi = 1, ndim
-            saut(j) = saut(j) - 2.d0 * fk(ino,alpi,j) * zr(idepd-1+in+ndim*(1+nfh)+alpi)
-          enddo
-156     continue
-154 end do
+        do j = 1, ndim
+            do ig = 1, nfh
+                saut(j) = saut(j) - coefj * ffp(ino) * zr(idepd-1+in+ndim*(1+ig-1)+j)
+            enddo
+        end do
+        do j = 1, ndim*singu
+            do alpi = 1, ndim
+                saut(j) = saut(j) - 2.d0 * fk(ino,alpi,j) * zr(idepd-1+in+ndim*(1+nfh)+alpi)
+            enddo
+        end do
+    end do
 !
-    do 158 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
         if (nli .eq. 0) goto 158
 !
-        do 159 j = 1, ndim
+        do j = 1, ndim
             lamb1(j)=lamb1(j) + ffi * tau1(j) * (zr(idepd-1+pli+1)+zr(&
             idepm-1+pli+1))
 !
             if (ndim .eq. 3) lamb1(j)=lamb1(j) + ffi * tau2(j) * (zr(idepd-1+pli+2) + zr(idepm-1+&
                              &pli+2))
-159     continue
-158 continue
+        end do
+158     continue
+    end do
 !
 !
 ! --- TEST DE L'ADHERENCE ET CALCUL DES MATRICES DE FROTTEMENT UTILES

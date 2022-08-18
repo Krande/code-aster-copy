@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeprat(unit, nomlu, cidatr, mess)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -102,7 +102,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
         if (iclas .eq. 0) then
             call utmess('F', 'JEVEUX1_15', sk=noml32(2:2))
         endif
-        do 1 k = 1, lidbas
+        do k = 1, lidbas
             if (nom .eq. cidbas(k)) then
                 idatr = k
                 ideci = 0
@@ -115,7 +115,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                             typei, ltypi, lonoi, mess)
                 goto 10
             endif
-  1     continue
+        end do
         call utmess('F', 'JEVEUX1_16', sk=nom)
  10     continue
 !
@@ -125,12 +125,12 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
         call jjvern(noml32, icre, iret)
 !
         if (iret .eq. 1 .and. nom(1:2) .eq. '&&') then
-            do 2 k = 1, idpar
+            do k = 1, idpar
                 if (nom .eq. cidpar(k)) then
                     idatr = k
                     goto 20
                 endif
-  2         continue
+            end do
             call utmess('F', 'JEVEUX1_17', sk=nom)
  20         continue
             call jjcren(noml32(1:24)//nom, 0, iret2)
@@ -161,12 +161,12 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
         else
             lcol = .true.
             call jjallc(iclaco, idatco, 'L', ibacol)
-            do 3 k = 1, idnum
+            do k = 1, idnum
                 if (nom .eq. cidnom(k)) then
                     idatr = k
                     goto 30
                 endif
-  3         continue
+            end do
             call utmess('F', 'JEVEUX1_17', sk=nom)
  30         continue
             ixatr = iszon ( jiszon + ibacol + idatr )

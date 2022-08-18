@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vexpan(nb1, vecl1, vecl)
     implicit none
     integer :: nb1, kompt
@@ -27,13 +27,13 @@ subroutine vexpan(nb1, vecl1, vecl)
     integer :: i, i1, i2, ib
 !-----------------------------------------------------------------------
     kompt=-1
-    do 60 ib = 1, nb1
+    do ib = 1, nb1
         kompt=kompt+1
-        do 70 i = 1, 5
+        do i = 1, 5
             i1=5*(ib-1)+i
             i2=i1+kompt
             vecl(i2)=vecl1(i1)
-70      end do
+        end do
         vecl(6*ib)=0.d0
-60  end do
+    end do
 end subroutine

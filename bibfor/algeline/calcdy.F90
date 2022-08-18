@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcdy(mu, k, f0, devg, devgii,&
                   traceg, dfdl, delta, dy)
 !
-    implicit      none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     real(kind=8) :: mu, k, f0, devg(6), devgii, traceg
@@ -56,9 +56,9 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
     ddelta = mun * f0 / dfdl
     delta = delta + ddelta
     dgamp = delta * sqrt(deux/trois) * devgii
-    do 10 ii = 1, ndt
+    do ii = 1, ndt
         dsn(ii) = mun * deux * mu * delta * devg(ii)
-10  end do
+    end do
     dinv = mun * trois * k * delta * traceg
     devp = delta * traceg
 ! ======================================================================
@@ -69,8 +69,8 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
     dy(ndt+2)=dgamp
     dy(ndt+3)=devp
     dy(ndt+4)=ddelta
-
-
+!
+!
 ! ======================================================================
     call jedema()
 ! ======================================================================

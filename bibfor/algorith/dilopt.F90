@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dilopt(dimdef, dimuel, poids, poids2, b,&
                   drde, matuu)
 ! ======================================================================
@@ -33,14 +33,14 @@ subroutine dilopt(dimdef, dimuel, poids, poids2, b,&
     integer :: i, j, kji
     real(kind=8) :: matr1(dimdef, dimuel), matri(dimuel, dimuel)
 ! ======================================================================
-    do 10 i = 1, dimuel
-        do 20 j = 1, dimdef
+    do i = 1, dimuel
+        do j = 1, dimdef
             matr1(j,i)=0.0d0
-20      continue
-        do 50 j = 1, dimuel
+        end do
+        do j = 1, dimuel
             matri(j,i)=0.0d0
-50      continue
-10  end do
+        end do
+    end do
 ! ======================================================================
     call dgemm('N', 'N', dimdef, dimuel, dimdef,&
                1.0d0, drde, dimdef, b, dimdef,&
@@ -51,11 +51,11 @@ subroutine dilopt(dimdef, dimuel, poids, poids2, b,&
                0.0d0, matri, dimuel)
 ! ======================================================================
     kji=1
-    do 30 i = 1, dimuel
-        do 40 j = 1, dimuel
+    do i = 1, dimuel
+        do j = 1, dimuel
             matuu(kji) = matuu(kji)+matri(i,j)
             kji = kji+1
-40      continue
-30  end do
+        end do
+    end do
 ! ======================================================================
 end subroutine

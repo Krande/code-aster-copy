@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine invjac(nno, ipg, ipoids, idfde, coor,&
                   invja, jac)
     implicit none
@@ -45,18 +45,18 @@ subroutine invjac(nno, ipg, ipoids, idfde, coor,&
 !
     g(:,:) = 0.d0
 !
-    do 100 i = 1, nno
+    do i = 1, nno
         k = 3*nno*(ipg-1)
         ii = 3*(i-1)
         de = zr(idfde-1+k+ii+1)
         dn = zr(idfde-1+k+ii+2)
         dk = zr(idfde-1+k+ii+3)
-        do 101 j = 1, 3
+        do j = 1, 3
             g(1,j) = g(1,j) + coor(ii+j) * de
             g(2,j) = g(2,j) + coor(ii+j) * dn
             g(3,j) = g(3,j) + coor(ii+j) * dk
-101      continue
-100  end do
+        end do
+    end do
 !
     call matinv('S', 3, g, invja, jac)
 !

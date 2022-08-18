@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat,&
                   nbcomm, is, nbsys, nfs, nsg,&
                   hsr, vind, dy, dt, dalpha,&
@@ -95,14 +95,14 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat,&
         som=0.d0
         taumu=0.d0
         alphas=vind(3*(is-1)+1)+dy(is)
-        do 1 iu = 1, nbsys
+        do iu = 1, nbsys
             alphar=vind(3*(iu-1)+1)+dy(iu)
 !           PARTIE POSITIVE DE ALPHA
             if (alphar .gt. 0.d0) then
                 taumu = taumu + hsr(is,iu)*alphar
                 if (iu .ne. is) som = som+alphar
             endif
- 1      continue
+        end do
 !
         som=sqrt(som)
         taumu = cisa2 * taumu/tauv
@@ -112,7 +112,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat,&
             aux= (1.d0-(tauef/taur)**p)
             if (aux .le. 0.d0) then
                 iret=1
-                goto 9999
+                goto 999
             endif
 !          PROTECTION DE l'EXPONENTIELLE
             tabs=tempf+273.15d0
@@ -120,7 +120,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat,&
             terme=-deltgg/k/tabs
             if (terme .gt. 10.d0) then
                 iret=1
-                goto 9999
+                goto 999
             endif
             petitg=gamma0*exp(terme)*dt
             dgamma=petitg*sgns
@@ -140,5 +140,5 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat,&
         dp=0.d0
         dalpha=0.d0
     endif
-9999  continue
+999 continue
 end subroutine

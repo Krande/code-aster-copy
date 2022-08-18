@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
                   nelcom, numeli, xy, erreur, energi,&
                   volume, alpha, nalpha)
@@ -109,21 +109,21 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! 2 - INITIALISATION DES ALPHA = DEGRE D INTERPOLATION
 !
-    do 10 inno = 1, nnoem
+    do inno = 1, nnoem
         alphan(inno)= dtyp
-10  end do
-    do 20 inel = 1, nelem
+    end do
+    do inel = 1, nelem
         alpha(inel) = dtyp
-20  end do
+    end do
 !
 ! 3 - CALCUL DES PRECISIONS MOYENNE ET DE REFERENCE
 !
     precmo = 0.d+0
     vol = 0.d+0
-    do 30 inel = 1, nelem
+    do inel = 1, nelem
         precmo = precmo + erreur(inel)**2
         vol = vol + volume(inel)
-30  end do
+    end do
     precmo = sqrt( precmo / vol )
 !
     if (dtyp .eq. 1.0d0) then
@@ -135,7 +135,7 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 ! 4 - BOUCLE SUR LES NOEUDS SOMMET BORD POUR DETECTER
 !     SI LE NOEUD CONSIDERE EST SINGULIER OU PAS
 !
-    do 40 inno = 1, nnoem
+    do inno = 1, nnoem
 !
         if (numeli(2,inno) .ne. 2) goto 40
 !
@@ -144,11 +144,11 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
         prec = 0.0d0
         vol = 0.0d0
 !
-        do 50 inel = 1, numeli(1, inno)
+        do inel = 1, numeli(1, inno)
             nuef=numeli(2+inel,inno)
             prec = prec + erreur(nuef)**2
             vol = vol + volume(nuef)
-50      continue
+        end do
         if (prec .ne. 0.d+0 .and. vol .ne. 0.d+0) then
             prec = sqrt(prec/vol)
         else
@@ -171,17 +171,17 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 !         SI OUI ON DETERMINE PE ET UNIQUEMENT SI NOEU2>NOEU1
 !         POUR EVITER DE FAIRE DEUX FOIS LE CALCUL
 !
-            do 60 i = 1, nbnozo(1)
+            do i = 1, nbnozo(1)
                 noeu2 = tbnozo(i)
                 if (numeli(2,noeu2) .ne. 2) goto 60
                 if (noeu2 .gt. noeu1) then
                     vol = 0.0d0
                     prec = 0.0d0
-                    do 70 inel = 1, numeli(1, noeu2)
+                    do inel = 1, numeli(1, noeu2)
                         nuef=numeli(2+inel,noeu2)
                         prec = prec + erreur(nuef)**2
                         vol = vol + volume(nuef)
-70                  continue
+                    end do
                     if (prec .ne. 0.d+0 .and. vol .ne. 0.d+0) then
                         prec = sqrt(prec/vol)
                     else
@@ -201,21 +201,24 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
                         if (alphan(noeu2) .gt. pe) alphan(noeu2)=pe
                     endif
                 endif
-60          continue
+ 60             continue
+            end do
         endif
-40  end do
+ 40     continue
+    end do
 !
 ! 5 - ON REMPLIT LE TABLEAU ALPHA = DEGRE DE LA SINGULARITE PAR EF
 !
     nalpha = 1
-    do 110 inel = 1, nelem
+    do inel = 1, nelem
         if (icnc(2,inel) .lt. 1) goto 110
-        do 120 inno = 1, icnc(1, inel)
+        do inno = 1, icnc(1, inel)
             alpha(inel) = min(alpha(inel),alphan(icnc(inno+2,inel)))
-120      continue
+        end do
         if (alpha(inel) .lt. dtyp) then
             nalpha = nalpha + 1
         endif
-110  end do
+110     continue
+    end do
 !
 end subroutine

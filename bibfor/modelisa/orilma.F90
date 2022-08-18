@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine orilma(noma, ndim, listma, nbmail, norien,&
                   ntrait, reorie, nbmavo, mailvo)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -33,8 +35,6 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 #include "asterfort/oriema.h"
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: ndim, listma(*), nbmail, norien, ntrait, nbmavo, mailvo(*)
     character(len=8) :: noma
@@ -82,7 +82,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     call jemarq()
-    if (nbmail .eq. 0) goto 9999
+    if (nbmail .eq. 0) goto 999
 !
 ! --- INITIALISATIONS :
 !     ---------------
@@ -114,7 +114,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !     -----------------------------------
     dime1 = .false.
     dime2 = .false.
-    do 10 ima = 1, nbmail
+    do ima = 1, nbmail
         numa = listma(ima)
         call jenuno(jexnum(mailma, numa), nomail)
         ori3(ima) = nomail
@@ -142,7 +142,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
             call utmess('F', 'MODELISA5_98')
         endif
 !
- 10 end do
+    end do
 !
 ! --- RECHERCHE DES MAILLES SUPPORTS
 !
@@ -158,7 +158,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     norieg = 0
     ntrait = 0
 !
-    do 100 ima = 1, nbmail
+    do ima = 1, nbmail
 !
         nomail = ori3(ima)
         tpmail = ori4(ima)
@@ -178,7 +178,8 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
         norieg = norieg + noriem
 !
-100 end do
+100     continue
+    end do
 !
     norien = norien + norieg
 !
@@ -188,6 +189,6 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     AS_DEALLOCATE(vk8=ori4)
     call jedetr(nomob1)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jedupc(clain, schin, ipos, claout, schout,&
                   dupcol)
     implicit none
@@ -90,9 +90,9 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
         ncla1 = index ( classe , kclas)
         ncla2 = ncla1
     endif
-    do 100 icin = ncla1, ncla2
+    do icin = ncla1, ncla2
         kclas = classe(icin:icin)
-        do 150 j = 1, nremax(icin)
+        do j = 1, nremax(icin)
             nomin = rnom(jrnom(icin)+j)
             if (nomin(1:1) .eq. '?' .or. nomin(25:32) .ne. '        ') goto 150
             if (schin .eq. nomin(ipos:ipos+l1-1)) then
@@ -100,8 +100,9 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
                 nomout = nomout(1:ipos-1)//schou2(1:l2)//nomout(ipos+ l1:32)
                 call jedupo(nomin, claout, nomout, dupcol)
             endif
-150     continue
-100 end do
+150         continue
+        end do
+    end do
 ! FIN ------------------------------------------------------------------
 !
 !

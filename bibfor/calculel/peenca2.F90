@@ -15,14 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
-                  ztot, option, nbproc, rang)
+!
+subroutine peenca2(champ, long, vr, nbmail, nummai,&
+                   ligrel, nbgr, ztot, option, nbproc,&
+                   rang)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/assert.h"
 #include "asterfort/digdel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -60,65 +61,68 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
     call jeveuo(champ//'.CELD', 'L', vi=celd)
     icoef=max(1,celd(4))
     call jeveuo(champ//'.CELV', 'L', vr=celv)
-    do k=1,long
-      vr(k)=0.d0
+    do k = 1, long
+        vr(k)=0.d0
     enddo
 !
 ! Activation du parallelisme en espace pour construire la connectivite inverse
     ldist2=.true.
-    if (nbmail.lt.nbproc) ldist2=.false.
+    if (nbmail .lt. nbproc) ldist2=.false.
 !
 !-----------------------------------------------------------------------------
 ! PREMIER PASSAGE: CALCUL CONNECTIVITE INVERSE ET CALCUL ENERGIE
 !                  SI LDIST2=.TRUE. CALCUL CONNECTIVITE EN PARALLELE MPI
 !-----------------------------------------------------------------------------
 !
-    if (option.lt.0) then
+    if (option .lt. 0) then
 ! Init.
-      ind=-option
-      call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
+        ind=-option
+        call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
 ! Objet pour stocker et mutualiser la connectivite inverse
-      call jeveuo('&&PEEPOT_peenca', 'E', jad)
+        call jeveuo('&&PEEPOT_peenca', 'E', jad)
 ! Remplissage objet nbelem pour gagner le temps des jelira ds nbelem
-      call wkvect('&&PEECA2_nbelem','V V I',nbgr,jnbgr)
-      do j=1,nbgr
-        zi(jnbgr+j-1)=nbelem(ligrel,j)
-      enddo
+        call wkvect('&&PEECA2_nbelem', 'V V I', nbgr, jnbgr)
+        do j = 1, nbgr
+            zi(jnbgr+j-1)=nbelem(ligrel,j)
+        enddo
 !
-      if (.not.ldist2) then
+        if (.not.ldist2) then
 !
 !-----------------------------------------------------------------------------
 !     CALCUL CONNECTIVITE INVERSE (PART I) + ENERGIE (PART II) EN SEQUENTIEL
 !-----------------------------------------------------------------------------
 !PART I + II
-        do 40 im = 1, nbmail
-          inum = 0
-          numim=nummai(im)
-          do 42 j = 1, nbgr
-            iaux=celd(4+j)+2
-            mode=celd(iaux)
-            nel=zi(jnbgr+j-1)
-            if (mode .eq. 0) then
-              inum = inum + nel + 1
-              goto 42
-            endif
-            longt = digdel(mode)
-            longt = longt * icoef
-            idecgr=celd(iaux+6)
-            do 44 k = 1, nel
-              iel = liel(1+inum+k-1)
-              if (iel .ne. numim) goto 44
-              zi(jad+2*(ind-1))=j
-              zi(jad+2*(ind-1)+1)=k
-              ind=ind+1
-              vr(1) = vr(1)+ celv(idecgr+(k-1)*longt)
-              goto 40
-44          continue
-            inum = inum + nel + 1
-42        continue
-40      continue
+            do im = 1, nbmail
+                inum = 0
+                numim=nummai(im)
+                do j = 1, nbgr
+                    iaux=celd(4+j)+2
+                    mode=celd(iaux)
+                    nel=zi(jnbgr+j-1)
+                    if (mode .eq. 0) then
+                        inum = inum + nel + 1
+                        goto 42
+                    endif
+                    longt = digdel(mode)
+                    longt = longt * icoef
+                    idecgr=celd(iaux+6)
+                    do k = 1, nel
+                        iel = liel(1+inum+k-1)
+                        if (iel .ne. numim) goto 44
+                        zi(jad+2*(ind-1))=j
+                        zi(jad+2*(ind-1)+1)=k
+                        ind=ind+1
+                        vr(1) = vr(1)+ celv(idecgr+(k-1)*longt)
+                        goto 40
+ 44                     continue
+                    end do
+                    inum = inum + nel + 1
+ 42                 continue
+                end do
+ 40             continue
+            end do
 !
-      else
+        else
 !
 !-----------------------------------------------------------------------------
 ! PART I: CALCUL CONNECTIVITE INVERSE EN PARALLELE MPI (FILTRE VIA &PEECA2_vldist)
@@ -127,95 +131,97 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
 !PART I
 ! Filtre MPI type distribution de carte. Le reliquat est fait par tout le monde
 ! donc on ne le communique pas: pour les mailles de nbpas2*proc+1 jusqua nbmail
-        call wkvect('&&PEECA2_vldist','V V I',nbmail,jldist2)
-        call vecint(nbmail,rang,zi(jldist2))
+            call wkvect('&&PEECA2_vldist', 'V V I', nbmail, jldist2)
+            call vecint(nbmail, rang, zi(jldist2))
 ! Determination du nbre de pas paralleles mpi: nbpas2
-        nbpas2=nbmail/nbproc
-        iaux1=0
-        do k=1,nbpas2*nbproc
-          if (iaux1.gt.(nbproc-1)) iaux1=0
-          zi(jldist2+k-1)=iaux1
-          iaux1=iaux1+1
-        enddo
-        lluck=.false.
-        do 240 im = 1, nbmail
+            nbpas2=nbmail/nbproc
+            iaux1=0
+            do k = 1, nbpas2*nbproc
+                if (iaux1 .gt. (nbproc-1)) iaux1=0
+                zi(jldist2+k-1)=iaux1
+                iaux1=iaux1+1
+            enddo
+            lluck=.false.
+            do im = 1, nbmail
 ! Filtre MPI
-          if (zi(jldist2+im-1).eq.rang) then
-            numim=nummai(im)
-            ind1=ind+im-1
-            if (lluck) then
-              k=k+1
-              iel = liel(1+inum+k-1)
-              if (iel .eq. numim) then
-                zi(jad+2*(ind1-1))=j
-                zi(jad+2*(ind1-1)+1)=k
-                if (k.eq.nel) then
-                  lluck=.false.
-                  inum = 0
-                else
-                  lluck=.true.
-                endif
-                goto 239
-              else
-                lluck=.false.
-                inum = 0
-              endif
-            else
-              inum = 0
-            endif
-            do 242 j = 1, nbgr
-              iaux=celd(4+j)+2
-              mode=celd(iaux)
-              nel=zi(jnbgr+j-1)
-              if (mode .eq. 0) then
-                inum = inum + nel + 1
-                goto 242
-              endif
-              do 244 k = 1, nel
-                iel = liel(1+inum+k-1)
-                if (iel .ne. numim) goto 244
-                if (k.eq.nel) then
-                  lluck=.false.
-                else
-                  lluck=.true.
-                endif
-                zi(jad+2*(ind1-1))=j
-                zi(jad+2*(ind1-1)+1)=k
-                goto 239
-244            continue
-              inum = inum + nel + 1
-242          continue
-239          continue
+                if (zi(jldist2+im-1) .eq. rang) then
+                    numim=nummai(im)
+                    ind1=ind+im-1
+                    if (lluck) then
+                        k=k+1
+                        iel = liel(1+inum+k-1)
+                        if (iel .eq. numim) then
+                            zi(jad+2*(ind1-1))=j
+                            zi(jad+2*(ind1-1)+1)=k
+                            if (k .eq. nel) then
+                                lluck=.false.
+                                inum = 0
+                            else
+                                lluck=.true.
+                            endif
+                            goto 239
+                        else
+                            lluck=.false.
+                            inum = 0
+                        endif
+                    else
+                        inum = 0
+                    endif
+                    do j = 1, nbgr
+                        iaux=celd(4+j)+2
+                        mode=celd(iaux)
+                        nel=zi(jnbgr+j-1)
+                        if (mode .eq. 0) then
+                            inum = inum + nel + 1
+                            goto 242
+                        endif
+                        do k = 1, nel
+                            iel = liel(1+inum+k-1)
+                            if (iel .ne. numim) goto 244
+                            if (k .eq. nel) then
+                                lluck=.false.
+                            else
+                                lluck=.true.
+                            endif
+                            zi(jad+2*(ind1-1))=j
+                            zi(jad+2*(ind1-1)+1)=k
+                            goto 239
+244                         continue
+                        end do
+                        inum = inum + nel + 1
+242                     continue
+                    end do
+239                 continue
 ! Fin du filtre
-           endif
-240     continue
+                endif
+            end do
 ! Nettoyage filtre et communication MPI associee (sauf le reliquat)
-        call jedetr('&&PEECA2_vldist')
-        iaux1=jad+2*(ind-1)
-        call asmpi_comm_vect('MPI_SUM','I',nbval=2*nbpas2*nbproc,vi=zi(iaux1))
+            call jedetr('&&PEECA2_vldist')
+            iaux1=jad+2*(ind-1)
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=2*nbpas2*nbproc, vi=zi(iaux1))
 !
 !PART II
 ! Calcul energie proprement dit via la connectivite nouvellement cree
-        do im = 1, nbmail
-          j=zi(jad+2*(ind-1))
-          k=zi(jad+2*(ind-1)+1)
+            do im = 1, nbmail
+                j=zi(jad+2*(ind-1))
+                k=zi(jad+2*(ind-1)+1)
 ! On teste au cas ou afin de ne pas oublier des mailles.
 ! Visiblement cest acceptee pour cette option (cf. MA99 avec ssla200a)
-          if (j <=0 .or. k<=0) then
-              cycle
-          endif
-          ind=ind+1
-          iaux=celd(4+j)+2
-          mode=celd(iaux)
-          longt = digdel(mode) * icoef
-          idecgr=celd(iaux+6)
-          vr(1) = vr(1)+ celv(idecgr+(k-1)*longt)
-        enddo
-      endif
+                if (j <=0 .or. k<=0) then
+                    cycle
+                endif
+                ind=ind+1
+                iaux=celd(4+j)+2
+                mode=celd(iaux)
+                longt = digdel(mode) * icoef
+                idecgr=celd(iaux+6)
+                vr(1) = vr(1)+ celv(idecgr+(k-1)*longt)
+            enddo
+        endif
 ! Nettoyage objet pour mutualisation nbelem
-      call jedetr('&&PEECA2_nbelem')
+        call jedetr('&&PEECA2_nbelem')
 ! Renvoi a la routine appelante de l'increment
-      option=-ind
+        option=-ind
 !
 !-----------------------------------------------------------------------------
 ! PASSAGES SUIVANTS: QUE CALCUL ENERGIE GRACE A LA CONNECTIVITE CALCULEE AU
@@ -224,25 +230,25 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
 !
     else
 ! Init.
-      call jeveuo('&&PEEPOT_peenca', 'L', jad)
-      ind=option
+        call jeveuo('&&PEEPOT_peenca', 'L', jad)
+        ind=option
 ! Calcul energie proprement dit via la connectivite cree au premier pas
-      do 140 im = 1, nbmail
-        j=zi(jad+2*(ind-1))
-        k=zi(jad+2*(ind-1)+1)
+        do im = 1, nbmail
+            j=zi(jad+2*(ind-1))
+            k=zi(jad+2*(ind-1)+1)
 ! On teste au cas ou afin de ne pas oublier des mailles.
 ! Visiblement cest acceptee pour cette option (cf. MA99 avec ssla200a)
-        if (j <=0 .or. k<=0) then
-            cycle
-        endif
-        ind=ind+1
-        iaux=celd(4+j)+2
-        mode=celd(iaux)
-        longt = digdel(mode) * icoef
-        idecgr=celd(iaux+6)
-        vr(1) = vr(1)+ celv(idecgr+(k-1)*longt)
-140   continue
-      option=ind
+            if (j <=0 .or. k<=0) then
+                cycle
+            endif
+            ind=ind+1
+            iaux=celd(4+j)+2
+            mode=celd(iaux)
+            longt = digdel(mode) * icoef
+            idecgr=celd(iaux+6)
+            vr(1) = vr(1)+ celv(idecgr+(k-1)*longt)
+        end do
+        option=ind
     endif
 !
 !-----------------------------------------------------------------------------
@@ -250,9 +256,9 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
 !-----------------------------------------------------------------------------
 !
     if (( vr(1).lt.r8prem() ) .and. ( ztot.lt.r8prem() )) then
-      vr(2) = 0.0d0
+        vr(2) = 0.0d0
     else
-      vr(2) = 100.0d0 * vr(1) / ztot
+        vr(2) = 100.0d0 * vr(1) / ztot
     endif
 !
     call jedema()

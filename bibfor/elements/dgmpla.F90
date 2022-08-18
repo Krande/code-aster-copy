@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dgmpla(eb, nub, ea, sya, num,&
                   nuf, h, a, b1, b,&
                   nnap, rx, ry, mp, drp,&
                   w)
 !
-    implicit   none
+    implicit none
 !
 ! - PARAMETRES ENTRANTS
 !
@@ -67,12 +67,12 @@ subroutine dgmpla(eb, nub, ea, sya, num,&
     p=(rx(1)+ry(1))/2.d0
     drp=abs(sya(1)/(ea(1)*(d3+p*h)))
 !
-    do 10, ilit1 = 1,nnap
-    p=(rx(ilit1)+ry(ilit1))/2.d0
-    if (abs(sya(ilit1)/(ea(ilit1)*(d3-p*h))) .lt. drp) then
-        drp=abs(sya(ilit1)/(ea(ilit1)*(d3-p*h)))
-    endif
-    10 end do
+    do ilit1 = 1, nnap
+        p=(rx(ilit1)+ry(ilit1))/2.d0
+        if (abs(sya(ilit1)/(ea(ilit1)*(d3-p*h))) .lt. drp) then
+            drp=abs(sya(ilit1)/(ea(ilit1)*(d3-p*h)))
+        endif
+    end do
 !
     ilit1 = nnap
     d4=eb/(1.d0-nub**2)*(-(1.d0-nub*num)*d3*h**2/8.d0*&

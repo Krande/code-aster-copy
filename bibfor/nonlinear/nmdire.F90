@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
                   grlt, compo, vect)
 !
@@ -47,7 +47,7 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
 !
 !
 !
-    integer ::   jgrtno, i
+    integer :: jgrtno, i
     real(kind=8) :: norm(3), tang(3), normn
     real(kind=8) :: tang2(3), normt
     real(kind=8) :: lsn1, lsn2, eps
@@ -69,14 +69,14 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
     tang(3)=0.d0
 !
     if ((abs(lsn1).le.eps) .and. (abs(lsn2).le.eps)) then
-        do 95 i = 1, ndim
+        do i = 1, ndim
             norm(i) = norm(i)+ grnno(ndim*(noeu1-1)+i)
-95      continue
+        end do
     else
-        do 91 i = 1, ndim
-            norm(i) = norm(i)+ abs(lsn1)*grnno(ndim*(noeu2-1)+i) + abs(lsn2)*grnno(nd&
-                      &im*(noeu1-1)+i)
-91      continue
+        do i = 1, ndim
+            norm(i) = norm(i)+ abs(lsn1)*grnno(ndim*(noeu2-1)+i) + abs(lsn2)*grnno(ndim*(noeu1-1)&
+                      &+i)
+        end do
     endif
     normn=sqrt(norm(1)**2+norm(2)**2+norm(3)**2)
     norm(1)=norm(1)/normn
@@ -106,7 +106,7 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
         endif
     endif
 !
-    do 92 i = 1, ndim
+    do i = 1, ndim
         if (compo .eq. 'DNOR') then
             vect(i)=norm(i)
         else if (compo.eq.'DTAN2') then
@@ -114,5 +114,5 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
         else if (compo.eq.'DTAN') then
             vect(i)=tang(i)
         endif
-92  continue
+    end do
 end subroutine

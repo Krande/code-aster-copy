@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utcmp3(nbcmp, nomcmp, numcmp)
     implicit none
 #include "asterfort/lxliis.h"
@@ -37,7 +37,7 @@ subroutine utcmp3(nbcmp, nomcmp, numcmp)
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
 !
-    do 10 i = 1, nbcmp
+    do i = 1, nbcmp
         nom = nomcmp(i)
         numcmp(i) = 0
 !
@@ -48,6 +48,6 @@ subroutine utcmp3(nbcmp, nomcmp, numcmp)
             valk (2) = 'VARI_R'
             call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
         endif
-10  end do
+    end do
 !
 end subroutine

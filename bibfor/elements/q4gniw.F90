@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine q4gniw(qsi, eta, caraq4, dba, wsq)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, caraq4(*), dba(2, 12), wsq(12)
 !     INTERPOLATION DE LA FLECHE AU POINTS D'INTEGRATION POUR LE Q4G
 !     ------------------------------------------------------------------
@@ -59,14 +59,14 @@ subroutine q4gniw(qsi, eta, caraq4, dba, wsq)
 !     --- RAPPEL DE LA DISTORSION ( DBA ) ---------------
 !
 !     --- FONCTIONS D'INTERPOLATION DU DSQ DANS LE REPERE LOCAL --------
-    do 140 j = 1, 12
+    do j = 1, 12
         wsq(j) = (&
                  - dba(1,j)*x5 + dba(2,j)*x8) * n(2) + (- dba(1,j)* y5 + dba(2,j)*y8) * n(2) + (-&
                  & dba(1,j)*x5 - dba(2,j)*x6) * n( 5) + (- dba(1,j)*y5 - dba(2,j)*y6) * n(5) + ( &
                  &dba(1,j)*x7 - dba(2,j)*x6) * n(8) + ( dba(1,j)*y7 - dba(2,j)*y6) * n(8) + ( dba&
                  &(1,j)*x7 + dba(2,j)*x8) * n(11) + ( dba(1,j)*y7 + dba( 2,j)*y8) * n(11&
                  )
-140  end do
+    end do
 !
 ! ----- FONCTIONS D'INTERPOLATION DANS LE REPERE LOCAL -------------
     wsq(1) = wsq(1) + n(1)

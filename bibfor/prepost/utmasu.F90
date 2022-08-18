@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
                   coor, nbmavo, mailvo, coince)
     implicit none
@@ -120,26 +120,26 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !
 !   -- on remplit nomob1 :
 !   ----------------------
-    do 100 ima = 1, nlima
+    do ima = 1, nlima
         numa = lima(ima)
         nutyma=typmail(numa)
         nnoe = zi(p2+numa)-zi(p2-1+numa)
         ASSERT(nnoe .le. 27)
-        do 80 ino = 1, nnoe
+        do ino = 1, nnoe
             lisnoe(ino) = zi(p1-1+zi(p2+numa-1)+ino-1)
- 80     continue
+        end do
         nbmat = zi(p4+ima+1-1) - zi(p4+ima-1)
         nbm = 0
-        do 10 i = 1, nbmat
+        do i = 1, nbmat
             im2 = zi(p3+zi(p4+ima-1)-1+i-1)
             if (im2 .eq. 0) goto 10
             if (zi(p1+zi(p2+im2-1)-1) .eq. 0) goto 10
             nnoem = zi(p2+im2) - zi(p2-1+im2)
 !
-            do 12 k = 1, nnoe
+            do k = 1, nnoe
                 indi = indiis(zi(p1+zi(p2+im2-1)-1),lisnoe(k),1,nnoem)
                 if (indi .eq. 0) goto 10
- 12         continue
+            end do
             nbm = nbm + 1
             if (nbm .eq. 1) then
                 zi(jm3d+ima-1) = im2
@@ -185,7 +185,8 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
                     endif
                 endif
             endif
- 10     continue
+ 10         continue
+        end do
 !
 !
         if (nbm .eq. 0 .and. niv .gt. 1) then
@@ -200,7 +201,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
             first = .true.
         endif
 !
-100 end do
+    end do
 !
     call jedetr(nomavo)
     call jedema()

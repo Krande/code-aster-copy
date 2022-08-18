@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rogllo(nb1, nb2, vrg, blam, ctor,&
                   knn)
 !
@@ -65,43 +65,43 @@ subroutine rogllo(nb1, nb2, vrg, blam, ctor,&
 !
 !---- EN CHAQUE NOEUD
 !
-    do 401 in = 1, nb2
+    do in = 1, nb2
 !
 !------- ON RECUPERE BARLAMBDA
 !
-        do 411 jj = 1, 3
-            do 422 ii = 1, 3
+        do jj = 1, 3
+            do ii = 1, 3
 !
                 barl ( ii , jj ) = blam ( in , ii , jj )
 !
-422          continue
-411      continue
+            end do
+        end do
 !
 !-------    ON CONSTRUIT RIGRG
 !
         if (in .le. nb1) then
 !
 !--------------    NOEUDS DE SERENDIP
-            do 431 jj = 1, 3
-                do 441 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     j = 6 * ( in - 1 ) + jj + 3
                     i = 6 * ( in - 1 ) + ii + 3
                     irig = ( 6 * nb1 + 3 ) * ( j - 1 ) + i
                     rigrg ( ii , jj ) = vrg ( irig )
-441              continue
-431          continue
+                end do
+            end do
 !
         else
 !
 !--------------    SUPERNOEUD
-            do 451 jj = 1, 3
-                do 461 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     j = 6 * nb1 + jj
                     i = 6 * nb1 + ii
                     irig = ( 6 * nb1 + 3 ) * ( j - 1 ) + i
                     rigrg ( ii , jj ) = vrg ( irig )
-461              continue
-451          continue
+                end do
+            end do
 !
         endif
 !
@@ -122,7 +122,7 @@ subroutine rogllo(nb1, nb2, vrg, blam, ctor,&
             xmin = abs(rigrl ( 2 , 2 ))
         endif
 !
-401  continue
+    end do
 !
     knn = ctor * xmin
 !

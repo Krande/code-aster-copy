@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utmam2(modele, nbma, nbtrou, tatrou)
     implicit none
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     integer :: nbma, nbtrou, tatrou(nbma)
     character(len=8) :: modele
 !
@@ -70,20 +70,20 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 !
     nbtrou = 0
 !
-    do 10, ima=1,nbmail
-    if (maille(ima) .gt. 0) then
-        nbtrou=nbtrou+1
-        liste_m_temp(nbtrou)=ima
-    endif
-    10 end do
+    do ima = 1, nbmail
+        if (maille(ima) .gt. 0) then
+            nbtrou=nbtrou+1
+            liste_m_temp(nbtrou)=ima
+        endif
+    end do
 !
-    if (nbtrou .eq. 0) goto 9999
+    if (nbtrou .eq. 0) goto 999
 !
-    do 20 itrou = 1, nbtrou
+    do itrou = 1, nbtrou
         tatrou(itrou) = liste_m_temp(itrou)
-20  end do
+    end do
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

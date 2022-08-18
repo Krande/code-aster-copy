@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function jjcodn(icre, nomrep, nomec, irep, crep,&
                 nmax, nuti)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -57,9 +57,9 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
                 call utmess('F', 'JEVEUX1_33', sk=valk(2))
             else
                 j = nuti + 1
-                do 12 k = 1, ll
+                do k = 1, ll
                     crep(idenom+lnom*(j-1)+k) = nomec(k:k)
- 12             continue
+                end do
                 nuti = nuti + 1
                 irep(iluti) = nuti
                 irep(idehco+i) = j
@@ -74,12 +74,12 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
         endif
     else
         j = irep(idehco+i)
-        do 15 k = 1, ll
+        do k = 1, ll
             cle(k:k) = crep(idenom+lnom*(abs(j)-1)+k)
- 15     continue
-        do 16 k = ll+1, 32
+        end do
+        do k = ll+1, 32
             cle(k:k) = ' '
- 16     continue
+        end do
         if (cle .eq. nom) then
             if (icre .eq. 3) then
                 call utmess('F', 'JEVEUX1_35', nk=2, valk=valk)
@@ -117,9 +117,9 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
  10 continue
     if (rinser) then
         irep(idehco+iin) = -jin
-        do 25 k = 1, ll
+        do k = 1, ll
             crep(idenom+lnom*(-jin-1)+k) = nomec(k:k)
- 25     continue
+        end do
         iret = -jin
     endif
     jjcodn = iret

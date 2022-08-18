@@ -15,20 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
                   nsingm, ffe, ffm, norm, jgeom,&
                   jdepde, fk_escl, fk_mait, jddle, jddlm,&
-                  nfhe, nfhm, lmulti, heavn, heavfa, jeuca)
+                  nfhe, nfhm, lmulti, heavn, heavfa,&
+                  jeuca)
 !
 !
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/indent.h"
-#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
+!
     integer :: ndim
     real(kind=8) :: norm(3)
     real(kind=8) :: ffe(20), ffm(20)
@@ -36,7 +37,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     integer :: jgeom, jdepde
     integer :: jnnm(3), jnne(3), jddle(2), jddlm(2)
     integer :: nsinge, nsingm, nfhe, nfhm, heavfa(*), heavn(*)
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3)
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -97,84 +98,81 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     posm(:) = 0.d0
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
     if (.not.lmulti) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+        hea_fa(1)=xcalc_code(1,he_inte=[-1])
+        hea_fa(2)=xcalc_code(1,he_inte=[+1])
     endif
 !
 ! --- CALCUL DE LA POSITION COURANTE DU POINT ESCLAVE
 !
-    do 10 idim = 1, ndim
-        do 20 inoes = 1, ndeple
+    do idim = 1, ndim
+        do inoes = 1, ndeple
             call indent(inoes, ddles, ddlem, nnes, in)
             if (nnm .ne. 0) then
                 if (lmulti) then
-                    do 30 ifh = 1, nfhe
+                    do ifh = 1, nfhe
                         iescl(1+ifh)=xcalc_heav(heavn(nfhe*(inoes-1)+ifh),&
                                                 heavfa(1),&
                                                 heavn(nfhe*nne+nfhm*nnm+inoes))
- 30                 continue
+                    end do
                 else
-                        iescl(2)=xcalc_heav(heavn(inoes),&
+                    iescl(2)=xcalc_heav(heavn(inoes),&
                                             hea_fa(1),&
                                             heavn(nfhe*nne+nfhm*nnm+inoes))
                 endif
                 pos = zr(jgeom-1+ndim*(inoes-1)+idim)
-                do 40 iddl = 1, 1+nfhe
+                do iddl = 1, 1+nfhe
                     pl = in + (iddl-1)*ndim + idim
                     pos = pos + iescl(iddl)*zr(jdepde-1+pl)
- 40             continue
+                end do
                 pose(idim) = pose(idim) + pos*ffe(inoes)
-                do 41 alp = 1, ndim*nsinge
+                do alp = 1, ndim*nsinge
                     pl = in + (1+nfhe+nsinge-1)*ndim + alp
-                    pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)*&
-                                              zr(jdepde-1+pl)
- 41             continue
-
+                    pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)* zr(jdepde-1+pl)
+                end do
+!
             else
-              do alp = 1,ndim*nsinge
-                pl = in + alp
-                pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)*&
-                                          zr( jdepde-1+pl)
-              enddo
+                do alp = 1, ndim*nsinge
+                    pl = in + alp
+                    pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)* zr( jdepde-1+pl)
+                enddo
             endif
- 20     continue
- 10 end do
+        end do
+    end do
 !
 ! --- CALCUL DE LA POSITION COURANTE DU POINT MAITRE
 !
-    do 50 idim = 1, ndim
-        do 60 inom = 1, nnm
+    do idim = 1, ndim
+        do inom = 1, nnm
             call indent(inom, ddlms, ddlmm, nnms, in)
             in = in + nddle
             if (lmulti) then
-                do 70 ifh = 1, nfhm
+                do ifh = 1, nfhm
                     imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh),&
                                             heavfa(2),&
                                             heavn((1+nfhe)*nne+nfhm*nnm+inom))
- 70             continue
+                end do
             else
-                    imait(2)=xcalc_heav(heavn(nne+inom),&
+                imait(2)=xcalc_heav(heavn(nne+inom),&
                                         hea_fa(2),&
                                         heavn((1+nfhe)*nne+nfhm*nnm+inom))
             endif
             pos = zr(jgeom-1+nne*ndim+(inom-1)*ndim+idim)
-            do 80 iddl = 1, 1+nfhm
+            do iddl = 1, 1+nfhm
                 pl = in + (iddl-1)*ndim + idim
                 pos = pos + imait(iddl)*zr(jdepde-1+pl)
- 80         continue
+            end do
             posm(idim) = posm(idim) + pos*ffm(inom)
-            do alp = 1,ndim*nsingm
+            do alp = 1, ndim*nsingm
                 pl = in + (1+nfhm+nsingm-1)*ndim + alp
-              posm(idim) = posm(idim) + fk_mait(inom,alp,idim)*&
-                                        zr( jdepde-1+pl)
+                posm(idim) = posm(idim) + fk_mait(inom,alp,idim)* zr( jdepde-1+pl)
             enddo
- 60     continue
- 50 end do
+        end do
+    end do
 !
 ! --- CALCUL DU JEU
 !
-    do 90 idim = 1, ndim
+    do idim = 1, ndim
         jeuca = jeuca + norm(idim)*(pose(idim)-posm(idim))
- 90 end do
+    end do
 !
 end subroutine

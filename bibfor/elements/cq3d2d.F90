@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     implicit none
 #include "asterfort/trigom.h"
@@ -55,12 +55,12 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
         na1a2 = 0.d0
         na1a3 = 0.d0
 !
-        do 10 i = 1, 3
+        do i = 1, 3
             va1a2(i) = coor3d(3+i) - coor3d(i)
             va1a3(i) = coor3d(6+i) - coor3d(i)
             na1a2 = na1a2 + va1a2(i)**2
             na1a3 = na1a3 + va1a3(i)**2
-10      end do
+        end do
         na1a2 = sqrt(na1a2)
         na1a3 = sqrt(na1a3)
         pvec1 = va1a2(2)*va1a3(3) - va1a2(3)*va1a3(2)
@@ -74,9 +74,9 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
         coor2d(4) = -na1a2*siteta
 !
         pscal = 0.d0
-        do 20 i = 1, 3
+        do i = 1, 3
             pscal = pscal + va1a2(i)*va1a3(i)
-20      end do
+        end do
 !
         sigama = norme/ (na1a2*na1a3)
         if (sigama .gt. 1.d0) sigama = 1.d0
@@ -90,11 +90,11 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
         coor2d(6) = na1a3*sin(alpha)
 !
         if ((nno.eq.6) .or. (nno.eq.7)) then
-            do 30 i = 1, 2
+            do i = 1, 2
                 coor2d(i+6) = (coor2d(i+2)+coor2d(i))/2.d0
                 coor2d(i+8) = (coor2d(i+4)+coor2d(i+2))/2.d0
                 coor2d(i+10) = (coor2d(i)+coor2d(i+4))/2.d0
-30          continue
+            end do
         endif
 !
         if (nno .eq. 7) then
@@ -110,7 +110,7 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
         na1a3 = 0.d0
         na1a4 = 0.d0
 !
-        do 50 i = 1, 3
+        do i = 1, 3
             va1a2(i) = coor3d(3+i) - coor3d(i)
             va1a3(i) = coor3d(6+i) - coor3d(i)
             va1a4(i) = coor3d(9+i) - coor3d(i)
@@ -118,7 +118,7 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
             na1a2 = na1a2 + va1a2(i)**2
             na1a3 = na1a3 + va1a3(i)**2
             na1a4 = na1a4 + va1a4(i)**2
-50      end do
+        end do
         na1a2 = sqrt(na1a2)
         na1a3 = sqrt(na1a3)
         na1a4 = sqrt(na1a4)
@@ -142,10 +142,10 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
 !
         ppscal = 0.d0
         qpscal = 0.d0
-        do 60 i = 1, 3
+        do i = 1, 3
             ppscal = ppscal + va1a2(i)*va1a3(i)
             qpscal = qpscal + va1a2(i)*va1a4(i)
-60      end do
+        end do
 !
         sigama = pnorme/ (na1a2*na1a3)
         if (sigama .gt. 1.d0) sigama = 1.d0
@@ -170,12 +170,12 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
         coor2d(8) = na1a4*sin(alpha2)
 !
         if ((nno.eq.8) .or. (nno.eq.9)) then
-            do 70 i = 1, 2
+            do i = 1, 2
                 coor2d(i+8) = (coor2d(i+2)+coor2d(i))/2.d0
                 coor2d(i+10) = (coor2d(i+4)+coor2d(i+2))/2.d0
                 coor2d(i+12) = (coor2d(i+6)+coor2d(i+4))/2.d0
                 coor2d(i+14) = (coor2d(i)+coor2d(i+6))/2.d0
-70          continue
+            end do
         endif
 !
         if (nno .eq. 9) then

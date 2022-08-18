@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
                   tau1, tau2, mu, nddls, jac,&
-                  ffc, ffp, nddlm, wsaut,&
-                  saut, vect, ifiss, nfiss, nfh,&
-                  ifa, jheafa, ncomph,&
-                  jheavn, ncompn, pf)
-
+                  ffc, ffp, nddlm, wsaut, saut,&
+                  vect, ifiss, nfiss, nfh, ifa,&
+                  jheafa, ncomph, jheavn, ncompn, pf)
+!
 !
 !
     implicit none
@@ -82,23 +81,23 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
     am(:) = 0.d0
     lmultc = nfiss.gt.1
     if (.not.lmultc) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+        hea_fa(1)=xcalc_code(1,he_inte=[-1])
+        hea_fa(2)=xcalc_code(1,he_inte=[+1])
     else
-      hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
-      hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
+        hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
+        hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
     endif
 !
-    do 17 i = 1, ndim
+    do i = 1, ndim
         p(1,i) = nd(i)
-17  continue
-    do 18 i = 1, ndim
+    end do
+    do i = 1, ndim
         p(2,i) = tau1(i)
-18  continue
+    end do
     if (ndim .eq. 3) then
-        do 19 i = 1, ndim
+        do i = 1, ndim
             p(3,i) = tau2(i)
-19      continue
+        end do
     endif
 ! calcul du saut de deplacement am en base locale
     call prmave(0, p, 3, ndim, ndim,&
@@ -111,17 +110,18 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
 ! on reecrit tout
 ! remplissage L1mu
     do i = 1, nnop
-        call hmdeca(i, nddls, nddlm, nnops, in, dec)
+        call hmdeca(i, nddls, nddlm, nnops, in,&
+                    dec)
 !
         do ifh = 1, nfh
-           coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
-                              hea_fa(1), &
-                              hea_fa(2),&
-                              zi(jheavn-1+ncompn*(i-1)+ncompn))
-
-           do j = 1, ndim
-               vect(in+(ndim+dec)*ifh+j) = vect(in+(ndim+dec)*ifh+j)+ coefi*mug(j)*ffp(i)*jac
-           end do
+            coefi = xcalc_saut(&
+                    zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
+                    zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                    )
+!
+            do j = 1, ndim
+                vect(in+(ndim+dec)*ifh+j) = vect(in+(ndim+dec)*ifh+j)+ coefi*mug(j)*ffp(i)*jac
+            end do
         end do
     end do
 ! remplissage L1u

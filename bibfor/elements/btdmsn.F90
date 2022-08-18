@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
                   btdm, btdf, btds, btild)
 !
@@ -47,17 +47,17 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !     BTILD =  BTDF + BTDM  : BTDF, BTDM , BTDS
 !              BTDS           OBTENUES PAR INTEGRATION REDUITE
 !
-        do 14 i = 1, 3
-            do 15 j = 1, 5*nb1+2
+        do i = 1, 3
+            do j = 1, 5*nb1+2
                 btild(i,j)=btdf(i,j)+btdm(intsn,i,j)
-15          end do
-14      end do
+            end do
+        end do
 !
-        do 16 i = 1, 2
-            do 17 j = 1, 5*nb1+2
+        do i = 1, 2
+            do j = 1, 5*nb1+2
                 btild(3+i,j)=btds(intsn,i,j)
-17          end do
-16      end do
+            end do
+        end do
 !
     else if (ind.eq.1) then
 !
@@ -66,14 +66,14 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !              BTDS           BTDM, BTDS INTEGRATION REDUITE
 !
 !
-        do 20 j = 1, 5*nb1+2
-            do 10 i = 1, 2
+        do j = 1, 5*nb1+2
+            do i = 1, 2
                 btdm1=0.d0
                 btds1=0.d0
-                do 30 k = 1, npgsr
+                do k = 1, npgsr
                     btdm1=btdm1+xr(i1+k)*btdm(k,i,j)
                     btds1=btds1+xr(i1+k)*btds(k,i,j)
-30              end do
+                end do
 !
 !                               BTILDMN + BTILDFN
 !     CONSTRUCTION DE BTILD =
@@ -82,7 +82,7 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !
                 btild(i,j)=btdm1+btdf(i,j)
                 btild(i+3,j)=btds1
-10          end do
+            end do
             btdm1=0.d0
             do k = 1, npgsr
                 btdm1=btdm1+xr(i1+k)*btdm(k,3,j)
@@ -94,7 +94,7 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !
 !
             btild(3,j)=btdm1+btdf(3,j)
-20      end do
+        end do
 !
     endif
 !

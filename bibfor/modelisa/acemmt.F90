@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acemmt(noma, nmmt)
     implicit none
 #include "jeveux.h"
@@ -43,7 +43,7 @@ subroutine acemmt(noma, nmmt)
 !
     motfac = 'POUTRE'
     call getfac(motfac, nbocpo)
-    if (nbocpo .eq. 0) goto 9999
+    if (nbocpo .eq. 0) goto 999
 !
     mesmai = '&&ACEMMT.MES_MAILLES'
     motcls(1) = 'GROUP_MA'
@@ -51,7 +51,7 @@ subroutine acemmt(noma, nmmt)
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
 !
-    do 10 iocc = 1, nbocpo
+    do iocc = 1, nbocpo
 !
         call getvtx(motfac, 'MODI_METRIQUE', iocc=iocc, scal=mmt, nbret=ibid)
         if (mmt .eq. 'NON') then
@@ -64,15 +64,15 @@ subroutine acemmt(noma, nmmt)
                     2, motcls, typmcl, mesmai, nbma)
         if (nbma .ne. 0) then
             call jeveuo(mesmai, 'L', jma)
-            do 12 i = 1, nbma
+            do i = 1, nbma
                 ima = zi(jma+i-1)
                 nmmt(ima) = immt
-12          continue
+            end do
             call jedetr(mesmai)
         endif
 !
-10  end do
+    end do
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

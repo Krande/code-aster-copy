@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine sansno(sdcont , keywf    , mesh     , sans, psans,&
+!
+subroutine sansno(sdcont, keywf, mesh, sans, psans,&
                   nb_keyw, keyw_type, keyw_name)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfnbsf.h"
@@ -30,8 +32,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -87,14 +87,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     list_elim = '&&SANSNO.SANSNO'
-    nt_node_elim    = 0
+    nt_node_elim = 0
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi    = sdcont(1:8)//'.CONTACT'
-    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
     sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
-    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
+    call jeveuo(sdcont_noeuco, 'L', vi = v_sdcont_noeuco)
     call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
 !
 ! - Parameters
@@ -127,7 +127,7 @@ implicit none
 ! ----- Nodes belong to contact surface ?
 !
         nb_node_elim = 0
-        do 50 i_elim = 1, nb_elim
+        do i_elim = 1, nb_elim
             node_nume_elim = v_list_elim(i_elim)
             call cfzone(sdcont_defi, i_zone, 'ESCL', i_surf)
             call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
@@ -139,7 +139,8 @@ implicit none
                     goto 50
                 endif
             end do
- 50     continue
+ 50         continue
+        end do
 !
 ! ----- Update pointer
 !
@@ -151,7 +152,7 @@ implicit none
 ! - Create datastructure
 !
     if (nt_node_elim .eq. 0) then
-        call wkvect(sans, 'G V I', 1     , vi = v_sans)
+        call wkvect(sans, 'G V I', 1, vi = v_sans)
     else
         call wkvect(sans, 'G V I', nt_node_elim, vi = v_sans)
         do i_node = 1, nt_node_elim

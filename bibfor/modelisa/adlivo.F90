@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
                   touvoi, nomail)
     implicit none
@@ -42,18 +42,18 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
 !     TOUVOI(IV,2+IS) : CES SOMMETS COMMUNS DANS NUMEROTATION DE M0
 !
     trma=.false.
-    do 30 iv = 1, nvtot
+    do iv = 1, nvtot
         if (mv .eq. touvoi(iv,1)) then
             trma=.true.
             trso=.false.
             nsco=touvoi(iv,2)
-            do 10 isco = 1, nsco
+            do isco = 1, nsco
                 if (touvoi(iv,2+isco) .eq. is) then
                     trso=.true.
                     goto 20
 !
                 endif
- 10         continue
+            end do
  20         continue
             if (.not.trso) then
                 nsco=nsco+1
@@ -66,7 +66,7 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
             goto 40
 !
         endif
- 30 end do
+    end do
  40 continue
     if (.not.trma) then
         nvtot=nvtot+1

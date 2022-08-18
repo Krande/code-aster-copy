@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foc1ma(nbvar, var, fon, nbmax, varmax,&
                   fonmax)
     implicit none
@@ -34,7 +34,7 @@ subroutine foc1ma(nbvar, var, fon, nbmax, varmax,&
     nbmax = 1
     varmax(1) = var(1)
     fonmax(1) = fon(1)
-    do 100 i = 2, nbvar
+    do i = 2, nbvar
         if (abs(fon(i)) .ge. lemax-eps) then
             if (abs(fon(i)) .gt. lemax+eps) then
                 nbmax = 1
@@ -48,5 +48,5 @@ subroutine foc1ma(nbvar, var, fon, nbmax, varmax,&
                 fonmax(nbmax) = fon(i)
             endif
         endif
-100  end do
+    end do
 end subroutine

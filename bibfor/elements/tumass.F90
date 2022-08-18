@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tumass(nomte, nbrddl, mass)
 ! aslint: disable=W1306
     implicit none
@@ -74,9 +74,9 @@ subroutine tumass(nomte, nbrddl, mass)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'R1','EP1'/
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
 !
     pi = r8pi()
@@ -116,8 +116,8 @@ subroutine tumass(nomte, nbrddl, mass)
     call jevech('PGEOMER', 'L', igeom)
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     r1 = vale_cara1(1)
-    h  = vale_cara1(2)
-    a  = r1-h/2.d0
+    h = vale_cara1(2)
+    a = r1-h/2.d0
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
 !
@@ -150,16 +150,17 @@ subroutine tumass(nomte, nbrddl, mass)
 !
     nomres(1) = 'RHO'
     call rcvala(zi(imate), ' ', 'ELAS', nbpar, nompar,&
-                [valpar], 1, nomres, valres, icodre,1)
+                [valpar], 1, nomres, valres, icodre,&
+                1)
     rho = valres(1)
     do i = 1, nbrddl
-        do 50 j = 1, nbrddl
+        do j = 1, nbrddl
             mass(i,j) = 0.d0
-50      continue
-        do 60 j = 1, 6
+        end do
+        do j = 1, 6
             nvec(j,i) = 0.d0
             tnvec(i,j) = 0.d0
-60      continue
+        end do
     end do
 !
     if (nno .eq. 3) then
@@ -179,7 +180,7 @@ subroutine tumass(nomte, nbrddl, mass)
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-        do 140 icou = 1, 2*nbcou + 1
+        do icou = 1, 2*nbcou + 1
 ! CALCUL DU RAYON DU POINT ICOU ( A= RMOY, H = EPAISSEUR)
             if (mmt .eq. 0) then
                 r = a
@@ -189,13 +190,13 @@ subroutine tumass(nomte, nbrddl, mass)
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-            do 130 isect = 1, 2*nbsec + 1
+            do isect = 1, 2*nbsec + 1
 ! CALCUL DE L'ANGLE FI DU POINT ISECT
                 fi = (isect-1)*deuxpi/ (2.d0*nbsec)
 !                        IF(ICOUDE.EQ.1) FI = FI - OMEGA
                 cosfi = cos(fi)
                 sinfi = sin(fi)
-                do 100 ino = 1, nno
+                do ino = 1, nno
                     hk = zr(ivf-1+nno* (igau-1)+ino)
                     if (icoude .eq. 1) then
                         ck = cos((1.d0+xpg(igau))*theta/2.d0-tk(ino))
@@ -206,10 +207,10 @@ subroutine tumass(nomte, nbrddl, mass)
                     endif
 !
                     ibloc = (9+6* (m-1))* (ino-1)
-                    do 80 i1 = 1, 3
+                    do i1 = 1, 3
                         nvec(i1,ibloc+i1) = hk*ck
                         tnvec(ibloc+i1,i1) = hk*ck
-80                  continue
+                    end do
                     nvec(1,ibloc+2) = hk*sk
                     nvec(1,ibloc+4) = hk*r*cosfi*sk
                     nvec(1,ibloc+5) = -hk*r*cosfi*ck
@@ -231,7 +232,7 @@ subroutine tumass(nomte, nbrddl, mass)
                     tnvec(ibloc+4,3) = -hk*r*sinfi*ck
                     tnvec(ibloc+5,3) = -hk*r*sinfi*sk
 !
-                    do 90 n = 2, m
+                    do n = 2, m
                         icolon = ibloc + 6 + 6* (n-2)
                         cosmfi = cos(n*fi)
                         sinmfi = sin(n*fi)
@@ -248,7 +249,7 @@ subroutine tumass(nomte, nbrddl, mass)
                         tnvec(icolon+5,5) = hk*cosmfi
                         tnvec(icolon+3,6) = hk*cosmfi
                         tnvec(icolon+6,6) = hk*sinmfi
-90                  continue
+                    end do
                     icolon = ibloc + 6* (m-1) + 6
                     nvec(5,icolon+2) = hk*sinfi
                     nvec(5,icolon+3) = -hk*cosfi
@@ -261,20 +262,20 @@ subroutine tumass(nomte, nbrddl, mass)
                     tnvec(icolon+1,6) = hk
                     tnvec(icolon+2,6) = hk*cosfi
                     tnvec(icolon+3,6) = hk*sinfi
-100              continue
+                end do
                 call promat(tnvec, nbrddl, nbrddl, 6, nvec,&
                             6, 6, nbrddl, mass1)
                 if (icoude .eq. 1) l = theta* (rayon+r*sinfi)
                 poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)* (l/2.d0)*h*deuxpi/ (4.d0*nb&
                         &cou*nbsec)*r*rho
-                do 120 i = 1, nbrddl
-                    do 110 j = 1, i
+                do i = 1, nbrddl
+                    do j = 1, i
                         mass(i,j) = mass(i,j) + poids*mass1(i,j)
                         mass(j,i) = mass(i,j)
-110                  continue
-120              continue
-130          continue
-140      continue
+                    end do
+                end do
+            end do
+        end do
     end do
 !
     if (icoude .eq. 0) then

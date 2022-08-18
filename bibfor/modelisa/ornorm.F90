@@ -15,11 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
+!
+subroutine ornorm(noma, listma, nbmail, reorie, norien,&
+                  command)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iorim1.h"
@@ -33,8 +36,6 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: listma(*), nbmail, norien
     aster_logical :: reorie
@@ -77,9 +78,9 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
 !
     cmd = ' '
     if (present(command)) cmd = command
-
+!
     call jemarq()
-    if (nbmail .eq. 0) goto 9999
+    if (nbmail .eq. 0) goto 999
 !
     call infniv(ifm, niv)
 !
@@ -110,7 +111,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
 !     -----------------------------------
     dime1 = .false.
     dime2 = .false.
-    do 10 ima = 1, nbmail
+    do ima = 1, nbmail
         ori1(ima) = 0
         numa = listma(ima)
         ori3(ima) = zi(p2+numa)-zi(p2-1+numa)
@@ -138,12 +139,12 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
         endif
- 10 end do
-
-    if (dime2 .and. cmd(1:10).eq.'ORIE_LIGNE')then
-        call utmess('F','MODELISA5_92')
+    end do
+!
+    if (dime2 .and. cmd(1:10) .eq. 'ORIE_LIGNE') then
+        call utmess('F', 'MODELISA5_92')
     endif
-
+!
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
@@ -161,7 +162,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
 ! --- LA BOUCLE 100 DEFINIT LES CONNEXES
 !
     nconex = 0
-    do 100 ima = 1, nbmail
+    do ima = 1, nbmail
         numail = listma(ima)
 ! ----- SI LA MAILLE N'EST PAS ORIENTEE ON L'ORIENTE
         if (pasori(ima)) then
@@ -172,7 +173,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
             endif
             nconex = nconex + 1
             if (nconex .gt. 1) then
-                if (cmd .ne. ' ')then
+                if (cmd .ne. ' ') then
                     call utmess('F', 'MODELISA6_2')
                 else
                     call utmess('F', 'MODELISA5_99')
@@ -191,7 +192,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
             jdesm1 = ori4(im1)
 ! ------- ON ESSAYE D'ORIENTER LES MAILLES VOISINES
             nbmavo = zi(p4+im1)-zi(p4-1+im1)
-            do 210 im3 = 1, nbmavo
+            do im3 = 1, nbmavo
                 indi = zi(p3+zi(p4+im1-1)-1+im3-1)
                 im2 = indiis ( listma, indi, 1, nbmail )
                 if (im2 .eq. 0) goto 210
@@ -223,11 +224,12 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
                     if (ico .lt. 0) norieg = norieg + 1
 !
                 endif
-210         continue
+210             continue
+            end do
             iliste = iliste + 1
             if (iliste .le. lliste) goto 200
         endif
-100 end do
+    end do
 !
     norien = norien + norieg
 !
@@ -238,6 +240,6 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
     AS_DEALLOCATE(vk8=ori5)
     call jedetr(nomavo)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

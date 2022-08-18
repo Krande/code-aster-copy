@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
                   iflu, tdt, hini, hfin, afpd,&
                   bfpd, cfpd)
@@ -82,9 +82,9 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
 ! TEST SI TDT = 0
 !
     if (tdt .eq. 0.d0) then
-        do 11 i = 1, nstrs
+        do i = 1, nstrs
             afpd(i) = 0.d0
-11      continue
+        end do
         bfpd = 0.d0
         cfpd = 0.d0
         goto 20
@@ -155,7 +155,7 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
 !  * TOTAL               : AFPD BFPD CFPD (IFLU = 2)
 !          => EQUATION (3.4-10)
 !
-    do 10 i = 1, 6
+    do i = 1, 6
         if (iflu .eq. 0) then
 !
             afpd(i) = adr * epsdvr(i) + adi * epsdvi(i)
@@ -175,9 +175,9 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
             cfpd = cdi
         endif
 !
-10  end do
+    end do
 !
-20  continue
+ 20 continue
 !
     hini = hvini
     hfin = hvfin

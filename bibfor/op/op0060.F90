@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0060()
     implicit none
 !
@@ -41,8 +41,8 @@ subroutine op0060()
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/isParallelMesh.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -93,7 +93,7 @@ subroutine op0060()
 !     ---------------------------------------------------------------
 !
     call getfac('FOND_FISS', nbocc)
-    do 1 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !
         call getvtx('FOND_FISS', 'TYPE_FOND', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -103,7 +103,7 @@ subroutine op0060()
         endif
 !
 !       DANS LE CAS D'UN FOND FERME, ON INTERDIT LES MCS NOEUD ET GROUP_NO
-        if (typfon.eq.'FERME') then
+        if (typfon .eq. 'FERME') then
             call getvtx('FOND_FISS', 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
                 call utmess('F', 'RUPTURE0_98')
@@ -132,14 +132,14 @@ subroutine op0060()
         else
             ASSERT(.FALSE.)
         endif
-        do 11 idonn = 1, ndonn
+        do idonn = 1, ndonn
             call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=0, nbret=n1)
             n1 = -n1
             if (n1 .gt. 0) then
                 call wkvect('&&'//nompro//'.'//motcl(idonn), 'V V K24', n1, iadr1)
                 call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=n1, vect=zk24(iadr1),&
                             nbret=n2)
-                do 111 idon = 1, n1
+                do idon = 1, n1
                     entnom = zk24(iadr1-1 + idon)
                     call jenonu(jexnom(noma//entit(idonn), entnom), ibid)
                     if (ibid .eq. 0) then
@@ -147,9 +147,9 @@ subroutine op0060()
                         valk(2) = motcl(idonn)
                         call utmess('F', 'RUPTURE0_7', nk=2, valk=valk)
                     endif
-111              continue
+                end do
             endif
-11      continue
+        end do
 !
 !
 !       ---------------------------------------------------------------
@@ -160,10 +160,10 @@ subroutine op0060()
 !        ----------------------------------------
 !
         call jeexin('&&'//nompro//'.GROUP_NO', iret1)
-        if (iret1.ne.0) then
+        if (iret1 .ne. 0) then
             call jeveuo(noma//'.DIME', 'L', iret1)
 !!          LE MOT-CLE GROUP_NO EST UNIQUEMENT AUTORISE EN DIMENSION 2
-            if (zi(iret1-1+6).eq.2) then
+            if (zi(iret1-1+6) .eq. 2) then
                 call fonnoe2(resu, noma, nompro, nbnoff, typmp)
             else
                 call utmess('F', 'RUPTURE1_9')
@@ -174,11 +174,12 @@ subroutine op0060()
 !        ----------------------------------------
 !
         call jeexin('&&'//nompro//'.GROUP_MA', iret1)
-        if (iret1.ne.0) then
+        if (iret1 .ne. 0) then
             call jeveuo(noma//'.DIME', 'L', iret1)
 !!          LE MOT-CLE GROUP_MA EST UNIQUEMENT AUTORISE EN DIMENSION 3
-            if (zi(iret1-1+6).eq.3) then
-                call fonmai2(resu, noma, typfon, iocc, nbnoff, typm)
+            if (zi(iret1-1+6) .eq. 3) then
+                call fonmai2(resu, noma, typfon, iocc, nbnoff,&
+                             typm)
             else
                 call utmess('F', 'RUPTURE1_8')
             endif
@@ -187,12 +188,12 @@ subroutine op0060()
 !
 !       DESTRUCTION DES VECTEURS DE TRAVAIL
 !       ----------------------------------------
-        do 20 idonn = 1, ndonn
+        do idonn = 1, ndonn
             call jeexin('&&'//nompro//'.'//motcl(idonn), iret)
             if (iret .ne. 0) call jedetr('&&'//nompro//'.'//motcl(idonn))
-20      continue
+        end do
 !
- 1  continue
+    end do
 !
 !
 !     ---------------------------------------------------------------
@@ -260,8 +261,9 @@ subroutine op0060()
         basloc = resu//'.BASLOC'
         lnno = resu//'.LNNO'
         ltno = resu//'.LTNO'
-        call fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, &
-                    absfon, basloc, abscur, lnno, ltno)
+        call fonbas2(noma, basnof, typm, fonoeu, coorfond,&
+                     nbnoff, absfon, basloc, abscur, lnno,&
+                     ltno)
     endif
 !
 !     ---------------------------------------------------------------
@@ -271,9 +273,9 @@ subroutine op0060()
     call getvtx(' ', 'CONFIG_INIT', scal=confin, nbret=ibid)
     if (confin .eq. 'COLLEE') then
         call jeexin(resu//'.LEVRESUP.MAIL', irets)
-
+!
         if (irets .ne. 0) then
-
+!
             call fonnof2(resu, noma, typfon, nbnoff, basnof)
         endif
     endif
@@ -298,8 +300,8 @@ subroutine op0060()
     if (niv .eq. 2) then
         call fonimp(resu)
     endif
-
+!
     call jedetr('&&OP0060.COORFOND')
-
+!
     call jedema()
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsorac(nomsd, acces, ival, rval, kval,&
                   cval, epsi, crit, nutrou, ndim,&
                   nbtrou)
@@ -125,7 +125,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
         if (ndim .gt. 0) then
             nbtrou = 1
             call jelira(noms2//'.ORDR', 'LONUTI', numed)
-            if (numed .eq. 0 ) then
+            if (numed .eq. 0) then
                 nbtrou = 0
             else
                 call jeveuo(noms2//'.ORDR', 'L', jordr)
@@ -151,15 +151,15 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
         if (nordr .le. ndim) then
             nbtrou = nordr
             call jeveuo(noms2//'.ORDR', 'L', jordr)
-            do 10 i = 1, nordr
+            do i = 1, nordr
                 nutrou(i) = zi(jordr+i-1)
-10          continue
+            end do
         else
             nbtrou = -nordr
             call jeveuo(noms2//'.ORDR', 'L', jordr)
-            do 11 i = 1, ndim
+            do i = 1, ndim
                 nutrou(i) = zi(jordr+i-1)
-11          continue
+            end do
         endif
         goto 20
 !
@@ -191,6 +191,6 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
                 rval, kval, cval, epsi, crit,&
                 nbordr, nbtrou, nutrou, ndim)
 !
-20  continue
+ 20 continue
     call jedema()
 end subroutine

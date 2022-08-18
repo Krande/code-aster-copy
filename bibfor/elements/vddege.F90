@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
                   deggt)
     implicit none
@@ -25,39 +25,39 @@ subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
 !
 #include "asterfort/matrq9.h"
     character(len=16) :: nomte
-    real(kind=8) :: xr(*), deggtg(72), deggt(8, 9), mat(9,9)
+    real(kind=8) :: xr(*), deggtg(72), deggt(8, 9), mat(9, 9)
     integer :: i, i1, j, k, l1, nb2, npgsn, icmp, ino, ipg
 !
-    do 5 i = 1, nb2
-        do 6 j = 1, 8
+    do i = 1, nb2
+        do j = 1, 8
             deggt(j,i)=0.d0
- 6      continue
- 5  continue
+        end do
+    end do
 !
     if (nomte .eq. 'MEC3QU9H') then
 !
         call matrq9(mat)
-        do 15 icmp = 1, 8
-            do 20 ino = 1, nb2
-                do 25 ipg = 1, npgsn
+        do icmp = 1, 8
+            do ino = 1, nb2
+                do ipg = 1, npgsn
                     deggt(icmp,ino)=deggt(icmp,ino)&
                     +deggtg(8*(ipg-1)+icmp)*mat(ino,ipg)
-25              continue
-20          continue
-15      continue
+                end do
+            end do
+        end do
 !
     else if (nomte.eq.'MEC3TR7H') then
 !
-    l1 =1600
+        l1 =1600
 !
-        do 35 i = 1, nb2
+        do i = 1, nb2
             i1=l1+7*(i-1)
-            do 40 k = 1, npgsn
-                do 45 j = 1, 8
+            do k = 1, npgsn
+                do j = 1, 8
                     deggt(j,i)=deggt(j,i)+deggtg(8*(k-1)+j)*xr(i1+k)
-45              continue
-40          continue
-35      continue
+                end do
+            end do
+        end do
 !
 !     VALEURS AU NOEUD INTERNE OBTENUE PAR MOYENNE DES AUTRES
 !

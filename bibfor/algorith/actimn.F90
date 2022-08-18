@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine actimn(nbcmp, nbno, nbec, mcoddl, icodac)
     implicit none
 !
@@ -57,25 +57,25 @@ subroutine actimn(nbcmp, nbno, nbec, mcoddl, icodac)
 !    INITIALISATION DU VECTEUR A CODER (SERAINUTILE QUAND LA BOUCLE
 !   INTERNE 20  SERA DE 1 A 30)
 !
-    do 10 i = 1, nbecmx
+    do i = 1, nbecmx
         idec(i) = 0
         itout(i) = 0
         icoco(i) = 0
         icici(i) = 0
-10  continue
+    end do
 !
-    do 20 i = 1, nbcmp
+    do i = 1, nbcmp
         idec(i)=1
-20  continue
+    end do
     call iscode(idec, itout, nbcmp)
 !
-    if (nbno .eq. 0) goto 9999
+    if (nbno .eq. 0) goto 999
 !
-    do 30 i = 1, nbno
+    do i = 1, nbno
         call isgeco(itout, mcoddl((i-1)*nbec+1, 1), nbcmp, -1, icoco)
         call isgeco(icodac((i-1)*nbec+1), icoco, nbcmp, -1, icici)
         call isgeco(icici, mcoddl((i-1)*nbec+1, 2), nbcmp, -1, icodac((i- 1)*nbec+1))
-30  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

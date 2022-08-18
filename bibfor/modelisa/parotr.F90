@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine parotr(nomma, iageom, ima, nbno, o,&
                   mrot, t, coor)
     implicit none
@@ -57,16 +57,16 @@ subroutine parotr(nomma, iageom, ima, nbno, o,&
         call pacoor(nomma, ima, nbno, coor)
     endif
 !
-    do 1 ino = 1, nbnot
+    do ino = 1, nbnot
         icoor = 3*(ino-1)
-        do 2 i = 1, 3
+        do i = 1, 3
             x(i) = 0.d0
-            do 3 j = 1, 3
+            do j = 1, 3
                 x(i) = x(i) + mrot(j,i)*(coor(icoor+j)-o(j))
- 3          continue
- 2      continue
-        do 4 i = 1, 3
+            end do
+        end do
+        do i = 1, 3
             coor(icoor+i) = x(i)+o(i)+t(i)
- 4      continue
- 1  end do
+        end do
+    end do
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine abscvf(ndim, tabar, xe, s)
 ! aslint: disable=W1306
     implicit none
@@ -63,23 +63,23 @@ subroutine abscvf(ndim, tabar, xe, s)
     pt3(:) = 0.d0
     eps=1.d-7
 !
-    do 10 i = 1, ndim
+    do i = 1, ndim
         pt1(i)=tabar(i)
         pt2(i)=tabar(ndim+i)
         pt3(i)=tabar(2*ndim+i)
-10  end do
+    end do
 !
-    do 101 i = 1, ndim
+    do i = 1, ndim
         coef1 = coef1 + (pt1(i)-2*pt3(i)+pt2(i))* (pt1(i)-2*pt3(i)+ pt2(i))
-101  end do
+    end do
 !
-    do 102 i = 1, ndim
+    do i = 1, ndim
         coef2 = coef2 + (pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
-102  end do
+    end do
 !
-    do 103 i = 1, ndim
+    do i = 1, ndim
         coef3 = coef3 + (pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
-103  end do
+    end do
 !
     d = coef2*coef2 - 4*coef1*coef3
 !

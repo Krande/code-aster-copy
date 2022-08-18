@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recude(caelem, phie, ep)
     implicit none
 !  RECUPERATION DU DIAMETRE EXTERIEUR ET INTERIEUR D'UNE STRUCTURE
@@ -67,7 +67,7 @@ subroutine recude(caelem, phie, ep)
                 iassmx)
 !
     phie2 = 0.d0
-    do 10 ia = 1, iassef
+    do ia = 1, iassef
         lr1 = ivalre + 4* (ia-1)
         if (zr(lr1) .ne. zr(lr1+2)) then
             call utmess('F', 'ALGELINE3_31')
@@ -84,7 +84,8 @@ subroutine recude(caelem, phie, ep)
 !
         phie2 = zr(lr1)
         ep = zr(lr1+1)
-10  end do
+ 10     continue
+    end do
 !
     phie=2.d0*phie2
     if (phie .eq. 0.d0) then

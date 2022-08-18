@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lisdbl(lischa)
 !
 !
@@ -55,17 +55,17 @@ subroutine lisdbl(lischa)
 !
 ! --- BOUCLE SUR LES CHARGES
 !
-    do 10 ichar1 = 1, nbchar
+    do ichar1 = 1, nbchar
         call lislch(lischa, ichar1, charg1)
-        do 20 ichar2 = 1, nbchar
+        do ichar2 = 1, nbchar
             if (ichar1 .ne. ichar2) then
                 call lislch(lischa, ichar2, charg2)
                 if (charg1 .eq. charg2) then
                     call utmess('F', 'CHARGES5_2', sk=charg1)
                 endif
             endif
-20      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

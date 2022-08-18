@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rotama(geomi, pt, d, angl, bidim)
     implicit none
 !
@@ -66,12 +66,12 @@ subroutine rotama(geomi, pt, d, angl, bidim)
     iadcoo=iadcoo-1
 !     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
     if (bidim) then
-        do 10 i = 1, n1
+        do i = 1, n1
             p1mx=zr(iadcoo+3*(i-1)+1)-pt(1)
             p1my=zr(iadcoo+3*(i-1)+2)-pt(2)
             zr(iadcoo+3*(i-1)+1)=pt(1)+ca*p1mx-sa*p1my
             zr(iadcoo+3*(i-1)+2)=pt(2)+ca*p1my+sa*p1mx
- 10     continue
+        end do
     else
         if (dnrm2(3,d,1) .lt. prec) then
             call utmess('F', 'ALGORITH10_48')
@@ -80,7 +80,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
             d(1)=d(1)/p1m
             d(2)=d(2)/p1m
             d(3)=d(3)/p1m
-            do 20 i = 1, n1
+            do i = 1, n1
                 p1mx=zr(iadcoo+3*(i-1)+1)-pt(1)
                 p1my=zr(iadcoo+3*(i-1)+2)-pt(2)
                 p1mz=zr(iadcoo+3*(i-1)+3)-pt(3)
@@ -91,7 +91,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
                 sa*(d(3)*p1mx-d(1)*p1mz)
                 zr(iadcoo+3*(i-1)+3)=pt(3)+ ca*p1mz+(1-ca)*p1m*d(3)+&
                 sa*(d(1)*p1my-d(2)*p1mx)
- 20         continue
+            end do
         endif
     endif
     call jedema()

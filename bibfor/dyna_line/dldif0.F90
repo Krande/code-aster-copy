@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dldif0(result, force1, neq, istoc, iarchi,&
                   lamort, imat, masse, rigid, amort,&
                   dep0, vit0, acc0, depl1, vite1,&
@@ -55,9 +55,9 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
@@ -106,9 +106,9 @@ implicit none
 !
 ! --- CALCUL DES DEPLACEMENTS ET VITESSES
 !
-    do ieq = 1 , neq
-    vite1(ieq) = vit0(ieq) + dt*acc0(ieq)
-    depl1(ieq) = dep0(ieq) + dt*vite1(ieq)
+    do ieq = 1, neq
+        vite1(ieq) = vit0(ieq) + dt*acc0(ieq)
+        depl1(ieq) = dep0(ieq) + dt*vite1(ieq)
     end do
 !
 !====
@@ -122,10 +122,10 @@ implicit none
                 mate, mateco, carele, numedd, zr(iforc1))
 !
     if (ener) then
-        do 433 ieq = 1, neq
+        do ieq = 1, neq
             fexte(ieq)=fexte(ieq+neq)
             fexte(ieq+neq)=zr(iforc1+ieq-1)
-433     continue
+        end do
     endif
 !
     call dlfdyn(imat(1), imat(3), lamort, neq, depl1,&
@@ -138,7 +138,7 @@ implicit none
 !
     r8bid = dt/2.d0
 !
-    do ieq = 1 , neq
+    do ieq = 1, neq
 !
         acce1(ieq) = tabwk1(ieq)*zr(iforc1+ieq-1)
 !
@@ -161,9 +161,9 @@ implicit none
         call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
 ! ON CALCULE LA VITESSE A T N-1
         call wkvect('VIT0_TR', 'V V R', neq, ivit0r)
-        do 50 ieq = 1, neq
+        do ieq = 1, neq
             zr(ivit0r-1+ieq)=vit0(ieq)+r8bid*acc0(ieq)
- 50     continue
+        end do
         call enerca(k19bid, dep0, zr(ivit0r), depl1, vite2,&
                     masse1, amort1, rigid1, fexte, famor,&
                     fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&

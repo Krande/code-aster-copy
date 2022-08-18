@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trjeve(ific, nocc)
     implicit none
 #include "asterf_types.h"
@@ -23,10 +23,10 @@ subroutine trjeve(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/tresu_tole.h"
-#include "asterfort/tresu_read_refe.h"
-#include "asterfort/tresu_ordgrd.h"
 #include "asterfort/tresu_obj.h"
+#include "asterfort/tresu_ordgrd.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_tole.h"
 #include "asterfort/utmess.h"
     integer, intent(in) :: ific
     integer, intent(in) :: nocc
@@ -44,7 +44,7 @@ subroutine trjeve(ific, nocc)
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
-    do 100 iocc = 1, nocc
+    do iocc = 1, nocc
         call getvtx('OBJET', 'NOM', iocc=iocc, scal=nomobj, nbret=n1)
         call getvtx('OBJET', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
         call tresu_tole(epsi, mcf='OBJET', iocc=iocc)
@@ -92,7 +92,7 @@ subroutine trjeve(ific, nocc)
             endif
         endif
         write (ific,*)' '
-100 end do
+    end do
 !
 !
 end subroutine

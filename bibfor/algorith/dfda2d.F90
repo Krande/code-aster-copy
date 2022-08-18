@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
                   sdedx, sdedy, sdkdx, sdkdy, sdfdx,&
                   sdfdy, geom, jac)
@@ -46,12 +46,12 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
     sdyde = 0.d0
     sdydk = 0.d0
 !
-    do 10 i = 1, nno
+    do i = 1, nno
         sdxde = sdxde + geom(1,i)*sdfrde(kpg,i)
         sdxdk = sdxdk + geom(1,i)*sdfrdk(kpg,i)
         sdyde = sdyde + geom(2,i)*sdfrde(kpg,i)
         sdydk = sdydk + geom(2,i)*sdfrdk(kpg,i)
-10  end do
+    end do
 !
     jac = sdxde*sdydk - sdxdk*sdyde
 !
@@ -61,10 +61,10 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
         call utmess('F', 'ALGORITH2_59', sk=nomail)
     endif
 !
-    do 20 i = 1, nno
+    do i = 1, nno
         sdfdx(kpg,i) = (sdydk*sdfrde(kpg,i)-sdyde*sdfrdk(kpg,i))/jac
         sdfdy(kpg,i) = (sdxde*sdfrdk(kpg,i)-sdxdk*sdfrde(kpg,i))/jac
-20  end do
+    end do
 !
     sdedx(kpg) = sdydk/jac
     sdkdy(kpg) = sdxde/jac

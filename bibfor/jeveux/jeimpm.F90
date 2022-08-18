@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeimpm(unit)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -71,17 +71,17 @@ subroutine jeimpm(unit)
     real(kind=8) :: vusta, vudyn, vxsta, vxdyn
     aster_logical :: dbg
 ! DEB ------------------------------------------------------------------
-
+!
 !   dbg : une variable pour provoquer des ecritures de debug :
     dbg = .false.
-    if (.not. dbg ) then
+    if (.not. dbg) then
         valk(1) = 'dbg = .true.'
         valk(2) = 'jeimpm.F90'
         call utmess('A', 'JEVEUX1_24', nk=2, valk=valk)
-        goto 9999
+        goto 999
     endif
-
-    if (unit .le. 0) goto 9999
+!
+    if (unit .le. 0) goto 999
     vusta = 0.d0
     vudyn = 0.d0
     vxsta = 0.d0
@@ -98,9 +98,9 @@ subroutine jeimpm(unit)
     ncla1 = 1
     ncla2 = index ( classe , '$' ) - 1
     if (ncla2 .lt. 0) ncla2 = n
-    do 200 ic = ncla1, ncla2
+    do ic = ncla1, ncla2
         cla = classe(ic:ic)
-        do 205 j = 1, nremax(ic)
+        do j = 1, nremax(ic)
             idco = 0
             iadmi = iadm(jiadm(ic)+2*j-1)
             iadyn = iadm(jiadm(ic)+2*j )
@@ -135,7 +135,7 @@ subroutine jeimpm(unit)
                     ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
                     ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
                     if (ibiadm .ne. 0) then
-                        do 210 k = 1, nmax
+                        do k = 1, nmax
                             iadmoc = iszon(jiszon + ibiadm - 1 +2*k-1)
                             iadyoc = iszon(jiszon + ibiadm - 1 +2*k )
                             if (iadyoc .ne. 0) then
@@ -157,12 +157,13 @@ subroutine jeimpm(unit)
                                     vxdyn = vxdyn + iszon(jiszon+idm) - idm + 1
                                 endif
                             endif
-210                      continue
+                        end do
                     endif
                 endif
             endif
-205      continue
-200  end do
+205         continue
+        end do
+    end do
 !
     write(unit,*) '  '
     write(unit,*) ' CUMUL DES LONGUEURS DES SEGMENTS UTILISES UA/UD'
@@ -189,6 +190,6 @@ subroutine jeimpm(unit)
     call jxveri()
 !
     60 format(a,2(1pe12.2,a3))
-9999  continue
+999 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

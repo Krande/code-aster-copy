@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjlchd(id, ic, idfic, idts, ngrp)
 ! LECTURE SUR FICHIER HDF D'UNE COLLECTION PUIS LIBERATION
 !
@@ -28,6 +28,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
 ! ----------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
+#include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/hdfcld.h"
 #include "asterc/hdfclg.h"
@@ -36,7 +37,6 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
 #include "asterc/hdfopg.h"
 #include "asterc/hdfrsv.h"
 #include "asterc/hdftsd.h"
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjecrs.h"
@@ -120,7 +120,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
     iadm (jiadm(ic)+2*id-1) = ibacol
     iadm (jiadm(ic)+2*id  ) = iadyn
 !
-    do 20 k = idiadd, idnum
+    do k = idiadd, idnum
 !     ----------- OBJETS ATTRIBUTS DE COLLECTION
         ix = iszon(jiszon + ibacol + k)
         if (ix .gt. 0) then
@@ -185,7 +185,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
                 ASSERT(iret .eq. 0)
             endif
         endif
-20  end do
+    end do
     ixiadd = iszon(jiszon + ibacol + idiadd)
     ixiadm = iszon(jiszon + ibacol + idiadm)
     ixmarq = iszon(jiszon + ibacol + idmarq)
@@ -221,7 +221,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
         idgc = hdfopg(idfic,ngrc)
         nbob = hdfnbo(idfic,ngrc)
         nomo = rnom(jrnom(ic)+id)(1:24)
-        do 30 k = 1, nbob
+        do k = 1, nbob
             write(nomo(25:32),'(I8)') k
             if (ixlono .eq. 0) then
                 lonoi = lono (jlono(ic) + ixdeso) * ltypi
@@ -243,7 +243,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
                 iret = hdfcld(ido)
                 ASSERT(iret .eq. 0)
             endif
-30      continue
+        end do
         iret = hdfclg(idgc)
         ASSERT(iret .eq. 0)
     endif

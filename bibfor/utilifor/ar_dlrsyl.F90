@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -26,8 +26,8 @@
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
 subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
-                  a, lda, b, ldb, c,&
-                  ldc, scale, info)
+                     a, lda, b, ldb, c,&
+                     ldc, scale, info)
 !
 !     SUBROUTINE LAPACK RESOLVANT L'EQUATION DE SYLVESTER.
 !-----------------------------------------------------------------------
@@ -232,7 +232,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !        L1 (L2) : COLUMN INDEX OF THE FIRST (FIRST) ROW OF X(K,L).
 !
         lnext = 1
-        do 60 l = 1, n
+        do l = 1, n
             if (l .lt. lnext) goto 60
             if (l .eq. n) then
                 l1 = l
@@ -253,7 +253,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L).
 !
             knext = m
-            do 50 k = m, 1, -1
+            do k = m, 1, -1
                 if (k .gt. knext) goto 50
                 if (k .eq. 1) then
                     k1 = k
@@ -290,9 +290,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
 !
                     if (scaloc .ne. one) then
-                        do 10 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 10                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -308,15 +308,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                a( k1, k1 ), lda, one, one, vec,&
-                                2, -sgn*b( l1, l1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   a( k1, k1 ), lda, one, one, vec,&
+                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 20 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 20                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -333,15 +333,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                b( l1, l1 ), ldb, one, one, vec,&
-                                2, -sgn*a( k1, k1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   b( l1, l1 ), ldb, one, one, vec,&
+                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 30 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 30                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -366,15 +366,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
                     call ar_dlasy2(.false._1, .false._1, isgn, 2, 2,&
-                                a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                2, scaloc, x, 2, xnorm,&
-                                ierr)
+                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
+                                   ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 40 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 40                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -383,9 +383,11 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
- 50         continue
+ 50             continue
+            end do
 !
- 60     continue
+ 60         continue
+        end do
 !
     else if (.not.notrna .and. notrnb) then
 !
@@ -405,7 +407,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !        L1 (L2): COLUMN INDEX OF THE FIRST (LAST) ROW OF X(K,L)
 !
         lnext = 1
-        do 120 l = 1, n
+        do l = 1, n
             if (l .lt. lnext) goto 120
             if (l .eq. n) then
                 l1 = l
@@ -426,7 +428,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L)
 !
             knext = 1
-            do 110 k = 1, m
+            do k = 1, m
                 if (k .lt. knext) goto 110
                 if (k .eq. m) then
                     k1 = k
@@ -463,9 +465,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
 !
                     if (scaloc .ne. one) then
-                        do 70 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 70                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -481,15 +483,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                a( k1, k1 ), lda, one, one, vec,&
-                                2, -sgn*b( l1, l1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   a( k1, k1 ), lda, one, one, vec,&
+                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 80 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 80                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -506,15 +508,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                b( l1, l1 ), ldb, one, one, vec,&
-                                2, -sgn*a( k1, k1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   b( l1, l1 ), ldb, one, one, vec,&
+                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 90 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
- 90                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -539,15 +541,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
                     call ar_dlasy2(.true._1, .false._1, isgn, 2, 2,&
-                                a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                2, scaloc, x, 2, xnorm,&
-                                ierr)
+                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
+                                   ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 100 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-100                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -556,8 +558,10 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-110         continue
-120     continue
+110             continue
+            end do
+120         continue
+        end do
 !
     else if (.not.notrna .and. .not.notrnb) then
 !
@@ -577,7 +581,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !        L1 (L2): COLUMN INDEX OF THE FIRST (LAST) ROW OF X(K,L)
 !
         lnext = n
-        do 180 l = n, 1, -1
+        do l = n, 1, -1
             if (l .gt. lnext) goto 180
             if (l .eq. 1) then
                 l1 = l
@@ -598,7 +602,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L)
 !
             knext = 1
-            do 170 k = 1, m
+            do k = 1, m
                 if (k .lt. knext) goto 170
                 if (k .eq. m) then
                     k1 = k
@@ -635,9 +639,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
 !
                     if (scaloc .ne. one) then
-                        do 130 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-130                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -653,15 +657,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
                     call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                a( k1, k1 ), lda, one, one, vec,&
-                                2, -sgn*b( l1, l1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   a( k1, k1 ), lda, one, one, vec,&
+                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 140 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-140                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -678,15 +682,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                b( l1, l1 ), ldb, one, one, vec,&
-                                2, -sgn*a( k1, k1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   b( l1, l1 ), ldb, one, one, vec,&
+                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 150 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-150                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -711,15 +715,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
                     call ar_dlasy2(.true._1, .true._1, isgn, 2, 2,&
-                                a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                2, scaloc, x, 2, xnorm,&
-                                ierr)
+                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
+                                   ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 160 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-160                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -728,8 +732,10 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-170         continue
-180     continue
+170             continue
+            end do
+180         continue
+        end do
 !
     else if (notrna .and. .not.notrnb) then
 !
@@ -749,7 +755,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !        L1 (L2): COLUMN INDEX OF THE FIRST (LAST) ROW OF X(K,L)
 !
         lnext = n
-        do 240 l = n, 1, -1
+        do l = n, 1, -1
             if (l .gt. lnext) goto 240
             if (l .eq. 1) then
                 l1 = l
@@ -770,7 +776,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L)
 !
             knext = m
-            do 230 k = m, 1, -1
+            do k = m, 1, -1
                 if (k .gt. knext) goto 230
                 if (k .eq. 1) then
                     k1 = k
@@ -807,9 +813,9 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
 !
                     if (scaloc .ne. one) then
-                        do 190 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-190                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -825,15 +831,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                a( k1, k1 ), lda, one, one, vec,&
-                                2, -sgn*b( l1, l1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   a( k1, k1 ), lda, one, one, vec,&
+                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 200 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-200                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -850,15 +856,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
 !
                     call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                b( l1, l1 ), ldb, one, one, vec,&
-                                2, -sgn*a( k1, k1 ), zero, x, 2,&
-                                scaloc, xnorm, ierr)
+                                   b( l1, l1 ), ldb, one, one, vec,&
+                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                                   scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 210 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-210                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -883,15 +889,15 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
 !
                     call ar_dlasy2(.false._1, .true._1, isgn, 2, 2,&
-                                a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                2, scaloc, x, 2, xnorm,&
-                                ierr)
+                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
+                                   2, scaloc, x, 2, xnorm,&
+                                   ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
-                        do 220 j = 1, n
+                        do j = 1, n
                             call dscal(m, scaloc, c( 1, j ), 1)
-220                     continue
+                        end do
                         scale = scale*scaloc
                     endif
                     c( k1, l1 ) = x( 1, 1 )
@@ -900,8 +906,10 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     c( k2, l2 ) = x( 2, 2 )
                 endif
 !
-230         continue
-240     continue
+230             continue
+            end do
+240         continue
+        end do
 !
     endif
 !

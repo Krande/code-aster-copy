@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine getcon(nomres, iob, ishf, ilng, ctype,&
                   lcon, iadvar, nomob)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -32,6 +31,7 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
 #include "asterfort/jjvern.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomres
     integer :: ctype, lcon, iob, ishf, ilng
     integer :: iadvar, loc
@@ -179,25 +179,25 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
         call jedetr('&&GETCON.PTEUR_NOM')
         call wkvect('&&GETCON.PTEUR_NOM', 'V V '//type, lcon, iad)
         if (type .eq. 'K8') then
-            do 51, kk=1,lcon
-            call jenuno(jexnum(noml32, kk), zk8(iad-1+kk))
-51          continue
+            do kk = 1, lcon
+                call jenuno(jexnum(noml32, kk), zk8(iad-1+kk))
+            end do
             ctype=4
             iadvar=loc(zk8(iad))
         else if (type.eq.'K16') then
-            do 52, kk=1,lcon
-            call jenuno(jexnum(noml32, kk), zk16(iad-1+kk))
-52          continue
+            do kk = 1, lcon
+                call jenuno(jexnum(noml32, kk), zk16(iad-1+kk))
+            end do
             ctype=5
             iadvar=loc(zk16(iad))
         else if (type.eq.'K24') then
-            do 53, kk=1,lcon
-            call jenuno(jexnum(noml32, kk), zk24(iad-1+kk))
-53          continue
+            do kk = 1, lcon
+                call jenuno(jexnum(noml32, kk), zk24(iad-1+kk))
+            end do
             ctype=6
             iadvar=loc(zk24(iad))
         endif
     endif
 !
-999  continue
+999 continue
 end subroutine

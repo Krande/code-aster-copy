@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dvout(lout, n, sx, idigit, ifmt)
 !
 !     SUBROUTINE ARPACK ECRIVANT DES VECTEURS DE REELS.
@@ -35,14 +35,6 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
 !  INTRINSIC FUNCTIONS
 !     LEN, MIN.
 !-----------------------------------------------------------------------
-!
-! ASTER INFORMATION
-! 14/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
-!            REMPLACEMENT DE RETURN PAR GOTO 1000,
-!            IMPLICIT NONE.
-! ENDLIB
-!-----------------------------------------------------------------------
-! CORPS DU PROGRAMME
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
@@ -61,18 +53,18 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
 !     ... FIRST EXECUTABLE STATEMENT
 !
     lll = min( len( ifmt ), 80 )
-    do 10 i = 1, lll
+    do i = 1, lll
         line( i: i ) = '-'
-10  end do
+    end do
 !
-    do 20 i = lll + 1, 80
+    do i = lll + 1, 80
         line( i: i ) = ' '
-20  end do
+    end do
 !
-    write( lout, fmt = 9999 )ifmt, line( 1: lll )
-    9999 format( / 1x, a, / 1x, a )
+    write( lout, fmt=999 ) ifmt, line( 1: lll )
+999 format( / 1x, a, / 1x, a )
 !
-    if (n .le. 0) goto 1000
+    if (n .le. 0) goto 100
     ndigit = idigit
     if (idigit .eq. 0) ndigit = 4
 !
@@ -83,29 +75,29 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
     if (idigit .lt. 0) then
         ndigit = -idigit
         if (ndigit .le. 4) then
-            do 30 k1 = 1, n, 5
+            do k1 = 1, n, 5
                 k2 = min( n, k1+4 )
-                write( lout, fmt = 9998 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 998 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-30          continue
+            end do
         else if (ndigit.le.6) then
-            do 40 k1 = 1, n, 4
+            do k1 = 1, n, 4
                 k2 = min( n, k1+3 )
-                write( lout, fmt = 9997 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 997 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-40          continue
+            end do
         else if (ndigit.le.10) then
-            do 50 k1 = 1, n, 3
+            do k1 = 1, n, 3
                 k2 = min( n, k1+2 )
-                write( lout, fmt = 9996 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 996 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-50          continue
+            end do
         else
-            do 60 k1 = 1, n, 2
+            do k1 = 1, n, 2
                 k2 = min( n, k1+1 )
-                write( lout, fmt = 9995 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 995 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-60          continue
+            end do
         endif
 !
 !=======================================================================
@@ -114,37 +106,37 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
 !
     else
         if (ndigit .le. 4) then
-            do 70 k1 = 1, n, 10
+            do k1 = 1, n, 10
                 k2 = min( n, k1+9 )
-                write( lout, fmt = 9998 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 998 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-70          continue
+            end do
         else if (ndigit.le.6) then
-            do 80 k1 = 1, n, 8
+            do k1 = 1, n, 8
                 k2 = min( n, k1+7 )
-                write( lout, fmt = 9997 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 997 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-80          continue
+            end do
         else if (ndigit.le.10) then
-            do 90 k1 = 1, n, 6
+            do k1 = 1, n, 6
                 k2 = min( n, k1+5 )
-                write( lout, fmt = 9996 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 996 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-90          continue
+            end do
         else
-            do 100 k1 = 1, n, 5
+            do k1 = 1, n, 5
                 k2 = min( n, k1+4 )
-                write( lout, fmt = 9995 )k1, k2, ( sx( i ), i = k1,&
+                write( lout, fmt = 995 )k1, k2, ( sx( i ), i = k1,&
                 k2 )
-100          continue
+            end do
         endif
     endif
-    write( lout, fmt = 9994 )
-    9998 format( 1x, i4, ' - ', i4, ':', 1p, 10d12.3 )
-    9997 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 8d14.5 )
-    9996 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 6d18.9 )
-    9995 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 5d24.13 )
-    9994 format( 1x, ' ' )
+    write( lout, fmt = 994 )
+998 format( 1x, i4, ' - ', i4, ':', 1p, 10d12.3 )
+997 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 8d14.5 )
+996 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 6d18.9 )
+995 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 5d24.13 )
+994 format( 1x, ' ' )
 !
-1000  continue
+100 continue
 end subroutine

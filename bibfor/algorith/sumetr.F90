@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sumetr(cova, metr, jac)
 !
     implicit none
@@ -35,11 +35,11 @@ subroutine sumetr(cova, metr, jac)
 !
 !
 !    CALCUL DE LA METRIQUE
-    do 10 i = 1, 2
-        do 20 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             metr(i,j) = ddot(3,cova(1,i),1,cova(1,j),1)
-20      continue
-10  end do
+        end do
+    end do
 !
 !
 !    CALCUL DU JACOBIEN

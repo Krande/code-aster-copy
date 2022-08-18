@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                   idir, igrp, som, rint, dcent,&
                   ficent, d, fi, a, b)
@@ -69,11 +69,11 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
     rext = som(3)
 !
 !
-    do 1 j = 1, nbtron
+    do j = 1, nbtron
         nj = 2*j
-        do 11 k = 1, nbcyl
+        do k = 1, nbcyl
             nk = 2*nbtron*k
-            do 111 l = 1, j
+            do l = 1, j
                 nl = nk+2*l
                 if (dcent(k) .eq. 0.d0 .and. j .eq. l) then
                     coef = mefac1(j,l)* (rint(k)**(l+1))/(rext**(j+1))
@@ -86,21 +86,21 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                 a(nj,nl-1) = coef*sin((j-l)*ficent(k))
                 a(nj-1,nl) = coef*sin((j-l)*ficent(k))
                 a(nj,nl) = coef*cos((j-l)*ficent(k))
-111          continue
-11      continue
+            end do
+        end do
         a(nj-1,nj-1) = j
         a(nj,nj) = -j
 !
- 1  end do
+    end do
 !
-    do 2 i = 1, nbcyl
+    do i = 1, nbcyl
         ni = 2*nbtron*i
-        do 21 j = 1, nbtron
+        do j = 1, nbtron
             nj = ni+2*j
-            do 211 k = 1, nbcyl
+            do k = 1, nbcyl
                 nk = 2*nbtron*k
                 if (k .ne. i) then
-                    do 2111 l = 1, nbtron
+                    do l = 1, nbtron
                         nl = nk+2*l
                         coef = mefac2(l,j)*(rint(i)**(j-1))* (rint(k) **(l+1))/(d(i,k)**(l+j))
                         coef = coef*((-1)**l)
@@ -108,15 +108,15 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                         a(nj,nl-1) = coef*sin((j+l)*fi(i,k))
                         a(nj-1,nl) = coef*sin((j+l)*fi(i,k))
                         a(nj,nl) = -coef*cos((j+l)*fi(i,k))
-2111                  continue
+                    end do
                 else
                     nl = nk+2*j
                     a(nj-1,nl-1) = -j
                     a(nj,nl) = -j
                 endif
-211          continue
+            end do
 !
-            do 221 l = j, nbtron
+            do l = j, nbtron
                 nl = 2*l
                 if (dcent(i) .eq. 0.d0 .and. j .eq. l) then
                     coef = mefac1(l,j)*(rint(i)**(j-1)) /(rext**(l-1))
@@ -129,12 +129,12 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                 a(nj,nl-1) = -coef*sin((l-j)*ficent(i))
                 a(nj-1,nl) = coef*sin((l-j)*ficent(i))
                 a(nj,nl) = coef*cos((l-j)*ficent(i))
-221          continue
+            end do
 !
-21      continue
+        end do
         if (numgrp(i) .eq. igrp) then
             b(2*nbtron*i+idir) = 1.d0
         endif
- 2  end do
+    end do
 !
 end subroutine

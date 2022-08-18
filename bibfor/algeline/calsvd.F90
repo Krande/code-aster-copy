@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calsvd(nm, m, n, a, w,&
                   matu, u, matv, v, ierr)
     implicit none
@@ -70,8 +70,8 @@ subroutine calsvd(nm, m, n, a, w,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/matfpe.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "blas/dgesdd.h"
 #include "blas/dgesvd.h"
     integer :: nm, m, n, ierr
@@ -144,11 +144,11 @@ subroutine calsvd(nm, m, n, a, w,&
                         work, lwork, iwork, ierr1)
         endif
         if (matv) then
-            do 1 i = 1, nm
-                do 2 j = 1, n
+            do i = 1, nm
+                do j = 1, n
                     v(i,j)=vt((i-1)*ldvt+j)
-  2             continue
-  1         continue
+                end do
+            end do
         endif
 !
     else
@@ -162,11 +162,11 @@ subroutine calsvd(nm, m, n, a, w,&
                         vwork, lwork, viwork, ierr1)
         endif
         if (matv) then
-            do 3 i = 1, nm
-                do 4 j = 1, n
+            do i = 1, nm
+                do j = 1, n
                     v(i,j)=vvt((i-1)*ldvt+j)
-  4             continue
-  3         continue
+                end do
+            end do
         endif
     endif
 !

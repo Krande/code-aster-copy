@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
                   cnbn, cplas, rpara, cief, cdeps,&
                   cdtg, cier, cdepsp, dc1, dc2)
@@ -68,11 +68,11 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     call dfplgl(nmnbn, nmplas, nmdpla, 1, df1)
     call dfplgl(nmnbn, nmplas, nmdpla, 2, df2)
 !
-    do j = 1,6
-       df(j,1) = df1(j)
-       df(j,2) = df2(j)
-       tdf(1,j) = df(j,1)
-       tdf(2,j) = df(j,2)
+    do j = 1, 6
+        df(j,1) = df1(j)
+        df(j,2) = df2(j)
+        tdf(1,j) = df(j,1)
+        tdf(2,j) = df(j,2)
     end do
 !
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
@@ -81,9 +81,9 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 2,&
                 dfu2)
 !
-    do j = 1,6
-       dfu(j,1) = dfu1(j)
-       dfu(j,2) = dfu2(j)
+    do j = 1, 6
+        dfu(j,1) = dfu1(j)
+        dfu(j,2) = dfu2(j)
     end do
 !
     cp = matmul(cdtg, cdeps)
@@ -120,16 +120,16 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
 !
     depsp2 = matmul(dfu, lambda)
 !
-    do 30, j = 1,6
-    cdepsp(j) = depsp2(j,1)+depsp2(j,2)
-    30 end do
+    do j = 1, 6
+        cdepsp(j) = depsp2(j,1)+depsp2(j,2)
+    end do
 !
 !     CALCUL DE CNBN ET DEPSP2 QUAND DEUX CRITERES PLAST SONT ACTIVES
     call nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
                 czeg, cief, cdeps, cdtg, cier,&
                 dc1, dc2, depsp2, normm)
 !
-40  continue
+ 40 continue
 !
     rpara(1) = czef
     rpara(2) = czeg

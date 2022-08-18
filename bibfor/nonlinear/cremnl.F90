@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
                   nbpt, neq, nbhar, imat, numedd,&
                   parcho, nbchoc, vk8, modrep)
@@ -37,19 +37,17 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!     -----------------------------------------------------------------
+#include "asterc/getres.h"
+#include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/utmess.h"
-#include "blas/dnrm2.h"
 #include "asterfort/gcncon.h"
-#include "asterc/getres.h"
-#include "blas/idamax.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterc/r8vide.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -58,10 +56,12 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-
+#include "blas/dnrm2.h"
+#include "blas/idamax.h"
+!     -----------------------------------------------------------------
+!
     aster_logical :: reprise, suite
     character(len=4) :: nomsym(1), kordr
     character(len=8) :: nomres, nomrep, baseno, k8b, nomtab, modrep
@@ -94,13 +94,13 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
     call getres(nomres, typres, nomcmd)
 !
     if (reprise) then
-      if (nomres .ne. modrep) then
-        suite = .true.
-      else
-        suite = .false.
-      endif
+        if (nomres .ne. modrep) then
+            suite = .true.
+        else
+            suite = .false.
+        endif
     else
-      suite = .false.
+        suite = .false.
     endif
 !
     rvide = r8vide()
@@ -159,11 +159,11 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
     AS_ALLOCATE(vr=nspec,size=neq)
 !
 !     BOUCLE SUR LES NUMEROS D ORDRE
-    do 100 iordr = 1, nbordr
+    do iordr = 1, nbordr
 !   Conversion du numéro d'ordre en chaine de caractère
-    ASSERT( nbordr <=9999 )
-    write (kordr,'(I4.4)') iordr
-
+        ASSERT( nbordr <=9999 )
+        write (kordr,'(I4.4)') iordr
+!
 !-- ATTRIBUTION D UN NOM DE CONCEPT
         call gcncon('_', nomrep)
 !
@@ -173,7 +173,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         matrice(3) = ' '
         call refdaj('F', nomrep, nmodes, numedd, 'DYNAMIQUE',&
                     matrice, ier)
-        do 200 ihar = 1, nmodes
+        do ihar = 1, nmodes
             call rsexch(' ', nomrep, nomsym(1), ihar, chamno,&
                         ier)
             if (ier .eq. 0) then
@@ -185,11 +185,11 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 !
             call jeveuo(chamno//'.VALE', 'E', vr=vale)
             xnorm = 0.d0
-            do 44 ieq = 1, neq
+            do ieq = 1, neq
                 iadd = (iordr-1)*(neq*nmodes+2)+(ihar-1)*neq+ieq
                 vale(ieq) = zr(isort-1+iadd)
                 xnorm = xnorm + zr(isort-1+iadd)*zr(isort-1+iadd)
- 44         continue
+            end do
             call rsnoch(nomrep, nomsym(1), ihar)
 !
             call rsadpa(nomrep, 'E', 1, 'NUME_MODE', ihar,&
@@ -216,7 +216,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             call rsadpa(nomrep, 'E', 1, 'FACT_PARTICI_DX', ihar,&
                         0, sjv=ladpa, styp=k8b)
             zr(ladpa) = sqrt(xnorm)
-200     continue
+        end do
 !
         iadd = (iordr-1)*(neq*nmodes+2)+neq*nmodes+1
         freq = zr(isort-1+iadd)
@@ -228,17 +228,17 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 !
 !       DETERMINER HARMONIQUE MAX
         harmax=1
-        do 440 ieq = 1, neq
+        do ieq = 1, neq
             iadd = (iordr-1)*(neq*nmodes+2)+ieq
             nspec(ieq)=dnrm2(2*nbhar+1,zr(isort-1+iadd),neq)**2
-440     continue
+        end do
         inspec=idamax(neq,nspec,1)
         iadd = (iordr-1)*(neq*nmodes+2)+inspec
         espec(1)=zr(isort-1+iadd)**2/nspec(inspec)
-        do 20 ihar = 1, nbhar
+        do ihar = 1, nbhar
             espec(ihar+1)=(zr(isort-1+iadd+ihar*neq)**2+&
             zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/nspec(inspec)
- 20     continue
+        end do
         harmaxa=idamax(nbhar+1,espec,1)-1
         if (harmaxa .gt. harmax) then
             harmax=harmaxa
@@ -272,10 +272,10 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         call tbajli(nomres, nbpar, nompar, vali, valr,&
                     [cvide], valk, 0)
 !
-100 continue
+    end do
 !
     AS_DEALLOCATE(vr=nspec)
-
+!
     if (.not. reprise) then
 ! TABLE POUR LES CARACTERISTIQUES DE CHOC
         call tbcrsd(nomtab, 'G')
@@ -312,7 +312,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         typpat(11)='R'
         call tbajpa(nomtab, nbpart, nompat, typpat)
 !
-        do 300 iordr = 1, nbchoc
+        do iordr = 1, nbchoc
             valit(1) = iordr
             valkt(1) = type(iordr)
             valkt(2) = noeu(iordr)
@@ -326,7 +326,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             valrt(6) = orig((iordr-1)*3+3)
             call tbajli(nomtab, nbpart, nompat, valit, valrt,&
                         [cvide], valkt, 0)
-300     continue
+        end do
     endif
 !
     call jedema()

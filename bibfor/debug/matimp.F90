@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matimp(matz, ific, typimz)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -31,7 +31,7 @@ subroutine matimp(matz, ific, typimz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/asmpi_info.h"
+!
     character(len=*) :: matz, typimz
     integer :: ific
 ! ---------------------------------------------------------------------
@@ -164,7 +164,7 @@ subroutine matimp(matz, ific, typimz)
 !     ------------------------------------------------
     if ((typimp.eq.' ') .or. (typimp.eq.'ASTER')) write(ific, 1003) 'ILIGL', 'JCOLL', 'VALEUR'
     jcoll=1
-    do 1 kterm = 1, nz
+    do kterm = 1, nz
 !
 !       --- PARTIE TRIANGULAIRE SUPERIEURE
         if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
@@ -208,7 +208,7 @@ subroutine matimp(matz, ific, typimz)
             endif
         endif
 !
-  1 end do
+    end do
 !
 !
 !
@@ -227,11 +227,11 @@ subroutine matimp(matz, ific, typimz)
         nomgd=refn(2)(1:8)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
         ASSERT(n1.eq.2*n)
-        do 2 k = 1, n
+        do k = 1, n
             nuno=deeq(2*(k-1)+1)
             nucmp=deeq(2*(k-1)+2)
             if (lmhpc) then
-                if (zi(jprddl - 1 + k).eq.rang) then
+                if (zi(jprddl - 1 + k) .eq. rang) then
                     localOrGhost='DDL_LOCAL'
                 else
                     localOrGhost='DDL_GHOST'
@@ -262,7 +262,7 @@ subroutine matimp(matz, ific, typimz)
                     write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR2 RELATION LINEAIRE '
                 endif
             endif
-  2     continue
+        end do
     endif
 !
 !     --- FIN IMPRESSION

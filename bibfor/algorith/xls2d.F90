@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                  jlnsl, nbno, jcoor, jcoorg, nbmaf,&
                  jdlima, nbsef, jdlise, jconx1, jconx2)
@@ -26,14 +26,14 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "blas/ddot.h"
     integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
     integer :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
@@ -66,18 +66,18 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
     AS_ALLOCATE(vl=is_pt_fond,size=nbno)
     is_pt_fond(1:nbno)=.false.
     do isefis = 1, nbsef
-      nseabs=zi(jdlise-1+(isefis-1)+1)
-      is_pt_fond(zi(jconx1-1+zi(jconx2+nseabs-1)))=.true.
+        nseabs=zi(jdlise-1+(isefis-1)+1)
+        is_pt_fond(zi(jconx1-1+zi(jconx2+nseabs-1)))=.true.
     enddo
 !     INITIALISATION PREMIERE MAILLE
     ori=1
     zi(jmaori)=1
     zi(jmafit)=zi(jdlima)
 !     PARCOURS DES MAILLES CONTIGUES DANS 1 SENS
-    do 114 ir = 2, nbmaf
+    do ir = 2, nbmaf
         nunoi=zi(jconx1-1+zi(jconx2+zi(jmafit+ir-1-1)-1)+1+ori-1)
         finfis=.true.
-        do 113 ir2 = 1, nbmaf
+        do ir2 = 1, nbmaf
             nuno1=zi(jconx1-1+zi(jconx2+zi(jdlima+ir2-1)-1)+1-1)
             nuno2=zi(jconx1-1+zi(jconx2+zi(jdlima+ir2-1)-1)+2-1)
             if (zi(jdlima+ir2-1) .ne. zi(jmafit+ir-1-1) .and.&
@@ -89,24 +89,24 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 finfis=.false.
                 goto 1135
             endif
-113     continue
+        end do
 1135     continue
         if (finfis) goto 1145
-114 end do
+    end do
 1145 continue
 !
 !     VECTEUR FINAL REORGANISE
     call wkvect('&&XINILS.LIMFISOF', 'V V I', nbmaf, jmafif)
 !     DECALAGE DES MAILLES TROUVEES
-    do 115 ir3 = 1, ir-1
+    do ir3 = 1, ir-1
         zi(jmafif+nbmaf-ir+ir3)=zi(jmafit-1+ir3)
-115 end do
+    end do
 !     PARCOURS DANS L'AUTRE SENS A PARTIR DE LA PREMIERE MAILLE
     ori=0
-    do 117 ir2 = ir, nbmaf+1
+    do ir2 = ir, nbmaf+1
         nunoi=zi(jconx1-1+zi(jconx2+zi(jmafif+nbmaf-ir2+1)-1)+1+ori-1)
         finfis=.true.
-        do 116 ir3 = 1, nbmaf
+        do ir3 = 1, nbmaf
             nuno1=zi(jconx1-1+zi(jconx2+zi(jdlima+ir3-1)-1)+1-1)
             nuno2=zi(jconx1-1+zi(jconx2+zi(jdlima+ir3-1)-1)+2-1)
             if (zi(jdlima+ir3-1) .ne. zi(jmafif+nbmaf-ir2+1) .and.&
@@ -118,10 +118,10 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 finfis=.false.
                 goto 1165
             endif
-116     continue
+        end do
 1165     continue
         if (finfis) goto 1175
-117 end do
+    end do
 1175 continue
 !
 !      DO 118 IR3=1,NBMAF
@@ -141,7 +141,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
     endif
 !
 !     BOUCLE SUR LES NOEUDS P DU MAILLAGE
-    do 11 ino = 1, nbno
+    do ino = 1, nbno
         p(1)=zr(jcrd-1+3*(ino-1)+1)
         p(2)=zr(jcrd-1+3*(ino-1)+2)
 !
@@ -151,7 +151,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
         xln=r8maem()
 !         RECHERCHE DE LA MAILLE LA PLUS PROCHE :
 !         BOUCLE SUR NOEUDS DE MAFIS
-        do 2 imafis = 1, nbmaf
+        do imafis = 1, nbmaf
             nmaabs=zi(jmafif-1+(imafis-1)+1)
             inoma=1
             nuno(inoma)=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
@@ -163,10 +163,10 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
             b(1)=zr(jcoor-1+3*(nuno(inoma)-1)+1)
             b(2)=zr(jcoor-1+3*(nuno(inoma)-1)+2)
 !
-            do 211 i = 1, 2
+            do i = 1, 2
                 ab(i)=b(i)-a(i)
                 ap(i)=p(i)-a(i)
-211         continue
+            end do
 !
 !           CALCUL DE EPS TEL QUE AM=EPS*AB
             norcab=ab(1)*ab(1)+ab(2)*ab(2)
@@ -176,13 +176,13 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !           ON RAMENE LES POINTS EN DEHORS DU SEGMENT
 !             > SI LE POINT N EST PAS SUR LA DROITE DIRECTRICE AU SEGMENT
             if (abs(ddot(2,ap,1,[-ab(2),ab(1)],1)) .gt. norcab*tole) then
-              if (eps .lt. -tole .and. .not.is_pt_fond(nuno(1))) eps=0.d0
-              if (eps .gt. (1.d0+tole) .and. .not.is_pt_fond(nuno(2))) eps=1.d0
+                if (eps .lt. -tole .and. .not.is_pt_fond(nuno(1))) eps=0.d0
+                if (eps .gt. (1.d0+tole) .and. .not.is_pt_fond(nuno(2))) eps=1.d0
             endif
 !
-            do 212 i = 1, 2
+            do i = 1, 2
                 m(i)=a(i)+eps*ab(i)
-212         continue
+            end do
 !
 !           CALCUL DE LA DISTANCE PM
             d=padist(2,p,m)
@@ -192,9 +192,9 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
             if ((dmin-d) .gt. (r8prem()*1.d02)) then
                 dmin=d
                 oriabp=ab(1)*ap(2)-ab(2)*ap(1)
-                do 213 i = 1, 2
+                do i = 1, 2
                     m(i)=a(i)+ps/norcab*ab(i)
-213             continue
+                end do
                 d=padist(2,p,m)
                 if (oriabp .gt. 0.d0) then
                     xln=d
@@ -208,7 +208,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 endif
             endif
 !
-  2     continue
+        end do
 !
         zr(jlnsv-1+(ino-1)+1)=xln
         zl(jlnsl-1+(ino-1)+1)=.true.
@@ -225,7 +225,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
         xlt=r8maem()
 !
 !         RECHERCHE DU POINT LE PLUS PROCHE : BOUCLE SUR POINT DE FONFIS
-        do 3 isefis = 1, nbsef
+        do isefis = 1, nbsef
 !
             nseabs=zi(jdlise-1+(isefis-1)+1)
             inose=1
@@ -233,30 +233,30 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !           BOUCLE SUR LES MAILLES DE MAFIS POUR TROUVER LA BONNE MAILLE
             ma2ff=.false.
-            do 31 imafis = 1, nbmaf
+            do imafis = 1, nbmaf
 !
                 nmaabs=zi(jmafif-1+(imafis-1)+1)
                 nbnoma=zi(jconx2+nmaabs) - zi(jconx2+nmaabs-1)
 !             ON RECUPERE LES NUMEROS DS NOEUDS DE LA MAILLE ET ON TESTE
                 n1=0
 !
-                do 32 inoma = 1, nbnoma
+                do inoma = 1, nbnoma
                     num=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
                     if (nunose .eq. num) n1=1
 !               POUR RECUPERER UN 2EME POINT DE LA MAILLE QUI NE SOIT
 !               PAS SUR LE FOND
                     if ((nunose.ne.num)) nunoc=num
- 32             continue
+                end do
 !
                 if (n1 .eq. 1) then
 !
                     ma2ff=.true.
-                    do 33 i = 1, 2
+                    do i = 1, 2
                         a(i)=zr(jcoor-1+3*(nunose-1)+i)
                         b(i)=zr(jcoor-1+3*(nunoc-1)+i)
                         ab(i)=b(i)-a(i)
                         ap(i)=p(i)-a(i)
- 33                 continue
+                    end do
 !
 !               PROJECTION SUR LE SEGMENT
                     ps=ddot(2,ap,1,ab,1)
@@ -273,18 +273,18 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
                 endif
 !
- 31         continue
+            end do
 !
             if (.not.ma2ff) then
                 call utmess('F', 'XFEM2_15')
             endif
-  3     continue
+        end do
 !
 888     continue
         zr(jltsv-1+(ino-1)+1)=xlt
         zl(jltsl-1+(ino-1)+1)=.true.
 !
- 11 continue
+    end do
 !
     AS_DEALLOCATE(vl=is_pt_fond)
     call jedema()

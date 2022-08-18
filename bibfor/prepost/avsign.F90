@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
                   kwork, sommw, tspaq, i, jvsign)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,7 +27,7 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
 !    real(kind=8) ::vsign(nbvec*nbordr)
-    integer ::jvsign
+    integer :: jvsign
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE NORMALE POUR TOUS LES VECTEURS NORMAUX
 !      A TOUS LES NUMEROS D'ORDRE.
@@ -75,12 +75,12 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 !          DECAL = 6
 !       ENDIF
     decal = 18
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
         nx = vectn((ivect-1)*3 + 1)
         ny = vectn((ivect-1)*3 + 2)
         nz = vectn((ivect-1)*3 + 3)
 !
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
             adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
             sixx = vwork(adrs + 1)
             siyy = vwork(adrs + 2)
@@ -98,8 +98,8 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
             norm = fx*nx + fy*ny + fz*nz
             zr(jvsign+n) = norm
             n = n + 1
-20      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 !

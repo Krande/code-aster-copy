@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ceobfd(dm, epsm, lambda, mu, ecrod,&
                   fd)
 ! person_in_charge: ludovic.idoux at edf.fr
@@ -48,17 +48,17 @@ subroutine ceobfd(dm, epsm, lambda, mu, ecrod,&
     deux=2.d0
 !
     d=dm
-    do 100 i = 1, 6
+    do i = 1, 6
         eps(i)=epsm(i)
-100  end do
+    end do
 !
     treps=eps(1)+eps(2)+eps(3)
     call diago3(eps, vecc, valcc)
-    do 22 i = 1, 3
+    do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
             valcc(i)=0.d0
         endif
-22  end do
+    end do
 !
     trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then

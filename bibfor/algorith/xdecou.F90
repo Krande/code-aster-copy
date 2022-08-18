@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xdecou(ndim, elp, nnop, nnose, it,&
                   pintt, cnset, lsn, fisco, igeom,&
                   nfiss, ifiss, pinter, ninter, npts,&
@@ -136,25 +136,25 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     do k = 1, nnose
         na=cnset(nnose*(it-1)+k)
         if (na .lt. 1000) then
-            do 305 i = 1, nfisc
+            do i = 1, nfisc
                 somlsn(i) = somlsn(i)+lsn((na-1)*nfiss+fisco(2*i-1))
-305         continue
+            end do
         else
 !         RECUP COOR GLOBALES
             a(:) = 0.d0
-            do 310 i = 1, ndim
+            do i = 1, ndim
                 a(i)=pintt(ndim*(na-1001)+i)
-310         continue
+            end do
 !           CALCUL DES FF
             call reeref(elp, nnop, zr(igeom), a, ndim,&
                         rbid2, ff)
 !           INTERPOLATION LSN
-            do 320 j = 1, nnop
-                do 325 i = 1, nfisc
+            do j = 1, nnop
+                do i = 1, nfisc
                     somlsn(i)=somlsn(i)+ff(j)*lsn((j-1)*nfiss+fisco(2*&
                     i-1))
-325             continue
-320         continue
+                end do
+            end do
         endif
     end do
 !  SI ON EST PAS DU COTÉ INTERSECTÉ, ON SORT
@@ -176,7 +176,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !
         a(:) = 0.d0
         b(:) = 0.d0
-        do 110 i = 1, ndim
+        do i = 1, ndim
             if (na .lt. 1000) then
                 a(i)=zr(igeom-1+ndim*(na-1)+i)
             else
@@ -187,7 +187,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             else
                 b(i)=pintt(ndim*(nb-1001)+i)
             endif
-110     continue
+        end do
 !        LONGAR=PADIST(NDIM,A,B)
 !
         if (na .lt. 1000) then
@@ -198,9 +198,9 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
                         rbid2, ff)
 !         INTERPOLATION LSN
             lsna=0
-            do 10 i = 1, nnop
+            do i = 1, nnop
                 lsna = lsna + ff(i)*lsn((i-1)*nfiss+ifiss)
- 10         continue
+            end do
             if (abs(lsna) .lt. lonref*1.d-4) lsna = 0
         endif
         if (nb .lt. 1000) then
@@ -211,9 +211,9 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
                         rbid2, ff)
 !         INTERPOLATION LSN
             lsnb=0
-            do 20 i = 1, nnop
+            do i = 1, nnop
                 lsnb = lsnb + ff(i)*lsn((i-1)*nfiss+ifiss)
- 20         continue
+            end do
             if (abs(lsnb) .lt. lonref*1.d-4) lsnb = 0
         endif
 !
@@ -232,16 +232,17 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             endif
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-                do 130 i = 1, ndim
+                do i = 1, ndim
                     c(i)=a(i)-lsna/(lsnb-lsna)*(b(i)-a(i))
-130             continue
+                end do
                 nm=0
                 lsnm=(lsna+lsnb)/2.d0
                 do i = 1, nnop
-                   lsnelp(i)=lsn((i-1)*nfiss+ifiss)
+                    lsnelp(i)=lsn((i-1)*nfiss+ifiss)
                 end do
-                call xinter(ndim, ndime, elp, zr(igeom), lsnelp, na, nb,&
-                            nm, pintt, pintt, lsna, lsnb, lsnm, cref, c)
+                call xinter(ndim, ndime, elp, zr(igeom), lsnelp,&
+                            na, nb, nm, pintt, pintt,&
+                            lsna, lsnb, lsnm, cref, c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
 !            ALPHA=PADIST(NDIM,A,C)
 !           ON AJOUTE A LA LISTE LE POINT C
@@ -260,19 +261,19 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !     TRI DES POINTS D'INTERSECTION PAR ORDRE CROISSANT DES ARETES
     do pd = 1, ninter-1
         pp=pd
-        do 201 i = pp, ninter
+        do i = pp, ninter
             if (ainter(zxain*(i-1)+1) .lt. ainter(zxain*(pp-1)+1)) pp=i
-201     continue
-        do 202 k = 1, 4
+        end do
+        do k = 1, 4
             tampor(k)=ainter(zxain*(pp-1)+k)
             ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
             ainter(zxain*(pd-1)+k)=tampor(k)
-202     continue
-        do 203 k = 1, ndim
+        end do
+        do k = 1, ndim
             tampor(k)=pinter(ndim*(pp-1)+k)
             pinter(ndim*(pp-1)+k)=pinter(ndim*(pd-1)+k)
             pinter(ndim*(pd-1)+k)=tampor(k)
-203     continue
+        end do
     end do
 !
 !      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
@@ -280,27 +281,27 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !      IP1 ET IP4 N ONT PAS DE SOMMET COMMUN
     if (ninter .eq. 4 .and. npts .eq. 0) then
         a1=nint(ainter(1))
-        do 220 ia = 2, 3
+        do ia = 2, 3
             a2=nint(ainter(zxain*(ia-1)+1))
             papillon=.true.
-            do 224 i = 1, 2
-                do 225 j = 1, 2
+            do i = 1, 2
+                do j = 1, 2
                     if (ar(a1,i) .eq. ar(a2,j)) papillon=.false.
-225             continue
-224         continue
+                end do
+            end do
             if (papillon) then
 !        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C
-                do 226 k = 1, (zxain-1)
+                do k = 1, (zxain-1)
                     tampor(k)=ainter(zxain*(ia-1)+k)
                     ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
                     ainter(zxain*(4-1)+k)=tampor(k)
-226             continue
-                do 227 k = 1, ndim
+                end do
+                do k = 1, ndim
                     tampor(k)=pinter(ndim*(ia-1)+k)
                     pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
                     pinter(ndim*(4-1)+k)=tampor(k)
-227             continue
+                end do
             endif
-220     continue
+        end do
     endif
 end subroutine

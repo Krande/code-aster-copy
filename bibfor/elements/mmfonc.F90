@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmfonc(fepx, fmin, fmax)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     character(len=8) :: fepx
     real(kind=8) :: fmin, fmax
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -41,11 +41,11 @@ subroutine mmfonc(fepx, fmin, fmax)
     rl = int(rl/2.d0)
     nf0 = jfon-1 + rl
 !
-    do 20, i = 1, rl
-    val = zr(nf0 + i)
-    if (val .gt. fmax) fmax = val
-    if (val .lt. fmin) fmin = val
-    20 end do
+    do i = 1, rl
+        val = zr(nf0 + i)
+        if (val .gt. fmax) fmax = val
+        if (val .lt. fmin) fmin = val
+    end do
 !
     call jedema()
 !

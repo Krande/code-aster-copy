@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
                   jresl, rcoef, jvalm)
     implicit none
@@ -55,7 +55,7 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
     endif
 !
 !
-    do 1 kfois = 1, nbfois
+    do kfois = 1, nbfois
 !
         if (kfois .eq. 1) then
             permbl(1)=1
@@ -68,41 +68,41 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !
         if (tt .eq. 'RR') then
 !       ---------------------------
-            do 10 j = 1, nrmax
+            do j = 1, nrmax
                 ibloc=zi(jtmp2-1+2*(j-1)+1)
                 jvalb=jvalm(permbl(ibloc))
                 iadloc=zi(jtmp2-1+2*(j-1)+2)
                 zr(jvalb+iadloc-1)=zr(jvalb+iadloc-1)+rcoef*zr(jresl-&
                 1+j)
- 10         continue
+            end do
 !
 !
         else if (tt.eq.'CC') then
 !       ---------------------------
-            do 11 j = 1, nrmax
+            do j = 1, nrmax
                 ibloc=zi(jtmp2-1+2*(j-1)+1)
                 jvalb=jvalm(permbl(ibloc))
                 iadloc=zi(jtmp2-1+2*(j-1)+2)
                 zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+rcoef*zc(jresl-&
                 1+j)
- 11         continue
+            end do
 !
 !
         else if (tt.eq.'RC') then
 !       ---------------------------
-            do 12 j = 1, nrmax
+            do j = 1, nrmax
                 ibloc=zi(jtmp2-1+2*(j-1)+1)
                 jvalb=jvalm(permbl(ibloc))
                 iadloc=zi(jtmp2-1+2*(j-1)+2)
                 zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+ dcmplx(rcoef*&
                 zr(jresl-1+j),0.d0)
- 12         continue
+            end do
 !
 !
         else
             ASSERT(.false.)
         endif
 !
-  1 end do
+    end do
 !
 end subroutine

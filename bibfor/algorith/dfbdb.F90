@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfbdb(dim, b, e, deuxmu, lambda,&
                  ecrob, dsidep)
 !
@@ -87,10 +87,10 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
     call r8inir(36, 0.d0, a, 1)
 !
 !
-    do 20 i = 1, dim
-        do 21 j = i, dim
-            do 22 k = 1, dim
-                do 23 l = 1, dim
+    do i = 1, dim
+        do j = i, dim
+            do k = 1, dim
+                do l = 1, dim
                     if (i .eq. j) then
                         rtemp3=1.d0
                     else
@@ -103,28 +103,28 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
                     endif
                     dbedb(t(i,j),t(k,l))=dbedb(t(i,j),t(k,l))+(kron(k,&
                     i)* e(t(l,j))+kron(j,l)*e(t(i,k)))*rtemp3*rtemp4
-23              continue
+                end do
                 c(t(i,j))=c(t(i,j))+ b(t(i,k))*e(t(k,j))+e(t(i,k))*b(&
                 t(k,j))
-22          continue
-21      continue
-20  end do
+            end do
+        end do
+    end do
 !
     call dfpdf(6, c, mtemp)
 !
-    do 40 i = 1, ndim
-        do 41 j = 1, ndim
-            do 42 k = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
+            do k = 1, ndim
                 a(i,j)=a(i,j)+mtemp(i,k)*dbedb(k,j)
-42          continue
-41      continue
-40  end do
+            end do
+        end do
+    end do
 !
 !
-    do 50 i = 1, dim
-        do 51 j = i, dim
-            do 52 k = 1, dim
-                do 53 l = 1, ndim
+    do i = 1, dim
+        do j = i, dim
+            do k = 1, dim
+                do l = 1, ndim
                     if (i .eq. j) then
                         rtemp2=1.d0
                     else
@@ -143,15 +143,15 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
                     dsidep(t(i,j),l)=dsidep(t(i,j),l)+(a(t(i,k),l)*e(&
                     t(k,j))* rtemp4+e(t(i,k))*a(t(k,j),l)*rtemp3)*&
                     rtemp2
-53              continue
-52          continue
-51      continue
-50  end do
+                end do
+            end do
+        end do
+    end do
 !
 !
-    do 70 i = dim+1, ndim
+    do i = dim+1, ndim
         e(i)=rac2*e(i)
-70  end do
+    end do
 !
     if (dim .eq. 3) then
         treb=(c(1)+c(2)+c(3))
@@ -165,22 +165,22 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
     else
         treb=1.d0
     endif
-    do 60 i = 1, ndim
-        do 61 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
             dsidep(i,j)=-deuxmu/4.d0*dsidep(i,j)-lambda*treb*e(i)*e(j)
-61      continue
-60  end do
+        end do
+    end do
 !
-    do 71 i = dim+1, ndim
+    do i = dim+1, ndim
         e(i)=e(i)/rac2
-71  end do
+    end do
 !
 !
 !CC ON RAJOUTE LE TERME QUI VIENT DE L ECROUISSAGE
 !
-    do 80 i = 1, ndim
+    do i = 1, ndim
         dsidep(i,i)=dsidep(i,i)-ecrob
-80  end do
+    end do
 !
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crirup(fami, imat, ndim, npg, lgpg,&
                   option, compor, sigp, vip, vim,&
                   instam, instap)
@@ -65,11 +65,11 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
     call r8inir(6, 0.d0, sigmoy, 1)
 !
 !     CALCUL DU TENSEUR MOYEN
-    do 200 i = 1, 2*ndim
-        do 300 kpg = 1, npg
+    do i = 1, 2*ndim
+        do kpg = 1, npg
             sigmoy(i)=sigmoy(i)+sigp(i,kpg)/npg
-300      continue
-200  end do
+        end do
+    end do
 !
 !     EVALUATION DE LA CONTRAINTE PRINCIPALE MAXIMALE
     call fgequi(sigmoy, 'SIGM', ndim, equi)
@@ -84,10 +84,10 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
     else
         ivp=13
     endif
-    do 400 kpg = 1, npg
+    do kpg = 1, npg
         pm=pm+vim(ivp,kpg)/npg
         pp=pp+vip(ivp,kpg)/npg
-400  end do
+    end do
     dp=pp-pm
     dt=instap-instam
 !
@@ -97,31 +97,31 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
 !     V(LGPG-3) : ENREGIE DISSIPEE CUMULEE A CHAQUE PAS,
 !     V(LGPG-2) : PUISSANCE DISSIPEE, DP/DT*SIGMOY_EG
 !     V(LGPG-1) : PUISSANCE DISSIPEE CUMULEE A CHAQUE PAS,
-    do 500 kpg = 1, npg
+    do kpg = 1, npg
         vip(lgpg-5,kpg)=dp/dt
         vip(lgpg-4,kpg)=dp*equi(1)
         vip(lgpg-3,kpg)=dp*equi(1)+vim(lgpg-3,kpg)
         vip(lgpg-2,kpg)=dp*equi(1)/dt
         vip(lgpg-1,kpg)=dp*equi(1)/dt+vim(lgpg-1,kpg)
-500  end do
+    end do
 !
 !     CRITERE DE RUPTURE
     if (prin1 .gt. sc(1)) then
 ! LA CONTRAINTE PRINCIPALE MAXI DEPASSE LE SEUIL
-        do 600 kpg = 1, npg
+        do kpg = 1, npg
             vip(lgpg,kpg)=1.d0
-600      continue
+        end do
     else if (abs(vim(lgpg,1)-1.d0).lt.r8prem()) then
 ! LA MAILLE ETAIT DEJA CASSEE. ELLE LE RESTE
-        do 601 kpg = 1, npg
+        do kpg = 1, npg
             vip(lgpg,kpg)=1.d0
-601      continue
+        end do
     else
 ! MAILLE SAINE
-        do 602 kpg = 1, npg
+        do kpg = 1, npg
             vip(lgpg,kpg)=0.d0
-602      continue
+        end do
     endif
 !
-999  continue
+999 continue
 end subroutine

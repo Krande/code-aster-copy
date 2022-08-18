@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
                   dcc1, dcc2, dsidep)
     implicit none
@@ -54,24 +54,24 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 !     INITIALISATION
     n=6
 !
-    do 100 i = 1, 6
+    do i = 1, 6
         dfpla1(i) = 0.d0
         dfpla2(i) = 0.d0
-        do 110 j = 1, 6
+        do j = 1, 6
             dc1(i,j) = 0.d0
             dc2(i,j) = 0.d0
-110      continue
-100  end do
+        end do
+    end do
 !
     call dcopy(36, delas, 1, dc1, 1)
     call dcopy(36, delas, 1, dc2, 1)
 !
-    do 120 i = 1, 3
-        do 130 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             dc1(i+3,j+3) = dcc1(i,j)
             dc2(i+3,j+3) = dcc2(i,j)
-130      continue
-120  end do
+        end do
+    end do
 !
     if (ncrit .eq. 0) then
 !     CAS ELASTIQUE
@@ -85,11 +85,11 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
         call pmavec('ZERO', 6, dc1, dfpla1, vect)
         scal = dot_product(dfpla1(1:n), vect(1:n))
 !
-        do 10 i = 1, 6
-            do 20 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=delas(i,j)-matc(i,j)/scal
-20          continue
-10      continue
+            end do
+        end do
 !
     else if (ncrit .eq. 2) then
         call dfplas(nbackn(4), mp2, dfpla2(4))
@@ -99,11 +99,11 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
         call pmavec('ZERO', 6, dc2, dfpla2, vect)
         scal = dot_product(dfpla2(1:n), vect(1:n))
 !
-        do 30 i = 1, 6
-            do 40 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=delas(i,j)-matc(i,j)/scal
-40          continue
-30      continue
+            end do
+        end do
     else if (ncrit .eq. 12) then
 !
 !     NUMERATEUR
@@ -125,21 +125,21 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 !
         scal = scala*scalb
 !
-        do 50 i = 1, 6
-            do 60 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 mat(i,j)=(mata(i,j)-matb(i,j)+matc(i,j)-matd(i,j))/&
                 scal
-60          continue
-50      continue
+            end do
+        end do
 !
         mata = matmul(delas,mat)
         matb = matmul(mata,delas)
 !
-        do 70 i = 1, 6
-            do 80 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=delas(i,j)-matb(i,j)
-80          continue
-70      continue
+            end do
+        end do
 !
     endif
 end subroutine

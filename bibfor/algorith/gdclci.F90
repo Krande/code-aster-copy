@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdclci(fm, df, em)
 !
 !
@@ -71,36 +71,36 @@ subroutine gdclci(fm, df, em)
 ! ---------------
 !
 !    CALCUL DE BE EN T-
-    do 10 ij = 1, 6
+    do ij = 1, 6
         bem(ij) = kr(ij) - 2*em(ij)
-10  end do
+    end do
 !
 !
 !    CALCUL PDF(AB,KL) = DF(A,K)*DF(B,L) SYMETRISE ET RACINE DE 2
-    do 100 ij = 1, 6
+    do ij = 1, 6
         i = ind1(ij)
         j = ind2(ij)
-        do 110 kl = 1, 6
+        do kl = 1, 6
             k = ind1(kl)
             l = ind2(kl)
             pdf(ij,kl)=rc(ij)*rc(kl)*(df(i,k)*df(j,l)+df(j,k)*df(i,l))&
             /2
-110      continue
-100  end do
+        end do
+    end do
 !
 !
 !    CALCUL DE BE TRIAL : BETR(AB) = PDF(AB,IJ):BEM(IJ)  ET  E TRIAL
-    do 200 ij = 1, 6
+    do ij = 1, 6
         betr(ij) = ddot(6, pdf(ij,1),6, bem,1)
         etr(ij) = (kr(ij)-betr(ij))/2
-200  continue
+    end do
 !
 !
 !    CALCUL DES INVARIANTS DE E TRIAL
     tretr = etr(1)+etr(2)+etr(3)
-    do 300 ij = 1, 6
+    do ij = 1, 6
         dvetr(ij) = etr(ij) - tretr/3.d0*kr(ij)
-300  end do
+    end do
     eqetr = sqrt(1.5d0 * ddot(6,dvetr,1,dvetr,1))
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine defgen(testl1, testl2, nno, r, x3,&
                   sina, cosa, cour, vf, dfds,&
                   depl, eps, epsx3)
@@ -59,7 +59,7 @@ subroutine defgen(testl1, testl2, nno, r, x3,&
     duxds=0.d0
     duyds=0.d0
     dbtds=0.d0
-    do 20 i = 1, nno
+    do i = 1, nno
         ux =ux+vf(i)*uxl(i)
         uy =uy+vf(i)*uyl(i)
         betas=betas+vf(i)*betasl(i)
@@ -67,7 +67,7 @@ subroutine defgen(testl1, testl2, nno, r, x3,&
         duxds=duxds+dfds(i)*uxl(i)
         duyds=duyds+dfds(i)*uyl(i)
         dbtds=dbtds+dfds(i)*betasl(i)
- 20 end do
+    end do
 !
 !     ESS  ,  KSS  ,  ETT  ,  KTT  ,  GS
 !

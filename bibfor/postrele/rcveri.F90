@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcveri(tablz)
     implicit none
 #include "asterf_types.h"
@@ -111,7 +111,7 @@ subroutine rcveri(tablz)
 !
 ! ------------------------
 !     ON PARCOURT LES INTITULES
-    do 100 inti = 1, nbinti
+    do inti = 1, nbinti
 !
         if (noinst) then
 !
@@ -168,7 +168,7 @@ subroutine rcveri(tablz)
         call normev(ab, norab)
 !
 !       ON VERIFIE QUE LES NOEUDS SONT ORDONNES
-        do 10 i = 1, nbno-1
+        do i = 1, nbno-1
             mm(1)=zr(jcox+i)-zr(jcox+i-1)
             mm(2)=zr(jcoy+i)-zr(jcoy+i-1)
             mm(3)=zr(jcoz+i)-zr(jcoz+i-1)
@@ -177,11 +177,11 @@ subroutine rcveri(tablz)
             if (ps .le. eps) then
                 call utmess('F', 'POSTRCCM_37', sk=table)
             endif
- 10     continue
+        end do
 !
 !       ON VERIFIE QUE LES NOEUDS SONT ALIGNES
         maxdis=eps2
-        do 20 i = 1, nbno-1
+        do i = 1, nbno-1
             am(1)=zr(jcox+i)-zr(jcox)
             am(2)=zr(jcoy+i)-zr(jcoy)
             am(3)=zr(jcoz+i)-zr(jcoz)
@@ -193,7 +193,7 @@ subroutine rcveri(tablz)
                 impnm=.true.
                 maxdis=max(disrel,maxdis)
             endif
- 20     continue
+        end do
 !
         if (impnm) then
             if (tyva(1:2) .eq. 'K8') then
@@ -214,7 +214,7 @@ subroutine rcveri(tablz)
         call jedetr(coorz)
 !
 !
-100 end do
+    end do
 !
 !
 !

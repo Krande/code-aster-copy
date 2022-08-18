@@ -15,14 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
                   vdiag)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -30,8 +31,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     character(len=*) :: matz
     integer :: nbcmp
     real(kind=8) :: vdiag
@@ -125,19 +125,19 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     nomgd=refn(2)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     ASSERT(n1.eq.2*n)
-    do 20 k = 1, n
+    do k = 1, n
         nucmp=deeq(2*(k-1)+2)
         if (nucmp .gt. 0) then
             nocmp=zk8(jcmp-1+nucmp)
-            do 10 kcmp = 1, nbcmp
+            do kcmp = 1, nbcmp
                 if (nocmp .eq. licmp(kcmp)) then
                     lddlelim(k)=1
                 endif
- 10         continue
+            end do
         else if (modlag(1:13) .eq. 'MODI_LAGR_OUI') then
             llag(k)=1
         endif
- 20 end do
+    end do
 !
 !
 !
@@ -149,28 +149,28 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     ckmax = dcmplx(0.d0,0.d0)
     if (tdiag(1:7) .eq. 'MAX_ABS') then
         if (ltypr) then
-            do 25 kterm = 1, nz
+            do kterm = 1, nz
                 kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
- 25         continue
+            end do
             kmax = kmax*vdiag
         else
-            do 26 kterm = 1, nz
+            do kterm = 1, nz
                 ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
- 26         continue
+            end do
             ckmax = ckmax*vdiag
         endif
     else if (tdiag(1:7) .eq. 'MIN_ABS') then
         if (ltypr) then
             kmax = abs(zr(jvale))
-            do 27 kterm = 1, nz
+            do kterm = 1, nz
                 kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
- 27         continue
+            end do
             kmax = kmax*vdiag
         else
             ckmax = abs(zc(jvale))
-            do 28 kterm = 1, nz
+            do kterm = 1, nz
                 ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
- 28         continue
+            end do
             ckmax = ckmax*vdiag
         endif
     else if (tdiag(1:6) .eq. 'IMPOSE') then
@@ -179,7 +179,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
         ASSERT(.false.)
     endif
 !
-    do 30 kterm = 1, nz
+    do kterm = 1, nz
         if (smdi(jcol) .lt. kterm) jcol=jcol+1
         ilig=zi4(jsmhc-1+kterm)
         elimc=.false.
@@ -222,7 +222,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
             endif
         endif
 !
- 30 end do
+    end do
 !
     AS_DEALLOCATE(vi=lddlelim)
     AS_DEALLOCATE(vi=llag)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zerofb(func, x1, x2, tol, itmax,&
                   zbrent, iret, iter)
 !
@@ -60,14 +60,14 @@ subroutine zerofb(func, x1, x2, tol, itmax,&
     if (fa .gt. 0.d0 .and. fb .gt. 0.d0 .or. fa .lt. 0.d0 .and. fb .lt. 0.d0) then
 !
         iret=1
-        goto 9999
+        goto 999
 !
     endif
 !
     c=b
     fc=fb
 !
-    do 11 iter = 1, itmax
+    do iter = 1, itmax
 !
         if (fb .gt. 0.d0 .and. fc .gt. 0.d0 .or. fb .lt. 0.d0 .and. fc .lt. 0.d0) then
 !         RENAME A, B, C AND ADJUST BOUNDING INTERVAL D.
@@ -91,7 +91,7 @@ subroutine zerofb(func, x1, x2, tol, itmax,&
         xm=0.5d0*(c-b)
         if (abs(xm) .le. tol1 .or. abs(fb) .lt. tol) then
             zbrent=b
-            goto 9999
+            goto 999
         endif
 !
         if (abs(e) .ge. tol1 .and. abs(fa) .gt. abs(fb)) then
@@ -135,10 +135,10 @@ subroutine zerofb(func, x1, x2, tol, itmax,&
             b=b+sign(tol1,xm)
         endif
         fb=func(b)
-11  end do
+    end do
 !
     iret=1
     zbrent=b
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
                   cnvass)
 !
@@ -86,9 +86,9 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     ASSERT(typres.eq.'C')
     omega = r8depi()*valpar
     call jeveuo(cnvass(1:19)//'.VALE', 'E', vc=resu)
-    do 5 ieq = 1, neq
+    do ieq = 1, neq
         resu(ieq) = dcmplx(0.d0,0.d0)
-  5 continue
+    end do
 !
 ! --- NOMBRE DE CHARGEMENTS
 !
@@ -103,7 +103,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
 ! --- BOUCLE SUR LES CHARGES
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
@@ -147,16 +147,16 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
             endif
             call jeveuo(chamno(1:19)//'.VALE', 'L', jvale)
             if (typech .eq. 'COMP') then
-                do 122 ieq = 1, neq
+                do ieq = 1, neq
                     resu(ieq) = resu(ieq) + calpha*zc( jvale-1+ieq)
-122             continue
+                end do
             else
-                do 123 ieq = 1, neq
+                do ieq = 1, neq
                     resu(ieq) = resu(ieq) + calpha*zr( jvale-1+ieq)
-123             continue
+                end do
             endif
         endif
- 10 continue
+    end do
 !
 999 continue
 !

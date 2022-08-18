@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine erglme(jceld, iavale, option, iord, ligrel,&
                   longt, nbgr, resuco, resuc1)
     implicit none
@@ -111,7 +111,7 @@ subroutine erglme(jceld, iavale, option, iord, ligrel,&
     termvo = termvo + zr(iad+4-1)**2
     termno = termno + zr(iad+6-1)**2
     termsa = termsa + zr(iad+8-1)**2
-20  continue
+ 20 continue
     10 end do
     if (option .eq. 'QIRE_ELEM') then
         err0 = sqrt(err0)

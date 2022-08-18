@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine redetr(matelz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -32,8 +34,6 @@ subroutine redetr(matelz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/zerosd.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: matelz
 ! person_in_charge: jacques.pellet at edf.fr
@@ -65,7 +65,7 @@ subroutine redetr(matelz)
 !        L'OBJET .RELR N'EXISTE PAS ET IL N'Y A RIEN A FAIRE :
     call jeexin(matele//'.RELR', iexi)
     iexi=min(1,abs(iexi))
-    if( kret.eq.'NON' ) then
+    if (kret .eq. 'NON') then
         iexiav=iexi
         call asmpi_comm_vect('MPI_MAX', 'I', sci=iexi)
         iexi=min(1,abs(iexi))
@@ -78,7 +78,7 @@ subroutine redetr(matelz)
 !
 !     -- LE MATR_ELEM DOIT CONTENIR LE MEME NOMBRE DE RESUELEM
 !        SUR TOUS LES PROCESSEURS :
-    if( kret.eq.'NON' ) then
+    if (kret .eq. 'NON') then
         nb1av=nb1
         call asmpi_comm_vect('MPI_MAX', 'I', sci=nb1)
         ASSERT(nb1.eq.nb1av)
@@ -101,7 +101,7 @@ subroutine redetr(matelz)
 !        ADETR(K)=0 : LA SD EXISTE ET ELLE EST NON NULLE
 !     REMARQUE : LES CAS 1 ET 2 N'EXISTENT PAS ENCORE
 !                J'ESPERE QU'ILS N'ARRIVERONT JAMAIS
-    do 10 k = 1, nb1
+    do k = 1, nb1
         adetr(k)=0
         resuel=relr(k)(1:19)
         if (resuel .eq. ' ') then
@@ -123,7 +123,7 @@ subroutine redetr(matelz)
 !          ON PEUT LE DETRUIRE:
         izero=1
         if (zerosd('RESUELEM',resuel)) izero=0
-        if( kret.eq.'NON' ) then
+        if (kret .eq. 'NON') then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=izero)
         endif
         if (izero .eq. 0) then
@@ -131,14 +131,15 @@ subroutine redetr(matelz)
         else
             adetr(k)=0
         endif
- 10 end do
+ 10     continue
+    end do
 !
 !
 !     -- ON COMPTE LES RESUELEM A DETRUIRE :
     nbdet=0
-    do 20 k = 1, nb1
+    do k = 1, nb1
         if (adetr(k) .eq. 3) nbdet=nbdet+1
- 20 end do
+    end do
     if (nbdet .eq. 0) goto 60
 !
 !     -- ON DETRUIT LES RESULEM NULS (ON EN GARDE AU MOINS 1) :
@@ -146,7 +147,7 @@ subroutine redetr(matelz)
 !        EN GENERAL STOCKEE APRES LA SYMETRIQUE
     nbdet=min(nbdet,nb1-1)
     ico=0
-    do 30 k = nb1, 1, -1
+    do k = nb1, 1, -1
         if (adetr(k) .eq. 3) then
             ico=ico+1
             if (ico .gt. nbdet) goto 31
@@ -154,25 +155,25 @@ subroutine redetr(matelz)
             call detrsd('RESUELEM', resuel)
             relr(k) = ' '
         endif
- 30 end do
+    end do
  31 continue
 !
 !     -- ON COMPACTE LE MATR_ELEM POUR QUE TOUS SES RESUELEM
 !        SOIENT "VRAIS"
     ico=0
-    do 40 k = 1, nb1
+    do k = 1, nb1
         resuel=relr(k)(1:19)
         if (resuel .ne. ' ') then
             ico=ico+1
             tempor(ico) = resuel
         endif
- 40 end do
+    end do
     ASSERT(ico.gt.0)
 !
     call jeecra(matele//'.RELR', 'LONUTI', ico)
-    do 50 k = 1, ico
+    do k = 1, ico
         relr(k) = tempor(k)
- 50 end do
+    end do
 !
  60 continue
 !

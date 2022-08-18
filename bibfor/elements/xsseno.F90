@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xsseno(nno, nbsig, nse, npg, jgano,&
                   jsigpg, siseno)
     implicit none
@@ -57,27 +57,27 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 !-----------------------------------------------------------------------
 !
 !   BOUCLE SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG  CORRESPONDANTE
         idecpg=npg*(ise-1)
 !
 !       BOUCLE NCMP DES CONTRAINTES
-        do 120 ic = 1, nbsig
+        do ic = 1, nbsig
 !
-            do 121 kpg = 1, npg
+            do kpg = 1, npg
                 vpg(kpg) = zr(jsigpg+(kpg-1+idecpg)*nbsig+ic-1)
-121          continue
+            end do
 !
             call ppgan2(jgano, 1, 1, vpg, vno)
 !
-            do 122 in = 1, nno
+            do in = 1, nno
                 siseno(nbsig*nno*(ise-1)+nbsig*(in-1)+ic)=vno(in)
-122          continue
+            end do
 !
-120      continue
+        end do
 !
-110  end do
+    end do
 !
 !
 end subroutine

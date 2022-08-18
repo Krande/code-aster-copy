@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
                   listno, nbno, selez)
     implicit none
@@ -56,7 +56,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: typm, notyma(19)
-    integer :: posini, posfin,  sel, nutyma
+    integer :: posini, posfin, sel, nutyma
     integer :: pini(3, 19), pfin(3, 19)
 !
 !-----------------------------------------------------------------------
@@ -129,11 +129,11 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
     if (selec .eq. 'MILIEU') sel=2
     if (selec .eq. 'CENTRE') sel=3
 !
-    do 1 i = 1, nbnoto
+    do i = 1, nbnoto
         litrav(i) =0
- 1  end do
+    end do
 !
-    do 2 i = 1, nbma
+    do i = 1, nbma
         ima=listma(i)
         call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
         call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
@@ -143,33 +143,34 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
             posfin = nbnoma
         else
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typm)
-            do 10 nutyma = 1, 18
+            do nutyma = 1, 18
                 if (typm .eq. notyma(nutyma)) then
                     posini = pini(sel,nutyma)
                     posfin = pfin(sel,nutyma)
                     goto 20
                 endif
-10          continue
+            end do
             call utmess('F', 'MODELISA4_68', sk=typm)
-20          continue
+ 20         continue
             if (posfin .eq. 0) goto 2
         endif
 !
-        do 3 ino = posini, posfin
+        do ino = posini, posfin
             numno=zi(iacnex-1+ino)
             litrav(numno)= litrav(numno) +1
- 3      continue
- 2  end do
+        end do
+  2     continue
+    end do
 !
 !     -- ON COMPTE LES NOEUDS COCHES ET ON LES RECOPIE DANS LISTNO:
 !
     nbno=0
-    do 4 i = 1, nbnoto
+    do i = 1, nbnoto
         if (litrav(i) .gt. 0) then
             nbno=nbno+1
             listno(nbno)=i
         endif
- 4  end do
+    end do
 !
     call jedema()
 end subroutine

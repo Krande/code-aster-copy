@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
                   nbno, ecrma, icoma)
     implicit none
@@ -102,9 +102,9 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
     call jeexin('&&GILIRE.VECT', ibvec)
     if (ibvec .eq. 0) then
         call wkvect('&&GILIRE.VECT', 'V V I', nmtot, ivect)
-        do 111 i = 1, nmtot
+        do i = 1, nmtot
             zi(ivect+i-1)=0
-111     continue
+        end do
     else
         call jeveuo('&&GILIRE.VECT', 'L', ivect)
     endif
@@ -114,7 +114,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
     if (.not.trouve) then
         icoma = icoma + nbele
-        goto 9999
+        goto 999
     endif
 !
     call jeveuo(jexnom('&&GILIRE.CORR_GIBI_ASTER', tymail), 'L', iacorr)
@@ -127,7 +127,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !     -- BOUCLE SUR LES MAILLES DE L'OBJET SIMPLE:
 !     --------------------------------------------
-    do 1 i = 1, nbele
+    do i = 1, nbele
 !
 !
         icoma = icoma + 1
@@ -142,13 +142,13 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
         if ((maille.ne.icoma) .and. (.not.(ecrma(maille)))) then
             if (zi(ivect+maille-1) .eq. 0) zi(ivect+maille-1) = icoma
-            do 11 ii = 1, nmtot
+            do ii = 1, nmtot
                 maili = numanew(ii)
                 if (maili .eq. maille) then
                     numanew(ii)= zi(ivect+maille-1)
                     ecrma(numanew(ii))=.true.
                 endif
- 11         continue
+            end do
         endif
 !
 !
@@ -158,40 +158,41 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
         k8nom(1) = 'M'//k7nom(1)
 !
 !        -- REMPLISSAGE DE COGIAS:
-        do 10 j = 1, nbno
+        do j = 1, nbno
             numno = connex(nbno* (i-1)+j)
             cogias(j) = indirect(numno)
- 10     continue
+        end do
 !
         nbfois = nbno/7
         nbrest = nbno - 7*nbfois
         icoj = 0
         icok = 0
 !
-        do 2 j = 1, nbfois
-            do 3 k = 1, 7
+        do j = 1, nbfois
+            do k = 1, 7
                 icok = icok + 1
                 numno = cogias(zi(iacorr-1+icok))
                 call codent(numno, 'G', k7nom(1+k))
                 k8nom(1+k) = 'N'//k7nom(1+k)
-  3         continue
+            end do
             write (nfic,1001) (k8nom(l),l=1,8)
             k8nom(1) = ' '
             icoj = icoj + 7
-  2     continue
+        end do
 !
-        do 4 k = 1, nbrest
+        do k = 1, nbrest
             icok = icok + 1
             numno = cogias(zi(iacorr-1+icok))
             call codent(numno, 'G', k7nom(1+k))
             k8nom(1+k) = 'N'//k7nom(1+k)
-  4     continue
+        end do
         write (nfic,1001) (k8nom(l),l=1,nbrest+1)
-  1 end do
+  1     continue
+    end do
     write (nfic,*) 'FINSF'
     write (nfic,*) '%'
 !
-9999 continue
+999 continue
     call jelibe('&&GILIRE.VECT')
 !
     1001 format (2x,a8,7(1x,a8),1x)

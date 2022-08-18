@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine affpou(tmp, tmpf, fcx, nom, isec,&
                   ivar, car, ncar, val, tab,&
                   exp, nbo, ioc, ier)
@@ -91,13 +91,13 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
     else
         call jecroc(jexnom(tmp, nom))
         call jeveuo(jexnom(tmp, nom), 'E', jdge)
-        do 5 i = 1, nbo
+        do i = 1, nbo
             zr(jdge+i-1) = tst
- 5      continue
+        end do
     endif
 !
 ! --- VERIFICATION QUE LES AY, AZ SONT >= 1
-    do 7 i = 1, ncar
+    do i = 1, ncar
         if ((car(i)(1:2).eq.'AY') .or. (car(i)(1:2).eq.'AZ')) then
             if (val(i) .lt. 1.0d0) then
                 valkm = car(i)
@@ -105,7 +105,7 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
                 call utmess('A', 'MODELISA_23', sk=valkm, sr=valrm)
             endif
         endif
- 7  end do
+    end do
 !
 !     --- NOM DE LA FONCTION DU CX
     call jenonu(jexnom(tmpf, nom), num)
@@ -116,21 +116,21 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
     zk8(jdgef) = fcx
 !
 !     --- VALEURS AUX EXTREMITES POUR SECTION VARIABLE
-    do 10 i = 1, ncar
-        do 20 j = 1, nbo
+    do i = 1, ncar
+        do j = 1, nbo
             if (car(i) .eq. tab(j)) zr(jdge+j-1) = val(i)
-20      continue
-10  end do
+        end do
+    end do
 !
 !     --- EXPANSION DES VALEURS AUX EXTREMITES POUR SECTION CONSTANTE
-    do 30 i = 1, ncar
-        do 40 j = 1, nbo
+    do i = 1, ncar
+        do j = 1, nbo
             if (car(i) .eq. exp(j)) zr(jdge+j-1) = val(i)
-40      continue
-30  end do
+        end do
+    end do
 !
 !     --- EXPANSION DANS LE CAS PARTICULIER DE LA SECTION CARRE (H,EP)
-    do 50 i = 1, ncar
+    do i = 1, ncar
         if (car(i) .eq. 'H1      ' .or. car(i) .eq. 'H       ') then
             zr(jdge+23) = val(i)
             zr(jdge+24) = val(i)
@@ -147,7 +147,7 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
             zr(jdge+29) = val(i)
             zr(jdge+30) = val(i)
         endif
-50  end do
+    end do
 !
 !     --- TYPE/GEOMETRIE  DE SECTION ---
     zr(jdge+22) = ivar

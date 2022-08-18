@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
                   dgamv, im, sm, vinm, de,&
                   ucrip, seuilp, gp, devgii, paraep,&
                   varpl, dfdsp, dlam)
 !
-    implicit   none
+    implicit none
 #include "asterfort/lkdepp.h"
 #include "asterfort/lkdfdx.h"
 #include "asterfort/r8inir.h"
@@ -71,9 +71,9 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 !
     sigv(1:ndt) = matmul(de(1:ndt,1:ndt), depsv(1:ndt))
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         sigint(i) = sigt(i) - sigv(i)
-20  end do
+    end do
 !
 ! =================================================================
 ! --- RECUPERATION DE DF/DXIP -------------------------------------

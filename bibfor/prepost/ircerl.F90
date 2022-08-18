@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                   ncmpmx, vale, nomcmp, nomel, loc,&
                   celd, connex, point, nomnos, nbcmpt,&
@@ -116,7 +116,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
     if = 0
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
-    do 2 i = 1, lgr-1
+    do i = 1, lgr-1
         if (format(i:i) .eq. 'D' .or. format(i:i) .eq. 'E' .or. format(i:i) .eq. 'F' .or.&
             format(i:i) .eq. 'G') then
             id = i+1
@@ -126,7 +126,8 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
             if = i-1
             goto 2
         endif
-  2 end do
+  2     continue
+    end do
     if (id .ne. 0 .and. if .ge. id) then
         forcmp = 'A'//format(id:if)
     else
@@ -135,14 +136,14 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
 !
 !  -- DETERMINATION DU NOMBRE MAXIMUM DE SOUS_POINTS ---
     icomax = 0
-    do 4 igre = 1, nbgrel
+    do igre = 1, nbgrel
         icoef=max(1,celd(4))
         if (icoef .gt. icomax) icomax = icoef
-  4 end do
+    end do
     ncmp = ncmpv
     if (ncmp .gt. 0) then
         ncmp = 0
-        do 141 i = 1, ncmpv
+        do i = 1, ncmpv
             if (nucmp(i) .le. icomax) then
                 ncmp = ncmp + 1
             else
@@ -150,10 +151,10 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                 nomcp = 'V'//cbid
                 call utmess('A', 'PREPOST_74', sk=nomcp)
             endif
-141     continue
+        end do
         if (ncmp .eq. 0) then
             call utmess('A', 'PREPOST_75')
-            goto 9999
+            goto 999
         endif
         icomax = ncmp
     endif
@@ -161,9 +162,9 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
     if (lmax .or. lmin) then
         call jedetr('&&IRCERL.NCMT')
         call wkvect('&&IRCERL.NCMT', 'V V K16', ncmpmx*icomax, inot)
-        do 6 i = 1, ncmpmx
+        do i = 1, ncmpmx
             if (icomax .gt. 1 .or. ncmp .ge. 1) then
-                do 7 jco = 1, icomax
+                do jco = 1, icomax
                     if (ncmp .gt. 0) then
                         call codent(nucmp(jco), 'G', cbid)
                     else
@@ -171,11 +172,11 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                     endif
                     nomcp = nomcmp(i)
                     zk16(inot-1+(i-1)*icomax+jco)='V'//cbid
-  7             continue
+                end do
             else
                 zk16(inot-1+i) = nomcmp(i)
             endif
-  6     continue
+        end do
     endif
     if (lmax) then
         call jedetr('&&IRCERL.MAX')
@@ -184,9 +185,9 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
         call wkvect('&&IRCERL.MAIMAX', 'V V K8', ncmpmx*icomax, inmax)
         call jedetr('&&IRCERL.NBVMAX')
         call wkvect('&&IRCERL.NBVMAX', 'V V I', ncmpmx*icomax, ivmax)
-        do 90 i = 1, ncmpmx*icomax
+        do i = 1, ncmpmx*icomax
             zr(imax-1+i)=rundf
- 90     continue
+        end do
     endif
     if (lmin) then
         call jedetr('&&IRCERL.MIN')
@@ -195,16 +196,16 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
         call wkvect('&&IRCERL.MAIMIN', 'V V K8', ncmpmx*icomax, inmin)
         call jedetr('&&IRCERL.NBVMIN')
         call wkvect('&&IRCERL.NBVMIN', 'V V I', ncmpmx*icomax, ivmin)
-        do 91 i = 1, ncmpmx*icomax
+        do i = 1, ncmpmx*icomax
             zr(imin-1+i)=rundf
- 91     continue
+        end do
     endif
     if (loc .eq. 'ELGA' .or. loc .eq. 'ELEM' .or. .not.lcor) ndim = 0
     nrepe = nolili//'.REPE'
     call jeveuo(nrepe, 'L', irepe)
     if (nbmat .ne. 0) nbel=nbmat
     modsau = 0
-    do 12 imai = 1, nbel
+    do imai = 1, nbel
         if (nbmat .ne. 0) then
             imail = nummai(imai)
         else
@@ -250,33 +251,33 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
             endif
             call jedetr('&&IRCERL.VAL')
             call wkvect('&&IRCERL.VAL', 'V V R', ncmpmx*icoef2, ival)
-            do 5 i = 1, ncmpmx*icoef2
+            do i = 1, ncmpmx*icoef2
                 zi(iposg-1+i)=0
-  5         continue
-            do 26 i = 1, ncmpmx
+            end do
+            do i = 1, ncmpmx
                 zi(iposv-1+i)=0
- 26         continue
-            do 23 i = 1, ncmpmx
+            end do
+            do i = 1, ncmpmx
                 if (exisdg(zi(iaec),i)) then
                     ncmpp=ncmpp+1
                     if (nbcmpt .ne. 0) then
-                        do 8 icm = 1, nbcmpt
+                        do icm = 1, nbcmpt
                             icmp2=nucmpu(icm)
                             if (i .eq. icmp2) then
                                 ncmp2=ncmp2+1
-                                do 92 jco = 1, icoef2
+                                do jco = 1, icoef2
                                     zi(iposg-1+(icm-1)*icoef2+jco)=i
- 92                             continue
+                                end do
                                 zi(iposv-1+icm)=ncmpp
                             endif
-  8                     continue
+                        end do
                     else
-                        do 93 jco = 1, icoef2
+                        do jco = 1, icoef2
                             zi(iposg-1+(ncmpp-1)*icoef2+jco)=i
- 93                     continue
+                        end do
                     endif
                 endif
- 23         continue
+            end do
             if (nbcmpt .eq. 0) ncmp2=ncmpp
             npcalc = nscal/ncmpp
 !
@@ -284,18 +285,18 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
 !
             if (nbcmpt .ne. 0) then
                 i2=0
-                do 9 i = 1, nbcmpt*icoef2
+                do i = 1, nbcmpt*icoef2
                     if (zi(iposg-1+i) .ne. 0) then
                         i2=i2+1
                         zi(iposg-1+i2)= zi(iposg-1+i)
                     endif
-  9             continue
+                end do
             endif
 !
 ! --- STOCKAGE DES NOMS DE COMPOSANTES ---
-            do 42 i = 1, ncmp2
+            do i = 1, ncmp2
                 if (icoef2 .gt. 1 .or. ncmp .ge. 1) then
-                    do 43 jco = 1, icoef2
+                    do jco = 1, icoef2
                         if (ncmp .gt. 0) then
                             call codent(nucmp(jco), 'G', cbid)
                         else
@@ -303,11 +304,11 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                         endif
                         nomcp = nomcmp(zi(iposg-1+i))
                         zk16(inom-1+(i-1)*icoef2+jco)='V'//cbid
- 43                 continue
+                    end do
                 else
                     zk16(inom-1+i)=nomcmp(zi(iposg-1+i))
                 endif
- 42         continue
+            end do
 !
 ! --- CREATION DES FORMATS D'ECRITURE ---
 !
@@ -367,59 +368,59 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
         endif
         iachml = iad + nsca * (ielg-1)
         if (loc .eq. 'ELGA' .or. loc .eq. 'ELEM') then
-            do 16 ipca = 1, npcalc
+            do ipca = 1, npcalc
                 j=iachml-1+ncmpp*icoef*(ipca-1)
                 if (nbcmpt .eq. 0) then
-                    do 10 i = 1, ncmp2
+                    do i = 1, ncmp2
                         if (ncmp .gt. 0) then
-                            do 551 jco = 1, icoef2
+                            do jco = 1, icoef2
                                 zr(ival-1+(i-1)*icoef2+jco)= vale(j+i+&
                                 (nucmp(jco)-1)*ncmpp)
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
-551                         continue
+                            end do
                         else
-                            do 55 jco = 1, icoef2
+                            do jco = 1, icoef2
                                 zr(ival-1+(i-1)*icoef2+jco)= vale(j+i+&
                                 (jco-1)*ncmpp)
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
- 55                         continue
+                            end do
                         endif
- 10                 continue
+                    end do
                 else
-                    do 20 i = 1, ncmp2
+                    do i = 1, ncmp2
                         inu=zi(iposv-1+i)
                         if (ncmp .gt. 0) then
-                            do 301 jco = 1, icoef2
+                            do jco = 1, icoef2
                                 zr(ival-1+(i-1)*icoef2+jco)= vale(j+&
                                 inu+(nucmp(jco)-1)*ncmpp)
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
-301                         continue
+                            end do
                         else
-                            do 30 jco = 1, icoef2
+                            do jco = 1, icoef2
                                 zr(ival-1+(i-1)*icoef2+jco)= vale(j+&
                                 inu+(jco-1)*ncmpp)
                                 zi(icoe-1+(i-1)*icoef2+jco)=jco
- 30                         continue
+                            end do
                         endif
- 20                 continue
+                    end do
                 endif
 !
 ! --  TRI DES COMPOSANTES DANS L'INTERVALLE BORINF,BORSUP
 !
                 if (lsup .or. linf) then
-                    do 35 iva = 1, icoef2*ncmp2
+                    do iva = 1, icoef2*ncmp2
                         if (lsup) then
                             if ((zr(ival-1+iva)-borsup) .gt. 0.d0) zi(icoe-1+iva)=0
                         endif
                         if (linf) then
                             if ((zr(ival-1+iva)-borinf) .lt. 0.d0) zi(icoe-1+iva)=0
                         endif
- 35                 continue
+                    end do
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
                     icomp2=0
-                    do 36 i = 1, icoef2*ncmp2
+                    do i = 1, icoef2*ncmp2
                         if (zi(icoe-1+i) .ne. 0) then
                             icomp2=icomp2+1
                             zi(icoe-1+icomp2)=zi(icoe-1+i)
@@ -427,7 +428,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                             zr(ival-1+icomp2)=zr(ival-1+i)
                             zk16(inop-1+icomp2)=zk16(inom-1+i)
                         endif
- 36                 continue
+                    end do
                     if (icomp2 .eq. 0) goto 16
 !
 ! -- IMPRESSION ----
@@ -499,7 +500,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
 ! -- RECHERCHE DE LA VALEUR MAXIMALE ---
 !
                 if (lmax) then
-                    do 101 i = 1, nbcpt
+                    do i = 1, nbcpt
                         if (lsup .or. linf) then
                             iadr=(zi(ipo2-1+i)-1)*icoef2+zi(icoe-1+i)
                         else
@@ -516,13 +517,13 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                         else if (zr(ival-1+i).eq.zr(imax-1+iadr)) then
                             zi(ivmax-1+iadr)=zi(ivmax-1+iadr)+1
                         endif
-101                 continue
+                    end do
                 endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
 !
                 if (lmin) then
-                    do 102 i = 1, nbcpt
+                    do i = 1, nbcpt
                         if (lsup .or. linf) then
                             iadr=(zi(ipo2-1+i)-1)*icoef2+zi(icoe-1+i)
                         else
@@ -539,15 +540,16 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                         else if (zr(ival-1+i).eq.zr(imin-1+iadr)) then
                             zi(ivmin-1+iadr)=zi(ivmin-1+iadr)+1
                         endif
-102                 continue
+                    end do
                 endif
- 16         continue
+ 16             continue
+            end do
 !CCCCC
         else if (loc.eq.'ELNO') then
             ipoin=point(iel)
             nbno=point(iel+1)-ipoin
             ncou=npcalc/nbno
-            do 17 icou = 1, ncou
+            do icou = 1, ncou
                 if (ncou .gt. 1) then
                     if (.not.lmax .and. .not.lmin) then
                         if (ncou .eq. 2) then
@@ -559,12 +561,12 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                         endif
                     endif
                 endif
-                do 18 in = 1, nbno
+                do in = 1, nbno
                     nuno = connex(ipoin-1+in)
                     if (nbnot .ne. 0) then
-                        do 187 iino = 1, nbnot
+                        do iino = 1, nbnot
                             if (nuno .eq. numnoe(iino)) goto 189
-187                     continue
+                        end do
                         goto 18
 189                     continue
                     endif
@@ -572,56 +574,56 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                     j=iachml-1+ncmpp*icoef*(in-1) +(icou-1)*ncmpp*&
                     icoef*nbno
                     if (nbcmpt .eq. 0) then
-                        do 50 i = 1, ncmp2
+                        do i = 1, ncmp2
                             if (ncmp .gt. 0) then
-                                do 511 jco = 1, icoef2
+                                do jco = 1, icoef2
                                     zr(ival-1+(i-1)*icoef2+jco)=&
                                     vale(j+i+(nucmp(jco)-1)*ncmpp)
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
-511                             continue
+                                end do
                             else
-                                do 51 jco = 1, icoef2
+                                do jco = 1, icoef2
                                     zr(ival-1+(i-1)*icoef2+jco)=&
                                     vale(j+i+(jco-1)*ncmpp)
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
- 51                             continue
+                                end do
                             endif
- 50                     continue
+                        end do
                     else
-                        do 60 i = 1, ncmp2
+                        do i = 1, ncmp2
                             inu=zi(iposv-1+i)
                             if (ncmp .gt. 0) then
-                                do 701 jco = 1, icoef2
+                                do jco = 1, icoef2
                                     zr(ival-1+(i-1)*icoef2+jco)=&
                                     vale(j+inu+(nucmp(jco)-1)*ncmpp)
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
-701                             continue
+                                end do
                             else
-                                do 70 jco = 1, icoef2
+                                do jco = 1, icoef2
                                     zr(ival-1+(i-1)*icoef2+jco)=&
                                     vale(j+inu+(jco-1)*ncmpp)
                                     zi(icoe-1+(i-1)*icoef2+jco)=jco
- 70                             continue
+                                end do
                             endif
- 60                     continue
+                        end do
                     endif
 !
 ! --  TRI DES COMPOSANTES DANS L'INTERVALLE BORINF,BORSUP
 !
                     if (lsup .or. linf) then
-                        do 65 iva = 1, icoef2*ncmp2
+                        do iva = 1, icoef2*ncmp2
                             if (lsup) then
                                 if ((zr(ival-1+iva)-borsup) .gt. 0.d0) zi(icoe-1+iva)=0
                             endif
                             if (linf) then
                                 if ((zr(ival-1+iva)-borinf) .lt. 0.d0) zi(icoe-1+iva)=0
                             endif
- 65                     continue
+                        end do
 !
 ! --- RETASSAGE POUR IMPRIMER COMPOSANTES PRESENTES DANS L'INTERVALLE --
 !
                         icomp2=0
-                        do 66 i = 1, icoef2*ncmp2
+                        do i = 1, icoef2*ncmp2
                             if (zi(icoe-1+i) .ne. 0) then
                                 icomp2=icomp2+1
                                 zi(icoe-1+icomp2)=zi(icoe-1+i)
@@ -629,7 +631,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                                 zr(ival-1+icomp2)=zr(ival-1+i)
                                 zk16(inop-1+icomp2)=zk16(inom-1+i)
                             endif
- 66                     continue
+                        end do
                         if (icomp2 .eq. 0) goto 18
 !
 ! -- IMPRESSION  --
@@ -689,7 +691,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
 ! -- RECHERCHE DE LA VALEUR MAXIMALE ---
 !
                     if (lmax) then
-                        do 103 i = 1, nbcpt
+                        do i = 1, nbcpt
                             if (lsup .or. linf) then
                                 iadr=(zi(ipo2-1+i)-1)*icoef2+zi(&
                                 icoe-1+i)
@@ -710,13 +712,13 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                             then
                                 zi(ivmax-1+iadr)=zi(ivmax-1+iadr)+1
                             endif
-103                     continue
+                        end do
                     endif
 !
 ! -- RECHERCHE DE LA VALEURE MINIMALE ---
 !
                     if (lmin) then
-                        do 104 i = 1, nbcpt
+                        do i = 1, nbcpt
                             if (lsup .or. linf) then
                                 iadr=(zi(ipo2-1+i)-1)*icoef2+zi(&
                                 icoe-1+i)
@@ -737,38 +739,40 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
                             then
                                 zi(ivmin-1+iadr)= zi(ivmin-1+iadr)+1
                             endif
-104                     continue
+                        end do
                     endif
- 18             continue
- 17         continue
+ 18                 continue
+                end do
+            end do
         endif
- 12 end do
+ 12     continue
+    end do
     write (ifi,*) ' '
 !
 ! --- IMPRESSION DE LA VALEUR MAXIMALE ---
 !
     if (lmax) then
-        do 95 i = 1, ncmpmx*icoef2
+        do i = 1, ncmpmx*icoef2
             if (zr(imax-1+i) .ne. rundf) then
                 form1 = '(1X,3A,1X,'//format//',A,I4,2A)'
                 write(ifi,form1) 'LA VALEUR MAXIMALE DE ', zk16(inot-1+i),&
      &       ' EST ',zr(imax-1+i),&
      &       ' EN ',zi(ivmax-1+i),' MAILLE(S) : ',zk8(inmax-1+i)
             endif
- 95     continue
+        end do
     endif
 !
 ! --- IMPRESSION DE LA VALEUR MINIMALE ---
 !
     if (lmin) then
-        do 96 i = 1, ncmpmx*icoef2
+        do i = 1, ncmpmx*icoef2
             if (zr(imin-1+i) .ne. rundf) then
                 form1 = '(1X,3A,1X,'//format//',A,I4,2A)'
                 write(ifi,form1) 'LA VALEUR MINIMALE DE ', zk16(inot-1+i),&
      &       ' EST ',zr(imin-1+i),&
      &       ' EN ',zi(ivmin-1+i),' MAILLE(S) : ',zk8(inmin-1+i)
             endif
- 96     continue
+        end do
     endif
 !
     call jedetr('&&IRCERL.NCMT')
@@ -787,6 +791,6 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
     call jedetr('&&IRCERL.PO2')
     call jedetr('&&IRCERL.VAL')
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

@@ -15,15 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine meamgy(modele, mate, mateco, cara, compor, matel,&
-                  nchar, lchar)
+!
+subroutine meamgy(modele, mate, mateco, cara, compor,&
+                  matel, nchar, lchar)
     implicit none
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/exisd.h"
+#include "asterfort/exlima.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -31,8 +33,6 @@ subroutine meamgy(modele, mate, mateco, cara, compor, matel,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/exlima.h"
-#include "asterfort/exisd.h"
     character(len=8) :: modele, cara, lchar(*)
     character(len=19) :: matel
     character(len=24) :: mate, mateco
@@ -76,13 +76,13 @@ subroutine meamgy(modele, mate, mateco, cara, compor, matel,&
     ASSERT(chgeom.ne.' ')
 !
     nbro = 0
-    do 10 icha = 1,nchar
-        call exisd('CHAMP_GD',lchar(icha)//'.CHME.ROTAT',iret)
-        if (iret.ne.0) then
-          chrota = lchar(icha)//'.CHME.ROTAT.DESC'
-          nbro = nbro + 1
+    do icha = 1, nchar
+        call exisd('CHAMP_GD', lchar(icha)//'.CHME.ROTAT', iret)
+        if (iret .ne. 0) then
+            chrota = lchar(icha)//'.CHME.ROTAT.DESC'
+            nbro = nbro + 1
         end if
- 10 continue
+    end do
 !
 !    CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(cara, chcara)
@@ -115,7 +115,7 @@ subroutine meamgy(modele, mate, mateco, cara, compor, matel,&
     lchin(11) = chrota
     lpain(12) = 'PVARCPR'
     lchin(12) = chvarc
-
+!
     call exlima(' ', 1, 'G', modele, ligrel)
     option = 'MECA_GYRO'
 !

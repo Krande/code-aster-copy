@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wpordc(type, shift, vp, x, m,&
                   neq)
     implicit none
@@ -45,47 +45,47 @@ subroutine wpordc(type, shift, vp, x, m,&
 !-----------------------------------------------------------------------
     om = dimag(shift)
     if (type .eq. 0) then
-        do 100, i = 1, m, 1
-        k = i
-        p = dimag(vp(i)) - om
-        do 110, j = i+1, m
-        if ((dimag(vp(j))-om) .lt. p) then
-            p = dimag(vp(j)) - om
-            k = j
-        endif
-110      continue
-        if (k .ne. i) then
-            q=vp(i)
-            vp(i)=vp(k)
-            vp(k)=q
-            do 120, j = 1, neq, 1
-            c = x(j,i)
-            x(j,i) = x(j,k)
-            x(j,k) = c
-120          continue
-        endif
-100      continue
+        do i = 1, m, 1
+            k = i
+            p = dimag(vp(i)) - om
+            do j = i+1, m
+                if ((dimag(vp(j))-om) .lt. p) then
+                    p = dimag(vp(j)) - om
+                    k = j
+                endif
+            end do
+            if (k .ne. i) then
+                q=vp(i)
+                vp(i)=vp(k)
+                vp(k)=q
+                do j = 1, neq, 1
+                    c = x(j,i)
+                    x(j,i) = x(j,k)
+                    x(j,k) = c
+                end do
+            endif
+        end do
     else if (type .eq. 1) then
-        do 200, i = 1, m, 1
-        k = i
-        p = abs(vp(i) - shift)
-        do 210, j = i+1, m
-        if ((abs(vp(j)-shift)) .lt. p) then
-            p = abs(vp(j) - shift)
-            k = j
-        endif
-210      continue
-        if (k .ne. i) then
-            q=vp(i)
-            vp(i)=vp(k)
-            vp(k)=q
-            do 220, j = 1, neq, 1
-            c = x(j,i)
-            x(j,i) = x(j,k)
-            x(j,k) = c
-220          continue
-        endif
-200      continue
+        do i = 1, m, 1
+            k = i
+            p = abs(vp(i) - shift)
+            do j = i+1, m
+                if ((abs(vp(j)-shift)) .lt. p) then
+                    p = abs(vp(j) - shift)
+                    k = j
+                endif
+            end do
+            if (k .ne. i) then
+                q=vp(i)
+                vp(i)=vp(k)
+                vp(k)=q
+                do j = 1, neq, 1
+                    c = x(j,i)
+                    x(j,i) = x(j,k)
+                    x(j,k) = c
+                end do
+            endif
+        end do
     else
         call utmess('F', 'ALGELINE3_97')
     endif

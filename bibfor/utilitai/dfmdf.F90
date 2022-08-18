@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfmdf(dim, f, dsidep)
 !
 !
@@ -94,7 +94,7 @@ subroutine dfmdf(dim, f, dsidep)
 ! DE LA DIAGONALE, ALORS TEST=.FALSE. ET ON NE CORRIGE PAS LES VECTEURS
 ! PROPRES
         test=.true.
-        do 30 i = 1, 3
+        do i = 1, 3
             if (epsp(i) .ne. 0.d0) then
                 if (abs(f(i)-epsp(i))/abs(epsp(i)) .gt. 1.d-12) then
                     test=.false.
@@ -104,50 +104,50 @@ subroutine dfmdf(dim, f, dsidep)
                     test=.false.
                 endif
             endif
- 30     end do
+        end do
 ! SI TEST = .TRUE. : CORRECTION DES VECTEURS PROPRES
         if (test) then
-            do 31 i = 1, 3
-                do 32 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     vecp(i,j)=0.d0
- 32             continue
+                end do
                 vecp(i,i)=1.d0
- 31         continue
+            end do
         endif
 ! FIN CORRECTION DES VALEURS PROPRES
         if (abs(epsp(2)) .gt. rtemp) rtemp=abs(epsp(2))
         if (abs(epsp(3)) .gt. rtemp) rtemp=abs(epsp(3))
-        do 500 i = 1, 2
-            do 501 j = (i+1), 3
+        do i = 1, 2
+            do j = (i+1), 3
                 if (abs(epsp(i)-epsp(j)) .lt. 1d-12) then
                     epsp(i)=epsp(i)+rigmin*rtemp
                     epsp(j)=epsp(j)-rigmin*rtemp
                 endif
-501         continue
-500     end do
-        do 600 i = 1, 3
+            end do
+        end do
+        do i = 1, 3
             if (epsp(i) .lt. 0.d0) then
                 sigp(i)=epsp(i)
             else
                 sigp(i)=0.d0
             endif
-600     end do
+        end do
         mtg = .true.
         call r8inir(9, 0.d0, dspdep, 1)
         call r8inir(36, 0.d0, dsidep, 1)
-        do 120 k = 1, 3
+        do k = 1, 3
             if (epsp(k) .lt. 0.d0) then
                 dspdep(k,k)=1.d0
             else
                 dspdep(k,k)=0.d0
             endif
-120     end do
-        do 20 i = 1, 3
-            do 21 j = i, 3
-                do 22 k = 1, 3
-                    do 23 l = 1, 3
-                        do 24 m = 1, 3
-                            do 25 n = 1, 3
+        end do
+        do i = 1, 3
+            do j = i, 3
+                do k = 1, 3
+                    do l = 1, 3
+                        do m = 1, 3
+                            do n = 1, 3
                                 if (i .eq. j) then
                                     rtemp3=1.d0
                                 else
@@ -180,19 +180,19 @@ subroutine dfmdf(dim, f, dsidep)
                                         mtg= .false.
                                     endif
                                 endif
- 25                         continue
- 24                     continue
- 23                 continue
- 22             continue
- 21         continue
- 20     continue
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
         if (.not.mtg) then
-            do 70 k = 1, 6
-                do 71 l = 1, 6
+            do k = 1, 6
+                do l = 1, 6
                     dsidep(k,l)=0.d0
- 71             continue
- 70         continue
+                end do
+            end do
             dsidep(1,1)=1.d0
             dsidep(2,2)=1.d0
             dsidep(3,3)=1.d0
@@ -223,7 +223,7 @@ subroutine dfmdf(dim, f, dsidep)
 ! DE LA DIAGONALE, ALORS TEST=.FALSE. ET ON NE CORRIGE PAS LES VECTEURS
 ! PROPRES
         test=.true.
-        do 40 i = 1, 2
+        do i = 1, 2
             if (epsp2(i) .ne. 0.d0) then
                 if (abs(f(ordre(i))-epsp2(i))/abs(epsp2(i)) .gt. 1.d-12) then
                     test=.false.
@@ -233,16 +233,16 @@ subroutine dfmdf(dim, f, dsidep)
                     test=.false.
                 endif
             endif
- 40     end do
+        end do
 ! SI TEST = .TRUE. : CORRECTION DES VECTEURS PROPRES
         if (test) then
             if (ordre(1) .eq. 1) then
-                do 41 i = 1, 2
-                    do 42 j = 1, 2
+                do i = 1, 2
+                    do j = 1, 2
                         vecp2(i,j)=0.d0
- 42                 continue
+                    end do
                     vecp2(i,i)=1.d0
- 41             continue
+                end do
             else
                 vecp2(1,1)=0.d0
                 vecp2(1,2)=1.d0
@@ -257,29 +257,29 @@ subroutine dfmdf(dim, f, dsidep)
             epsp2(2)=epsp2(2)-rigmin*rtemp
         endif
 !
-        do 700 i = 1, 2
+        do i = 1, 2
             if (epsp2(i) .lt. 0.d0) then
                 sigp2(i)=epsp2(i)
             else
                 sigp2(i)=0.d0
             endif
-700     end do
+        end do
         mtg = .true.
         call r8inir(4, 0.d0, dspdeb, 1)
 !
-        do 7200 k = 1, 2
+        do k = 1, 2
             if (epsp2(k) .lt. 0.d0) then
                 dspdeb(k,k)=1.d0
             else
                 dspdeb(k,k)=0.d0
             endif
-7200     continue
-        do 720 i = 1, 2
-            do 721 j = i, 2
-                do 722 k = 1, 2
-                    do 723 l = 1, 2
-                        do 724 m = 1, 2
-                            do 725 n = 1, 2
+        end do
+        do i = 1, 2
+            do j = i, 2
+                do k = 1, 2
+                    do l = 1, 2
+                        do m = 1, 2
+                            do n = 1, 2
                                 if (i .eq. j) then
                                     rtemp3=1.d0
                                 else
@@ -317,12 +317,12 @@ subroutine dfmdf(dim, f, dsidep)
                                         mtg= .false.
                                     endif
                                 endif
-725                         continue
-724                     continue
-723                 continue
-722             continue
-721         continue
-720     continue
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
         if (.not.mtg) then
             dsidep(1,1)=1.d0
             dsidep(2,2)=1.d0

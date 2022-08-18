@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function spect3(x, a, b, func, tol,&
                 coeff, xlc, vitn, defm, rhoe,&
                 nbp, im, jm)
@@ -85,7 +85,7 @@ function spect3(x, a, b, func, tol,&
 !
     if (abs(a-b) .lt. 1.0d-30) then
         spect3 = res
-        goto 9999
+        goto 999
     endif
 !
     ym = ( a + b ) / 2.0d0
@@ -99,16 +99,16 @@ function spect3(x, a, b, func, tol,&
 !
 ! --- REPETER ...
 !
-10  continue
+ 10 continue
     n1 = n1 + n2
-    do 20 i = n2, n1
+    do i = n2, n1
         index = index + 1
         y = coeff(index) * dy
-        w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + &
-               func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im,jm)
+        w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im&
+               &,jm)
         index = index + 1
         som = som + coeff(index)*w(i)
-20  end do
+    end do
     n2 = n1 + 1
     index = index + 1
     res = ( som + coeff(index)*y0 ) * dy
@@ -124,10 +124,10 @@ function spect3(x, a, b, func, tol,&
             arret = 0
             r1 = res
             som = 0.0d0
-            do 22 i = 1, n1
+            do i = 1, n1
                 index = index + 1
                 som = som + coeff(index)*w(i)
-22          continue
+            end do
         endif
     endif
 !
@@ -137,5 +137,5 @@ function spect3(x, a, b, func, tol,&
 !
     spect3 = res
 !
-9999  continue
+999 continue
 end function

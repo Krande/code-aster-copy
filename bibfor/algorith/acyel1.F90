@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart,&
                   lilig, nblig, licol, nbcol, cmat,&
                   ndim, ideb, jdeb, x)
@@ -54,7 +54,6 @@ subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/ampcpr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -62,6 +61,7 @@ subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, ideb, iret, j, jdeb
     integer :: llob, nbcol, nblig, ndim, nobc, nobl
@@ -78,7 +78,7 @@ subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart,&
     nomcol = nmcolz
 !
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), ibid)
     call jeveuo(jexnum(nomcol, ibid), 'L', llob)
@@ -88,14 +88,14 @@ subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart,&
 ! SI ASSEMBLAGE PARTIEL ON TRAITE LIGNE PAR LIGNE
 !        ET COLONNE PAR COLONNE
 !
-        do 10 j = 1, nbcol
-            do 20 i = 1, nblig
+        do j = 1, nbcol
+            do i = 1, nblig
                 iad=llob+(licol(j)-1)*nobl+lilig(i)-1
                 call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
                             1, ideb+i-1, jdeb+ j-1, x, 1,&
                             1)
- 20         continue
- 10     continue
+            end do
+        end do
 !
     else
 !
@@ -108,6 +108,6 @@ subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart,&
     endif
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

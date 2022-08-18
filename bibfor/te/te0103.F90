@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0103(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -51,11 +51,11 @@ subroutine te0103(option, nomte)
 !
     if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and.&
         nomte .ne. 'THCOSE2 ') then
-        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     else
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     endif
 !
 ! --- INITIALISATIONS :
@@ -63,11 +63,11 @@ subroutine te0103(option, nomte)
     zero = 0.0d0
     un = 1.0d0
 !
-    do 20 i = 1, ndimax
-        do 10 j = 1, ndimax
+    do i = 1, ndimax
+        do j = 1, ndimax
             rigith(i,j) = zero
-10      continue
-20  end do
+        end do
+    end do
 !
 ! --- POUR LE CALCUL DU COEFFICIENT D'ECHANGE :
 !     ---------------------------------------
@@ -104,8 +104,8 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES SURFACIQUES :
 !     --------------------------
-    if (nomte.ne.'THCPSE3' .and. nomte.ne.'THCASE3' .and. nomte.ne.'THCOSE3'&
-         .and. nomte.ne.'THCOSE2') then
+    if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and.&
+        nomte .ne. 'THCOSE2') then
 !
 ! --- DETERMINATION DES COORDONNEES COOR2D DES NOEUDS DE L'ELEMENT
 ! --- DANS LE REPERE DE L'ELEMENT :
@@ -114,7 +114,7 @@ subroutine te0103(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 80 kp = 1, npg2
+        do kp = 1, npg2
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
@@ -125,11 +125,11 @@ subroutine te0103(option, nomte)
 !
 ! ---   COORDONNEES DES POINTS D'INTEGRATION :
 !       ------------------------------------
-            do 30 i = 1, nno
+            do i = 1, nno
                 xgau = xgau + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                 ygau = ygau + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                 zgau = zgau + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-30          continue
+            end do
 !
             valpar(1) = xgau
             valpar(2) = ygau
@@ -164,10 +164,10 @@ subroutine te0103(option, nomte)
 !
 ! ---   CALCUL DE LA RIGIDITE THERMIQUE DUE AU TERME D'ECHANGE B :
 !       --------------------------------------------------------
-            do 70 gi = 1, nno
-                do 60 gj = 1, gi
-                    do 50 pi = 1, 3
-                        do 40 pj = 1, pi
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids* theta
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
@@ -185,11 +185,11 @@ subroutine te0103(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + pk
-40                      continue
-50                  continue
-60              continue
-70          continue
-80      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
 ! --- CAS DES COQUES LINEIQUES (EN CONTRAINTES PLANES ET AXI) :
 !     -------------------------------------------------------
@@ -198,7 +198,7 @@ subroutine te0103(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 140 kp = 1, npg2
+        do kp = 1, npg2
             k = (kp-1)*nno
             call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
                         cour, poids, cosa, sina)
@@ -207,10 +207,10 @@ subroutine te0103(option, nomte)
 !
 ! ---   COORDONNEES DES POINTS D'INTEGRATION :
 !       ------------------------------------
-            do 90 i = 1, nno
+            do i = 1, nno
                 xgau = xgau + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
                 ygau = ygau + zr(igeom+2* (i-1)+1)*zr(ivf+k+i-1)
-90          continue
+            end do
 !
             if (nomte .eq. 'THCASE3') poids = poids*xgau
 !
@@ -248,10 +248,10 @@ subroutine te0103(option, nomte)
 !
 ! ---   CALCUL DE LA RIGIDITE THERMIQUE DUE AU TERME D'ECHANGE B :
 !       --------------------------------------------------------
-            do 130 gi = 1, nno
-                do 120 gj = 1, gi
-                    do 110 pi = 1, 3
-                        do 100 pj = 1, pi
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids* theta
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
@@ -269,11 +269,11 @@ subroutine te0103(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + pk
-100                      continue
-110                  continue
-120              continue
-130          continue
-140      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
 ! --- CAS DES COQUES LINEIQUES (AUTRES QUE CONTRAINTES PLANES ET AXI) :
 !     --------------------------------------------------------------
@@ -318,7 +318,7 @@ subroutine te0103(option, nomte)
 ! ---   DETERMINATION DE LA MATRICE MATP DONT LE TERME GENERIQUE
 ! ---   EST MATP(I,J) = SOMME_EPAISSEUR(PI(Z)*PJ(Z).DZ) :
 !       -----------------------------------------------
-        do 150 kp = 1, npg2
+        do kp = 1, npg2
             kq = (kp-1)*3
 !
             poi1 = zr(mzr-1+12+kp)
@@ -332,14 +332,14 @@ subroutine te0103(option, nomte)
             matp(3,1) = matp(1,3)
             matp(3,2) = matp(2,3)
             matp(3,3) = matp(3,3) + poi1*zr(mzr-1+kq+3)**2
-150      continue
+        end do
 !
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
         nompar(4) = 'INST'
 !
-        do 170 kp = 1, npg2
+        do kp = 1, npg2
             k = (kp-1)*nno
 !
             poi2 = zr(ipoids-1+kp)
@@ -347,11 +347,11 @@ subroutine te0103(option, nomte)
             x = zero
             y = zero
             z = zero
-            do 160 i = 1, nno
+            do i = 1, nno
                 x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                 y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                 z = z + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-160          continue
+            end do
 !
             valpar(1) = x
             valpar(2) = y
@@ -374,7 +374,7 @@ subroutine te0103(option, nomte)
             matn(2,1) = matn(1,2)
             matn(2,2) = poi2*h*zr(ivf-1+k+2)**2
 !
-            if (nomte.eq.'THCOSE3') then
+            if (nomte .eq. 'THCOSE3') then
                 matn(1,3) = poi2*h*zr(ivf-1+k+1)*zr(ivf-1+k+3)
                 matn(2,3) = poi2*h*zr(ivf-1+k+2)*zr(ivf-1+k+3)
                 matn(3,1) = matn(1,3)
@@ -424,7 +424,7 @@ subroutine te0103(option, nomte)
             rigith(6,5) = rigith(5,6)
             rigith(6,6) = rigith(6,6) + matn(2,2)*matp(3,3)
 !
-            if (nomte.eq.'THCOSE3') then
+            if (nomte .eq. 'THCOSE3') then
 !
                 rigith(1,7) = rigith(1,7) + matn(1,3)*matp(1,1)
                 rigith(1,8) = rigith(1,8) + matn(1,3)*matp(1,2)
@@ -481,7 +481,7 @@ subroutine te0103(option, nomte)
                 rigith(9,9) = rigith(9,9) + matn(3,3)*matp(3,3)
             endif
 !
-170      continue
+        end do
 !
     endif
 !
@@ -493,11 +493,11 @@ subroutine te0103(option, nomte)
 !     ---------------------------------------------------------------
     nbddl = 3*nno
     ind = 0
-    do 190 i = 1, nbddl
-        do 180 j = 1, i
+    do i = 1, nbddl
+        do j = 1, i
             ind = ind + 1
             zr(imattt+ind-1) = rigith(i,j)
-180      continue
-190  end do
+        end do
+    end do
 !
 end subroutine

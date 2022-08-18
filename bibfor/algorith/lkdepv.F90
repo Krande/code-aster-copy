@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
                   ddgamv)
 !
-    implicit    none
+    implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/r8inir.h"
     integer :: nbmat
@@ -65,11 +65,11 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
 !
     dgamv = 0.d0
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
 !
         dgamv = dgamv + ddepsv(i)**2
 !
-20  end do
+    end do
     dgamv = sqrt(deux/trois * dgamv)
 ! =================================================================
 ! --- MATRICE DE PROJECTION DEVIATORIQUE --------------------------
@@ -77,15 +77,15 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
 !
     call r8inir(6*6, 0.d0, devia, 1)
 !
-    do 30 i = 1, 3
-        do 40 k = 1, 3
+    do i = 1, 3
+        do k = 1, 3
             devia(i,k) = mun/trois
-40      end do
-30  end do
+        end do
+    end do
 !
-    do 50 i = 1, ndt
+    do i = 1, ndt
         devia(i,i) = devia(i,i)+ un
-50  end do
+    end do
 !
     deviat(1:ndt,1:ndt) = transpose(devia(1:ndt,1:ndt))
 ! =================================================================
@@ -96,14 +96,14 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
 !
 !      SI PAS DE VISCOSITE DGAMV=0
     if (dgamv .eq. zero) then
-        do 60 i = 1, ndt
+        do i = 1, ndt
             ddgamv(i) = zero
-60      end do
+        end do
     else
         ddgamv(1:ndt) = matmul(deviat(1:ndt,1:ndt), ddepsv(1:ndt))
-        do 70 i = 1, ndt
+        do i = 1, ndt
             ddgamv(i) = deux/trois*ddgamv(i)/dgamv
-70      end do
+        end do
     endif
 !
 ! =================================================================

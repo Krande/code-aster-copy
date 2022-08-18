@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcds(hook, devg, devgii, dfds, dfdg,&
                   dsde)
 !
-    implicit   none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lglpma.h"
@@ -55,11 +55,11 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
     mat(:,:) = 0.d0
     tmp(:,:) = 0.d0
     num(:,:) = 0.d0
-    do 10 i = 1, ndt
-        do 20 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             mat(i,j) = devg(i)*dfds(j)
-20      continue
-10  end do
+        end do
+    end do
     call lglpma(ndt, hook, mat, tmp)
     call lglpma(ndt, tmp, hook, num)
 ! ======================================================================
@@ -73,11 +73,11 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
 ! --- STOCKAGE DANS MATRICE TEMPORAIRE AVANT SYMETRISATION -------------
 ! ======================================================================
     tmp(:,:) = 0.d0
-    do 30 i = 1, ndt
-        do 40 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             dsde(i,j) = hook(i,j) + num(i,j)/denom
-40      continue
-30  end do
+        end do
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

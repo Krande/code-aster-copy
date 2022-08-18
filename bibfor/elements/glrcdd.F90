@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
                   surfgp, q, epst, deps, dsig,&
                   ecr, delas, dsidep, normm, normn,&
@@ -88,22 +88,22 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
     call r8inir(6*6, 0.0d0, c1, 1)
     call r8inir(6*6, 0.0d0, c2, 1)
 !
-    do 10, i = 1,6
-    c1(i,i) = matr(15+i)
-    c2(i,i) = matr(21+i)
-    10 end do
+    do i = 1, 6
+        c1(i,i) = matr(15+i)
+        c2(i,i) = matr(21+i)
+    end do
 !
-    do 70, j = 1,2
-    do 60, i = 1,2
-    tq(i,j) = q(j,i)
-60  continue
-    70 end do
+    do j = 1, 2
+        do i = 1, 2
+            tq(i,j) = q(j,i)
+        end do
+    end do
 !
 !     PASSSAGE DES TAUX DE DEFORMATION DANS LE REPERE ORTHOTROPE
 !
-    do 80, j = 1,6
-    depslo(j) = deps(j)
-    80 end do
+    do j = 1, 6
+        depslo(j) = deps(j)
+    end do
 !
 !   ATTENTION: DEPS(3)    = 2*EPS_XY
 !   ATTENTION: DEPS(6)    = 2*KAPPA_XY
@@ -119,9 +119,9 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
     depsor(6) = 2.d0* depsor(6)
 !
 !     CALCUL DU TENSEUR DE COURBURE DANS LE REPERE D ORTHO
-    do 100, i = 1,3
-    curloc(i) = epst(i+3)
-    100 end do
+    do i = 1, 3
+        curloc(i) = epst(i+3)
+    end do
 !
     curloc(3) = epst(6) / 2.d0
 !
@@ -132,9 +132,9 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
 !
     ep2s6 = ep*ep / 6.d0
 !
-    do 110, j = 1,6
-    nbacor(j) = ecr(j+13)
-    110 end do
+    do j = 1, 6
+        nbacor(j) = ecr(j+13)
+    end do
 !
 !       NBACOR(1:3) = ep * multsym(tq,sig(1),q)
 !       NBACOR(4:6) = ecr(17:19)    ! internal variable
@@ -145,9 +145,9 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
     dam1 = ecr(8) * dmax1
     dam2 = ecr(9) * dmax2
 !
-    do 120, j = 1,3
-    cuvcup(j) = curort(j) - ecr(j+3)
-    120 end do
+    do j = 1, 3
+        cuvcup(j) = curort(j) - ecr(j+3)
+    end do
 !
     rpara(1) = alpha
     rpara(2) = beta
@@ -180,21 +180,21 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
     call ortloc(dsidep, 3, 3, t1ve)
     call ortloc(dsidep, 0, 3, t1ve)
 !
-    do 127 i = 1, 3
-        do 125 j = 4, 6
+    do i = 1, 3
+        do j = 4, 6
             dsidep(j,i)=dsidep(i,j)
-125      continue
-127  end do
+        end do
+    end do
 !
 !     TRANSFERT DANS LE REPERE LOCAL DES INCREMENT D EFFORT ORTHO
     call multsy(q, dforth, tq, dfloc)
     call multsy(q, dforth(4), tq, dfloc(4))
 !
 !     CALCUL DES INCREMENTS DE CONTRAINTE DANS L EPAISSEUR
-    do 130, j = 1,3
-    dsig(j) = dfloc(j) / ep
-    dsig(j+3) = dfloc(j+3) / ep2s6
-    130 end do
+    do j = 1, 3
+        dsig(j) = dfloc(j) / ep
+        dsig(j+3) = dfloc(j+3) / ep2s6
+    end do
 !
 !     STOCKAGE DES DEFORMATIONS DANS LE REPERE ORTHOTROPE
 !     CALCUL DU TENSEUR DES TAUX DE DEFORMATION DANS LE REPERE LOCAL
@@ -207,10 +207,10 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
 !      DPSPLO(3)= 2.D0*DPSPLO(3)
 !      DPSPLO(6) = 2.D0* DPSPLO(6)
 !
-    do 140, j = 1,6
-    ecr(j) = ecr(j) + dpspor(j)
+    do j = 1, 6
+        ecr(j) = ecr(j) + dpspor(j)
 !        ECR(J) = ECR(J) + DPSPLO(J)
-    140 end do
+    end do
 !
 !     STOCKAGE DE L ENERGIE DISSIPEE PAR LA PLASTICITE
     ecr(7) = ecr(7) + surfgp*ddiss
@@ -232,9 +232,9 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
 !      NBACLO(3)= 2.D0*NBACLO(3)
 !      NBACLO(6) = 2.D0* NBACLO(6)
 !
-    do 150, j = 1,6
-    ecr(j+13) = nbacor(j)
+    do j = 1, 6
+        ecr(j+13) = nbacor(j)
 !        ECR(J+13) = NBACLO(J)
-    150 end do
+    end do
 !
 end subroutine

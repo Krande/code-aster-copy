@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bmocca(umoy, geom, cf0, mcf0, fsvr,&
                   nbm, vicoq, torco, tcoef, s1,&
                   s2, b)
@@ -92,7 +92,7 @@ subroutine bmocca(umoy, geom, cf0, mcf0, fsvr,&
 !
 ! --- 2.CALCUL DE LA MATRICE B(S)
 !
-    do 10 imod = 1, nbm
+    do imod = 1, nbm
 !
         icoq = vicoq(imod)
 !
@@ -113,7 +113,7 @@ subroutine bmocca(umoy, geom, cf0, mcf0, fsvr,&
                         mcf0, fsvr, icoq, imod, nbm,&
                         rki, tcoef, s1, s2, zc(iysol))
 !
-            do 20 jmod = 1, nbm
+            do jmod = 1, nbm
 !
                 jcoq = vicoq(jmod)
 !
@@ -167,7 +167,7 @@ subroutine bmocca(umoy, geom, cf0, mcf0, fsvr,&
 !
                 endif
 !
-20          continue
+            end do
 !
 !-------SINON (LES DEUX COQUES SONT EN MOUVEMENT POUR LE MODE IMOD)
 !
@@ -195,7 +195,7 @@ subroutine bmocca(umoy, geom, cf0, mcf0, fsvr,&
                         mcf0, fsvr, 2, imod, nbm,&
                         rk2i, tcoef, s1, s2, zc(iysol2))
 !
-            do 30 jmod = 1, nbm
+            do jmod = 1, nbm
 !
                 jcoq = vicoq(jmod)
 !
@@ -281,11 +281,11 @@ subroutine bmocca(umoy, geom, cf0, mcf0, fsvr,&
 !
                 endif
 !
-30          continue
+            end do
 !
         endif
 !
-10  end do
+    end do
 !
     call jedetr('&&BMOCCA.TEMP.YSOL')
     call jedetr('&&BMOCCA.TEMP.YSOL1')

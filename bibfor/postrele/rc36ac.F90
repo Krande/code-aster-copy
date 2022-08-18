@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                   listma, chresu)
     implicit none
@@ -175,7 +175,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 ! --- IL FAUT CALCULER LE FACTEUR D'USAGE EN CHAQUE NOEUD DE CHAQUE
 !     MAILLE
 !
-    do 10 im = 1, nbma
+    do im = 1, nbma
 !
         ima = listma(im)
         nommat = nom_materiau(ima)
@@ -185,7 +185,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
         decin = cind(5+4*(ima-1)+4)
         decca = ccad(5+4*(ima-1)+4)
 !
-        do 20 ipt = 1, nbpt
+        do ipt = 1, nbpt
 !
 ! ------- LA CONNECTIVITE INVERSE
 !
@@ -201,7 +201,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
 ! ------- LES INDICES DE CONTRAINTES
 !
-            do 202 icmp = 1, 3
+            do icmp = 1, 3
                 iad = decin + (ipt-1)*nbcin + icmp
                 if (.not. zl(jcinl-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
@@ -230,11 +230,11 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
                 endif
                 k(icmp) = cinv(iad)
-202         continue
+            end do
 !
 ! ------- LES CARATERISTIQUES : INERTIE, DIAMETRE, EPAISSEUR
 !
-            do 204 icmp = 2, 4
+            do icmp = 2, 4
                 iad = decca + (ipt-1)*nbcca + icmp
                 if (.not. zl(jccal-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
@@ -242,7 +242,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     call utmess('F', 'POSTRCCM_8', nk=2, valk=valk)
                 endif
                 cara(icmp-1) = ccav(iad)
-204         continue
+            end do
 !
             sm = 0.d0
             snmax = 0.d0
@@ -256,7 +256,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 ! ------- ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE
 !         -----------------------------------------------------
 !
-            do 100 ig = 1, nbgr
+            do ig = 1, nbgr
 !
                 numgr = situ_nume_group(ig)
                 if (numgr .lt. 0) goto 100
@@ -297,7 +297,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                             cara, nommat, snmax, samax, utot,&
                             sm, zr(jfact))
 !
-100         continue
+100             continue
+            end do
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   2
@@ -310,7 +311,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 ! ------- ON TRAITE LES SITUATIONS NON COMBINABLES
 !         ----------------------------------------
 !
-            do 200 ig = 1, nbgr
+            do ig = 1, nbgr
 !
                 numgr = situ_nume_group(ig)
                 if (numgr .lt. 0) goto 200
@@ -320,7 +321,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
                 npass = 0
 !
-                do 210 is1 = 1, nbsigr
+                do is1 = 1, nbsigr
                     ioc1 = zi(jnsg+is1-1)
                     if (zl(jcombi+ioc1-1)) goto 210
 !
@@ -398,9 +399,11 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     endif
                     utot = utot + ug
 !
-210             continue
+210                 continue
+                end do
 !
-200         continue
+200             continue
+            end do
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   3
@@ -409,7 +412,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 ! ------- ON TRAITE LES SITUATIONS DE PASSAGE
 !         -----------------------------------
 !
-            do 310 ig = 1, nbgr
+            do ig = 1, nbgr
 !
                 numgr = situ_nume_group(ig)
                 if (numgr .ge. 0) goto 310
@@ -436,7 +439,8 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                             cara, nommat, snmax, samax, utot,&
                             sm, zr(jfact))
 !
-310         continue
+310             continue
+            end do
 !
 ! ----------------------------------------------------------------------
 !
@@ -468,9 +472,9 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
             iad = decrs + (ipt-1)*nbcrs + icmp
             cesv(iad) = utot
 !
- 20     continue
+        end do
 !
- 10 end do
+    end do
 !
     1000 format(a,a8,a,a8)
     3002 format ('=> LISTE DES NUMEROS DE SITUATION: ',100 (i4,1x))

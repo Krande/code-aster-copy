@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine affono(valr, valk, desc, prnm, nbcomp,&
                   fonree, nomn, ino, nsurch, forimp,&
                   valfor, valfof, motcle, verif, nbec)
@@ -68,16 +68,16 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
     integer :: iec, indigd, j, nbec, nsurc0
 !-----------------------------------------------------------------------
     indigd = 0
-    do 10 iec = 1, nbec
+    do iec = 1, nbec
         if (prnm(iec) .ne. 0) then
             indigd = 1
             goto 20
         endif
- 10 end do
-    if (indigd .eq. 0) goto 9999
+    end do
+    if (indigd .eq. 0) goto 999
  20 continue
     nsurc0 = nsurch
-    do 30 j = 1, nbcomp
+    do j = 1, nbcomp
         if (forimp(j) .ne. 0) then
             if (iand(desc,2**(j-1)) .eq. 0) then
 !  VERIFICATION SUR LES 6 PREMIERS DDL : FX FY FZ MX MY MZ
@@ -104,7 +104,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
                 valk(nbcomp*(ino-1)+j) = valfof(j)
             endif
         endif
- 30 end do
+    end do
 !
-9999 continue
+999 continue
 end subroutine

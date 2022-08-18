@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irdrsr(ifi, nbno, desc, nec, dg,&
                   ncmpmx, vale, nomcmp, titr, nomnoe,&
                   nomsd, nomsym, ir, numnoe, lmasu,&
@@ -24,6 +24,8 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/ecrtes.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/irgags.h"
@@ -35,8 +37,6 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ifi, nbno, desc(*), nec, dg(*), ncmpmx
     integer :: ir, numnoe(*), nbcmp, ncmps(*), ncmp
     real(kind=8) :: vale(*)
@@ -109,16 +109,16 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
     call wkvect('&&IRDRSR.NOM', 'V V K16', ncmpmx, inom)
 !
     ncmp = -desc(2)
-    do 17 iec = 1, nec
+    do iec = 1, nec
         dg(iec)=desc(3+iec-1)
- 17 end do
+    end do
     icompt = 0
-    do 12 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (exisdg(dg,icmp)) then
             icompt = icompt + 1
             zk16(inom-1+icompt) = nomcmp(icmp)
         endif
- 12 end do
+    end do
 !
 !     ---- RECHERCHE DES GRANDEURS SUPERTAB -----
 !
@@ -132,7 +132,7 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
     if (nbcmp .eq. 0) then
 !
 !     ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
-        do 10 ichs = 1, nbchs
+        do ichs = 1, nbchs
             iente = 1
             lcmp=.false.
             call ecrtes(nomsd, titr, nomgds(ichs), ir, 'NOEU',&
@@ -140,27 +140,27 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
             idebu=1
             entete(4) = ' '
             texte = ' '
-            do 5 icp = 1, zi(ibcmps-1+ichs)
+            do icp = 1, zi(ibcmps-1+ichs)
                 nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp))
                 iutil = lxlgut(nocmp)
                 ifin = idebu+iutil
                 texte(idebu:ifin) = nocmp(1:iutil)//' '
                 idebu = ifin+1
-  5         continue
+            end do
             iutil = lxlgut(texte)
             jmax = lxlgut(titre)
             jmax = min(jmax,(80-iutil-2))
             entete(4)= titre(1:jmax)//' - '//texte(1:iutil)
-            do 11 inno = 1, nbno
+            do inno = 1, nbno
                 ino = numnoe(inno)
                 ival = (ino-1)*ncmp
 !
-                do 25 ic = 1, zi(ibcmps-1+ichs)
+                do ic = 1, zi(ibcmps-1+ichs)
                     zr(irval-1+ic) = 0.0d0
- 25             continue
-                do 13 icms = 1, zi(ibcmps-1+ichs)
+                end do
+                do icms = 1, zi(ibcmps-1+ichs)
                     zr(irval-1+icms) = vale(ival+icms)
- 13             continue
+                end do
                 if (iente .eq. 1) then
                     write(ifi,'(A80)') (entete(i),i=1,10)
                     iente=0
@@ -171,9 +171,9 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
                 write (ifi,'(I10,5X,A,A)') ino,'% NOEUD ',nomnoe(inno)
                 write (ifi,'(6(1PE13.5E3))') (zr(irval-1+i), i=1,zi(&
                 ibcmps-1+ichs))
- 11         continue
+            end do
             if (iente .eq. 0) write (ifi,'(A)') '    -1'
- 10     continue
+        end do
         call jedetr('&&IRDRSR.VAL')
         call jedetr('&&IRDRSR.NOM')
         call jedetr('&&IRDRSR.NBCMPS')
@@ -185,11 +185,11 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
     else
 !
 ! --- NOM DE LA GRANDEUR SUPERTAB
-        do 897 i = 1, nbchs
-            do 898 j = 1, zi(ibcmps+i-1)
+        do i = 1, nbchs
+            do j = 1, zi(ibcmps+i-1)
                 if (ncmps(1) .eq. ipcmps((i-1)*ncmpmx+j)) goto 899
-898         continue
-897     end do
+            end do
+        end do
 899     continue
         nomgs=nomgds(i)
 !
@@ -202,18 +202,18 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
         zi(indats)=ni
         if (ires .eq. 0) then
             nbdats=ilig
-            do 901 i = 1, nbdats
+            do i = 1, nbdats
                 zi(ibcmps+i-1)=6
                 ni=ni+6
                 zi(indats+i)=ni
-901         continue
+            end do
         else
             nbdats=ilig+1
-            do 902 i = 1, nbdats-1
+            do i = 1, nbdats-1
                 zi(ibcmps+i-1)=6
                 ni=ni+6
                 zi(indats+i)=ni
-902         continue
+            end do
             zi(ibcmps+nbdats-1)=ires
             zi(indats+nbdats)=ni+ires
         endif
@@ -230,16 +230,16 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
         call jedetr('&&IRDESR.POS')
         call wkvect('&&IRDESR.POS', 'V V I', nbcmp, jpos)
         k=0
-        do 777 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(dg,icmp)) then
                 zi(jadm+k)=icmp
                 k=k+1
             endif
-777     end do
+        end do
 !
 ! --- BOUCLES SUR LES DATASETS
 ! ----------------------------
-        do 810 ida = 1, nbdats
+        do ida = 1, nbdats
 !
             iente = 1
             ifin=1
@@ -247,13 +247,13 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
             entete(4) = ' '
             texte = ' '
 !
-            do 805 icp = 1, zi(ibcmps+ida-1)
+            do icp = 1, zi(ibcmps+ida-1)
                 nocmp = nocmpl(icp+zi(indats+ida-1))
                 iutil = lxlgut(nocmp)
                 ifin = idebu+iutil
                 texte(idebu:ifin) = nocmp(1:iutil)//' '
                 idebu = ifin+1
-805         continue
+            end do
 !
             iutil = lxlgut(texte)
             jmax = lxlgut(titre)
@@ -264,31 +264,31 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 ! ---    POSITIONS DES COMPOSANTES SELECTIONNEES PARMI LES
 !        COMPOSANTES ADMISES
             l=0
-            do 778 j = 1, zi(ibcmps+ida-1)
+            do j = 1, zi(ibcmps+ida-1)
                 ll=0
-                do 779 jl = 1, ncmp
+                do jl = 1, ncmp
                     ll=ll+1
                     if (zi(jadm+jl-1) .eq. ncmps(j+zi(indats+ida-1))) goto 780
-779             continue
+                end do
 780             continue
                 zi(jpos+l)=ll
                 l=l+1
-778         continue
+            end do
 !
 ! ---    BOUCLES SUR LES NOEUDS
 !        ---------------------
-            do 811 inno = 1, nbno
+            do inno = 1, nbno
 !
                 ino = numnoe(inno)
                 jj=(ino-1)*ncmp
 !
-                do 825 ic = 1, 6
+                do ic = 1, 6
                     zr(irval-1+ic) = 0.0d0
-825             continue
+                end do
 !
-                do 813 icms = 1, zi(ibcmps+ida-1)
+                do icms = 1, zi(ibcmps+ida-1)
                     zr(irval-1+icms)=vale(jj+zi(jpos+icms-1))
-813             continue
+                end do
 !
                 if (iente .eq. 1) then
                     write(ifi,'(A80)') (entete(i),i=1,10)
@@ -299,9 +299,9 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
                 endif
                 write (ifi,'(I10,5X,A,A)') ino,'% NOEUD ',nomnoe(inno)
                 write (ifi,'(6(1PE13.5E3))') (zr(irval-1+i), i=1,6)
-811         continue
+            end do
             if (iente .eq. 0) write (ifi,'(A)') '    -1'
-810     end do
+        end do
 !
         call jedetr('&&IRDESR.CMP_DATS')
         call jedetr('&&IRDESR.CMP')

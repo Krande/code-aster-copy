@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtdete(option, method, lmat, mantis, expo,&
                   cmod)
     implicit none
@@ -96,16 +96,16 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
 ! --- CALCUL DET AVEC LDLT/MF
             call almulr('ZERO', zr(ldiag), neq, mantis, expo)
             nbneg=0
-            do 10 i = 0, neq-1
+            do i = 0, neq-1
                 if (zr(ldiag+i) .le. 0.d0) nbneg=nbneg+1
- 10         continue
+            end do
             call jedetr(nomdia)
             if (niv .ge. 2) write(ifm, *)'<MTDETE 1 LDLT/MF>  MANTIS/EXPO  ', mantis, expo
 !
         else if (option.eq.2) then
 ! --- CALCUL DET NORMALISE AVEC LDLT/MF
             cmod=cun
-            do 15 i = 1, neq
+            do i = 1, neq
                 caux=zc(ldiag+i-1)
                 rauxx=dble(cmod)
                 rauxy=dimag(cmod)
@@ -113,7 +113,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
                 if (rauxm .lt. rmin) rauxm=1.d0
                 caux=caux/rauxm
                 cmod=cmod*caux
- 15         continue
+            end do
 !
             if (niv .ge. 2) write(ifm,*)'<MTDETE 2 LDLT/MF>  CMOD  ',cmod
         endif
@@ -153,7 +153,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
             endif
             mantis=rinf12
             expo = 0
-            do 20 i = 1, info34
+            do i = 1, info34
                 mantis=mantis*2.d0
                 if (abs(mantis) .ge. trent) then
                     mantis = mantis*trent1
@@ -162,7 +162,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
                     mantis = mantis*trent
                     expo = expo - itrent
                 endif
- 20         continue
+            end do
             if (abs(mantis) .gt. rmin) then
                 ie = nint(log10(abs(mantis)))
                 mantis = mantis/ (10.d0**ie)

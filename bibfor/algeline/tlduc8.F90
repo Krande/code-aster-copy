@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
                   neq, nbbloc, ildeb, ilfin, eps)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -28,6 +27,7 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nommat
 ! BUT : DECOMPOSTION D'UNE MATRICE NON_SYMETRIQUE A COEFFICIENTS
 !       COMPLEXES SOUS LA FORME DE CROUT LDU
@@ -95,7 +95,7 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
     integer :: ldiag, ibloc, il1, il2, iaa, il
     integer :: iaas, iaai, kl1, imini, iequa, i, jblmin, jbloc, jl1, jl2
     integer :: iabs, iabi, ilong, iadiai, idei, iadias, ides, idl, jnmini
-    integer ::  jequa, jlong, jadias, jdes, jadiai, jdei, jdl, ibcl1
+    integer :: jequa, jlong, jadias, jdes, jadiai, jdei, jdl, ibcl1
     integer :: lm, icai, icas, icbi, icbs, icd
 !
     real(kind=8) :: eps
@@ -126,7 +126,7 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
     npivot = 0
 !
 !  ------- BOUCLE SUR LES BLOCS A TRANSFORMER -----------------------
-    do 150 ibloc = 1, nbbloc
+    do ibloc = 1, nbbloc
 !
         il1 = ablo(ibloc) + 1
         il2 = ablo(ibloc+1)
@@ -135,9 +135,9 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
         if (il2 .lt. ildeb) then
 !        --- C'EST TROP TOT : MAIS ON REMPLIT LA DIAGONALE ---
             call jeveuo(jexnum(ualf, ibloc), 'L', iaa)
-            do 10 il = il1, il2
+            do il = il1, il2
                 zc(ldiag+il-1) = zc(iaa+adia(il)-1)
-10          continue
+            end do
             call jelibe(jexnum(ualf, ibloc))
             goto 150
         else if (il1.gt.ilfin) then
@@ -151,9 +151,9 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
             call jeveuo(jexnum(ualf, ibloc+nbbloc), 'E', iaai)
             if (il1 .lt. ildeb) then
                 kl1 = ildeb
-                do 20 il = il1, kl1 - 1
+                do il = il1, kl1 - 1
                     zc(ldiag+il-1) = zc(iaai+adia(il)-1)
-20              continue
+                end do
             else
                 kl1 = il1
             endif
@@ -164,27 +164,27 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
 !     --- RECHERCHE DE LA PLUS PETITE EQUATION EN RELATION AVEC UNE
 !     --- EQUATION DES LIGNES EFFECTIVES DU BLOC COURANT
         imini = il2 - 1
-        do 30 iequa = kl1, il2
+        do iequa = kl1, il2
             imini = min(iequa-hcol(iequa),imini)
-30      continue
+        end do
         imini = imini + 1
 !
 !     --- RECHERCHE DU BLOC D'APPARTENANCE DE L'EQUATION IMINI ---
-        do 40 i = 1, ibloc
+        do i = 1, ibloc
             jblmin = i
             if (ablo(1+i) .ge. imini) goto 50
-40      continue
-50      continue
+        end do
+ 50     continue
 !
 !     --- BOUCLE  SUR  LES  BLOCS  DEJA  TRANSFORMES ---
-        do 90 jbloc = jblmin, ibloc - 1
+        do jbloc = jblmin, ibloc - 1
 !
             jl1 = max(imini,ablo(jbloc)+1)
             jl2 = ablo(jbloc+1)
             call jeveuo(jexnum(ualf, jbloc), 'L', iabs)
             call jeveuo(jexnum(ualf, jbloc+nbbloc), 'L', iabi)
 !
-            do 80 iequa = kl1, il2
+            do iequa = kl1, il2
 !
 !           --- RECUPERATION DE L'ADRESSE ET LA LONGUEUR DE LA LIGNE
                 ilong = hcol(iequa) - 1
@@ -206,7 +206,7 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
 !- POUR LES BLOCS SUP ET INF COURANTS AUXQUELS ON A ACCEDE EN ECRITURE
 !
                 jnmini = max(idl,jl1)
-                do 70 jequa = jnmini, jl2
+                do jequa = jnmini, jl2
                     jlong = hcol(jequa) - 1
 !-    ADRESSE DU TERME DIAGONAL KII DANS LE BLOC SUP
                     jadias = iabs + adia(jequa) - 1
@@ -241,30 +241,30 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
                     c8vali = zc(icai+lm)
 !-    TERME COURANT DE LA COLONNE S=IEQUA A MODIFIER ( = K(I,S))
                     c8vals = zc(icas+lm)
-                    do 60 i = 0, lm - 1
+                    do i = 0, lm - 1
 !-                   K(S,I) = K(S,I) -  K(S,M)   * K(M,I)
                         c8vali = c8vali - zc(icai+i)*zc(icbs+i)
 !-                   K(I,S) = K(I,S) -  K(M,S)   * K(I,M)
                         c8vals = c8vals - zc(icas+i)*zc(icbi+i)
-60                  continue
+                    end do
                     zc(icai+lm) = c8vali
                     zc(icas+lm) = c8vals
                     icd = ldiag + jequa - 1
 !                    ZC(ICAI+LM) = ZC(ICAI+LM) / ZC(ICD)
                     zc(icas+lm) = zc(icas+lm)/zc(icd)
 !
-70              continue
-80          continue
+                end do
+            end do
 !
 !-  DEVEROUILLAGE DES BLOCS SUP ET INF DEJA TRANSFORMES
 !
             call jelibe(jexnum(ualf, jbloc))
             call jelibe(jexnum(ualf, jbloc+nbbloc))
-90      continue
+        end do
 !
 !     --- UTILISATION DU BLOC EN COURS DE TRANSFORMATION ---
         jl1 = max(imini,il1)
-        do 140 iequa = kl1, il2
+        do iequa = kl1, il2
 !
 !        --- RECUPERATION DE L ADRESSE ET LA LONGUEUR DE LA LIGNE
 !            (COLONNE) ---
@@ -289,7 +289,7 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
 !
 !        --- UTILISATION DES LIGNES (IDL+1) A (IEQUA-1) ---
             jnmini = max(iequa-ilong,jl1)
-            do 120 jequa = jnmini, iequa - 1
+            do jequa = jnmini, iequa - 1
                 jlong = hcol(jequa) - 1
 !-      ADRESSE DE K(I,I) DANS LE BLOC INF
                 jadiai = iaai + adia(jequa) - 1
@@ -327,19 +327,19 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
                 c8vali = zc(icai+lm)
 !-      TERME COURANT DE LA COLONNE S (IEQUA) = K(I,S)
                 c8vals = zc(icas+lm)
-                do 100 i = 0, lm - 1
+                do i = 0, lm - 1
 !-                K(S,I) = K(S,I) -  K(S,M)   * K(M,I)
                     c8vali = c8vali - zc(icai+i)*zc(icbs+i)
 !-                K(I,S) = K(I,S) -  K(M,S)   * K(I,M)
                     c8vals = c8vals - zc(icas+i)*zc(icbi+i)
-100              continue
+                end do
                 zc(icai+lm) = c8vali
                 zc(icas+lm) = c8vals
 !
 !        --- UTILISATION DE LA LIGNE IEQUA (CALCUL DU PIVOT) ---
                 icd = ldiag + jequa - 1
                 zc(icas+lm) = zc(icas+lm)/zc(icd)
-120          continue
+            end do
 !
 !
 !        --- CALCUL DU TERME DIAGONAL ---
@@ -356,9 +356,9 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
 !-      TERME DE LA LIGNE COURANTE A NORMALISER
             icd = ldiag + iequa - ilong - 1
             c8vali = zc(iadiai)
-            do 130 i = 0, lm
+            do i = 0, lm
                 c8vali = c8vali - zc(icai+i)*zc(icas+i)
-130          continue
+            end do
             zc(iadiai) = c8vali
             digs(neq+iequa) = zc(iadiai)
             zc(ldiag+iequa-1) = c8vali
@@ -367,16 +367,17 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot,&
 !           --- LE PIVOT EST-IL NUL ? ----------------------------------
             if (abs(c8vali) .le. eps) then
                 npivot = iequa
-                goto 9999
+                goto 999
             endif
 !
-140      continue
+        end do
         call jelibe(jexnum(ualf, ibloc))
         call jelibe(jexnum(ualf, ibloc+nbbloc))
-150  end do
+150     continue
+    end do
 !
-160  continue
-9999  continue
+160 continue
+999 continue
 !
 !
     call jeveuo(noma19//'.REFA', 'E', vk24=refa)

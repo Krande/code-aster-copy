@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
                   quant, option, rep, nomtab, ncheff,&
                   i1, isd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -30,6 +29,7 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rvinfa.h"
 #include "asterfort/rvtaso.h"
+!
     integer :: iocc, i1, isd
     character(len=16) :: ncheff
     character(len=19) :: sdeval, nomtab
@@ -51,7 +51,7 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
 !     ------------------------------------------------------------------
     integer :: anocp, nbcp, ioc, aabsc, nbpt, nboc, asdmo, niv
     integer :: i, ifm, anomnd, nbco, nbsp, k
-    real(kind=8) ::  s1, s2
+    real(kind=8) :: s1, s2
     character(len=4) :: docul
     character(len=16) :: oper
     character(len=24) :: nabsc, nnocp
@@ -74,28 +74,28 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
     nbco = zi(i)
     call jeveuo(sdeval//'.PNSP', 'L', i)
     nbsp = zi(i)
-    do 100, ioc = 1, nboc, 1
-    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
-    call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
-    call jeveuo(jexnum(sdmoy(1:19)//'.VALE', ioc), 'L', asdmo)
-    s1 = zr(aabsc + 1-1)
-    s2 = zr(aabsc + nbpt-1)
-    if (niv .gt. 1) then
-        if (docul .eq. 'LSTN') then
-            write(ifm,*)'CHEMIN RELIANT LES NOEUDS :'
-            do 200, i = 1,nbpt/8, 1
-            write(ifm,'(8(1X,A8))')(zk8(anomnd+(i-1)*8+k-1),k=&
+    do ioc = 1, nboc, 1
+        call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
+        call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
+        call jeveuo(jexnum(sdmoy(1:19)//'.VALE', ioc), 'L', asdmo)
+        s1 = zr(aabsc + 1-1)
+        s2 = zr(aabsc + nbpt-1)
+        if (niv .gt. 1) then
+            if (docul .eq. 'LSTN') then
+                write(ifm,*)'CHEMIN RELIANT LES NOEUDS :'
+                do i = 1, nbpt/8, 1
+                    write(ifm,'(8(1X,A8))')(zk8(anomnd+(i-1)*8+k-1),k=&
                     1,8,1)
-200          continue
-            write(ifm,*)'   '
-            write(ifm,*)(zk8(anomnd+k-1)//' ',k=8*(nbpt/8)+1,nbpt,&
+                end do
+                write(ifm,*)'   '
+                write(ifm,*)(zk8(anomnd+k-1)//' ',k=8*(nbpt/8)+1,nbpt,&
                 1)
+            endif
+            write(ifm,*)' '
         endif
-        write(ifm,*)' '
-    endif
-    call rvtaso(zr(asdmo), zk8(anocp), nbcp, nbco, nbsp,&
-                nomtab, iocc, ncheff, i1)
-    100 end do
+        call rvtaso(zr(asdmo), zk8(anocp), nbcp, nbco, nbsp,&
+                    nomtab, iocc, ncheff, i1)
+    end do
 !
     call jedema()
 end subroutine

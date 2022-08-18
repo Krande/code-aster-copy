@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvpar0(nomtab, mcf, nbpost)
 ! IN  NOMTAB  : NOM DE LA TABLE PRINCIPALE PRODUITE PAR LA COMMANDE
 ! IN  MCF     : MOT-CLE FACTEUR
@@ -103,7 +103,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 !
     do 222 , iaux = 1 , nbtabl
     if (zk8(admemo+2*iaux-2) .eq. nomtab) goto 220
-222  continue
+222 continue
 !
 ! 2.2.2.2. ==> LA CONFIGURATION EST NOUVELLE
 !              ON L'ENREGISTRE, EN ALLONGEANT EVENTUELLEMENT SI LA PLACE
@@ -124,7 +124,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 !
     22 end do
 !
-220  continue
+220 continue
 !
 !====
 ! 3. ON INITIALISE LES TABLES DEMANDEES

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0004()
     implicit none
 !     OPERATEUR DEFI_NAPPE
@@ -100,7 +100,7 @@ subroutine op0004()
     endif
 !
     if (defonc) then
-        do 10 iocc = 1, nbfonc
+        do iocc = 1, nbfonc
             call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=0, nbret=nv)
             nv = -nv
             if (mod(nv,2) .ne. 0) then
@@ -113,9 +113,9 @@ subroutine op0004()
                 call wkvect('&&OP0004.TEMP.PAR2', 'V V R', nbcoup, lpar2)
                 call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=nv, vect=zr(lpara),&
                             nbret=nbval)
-                do 12 i = 0, nbcoup-1
+                do i = 0, nbcoup-1
                     zr(lpar2+i) = zr(lpara+2*i)
- 12             continue
+                end do
 !              VERIF QUE LES PARA SONT STRICT CROISSANTS
                 iret=2
                 call foverf(zr(lpar2), nbcoup, iret)
@@ -125,7 +125,7 @@ subroutine op0004()
                 call jedetr('&&OP0004.TEMP.PARA')
                 call jedetr('&&OP0004.TEMP.PAR2')
             endif
- 10     continue
+        end do
     endif
 !
 !
@@ -155,13 +155,13 @@ subroutine op0004()
     if (defonc) then
         call getvtx(' ', 'NOM_PARA_FONC', scal=zk24(lpro+6), nbret=l)
         mxva = 0
-        do 20 ifonc = 1, nbfonc
+        do ifonc = 1, nbfonc
             call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=0, nbret=nbval)
             mxva = max(mxva,-nbval)
- 20     continue
+        end do
         call wkvect('&&OP0004.VALEURS.LUES', 'V V R', mxva, jval)
         call wkvect('&&OP0004.POINTEURS.F', 'V V I', nbfonc, ladrf)
-        do 30 ifonc = 1, nbfonc
+        do ifonc = 1, nbfonc
             zk24(lnomf+ifonc-1) = '&&OP0004.F'
             call codent(ifonc, 'G', zk24(lnomf+ifonc-1)(11:19))
             zk24(lnomf+ifonc-1)(20:24) = '.VALE'
@@ -170,10 +170,10 @@ subroutine op0004()
             call wkvect(zk24(lnomf+ifonc-1), 'V V R', nbval, lval)
             zi(ladrf+ifonc-1) = lval
             nbcoup = nbval / 2
-            do 32 ival = 1, nbcoup
+            do ival = 1, nbcoup
                 zr(lval-1+ival) = zr(jval-1+2*ival-1)
                 zr(lval-1+nbcoup+ival) = zr(jval-1+2*ival)
- 32         continue
+            end do
 !
 !           --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 !               ET REMISE DES ABSCISSES EN ORDRE CROISSANT
@@ -201,7 +201,7 @@ subroutine op0004()
                         scal=zk24(lpro+6+2*ifonc)(1:1), nbret=l)
             call getvtx('DEFI_FONCTION', 'PROL_DROITE', iocc=ifonc,&
                         scal=zk24(lpro+6+2*ifonc)(2:2), nbret=l)
- 30     continue
+        end do
     else
         call getvid(' ', 'FONCTION', nbval=nbfonc, vect=zk24(lnomf), nbret=n)
         call fovern(zk24(lnomf), nbfonc, zk24(lpro), iret)

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
                  typfon, jfon, jnofaf, jbas, jtail)
 !
@@ -64,31 +64,31 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 !
     call jemarq()
 !
-    do 10 ipt = 1, nfon
+    do ipt = 1, nfon
 !
         indipt = zi(jindpt-1+ipt)
 !
-        do 11 k = 1, 3
+        do k = 1, 3
 !
             zr(jfon-1+4*(ipt-1)+k) = zr(jfono-1+11*(indipt-1)+k)
             zi(jnofaf-1+4*(ipt-1)+k) = int( zr(jfono-1+11*(indipt-1)+4+k) )
             zr(jbas-1+6*(ipt-1)+k) = zr(jbaso-1+6*(indipt-1)+k)
             zr(jbas-1+6*(ipt-1)+k+3) = zr(jbaso-1+6*(indipt-1)+3+k)
 !
-11      continue
+        end do
 !
         zr(jfon-1+4*(ipt-1)+4) = zr(jfono-1+11*(indipt-1)+4)
         zi(jnofaf-1+4*(ipt-1)+4) = int( zr(jfono-1+11*(indipt-1)+8) )
         zr(jtail-1+ipt) = zr(jtailo-1+indipt)
 !
-10  continue
+    end do
 !
 !     CAS D'UN FOND FERME: PREMIER POINT DU FOND = DERNIER POINT
     if (typfon .eq. 'FERME') then
 !
         nfon = nfon + 1
 !
-        do 20 k = 1, 3
+        do k = 1, 3
 !
             zr(jfon-1+4*(nfon-1)+k) = zr(jfon-1+4*(1-1)+k)
             zi(jnofaf-1+4*(nfon-1)+k) = zi(jnofaf-1+4*(1-1)+k)
@@ -98,7 +98,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
             p(k) = zr(jfon-1+4*(nfon-1)+k)
             m(k) = zr(jfon-1+4*(nfon-2)+k)
 !
-20      continue
+        end do
 !
         zr(jfon-1+4*(nfon-1)+4)= zr(jfon-1+4*(nfon-2)+4) + padist(3,m,&
         p)

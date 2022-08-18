@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0339(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -58,8 +58,8 @@ subroutine te0339(option, nomte)
 !     -------------------------
 !     1.1 NOMBRE DE NOEUDS ET DE POINTS DE GAUSS
 !     ------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     1.2 NUMERO DE LA MAILLE
 !     -----------------------
@@ -118,9 +118,9 @@ subroutine te0339(option, nomte)
     vk = 0.d0
     dvpg = 0.d0
     depseq = 0.d0
-    do 10,i = 1,6,1
-    cong(i) = 0.d0
-    10 end do
+    do i = 1, 6, 1
+        cong(i) = 0.d0
+    end do
     varigm = 0.d0
     varigp = 0.d0
 !
@@ -149,23 +149,23 @@ subroutine te0339(option, nomte)
     if ((optcal(1).eq.'SIGM_ELMOY') .and. (optcal(2).eq.'NON')) then
 !        2.1.1 INTEGRATION PAR QUADRATURE DES CHAMPS IN
 !        ----------------------------------------------
-        do 30,kp = 1,npg,1
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    poids)
-        dvpg = poids
-        vk = vk + dvpg
-        do 20,i = 1,6,1
-        cong(i) = cong(i) + dvpg*zr(icong+6*kp+i-7)
-20      continue
-        varigm = varigm + dvpg*zr(ivarmg+nbvari* (kp-1)+ipopp-1)
-        varigp = varigp + dvpg*zr(ivarpg+nbvari* (kp-1)+ipopp-1)
-30      continue
+        do kp = 1, npg, 1
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                        poids)
+            dvpg = poids
+            vk = vk + dvpg
+            do i = 1, 6, 1
+                cong(i) = cong(i) + dvpg*zr(icong+6*kp+i-7)
+            end do
+            varigm = varigm + dvpg*zr(ivarmg+nbvari* (kp-1)+ipopp-1)
+            varigp = varigp + dvpg*zr(ivarpg+nbvari* (kp-1)+ipopp-1)
+        end do
 !
 !        2.1.2 VALEUR MOYENNE DES CHAMPS IN SUR LA MAILLE
 !        ------------------------------------------------
-        do 40,i = 1,6,1
-        sig(i) = cong(i)/vk
-40      continue
+        do i = 1, 6, 1
+            sig(i) = cong(i)/vk
+        end do
         varigm = varigm/vk
         varigp = varigp/vk
 !
@@ -185,52 +185,52 @@ subroutine te0339(option, nomte)
         triax = sigm/sigeq
         volu = vk
         depseq = varigp - varigm
-        do 50,i = 1,npg,1
-        zr(isdrpr+i-1) = zr(isdrmr+i-1)
-50      continue
+        do i = 1, npg, 1
+            zr(isdrpr+i-1) = zr(isdrmr+i-1)
+        end do
 !
 !     2.2 CHAM_ELEM POUR CALCUL DU TAUX MOYEN AVEC CHAMPS IN ORIGINAUX
 !     ----------------------------------------------------------------
         else if ((optcal(1).eq.'SIGM_ELGA') .and. (optcal(2).eq.'NON'))&
     then
-        do 70,kp = 1,npg,1
+        do kp = 1, npg, 1
 !           2.2.1 RECUPERATION DES CHAMPS IN
 !           --------------------------------
-        do 60,i = 1,6,1
-        cong(i) = zr(icong+6*kp+i-7)
-60      continue
-        varigm = zr(ivarmg+nbvari* (kp-1)+ipopp-1)
-        varigp = zr(ivarpg+nbvari* (kp-1)+ipopp-1)
+            do i = 1, 6, 1
+                cong(i) = zr(icong+6*kp+i-7)
+            end do
+            varigm = zr(ivarmg+nbvari* (kp-1)+ipopp-1)
+            varigp = zr(ivarpg+nbvari* (kp-1)+ipopp-1)
 !
 !           2.2.2 CALCUL DE LA TRIAXIALITE LOCALE
 !           -------------------------------------
-        sigm = (cong(1)+cong(2)+cong(3))/3.d0
-        sigeq = cong(4)*cong(4) + cong(5)*cong(5) + cong(6)*cong( 6)
-        sigeq = sigeq + sigeq
-        sigeq = sigeq + (&
-                cong(1)-sigm)* (cong(1)-sigm) + (cong(2)- sigm)* (cong(2)-sigm) + (cong(3)-sigm)*&
-                & (cong(3)-sigm&
-                )
-        sigeq = sqrt(1.5d0*sigeq)
+            sigm = (cong(1)+cong(2)+cong(3))/3.d0
+            sigeq = cong(4)*cong(4) + cong(5)*cong(5) + cong(6)*cong( 6)
+            sigeq = sigeq + sigeq
+            sigeq = sigeq + (&
+                    cong(1)-sigm)* (cong(1)-sigm) + (cong(2)- sigm)* (cong(2)-sigm) + (cong(3)-si&
+                    &gm)* (cong(3)-sigm&
+                    )
+            sigeq = sqrt(1.5d0*sigeq)
 !
 !           2.2.3 INTEGRATION PAR QUADRATURE
 !           --------------------------------
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    poids)
-        dvpg = poids
-        vk = vk + dvpg
-        triax = triax + dvpg* (sigm/sigeq)
-        depseq = depseq + dvpg* (varigp-varigm)
-70      continue
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                        poids)
+            dvpg = poids
+            vk = vk + dvpg
+            triax = triax + dvpg* (sigm/sigeq)
+            depseq = depseq + dvpg* (varigp-varigm)
+        end do
 !
 !        2.2.4 CHAMPS OUT
 !        ----------------
         triax = triax/vk
         volu = vk
         depseq = depseq/vk
-        do 80,i = 1,npg,1
-        zr(isdrpr+i-1) = zr(isdrmr+i-1)
-80      continue
+        do i = 1, npg, 1
+            zr(isdrpr+i-1) = zr(isdrmr+i-1)
+        end do
 !
 !     2.3 CHAM_ELEM POUR LE CALCUL DU TAUX MAX AVEC CHAMPS IN MOYENNES
 !     ----------------------------------------------------------------
@@ -238,23 +238,23 @@ subroutine te0339(option, nomte)
     then
 !        2.3.1 INTEGRATION PAR QUADRATURE DES CHAMPS IN
 !        ----------------------------------------------
-        do 100,kp = 1,npg,1
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    poids)
-        dvpg = poids
-        vk = vk + dvpg
-        do 90,i = 1,6,1
-        cong(i) = cong(i) + dvpg*zr(icong+6*kp+i-7)
-90      continue
-        varigm = varigm + dvpg*zr(ivarmg+nbvari* (kp-1)+ipopp-1)
-        varigp = varigp + dvpg*zr(ivarpg+nbvari* (kp-1)+ipopp-1)
-100      continue
+        do kp = 1, npg, 1
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                        poids)
+            dvpg = poids
+            vk = vk + dvpg
+            do i = 1, 6, 1
+                cong(i) = cong(i) + dvpg*zr(icong+6*kp+i-7)
+            end do
+            varigm = varigm + dvpg*zr(ivarmg+nbvari* (kp-1)+ipopp-1)
+            varigp = varigp + dvpg*zr(ivarpg+nbvari* (kp-1)+ipopp-1)
+        end do
 !
 !        2.3.2 VALEUR MOYENNE DES CHAMPS IN SUR LA MAILLE
 !        ------------------------------------------------
-        do 110,i = 1,6,1
-        sig(i) = cong(i)/vk
-110      continue
+        do i = 1, 6, 1
+            sig(i) = cong(i)/vk
+        end do
         varigm = varigm/vk
         varigp = varigp/vk
 !
@@ -280,53 +280,53 @@ subroutine te0339(option, nomte)
 !        2.3.5 CHAMPS OUT
 !        ----------------
         rsr0 = exp(lrsr0p)
-        do 120,i = 1,npg,1
-        zr(isdrpr+i-1) = lrsr0p
-120      continue
+        do i = 1, npg, 1
+            zr(isdrpr+i-1) = lrsr0p
+        end do
 !
 !     2.4 CHAM_ELEM POUR LE CALCUL DU TAUX MAX AVEC CHAMPS IN ORIGINAUX
 !     -----------------------------------------------------------------
         else if ((optcal(1).eq.'SIGM_ELGA') .and. (optcal(2).eq.'OUI'))&
     then
-        do 140,kp = 1,npg,1
+        do kp = 1, npg, 1
 !           2.4.1 RECUPERATION DES CHAMPS IN
 !           --------------------------------
-        do 130,i = 1,6,1
-        cong(i) = zr(icong+6*kp+i-7)
-130      continue
-        varigm = zr(ivarmg+nbvari* (kp-1)+ipopp-1)
-        varigp = zr(ivarpg+nbvari* (kp-1)+ipopp-1)
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    poids)
-        dvpg = poids
-        volu = volu+dvpg
+            do i = 1, 6, 1
+                cong(i) = zr(icong+6*kp+i-7)
+            end do
+            varigm = zr(ivarmg+nbvari* (kp-1)+ipopp-1)
+            varigp = zr(ivarpg+nbvari* (kp-1)+ipopp-1)
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                        poids)
+            dvpg = poids
+            volu = volu+dvpg
 !
 !           2.4.2 CALCUL DE LA TRIAXIALITE LOCALE
 !           -------------------------------------
-        sigm = (cong(1)+cong(2)+cong(3))/3.d0
-        sigeq = cong(4)*cong(4) + cong(5)*cong(5) + cong(6)*cong( 6)
-        sigeq = sigeq + sigeq
-        sigeq = sigeq + (&
-                cong(1)-sigm)* (cong(1)-sigm) + (cong(2)- sigm)* (cong(2)-sigm) + (cong(3)-sigm)*&
-                & (cong(3)-sigm&
-                )
-        sigeq = sqrt(1.5d0*sigeq)
-        triax = sigm/sigeq
+            sigm = (cong(1)+cong(2)+cong(3))/3.d0
+            sigeq = cong(4)*cong(4) + cong(5)*cong(5) + cong(6)*cong( 6)
+            sigeq = sigeq + sigeq
+            sigeq = sigeq + (&
+                    cong(1)-sigm)* (cong(1)-sigm) + (cong(2)- sigm)* (cong(2)-sigm) + (cong(3)-si&
+                    &gm)* (cong(3)-sigm&
+                    )
+            sigeq = sqrt(1.5d0*sigeq)
+            triax = sigm/sigeq
 !
 !           2.4.3 INTEGRATION DE LA LOI RT AU PG COURRANT
 !           ---------------------------------------------
-        depseq = varigp - varigm
-        lrsr0m = zr(isdrmr+kp-1)
-        lrsr0p = lrsr0m + 0.283d0*sign(1.0d0,triax)* exp(1.5d0* abs(triax))*depseq
-        crois = exp(lrsr0p)
+            depseq = varigp - varigm
+            lrsr0m = zr(isdrmr+kp-1)
+            lrsr0p = lrsr0m + 0.283d0*sign(1.0d0,triax)* exp(1.5d0* abs(triax))*depseq
+            crois = exp(lrsr0p)
 !
 !           2.4.4 CHAMPS OUT
 !           ----------------
-        zr(isdrpr+kp-1) = lrsr0p
-        if (crois .gt. rsr0) then
-            rsr0 = crois
-        endif
-140      continue
+            zr(isdrpr+kp-1) = lrsr0p
+            if (crois .gt. rsr0) then
+                rsr0 = crois
+            endif
+        end do
 !       ON SORT LE VOLUME ASSOCIE A LA "SOUS-MAILLE" (CF DOC R)
 !       PLUTOT QU ECRIRE UN POIDS RELATIF DE PT DE GAUSS,
 !       VARIABLE SUIVANT LE PG QUI "ACCROCHE" LE MAX,

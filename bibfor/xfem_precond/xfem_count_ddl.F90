@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
-                              nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
+!
+subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem,&
+                          is_xfem, nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
 !
 !-----------------------------------------------------------------------
 ! BUT :
@@ -61,22 +61,23 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
 !
     call jemarq()
 !
-    do 20 ieq = 1, neq
-       nuno=deeq(2*(ieq-1)+1)
-       nucmp=deeq(2*(ieq-1)+2)
-       nocmp=k8cmp(nucmp)
+    do ieq = 1, neq
+        nuno=deeq(2*(ieq-1)+1)
+        nucmp=deeq(2*(ieq-1)+2)
+        nocmp=k8cmp(nucmp)
 !       write(6,*) ieq,'|', nuno,'|', nocmp
-       if(nuno .lt. 1) goto 20
-       if(.not. is_xfem(nuno)) goto 20
-       if(.not. xfem_cmps(nocmp,'OUI')) goto 20
-       ipos=neq_mloc(ino_xfem(nuno))+1
-       ieq_loc(ieq)=ipos
-       neq_mloc(ino_xfem(nuno))=ipos
- 20  continue
+        if (nuno .lt. 1) goto 20
+        if (.not. is_xfem(nuno)) goto 20
+        if (.not. xfem_cmps(nocmp,'OUI')) goto 20
+        ipos=neq_mloc(ino_xfem(nuno))+1
+        ieq_loc(ieq)=ipos
+        neq_mloc(ino_xfem(nuno))=ipos
+ 20     continue
+    end do
 !
     maxi_ddl=0
-    do j=1,nbnoxfem
-       maxi_ddl=max(neq_mloc(j),maxi_ddl)
+    do j = 1, nbnoxfem
+        maxi_ddl=max(neq_mloc(j),maxi_ddl)
     enddo
 !
     ASSERT(maxi_ddl .le. ddlmax)

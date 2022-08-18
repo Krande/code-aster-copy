@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jetass(clas)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"
+#include "asterfort/jesvos.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlide.h"
@@ -29,9 +30,8 @@ subroutine jetass(clas)
 #include "asterfort/jxecro.h"
 #include "asterfort/jxlibd.h"
 #include "asterfort/jxliro.h"
-#include "asterfort/jesvos.h"
-
-
+!
+!
     character(len=1), intent(in) :: clas
 ! ----------------------------------------------------------------------
 ! COMPRESSION D'UNE BASE DE DONNEES PAR RECUPERATION DES ENREGISTREMENTS
@@ -95,7 +95,7 @@ subroutine jetass(clas)
 !
 !   ON COMMENCE PAR S'ASSURER QUE TOUS LES OBJETS POSSEDENT UNE IMAGE DISQUE
 !
-    call jesvos ( kclas )
+    call jesvos(kclas)
     if (kclas .eq. ' ') then
         ncla1 = 1
         ncla2 = index ( classe , '$' ) - 1
@@ -104,7 +104,7 @@ subroutine jetass(clas)
         ncla1 = index ( classe , kclas)
         ncla2 = ncla1
     endif
-    do 100 ic = ncla1, ncla2
+    do ic = ncla1, ncla2
         lgbl = 1024*longbl(ic)*lois
         call jjalls(lgbl, 0, 'V', 'I', lois,&
                     'INIT', itp, jitp, iaditp, iadyn)
@@ -266,14 +266,14 @@ subroutine jetass(clas)
             goto 200
         endif
         if (klib .gt. 0) then
-            do 400 k = klib, nbluti(ic)
+            do k = klib, nbluti(ic)
                 iusadi(jusadi(ic)+3*k-2) = -1
                 iusadi(jusadi(ic)+3*k-1) = -1
                 iusadi(jusadi(ic)+3*k ) = 0
-400         continue
+            end do
             nbluti(ic) = klib-1
         endif
         call jjlidy(iadyn, iaditp)
-100 end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

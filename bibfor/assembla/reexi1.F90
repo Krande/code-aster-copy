@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine reexi1(nu, mo, ma, nlili, nm,&
                   nl, nbntt)
     implicit none
@@ -105,7 +105,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iaconx, iaexi1, iagrel, ialiel, iamail, ianbno
-    integer :: ianema,  iel, igrel
+    integer :: ianema, iel, igrel
     integer :: iino, ilconx, ili, illiel, ilnema, ima, ino
     integer :: iret, j, jjno, jno, nbel, nbgrel, nbnm
     integer :: nbnom, nbnot, nbsma, nbssa, nma
@@ -124,7 +124,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !    call utmess('F', 'ASSEMBLA_35', sk=nu)
 !
  42 continue
-    if(mo.ne. ' ') then
+    if (mo .ne. ' ') then
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     else
         call jenuno(jexnum(nu//'.NUME.LILI', nlili), nomli2)
@@ -137,7 +137,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nm)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nma)
     nl = 0
-    if(mo .ne. ' ') then
+    if (mo .ne. ' ') then
         call dismoi('NB_NL_MAILLA', mo, 'MODELE', repi=nl)
     end if
     nbnom=nm+nl
@@ -170,7 +170,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !     -------------------------------------------
     nbssa = 0
     nbsma = 0
-    if( mo .ne. ' ') then
+    if (mo .ne. ' ') then
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     end if

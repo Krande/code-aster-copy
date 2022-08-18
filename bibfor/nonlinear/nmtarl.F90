@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
                   epm, dp, sp, xi, dirdp,&
                   dirsp, dirxi, min, rho, ener)
@@ -64,7 +64,7 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
     refe = min
     if (refe .ge. 0.d0) then
         rho = 0.d0
-        goto 9999
+        goto 999
     endif
     energ(1) = ener
 !
@@ -84,7 +84,7 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
     ener = (f**2+g**2)/2.d0
     if (y(2) .le. 0.d0) then
         rho = rhomax
-        goto 9999
+        goto 999
     endif
     energ(2) = ener
 !
@@ -98,7 +98,7 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
     y(4) = y(2)
     energ(4) = energ(2)
 !
-    do 100 niter = 1, itelin
+    do niter = 1, itelin
         if (abs( y(4)/refe ) .lt. prelin) goto 110
         call zeroco(x, y)
         call nmtacr(mode, ndimsi, mat, sigel, vim,&
@@ -111,11 +111,11 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
             y(4) = (f*fdx+g*gdx)*dirxi + (f*fds+g*gds)*dirsp
         endif
         energ(4) = (f**2+g**2)/2.d0
-100  end do
-110  continue
+    end do
+110 continue
     rho = x(4)
     ener = energ(4)
 !
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gefact(duree, nominf)
 !
 ! GENERATION DE FCT ALEATOIRES :
@@ -138,18 +138,19 @@ subroutine gefact(duree, nominf)
 !
     nomobj = '&&GEFACT.TEMP.NUOR'
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
-    do 150 i1 = 1, nbmr
+    do i1 = 1, nbmr
         zi(jnuor-1+i1) = zi(lnumi-1+i1)
-150 end do
+    end do
     call ordis(zi(jnuor), nbmr)
     call wkvect('&&GEFACT.MODE', 'V V I', nbmr, inuor)
     nnn = 1
     zi(inuor) = zi(jnuor)
-    do 10 i = 2, nbmr
+    do i = 2, nbmr
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 10
         nnn = nnn + 1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
- 10 end do
+ 10     continue
+    end do
 !
 !=====
 ! 1.2 DONNEES ECHANTILLONNAGE FREQUENTIEL, DEDUCTION DES DONNEES
@@ -166,13 +167,13 @@ subroutine gefact(duree, nominf)
         nbval = nbfreq
         pas = (zr(lfreq+nbval-1)-zr(lfreq))/ (nbval-1)
         prec = 1.d-06
-        do 100 ii = 1, nbval-1
+        do ii = 1, nbval-1
             pas1 = zr(lfreq+ii) - zr(lfreq+ii-1)
             difpas = abs(pas1-pas)
             if (difpas .gt. prec) then
                 call utmess('F', 'ALGORITH3_78')
             endif
-100     continue
+        end do
 !
         if (( lnbpn ) .and. (nbpini.lt.nbval)) then
             freqf = zr(lfreq+nbpini-1)
@@ -219,10 +220,10 @@ subroutine gefact(duree, nominf)
         fmax = 0.d0
         fmin = 1.d+10
         nbval = nbfreq
-        do 35 j = 1, nbval-1
+        do j = 1, nbval-1
             pas= abs(zr(lfreq+j) - zr(lfreq+j-1))
             if (pas .lt. pmin) pmin = pas
- 35     continue
+        end do
         freq = zr(lfreq+nbval-1)
         if (freq .gt. fmax) fmax = freq
         freq = zr(lfreq)
@@ -310,7 +311,7 @@ subroutine gefact(duree, nominf)
     lprem = .true.
     iinf = 0
     isup = nbpt1+1
-    do 70 k = 1, nbpt1
+    do k = 1, nbpt1
         freq = frinit + (k-1)*dfreq
         zr(lval+k-1) = freq
         if (freq .lt. freqi) iinf= k
@@ -318,7 +319,7 @@ subroutine gefact(duree, nominf)
             isup = k
             lprem = .false.
         endif
- 70 end do
+    end do
 !     ------------------------------------------------------------------
 !     --- CHANGER LA FREQ INIT. A 0 HZ POUR LE CAS SANS INTERPOL
     if (linter) zr(lval)=0.d0
@@ -327,13 +328,13 @@ subroutine gefact(duree, nominf)
 !
 !     --- POUR CHAQUE FONCTION CALCUL DE X,Y POUR CHAQUE FREQ.
 !     (ON PROLONGE PAR 0 EN DEHORS DE (FREQI,FREQF)), PUIS ON STOCKE ---
-    do 80 kf = 1, nbfc
+    do kf = 1, nbfc
         call jeveuo(jexnum(chval, kf), 'L', lval2)
         diag = .false.
         if (zi(lnumi-1+kf) .eq. zi(lnumj-1+kf)) diag = .true.
 !
         k8b = ' '
-        do 120 ipas = 1, nbpt1
+        do ipas = 1, nbpt1
             freq = frinit + (ipas-1)*dfreq
             ix = lval1 + (kf-1)*nbpt2 + ipas - 1
             iy = lval1 + (kf-1)*nbpt2 + ipas - 1 + nbpt1
@@ -386,8 +387,8 @@ subroutine gefact(duree, nominf)
                 zr(ix) = resure
                 zr(iy) = resuim
             endif
-120     continue
- 80 end do
+        end do
+    end do
     nbval1 = nbpt1
 !
 !===============
@@ -412,9 +413,9 @@ subroutine gefact(duree, nominf)
     chnuor = nominf//'.NUOR'
     call wkvect(chnuor, 'V V I', dim, lnuor)
     call jeveuo('&&GEFACT.MODE', 'L', inuor)
-    do 125 i = 1, dim
+    do i = 1, dim
         zi(lnuor-1+i) = zi(inuor-1+i)
-125 end do
+    end do
 !
     dim2 = dim*dim
     dim3 = dim2 + dim
@@ -431,9 +432,9 @@ subroutine gefact(duree, nominf)
                 zr(lv), zc(lw))
 !
     nbpt1 = nbval1
-    do 130 jj = 1, nbpt1
+    do jj = 1, nbpt1
         zr(lvalc+jj-1) = zr(lval+jj-1)
-130 end do
+    end do
 !
     call titre()
 !

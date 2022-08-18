@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismco(questi, nomob, repi, repk, ierd)
     implicit none
 !
@@ -91,7 +91,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
     noma = cesk(1)
     nbma = zi(jcald-1+1)
 !
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
 !
         if (incr .and. elas) goto 999
 !
@@ -108,7 +108,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
             endif
         endif
 !
- 10 end do
+    end do
 !
 999 continue
 !

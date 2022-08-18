@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
                   vrotat)
 ! person_in_charge: nicolas.greffet at edf.fr
@@ -170,7 +170,6 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !     ARGUMENTS
 !     =========
 #include "jeveux.h"
-!
 #include "asterc/cpech.h"
 #include "asterc/cpedb.h"
 #include "asterc/cpeen.h"
@@ -180,6 +179,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     real(kind=8) :: vrotat, tinit, tfin, dt, dtsto, tmin
     integer :: nbpas
 !
@@ -254,9 +254,9 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS
     call jeveuo(cpal, 'L', iadrk)
-    do 20 iapp = 1, nbpal
+    do iapp = 1, nbpal
         finpal(iapp) = zk8(iadrk+(iapp-1)+palmax)(1:3)
-20  end do
+    end do
 !
 !
 !
@@ -271,7 +271,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !
 !     DEBUT DE LA BOUCLE SUR LES PALIERS
-    do 100 iapp = 1, nbpal
+    do iapp = 1, nbpal
 !
 !        CREATION DU NOM DE VARIABLE YACS POUR LE NOM DU PALIER
 !
@@ -381,7 +381,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
         endif
 !
 !
-100  end do
+    end do
 !
 !     FIN DE LA BOUCLE SUR LES PALIERS
 !

@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rrssm2(neq, smhcr, smhci, smdir, smdii,&
                   idlexc, coef, valmi, valmr)
     implicit none
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
     integer(kind=4) :: smhci(*), smhcr(*)
     integer :: idlexc(*)
     integer :: smdir(*), smdii(*)
     integer :: neq, idebl1, idebl2, kin1, kin2, iequa, ifinl1
-    integer :: ifinl2,  j2, k, i2, i1, j1, ind1
+    integer :: ifinl2, j2, k, i2, i1, j1, ind1
     real(kind=8) :: coef, valmi(*), valmr(*)
     integer, pointer :: ind_lig(:) => null()
 !--------------------------------------------------------
@@ -45,40 +45,40 @@ subroutine rrssm2(neq, smhcr, smhci, smdir, smdii,&
     kin2 = 0
 !
 !
-    do 60 iequa = 1, neq
+    do iequa = 1, neq
         ifinl1 = smdir(iequa)
         ifinl2 = smdii(iequa)
 !
 !       -- CALCUL DE .IND_LIG :
 !       ------------------------
-        do 40 j2 = idebl2, ifinl2
+        do j2 = idebl2, ifinl2
             k = 0
             i2 = smhci(j2)
-            do 20 j1 = idebl1, ifinl1
+            do j1 = idebl1, ifinl1
                 i1 = smhcr(j1)
                 k = k + 1
                 if (i1 .eq. i2) goto 30
-20          continue
-30          continue
+            end do
+ 30         continue
             ind_lig(i2) = k
-40      continue
+        end do
 !
 !
 !       -- CUMUL DANS LA MATRICE RESULTAT :
 !       ------------------------------------
         kin1 = idebl1 - 1
-        do 50 j2 = idebl2, ifinl2
+        do j2 = idebl2, ifinl2
             kin2 = kin2 + 1
             i2 = smhci(j2)
             ind1 = ind_lig(i2)
             valmr(kin1+ind1) = valmr(kin1+ind1) + coef*valmi(kin2)* ( 1-idlexc(i2))* (1-idlexc(ie&
                                &qua))
             ind_lig(i2) = 0
-50      continue
+        end do
 !
         idebl1 = smdir(iequa) + 1
         idebl2 = smdii(iequa) + 1
-60  end do
+    end do
     AS_DEALLOCATE(vi=ind_lig)
 !
 end subroutine

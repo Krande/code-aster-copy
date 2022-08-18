@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtdefs(matout, matin, base, typc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -30,6 +29,7 @@ subroutine mtdefs(matout, matin, base, typc)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=*) :: matout, matin, base, typc
 !     DEFINITION DE LA STRUCTURE D'UNE MATRICE "MATOUT"
 !       QUI S'APPUIE SUR LA MEME NUMEROTATION QUE "MATIN",
@@ -78,9 +78,9 @@ subroutine mtdefs(matout, matin, base, typc)
     call jeecra(refa, 'LONMAX', nbval)
     call jeecra(refa, 'LONUTI', nbval)
     call jeveuo(refa, 'E', jrefao)
-    do 10 ival = 0, nbval-1
+    do ival = 0, nbval-1
         zk24(jrefao+ival) = zk24(jrefai+ival)
-10  end do
+    end do
     zk24(jrefao-1+8) = 'ASSE'
 !
 !
@@ -98,9 +98,9 @@ subroutine mtdefs(matout, matin, base, typc)
         call jeecra(lime, 'LONMAX', nbval)
         call jeecra(lime, 'LONUTI', nbval)
         call jeveuo(lime, 'E', jrefao)
-        do 15 ival = 0, nbval-1
+        do ival = 0, nbval-1
             zk24(jrefao+ival) = zk24(jrefai+ival)
-15      continue
+        end do
     endif
 !
 !
@@ -115,11 +115,11 @@ subroutine mtdefs(matout, matin, base, typc)
     call jecrec(valm, classe//' V '//type, 'NU', 'DISPERSE', 'CONSTANT',&
                 nbbloc)
     call jeecra(valm, 'LONMAX', lgbloc)
-    do 20 ibloc = 1, nbbloc
+    do ibloc = 1, nbbloc
         call jecroc(jexnum(valm, ibloc))
 !        -- IL FAUT FAIRE UN JEVEUO/'E' POUR QUE L'OBJET EXISTE VRAIMENT
         call jeveuo(jexnum(valm, ibloc), 'E', jvalm)
-20  end do
+    end do
 !
 !
     call jedema()

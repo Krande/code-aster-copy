@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
                   typei, lt, lonoi, mess)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -145,7 +145,7 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
      &                     r8zon(ji+4*(l-1)+1),')'
             endif
         else if (typei .eq. 'L') then
-            ji = 1 +  (jiszon +kadm - 1)*lois +ideci +ladm
+            ji = 1 + (jiszon +kadm - 1)*lois +ideci +ladm
             nl = lonoi / (20*lols)
             nd = mod( lonoi , (20*lols) ) / lols
             write ( unit , '((I7,'' - '',20(L1,1X)))') (20*(l-1)+1,(&
@@ -160,11 +160,11 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
             nl = lonoi / (nb* lt)
             nd = (mod( lonoi , nb*lt )) / lt
             write ( fmt,'(I2,''(A1,'',I2,''A1,A1)'')' ) nb,lt
-            do 1,l=1,nl
-            write ( unit , '(I7,'' - '','//fmt//')') nb*(l-1)+1,&
+            do l = 1, nl
+                write ( unit , '(I7,'' - '','//fmt//')') nb*(l-1)+1,&
                 ('>',(k1zon(ji+lt*((k-1)+(l-1)*nb)+j-1),j=1,lt),'<',&
                 k= 1,nb)
- 1          continue
+            end do
             if (nd .ne. 0) then
                 write ( unit , '(I7,'' - '','//fmt//')') nb*nl+1,&
                 ('>',(k1zon(ji+lt*((k-1)+nl*nb)+j-1),j=1,lt),'<',k=1,&
@@ -183,16 +183,16 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
         nl = nm / nb
         nd = mod(nm,nb)
         write ( fmt,'(I2,''(A1,'',I2,''A1,A1)'')' ) nb,lt
-        do 2,l=1,nl
-        write ( unit , '(I7,'' - '','//fmt//')') nb*(l-1)+1,&
+        do l = 1, nl
+            write ( unit , '(I7,'' - '','//fmt//')') nb*(l-1)+1,&
             ('>',(k1zon( ji+lt*((k-1)+(l-1)*nb)+j-1 ),j=1,lt),'<',&
             k= 1,nb )
- 2      continue
+        end do
         if (nd .ne. 0) then
             write ( unit , '(I7,'' - '','//fmt//')') nb*nl+1, ('>',(&
             k1zon (ji +lt*((k-1)+nl*nb)+j-1),j=1,lt),'<',k=1,nd)
         endif
     endif
-999  continue
+999 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

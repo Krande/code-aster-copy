@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
                   isph, tdt, hini, hfin, afp,&
                   bfp, cfp, cfps, cfpd)
@@ -70,9 +70,9 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
 ! INITIALISATION DES VARIABLES
 !
 !
-    do 9 i = 1, 3
+    do i = 1, 3
         afpd(i) = 0.d0
- 9  end do
+    end do
 !
 ! CALCUL DE LA MATRICE DES DEFORMATIONS DE FLUAGE PROPRE SPHERIQUE
 !          INCREMENTALES
@@ -96,11 +96,11 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
 !
 !   EQUATION (3.5-2)
 !
-    do 10 i = 1, 2
+    do i = 1, 2
         afp(i) = afps + afpd(i)
         bfp(i,i) = (bfps + 2.d0 * bfpd)/3.d0
         cfp(i,i) = (cfps + 2.d0 * cfpd)/3.d0
-10  end do
+    end do
     bfp(1,2) = (bfps - bfpd) / 3.d0
     bfp(2,1) = bfp(1,2)
     cfp(1,2) = (cfps - cfpd) / 3.d0

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsc3q(sig, x, pa, qinit, q,&
                   qii, cos3tq, devnul, trac)
     implicit none
@@ -62,9 +62,9 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
 !
 !
     i1 = zero
-    do 10 i = 1, ndi
+    do i = 1, ndi
         i1 = i1 + sig(i)
- 10 continue
+    end do
 !
 !
     if ((i1+qinit) .eq. 0.d0) then

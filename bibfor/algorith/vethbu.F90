@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vethbu(modele, matasz, charge, infcha, carele,&
                   mate, chtni, vebtem)
     implicit none
@@ -103,7 +103,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     option = 'THER_BU_R'
     if (nchar .gt. 0) then
         call jeveuo(infcha, 'L', jinf)
-        do 10 icha = 1, nchar
+        do icha = 1, nchar
             ndir = 0
             if (zi(jinf+icha) .gt. 0) then
                 nomcha = zk24(jchar+icha-1) (1:8)
@@ -127,7 +127,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
             endif
             call jeecra(vebtem, 'LONUTI', ndir)
 !
-10      continue
+        end do
 !
     endif
 ! FIN ------------------------------------------------------------------

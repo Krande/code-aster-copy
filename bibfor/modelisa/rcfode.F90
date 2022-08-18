@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcfode(ifon, temp, f, df)
     implicit none
 #include "asterf_types.h"
@@ -83,7 +83,7 @@ subroutine rcfode(ifon, temp, f, df)
     endif
     if (entre) then
         if (incr .gt. 0) then
-            do 8 jp = ideb, ifin, incr
+            do jp = ideb, ifin, incr
                 jv = jp + nbvf
                 if (zr(jp) .ge. temp) then
                     df = (zr(jv)-zr(jv-1))/(zr(jp)-zr(jp-1))
@@ -91,10 +91,10 @@ subroutine rcfode(ifon, temp, f, df)
                     isave = jp-jvalf
                     goto 5
                 endif
-  8         continue
+            end do
   5         continue
         else
-            do 9 jp = ideb, ifin, incr
+            do jp = ideb, ifin, incr
                 jv = jp + nbvf
                 if (zr(jp) .le. temp) then
                     df = (zr(jv+1)-zr(jv))/(zr(jp+1)-zr(jp))
@@ -102,7 +102,7 @@ subroutine rcfode(ifon, temp, f, df)
                     isave = jp-jvalf+1
                     goto 6
                 endif
-  9         continue
+            end do
   6         continue
         endif
     else if (tesinf) then

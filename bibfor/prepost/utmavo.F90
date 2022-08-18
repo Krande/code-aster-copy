@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utmavo(mail, kdim, lima, nlima, base,&
                   nomz, nbmavo, mailvo)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/jecrec.h"
@@ -34,8 +36,6 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: lima(*), nlima, nbmavo, mailvo(*)
     character(len=1) :: base
@@ -71,9 +71,9 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !     TYPE : XC V I ACCES(NUMEROTE) LONG(VARIABLE)
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nare, numa, nbno, nbmat, ino, nuno,  p2
+    integer :: ibid, nare, numa, nbno, nbmat, ino, nuno, p2
     integer :: i, j, k, jmail, nbman, adrvlc, acncin, ima, ii
-    integer :: adra, iad, jtr1(1000),   nutyma, iexinv
+    integer :: adra, iad, jtr1(1000), nutyma, iexinv
     character(len=8) :: type
     character(len=24) :: nom, ncninv
     integer, pointer :: trav2(:) => null()
@@ -111,16 +111,16 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
     AS_ALLOCATE(vi=trav2, size=nlima)
     nare = 0
-    do 100 i = 1, nlima
+    do i = 1, nlima
         numa = lima(i)
         nbno = zi(p2+numa+1-1) - zi(p2+numa-1)
         iad = zi(p2+numa-1)
         nbmat = 0
-        do 110 ino = 1, nbno
+        do ino = 1, nbno
             nuno = connex(1+iad-1+ino-1)
             nbman = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
             adra = zi(adrvlc+nuno-1)
-            do 120 j = 1, nbman
+            do j = 1, nbman
                 ii = zi(acncin+adra-1+j-1)
 !              -- SI UN NOEUD EST ORPHELIN : II=0
 !                 (PAS D'OBJET JEVEUX DE LONG=0)
@@ -155,16 +155,17 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                 else
                     call utmess('F', 'PREPOST4_89', sk=type)
                 endif
-                do 122 k = 1, nbmat
+                do k = 1, nbmat
                     if (jtr1(k) .eq. ima) goto 120
-122              continue
+                end do
                 nbmat = nbmat + 1
                 jtr1(nbmat) = ima
-120          continue
-110      continue
+120             continue
+            end do
+        end do
         trav2(i) = nbmat
         nare = nare + max(nbmat,1)
-100  end do
+    end do
 !
 ! --- CREATION DE LA SD
 !
@@ -174,7 +175,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
 ! --- ON REMPLIT LA SD
 !
-    do 200 i = 1, nlima
+    do i = 1, nlima
         numa = lima(i)
         nbno = zi(p2+numa+1-1) - zi(p2+numa-1)
         iad = zi(p2+numa-1)
@@ -190,11 +191,11 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
         endif
 !
         nbmat = 0
-        do 210 ino = 1, nbno
+        do ino = 1, nbno
             nuno = connex(1+iad-1+ino-1)
             nbman = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
             adra = zi(adrvlc+nuno-1)
-            do 220 j = 1, nbman
+            do j = 1, nbman
                 ii = zi(acncin+adra-1+j-1)
                 if (ii .eq. 0) goto 220
 !
@@ -232,14 +233,16 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                 else
                     call utmess('F', 'PREPOST4_89', sk=type)
                 endif
-                do 222 k = 1, nbmat
+                do k = 1, nbmat
                     if (zi(jmail-1+k) .eq. ima) goto 220
-222              continue
+                end do
                 nbmat = nbmat + 1
                 zi(jmail-1+nbmat) = ima
-220          continue
-210      continue
-200  end do
+220             continue
+            end do
+        end do
+200     continue
+    end do
 !
     call jedetr('&&UTMAVO.TRAV1')
     AS_DEALLOCATE(vi=trav2)

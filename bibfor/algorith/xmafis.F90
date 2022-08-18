@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
                   lisma)
     implicit none
@@ -47,7 +47,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
 !       NMAFIS   :  NOMBRE DE MAILLES DE LA ZONE FISSURE
 !     ------------------------------------------------------------------
 !
-    integer :: jdlima,  jconx2,  jmafis
+    integer :: jdlima, jconx2, jmafis
     integer :: i, imae, in, jma, itypma, nbnott(3)
     integer :: nmaabs, nuno, nbmae, nnos
     real(kind=8) :: lsnp, lsn
@@ -75,7 +75,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
 !
     i=0
 !     BOUCLE SUR LES MAILLES DE GROUP_ENRI
-    do 100 imae = 1, nbmae
+    do imae = 1, nbmae
         nmaabs=zi(jdlima-1+(imae-1)+1)
         in=1
         nuno=connex(zi(jconx2+nmaabs-1)+in-1)
@@ -85,7 +85,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
         call panbno(itypma, nbnott)
         nnos=nbnott(1)
 !
-        do 101 in = 2, nnos
+        do in = 2, nnos
             nuno=connex(zi(jconx2+nmaabs-1)+in-1)
             lsn=cnsv((nuno-1)+1)
             if ((lsnp*lsn) .le. 0.d0) then
@@ -96,8 +96,9 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
                 ASSERT((i-1).lt.nxmafi)
                 goto 100
             endif
-101      continue
-100  end do
+        end do
+100     continue
+    end do
     nmafis=i
 !
     call jedema()

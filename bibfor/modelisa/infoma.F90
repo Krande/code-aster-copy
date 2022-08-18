@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine infoma(nomu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -29,6 +28,7 @@ subroutine infoma(nomu)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: nomu
 !
 !     IMPRESSION DES INFOS (1 OU 2)
@@ -39,11 +39,11 @@ subroutine infoma(nomu)
     character(len=24) :: conxv, grpnov, grpmav, nomnoe, titre, cooval
     character(len=24) :: nom, nommai
     character(len=8) :: type
-    integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor,  nbma
+    integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, nbma
     integer :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
     integer :: nbmmai, n1, nbmmax, ityp
     parameter (nbmmax=100)
-    integer :: dimmai(nbmmax),  iret
+    integer :: dimmai(nbmmax), iret
     character(len=8) :: mclmai(nbmmax)
     integer, pointer :: typmail(:) => null()
     integer, pointer :: dime(:) => null()
@@ -97,15 +97,15 @@ subroutine infoma(nomu)
 !
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
-    do 20 i = 1, nbmmai
+    do i = 1, nbmmai
         dimmai(i) = 0
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
-20  end do
-    do 21 i = 1, nbmail
+    end do
+    do i = 1, nbmail
         ityp=typmail(i)
         ASSERT((ityp.gt.0).and.(ityp.lt.100))
         dimmai(ityp)=dimmai(ityp)+1
-21  end do
+    end do
 !
 !
 !
@@ -115,35 +115,37 @@ subroutine infoma(nomu)
     if (niv .ge. 1) then
         write (ifm,802) nomu,niv
         call jeveuo(titre, 'L', iad)
-        do 40 i = 1, nbltit
+        do i = 1, nbltit
             write (ifm,801) zk80(iad+i-1)
-40      continue
+        end do
         write (ifm,804) comnoe,nbnoeu
         write (ifm,804) commai,nbmail
-        do 50 i = 1, nbmmai
+        do i = 1, nbmmai
             if (dimmai(i) .ne. 0) write (ifm,806) mclmai(i),dimmai(i)
-50      continue
+        end do
 !
         if (nbgrno .ne. 0) then
             write (ifm,804) comgrn,nbgrno
-            do 60 i = 1, nbgrno
+            do i = 1, nbgrno
                 call jeexin(jexnum(grpnov, i), iret)
                 if (iret .eq. 0) goto 60
                 call jenuno(jexnum(grpnov, i), nom)
                 call jelira(jexnum(grpnov, i), 'LONUTI', n1)
                 write (ifm,808) nom,n1
-60          continue
+ 60             continue
+            end do
         endif
 !
         if (nbgrma .ne. 0) then
             write (ifm,804) comgrm,nbgrma
-            do 70 i = 1, nbgrma
+            do i = 1, nbgrma
                 call jeexin(jexnum(grpmav, i), iret)
                 if (iret .eq. 0) goto 70
                 call jenuno(jexnum(grpmav, i), nom)
                 call jelira(jexnum(grpmav, i), 'LONUTI', n1)
                 write (ifm,808) nom,n1
-70          continue
+ 70             continue
+            end do
         endif
     endif
 !
@@ -153,14 +155,14 @@ subroutine infoma(nomu)
 !
         write (ifm,803) lisnoe
         call jeveuo(cooval, 'L', iad)
-        do 80 i = 1, nbnoeu
+        do i = 1, nbnoeu
             call jenuno(jexnum(nomnoe, i), nom)
             idec = iad + (i-1)*3
             write (ifm,701) i,nom, (zr(idec+j-1),j=1,nbcoor)
-80      continue
+        end do
 !
         write (ifm,803) lismai
-        do 90 i = 1, nbmail
+        do i = 1, nbmail
             call jenuno(jexnum(nommai, i), nom)
             call jeveuo(jexnum(conxv, i), 'L', iad1)
             call jelira(jexnum(conxv, i), 'LONMAX', nbno)
@@ -172,11 +174,11 @@ subroutine infoma(nomu)
                 write (ifm,702) i,nom,type, (zi(iad1+j-1),j=1,5)
                 write (ifm,703) (zi(iad1+j-1),j=6,nbno)
             endif
-90      continue
+        end do
 !
         if (nbgrno .ne. 0) then
             write (ifm,803) lisgrn
-            do 100 i = 1, nbgrno
+            do i = 1, nbgrno
                 call jeexin(jexnum(grpnov, i), iret)
                 if (iret .eq. 0) goto 100
                 call jenuno(jexnum(grpnov, i), nom)
@@ -189,12 +191,13 @@ subroutine infoma(nomu)
                     write (ifm,704) i,nom,nbno, (zi(iad+j-1),j=1,5)
                     write (ifm,703) (zi(iad+j-1),j=6,nn)
                 endif
-100          continue
+100             continue
+            end do
         endif
 !
         if (nbgrma .ne. 0) then
             write (ifm,803) lisgrm
-            do 110 i = 1, nbgrma
+            do i = 1, nbgrma
                 call jeexin(jexnum(grpmav, i), iret)
                 if (iret .eq. 0) goto 110
                 call jenuno(jexnum(grpmav, i), nom)
@@ -207,7 +210,8 @@ subroutine infoma(nomu)
                     write (ifm,704) i,nom,nbma, (zi(iad+j-1),j=1,5)
                     write (ifm,703) (zi(iad+j-1),j=6,nn)
                 endif
-110          continue
+110             continue
+            end do
         endif
     endif
     write (ifm,809)

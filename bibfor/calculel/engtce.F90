@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine engtce(ific, chamel, typtes, preci, formr)
     implicit none
 #include "jeveux.h"
@@ -41,7 +41,7 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
 ! IN  : FORMR  : FORMAT D'IMPRESSION DU CHAMP VALE REEL
 ! ----------------------------------------------------------------------
 !
-    integer ::  vali, i, jvale, long, lg1, lg2
+    integer :: vali, i, jvale, long, lg1, lg2
     real(kind=8) :: valr
     character(len=3) :: type
     character(len=80) :: form1, form2
@@ -51,8 +51,10 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
 !
     lg1 = lxlgut( formr )
     lg2 = lxlgut( typtes )
-    form1 = '('' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', '&
-            //formr(1:lg1)//','' ), '')'
+    form1 = '(&
+            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', ' //formr(1:lg1)//',&
+            '' ), ''&
+            )'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
     write(ific,1000)
@@ -67,24 +69,24 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
-            do 110 i = 1, long
+            do i = 1, long
                 vali = vali + abs(zi(jvale+i-1))
-110          continue
+            end do
         else if (typtes .eq. 'SOMM') then
             vali = 0
-            do 112 i = 1, long
+            do i = 1, long
                 vali = vali + zi(jvale+i-1)
-112          continue
+            end do
         else if (typtes .eq. 'MAX') then
             vali = -ismaem()
-            do 114 i = 1, long
+            do i = 1, long
                 vali = max( vali , zi(jvale+i-1) )
-114          continue
+            end do
         else if (typtes .eq. 'MIN') then
             vali = ismaem()
-            do 116 i = 1, long
+            do i = 1, long
                 vali = min( vali , zi(jvale+i-1) )
-116          continue
+            end do
         endif
         if (vali .eq. 0) write(ific,1022)
         write(ific,form2) vali
@@ -92,24 +94,24 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
-            do 120 i = 1, long
+            do i = 1, long
                 valr = valr + abs(zr(jvale+i-1))
-120          continue
+            end do
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
-            do 122 i = 1, long
+            do i = 1, long
                 valr = valr + zr(jvale+i-1)
-122          continue
+            end do
         else if (typtes .eq. 'MAX') then
             valr = -r8maem()
-            do 124 i = 1, long
+            do i = 1, long
                 valr = max( valr , zr(jvale+i-1) )
-124          continue
+            end do
         else if (typtes .eq. 'MIN') then
             valr = r8maem()
-            do 126 i = 1, long
+            do i = 1, long
                 valr = min( valr , zr(jvale+i-1) )
-126          continue
+            end do
         endif
         if (abs(valr) .le. r8prem()) write(ific,1022)
         write(ific,form1) valr

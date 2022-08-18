@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
                   norev, sigmrv, nomdb, sigmdb)
 !
@@ -174,10 +174,10 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
             call jeveuo(revxx, 'L', jrevxx)
             call jeveuo(revyy, 'L', jrevyy)
             call jeveuo(revxy, 'L', jrevxy)
-            do 10 ii = 1, norev
+            do ii = 1, norev
                 zr(jsigmr-1+ii) = sint * zr(jrevxx-1+ii) + cost * zr( jrevyy-1+ii) - sicot* zr(jr&
                                   &evxy-1+ii)
-10          continue
+            end do
 ! ======================================================================
 ! --- RECUPERATION DES LISTES DE CONTRAINTE SIXX - SIYY - SIXY ---------
 ! --- COTE METAL DE BASE -----------------------------------------------
@@ -191,10 +191,10 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
             call jeveuo(mdbxx, 'L', jmdbxx)
             call jeveuo(mdbyy, 'L', jmdbyy)
             call jeveuo(mdbxy, 'L', jmdbxy)
-            do 20 ii = 1, nomdb
+            do ii = 1, nomdb
                 zr(jsigmb-1+ii) = sint * zr(jmdbxx-1+ii) + cost * zr( jmdbyy-1+ii) - sicot* zr(jm&
                                   &dbxy-1+ii)
-20          continue
+            end do
         endif
     endif
 ! ======================================================================

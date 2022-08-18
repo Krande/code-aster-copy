@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0417(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -51,11 +51,11 @@ subroutine te0417(option, nomte)
 !
     call jevech('PGEOMER', 'L', jgeom)
 !
-    do 5 i = 1, nb2
+    do i = 1, nb2
         xi(1,i)=zr(jgeom+3*(i-1))
         xi(2,i)=zr(jgeom+3*(i-1)+1)
         xi(3,i)=zr(jgeom+3*(i-1)+2)
- 5  end do
+    end do
 !
     call dxroep(rho, epais)
     if (rho .le. r8prem()) then
@@ -71,15 +71,15 @@ subroutine te0417(option, nomte)
 !
     volume=0.d0
 !
-    do 10 k = 1, 3
+    do k = 1, 3
         xg(k) =0.d0
         ix2(k)=0.d0
-10  end do
+    end do
     ix1x2 =0.d0
     ix1x3 =0.d0
     ix2x3 =0.d0
 !
-    do 200 intsn = 1, npgsn
+    do intsn = 1, npgsn
 !
 !     RNORMC EST LE DETERMINANT DE LA SURFACE MOYENNE
 !
@@ -99,19 +99,19 @@ subroutine te0417(option, nomte)
 !
         wgt=wgt*rnormc
 !
-        do 20 j = 1, nb1
-            do 25 k = 1, 3
+        do j = 1, nb1
+            do k = 1, 3
                 xg(k)=xg(k)+epais*wgt*zr(l2+j)*xi(k,j)
-25          continue
+            end do
 !
 !     MOMENTS ET PRODUITS D'INERTIE
 !
-            do 30 i = 1, nb1
-                do 35 k = 1, 3
+            do i = 1, nb1
+                do k = 1, 3
                     ix2(k)=ix2(k)+epais*wgt*zr(l2+j)*xi(k,j)*zr(l2+i)*&
                     xi(k,i) +epais3/12.d0*wgt*zr(l2+j)*vectn(j,k)*zr(&
                     l2+i)*vectn(i,k)
-35              continue
+                end do
 !
                 ix1x2=ix1x2+epais*wgt*zr(l2+j)*xi(1,j)*zr(l2+i)*xi(2,&
                 i) +epais3/12.d0*wgt*zr(l2+j)*vectn(j,1)*zr(l2+i)*&
@@ -122,11 +122,11 @@ subroutine te0417(option, nomte)
                 ix2x3=ix2x3+epais*wgt*zr(l2+j)*xi(2,j)*zr(l2+i)*xi(3,&
                 i) +epais3/12.d0*wgt*zr(l2+j)*vectn(j,2)*zr(l2+i)*&
                 vectn(i,3)
-30          end do
+            end do
 !
-20      end do
+        end do
 !
-200  end do
+    end do
 !
     matine(1)=rho*(ix2(2)+ix2(3))
     matine(2)=rho*ix1x2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
                   z, freq0, rho, visc, rint,&
                   phix, phiy, dcent, matma)
@@ -91,27 +91,27 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
 !
     pi = r8pi()
 !
-    do 1 nz = 1, nbz
+    do nz = 1, nbz
         zr(ifct+nz-1) = rho(nz)*sqrt(visc(nz))
- 1  end do
+    end do
 !
 !
-    do 2 imod = 1, nbmod
+    do imod = 1, nbmod
         amor = 0.d0
-        do 21 igrp = 1, nbgrp
-            do 211 icyl = 1, nbcyl
+        do igrp = 1, nbgrp
+            do icyl = 1, nbcyl
                 if (numgrp(icyl) .eq. igrp) then
                     rayo = rint(icyl)
                 endif
-211          continue
-            do 212 jgrp = 1, nbgrp
+            end do
+            do jgrp = 1, nbgrp
                 ncyl = 0
                 if (igrp .eq. jgrp) then
-                    do 2121 icyl = 1, nbcyl
+                    do icyl = 1, nbcyl
                         if (numgrp(icyl) .eq. igrp) then
                             ncyl = ncyl-1
                         endif
-2121                  continue
+                    end do
                 endif
 !
                 amor = amor-rayo* (&
@@ -127,12 +127,12 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
                        nbgrp, imod, igrp, imod, jgrp, z, phiy, phiy, zr(ifct)&
                        )&
                        )
-212          continue
-21      continue
+            end do
+        end do
         amor = 4.d0*pi*sqrt(pi*freq0(imod))*amor
         matma(2*nbmod+imod) = matma(2*nbmod+imod)+amor
 !
- 2  end do
+    end do
 !
 ! --- MENAGE
     call jedetr('&&MEFREP.TEMP.FCT')

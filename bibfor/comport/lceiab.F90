@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lceiab(fami, kpg, ksp, mat, option,&
                   mu, su, de, ddedt, vim,&
                   vip, r, codret)
@@ -232,7 +232,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !         DIAGNOSTIC DE NON-CONVERGENCE
         if (i .ge. 20) then
             codret = 1
-            goto 9999
+            goto 999
         endif
         i = i + 1
 !
@@ -300,20 +300,22 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !      MATRICE TANGENTE 3D
         call r8inir(36, 0.d0, ddedt, 1)
         if (tno .gt. 0.d0) then
-            do 300 i = 1, 3
-                do 300 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     ddedt(i,j) = ddno * tpon(i)*tpon(j) + dno/tno * ( pr(i,j) - tpon(i)*tpon(j))
-300             continue
+                end do
+            end do
         else
 !         CAS OU TNO EST RIGOUREUSEMENT NUL
-            do 310 i = 1, 3
-                do 310 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     ddedt(i,j) = ddno * tpon(i)*tpon(j)
-310             continue
+                end do
+            end do
         endif
 !
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

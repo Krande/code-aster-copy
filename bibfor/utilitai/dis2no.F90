@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function dis2no(geom, ino1, ino2)
     implicit none
     real(kind=8) :: dis2no
@@ -39,10 +39,10 @@ function dis2no(geom, ino1, ino2)
 !
 !---------------------------------------------------------------------
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         a(i) = geom(3*(ino1-1)+i)
         b(i) = geom(3*(ino2-1)+i)
-10  end do
+    end do
     dis2no = padist(3,a,b)
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diagp3(tens, vecp, valp)
 !
     implicit none
@@ -80,11 +80,11 @@ subroutine diagp3(tens, vecp, valp)
             endif
         else
             tnull = .true.
-            do 600 i = 1, 6
+            do i = 1, 6
                 if (abs(tens(i)) .gt. (r8prem()*100*abs(trace))) then
                     tnull = .false.
                 endif
-600         continue
+            end do
             if (tnull) then
                 valp(1)=0.d0
                 valp(2)=0.d0
@@ -121,7 +121,7 @@ subroutine diagp3(tens, vecp, valp)
 !      write (6,*) 'VAL PROPRE APRES TRI : ',VALP(1),VALP(2),VALP(3)
 ! -- ON MULTIPLIE LES 3 VECT DE BASE PAR (A-LAMBDA_3.ID)(A-LAMBDA_2.ID)
 !      ON PRENDRA CELUI DONT LA NORME EST LA PLUS GRANDE
-    do 4000 ind = 1, 3
+    do ind = 1, 3
         if (ind .eq. 1) then
             x(1)= tens(1)-valp(2)
             x(2)= tens(2)
@@ -139,7 +139,7 @@ subroutine diagp3(tens, vecp, valp)
         vecp(2,ind)=tens(2)*x(1)+(tens(4)-valp(3))*x(2)+ tens(5)*x(3)
         vecp(3,ind)=tens(3)*x(1)+tens(5)*x(2)+ (tens(6)-valp(3))*x(3)
         y(ind)=(vecp(1,ind))**2+(vecp(2,ind))**2+ (vecp(3,ind))**2
-4000 end do
+    end do
     rtemp=y(1)
     ind=1
     if (y(2) .gt. y(1)) then
@@ -158,11 +158,11 @@ subroutine diagp3(tens, vecp, valp)
         vecp(1,1)=1.d0
         vecp(2,2)=1.d0
         vecp(3,3)=1.d0
-        goto 9999
+        goto 999
     endif
-    do 4010 i = 1, 3
+    do i = 1, 3
         vecp(i,1)=vecp(i,ind)/a
-4010 end do
+    end do
 !
 ! -- AUTRES VECTEURS PROPRES : ON PASSE DANS LE SOUS-ESPACE
 !    ORTHOGONAL AU PREMIER VECTEUR PROPRE
@@ -251,11 +251,11 @@ subroutine diagp3(tens, vecp, valp)
      &                      vecp(2,1)*vecp(1,2)
 !
     if (invvp) then
-        do 5050 i = 1, 3
+        do i = 1, 3
             rtemp=vecp(i,1)
             vecp(i,1)=vecp(i,3)
             vecp(i,3)=-rtemp
-5050     continue
+        end do
         rtemp=valp(1)
         valp(1)=valp(3)
         valp(3)=rtemp
@@ -278,11 +278,11 @@ subroutine diagp3(tens, vecp, valp)
 !        ENDIF
 !
 !
-9999 continue
+999 continue
 !
-    do 200 i = 1, 3
+    do i = 1, 3
         valp(i)=valp(i)+trace
-200 end do
+    end do
 !
 !      IF (MOD(INT(TPS(2)),100000).EQ.0) THEN
 !        write (6,*) 'NB APP = ',TPS(2),' ; TOT = ',TPS(3),

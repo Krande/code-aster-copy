@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
                   typent, nbcmpv, ncmpva, ncmpvm, iinst,&
                   numpt, numord, inst, crit, prec,&
@@ -130,7 +130,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     else
         bas2 = base
     endif
-
+!
 ! 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 !
     call jenonu(jexnom ( '&CATA.GD.NOMGD', nomgd ), iaux)
@@ -151,15 +151,15 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
         call jeveuo(ncmpva, 'L', jcmpva)
         call jelira(ncmpva, 'LONMAX', nbcmpa)
         if (nbcmpa .le. ncmprf) then
-            do 20 i = 1, nbcmpa
+            do i = 1, nbcmpa
                 ttt=.false.
-                do 30 j = 1, ncmprf
+                do j = 1, ncmprf
                     if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) ttt= .true.
- 30             continue
+                end do
                 if (.not.ttt) then
                     call utmess('F', 'MED_66')
                 endif
- 20         continue
+            end do
         else
             call utmess('F', 'MED_70')
         endif
@@ -174,7 +174,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
         endif
         call as_med_open(idfimd, nofimd, edlect, iret)
         call as_mfdnfd(idfimd, nbcham, iret)
-        do 780 i = 1, nbcham
+        do i = 1, nbcham
             call as_mfdnfc(idfimd, i, nbcmp, iret)
             call wkvect('&&LRCNME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCNME.UNITCMP', 'V V K16', nbcmp, junit)
@@ -183,16 +183,17 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
             if (nomcha .eq. nochmd) then
                 ncmprf=nbcmp
                 call wkvect('&&LRCNME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
-                do 778 j = 1, nbcmp
+                do j = 1, nbcmp
                     zk8(jnocmp+j-1)=zk16(jcmp+j-1)(1:8)
-778             continue
+                end do
                 call jedetr('&&LRCNME.NOMCMP_K16')
                 call jedetr('&&LRCNME.UNITCMP')
                 goto 780
             endif
             call jedetr('&&LRCNME.NOMCMP_K16')
             call jedetr('&&LRCNME.UNITCMP')
-780     continue
+780         continue
+        end do
         call as_mficlo(idfimd, iret)
 !
     endif
@@ -207,8 +208,8 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     call lrcame(nrofic, nochmd, nomamd, nomaas, ligbid,&
                 optbid, parbid, 'NOEU', typent, unbid,&
                 unbid, unbid, nbcmpv, ncmpva, ncmpvm,&
-                iinst,numpt, numord, inst, crit,&
-                prec,nomgd, ncmprf, jnocmp, chamns,&
+                iinst, numpt, numord, inst, crit,&
+                prec, nomgd, ncmprf, jnocmp, chamns,&
                 codret)
 !
 !====

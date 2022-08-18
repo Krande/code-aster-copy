@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
                   cnset, typma, ndime, geom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
@@ -31,9 +31,9 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 #include "asterfort/jemarq.h"
 #include "asterfort/xajpmi.h"
 #include "asterfort/xcenfi.h"
+#include "asterfort/xmifis.h"
 #include "asterfort/xmilar.h"
 #include "asterfort/xmilfa.h"
-#include "asterfort/xmifis.h"
 #include "asterfort/xstudo.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
@@ -91,13 +91,13 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 !
     pmilie(1:51) = 0.d0
 !
-    do 204 i = 1, 4
+    do i = 1, 4
         ip1(i)=0
         ip2(i)=0
         pm1a(i)=0
         pm1b(i)=0
         pm2(i)=0
-204 continue
+    end do
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
@@ -107,19 +107,19 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
     a2=nint(ainter(zxain*(2-1)+1))
     noeub=0
     noeuc=0
-    do 205 i = 1, 2
-        do 206 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             if (ar(a1,i) .eq. ar(a2,j)) then
                 noeub=ar(a1,3-i)
                 noeuc=ar(a2,3-j)
             endif
-206     continue
-205 continue
+        end do
+    end do
     ASSERT((noeub*noeuc).gt.0)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU PREMIER TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 300 r = 1, ninter
+    do r = 1, ninter
         a2=nint(ainter(zxain*(r-1)+1))
         ASSERT(a2 .ne. 0)
         ip = ip+1
@@ -127,40 +127,40 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
         ia=0
         ib=0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD B OU C
-        do 320 i = 1, 2
+        do i = 1, 2
             if ((ar(a2,3-i) .eq. noeub) .or. (ar(a2,3-i) .eq. noeuc)) then
                 ia=cnset(nnose*(it-1)+ar(a2,3-i))
                 ib=cnset(nnose*(it-1)+ar(a2,i))
                 im=cnset(nnose*(it-1)+ar(a2,3))
             endif
-320     continue
+        end do
         milara(:) = 0.d0
         milarb(:) = 0.d0
 !           INTERPOLATION DES COORDONNEES DES POINTS MILIEUX MA ET MB
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
-                    ia, ib, im, r, ksia, ksib,&
-                    milara, milarb, pintt, pmitt)
+                    ia, ib, im, r, ksia,&
+                    ksib, milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
-                    lonref, ajout)
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                    milara, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksia(j)
             enddo
         endif
 !
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milarb,&
-                    lonref, ajout)
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                    milarb, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksib(j)
             enddo
         endif
-300 continue
+    end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU DEUXIEME TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 400 k = 1, nbpi
+    do k = 1, nbpi
 !      POINT MILIEU ENTRE IP1(R) ET IP2(R)
 !
 !      on ne calcule pas le premier type de point milieu si la
@@ -182,15 +182,15 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
 !        STOCKAGE PMILIE
-            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfi,&
-                        lonref, ajout)
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                        milfi, lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
                     pmiref(ndime*(ipm-1)+j)=ksia(j)
                 enddo
             endif
         endif
-400 continue
+    end do
 !
 !    NUMEROS DES NOEUDS NOEUDS SOMMETS DU SOUS TETRA
     nn(1) = cnset(nnose*(it-1)+1)
@@ -198,11 +198,12 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
     nn(3) = cnset(nnose*(it-1)+3)
     nn(4) = cnset(nnose*(it-1)+4)
 !    LE NOEUD MILIEU AU CENTRE DE LA FACE QUADRANGLE
-    call xcenfi(elrefp, ndim, ndime, nnop, geom, lsnelp,&
-                pinref, pmiref, ksia, cenfi, nn, exit, jonc)
+    call xcenfi(elrefp, ndim, ndime, nnop, geom,&
+                lsnelp, pinref, pmiref, ksia, cenfi,&
+                nn, exit, jonc)
     mfisloc=mfisloc+1
-    call xajpmi(ndim, pmilie, pmmax, ipm, inm, cenfi,&
-                lonref, ajout)
+    call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                cenfi, lonref, ajout)
     if (ajout) then
         do j = 1, ndime
             pmiref(ndime*(ipm-1)+j)=ksia(j)
@@ -211,7 +212,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU TROISIEME TYPE DE POINT MILIEU   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 500 k = 1, nbpi
+    do k = 1, nbpi
 !      POINT MILIEU ENTRE IP1(R) ET IP2(R)
 !
 !      on calcule le troisieme type de point milieu seulement si
@@ -231,15 +232,15 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
                         pm2(k), typma, pinref, pmiref, ksia,&
                         milfa, pintt, pmitt)
 !
-            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
-                        lonref, ajout)
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                        milfa, lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
                     pmiref(ndime*(ipm-1)+j)=ksia(j)
                 enddo
             endif
         endif
-500 continue
+    end do
 !
 !
     ASSERT(ipm.eq.17.and.mfisloc.eq.5)

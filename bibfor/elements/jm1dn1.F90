@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jm1dn1(indn, indc, nb1, nb2, xr,&
                   epais, ksi3s2, intsx, jm1, j1dn1)
 !
@@ -105,7 +105,7 @@ subroutine jm1dn1(indn, indc, nb1, nb2, xr,&
 !
 !----- CALCUL COMPLET AVEC TERMES ROTATION
 !
-        do 100 jn = 1, nb2
+        do jn = 1, nb2
 !
 !------- PARTIE ROTATION
 !
@@ -208,7 +208,7 @@ subroutine jm1dn1(indn, indc, nb1, nb2, xr,&
 !
             endif
 !
-100      continue
+        end do
 !
 !
 !
@@ -221,7 +221,7 @@ subroutine jm1dn1(indn, indc, nb1, nb2, xr,&
 !----- CALCUL INCOMPLET SANS TERMES ROTATION
 !
 !
-        do 200 jn = 1, nb1
+        do jn = 1, nb1
 !
 !---------- NOEUDS DE SERENDIP
 !
@@ -256,7 +256,7 @@ subroutine jm1dn1(indn, indc, nb1, nb2, xr,&
             j1dn1( 8 , (jn-1) * 6 + 3 )= tmpi ( 2 )
             j1dn1( 9 , (jn-1) * 6 + 3 )= tmpi ( 3 )
 !
-200      continue
+        end do
 !
 !
 !

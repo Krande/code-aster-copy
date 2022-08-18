@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vdxrep(nomte, epais, xi)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -55,14 +55,14 @@ subroutine vdxrep(nomte, epais, xi)
 !     -- QUELLE VALEUR POUR IND ? FICHE ???
     ind =0
     k = 0
-    do 110 intsr = 1, npgsr
+    do intsr = 1, npgsr
         call vectgt(ind, nb1, xi, zero, intsr,&
                     zr(lzr), epais, vectn, vectg, vectt)
-        do 120 j = 1, 3
-            do 130 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k = k + 1
                 zr(lzr+2000+k-1) = vectt(i,j)
-130          continue
-120      continue
-110  end do
+            end do
+        end do
+    end do
 end subroutine

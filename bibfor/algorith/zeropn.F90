@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zeropn(kstop, degre, ai, racine, ier)
     implicit none
 #include "jeveux.h"
@@ -54,27 +54,27 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
 ! --- INITIALISATIONS ET COHERENCES -----------------------------------
 ! =====================================================================
     ier = 0
-    do 2 ii = 1, 2*degre
+    do ii = 1, 2*degre
         racine(ii) = 0.0d0
- 2  end do
+    end do
 ! =====================================================================
 ! --- INITIALISATION DE LA MATRICE ------------------------------------
 ! =====================================================================
     ASSERT(degre.le.degmax)
-    do 10 ii = 1, degmax*degmax
+    do ii = 1, degmax*degmax
         comapo(ii) = 0.d0
-10  end do
+    end do
 ! =====================================================================
 ! --- CREATION DE LA MATRICE DE TYOPE HESSENBERG ----------------------
 ! =====================================================================
 ! --- REMPLISSAGE DE LA PREMIERE SOUS DIAGONALE -----------------------
 ! =====================================================================
-    do 20 ii = 1, degre - 1
+    do ii = 1, degre - 1
         comapo(ii*(degre+1)) = 1.0d0
-20  end do
-    do 30 ii = 1, degre
+    end do
+    do ii = 1, degre
         comapo(ii*degre) = - ai(ii)
-30  end do
+    end do
     icode = 0
     call vphqrp(comapo, degre, degre, icode, racine,&
                 bidon, 1, vbid, 30, ier,&
@@ -86,6 +86,6 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
         call utmess(kstop, 'ALGORITH17_6', si=ier)
     endif
 !
-40  continue
+ 40 continue
 ! =====================================================================
 end subroutine

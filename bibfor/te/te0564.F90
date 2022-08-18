@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0564(option, nomte)
 !.......................................................................
 !
@@ -77,9 +77,9 @@ subroutine te0564(option, nomte)
     zero = 0.0d0
     iopt = 0
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
-
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
+!
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
@@ -90,9 +90,9 @@ subroutine te0564(option, nomte)
     if (option .eq. 'CARA_SECT_POUT3') then
         call jevech('PCASECT', 'E', isect)
         iopt = 3
-        do 10 i = 1, 6
+        do i = 1, 6
             zr(isect+i-1) = zero
-10      continue
+        end do
 !
     else if (option.eq.'CARA_SECT_POUT4') then
         call jevech('PORIGIN', 'L', iorig)
@@ -101,10 +101,10 @@ subroutine te0564(option, nomte)
         iopt = 4
         xg = zr(iorig+1-1)
         yg = zr(iorig+2-1)
-        do 20 i = 1, 2*nno
+        do i = 1, 2*nno
             zr(ivect1+i-1) = zero
             zr(ivect2+i-1) = zero
-20      continue
+        end do
 !
     endif
 !
@@ -116,7 +116,7 @@ subroutine te0564(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS :
 !     ------------------------------
-        do 70 ipg = 1, npg
+        do ipg = 1, npg
 !
             ldec = (ipg-1)*nno
 !
@@ -125,11 +125,11 @@ subroutine te0564(option, nomte)
 !
 ! ---   DERIVEES DES FONCTION DE FORME SUR L'ELEMENT REEL :
 !       -------------------------------------------------
-            do 40 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2* (ino-1) - 1
                 dxdk = dxdk + zr(i+1)*zr(idfdk+ldec+ino-1)
                 dydk = dydk + zr(i+2)*zr(idfdk+ldec+ino-1)
-40          continue
+            end do
 !
 ! ---   JACOBIEN :
 !       --------
@@ -147,22 +147,22 @@ subroutine te0564(option, nomte)
             axgau = zero
             aygau = zero
 !
-            do 50 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2* (ino-1) - 1
                 axgau = axgau + zr(ivf+ldec+ino-1)*zr(i+1)
                 aygau = aygau + zr(ivf+ldec+ino-1)*zr(i+2)
-50          continue
+            end do
 !
 ! ---   CALCUL DE  AXX, AYY, AXY = SOMME(X*X.DS, Y*Y.DS, X*Y.DS) :
 !       -------------------------------------------------------
             xgau = zero
             ygau = zero
 !
-            do 60 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2* (ino-1) - 1
                 xgau = xgau + zr(ivf+ldec+ino-1)*zr(i+1)
                 ygau = ygau + zr(ivf+ldec+ino-1)*zr(i+2)
-60          continue
+            end do
 !
             axxgau = xgau*xgau
             ayygau = ygau*ygau
@@ -181,8 +181,8 @@ subroutine te0564(option, nomte)
 !---  AXY
             zr(isect+6-1) = zr(isect+6-1) + axygau*jacpoi
 !
-70      continue
-
+        end do
+!
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 ! --- ET FIN DE L'OPTION 'CARA_SECT_POUT3'
 !
@@ -194,7 +194,7 @@ subroutine te0564(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS :
 !     ------------------------------
-        do 110 ipg = 1, npg
+        do ipg = 1, npg
 !
             ldec = (ipg-1)*nno
 !
@@ -203,11 +203,11 @@ subroutine te0564(option, nomte)
 !
 ! ---   DERIVEES DES FONCTION DE FORME SUR L'ELEMENT REEL :
 !       -------------------------------------------------
-            do 80 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2* (ino-1) - 1
                 dxdk = dxdk + zr(i+1)*zr(idfdk+ldec+ino-1)
                 dydk = dydk + zr(i+2)*zr(idfdk+ldec+ino-1)
-80          continue
+            end do
 !
 ! ---   JACOBIEN :
 !       --------
@@ -215,7 +215,7 @@ subroutine te0564(option, nomte)
             if (jac .le. r8prem()) then
                 call utmess('F', 'ELEMENTS4_34')
             endif
-
+!
             if (laxi) then
                 r = 0.d0
                 do ino = 1, nno
@@ -227,31 +227,31 @@ subroutine te0564(option, nomte)
 !
 !---    CALCUL DE VECT1(I) = SOMME(NI.DS, 0)
 !       ---------------------------------------
-            do 120 ino = 1, nno
+            do ino = 1, nno
                 zr(ivect1+2*(ino-1)+1-1) = zr(ivect1+2*(ino-1)+1-1 ) + zr(ivf+ldec+ino-1)*jacpoi
-120          continue
+            end do
 !
 !---    CALCUL DE VECT2(I) = SOMME(X*NI.DS, Y*NI.DS)
 !       --------------------------------------------
             xgau = zero
             ygau = zero
 !
-            do 130 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2*(ino-1) -1
                 xgau = xgau + zr(ivf+ldec+ino-1) * zr(i+1)
                 ygau = ygau + zr(ivf+ldec+ino-1) * zr(i+2)
-130          continue
+            end do
 !
-            do 140 ino = 1, nno
+            do ino = 1, nno
                 zr(ivect2+2*(ino-1)) = zr(ivect2+2*(ino-1)) + zr(ivf+ ldec+ino-1)*(xgau-xg&
                                        )*jacpoi
                 zr(ivect2+2*(ino-1)+1) = zr(ivect2+2*(ino-1)+1) + zr(ivf+ldec+ino-1)*(ygau-yg&
                                          )*jacpoi
-140          continue
+            end do
 !
 !
 !
-110      continue
+        end do
 !
 ! ---  FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 ! ---  ET FIN DE L'OPTION 'CARA_SECT_POUT4'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                   prec, erreur, alpha, types, re)
 ! aslint: disable=W1306
@@ -67,11 +67,11 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
 ! 1 - CALCUL DE L ERREUR TOTALE
 !
     errtot=0.d0
-    do 10 inel = 1, nelem
+    do inel = 1, nelem
         errtot=errtot+erreur(inel)**2
 ! ------POUR L ERREUR EN QUANTITE D INTERET QUI PEUT ETRE NEGATIVE
         erreur(inel)=abs(erreur(inel))
- 10 end do
+    end do
     errtot=sqrt(errtot)
 !
 ! 2 - CALCUL DE RE
@@ -86,7 +86,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
 !
         cumm=0.d0
 !
-        do 20 inel = 1, nelem
+        do inel = 1, nelem
             if (nbr(inel) .eq. 3) then
                 if (lqi) then
                     cumm=cumm+(erreur(inel)**(d/(2.d0*ordre+d)))
@@ -94,11 +94,11 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     cumm=cumm+(erreur(inel)**(2.d0*d/(2.d0*ordre+d)))
                 endif
             endif
- 20     continue
+        end do
 !
         cumm=cumm**(1.d0/(2.d0*ordre))
 !
-        do 30 inel = 1, nelem
+        do inel = 1, nelem
             if (nbr(inel) .eq. 3) then
                 if (lqi) then
                     re(inel)=erreur(inel)**(1.d0/(2.d0*ordre+d))
@@ -110,14 +110,14 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     re(inel)=(prec0**(1.d0/2.d0*ordre))*re(inel)
                 endif
             endif
- 30     continue
+        end do
 !
 ! 2.2 - CAS OU CERTAINS ELEMENTS SONT SINGULIERS
 ! 2.2.1 - CALCUL DES COEFFICIENTS AE ET BE POUR SIMPLIFIER EXPRESSION
 !
     else
         mu=0.d0
-        do 40 inel = 1, nelem
+        do inel = 1, nelem
             if (nbr(inel) .eq. 3) then
                 ae(inel)=2.d0*alpha(inel)/(2.d0*alpha(inel)+d)
                 if (lqi) then
@@ -129,7 +129,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                 be(inel)=be(inel)**ae(inel)
                 mu=mu+(erreur(inel)**(2.d0*ordre/(2.d0*ordre+d)))
             endif
- 40     continue
+        end do
 !
 ! 2.2.2 - RECHERCHE DU LAGRANGIEN MU PAR MEHODE DE NEWTON
 !         OU DICHOTOMIE
@@ -148,13 +148,13 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                 fonc=-(prec0**2.d0)
             endif
             dfonc=0.d0
-            do 50 inel = 1, nelem
+            do inel = 1, nelem
                 if (nbr(inel) .eq. 3) then
                     fonc=fonc+be(inel)/(mu**ae(inel))
                     dfonc=dfonc-ae(inel)*be(inel)/(mu**(ae(inel)+1.d0)&
                     )
                 endif
- 50         continue
+            end do
 !
             if (abs(fonc) .le. 1.d-06) goto 60
             if (fonc .ge. 0.d0) then
@@ -169,7 +169,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
 !
  60         continue
 !
-            do 80 inel = 1, nelem
+            do inel = 1, nelem
                 if (nbr(inel) .eq. 3) then
                     if (lqi) then
                         re(inel)=d/(2.d0*mu*alpha(inel)*erreur(inel))
@@ -179,7 +179,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                     endif
                     re(inel)=re(inel)**(1.d0/(2.d0*alpha(inel)+d))
                 endif
- 80         continue
+            end do
 !
         else
 !

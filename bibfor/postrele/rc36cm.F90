@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
                   lichar, chmome)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cesfus.h"
 #include "asterfort/cesqua.h"
 #include "asterfort/cesred.h"
@@ -30,8 +32,6 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: iocc, nbma, listma(*), nbchar, lichar(*)
     character(len=1) :: etat
     character(len=24) :: chmome
@@ -80,10 +80,10 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     AS_ALLOCATE(vl=licm, size=nbchar)
     AS_ALLOCATE(vr=licr, size=nbchar)
 !
-    do 110 icha = 1, nbchar, 1
-        do 112 ir = 1, nbresu, 1
+    do icha = 1, nbchar, 1
+        do ir = 1, nbresu, 1
             if (lichar(icha) .eq. nume_char(ir)) goto 114
-112     continue
+        end do
         vali (1) = iocc
         vali (2) = lichar(icha)
         call utmess('F', 'POSTRCCM_28', ni=2, vali=vali)
@@ -96,7 +96,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
         lich(icha) = champ(ir)
         licm(icha) = .true.
         licr(icha) = 1.d0
-110 end do
+    end do
 !
     if (seisme .and. autre) then
         call utmess('F', 'POSTRCCM_29', si=iocc)

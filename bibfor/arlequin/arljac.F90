@@ -15,21 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine arljac(nno   ,ndim  ,dff   ,coor  ,invjac)
-
-
+!
+subroutine arljac(nno, ndim, dff, coor, invjac)
+!
+!
     implicit none
-
+!
 #include "jeveux.h"
+#include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/matinv.h"
-#include "asterfort/jedema.h"
-
-    integer :: nno,ndim
+!
+    integer :: nno, ndim
     real(kind=8) :: coor(ndim*nno)
-    real(kind=8) :: dff(3,nno),invjac(3,3)
-
+    real(kind=8) :: dff(3, nno), invjac(3, 3)
+!
 ! ----------------------------------------------------------------------
 ! CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE
 ! ----------------------------------------------------------------------
@@ -39,47 +39,46 @@ subroutine arljac(nno   ,ndim  ,dff   ,coor  ,invjac)
 ! IN  NDIM   : DIMENSION DE L'ESPACE
 ! OUT INVJAC : INVERSE DE LA JACONIENNE AU POINT XE
 ! ----------------------------------------------------------------------
-
-    integer :: i,j,k
-    real(kind=8) :: jacobi(3,3),temp(3,3),det
-
+!
+    integer :: i, j, k
+    real(kind=8) :: jacobi(3, 3), temp(3, 3), det
+!
 ! ----------------------------------------------------------------------
-
+!
     call jemarq()
-
+!
 ! --- JACOBIENNE EN XE
-
+!
     jacobi(:,:) = 0.d0
-    do 100 i=1,ndim
-        do 110 j=1,ndim
-            do 120 k=1,nno
-                jacobi(i,j) = jacobi(i,j) + &
-                              dff(j,k) * coor(ndim*(k-1)+i)
-            120 end do
-        110 end do
-    100 end do
-
+    do i = 1, ndim
+        do j = 1, ndim
+            do k = 1, nno
+                jacobi(i,j) = jacobi(i,j) + dff(j,k) * coor(ndim*(k-1)+i)
+            end do
+        end do
+    end do
+!
     if (ndim == 2) then
         jacobi(3,3) = 1.d0
-    elseif (ndim == 1) then
+    else if (ndim == 1) then
         jacobi(3,3) = 1.d0
         jacobi(2,2) = 1.d0
     endif
-
+!
 ! --- INVERSE DE LA JACOBIENNE
-
-    call matinv('S',3,jacobi,temp,det)
-    do 200 i=1,3
-        do 210 j=1,3
+!
+    call matinv('S', 3, jacobi, temp, det)
+    do i = 1, 3
+        do j = 1, 3
             invjac(i,j) = 0.d0
-        210 end do
-    200 end do
-    do 300 i=1,ndim
-        do 310 j=1, ndim
+        end do
+    end do
+    do i = 1, ndim
+        do j = 1, ndim
             invjac(i,j) = temp(i,j)
-        310 end do
-    300 end do
-
+        end do
+    end do
+!
     call jedema()
-
+!
 end subroutine

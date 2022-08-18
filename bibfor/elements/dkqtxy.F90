@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkqtxy(qsi, eta, hft2, depf, codi,&
                   lcot, vt)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, hft2(2, 6), depf(12), codi(*), lcot(*), vt(2)
 !     EFFORT TRANCHANT L'ELEMENT DE PLAQUE DKQ
 !     ------------------------------------------------------------------
@@ -36,13 +36,13 @@ subroutine dkqtxy(qsi, eta, hft2, depf, codi,&
     meta = 1.d0 - eta
     pqsi = 1.d0 + qsi
     mqsi = 1.d0 - qsi
-    do 100 i = 1, nc
+    do i = 1, nc
         cl(i) = 1.50d0 * codi( i) / lcot(i)
         sl(i) = 1.50d0 * codi(nc+i) / lcot(i)
         cs(i) = 0.75d0 * codi( i) * codi(nc+i)
         cu(i) = 0.75d0 * codi( i) * codi( i)
         su(i) = 0.75d0 * codi(nc+i) * codi(nc+i)
-100  end do
+    end do
     tkq(1,1 ) = - meta * cl(1)
     tkq(1,2 ) = meta * cu(1)
     tkq(1,3 ) = meta * cs(1)
@@ -120,19 +120,19 @@ subroutine dkqtxy(qsi, eta, hft2, depf, codi,&
 !
     bc(:,:) = 0.d0
 !
-    do 130 i = 1, 2
-        do 120 j = 1, 3*nno
-            do 110 k = 1, 6
+    do i = 1, 2
+        do j = 1, 3*nno
+            do k = 1, 6
                 bc(i,j) = bc(i,j) + hft2(i,k) * tkq(k,j)
-110          continue
-120      continue
-130  end do
+            end do
+        end do
+    end do
     vt(1) = 0.d0
     vt(2) = 0.d0
-    do 150 i = 1, 2
-        do 140 j = 1, 3*nno
+    do i = 1, 2
+        do j = 1, 3*nno
             vt(i) = vt(i) + bc(i,j) * depf(j)
-140      continue
-150  end do
+        end do
+    end do
 !
 end subroutine

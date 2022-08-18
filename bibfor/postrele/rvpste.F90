@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvpste(lieu, ssch19, nomsd, typaff)
     implicit none
 !
@@ -83,32 +83,32 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
     call jeveuo(descm, 'L', adescm)
     call wkvect('&&RVPSTE.NB.ND.FACE.TYPE', 'V V I', 18, anbndf)
     call wkvect('&&RVPSTE.CNC.LOC.FA.TYPE', 'V V I', 72, aclocf)
-    do 5, i = 1, 3, 1
-    ibid = zi(adescm + i-1)
-    do 6, l = 1, 6, 1
-    zi(anbndf + 6*(i-1) + l-1) = zi(ibid + l+1)
- 6  continue
-    do 7, l = 1, 24, 1
-    zi(aclocf + 24*(i-1) + l-1) = zi(ibid + l+7)
- 7  continue
-    5 end do
-    do 10, l = 1, nbl, 1
-    sdlieu = zk24(alieu + l-1)(1:19)
-    sdeval = sdlieu
-    sdeval(1:8) = '&&RVPSTE'
-    zk24(anomsd + l-1) = sdeval//'     '
-    nrefe = sdlieu//'.REFE'
-    call jelira(nrefe, 'DOCU', cval=docu)
-    if (docu .eq. 'LSTN') then
-        if (typaff .eq. 'N') then
-            call rvechn(ssch19, sdlieu, sdeval)
+    do i = 1, 3, 1
+        ibid = zi(adescm + i-1)
+        do l = 1, 6, 1
+            zi(anbndf + 6*(i-1) + l-1) = zi(ibid + l+1)
+        end do
+        do l = 1, 24, 1
+            zi(aclocf + 24*(i-1) + l-1) = zi(ibid + l+7)
+        end do
+    end do
+    do l = 1, nbl, 1
+        sdlieu = zk24(alieu + l-1)(1:19)
+        sdeval = sdlieu
+        sdeval(1:8) = '&&RVPSTE'
+        zk24(anomsd + l-1) = sdeval//'     '
+        nrefe = sdlieu//'.REFE'
+        call jelira(nrefe, 'DOCU', cval=docu)
+        if (docu .eq. 'LSTN') then
+            if (typaff .eq. 'N') then
+                call rvechn(ssch19, sdlieu, sdeval)
+            else
+                call rveche(ssch19, sdlieu, sdeval)
+            endif
         else
-            call rveche(ssch19, sdlieu, sdeval)
-        endif
-    else
 !           AUTRE LIEU DE POST-TRAITEMENT
-    endif
-    10 end do
+        endif
+    end do
     call jedetr('&&RVPSTE.NB.ND.FACE.TYPE')
     call jedetr('&&RVPSTE.CNC.LOC.FA.TYPE')
     call i3drdm(descm)

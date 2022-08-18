@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
                   ncolia, promod, nlipro, ncopro, taille,&
                   indcol, nbcol)
@@ -55,7 +55,6 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 !
 !-- VARIABLES EN ENTREES / SORTIE
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -63,6 +62,7 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iblo, nlilia, ncolia, nlipro, ncopro, taille(2), nbcol
     character(len=8) :: nomres
     character(len=24) :: fmli, liamod, promod, indcol
@@ -97,20 +97,20 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
         if (indcol(1:5) .eq. 'BLANC') then
             indcol='&&INDCOLONNES_NON_ZERO'
             call wkvect(indcol, 'V V I', ncopro, lpro)
-            do 20 i1 = 1, ncopro
+            do i1 = 1, ncopro
                 zi(lpro+i1-1)=0
-20          continue
+            end do
             nbcol=0
-            do 30 j1 = 1, ncopro
+            do j1 = 1, ncopro
                 temp=0.d0
-                do 40 i1 = 1, nlipro
+                do i1 = 1, nlipro
                     temp=temp+zr(lpromo+(j1-1)*nlipro+i1-1)**2
-40              continue
+                end do
                 if (sqrt(temp)/nlipro .gt. eps) then
                     zi(lpro+nbcol)=j1
                     nbcol=nbcol+1
                 endif
-30          continue
+            end do
         else
             call jeveuo(indcol, 'L', lpro)
         endif
@@ -123,9 +123,9 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 !
 ! --- INITIALISATION DES MATRICES ORIENTEES DE LIAISON----------
 !
-        do 10 i1 = 1, nbcol*ncolia
+        do i1 = 1, nbcol*ncolia
             zr(ltemp+i1-1)=0.d0
-10      continue
+        end do
 !
 !
 !        CALL DGEMM('T','N',NCOPRO,NCOLIA,NLIPRO,1.,ZR(LPROMO),
@@ -158,17 +158,17 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 !-- PROJECTION INITIALE
 !--
 !
-        do 50 j1 = 1, ncolia
-            do 60 k1 = 1, nlipro
+        do j1 = 1, ncolia
+            do k1 = 1, nlipro
                 temp=zr(lliamo+(j1-1)*nlilia+k1-1)
-                do 70 l1 = 1, nbcol
+                do l1 = 1, nbcol
                     i1=zi(lpro+l1-1)
                     zr(ltemp+(j1-1)*nbcol+l1-1)= zr(ltemp+(j1-1)*&
                     nbcol+l1-1)+ coeff*temp*zr(lpromo+(i1-1)*nlipro+&
                     k1-1)
-70              continue
-60          continue
-50      continue
+                end do
+            end do
+        end do
 !
     endif
 !

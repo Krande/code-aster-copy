@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -111,12 +111,13 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     zi(icarac ) = nno1
     zi(icarac+1) = nno2
     n = 1
-    do 1 i = 1, 2
-        do 1 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             n = n+1
             zi(icarac+n)= npg1(i,j)
             zi(icarac+n+4) = npg2(i,j)
- 1      continue
+        end do
+    end do
 ! --- PLACE MEMOIRE POUR VALEURS DES FONCTIONS DE FORME ET DE LEURS ---
 ! ---              DERIVEES AU DIFFERENTS POINTS DE GAUSS           ---
     npg = npg1(1,1)*npg1(1,1)*npg1(1,2)
@@ -138,30 +139,30 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 !     --------------------------------------------
 !     --- COORDONNEES INTRINSEQUES DE L'HEXA8 ----
 !     --------------------------------------------
-    do 500 i = 1, 4
+    do i = 1, 4
         zin(i) = -1.d0
         zin(4+i) = 1.d0
-500  end do
-    do 510 i = 1, 2
+    end do
+    do i = 1, 2
         xin(1+4*(i-1)) = -1.d0
         xin(2+4*(i-1)) = 1.d0
         xin(3+4*(i-1)) = 1.d0
         xin(4+4*(i-1)) = -1.d0
-510  end do
-    do 520 i = 1, 2
+    end do
+    do i = 1, 2
         yin(1+4*(i-1)) = -1.d0
         yin(2+4*(i-1)) = -1.d0
         yin(3+4*(i-1)) = 1.d0
         yin(4+4*(i-1)) = 1.d0
-520  end do
+    end do
 !     --------------------------------------------
 !     --- COORDONNEES INTRINSEQUES DE L'EXA20 ----
 !     --------------------------------------------
-    do 530 i = 9, 12
+    do i = 9, 12
         zin(i) = -1.d0
         zin(4+i) = 0.d0
         zin(8+i) = 1.d0
-530  end do
+    end do
     xin(9) = 0.d0
     xin(10) = 1.d0
     xin(11) = 0.d0
@@ -220,7 +221,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     call gausch(npgi, zr(icopg), zr(icopg+npg), zr(icopg+npg+npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES ET SECONDES
 !                 AU POINT DE GAUSS
-    do 100 i = 1, npg
+    do i = 1, npg
         xg = zr(icopg+i-1)
         yg = zr(icopg+i-1+npg)
         zg = zr(icopg+i-1+npg+npg)
@@ -240,7 +241,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
                     zr(idsdx2+(i-1)*nno1), zr( idsdy2+(i-1)*nno1), zr(idsdz2+(i-1)*nno1),&
                     zr(idsxy2+(i-1)* nno1), zr(idsxz2+(i-1)*nno1), zr(idsyz2+(i-1)*nno1), ider)
 !
-100  end do
+    end do
 !     --------------------------------------------
 !     --- DEUXIEME FAMILLE DE POINTS DE GAUSS ----
 !     --- MATRICE DE MASSE : POUTRE           ----
@@ -259,7 +260,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     npgi(3) = npg1(2,2)
     call gausch(npgi, zr(icopg), zr(icopg + npg), zr(icopg + npg + npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
-    do 200 i = 1, npg
+    do i = 1, npg
         xg = zr(icopg+i-1)
         yg = zr(icopg+i-1+npg)
         zg = zr(icopg+i-1+npg+npg)
@@ -277,7 +278,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
                     bid, bid, bid, bid, bid,&
                     ider)
 !
-200  continue
+    end do
 !     --------------------------------------------
 !     --- TROISIEME FAMILLE DE POINTS DE GAUSS ---
 !     --- MATRICE DE MASSE : FLUIDE / FLUIDE   ---
@@ -299,7 +300,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     npgi(3) = npg2(1,2)
     call gausch(npgi, zr(icopg), zr(icopg + npg), zr(icopg + npg + npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
-    do 300 i = 1, npg
+    do i = 1, npg
         xg = zr(icopg+i-1)
         yg = zr(icopg+i-1+npg)
         zg = zr(icopg+i-1+npg+npg)
@@ -318,7 +319,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
                     bid, bid, bid, bid, bid,&
                     ider)
 !
-300  end do
+    end do
 !     --------------------------------------------
 !     --- QUATRIEME FAMILLE DE POINTS DE GAUSS ---
 !     --- MATRICE DE MASSE : SOLIDE / FLUIDE  ----
@@ -341,7 +342,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     npgi(3) = npg2(2,2)
     call gausch(npgi, zr(icopg), zr(icopg + npg), zr(icopg + npg + npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
-    do 400 i = 1, npg
+    do i = 1, npg
         xg = zr(icopg+i-1)
         yg = zr(icopg+i-1+npg)
         zg = zr(icopg+i-1+npg+npg)
@@ -366,11 +367,11 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
                     bid, bid, bid, bid, bid,&
                     ider)
 !
-400  continue
+    end do
 !
     call jedetr('&&JNI014.FFT')
 !
-9998  continue
+9998 continue
 !
 !
 end subroutine

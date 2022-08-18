@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ffgra1(nbfonc, idebit, nbp1, nbp2, long,&
                   disc, vale)
     implicit none
@@ -113,18 +113,18 @@ subroutine ffgra1(nbfonc, idebit, nbp1, nbp2, long,&
 !
     dx = 1.d-2
     x = dx
-    do 10 itron = 1, nbtron
+    do itron = 1, nbtron
         disc(ideb(itron)) = xdeb(itron)
-        do 11 ip = ideb(itron)+1, ifin(itron)
+        do ip = ideb(itron)+1, ifin(itron)
             disc(ip) = x
             x = x + dx
-11      continue
-10  end do
+        end do
+    end do
     disc(nbp1) = long
 !
-    do 20 ip = nbp1+1, nbp
+    do ip = nbp1+1, nbp
         disc(ip) = disc(ip-nbp1) + long
-20  end do
+    end do
 !
 ! --- 2.VALEURS DES FONCTIONS
 !
@@ -132,65 +132,65 @@ subroutine ffgra1(nbfonc, idebit, nbp1, nbp2, long,&
 !
     if (idebit .eq. 180) then
 !
-        do 30 imod = 1, nbmod
-            do 31 itron = 1, nbtron
+        do imod = 1, nbmod
+            do itron = 1, nbtron
                 lambda = coef18(15*(imod-1)+5*(itron-1)+1)
                 coef1 = coef18(15*(imod-1)+5*(itron-1)+2)
                 coef2 = coef18(15*(imod-1)+5*(itron-1)+3)
                 coef3 = coef18(15*(imod-1)+5*(itron-1)+4)
                 coef4 = coef18(15*(imod-1)+5*(itron-1)+5)
                 xref = x0(itron)
-                do 32 ip = ideb(itron), ifin(itron)
+                do ip = ideb(itron), ifin(itron)
                     x = lambda*(disc(ip)-xref)
                     vale(ip,imod) = coef1*dble(&
                                     cos(x)) + coef2*dble( sin(x)) + coef3*dble(cosh(x)) + coef4*d&
                                     &ble(sinh(x)&
                                     )
                     vale(ip+nbp1,imod+nbmod) = vale(ip,imod)
-32              continue
-31          continue
+                end do
+            end do
             x = lambda*(disc(nbp1)-xref)
             vale(nbp1,imod) = coef1*dble(&
                               cos(x)) + coef2*dble(sin(x)) + coef3*dble(cosh(x)) + coef4*dble(sin&
                               &h(x)&
                               )
             vale(nbp,imod+nbmod) = vale(nbp1,imod)
-30      continue
+        end do
 !
     else
 !
-        do 40 imod = 1, nbmod
-            do 41 itron = 1, nbtron
+        do imod = 1, nbmod
+            do itron = 1, nbtron
                 lambda = coef30(15*(imod-1)+5*(itron-1)+1)
                 coef1 = coef30(15*(imod-1)+5*(itron-1)+2)
                 coef2 = coef30(15*(imod-1)+5*(itron-1)+3)
                 coef3 = coef30(15*(imod-1)+5*(itron-1)+4)
                 coef4 = coef30(15*(imod-1)+5*(itron-1)+5)
                 xref = x0(itron)
-                do 42 ip = ideb(itron), ifin(itron)
+                do ip = ideb(itron), ifin(itron)
                     x = lambda*(disc(ip)-xref)
                     vale(ip,imod) = coef1*dble(&
                                     cos(x)) + coef2*dble( sin(x)) + coef3*dble(cosh(x)) + coef4*d&
                                     &ble(sinh(x)&
                                     )
                     vale(ip+nbp1,imod+nbmod) = vale(ip,imod)
-42              continue
-41          continue
+                end do
+            end do
             x = lambda*(disc(nbp1)-xref)
             vale(nbp1,imod) = coef1*dble(&
                               cos(x)) + coef2*dble(sin(x)) + coef3*dble(cosh(x)) + coef4*dble(sin&
                               &h(x)&
                               )
             vale(nbp,imod+nbmod) = vale(nbp1,imod)
-40      continue
+        end do
 !
     endif
 !
-    do 50 imod = 1, nbmod
-        do 51 ip = 1, nbp1
+    do imod = 1, nbmod
+        do ip = 1, nbp1
             vale(ip+nbp1,imod) = 0.d0
             vale(ip,imod+nbmod) = 0.d0
-51      continue
-50  end do
+        end do
+    end do
 !
 end subroutine

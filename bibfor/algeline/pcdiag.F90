@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pcdiag(n, icpl, icpc, icpd)
 !  CALCULE LE POINTEUT ICPD=ADRESSE DANS CA DU DERNIER COEFF
 !  DE L (DIAGONALE A PART)
@@ -28,18 +28,18 @@ subroutine pcdiag(n, icpl, icpc, icpd)
     integer :: i, k, k1, k2
 !-----------------------------------------------------------------------
     k1 = 1
-    do 30 i = 1, n
+    do i = 1, n
         k2 = icpl(i)
         icpd(i) = k1 - 1
-        do 10 k = k1, k2
+        do k = k1, k2
             if (icpc(k) .lt. i) then
                 icpd(i) = k
             else
                 goto 20
             endif
-10      continue
-20      continue
+        end do
+ 20     continue
         k1 = k2 + 1
-30  end do
+    end do
 !
 end subroutine

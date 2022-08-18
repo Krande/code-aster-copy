@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdmd(x0pg, pn, pm, d)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LA
@@ -41,25 +41,25 @@ subroutine gdmd(x0pg, pn, pm, d)
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
-    do 2 j = 1, 9
-        do 1 i = 1, 9
+    do j = 1, 9
+        do i = 1, 9
             d(i,j) = zero
- 1      end do
- 2  end do
+        end do
+    end do
     call antisy(pn, un, pntild)
     call antisy(pm, un, pmtild)
-    do 6 i = 1, 3
-        do 5 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             d(i,6+j) = -pntild(i,j)
             d(3+i,6+j) = -pmtild(i,j)
             d(6+i, j) = pntild(i,j)
- 5      end do
- 6  end do
+        end do
+    end do
     scal=ddot(3,pn,1,x0pg,1)
-    do 10 j = 1, 3
-        do 9 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             d(6+i,6+j) = pn(i) * x0pg(j)
- 9      end do
+        end do
         d(6+j,6+j) = d(6+j,6+j) - scal
-10  end do
+    end do
 end subroutine

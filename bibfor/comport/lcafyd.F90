@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
                   nmat, mod, nvi, vind, vinf,&
                   sigd, nr, yd, bnews, mtrac)
     implicit none
-
-
+!
+!
 !     CHOIX DES VALEURS DE VIND A AFFECTER A YD
 !     CAS PARTICULIER DU  MONOCRISTAL  :
 !     ON GARDE 1 VARIABLE INTERNE PAR SYSTEME DE GLISSEMENT SUR 3
@@ -45,15 +45,15 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !         MTRAC   :  GESTION MECANISMES TRACTION POUR HUJEUX (BIS)
 !     ----------------------------------------------------------------
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/hujayd.h"
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/Behaviour_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-
+!
     integer :: ndt, nvi, nmat, ndi, ns, i, nbcomm(nmat, 3), nr
     real(kind=8) :: yd(*), materd(nmat, 2), materf(nmat, 2), vind(*)
     real(kind=8) :: id(3, 3), hookf(6, 6), dkooh(6, 6), epsegl(6), fe(3, 3)
@@ -86,9 +86,9 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
 !           UNE SEULE FAMILLE
             ASSERT(nbcomm(nmat, 2).eq.1)
-            do 102 i = 1, ns
+            do i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+1)
-102         continue
+            end do
             necoul=cpmono(3)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 irr=1
@@ -100,9 +100,9 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
             endif
         else
 !           AUTRES COMPORTEMENTS MONOCRISTALLINS
-            do 103 i = 1, ns
+            do i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+2)
-103         continue
+            end do
         endif
 !
 !

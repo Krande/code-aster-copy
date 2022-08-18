@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine folocx(vale, n, x, prolgd, i,&
                   epsi, coli, ier)
     implicit none
@@ -58,7 +58,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
     if (n .lt. 1) then
         ier = 10
         call utmess('E', 'FONCT0_18')
-        goto 9999
+        goto 999
     else if (n.eq.1) then
 !             ON A X = VALE(1) + EPSILON
 !             ON A : X < VALE(1) ET PROL GAUCHE AUTORISE
@@ -75,7 +75,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             ier = 30
             call utmess('E', 'FONCT0_23')
         endif
-        goto 9999
+        goto 999
     endif
 !
 !     --- PROLONGEMENT A GAUCHE ---
@@ -85,13 +85,13 @@ subroutine folocx(vale, n, x, prolgd, i,&
             tole = epsi * abs( vale(1) - vale(2) )
             if (abs(vale(1)-x) .le. tole) then
                 coli = 'C'
-                goto 9999
+                goto 999
             endif
             ier = 30
             valr (1) = x
             valr (2) = vale(1)
             call utmess('E', 'FONCT0_19', nr=2, valr=valr)
-            goto 9999
+            goto 999
         else if (prolgd(1:1) .eq. 'L') then
             coli = 'E'
         else if (prolgd(1:1) .eq. 'C') then
@@ -101,7 +101,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
         else
             ier = 20
             call utmess('E', 'FONCT0_21', sk=prolgd(1:1))
-            goto 9999
+            goto 999
         endif
 !
 !     --- PROLONGEMENT A DROITE ---
@@ -111,13 +111,13 @@ subroutine folocx(vale, n, x, prolgd, i,&
             tole = epsi * abs( vale(n) - vale(n-1) )
             if (abs(vale(n)-x) .le. tole) then
                 coli = 'C'
-                goto 9999
+                goto 999
             endif
             ier = 40
             valr (1) = x
             valr (2) = vale(n)
             call utmess('E', 'FONCT0_20', nr=2, valr=valr)
-            goto 9999
+            goto 999
         else if (prolgd(2:2) .eq. 'C') then
             coli = 'C'
         else if (prolgd(2:2) .eq. 'I') then
@@ -128,7 +128,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
         else
             ier = 20
             call utmess('E', 'FONCT0_21', sk=prolgd(2:2))
-            goto 9999
+            goto 999
         endif
 !
 !     --- RECHERCHE DE LA VALEUR PAR DICHOTOMIE ---
@@ -141,7 +141,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             id = 1
             ie = i
         endif
-        do 2 j = 1, n
+        do j = 1, n
             if (ie .eq. (id+1)) goto 3
             ind = id+(ie-id)/2
             if (x .ge. vale(ind)) then
@@ -149,13 +149,13 @@ subroutine folocx(vale, n, x, prolgd, i,&
             else
                 ie = ind
             endif
- 2      continue
- 3      continue
+        end do
+  3     continue
         i = id
         coli = 'I'
     endif
     ASSERT(i.ge.1 .and. i.le.n)
 !
-9999  continue
+999 continue
 !
 end subroutine

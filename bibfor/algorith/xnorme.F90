@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
                   nunob, nunoc, jcoor, coorg)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
 #include "blas/ddot.h"
+!
     integer :: iptbor(2), nbfacb, jcoor
     integer :: nunoa, nunob, nunoc, indipt
     real(kind=8) :: vectn(12), coorg(3)
@@ -55,13 +55,13 @@ subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
     call jemarq()
 !
 !     CALCUL DE LA NORMALE
-    do 240 k = 1, 3
+    do k = 1, 3
 !       A,B ET C SONT DES NOEUDS DE LA FACE
         ab(k)=zr(jcoor-1+3*(nunob-1)+k)-zr(jcoor-1+3*(nunoa-1)+k)
         ac(k)=zr(jcoor-1+3*(nunoc-1)+k)-zr(jcoor-1+3*(nunoa-1)+k)
 !       G EST LE CENTRE DE GRAVITE DE LA MAILLE
         ag(k)=coorg(k)-zr(jcoor-1+3*(nunoa-1)+k)
-240  end do
+    end do
 !
     call provec(ab, ac, normal)
 !

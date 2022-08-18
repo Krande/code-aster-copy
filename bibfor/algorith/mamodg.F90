@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
                   itzsto, iprsto, iadirg, nbmo, max,&
                   may, maz, nbloc)
@@ -38,6 +38,8 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !             NORMAUX
 !---------------------------------------------------------------------
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
@@ -51,14 +53,12 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto
-    integer ::  iprsto,   imatz
-    integer ::  irang, jrang, i, j, iblo, ldblo,   iadirg
-    integer :: iblodi,  nbloc, n1bloc, n2bloc, nbmo, nn
+    integer :: iprsto, imatz
+    integer :: irang, jrang, i, j, iblo, ldblo, iadirg
+    integer :: iblodi, nbloc, n1bloc, n2bloc, nbmo, nn
     integer :: ifm, niv, iret1, hc
     real(kind=8) :: mij, rx, ry, rz
     character(len=2) :: model
@@ -122,7 +122,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
         n2bloc=smde(1)
 !
 !
-        do 10 i = n1bloc, n2bloc
+        do i = n1bloc, n2bloc
             if (i .gt. nbmo) goto 10
             if (repon(1:3) .eq. 'NON') then
                 if (indic(i) .ne. 1) goto 10
@@ -149,7 +149,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
             hc = smdi(i)
             if (i .gt. 1) hc = hc - smdi(i-1)
 !
-            do 30 j = (i-hc+1), i
+            do j = (i-hc+1), i
 !
 !----------------------------------------------------------------
 ! ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE
@@ -171,7 +171,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
                 else
                     mij = rx+ry
                 endif
-50              continue
+ 50             continue
                 if (repon(1:3) .eq. 'NON') then
                     if (indic(j) .ne. 1) mij=0.d0
                 endif
@@ -200,8 +200,9 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
                         write(ifm,350) irang,jrang,mij
                     endif
                 endif
-30          continue
-10      continue
+            end do
+ 10         continue
+        end do
     end do
 !
     350 format(18x,'M',2 i 4,1x,'=',1x, d 12.5)

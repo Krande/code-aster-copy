@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipere(npg, a, tau, nsol, eta)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -59,7 +59,7 @@ subroutine pipere(npg, a, tau, nsol, eta)
 !
 ! -- CONSTRUCTION DES INTERVALLES IG PAR RECURRENCE
 !
-    do 10 g = 1, npg
+    do g = 1, npg
 !
 !      LA PENTE DE LA DROITE CONSIDEREE EST NULLE
         if (abs(a(1,g)) .le. abs(tau - a(0,g))/infini) then
@@ -90,7 +90,7 @@ subroutine pipere(npg, a, tau, nsol, eta)
             endif
 !
         endif
-10  end do
+    end do
 !
 !
 ! -- TRAITEMENT DU NOMBRE DE SOLUTION
@@ -106,16 +106,16 @@ subroutine pipere(npg, a, tau, nsol, eta)
     else
         nsol = 2
     endif
-    goto 9999
+    goto 999
 !
 !
 ! -- CONSTRUCTION D'UNE ESTIMATION QUAND L'INTERVALLE EST VIDE
 !
-1000  continue
+1000 continue
     nsol = 0
     if (eta(1) .eq. -infini) eta(1) = eta(2)
     if (eta(1) .eq. infini) eta(1) = 0.d0
 !
 !
-9999  continue
+999 continue
 end subroutine

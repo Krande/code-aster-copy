@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
                   parame, derive, nbmat, materf, sig3,&
                   detadg, dgdl, dsdsip)
-    implicit      none
+    implicit none
 #include "asterfort/cadldp.h"
     integer :: nbmat
     real(kind=8) :: se(6), dg, etap, dsdsip(6)
@@ -51,20 +51,20 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
 ! ======================================================================
 ! --- CALCUL DU VECTEUR UNITE -----------------------------------------
 ! =====================================================================
-    do 91 ii = 1, 6
+    do ii = 1, 6
         dsdsip(ii) = 0.0d0
-91  end do
+    end do
     mu = materf(4,1)
     k = materf(5,1)
-    do 150 ii = 1, ndi
+    do ii = 1, ndi
         seb(ii) = se(ii)
-150  end do
-    do 140 ii = ndi+1, ndt
+    end do
+    do ii = ndi+1, ndt
         seb(ii) = se(ii) / sqrt(deux)
-140  end do
-    do 145 ii = ndt+1, 6
+    end do
+    do ii = ndt+1, 6
         seb(ii) = 0.0d0
-145  end do
+    end do
 ! ======================================================================
 ! --- CALCUL DE DDLAMBDA/DSIP ------------------------------------------
 ! ======================================================================
@@ -76,8 +76,8 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
     dsdsip(1:ndt) = param1 * seb(1:ndt)
 ! ======================================================================
     param1 = 1.0d0-trois*k*dldsip*(detadg*dgdl*dg/(etap+1.0d0)+etap)
-    do 90 ii = 1, ndi
+    do ii = 1, ndi
         dsdsip(ii) = dsdsip(ii)+param1
-90  end do
+    end do
 ! ======================================================================
 end subroutine

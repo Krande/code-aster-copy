@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                   lcrpa, vi, vr, vc, vk,&
                   lprec, lcrit, iret)
@@ -24,6 +24,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -33,8 +35,6 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: npacri, vi(*), iret
     real(kind=8) :: vr(*), lprec(*)
@@ -113,31 +113,32 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
-    do 10 i = 1, npacri
+    do i = 1, npacri
         inpar = lipacr(i)
-        do 12 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) goto 10
- 12     continue
+        end do
         iret = 10
-        goto 9999
- 10 end do
+        goto 999
+ 10     continue
+    end do
 !
     nbpu = nblign
     AS_ALLOCATE(vi=numero, size=nbpu)
-    do 18 i = 1, nbpu
+    do i = 1, nbpu
         numero(i) = i
- 18 end do
+    end do
 !
     ki = 0
     kr = 0
     kc = 0
     kk = 0
-    do 20 i = 1, npacri
+    do i = 1, npacri
         itrouv = 0
         inpar = lipacr(i)
         rela = lcrpa(i)
-        do 22 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
                 type = tblp(1+4*(j-1)+1)
@@ -146,30 +147,30 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                 call jeveuo(nomjv, 'L', jvale)
                 call jeveuo(nomjvl, 'L', jvall)
                 if (rela .eq. 'VIDE') then
-                    do 50 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) then
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 50                 continue
+                    end do
                     goto 24
                 else if (rela .eq. 'NON_VIDE') then
-                    do 51 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 1) then
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 51                 continue
+                    end do
                     goto 24
                 else if (rela .eq. 'MAXI') then
                     itrou2 = 0
                     if (type(1:1) .eq. 'I') then
                         imax = -ismaem()
-                        do 52 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 52
@@ -177,10 +178,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 imax = zi(jvale+n-1)
                                 itrou2 = n
                             endif
- 52                     continue
+ 52                         continue
+                        end do
                     else if (type(1:1) .eq. 'R') then
                         rmax = -r8maem()
-                        do 53 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 53
@@ -188,7 +190,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 rmax = zr(jvale+n-1)
                                 itrou2 = n
                             endif
- 53                     continue
+ 53                         continue
+                        end do
                     endif
                     if (itrou2 .ne. 0) then
                         itrouv = itrouv + 1
@@ -199,7 +202,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                     itrou2 = 0
                     if (type(1:1) .eq. 'I') then
                         imax = -ismaem()
-                        do 54 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 54
@@ -207,10 +210,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 imax = abs(zi(jvale+n-1))
                                 itrou2 = n
                             endif
- 54                     continue
+ 54                         continue
+                        end do
                     else if (type(1:1) .eq. 'R') then
                         rmax = -r8maem()
-                        do 55 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 55
@@ -218,10 +222,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 rmax = abs(zr(jvale+n-1))
                                 itrou2 = n
                             endif
- 55                     continue
+ 55                         continue
+                        end do
                     else if (type(1:1) .eq. 'C') then
                         cmax = dcmplx( -1.d-50 , -1.d-50 )
-                        do 60 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 60
@@ -229,7 +234,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 cmax = zc(jvale+n-1)
                                 itrou2 = n
                             endif
- 60                     continue
+ 60                         continue
+                        end do
                     endif
                     if (itrou2 .ne. 0) then
                         itrouv = itrouv + 1
@@ -240,7 +246,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                     itrou2 = 0
                     if (type(1:1) .eq. 'I') then
                         imin = ismaem()
-                        do 56 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 56
@@ -248,10 +254,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 imin = zi(jvale+n-1)
                                 itrou2 = n
                             endif
- 56                     continue
+ 56                         continue
+                        end do
                     else if (type(1:1) .eq. 'R') then
                         rmin = r8maem()
-                        do 57 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 57
@@ -259,7 +266,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 rmin = zr(jvale+n-1)
                                 itrou2 = n
                             endif
- 57                     continue
+ 57                         continue
+                        end do
                     endif
                     if (itrou2 .ne. 0) then
                         itrouv = itrouv + 1
@@ -270,7 +278,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                     itrou2 = 0
                     if (type(1:1) .eq. 'I') then
                         imin = ismaem()
-                        do 58 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 58
@@ -278,10 +286,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 imin = abs(zi(jvale+n-1))
                                 itrou2 = n
                             endif
- 58                     continue
+ 58                         continue
+                        end do
                     else if (type(1:1) .eq. 'R') then
                         rmin = r8maem()
-                        do 59 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 59
@@ -289,10 +298,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 rmin = abs(zr(jvale+n-1))
                                 itrou2 = n
                             endif
- 59                     continue
+ 59                         continue
+                        end do
                     else if (type(1:1) .eq. 'C') then
                         cmin = dcmplx ( +1.d+50 , +1.d+50 )
-                        do 61 k = 1, nbpu
+                        do k = 1, nbpu
                             n = numero(k)
                             numero(k) = 0
                             if (zi(jvall+n-1) .eq. 0) goto 61
@@ -300,7 +310,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 cmin = zc(jvale+n-1)
                                 itrou2 = n
                             endif
- 61                     continue
+ 61                         continue
+                        end do
                     endif
                     if (itrou2 .ne. 0) then
                         itrouv = itrouv + 1
@@ -310,7 +321,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                 endif
                 if (type(1:1) .eq. 'I') then
                     ki = ki + 1
-                    do 30 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 30
@@ -345,13 +356,14 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 30                 continue
+ 30                     continue
+                    end do
                     goto 24
                 else if (type(1:1) .eq. 'R') then
                     kr = kr + 1
                     prec = lprec(kr)
                     crit = lcrit(kr)
-                    do 31 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 31
@@ -394,11 +406,12 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 31                 continue
+ 31                     continue
+                    end do
                     goto 24
                 else if (type(1:1) .eq. 'C') then
                     kc = kc + 1
-                    do 32 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 32
@@ -413,11 +426,12 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 32                 continue
+ 32                     continue
+                    end do
                     goto 24
                 else if (type(1:3) .eq. 'K80') then
                     kk = kk + 1
-                    do 33 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 33
@@ -432,11 +446,12 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 33                 continue
+ 33                     continue
+                    end do
                     goto 24
                 else if (type(1:3) .eq. 'K32') then
                     kk = kk + 1
-                    do 34 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 34
@@ -451,11 +466,12 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 34                 continue
+ 34                     continue
+                    end do
                     goto 24
                 else if (type(1:3) .eq. 'K24') then
                     kk = kk + 1
-                    do 35 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 35
@@ -470,11 +486,12 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 35                 continue
+ 35                     continue
+                    end do
                     goto 24
                 else if (type(1:3) .eq. 'K16') then
                     kk = kk + 1
-                    do 36 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 36
@@ -489,11 +506,12 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 36                 continue
+ 36                     continue
+                    end do
                     goto 24
                 else if (type(1:2) .eq. 'K8') then
                     kk = kk + 1
-                    do 37 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 37
@@ -508,27 +526,28 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                                 numero(itrouv) = n
                             endif
                         endif
- 37                 continue
+ 37                     continue
+                    end do
                     goto 24
                 endif
             endif
- 22     continue
+        end do
  24     continue
         if (itrouv .eq. 0) then
             iret = 20
-            goto 9999
+            goto 999
         endif
         nbpu = itrouv
- 20 end do
+    end do
 !
 !     --- ON RECUPERE LES PARAMETRES ET LEURS TYPES  ---
 !
     AS_ALLOCATE(vk8=type_r, size=nbpara)
     AS_ALLOCATE(vk24=para_r, size=nbpara)
-    do 38 i = 1, nbpara
+    do i = 1, nbpara
         para_r(i) = tblp(1+4*(i-1))
         type_r(i) = tblp(1+4*(i-1)+1)
- 38 end do
+    end do
 !
 !     --- CREATION DE LA TABLE ---
 !
@@ -538,14 +557,14 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
     AS_ALLOCATE(vr=vale_r, size=nbpara)
     AS_ALLOCATE(vc=vale_c, size=nbpara)
     AS_ALLOCATE(vk80=vale_k, size=nbpara)
-    do 40 k = 1, nbpu
+    do k = 1, nbpu
         ki = 0
         kr = 0
         kc = 0
         kk = 0
         n = numero(k)
         nbp = 0
-        do 42 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = tblp(1+4*(j-1) )
             type = tblp(1+4*(j-1)+1)
             nomjv = tblp(1+4*(j-1)+2)
@@ -580,13 +599,15 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                 kk = kk + 1
                 vale_k(kk) = zk8(jvale+n-1)
             endif
- 42     continue
+ 42         continue
+        end do
         if (nbp .eq. 0) goto 40
         call tbajli(tabout, nbp, para_r, vale_i, vale_r,&
                     vale_c, vale_k, 0)
- 40 end do
+ 40     continue
+    end do
 !
-9999 continue
+999 continue
     AS_DEALLOCATE(vi=numero)
     AS_DEALLOCATE(vk8=type_r)
     AS_DEALLOCATE(vk24=para_r)

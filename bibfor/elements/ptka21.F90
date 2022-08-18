@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ptka21(sk, e, a, xl, xiy,&
                   xiz, xjx, xig, g, alfay,&
                   alfaz, ey, ez)
@@ -82,13 +82,13 @@ subroutine ptka21(sk, e, a, xl, xiy,&
     parameter (zero=0.d0)
     data ip/0,1,3,6,10,15,21,28,36,45,55,66,78,91/
 ! ---------------------------------------------------------------------
-    do 1,i = 1,105
-    sk(i) = zero
-    1 end do
+    do i = 1, 105
+        sk(i) = zero
+    end do
 !
 !     -- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
-        if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
+        if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
     endif
 !
@@ -152,5 +152,5 @@ subroutine ptka21(sk, e, a, xl, xiy,&
 !     -----------------------------------------------------------------
     call pouex7(sk(1), ey, ez)
 !
-9999  continue
+999 continue
 end subroutine

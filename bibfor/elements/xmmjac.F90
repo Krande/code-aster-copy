@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmjac(alias, geom, dff, jac)
 !
 !
@@ -59,36 +59,36 @@ subroutine xmmjac(alias, geom, dff, jac)
     dzdk = 0.d0
 !
     if (alias(1:5) .eq. 'SE2') then
-        do 10 i = 1, 2
+        do i = 1, 2
             dxds = dxds + geom(2*(i-1)+1)*dff(1,i)
             dyds = dyds + geom(2*(i-1)+2)*dff(1,i)
-10      continue
+        end do
         jac = sqrt(dxds**2+dyds**2+dzds**2)
     else if (alias(1:5).eq.'SE3') then
-        do 20 i = 1, 3
+        do i = 1, 3
             dxds = dxds + geom(2*(i-1)+1)*dff(1,i)
             dyds = dyds + geom(2*(i-1)+2)*dff(1,i)
-20      continue
+        end do
         jac = sqrt(dxds**2+dyds**2+dzds**2)
     else if (alias(1:5).eq.'TR3') then
-        do 30 i = 1, 3
+        do i = 1, 3
             dxde = dxde + geom(3*i-2)*dff(1,i)
             dxdk = dxdk + geom(3*i-2)*dff(2,i)
             dyde = dyde + geom(3*i-1)*dff(1,i)
             dydk = dydk + geom(3*i-1)*dff(2,i)
             dzde = dzde + geom(3*i)*dff(1,i)
             dzdk = dzdk + geom(3*i)*dff(2,i)
-30      continue
+        end do
         jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
     else if (alias(1:5).eq.'TR6') then
-        do 40 i = 1, 6
+        do i = 1, 6
             dxde = dxde + geom(3*i-2)*dff(1,i)
             dxdk = dxdk + geom(3*i-2)*dff(2,i)
             dyde = dyde + geom(3*i-1)*dff(1,i)
             dydk = dydk + geom(3*i-1)*dff(2,i)
             dzde = dzde + geom(3*i)*dff(1,i)
             dzdk = dzdk + geom(3*i)*dff(2,i)
-40      continue
+        end do
         jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
     else
         ASSERT(.false.)

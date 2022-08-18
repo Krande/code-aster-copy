@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc32ma()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/getvid.h"
-#include "asterfort/rccome.h"
-#include "asterfort/utmess.h"
 #include "asterc/getfac.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/rcvale.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     TRAITEMENT DU CHAM_MATER
 !     PAS DE MATERIAU FONCTION DU TEMPS
@@ -87,9 +87,9 @@ subroutine rc32ma()
     call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
                 3, nocmp(5), para(5), icodre, 2)
 !
-    do 12 i = 1, 7
+    do i = 1, 7
         zr(jvala-1+i) = para(i)
-12  continue
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
                   maxord, resuin, resuou, lacalc)
     implicit none
 !     --- ARGUMENTS ---
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
+!
     integer :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord
@@ -96,7 +96,7 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
         call jeveuo(noliin, 'L', jlnoin)
         curmax = maxord
         curmin = minord
-        do 10 iter = inddeb, indfin
+        do iter = inddeb, indfin
             call jeveuo(zk24(jlnoin+iter-1), 'L', jordo2)
 !
             if (zk8(jlidep+iter-1) .eq. 'NP1') then
@@ -111,11 +111,11 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
 !         ELLE EST DONC CROISSANTE
             curmax = min(curmax,zi(jordo2+2)+decal)
             curmin = max(curmin,zi(jordo2+1)+decal)
- 10     continue
+        end do
 !
         exitor = .true.
         if (zi(jacalc+nuoplo-1) .eq. 1) then
-            do 30 iordr = 1, nbordr
+            do iordr = 1, nbordr
                 numord = zi(jordr-1+iordr)
                 if ((isodep.eq.'-') .and. (numord.eq.minord)) then
                     goto 30
@@ -137,15 +137,16 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
                         exitor = .false.
                     endif
                 endif
- 30         continue
+ 30             continue
+            end do
         endif
 !
  40     continue
 !
         if (exitor) then
-            do 50 iter = inddeb, indfin
+            do iter = inddeb, indfin
                 zi(jacalc+iter-1) = 0
- 50         continue
+            end do
         endif
     endif
 !

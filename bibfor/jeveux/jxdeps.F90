@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxdeps(iadini, iadfin, lso)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !     DEPLACEMENT D'UNE ZONE MEMOIRE
@@ -47,23 +47,23 @@ subroutine jxdeps(iadini, iadfin, lso)
         jini = ( jk1zon + iadini - 1 ) / lois + 1
         jfin = ( jk1zon + iadfin - 1 ) / lois + 1
         if (jini .gt. jfin) then
-            do 20 i = 0, (lso / lois) - 1
+            do i = 0, (lso / lois) - 1
                 iszon( jfin + i ) = iszon( jini + i )
-20          continue
+            end do
         else if (jini .lt. jfin) then
-            do 21 i = (lso / lois) - 1, 0, -1
+            do i = (lso / lois) - 1, 0, -1
                 iszon( jfin + i ) = iszon( jini + i )
-21          continue
+            end do
         endif
     else
         if (iadini .gt. iadfin) then
-            do 30 i = 0, lso - 1
+            do i = 0, lso - 1
                 k1zon(jk1zon + iadfin + i) = k1zon(jk1zon + iadini + i)
-30          continue
+            end do
         else if (iadini .lt. iadfin) then
-            do 31 i = lso-1, 0, - 1
+            do i = lso-1, 0, - 1
                 k1zon(jk1zon + iadfin + i) = k1zon(jk1zon + iadini + i)
-31          continue
+            end do
         endif
     endif
 ! FIN ------------------------------------------------------------------

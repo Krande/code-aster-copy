@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
                   ivf, idfde, xyz, depl, nharm,&
                   eps1)
@@ -62,14 +62,14 @@ subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
     undemi = 0.5d0
     nbinco = ndim*nno
 !
-    do 10 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         eps1(i) = zero
-10  end do
+    end do
 !
 ! --- CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
@@ -81,22 +81,22 @@ subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
 ! ---      CALCUL DU VECTEUR DES COMPOSANTES DU TENSEUR DES
 ! ---      DEFORMATIONS AU POINT D'INTEGRATION COURANT
 !          -------------------------------------------
-        do 30 i = 1, nbsig
+        do i = 1, nbsig
 !
             s = zero
 !
-            do 40 j = 1, nbinco
+            do j = 1, nbinco
                 s = s + depl(j)*b((j-1)*nbsig+i)
-40          continue
+            end do
 !
             eps1(nbsig*(igau-1)+i) = s
-30      continue
+        end do
 !
-        do 50 i = 4, nbsig
+        do i = 4, nbsig
             eps1(nbsig*(igau-1)+i) = undemi*eps1(nbsig*(igau-1)+i)
-50      continue
+        end do
 !
-20  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

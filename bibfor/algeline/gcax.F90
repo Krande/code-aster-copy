@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gcax(m, in, ip, ac, x,&
                 y)
     implicit none
@@ -38,19 +38,19 @@ subroutine gcax(m, in, ip, ac, x,&
     integer :: i, j, kdeb, kfin, ki, klong
 !-----------------------------------------------------------------------
     y(1) = ac(1)*x(1)
-    do 10 i = 2, m
+    do i = 2, m
         kdeb = in(i-1)+1
         kfin = in(i)-1
         klong = in(i)
         dtemp = 0.0d0
-        do 30 j = kdeb, klong
+        do j = kdeb, klong
             dtemp = dtemp + x(ip(j))*ac(j)
-30      continue
+        end do
         y(i) = dtemp
         dtemp = x(i)
-        do 20 ki = kdeb, kfin
+        do ki = kdeb, kfin
             y(ip(ki)) = y(ip(ki)) + ac(ki)*dtemp
-20      continue
-10  end do
+        end do
+    end do
 !
 end subroutine

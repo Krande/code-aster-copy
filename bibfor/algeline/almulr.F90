@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine almulr(czero, table, nbval, mantis, expo)
     implicit none
     character(len=*) :: czero
@@ -52,7 +52,7 @@ subroutine almulr(czero, table, nbval, mantis, expo)
         expo = 0
     endif
 !
-    do 10 ival = 1, nbval
+    do ival = 1, nbval
         mantis = mantis*table(ival)
         if (abs(mantis) .ge. trent) then
             mantis = mantis*trent1
@@ -61,7 +61,7 @@ subroutine almulr(czero, table, nbval, mantis, expo)
             mantis = mantis*trent
             expo = expo - itrent
         endif
-10  end do
+    end do
 !
     if (mantis .ne. zero) then
         ie = nint(log10(abs(mantis)))

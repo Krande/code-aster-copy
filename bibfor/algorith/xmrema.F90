@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                   ifise, ds_contact, izone, alias, mmait,&
                   amait, nmait, statue, geom, nummin,&
@@ -23,9 +23,9 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                   t2min, ximin, yimin, projin, stamin,&
                   ifism)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -150,9 +150,9 @@ implicit none
     projin = .false.
     nummin = 0
     lappar = .false.
-    do 10 i = 1, 27
+    do i = 1, 27
         coorma(i)=0.d0
- 10 continue
+    end do
     dirapp = .false.
     ntmae = cfdisi(ds_contact%sdcont_defi,'NTMAE')
 !
@@ -237,7 +237,7 @@ implicit none
 !
 ! --- BOUCLE SUR LES MAILLES FISSURÉES
 !
-    do 100 ima = 1, ntmae
+    do ima = 1, ntmae
 !
 ! --- SI CE N'EST PAS LA BONNE ZONE, ON SORT
 !
@@ -347,7 +347,7 @@ implicit none
 !
 !               jeu est-il egal a jeumin ?
                 near = abs(jeu-jeumin) .le. (atol + jeumin*rtol)
-
+!
                 if (jeu .lt. jeumin .and. .not. near) then
                     nummin = nummai
                     ifamin = ifacem
@@ -364,7 +364,8 @@ implicit none
                 endif
             endif
         end do
-100 continue
+100     continue
+    end do
 !
     if (nummin .eq. 0 .and. (.not.lappar)) then
 !       DEUXIÈME CHANCE

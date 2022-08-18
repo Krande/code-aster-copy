@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coefra(ipas, ires, x, xsi0, ck)
 !   CALCUL DU COEFFICIENT DE RAIDEUR AJOUTEE CK EN FONCTION DE LA
 !   VITESSE REDUITE  (FAISCEAU DE TUBES SOUS ECOULEMENT TRANSVERSE)
@@ -88,13 +88,13 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
         nborck = zi(jborne-1+3)
         if (ipas1 .eq. ipas .and. ires1 .eq. ires) then
             k = 1
-            do 100 i = 1, nborck
+            do i = 1, nborck
                 bornck(i) = zr(jcoeff + i - 1)
-                do 110 j = 1, nckmax
+                do j = 1, nckmax
                     coefck(i,j) = zr(jcoeff + nborck + k - 1 )
                     k = k + 1
-110              continue
-100          continue
+                end do
+            end do
         else
             call jedetr(nom1)
             call jedetr(nom2)
@@ -120,7 +120,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                 ck = 0.d0
             else
                 if (x .lt. bornck(nborck)) then
-                    do 130 i = 2, nborck
+                    do i = 2, nborck
                         if (x .ge. bornck(i-1) .and. x .lt. bornck(i)) then
                             ck = coefck(i-1,1)/(x*x*x*x*x*x*x) + coefck(i-1,2)/(x*x*x*x*x*x) + co&
                                  &efck(i-1, 3)/(x*x*x*x*x) + coefck(i-1,4)/(x*x*x*x) + coefck(i-1&
@@ -129,8 +129,8 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                                  &,11)*(x*x*x)
                             goto 140
                         endif
-130                  continue
-140                  continue
+                    end do
+140                 continue
                 else
                     ck = coefck(nborck,1)/(x*x*x*x*x*x*x) + coefck( nborck,2)/(x*x*x*x*x*x) + coe&
                          &fck(nborck,3)/(x*x*x* x*x) + coefck(nborck,4)/(x*x*x*x) + coefck(nborck&
@@ -444,7 +444,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                 ck = 0.d0
             else
                 if (x .lt. bornck(nborck)) then
-                    do 150 i = 2, nborck
+                    do i = 2, nborck
                         if (x .ge. bornck(i-1) .and. x .lt. bornck(i)) then
                             ck = coefck(i-1,1)/(x*x*x*x*x*x*x) + coefck(i-1,2)/(x*x*x*x*x*x) + co&
                                  &efck(i-1, 3)/(x*x*x*x*x) + coefck(i-1,4)/(x*x*x*x) + coefck(i-1&
@@ -453,8 +453,8 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                                  &,11)*(x*x*x)
                             goto 160
                         endif
-150                  continue
-160                  continue
+                    end do
+160                 continue
                 else
                     ck = coefck(nborck,1)/(x*x*x*x*x*x*x) + coefck( nborck,2)/(x*x*x*x*x*x) + coe&
                          &fck(nborck,3)/(x*x*x* x*x) + coefck(nborck,4)/(x*x*x*x) + coefck(nborck&
@@ -546,6 +546,6 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 !
     ck = -ck
 !
-1000  continue
+1000 continue
     call jedema()
 end subroutine

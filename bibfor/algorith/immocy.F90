@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine immocy(nomres, ifm)
 !    P. RICHARD     DATE 14/03/91
 !-----------------------------------------------------------------------
@@ -124,28 +124,28 @@ subroutine immocy(nomres, ifm)
 !
     iad=0
 !
-    do 10 i = 1, nbdiam
+    do i = 1, nbdiam
         idiam=zi(lldiam+i-1)
         nbmobt=zi(lldiam+nbdiam+i-1)
         call utmess('I', 'ALGELINE6_98', si=idiam)
-        do 20 j = 1, nbmobt
+        do j = 1, nbmobt
             x1=zr(llfre+iad)
             call utmess('I', 'ALGELINE6_99', si=j, sr=x1)
             iam=(iad*nbddge)+llmoc
             xmodu=0.d0
-            do 30 k = 1, nbmod
+            do k = 1, nbmod
                 xmodu=xmodu+(abs(zc(iam+k-1)))**2
-30          continue
+            end do
             xmodu=xmodu
-            do 40 k = 1, nbmod
+            do k = 1, nbmod
                 xpar=100.d0*(abs(zc(iam+k-1))**2)/xmodu
                 call utmess('I', 'ALGELINE7_1', si=k, sr=xpar)
-40          continue
+            end do
             write(ifm,*) ' '
             iad=iad+1
-20      continue
+        end do
         write(ifm,*) ' '
-10  end do
+    end do
 !
     call jedema()
 end subroutine

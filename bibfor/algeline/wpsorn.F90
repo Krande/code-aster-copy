@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
                   nbvect, nfreq, tolsor, vect, resid,&
                   workd, workl, lonwl, selec, dsor,&
@@ -141,9 +141,9 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !------------------------------------------------------------------
-    do 10 i = 1, 11
+    do i = 1, 11
         iparam(i) = 0
- 10 end do
+    end do
 !
 ! INITIALISATION POUR ARPACK
 !
@@ -227,55 +227,55 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! 1/ CALCUL D'UN ELT. INITIAL X REPONDANT AU C.I. DE LAGRANGE
 ! 2/ CALCUL DE Y = (OP)* X AVEC DDL CINEMATIQUEMENT BLOQUES
 ! X <- X*DDL_LAGRANGE
-        do 25 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = 0.d0 * workd(ipntr(1)+j-1) * ddllag(j)
             vaux(j+nbeq) = workd(ipntr(1)+nbeq+j-1)*ddllag(j)
- 25     continue
+        end do
         call wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
                     ddlexc, vaux(1), vaux(nbeq+1), workd(ipntr(1)), workd(ipntr(1)+nbeq),&
                     zr(au1), zr(au2), zr(au3), zc(av), nbeq,&
                     solveu)
-        do 30 j = 1, nbeq
+        do j = 1, nbeq
             vaux(j) = workd(ipntr(1)+j-1) * ddlexc(j)
             vaux(j+nbeq) = workd(ipntr(1)+nbeq+j-1)*ddlexc(j)
- 30     continue
+        end do
         call wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
                     ddlexc, vaux(1), vaux(nbeq+1), workd(ipntr(1)), workd(ipntr(1)+nbeq),&
                     zr(au1), zr(au2), zr(au3), zc(av), nbeq,&
                     solveu)
 ! RETOUR VERS DNAUPD
-        do 40 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = workd(ipntr(1)+j-1) *ddlexc(j)
             workd(ipntr(2)+nbeq+j-1) = workd(ipntr(1)+nbeq+j-1)* ddlexc(j)
- 40     continue
+        end do
         goto 20
 !
     else if (ido .eq. 1) then
 ! CALCUL DU Y = (OP)*X CONNAISSANT DEJA (B)*X (EN FAIT ON CONNAIT
 ! SEULEMENT (ID)*X VIA IDO= 2 CAR PRODUIT SCALAIRE= L2)
 ! X <- (OP)*X
-        do 45 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(3)+j-1) = workd(ipntr(3)+j-1)*ddlexc(j)
             workd(ipntr(3)+nbeq+j-1) = workd(ipntr(3)+nbeq+j-1)* ddlexc(j)
- 45     continue
+        end do
         call wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
                     ddlexc, workd( ipntr(3)), workd(ipntr(3)+nbeq), vaux(1), vaux(nbeq+1),&
                     zr(au1), zr(au2), zr(au3), zc(av), nbeq,&
                     solveu)
 ! RETOUR VERS DNAUPD
-        do 50 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1) = vaux(j) * ddlexc(j)
             workd(ipntr(2)+nbeq+j-1) = vaux(j+nbeq) * ddlexc(j)
- 50     continue
+        end do
         goto 20
 !
     else if (ido .eq. 2) then
 ! X <- X*DDL_BLOQUE  (PRODUIT SCALAIRE= L2)
-        do 55 j = 1, nbeq
+        do j = 1, nbeq
             workd(ipntr(2)+j-1)=workd(ipntr(1)+j-1) * ddlexc(j)
             workd(ipntr(2)+nbeq+j-1)=workd(ipntr(1)+nbeq+j-1)* ddlexc(&
             j)
- 55     continue
+        end do
 ! RETOUR VERS DNAUPD
         goto 20
 !
@@ -330,37 +330,37 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 !       WRITE(IFM,*) 'IM: LANDAJ/ FJ INIT',DSOR(J,2)
 !  59  CONTINUE
 !
-    do 333 j = 1, nconv
+    do j = 1, nconv
         vpr(j) = dsor(j,1)
         vpi(j) = dsor(j,2)
-333 end do
+    end do
 !
 !      REMPLISSAGE DE VAUC AVEC VAUR
 !     DNEUPD SORT LES VECTEURS COMPLEXES PAR COLONNE
 !     PARTIE REELLE PUIS PARTIE IMAGINAIRE SANS LES CONJUGUES
 !
 !
-    do 340 j = 2, nconv, 2
-        do 341 i = 1, 2*nbeq
+    do j = 2, nconv, 2
+        do i = 1, 2*nbeq
             vaul(i,j/2)=dcmplx(vaur(i,j-1),vaur(i,j))
-341     continue
-340 end do
+        end do
+    end do
 !
 !
-    do 335 j = 2, nconv, 2
-        do 336 i = 1, 2*nbeq
+    do j = 2, nconv, 2
+        do i = 1, 2*nbeq
             vauc(i,j-1)=vaul(i,j/2)
             vauc(i,j)=dconjg(vaul(i,j/2))
-336     continue
-335 end do
+        end do
+    end do
 !*****************************************************************
 !
-    do 337 j = 1, nconv
-        do 338 i = 1, nbeq
+    do j = 1, nconv
+        do i = 1, nbeq
 !     --- REMPLISSAGE DU VECT PAR LA PARTIE BASSE DE VECTA
             vect(i,j)= vauc(i+nbeq,j)
-338     continue
-337 end do
+        end do
+    end do
 !
 !
 !     --- DESTRUCTION DES OJB TEMPORAIRES

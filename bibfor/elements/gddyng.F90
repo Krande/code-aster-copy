@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gddyng(kp, nno, en, x0sk, rmkm1,&
                   rmk, omkm1, ompkm1, omk, ompk,&
                   x0sec, rgmkm, rgmk, omgkm, ompgkm,&
@@ -59,7 +59,7 @@ subroutine gddyng(kp, nno, en, x0sk, rmkm1,&
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     zero = 0.d0
-    do 1 kc = 1, 3
+    do kc = 1, 3
         x0sec (kc) = zero
         rgmkm (kc) = zero
         rgmk(kc) = zero
@@ -67,9 +67,9 @@ subroutine gddyng(kp, nno, en, x0sk, rmkm1,&
         ompgkm (kc) = zero
         omgk (kc) = zero
         ompgk (kc) = zero
- 1  end do
-    do 12 kc = 1, 3
-        do 11 ne = 1, nno
+    end do
+    do kc = 1, 3
+        do ne = 1, nno
             x0sec (kc) = x0sec (kc) + en(ne,kp)*x0sk (kc,ne)
             rgmkm (kc) = rgmkm (kc) + en(ne,kp)*rmkm1 (kc,ne)
             rgmk (kc) = rgmk (kc) + en(ne,kp)*rmk (kc,ne)
@@ -77,6 +77,6 @@ subroutine gddyng(kp, nno, en, x0sk, rmkm1,&
             ompgkm (kc) = ompgkm (kc) + en(ne,kp)*ompkm1 (kc,ne)
             omgk (kc) = omgk (kc) + en(ne,kp)*omk (kc,ne)
             ompgk (kc) = ompgk (kc) + en(ne,kp)*ompk(kc,ne)
-11      end do
-12  end do
+        end do
+    end do
 end subroutine

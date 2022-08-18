@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tanmat(alpha, beta, gamma, k1, k2,&
                   dmax1, dmax2, dam1, dam2, curv,&
                   dcurv, tanma2)
 !
-    implicit  none
+    implicit none
 !
 !     EVALUE L ENDOMMAGEMENT ET LA MATRICE TANGENTE POUR LE MODELE
 !     DE COMPORTEMENT GLRC_DAMAGE
@@ -119,12 +119,12 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
     prp33(3,3) = cc - ss
 !
     if ((kappvp(1)*kappvn(1) .le. 0.d0) .or. (kappvp(2)*kappvn(2) .le. 0.d0)) then
-        do 20, j = 1,3
-        do 10, i = 1,3
-        cp(i,j) = tdm1rp(i,j) + tdm2rp(i,j)
-        cp2(i,j) = prp33(j,i)
-10      continue
-20      continue
+        do j = 1, 3
+            do i = 1, 3
+                cp(i,j) = tdm1rp(i,j) + tdm2rp(i,j)
+                cp2(i,j) = prp33(j,i)
+            end do
+        end do
 !
         cp3 = matmul(cp, prp33)
         tanmad = matmul(cp2, cp3)
@@ -168,27 +168,27 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
         prp33(2,3) = -cs
         prp33(3,3) = cc - ss
 !
-        do 31, j = 1,3
-        do 30, i = 1,3
-        cp2(i,j) = prp33(j,i)
-30      continue
-31      continue
+        do j = 1, 3
+            do i = 1, 3
+                cp2(i,j) = prp33(j,i)
+            end do
+        end do
 !
         cp3 = matmul(tanmrp, prp33)
         tanmtn = matmul(cp2, cp3)
 !
-        do 50, j = 1,3
-        do 40, i = 1,3
-        tanma2(i,j) = (tanmto(i,j)+tanmtn(i,j))/2.d0 + tanmad( i,j)
-40      continue
-50      continue
+        do j = 1, 3
+            do i = 1, 3
+                tanma2(i,j) = (tanmto(i,j)+tanmtn(i,j))/2.d0 + tanmad( i,j)
+            end do
+        end do
     else
-        do 70, j = 1,3
-        do 60, i = 1,3
-        cp(i,j) = tanmrp(i,j) + tdm1rp(i,j) + tdm2rp(i,j)
-        cp2(i,j) = prp33(j,i)
-60      continue
-70      continue
+        do j = 1, 3
+            do i = 1, 3
+                cp(i,j) = tanmrp(i,j) + tdm1rp(i,j) + tdm2rp(i,j)
+                cp2(i,j) = prp33(j,i)
+            end do
+        end do
 !
         cp3 = matmul(cp, prp33)
         tanma2 = matmul(cp2, cp3)

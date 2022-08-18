@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine velame(modele, charge, infcha, depmoz, vecelz)
     implicit none
 #include "asterf_types.h"
@@ -107,7 +107,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
 !     REACTUALISATION DE LA GEOMETRIE SI DEPMOI EXISTE
     if (depmoi .ne. ' ') then
         chgeo2 = '&&VELAME.CH_GEOMER'
-        call vtgpld('CUMU', 1.d0, chgeom,  depmoi, 'V',&
+        call vtgpld('CUMU', 1.d0, chgeom, depmoi, 'V',&
                     chgeo2)
     else
         chgeo2 = chgeom
@@ -126,7 +126,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         lchin(3) (1:17) = ligrch(1:13)//'.FL1'
-        do 10 j = 1, 99
+        do j = 1, 99
             call codent(j, 'D0', lchin(3) (18:19))
             lchin(3) = lchin(3) (1:19)//'.DESC'
             call exisd('CHAMP_GD', lchin(3), iret)
@@ -153,7 +153,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
             else
                 goto 20
             endif
- 10     continue
+        end do
  20     continue
 !
     end do

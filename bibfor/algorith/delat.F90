@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine delat(modgen, nbsst, nbmo)
     implicit none
 !
@@ -48,7 +48,7 @@ subroutine delat(modgen, nbsst, nbmo)
 ! NB DE MODES TOTAL
 !
     nbmo=0
-    do 1 isst = 1, nbsst
+    do isst = 1, nbsst
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
         macel=zk8(imacl)
         call jeveuo(macel//'.MAEL_REFE', 'L', ibamo)
@@ -56,13 +56,13 @@ subroutine delat(modgen, nbsst, nbmo)
                     cbid, ebid, 'ABSOLU', nbmodg, 1,&
                     nbid)
         nbmo=nbmo+nbmodg(1)
- 1  continue
+    end do
 !
 ! TABLEAU INDIQUANT LES MODES PROPRES
 !
     call wkvect('&&DELAT.INDIC', 'V V I', nbmo, idelat)
     icompt=0
-    do 2 isst = 1, nbsst
+    do isst = 1, nbsst
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
         macel=zk8(imacl)
 !
@@ -70,13 +70,14 @@ subroutine delat(modgen, nbsst, nbmo)
 !
 !       CALL JEVEUO(ZK24(IBAMO)(1:19)//'.TYPE','L',ITYPE)
         call jelira(zk24(ibamo)(1:19)//'.ORDR', 'LONUTI', nbtype)
-        do 3, ij=1,nbtype
-        icompt=icompt+1
-        call rsadpa(zk24(ibamo)(1:19), 'L', 1, 'TYPE_DEFO', ij,&
-                    0, sjv=jpara, styp=k8bid)
-        if (zk16(jpara)(1:8) .ne. 'PROPRE  ') goto 3
-        zi(idelat+icompt-1)=1
- 3      continue
- 2  continue
+        do ij = 1, nbtype
+            icompt=icompt+1
+            call rsadpa(zk24(ibamo)(1:19), 'L', 1, 'TYPE_DEFO', ij,&
+                        0, sjv=jpara, styp=k8bid)
+            if (zk16(jpara)(1:8) .ne. 'PROPRE  ') goto 3
+            zi(idelat+icompt-1)=1
+  3         continue
+        end do
+    end do
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine discrt(ff0, ff1, ff2, nbpt, amor,&
                   f)
     implicit none
@@ -39,19 +39,19 @@ subroutine discrt(ff0, ff1, ff2, nbpt, amor,&
     f2=ff2/ff0
     icmplx=dcmplx(0.d0,1.d0)
     if (amor .eq. 0.d0) then
-        do 104,i1=1,nbpt
-        f(i1)=ff1+(ff2-ff1)/(nbpt-1)*(i1-1)
-104      continue
-        goto 9999
+        do i1 = 1, nbpt
+            f(i1)=ff1+(ff2-ff1)/(nbpt-1)*(i1-1)
+        end do
+        goto 999
     endif
     horig=1/2.d0/amor/icmplx/2.d0
     call transf(f1, amor, hbid)
     phi1=phase((hbid-horig)/icmplx)
     call transf(f2, amor, hbid)
     phi2=phase((hbid-horig)/icmplx)
-    do 103,i1=1,nbpt
-    phi=phi1+(phi2-phi1)/(nbpt-1)*(i1-1)
-    f(i1)=fitof(phi,f1,f2,amor,horig)*ff0
-    103 end do
-9999  continue
+    do i1 = 1, nbpt
+        phi=phi1+(phi2-phi1)/(nbpt-1)*(i1-1)
+        f(i1)=fitof(phi,f1,f2,amor,horig)*ff0
+    end do
+999 continue
 end subroutine

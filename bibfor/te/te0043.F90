@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0043(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -116,9 +116,9 @@ subroutine te0043(option, nomte)
                 endif
             endif
         else
-            do 10 i = 1, nbterm
+            do i = 1, nbterm
                 mat(i) = zr(ldis+i-1)
-10          continue
+            end do
         endif
 !
 !        --- CHAMP DE PESANTEUR ---
@@ -245,9 +245,9 @@ subroutine te0043(option, nomte)
             endif
         endif
         call jevech('PVECTUR', 'E', lvectu)
-        do 20 i = 1, nno*nc
+        do i = 1, nno*nc
             zr(lvectu-1+i)=0.0d0
-20      continue
+        end do
     endif
 !
 end subroutine

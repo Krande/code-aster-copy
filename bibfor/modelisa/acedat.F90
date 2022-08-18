@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acedat(motfac, in, npara, sec, exp,&
                   tab, car)
     implicit none
@@ -115,28 +115,28 @@ subroutine acedat(motfac, in, npara, sec, exp,&
         npara(6) = ngenpo
         npara(7) = nrecpo
         npara(8) = ncerpo
-        if (in .eq. 0) goto 9999
-        do 10 i = 1, ntsepo
+        if (in .eq. 0) goto 999
+        do i = 1, ntsepo
             sec(i) = secpou(i)
-10      continue
-        do 12 i = 1, nbopou
+        end do
+        do i = 1, nbopou
             exp(i) = exppou(i)
             tab(i) = tabpou(i)
-12      continue
+        end do
         k = 0
-        do 14 i = 1, ngenpo*(nsecpo+1)
+        do i = 1, ngenpo*(nsecpo+1)
             k = k + 1
             car(k) = carpou(i,1)
-14      continue
-        do 16 i = 1, nrecpo*(nsecpo+1)
+        end do
+        do i = 1, nrecpo*(nsecpo+1)
             k = k + 1
             car(k) = carpou(i,2)
-16      continue
+        end do
         k = 2*ngenpo*(nsecpo+1)
-        do 18 i = 1, ncerpo*(nsecpo+1)
+        do i = 1, ncerpo*(nsecpo+1)
             k = k + 1
             car(k) = carpou(i,3)
-18      continue
+        end do
     else if (motfac.eq. 'BARRE') then
         npara(1) = nsecba
         npara(2) = ntseba
@@ -146,30 +146,30 @@ subroutine acedat(motfac, in, npara, sec, exp,&
         npara(6) = ngenba
         npara(7) = nrecba
         npara(8) = ncerba
-        if (in .eq. 0) goto 9999
-        do 20 i = 1, ntseba
+        if (in .eq. 0) goto 999
+        do i = 1, ntseba
             sec(i) = secbar(i)
-20      continue
-        do 22 i = 1, nbobar
+        end do
+        do i = 1, nbobar
             exp(i) = expbar(i)
             tab(i) = tabbar(i)
-22      continue
+        end do
         k = 0
-        do 24 i = 1, ngenba
+        do i = 1, ngenba
             k = k + 1
             car(k) = carbar(i,1)
-24      continue
+        end do
         k = nrecba
-        do 26 i = 1, nrecba
+        do i = 1, nrecba
             k = k + 1
             car(k) = carbar(i,2)
-26      continue
+        end do
         k = 2*nrecba
-        do 28 i = 1, ncerba
+        do i = 1, ncerba
             k = k + 1
             car(k) = carbar(i,3)
-28      continue
+        end do
     endif
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cpclma(nomain, nomaou, typcol, base)
     implicit none
 !
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -38,7 +39,6 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-#include "jeveux.h"
 !
 !   But :  Recopie des collections .GROUPEMA ET .GROUPENO
 !
@@ -67,27 +67,27 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 !
     call jeexin(grmain, codret)
     if (codret .eq. 0) goto 999
-
+!
     call jelira(grmain, 'NOMUTI', nbgmai)
     call jecreo(ptnmou, base//' N K24')
     call jeecra(ptnmou, 'NOMMAX', nbgmai)
     call jecrec(grmaou, base//' V I', 'NO '//ptnmou, 'DISPERSE', 'VARIABLE',&
                 nbgmai)
 !
-    do 10 igroup = 1, nbgmai
+    do igroup = 1, nbgmai
         call jenuno(jexnum(grmain, igroup), nomgrp)
         call jecroc(jexnom(grmaou, nomgrp))
         call jeveuo(jexnum(grmain, igroup), 'L', jnuma1)
         call jelira(jexnum(grmain, igroup), 'LONUTI', nbmail)
-        call jeecra(jexnom(grmaou, nomgrp), 'LONMAX', max(nbmail,1))
+        call jeecra(jexnom(grmaou, nomgrp), 'LONMAX', max(nbmail, 1))
         call jeecra(jexnom(grmaou, nomgrp), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmaou, nomgrp), 'E', jnuma2)
-        do 20 jmaill = 0, nbmail-1
+        do jmaill = 0, nbmail-1
             zi(jnuma2+jmaill) = zi(jnuma1+jmaill)
-20      continue
-10  end do
+        end do
+    end do
 !
-999  continue
+999 continue
 !
     call jedema()
 !

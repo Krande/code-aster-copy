@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
                   rigma, rigma2, rigto)
     implicit none
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/irmiim.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -31,8 +32,7 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     integer :: ifmis
     integer :: ifreq, nfreq
     character(len=8) :: noma
@@ -46,8 +46,8 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i1,  ifr, ii, ij, im, in
-    integer :: inoe,  iret, jrig, ldgm, ldnm
+    integer :: i1, ifr, ii, ij, im, in
+    integer :: inoe, iret, jrig, ldgm, ldnm
     integer :: nb, nbmode, nbno, noemax
     real(kind=8) :: r1, r2, r3
     integer, pointer :: noeud(:) => null()
@@ -64,11 +64,11 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
 !
     call jelira(jexnom(magrma, nogr), 'LONUTI', nb)
     call jeveuo(jexnom(magrma, nogr), 'L', ldgm)
-    do 22 in = 0, nb-1
+    do in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         inoe = zi(ldnm)
         noemax = max(noemax,inoe)
-22  end do
+    end do
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 !
@@ -76,25 +76,27 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
 !
     call jelira(jexnom(magrma, nogr), 'LONUTI', nb)
     call jeveuo(jexnom(magrma, nogr), 'L', ldgm)
-    do 23 in = 0, nb-1
+    do in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         inoe = zi(ldnm)
         parno(inoe) = parno(inoe) + 1
-23  end do
+    end do
 !
     nbno = 0
-    do 25 ij = 1, noemax
+    do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 25
         nbno = nbno + 1
-25  end do
+ 25     continue
+    end do
 !
     AS_ALLOCATE(vi=noeud, size=nbno)
     ii = 0
-    do 26 ij = 1, noemax
+    do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 26
         ii = ii + 1
         noeud(ii) = ij
-26  end do
+ 26     continue
+    end do
 !
 !     LECTURE DES RIGIDITES ELEMENTAIRES
 !
@@ -107,23 +109,23 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
     i1 = 0
 !      CALL JELIRA(JEXNOM(MAGRMA,NOGR),'LONUTI',NB,K8B)
 !      CALL JEVEUO(JEXNOM(MAGRMA,NOGR),'L',LDGM)
-    do 33 in = 0, nb-1
+    do in = 0, nb-1
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-        do 37 ii = 1, nbno
+        do ii = 1, nbno
             if (zi(ldnm) .eq. noeud(ii)) i1 = ii
-37      continue
+        end do
         rigma(3*in+1) = zr(jrig+(3*i1-3)*nbmode+3*i1-3)
         rigma(3*in+2) = zr(jrig+(3*i1-2)*nbmode+3*i1-2)
         rigma(3*in+3) = zr(jrig+(3*i1-1)*nbmode+3*i1-1)
-33  end do
+    end do
 !
-    do 34 in = 0, nb-1
+    do in = 0, nb-1
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-        do 38 ii = 1, nbno
+        do ii = 1, nbno
             if (zi(ldnm) .eq. noeud(ii)) i1 = ii
-38      continue
+        end do
         r1 = rigma(3*in+1)
         r2 = rigma(3*in+2)
         r3 = rigma(3*in+3)
@@ -141,7 +143,7 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
         rigma(3*in+3) = r3
         call jenuno(jexnum(mlgnma, im), nommai)
         write(ifr,1000) nommai,r1,r2,r3
-34  end do
+    end do
 !
     1000 format(2x,'_F ( MAILLE=''',a8,''',',1x,'CARA= ''K_T_D_N'' , ',&
      &      /7x,'VALE=(',1x,3(1x,1pe12.5,','),1x,'),',&

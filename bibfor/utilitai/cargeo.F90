@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cargeo(mailla)
-    implicit   none
-#include "jeveux.h"
 !
+subroutine cargeo(mailla)
+    implicit none
+#include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -38,6 +37,7 @@ subroutine cargeo(mailla)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
+!
     character(len=*) :: mailla
 !  CALCULER DES CARACTERISTIQUES DU MAILLAGES:
 !  X_MIN    : ABSCISSE MINIMALE DES NOEUDS DU MAILLAGE
@@ -103,7 +103,7 @@ subroutine cargeo(mailla)
         zmin = min ( zmin , zr(jvale+3*(i-1)+2) )
     end do
 !
-    if( l_pmesh ) then
+    if (l_pmesh) then
         call asmpi_comm_vect("MPI_MIN", 'R', scr=xmin)
         call asmpi_comm_vect("MPI_MIN", 'R', scr=ymin)
         call asmpi_comm_vect("MPI_MIN", 'R', scr=zmin)
@@ -138,34 +138,34 @@ subroutine cargeo(mailla)
         call jeveuo(jexnum(connex, im), 'L', jcone)
         if (typm(1:3) .eq. 'POI') then
         else if (typm(1:3) .eq. 'SEG') then
-            do 27 i = 1, 2
+            do i = 1, 2
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-27          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             armin = rminsp( armin , d1 , 0.d0, 0.d0, 0.d0)
             armax = max ( armax , d1 )
         else if (typm(1:4) .eq. 'TRIA') then
-            do 21 i = 1, 3
+            do i = 1, 3
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-21          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             d2 = (x(3)-x(2))**2 + (y(3)-y(2))**2 + (z(3)-z(2))**2
             d3 = (x(1)-x(3))**2 + (y(1)-y(3))**2 + (z(1)-z(3))**2
             armin = rminsp( armin , d1 , d2 , d3 ,0.d0)
             armax = max ( armax , d1 , d2 , d3 )
         else if (typm(1:4) .eq. 'QUAD') then
-            do 22 i = 1, 4
+            do i = 1, 4
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-22          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             d2 = (x(3)-x(2))**2 + (y(3)-y(2))**2 + (z(3)-z(2))**2
             d3 = (x(4)-x(3))**2 + (y(4)-y(3))**2 + (z(4)-z(3))**2
@@ -173,12 +173,12 @@ subroutine cargeo(mailla)
             armin = rminsp( armin , d1 , d2 , d3 , d4 )
             armax = max ( armax , d1 , d2 , d3 , d4 )
         else if (typm(1:4) .eq. 'HEXA') then
-            do 23 i = 1, 8
+            do i = 1, 8
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-23          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             d2 = (x(3)-x(2))**2 + (y(3)-y(2))**2 + (z(3)-z(2))**2
             d3 = (x(4)-x(3))**2 + (y(4)-y(3))**2 + (z(4)-z(3))**2
@@ -198,12 +198,12 @@ subroutine cargeo(mailla)
             armin = rminsp( armin , d1 , d2 , d3 , d4 )
             armax = max ( armax , d1 , d2 , d3 , d4 )
         else if (typm(1:5) .eq. 'PENTA') then
-            do 24 i = 1, 6
+            do i = 1, 6
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-24          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             d2 = (x(3)-x(2))**2 + (y(3)-y(2))**2 + (z(3)-z(2))**2
             d3 = (x(1)-x(3))**2 + (y(1)-y(3))**2 + (z(1)-z(3))**2
@@ -220,12 +220,12 @@ subroutine cargeo(mailla)
             armin = rminsp( armin , d1 , d2 , d3 ,0.d0)
             armax = max ( armax , d1 , d2 , d3 )
         else if (typm(1:5) .eq. 'TETRA') then
-            do 25 i = 1, 4
+            do i = 1, 4
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-25          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             d2 = (x(3)-x(2))**2 + (y(3)-y(2))**2 + (z(3)-z(2))**2
             d3 = (x(1)-x(3))**2 + (y(1)-y(3))**2 + (z(1)-z(3))**2
@@ -237,12 +237,12 @@ subroutine cargeo(mailla)
             armin = rminsp( armin , d1 , d2 , d3 ,0.d0)
             armax = max ( armax , d1 , d2 , d3 )
         else if (typm(1:4) .eq. 'PYRA') then
-            do 26 i = 1, 5
+            do i = 1, 5
                 n = zi(jcone+i-1)
                 x(i) = zr(jvale+3*(n-1) )
                 y(i) = zr(jvale+3*(n-1)+1)
                 z(i) = zr(jvale+3*(n-1)+2)
-26          continue
+            end do
             d1 = (x(2)-x(1))**2 + (y(2)-y(1))**2 + (z(2)-z(1))**2
             d2 = (x(3)-x(2))**2 + (y(3)-y(2))**2 + (z(3)-z(2))**2
             d3 = (x(4)-x(3))**2 + (y(4)-y(3))**2 + (z(4)-z(3))**2
@@ -257,7 +257,7 @@ subroutine cargeo(mailla)
             armax = max ( armax , d1 , d2 , d3 , d4 )
         endif
     end do
-    if( l_pmesh ) then
+    if (l_pmesh) then
         call asmpi_comm_vect("MPI_MIN", 'R', scr=armin)
         call asmpi_comm_vect("MPI_MAX", 'R', scr=armax)
     end if
@@ -265,7 +265,7 @@ subroutine cargeo(mailla)
     vale(7) = sqrt( armin )
     vale(8) = sqrt( armax )
 !
-100  continue
+100 continue
 !
     nomt19 = ' '
     call jeexin(ma//'           .LTNT', iret)

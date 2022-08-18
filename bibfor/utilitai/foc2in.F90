@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foc2in(method, nbpts, var, fon, cste,&
                   res)
     implicit none
@@ -59,9 +59,9 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
     if (method .eq. 'TRAPEZE') then
 !
         res(1) = cste
-        do 100 i = 2, nbpts
+        do i = 2, nbpts
             res(i) = res(i-1) + (var(i)-var(i-1)) * (fon(i)+fon(i-1)) * 0.5d0
-100      end do
+        end do
 !
     else if (method.eq.'SIMPSON') then
 !
@@ -73,7 +73,7 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
         res(1) = coef(1)
         res(2) = coef(2)
         iperm = 1
-        do 200 i = 3, nbpts
+        do i = 3, nbpts
             h1 = h2
             h2 = var(i) - var(i-1)
             bma = h1 + h2
@@ -106,7 +106,7 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
             coef(iperm) = coef(iperm) + (bma/six)*(ct1*fa+ct2*fm+ct3* fb)
             res(i) = coef(iperm)
             iperm = ip(iperm)
-200      end do
+        end do
 !
     endif
 !

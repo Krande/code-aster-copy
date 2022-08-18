@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irrini(fami, kpg, ksp, typess, essai,&
                   mod, nmat, materf, yd, deps,&
                   dy)
@@ -126,9 +126,9 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !        DP
         if (s .eq. 0.d0) then
             dp = 0.d0
-            do 10, i=1,6
-            dfds(i) = 0.d0
-10          continue
+            do i = 1, 6
+                dfds(i) = 0.d0
+            end do
         else
             dfds(1:ndt) = (1.5d0/s) * dev(1:ndt)
             vtmp1(1:ndt) = dpi * dfds(1:ndt)

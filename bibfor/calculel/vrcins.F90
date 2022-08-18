@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
                   codret, nompaz, basez)
     implicit none
@@ -25,19 +25,19 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcin1.h"
 #include "asterfort/vrcin2.h"
-#include "asterfort/detrsd.h"
 !
     character(len=2) :: codret
     character(len=19) :: chvarc
@@ -90,7 +90,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !
     call jemarq()
 !
-    if( present(basez) ) then
+    if (present(basez)) then
         base = basez
     else
         base = 'V'
@@ -114,7 +114,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     call jeexin(chmat//'.CVRCVARC', iret)
 !     AVRC : .TRUE. SI AFFE_MATERIAU/AFFE_VARC EST UTILISE
     avrc=(iret.gt.0)
-    if (.not.avrc) goto 9999
+    if (.not.avrc) goto 999
 !
 !
 !   1. interpolation en temps :
@@ -122,14 +122,15 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !      contenant les vrc a l'instant inst
 !      calcul de  chmat.liste_ch(:) et chmat.liste_sd(:)
 !   -----------------------------------------------------
-    call vrcin1(modele, chmat, carele, inst, codret, nompar)
-
+    call vrcin1(modele, chmat, carele, inst, codret,&
+                nompar)
+!
 !   1.1 si il n'y a pas vraiment de variables de commande
 !       (par exemple il existe temp/vale_ref mais pas de temp
     call jeexin(chmat//'.LISTE_SD', iret)
-    if (iret .eq. 0) goto 9999
-
-
+    if (iret .eq. 0) goto 999
+!
+!
 !   2. allocation du champ_elem_s resultat (chvars)
 !      calcul de chmat.cesvi
 !      (cette etape est economisee d'un instant a l'autre)
@@ -151,7 +152,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     call jeveuo(chvars//'.CESD', 'L', jce1d)
     call jeveuo(chvars//'.CESL', 'E', jce1l)
     call jeveuo(chmat//'.CESVI', 'L', vi=cesvi)
-
+!
 !   -- il faut remettre cesv a nan:
     rundef=r8nnem()
     call jeveuo(chvars//'.CESV', 'E', vr=ce1v)
@@ -159,9 +160,9 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     do k = 1, n1
         ce1v(k)=rundef
     end do
-
-
-    do 1 ichs = 1, nbchs
+!
+!
+    do ichs = 1, nbchs
         chs=liste_ch(ichs)(1:19)
         varc1=liste_sd(7*(ichs-1)+4)(1:8)
         call jeveuo(chs//'.CESD', 'L', jcesd)
@@ -170,39 +171,40 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
         call jeveuo(chs//'.CESC', 'L', vk8=cesc)
         call jelira(chs//'.CESC', 'LONMAX', nbcmp)
 !
-        do 2 kcmp = 1, nbcmp
+        do kcmp = 1, nbcmp
             nocmp1=cesc(kcmp)
 !
 !         -- calcul de kcvrc :
-            do 3 kcvrc = 1, nbcvrc
+            do kcvrc = 1, nbcvrc
                 varc2=cvrcvarc(kcvrc)
                 nocmp2=cvrccmp(kcvrc)
                 if ((varc1.eq.varc2) .and. (nocmp1.eq.nocmp2)) goto 4
-  3         continue
+            end do
             goto 2
 !
   4         continue
             ASSERT(kcvrc.ge.1 .and. kcvrc.le.nbcvrc)
-
+!
 !           -- boucle sur les mailles :
             nbma = zi(jcesd-1+1)
             ASSERT(nbma.eq.zi(jce1d-1+1))
-
-            do 70 ima = 1, nbma
+!
+            do ima = 1, nbma
                 nbpt = zi(jcesd-1+5+4* (ima-1)+1)
                 nbsp = zi(jcesd-1+5+4* (ima-1)+2)
                 if (nbsp*nbsp .eq. 0) goto 70
-
-                call cesexi('C', jce1d, jce1l, ima, 1, 1, kcvrc, iad1)
+!
+                call cesexi('C', jce1d, jce1l, ima, 1,&
+                            1, kcvrc, iad1)
 !               -- la maille n'est pas concernee par les variables de commande :
-                if (iad1 .eq. 0)  goto 70
-
-
+                if (iad1 .eq. 0) goto 70
+!
+!
 !               -- la maille porte un element fini qui saurait utiliser
 !                  les variables de commande mais elle n'est pas affectee.
 !                  on espere que les routines te00ij arreteront en <f> si necessaire.
                 if (iad1 .lt. 0) goto 70
-
+!
 !               -- On regarde si le champ possede des valeurs sur la maille :
                 exival=.false.
                 do ipt = 1, nbpt
@@ -213,17 +215,17 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
                     enddo
                 enddo
                 if (.not.exival) goto 70
-
+!
 !               -- controle du nombre de points :
                 ASSERT(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
-
+!
 !               -- Controle du nombre de sous-points :
                 if (nbsp .ne. zi(jce1d-1+5+4* (ima-1)+2)) then
 !                   -- issue23456 : il peut arriver que nbsp=1 mais sans aucune valeur :
-                    if (nbsp.eq.1 .and. .not.exival) goto 70
-
+                    if (nbsp .eq. 1 .and. .not.exival) goto 70
+!
                     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-                    call jenuno(jexnum(noma//'.NOMMAI',ima), nomail)
+                    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                     call jeveuo(modele//'.MAILLE', 'L', jmaille)
                     nute=zi(jmaille-1+ima)
                     call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
@@ -234,12 +236,13 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
                     valk(5) = nomte
                     vali(1) = zi(jce1d-1+5+4* (ima-1)+2)
                     vali(2) = nbsp
-                    call utmess('F', 'CALCULEL6_57', nk=5, valk=valk, ni=2, vali=vali)
+                    call utmess('F', 'CALCULEL6_57', nk=5, valk=valk, ni=2,&
+                                vali=vali)
                 endif
-
-
-                do 60 ipt = 1, nbpt
-                    do 50 isp = 1, nbsp
+!
+!
+                do ipt = 1, nbpt
+                    do isp = 1, nbsp
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     isp, kcmp, iad)
                         if (iad .gt. 0) then
@@ -252,23 +255,25 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
                                 ce1v(iad1)=valeur
                             endif
                         endif
- 50                 continue
- 60             continue
- 70         continue
-
-  2     continue
-  1 end do
-
-
+                    end do
+                end do
+ 70             continue
+            end do
+!
+  2         continue
+        end do
+    end do
+!
+!
 !   4. recopie du champ simple dans le champ chvarc
 !   -----------------------------------------------------
     ligrmo=modele//'.MODELE'
     call cescel(chvars, ligrmo, 'INIT_VARC', nompar, 'NAN',&
                 nncp, base, chvarc, 'F', ibid)
-
+!
     dbg=.false.
     if (dbg) call imprsd('CHAMP', chvarc, 6, 'VRCINS/CHVARC')
-
-9999 continue
+!
+999 continue
     call jedema()
 end subroutine

@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0218(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
@@ -28,6 +27,7 @@ subroutine te0218(option, nomte)
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/simtep.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 !
@@ -56,8 +56,8 @@ subroutine te0218(option, nomte)
 !
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
@@ -70,13 +70,13 @@ subroutine te0218(option, nomte)
 !      -----------------------------------------
     nbsig = nbsigm()
 !
-    do 10 i = 1, nbsig*npg1
+    do i = 1, nbsig*npg1
         sigma(i) = zero
-10  end do
+    end do
 !
-    do 20 i = 1, ndim*nno
+    do i = 1, ndim*nno
         bsigma(i) = zero
-20  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -93,11 +93,11 @@ subroutine te0218(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(ndim, bary, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
@@ -128,9 +128,9 @@ subroutine te0218(option, nomte)
 !             ----------------------------------------
     epot = zero
 !
-    do 30 i = 1, ndim*nno
+    do i = 1, ndim*nno
         epot = epot + bsigma(i)*zr(idepl+i-1)
-30  end do
+    end do
 !
     epot = epot + undemi*enthth
 !

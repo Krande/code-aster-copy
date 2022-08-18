@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                   nt, nbres, x1, x2, xacc,&
                   rtsafe, impr, ifm, indtp, nbtp)
@@ -91,10 +91,10 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
     endif
     if (fl .eq. 0.d0) then
         rtsafe = x1
-        goto 9999
+        goto 999
     else if (fh.eq.0.d0) then
         rtsafe = x2
-        goto 9999
+        goto 999
     else if (fl.lt.0.d0) then
         xl = x1
         xh = x2
@@ -109,24 +109,24 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                 nt, nbres, indtp, nbtp, rtsafe,&
                 f, df)
     if (impr) write(ifm,*) 'F ET DF MILIEU INTERVALLE :',rtsafe,f,df
-    do 10 j = 1, maxit
+    do j = 1, maxit
         if (impr) write(ifm,*) '*** ITERATION DE NEWTON NO',j
         if (((rtsafe-xh)*df-f)*((rtsafe-xl)*df-f) .gt. 0.d0 .or. abs( 2.d0*f) .gt.&
             abs(dxold*df)) then
             dxold = dx
             dx = 0.5d0*(xh-xl)
             rtsafe = xl+dx
-            if (xl .eq. rtsafe) goto 9999
+            if (xl .eq. rtsafe) goto 999
             if (impr) write(ifm,*) 'INCREMENT - SOLUTION : ',dx, rtsafe
         else
             dxold = dx
             dx = f/df
             temp = rtsafe
             rtsafe = rtsafe-dx
-            if (temp .eq. rtsafe) goto 9999
+            if (temp .eq. rtsafe) goto 999
             if (impr) write(ifm,*) 'INCREMENT - SOLUTION : ',dx, rtsafe
         endif
-        if (abs(dx) .lt. xacc) goto 9999
+        if (abs(dx) .lt. xacc) goto 999
         call fcweib(nrupt, cals, sk, sigw, nur,&
                     nt, nbres, indtp, nbtp, rtsafe,&
                     f, df)
@@ -136,9 +136,9 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
         else
             xh = rtsafe
         endif
- 10 end do
+    end do
     call utmess('F', 'UTILITAI2_53')
-9999 continue
+999 continue
     if (impr) then
         valr (1) = rtsafe
         valr (2) = f

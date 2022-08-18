@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
                   nbropt)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,8 +33,6 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
 #include "asterfort/juveca.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: nbordr, nbropt
     character(len=8) :: resuin, resuou
     character(len=19) :: lisord, lisopt
@@ -111,7 +111,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         if (nbopfa .eq. 0) goto 20
         call getvtx(' ', typopt, nbval=nbopfa, vect=zk16(jopt+postmp), nbret=n1)
         postmp = postmp+nbopfa
-20      continue
+ 20     continue
     enddo
 !
 ! --- MOT-CLE FACTEUR CHAM_UTIL
@@ -136,9 +136,11 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
 !       OPTION PRESENTE DANS RESUIN A TOUS LES NUME_ORDRE A CALCULER ?
         do i = 1, nbordr
             iordr = zi(jord-1+i)
-            call rsexch(' ', resuin, option, iordr, chn, iret)
+            call rsexch(' ', resuin, option, iordr, chn,&
+                        iret)
             if (iret .ne. 0) then
-                if (.not.newcal) call rsexch(' ', resuou, option, iordr, chn,iret)
+                if (.not.newcal) call rsexch(' ', resuou, option, iordr, chn,&
+                                             iret)
                 if (iret .ne. 0) then
                     vu = .false.
                     goto 32
@@ -169,7 +171,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
             nsup = nsup + 1
             oputil(nsup) = option
         endif
-30      continue
+ 30     continue
     enddo
 !
 ! --- REFAIRE OU AGRANDIR LISOPT
@@ -180,9 +182,9 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         else
             call juveca(lisopt, nbropt+nsup)
         endif
-        do 41 i = 1, nsup
+        do i = 1, nsup
             zk16(jopt-1+nbropt+i) = oputil(i)
- 41     continue
+        end do
         nbropt = nbropt + nsup
     endif
 !

@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -26,7 +26,7 @@
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
 subroutine ar_ztrexc(compq, n, t, ldt, q,&
-                  ldq, ifst, ilst, info)
+                     ldq, ifst, ilst, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
 !     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
@@ -158,7 +158,7 @@ subroutine ar_ztrexc(compq, n, t, ldt, q,&
         m3 = -1
     endif
 !
-    do 10 k = ifst + m1, ilst + m2, m3
+    do k = ifst + m1, ilst + m2, m3
 !
 !        INTERCHANGE THE K-TH AND (K+1)-TH DIAGONAL ELEMENTS.
 !
@@ -187,7 +187,7 @@ subroutine ar_ztrexc(compq, n, t, ldt, q,&
                       cs, dconjg( sn ))
         endif
 !
- 10 end do
+    end do
 !
 1000 continue
     call matfpe(1)

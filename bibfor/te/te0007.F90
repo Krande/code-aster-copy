@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0007(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -46,8 +46,8 @@ subroutine te0007(option, nomte)
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
@@ -78,16 +78,16 @@ subroutine te0007(option, nomte)
     call jevech('PCONTMR', 'L', icontm)
 !
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
-    do 90 i = 1, ndim*nno
+    do i = 1, ndim*nno
         geo(i) =zr(igeom-1+i)
-90  end do
+    end do
     call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
     call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
     if ((iretd.eq.0) .and. (iretc.eq.0)) then
         if (zk16(icomp+2)(1:6) .ne. 'PETIT ') then
-            do 80 i = 1, ndim*nno
+            do i = 1, ndim*nno
                 geo(i) =geo(i) + zr(idepl-1+i)
-80          continue
+            end do
         endif
     endif
 ! ---- PARAMETRES EN SORTIE
@@ -104,24 +104,24 @@ subroutine te0007(option, nomte)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE :
 !      ----------------------------------
-    do 10 n = 1, nnos
-        do 20 i = 1, ndim
+    do n = 1, nnos
+        do i = 1, ndim
             ku = (ndimsi + ndim)*(n-1) + i
             kp = ndim*(n-1) + i
             zr(ivectu+ku-1) = bsigm(kp)
-20      continue
-        do 30 i = 1, ndimsi
+        end do
+        do i = 1, ndimsi
             ku = (ndimsi + ndim)*(n-1) + i + ndim
             zr(ivectu+ku-1) = 0.d0
-30      continue
-10  continue
-    do 40 n = nnos+1, nno
-        do 50 i = 1, ndim
+        end do
+    end do
+    do n = nnos+1, nno
+        do i = 1, ndim
             ku = (ndimsi + ndim)*nnos + ndim*(n-nnos-1) + i
             kp = ndim*(n-1) + i
             zr(ivectu+ku-1) = bsigm(kp)
-50      continue
-40  continue
+        end do
+    end do
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpnor2(nomcon, nbmode, numord, coef)
     implicit none
 #include "jeveux.h"
@@ -57,11 +57,11 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
     nomd2 = nomcon
 !
     call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
-    if (nbnosy .eq. 0) goto 9999
+    if (nbnosy .eq. 0) goto 999
 !
-    do 10 isy = 1, nbnosy
+    do isy = 1, nbnosy
         call jenuno(jexnum(nomd2//'.DESC', isy), nomsym)
-        do 12 im = 1, nbmode
+        do im = 1, nbmode
             iordr = numord(im)
             call rsexch(' ', nomcon, nomsym, iordr, vale(1:19),&
                         iret)
@@ -96,17 +96,18 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
                 call jeveuo(vale, 'E', lvale)
                 call jelira(vale, 'LONMAX', neq)
                 if (typmod(1:1) .eq. 'R') then
-                    do 20 ieq = 0, neq-1
+                    do ieq = 0, neq-1
                         zr(lvale+ieq) = zr(lvale+ieq) * rcoef
-20                  continue
+                    end do
                 else
                     call utmess('F', 'UTILITAI5_89')
                 endif
             endif
-12      continue
-10  end do
+ 12         continue
+        end do
+    end do
 !
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

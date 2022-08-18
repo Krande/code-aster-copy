@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                   nbres, nomres, valres, icodre, iarret)
     implicit none
@@ -108,19 +108,19 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     if (nommat .ne. matpre) change = .true.
     if (phen .ne. phepre) change = .true.
     if (nbres .ne. nbresp) change = .true.
-    do 100 ires = 1, nbres
+    do ires = 1, nbres
         if (nomres(ires) .ne. nomrep(ires)) change = .true.
-100 end do
+    end do
 !
 !
     if (.not.change) then
-        do 110 ires = 1, nbres
+        do ires = 1, nbres
             valres(ires) = valrep(ires)
             icodre(ires) = icodr2(ires)
-110     continue
+        end do
         if (nbfp .eq. 0) goto 9999
 !
-        do 120 ires = 1, nbres
+        do ires = 1, nbres
             if (nomfop(ires) .ne. ' ') then
                 call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
                             valres(ires), ier)
@@ -129,7 +129,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             else
                 icodre(ires) = 1
             endif
-120     continue
+        end do
 !
 !
     else
@@ -137,9 +137,9 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
         call jeexin(nommat//k11//'.VALR', iret)
         if (iret .eq. 0) then
-            do 113 ires = 1, nbres
+            do ires = 1, nbres
                 icodre(ires) = 1
-113         continue
+            end do
             goto 999
         endif
 !
@@ -148,24 +148,24 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
         call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
         call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
-        do 130 ires = 1, nbres
+        do ires = 1, nbres
             icodre(ires) = 1
             nomfop(ires) = ' '
-130     continue
+        end do
         nbobj = 0
-        do 150 ir = 1, nbr
-            do 140 ires = 1, nbres
+        do ir = 1, nbr
+            do ires = 1, nbres
                 if (nomres(ires) .eq. valk(ir)) then
                     valres(ires) = valr(ir)
                     icodre(ires) = 0
                     nbobj = nbobj + 1
                 endif
-140         continue
-150     continue
+            end do
+        end do
         if (nbobj .ne. nbres) then
             nbf = (nbk-nbr-nbc)/2
-            do 170 ires = 1, nbres
-                do 160 ik = 1, nbf
+            do ires = 1, nbres
+                do ik = 1, nbf
                     if (nomres(ires) .eq. valk(nbr+nbc+ik)) then
                         nomfop(ires) = valk(nbr+nbc+nbf+ik)
                         call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
@@ -173,8 +173,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                         ASSERT(ier.eq.0)
                         icodre(ires) = 0
                     endif
-160             continue
-170         continue
+                end do
+            end do
         else
             nbf = 0
         endif
@@ -184,11 +184,11 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         phepre = phen
         nbfp = nbf
         nbresp = nbres
-        do 180 ires = 1, nbresp
+        do ires = 1, nbresp
             nomrep(ires) = nomres(ires)
             valrep(ires) = valres(ires)
             icodr2(ires) = icodre(ires)
-180     continue
+        end do
 !
     endif
 999 continue

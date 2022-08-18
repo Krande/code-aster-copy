@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function iposdg(dg, cmp)
 ! aslint: disable=
     implicit none
@@ -59,37 +59,37 @@ function iposdg(dg, cmp)
 !
     if (iand(dg(nbec),code) .eq. code) then
 !
-        do 10, paquet = 1, nbec-1, 1
+        do paquet = 1, nbec-1, 1
 !
-        valec = dg(paquet)
+            valec = dg(paquet)
 !
-        do 11, i = 1, 30, 1
+            do i = 1, 30, 1
 !
-        code = lshift(1,i)
+                code = lshift(1,i)
 !
-        if (iand(valec,code) .eq. code) then
+                if (iand(valec,code) .eq. code) then
 !
-            cmpt = cmpt + 1
+                    cmpt = cmpt + 1
 !
-        endif
+                endif
 !
-11      continue
+            end do
 !
-10      continue
+        end do
 !
         valec = dg(nbec)
 !
-        do 20, i = 1, reste, 1
+        do i = 1, reste, 1
 !
-        code = lshift(1,i)
+            code = lshift(1,i)
 !
-        if (iand(valec,code) .eq. code) then
+            if (iand(valec,code) .eq. code) then
 !
-            cmpt = cmpt + 1
+                cmpt = cmpt + 1
 !
-        endif
+            endif
 !
-20      continue
+        end do
 !
     endif
 !

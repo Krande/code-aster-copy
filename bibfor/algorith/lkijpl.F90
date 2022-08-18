@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
                   dsde)
     implicit none
@@ -59,42 +59,42 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! --- RECHERCHE DU MAXIMUM DE DRDY
 ! === =================================================================
     maxi = 0.d0
-    do 1 i = 1, nr
-        do 2 j = 1, nr
+    do i = 1, nr
+        do j = 1, nr
             if(abs(drdy(i,j)).gt.maxi)maxi = abs(drdy(i,j))
- 2      continue
- 1  continue
+        end do
+    end do
 ! === =================================================================
 ! --- DIMENSIONNEMENT A R8PREM
 ! === =================================================================
     mini = r8prem()*maxi
-    do 3 i = 1, nr
-        do 4 j = 1, nr
+    do i = 1, nr
+        do j = 1, nr
             if(abs(drdy(i,j)).lt.mini)drdy(i,j) = 0.d0
- 4      continue
- 3  continue
+        end do
+    end do
 !
 ! === =================================================================
 ! --- SEPARATION DES TERMES DU JACOBIEN
 ! === =================================================================
-    do 5 i = 1, ndt
-        do 6 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             jss(i,j) = drdy(i,j)
- 6      continue
- 5  continue
+        end do
+    end do
 !
-    do 7 i = 1, 3
-        do 8 j = 1, ndt
+    do i = 1, 3
+        do j = 1, ndt
             jsz(j,i)=drdy(j,ndt+i)
             jzs(i,j)=drdy(ndt+i,j)
- 8      continue
- 7  continue
+        end do
+    end do
 !
-    do 9 i = 1, 3
-        do 10 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             jzz(i,j) = drdy(ndt+i,ndt+j)
-10      continue
- 9  continue
+        end do
+    end do
 ! === =================================================================
 ! --- CONSTRUCTION TENSEUR RIGIDITE ELASTIQUE A T+DT
 ! === =================================================================
@@ -121,9 +121,9 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! === =================================================================
 ! --- INVERSION DU TERME JZZ
     call r8inir(9, 0.d0, invjzz, 1)
-    do 11 i = 1, 3
+    do i = 1, 3
         invjzz(i,i) = 1.d0
-11  continue
+    end do
 !
     call mgauss('NCVP', jzz, invjzz, 3, 3,&
                 3, det, iret)
@@ -146,13 +146,13 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !
 ! --- INVERSION DU TERME (DIJACO)^-1 = INVDIJ
     invdij(:,:) = 0.d0
-    do 12 i = 1, ndt
+    do i = 1, ndt
         invdij(i,i) = 1.d0
-12  continue
+    end do
     call mgauss('NCVP', dijaco, invdij, 6, ndt,&
                 ndt, det, iret)
     if (iret .gt. 1) then
-       dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     end if
 !
 ! --- CONSTRUCTION DSDE = INVDIJ*HOOKNL

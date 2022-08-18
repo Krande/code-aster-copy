@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
                   kwork, sompgw, jrwork, tspaq, ipg,&
                   dectau, nommet, jvecpg, jnorma, rayon,&
@@ -97,9 +97,9 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
 !
 ! SHEAR MAX
     n = 0
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
         zr(jtauma+ivect-1) = r8prem()
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
             n = n + 1
             cutau = zr( jvecpg + (n-1)*2 )
             cvtau = zr( jvecpg + (n-1)*2 + 1 )
@@ -107,16 +107,16 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
             if ((tau .gt. epsilo) .and. ((tau-zr(jtauma+ivect)) .gt. epsilo)) then
                 zr(jtauma+ivect-1) = tau
             endif
- 20     continue
+        end do
 !
- 10 end do
+    end do
 !
 !
 !! AMPLITUDE NORMAL MAX
-    do 12 ivect = 1, nbvec
+    do ivect = 1, nbvec
         dnomin = zr(jnorma)
         dnomax = zr(jnorma)
-        do 22 iordr = 1, nbordr
+        do iordr = 1, nbordr
             norm = zr( jnorma -1 +iordr+(ivect-1)*nbordr)
             if ((dnomin - norm) .gt. epsilo) then
                 dnomin = norm
@@ -124,12 +124,12 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
             if ((dnomax - norm) .lt. epsilo) then
                 dnomax = norm
             endif
- 22     continue
+        end do
 !
         zr(jdsgma+ivect-1) = (dnomax - dnomin)/2
         zr(jsgnma+ivect-1) = dnomax
 !
 !
- 12 end do
+    end do
 !
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pdadom(xm0, xm2, xm4, dom)
     implicit none
 #include "asterf_types.h"
@@ -23,6 +23,8 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 #include "asterc/erfcam.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/limend.h"
@@ -30,8 +32,6 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 #include "asterfort/rcpare.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     real(kind=8) :: xm0, xm2, xm4, dom
 !
 !     CALCUL DOMMAGE EN FREQUENTIEL
@@ -121,7 +121,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     endif
     AS_ALLOCATE(vr=dispics, size=2*nbpoin)
     if (mecomp .eq. 'PIC     ') xireg = sqrt( xm2*xm2/xm0/xm4)
-    do 305 ipoint = 1, nbpoin
+    do ipoint = 1, nbpoin
         x1 = valmin + (ipoint-1)*pas
         if (mecomp .eq. 'PIC     ') then
             alpha = xireg*x1/((sqrt(1.d0-xireg*xireg))*(sqrt(xm0)))
@@ -138,7 +138,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         endif
         dispics(ipoint) = x1
         dispics(nbpoin+ipoint) = y1
-305 end do
+    end do
 !
 !---------CORRECTION ELASTO-PLASTIQUE
 !
@@ -154,7 +154,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nompar = ' '
             call rcvale(nommat, 'RCCM', nbpar, nompar, [rbid],&
                         3, nomres(1), val(1), icodre(1), 2)
-            do 304 ipoint = 1, nbpoin
+            do ipoint = 1, nbpoin
                 delta = dispics(ipoint)
                 if (delta .le. 3.d0*val(3)) then
                     rvke = 1.d0
@@ -166,7 +166,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                     rvke = 1.d0/val(1)
                 endif
                 dispics(ipoint) = rvke * dispics(ipoint)
-304         continue
+            end do
         endif
     endif
 !
@@ -182,7 +182,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nbpar = 1
             pheno = 'FATIGUE'
             nompar = 'SIGM'
-            do 307 ipoint = 1, nbpoin
+            do ipoint = 1, nbpoin
                 delta = dispics(ipoint)
                 call limend(nommat, delta, 'WOHLER', kbid, endur)
                 if (endur) then
@@ -192,7 +192,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                                 1, nomres(1), nrupt(1), icodre(1), 2)
                     wohler2(ipoint) = 1.d0 / nrupt(1)
                 endif
-307         continue
+            end do
         else if (ibask.ne.0) then
             nompar = ' '
             nbpar = 0
@@ -200,9 +200,9 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nomres(2) = 'BETA_BASQUIN'
             call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                         2, nomres, val, icodre, 2)
-            do 308 ipoint = 1, nbpoin
+            do ipoint = 1, nbpoin
                 wohler2(ipoint) = val(1)*dispics(ipoint)**val( 2)
-308         continue
+            end do
         else if (ihosin.ne.0) then
             nomres(1) = 'E_REFE'
             nomres(2) = 'A0'
@@ -217,7 +217,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nomres(1) = 'E'
             call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
                         1, nomres, re(1), icodre, 2)
-            do 309 ipoint = 1, nbpoin
+            do ipoint = 1, nbpoin
                 salt = (val(1)/re(1))*dispics(ipoint)
                 if (salt .ge. val(6)) then
                     x = log10 (salt)
@@ -226,14 +226,14 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                 else
                     wohler2(ipoint) = 0.d0
                 endif
-309         continue
+            end do
         endif
     endif
 !
 ! -- CALCUL INTEGRALE
 !
     dom = 0.d0
-    do 310 ipoint = 2, nbpoin
+    do ipoint = 2, nbpoin
         x2 = dispics(ipoint)
         x1 = dispics(ipoint-1)
         yd2 = wohler2(ipoint)
@@ -241,7 +241,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         ypic2 = dispics(nbpoin+ipoint)
         ypic1 = dispics(nbpoin+ipoint-1)
         dom = dom + (yd2*ypic2+yd1*ypic1)* (x2-x1)/2.d0
-310 end do
+    end do
 !
     AS_DEALLOCATE(vr=dispics)
     AS_DEALLOCATE(vr=wohler2)

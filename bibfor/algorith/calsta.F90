@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calsta(proj, gamma, dh, def, nno,&
                   kpg, sig, tmp, kk, kkd,&
                   matuu, dsidep, jac)
@@ -48,24 +48,24 @@ subroutine calsta(proj, gamma, dh, def, nno,&
 !
     rac2 = sqrt(2.d0)
 !
-    do 20 i = 1, 3
-        do 10 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             f(i,j) = kron(i,j)
-10      continue
-20  end do
+        end do
+    end do
 !
 !
 !
-    do 40 i = 1, 2
-        do 30 j = 1, 3
+    do i = 1, 2
+        do j = 1, 3
             filtr1(i,j) = kron2(i,j)
             filtr2(i,j) = kron3(i,j)
-30      continue
-40  end do
+        end do
+    end do
 !
-    do 120 ifiltr = 1, 3
-        do 60 n = 1, nno
-            do 50 i = 1, 2
+    do ifiltr = 1, 3
+        do n = 1, nno
+            do i = 1, 2
 !
 !         QUAS4 SANS PROJECTION
 !         ---------------------
@@ -157,25 +157,25 @@ subroutine calsta(proj, gamma, dh, def, nno,&
                     defst2(4,n,i) = def(4,n,i)*filtr2(2,ifiltr)
 !
                 endif
-50          continue
-60      continue
+            end do
+        end do
 !
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE
 !
 !
-        do 110 n = 1, nno
-            do 100 i = 1, 2
-                do 70,kl = 1,4
-                sig(kl) = 0.d0
-                sig(kl) = sig(kl) + defst1(1,n,i)*dsidep(1,kl)
-                sig(kl) = sig(kl) + defst1(2,n,i)*dsidep(2,kl)
-                sig(kl) = sig(kl) + defst1(3,n,i)*dsidep(3,kl)
-                sig(kl) = sig(kl) + defst1(4,n,i)*dsidep(4,kl)
-70              continue
+        do n = 1, nno
+            do i = 1, 2
+                do kl = 1, 4
+                    sig(kl) = 0.d0
+                    sig(kl) = sig(kl) + defst1(1,n,i)*dsidep(1,kl)
+                    sig(kl) = sig(kl) + defst1(2,n,i)*dsidep(2,kl)
+                    sig(kl) = sig(kl) + defst1(3,n,i)*dsidep(3,kl)
+                    sig(kl) = sig(kl) + defst1(4,n,i)*dsidep(4,kl)
+                end do
 !
-                do 90 j = 1, 2
-                    do 80 m = 1, n
+                do j = 1, 2
+                    do m = 1, n
                         if (m .eq. n) then
                             j1 = i
                         else
@@ -196,10 +196,10 @@ subroutine calsta(proj, gamma, dh, def, nno,&
                             matuu(kk) = matuu(kk) + tmp*jac
                         endif
 !
-80                  continue
-90              continue
-100          continue
-110      continue
-120  end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

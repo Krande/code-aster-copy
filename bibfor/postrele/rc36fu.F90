@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
                   ug, factus)
     implicit none
@@ -49,13 +49,13 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
         write(ifm,*) 'MATRICE SALT INITIALE'
         write(ifm,1012) ( situ(2*(l-1)+1),situ(2*(l-1)+2),l=1,nbsigr )
         write(ifm,1010) ( nocc(2*(l-1)+1),nocc(2*(l-1)+2),l=1,nbsigr )
-        do 100 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
             write(ifm,1000) situ(2*(k-1)+1), nocc(2*(k-1)+1), (saltij(&
             i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,nbsigr)
             write(ifm,1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), (saltij(&
             i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,nbsigr)
-100     continue
+        end do
     endif
 !
     icompt = 0
@@ -70,7 +70,7 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
     call rc36f0(nbsigr, nocc, saltij, saltm, trouve,&
                 isk, isl, i1a4, nk, nl)
 !
-    if (.not. trouve) goto 9999
+    if (.not. trouve) goto 999
 !
     n0 = min ( nk , nl )
     call limend(nommat, saltm, 'WOHLER', kbid, endur)
@@ -123,19 +123,19 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
         write(ifm,*) 'MATRICE SALT MODIFIEE'
         write(ifm,1012) ( situ(2*(l-1)+1),situ(2*(l-1)+2),l=1,nbsigr )
         write(ifm,1010) ( nocc(2*(l-1)+1),nocc(2*(l-1)+2),l=1,nbsigr )
-        do 110 k = 1, nbsigr
+        do k = 1, nbsigr
             i1 = 4*nbsigr*(k-1)
             write(ifm,1000) situ(2*(k-1)+1), nocc(2*(k-1)+1), (saltij(&
             i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,nbsigr)
             write(ifm,1002) situ(2*(k-1)+2), nocc(2*(k-1)+2), (saltij(&
             i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,nbsigr)
-110     continue
+        end do
     endif
 !
     ug = ug + ukl
     goto 10
 !
-9999 continue
+999 continue
 !
     1000 format(1p,i7,'_A',i9,'|',40(e9.2,1x,e9.2,'|'))
     1002 format(1p,i7,'_B',i9,'|',40(e9.2,1x,e9.2,'|'))

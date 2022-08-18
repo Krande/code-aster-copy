@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0415(optioz, nomtz)
     implicit none
 #include "jeveux.h"
@@ -70,9 +70,9 @@ subroutine te0415(optioz, nomtz)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_12')
         endif
-
-
-
+!
+!
+!
 ! -- RECUPERATION DES VARIABLES INTERNES
 ! -- NBVARI = NOMBRES DE VARIABLES INTERNES
 ! -- STOCKAGE DANS PVARIGR : PAR POINT DE GAUSS DU PREMIER AU DERNIER
@@ -83,51 +83,51 @@ subroutine te0415(optioz, nomtz)
 !
         call jevech('PVARINR', 'E', jvari)
 !
-        do 280 icou = 1, nbcou
-            do 270 ic = 1, nbvari
-                do 260 i = 1, npge*nso
+        do icou = 1, nbcou
+            do ic = 1, nbvari
+                do i = 1, npge*nso
                     l = npge*npgsn* (i-1)
                     s = 0.d0
-                    do 230 j = 1, npge*npgsn
+                    do j = 1, npge*npgsn
 ! -- DETERMINATION DU PT DE GAUSS A PARTIR DE LA POSITION JJ
-                        do 220 k1 = 1, npgsn
-                            do 210 k2 = 1, npge
+                        do k1 = 1, npgsn
+                            do k2 = 1, npge
                                 j1 = (k1-1)*npge + k2
                                 if (j1 .eq. j) then
                                     inp = k1
                                     nep = k2 - 1
                                 endif
-210                          continue
-220                      continue
+                            end do
+                        end do
                         npp = (inp-1)*lgpg
                         npp = npp + ic + nbvari* ((icou-1)*npge+nep)
 ! -- ZR(ICHG-1+NPP) = VARI(IC,JJ)
 !                JJ = (ICOU-1)*NPGE*NPGSN + J
                         s = s + zr(jmat-1+l+j)*zr(ichg-1+npp)
-230                  continue
+                    end do
 ! -- DETERMINATION DU NOEUD SOMMET A PARTIR DE LA POSITION II
-                    do 250 k1 = 1, nso
-                        do 240 k2 = 1, npge
+                    do k1 = 1, nso
+                        do k2 = 1, npge
                             i1 = (k1-1)*npge + k2
                             if (i1 .eq. i) then
                                 ino = k1
                                 nep = k2 - 1
                             endif
-240                      continue
-250                  continue
+                        end do
+                    end do
                     npo = (ino-1)*lgpg
                     npo = npo + ic + nbvari* ((icou-1)*npge+nep)
                     zr(jvari-1+npo) = s
-260              continue
-270          continue
-280      continue
+                end do
+            end do
+        end do
 !
 ! -- CREATION DU CHAMP DE VARIABLES INTERNES POUR LES POINTS
 ! -- MILIEUX ET LE CENTRE
 ! -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
 !
         if (nomte .eq. 'MEC3QU9H') then
-            do 310 ic = 5, nb2
+            do ic = 5, nb2
                 npo = (ic-1)*lgpg
                 if (ic .eq. 5) then
                     np1 = 0
@@ -148,21 +148,21 @@ subroutine te0415(optioz, nomtz)
                     np4 = 3*lgpg
                 endif
                 if (ic .ne. 9) then
-                    do 290 i = 1, lgpg
+                    do i = 1, lgpg
                         zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/2.d0
-290                  continue
+                    end do
                 else
-                    do 300 i = 1, lgpg
+                    do i = 1, lgpg
                         zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i) + zr(jvari-1+np3+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i) + zr(jvari-1+np4+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/4.d0
-300                  continue
+                    end do
                 endif
-310          continue
+            end do
         else if (nomte.eq.'MEC3TR7H') then
-            do 340 ic = 4, nb2
+            do ic = 4, nb2
                 npo = (ic-1)*lgpg
                 if (ic .eq. 4) then
                     np1 = 0
@@ -179,18 +179,18 @@ subroutine te0415(optioz, nomtz)
                     np3 = 2*lgpg
                 endif
                 if (ic .ne. 7) then
-                    do 320 i = 1, lgpg
+                    do i = 1, lgpg
                         zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/2.d0
-320                  continue
+                    end do
                 else
-                    do 330 i = 1, lgpg
+                    do i = 1, lgpg
                         zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i) + zr(jvari-1+np3+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/3.d0
-330                  continue
+                    end do
                 endif
-340          continue
+            end do
         endif
 !
 ! ------------------------------------------------------------

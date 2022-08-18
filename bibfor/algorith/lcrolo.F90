@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcrolo(fami, kpg, ksp, mate, option,&
                   carcri, fm, df, vim, vip,&
                   taup, dtaudf, iret)
@@ -182,13 +182,13 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
     if ((unk*abs(tretr)/sig1) .ge. 500.d0) then
         iret = 1
-        goto 9999
+        goto 999
     endif
     fonc=fcd*exp(-unk*tretr/sig1)*exp(-cother/sig1)
 !
     if ((fonc.ge.infini) .or. (fonc.le.petit)) then
         iret = 1
-        goto 9999
+        goto 999
     endif
 !
 ! 4 - INTEGRATION DE LA LOI DE COMPORTEMENT
@@ -259,13 +259,13 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
         if (indice .eq. 0) then
             call dcopy(6, etr, 1, ep, 1)
         else
-            do 55 ij = 1, 6
+            do ij = 1, 6
                 ep(ij) = (x+tretr)/3.d0*kr(ij)
- 55         continue
+            end do
             if (indice .eq. 1 .and. eqetr .gt. petit) then
-                do 60 ij = 1, 6
+                do ij = 1, 6
                     ep(ij) = ep(ij) + dvetr(ij)*(1.d0-3.d0*dp/(2.d0* eqetr))
- 60             continue
+                end do
             endif
         endif
 !
@@ -321,5 +321,5 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
     endif
 !
-9999 continue
+999 continue
 end subroutine

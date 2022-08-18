@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tnsvec(choix, ndim, mat, vec, r)
     implicit none
 #include "asterfort/assert.h"
@@ -35,9 +35,9 @@ subroutine tnsvec(choix, ndim, mat, vec, r)
     if (choix .eq. 3) then
 !
 !        TRANSFORMATION MATRICE EN VECTEUR
-        do 300 i = 1, 3
+        do i = 1, 3
             vec(i)=mat(i,i)
-300      continue
+        end do
         vec(4)=mat(1,2)*r
         if (ndim .eq. 3) then
             vec(5)=mat(1,3)*r
@@ -48,9 +48,9 @@ subroutine tnsvec(choix, ndim, mat, vec, r)
     else if (choix.eq.6) then
 !
 !        TRANSFORMATION VECTEUR EN MATRICE
-        do 600 i = 1, 3
+        do i = 1, 3
             mat(i,i)=vec(i)
-600      continue
+        end do
         mat(1,2)=vec(4)*r
         mat(2,1)=vec(4)*r
         if (ndim .eq. 2) then

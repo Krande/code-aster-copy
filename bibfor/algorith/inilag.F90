@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine inilag(fmli, icar)
 !    P. RICHARD     DATE 13/10/92
 !-----------------------------------------------------------------------
@@ -39,13 +39,13 @@ subroutine inilag(fmli, icar)
 !   SOUS-JACENTE TRAITES
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=24) :: fmli
     real(kind=8) :: moinun, zero5
     integer :: icar(4)
@@ -70,10 +70,10 @@ subroutine inilag(fmli, icar)
 !-- LE ICAR(4) INDIQUE LE NUMERO DE LA SOUS STRUCTURE MAITRE
 !-- DANS LA LIAISON. LA MULTIPLICATION DE LA MATRICE
 !-- LAGRANGE / LAGRANGE PAR UN REEL NE CHANGE PAS LE RESULTAT
-    do 10 i = 1, nblig
+    do i = 1, nblig
         zr(ldmat+i-1)=moinun*icar(4)
         zr(ldmat+nblig+i-1)=zero5*icar(4)
-10  end do
+    end do
 !
 !
 !

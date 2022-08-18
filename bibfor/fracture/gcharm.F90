@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                   carteo)
 !
@@ -85,15 +85,15 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 ! - 1. CHARGEMENT 'SCALAIRE'
 !
     if (.not.lfchar) then
-        do 10 in = 1, nbvale
+        do in = 1, nbvale
             zr(jvalou+in-1) = const*zr(jvalin +in-1)
- 10     continue
+        end do
 !
 ! - 2. CHARGEMENT 'FONCTION'
 !
     else
         k=0
-        do 20 in = 1, nbvale
+        do in = 1, nbvale
             if (zk8(jvalin+in-1)(1:7) .ne. '&FOZERO' .and. zk8(jvalin+in-1)(1:7) .ne.&
                 '       ' .and. zk8(jvalin+in-1)(1:6) .ne. 'GLOBAL') then
                 k=k+1
@@ -105,9 +105,9 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                     call jeveuo(nch19//'.VALE', 'E', vr=valf)
                     call jelira(nch19//'.VALE', 'LONMAX', nb)
                     npt=nb/2
-                    do 30 i = 1, npt
+                    do i = 1, npt
                         valf(1+npt+i-1)=const*valf(1+npt+i-1)
- 30                 continue
+                    end do
                     zk8(jvalou+in-1) = newfct
                 else
                     call utmess('A', 'RUPTURE2_4', sk=charge)
@@ -115,7 +115,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                     goto 999
                 endif
             endif
- 20     continue
+        end do
     endif
 !
 999 continue

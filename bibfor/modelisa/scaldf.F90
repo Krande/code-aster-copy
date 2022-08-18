@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
                   defm, b)
     implicit none
@@ -45,17 +45,17 @@ subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
 !
 !-----------------------------------------------------------------------
 !
-    do 10 imr = 1, nbmr
-        do 20 ifo = 1, nbfonc
+    do imr = 1, nbmr
+        do ifo = 1, nbfonc
             b(ifo,imr) = 0.d0
-            do 30 ip = 1, nbp-1
+            do ip = 1, nbp-1
                 dx = disc(ip+1) - disc(ip)
                 y1 = vale(ip,ifo)*defm(ip,imr)
                 y2 = vale(ip+1,ifo)*defm(ip+1,imr)
                 yy = y1 + y2
                 b(ifo,imr) = b(ifo,imr) + yy * dx
-30          continue
+            end do
             b(ifo,imr) = b(ifo,imr)/2.d0
-20      continue
-10  end do
+        end do
+    end do
 end subroutine

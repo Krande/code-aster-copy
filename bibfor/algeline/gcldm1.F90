@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine gcldm1(m, in, ip, prec, x, y, perm, xtrav, ytrav)
+!
+subroutine gcldm1(m, in, ip, prec, x,&
+                  y, perm, xtrav, ytrav)
     implicit none
-
-    integer,intent(in) :: m
-    real(kind=8),intent(in)  :: prec(*), x(*)
-    real(kind=8),intent(out)  :: y(*)
-    integer(kind=4),intent(in) :: ip(*)
-    integer,intent(in)  :: in(*)
+!
+    integer, intent(in) :: m
+    real(kind=8), intent(in) :: prec(*), x(*)
+    real(kind=8), intent(out) :: y(*)
+    integer(kind=4), intent(in) :: ip(*)
+    integer, intent(in) :: in(*)
     integer, intent(in) :: perm(*)
     real(kind=8), intent(inout) :: xtrav(*)
     real(kind=8), intent(inout) :: ytrav(*)
@@ -41,54 +42,54 @@ subroutine gcldm1(m, in, ip, prec, x, y, perm, xtrav, ytrav)
     integer :: i, kdeb, kfin, ki
     real(kind=8) :: som, fac
 !-----------------------------------------------------------------------
-
+!
 !   -- on permute x pour qu'il ait la numerotation du preconditionneur :
 !   --------------------------------------------------------------------
     do i = 1, m
         xtrav(perm(i))=x(i)
     enddo
-
+!
 !-----------------------------------------------------------------------
 !     RESOLUTION DU PREMIER SYSTEME L.W = X
 !-------------------------------------------
     ytrav(1) = xtrav(1)
 !
-    do 20 i = 2, m
+    do i = 2, m
         som = 0.d0
         kdeb = in(i-1)+1
         kfin = in(i)-1
-        do 10 ki = kdeb, kfin
+        do ki = kdeb, kfin
             som = som + prec(ki)*ytrav(ip(ki))
-10      continue
+        end do
         ytrav(i) = (xtrav(i)-som)
-20  end do
-
+    end do
+!
 !-------------------------------------------
 !     RESOLUTION DE D.Y = W
 !-------------------------------------------
-    do 50 i = 1, m
+    do i = 1, m
         ytrav(i) = ytrav(i)*prec(in(i))
-50  end do
-
+    end do
+!
 !-------------------------------------------
 !     RESOLUTION DU SECOND SYSTEME LT.Y = W
 !-------------------------------------------
-    do 40 i = m, 2, -1
+    do i = m, 2, -1
         kdeb = in(i-1)+1
         kfin = in(i)-1
         fac = ytrav(i)
 !
 !        ---- PROCEDURE A LA MAIN
-        do 30 ki = kdeb, kfin
+        do ki = kdeb, kfin
             ytrav(ip(ki)) = ytrav(ip(ki))-prec(ki)*fac
-30      continue
-40  end do
-
+        end do
+    end do
+!
 !   -- on permute ytrav pour qu'il ait la numerotation du syteme :
 !   --------------------------------------------------------------
     do i = 1, m
         y(i)=ytrav(perm(i))
     enddo
-
-
+!
+!
 end subroutine

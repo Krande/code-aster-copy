@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
                   jresv1, jresl1, jresd2, jresv2, jresl2)
     implicit none
@@ -58,7 +58,7 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
     ima2 = nbmac + inmtot
 !
 !     COMPORTEMENT
-    do 310 icmp = 1, nbcmpc
+    do icmp = 1, nbcmpc
 !
         call cesexi('C', jresd1, jresl1, ima, 1,&
                     1, icmp, iadr1)
@@ -71,7 +71,7 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
             zl(jresl2-1-iadr2) = .true.
         endif
 !
-310  end do
+    end do
 !
     call jedema()
 end subroutine

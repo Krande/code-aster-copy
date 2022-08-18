@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bptobg(m, n, p)
     implicit none
     real(kind=8) :: m(6), n(6), p(3, 3)
@@ -44,8 +44,8 @@ subroutine bptobg(m, n, p)
     t(3,1)=5
     t(3,2)=6
     t(3,3)=3
-    do 10 i = 1, 3
-        do 11 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             temp=m(t(i,j))
             n(1)=n(1)+p(1,i)*p(1,j)*temp
             n(2)=n(2)+p(2,i)*p(2,j)*temp
@@ -53,6 +53,6 @@ subroutine bptobg(m, n, p)
             n(4)=n(4)+p(1,i)*p(2,j)*temp
             n(5)=n(5)+p(1,i)*p(3,j)*temp
             n(6)=n(6)+p(2,i)*p(3,j)*temp
-11      continue
-10  end do
+        end do
+    end do
 end subroutine

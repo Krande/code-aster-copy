@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function indiis(lis, is, rang, nbis)
     implicit none
     integer :: indiis
@@ -45,15 +45,15 @@ function indiis(lis, is, rang, nbis)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     j = 0
-    do 100 i = 1, nbis
+    do i = 1, nbis
         if (lis(i) .eq. is) then
             j = j + 1
             if (j .eq. rang) goto 110
         endif
-100  end do
+    end do
     indiis = 0
     goto 120
-110  continue
+110 continue
     indiis = i
-120  continue
+120 continue
 end function

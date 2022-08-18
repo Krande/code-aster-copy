@@ -15,15 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
                   nomcmp, lsup, linf, lmax, lmin,&
                   borinf, borsup)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -31,8 +32,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     character(len=*) :: cesz, nomcmp(*)
     integer :: unite, nbmat, nummai(*), nbcmp
     real(kind=8) :: borinf, borsup
@@ -99,18 +99,18 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     SI L'UTILISATEUR A RENSEIGNE NOM_CMP
     if (nbcmp .ne. 0) then
         ncmp=0
-        do 10 i = 1, nbcmp
+        do i = 1, nbcmp
             icmp=indik8(cesc,nomcmp(i),1,ncmpc)
             if (icmp .ne. 0) then
                 num_cmp_cham(ncmp+1)=icmp
                 ncmp=ncmp+1
             endif
- 10     continue
+        end do
     else
 !       SINON TOUT_CMP='OUI'
-        do 20 i = 1, ncmpc
+        do i = 1, ncmpc
             num_cmp_cham(i)=i
- 20     continue
+        end do
         ncmp=ncmpc
     endif
 !
@@ -118,15 +118,15 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     -------------------------------
 !     SI L'UTILISATEUR A RENSEIGNE MAILLE/GROUP_MA
     if (nbmat .ne. 0) then
-        do 30 i = 1, nbmat
+        do i = 1, nbmat
             num_mail_cham(i)=nummai(i)
- 30     continue
+        end do
         nbma=nbmat
     else
 !        SINON
-        do 40 i = 1, nbmac
+        do i = 1, nbmac
             num_mail_cham(i)=i
- 40     continue
+        end do
         nbma=nbmac
     endif
 !
@@ -135,7 +135,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     -------------------------------
 !
 !     BOUCLE SUR LES COMPOSANTES
-    do 50 i = 1, ncmp
+    do i = 1, ncmp
         icmp=num_cmp_cham(i)
 !
 !       LMAxxx : BOOLEEN INDIQUANT LE PREMIER PASSAGE
@@ -144,7 +144,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
         lmamax=.true.
 !
 !       BOUCLE SUR LES MAILLES
-        do 60 j = 1, nbma
+        do j = 1, nbma
             ima=num_mail_cham(j)
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
@@ -155,7 +155,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
             lptmax=.true.
 !
 !         BOUCLE SUR LES POINTS
-            do 70 ipt = 1, nbpt
+            do ipt = 1, nbpt
 !
 !           VSPMA3: VALEUR MAX SUR TOUS LES SOUS-POINTS
 !           VSPMI3: VALEUR MIN SUR TOUS LES SOUS-POINTS
@@ -168,7 +168,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
                 lspmax=.true.
 !
 !           BOUCLE SUR LES SOUS-POINTS:
-                do 80 isp = 1, nbsp
+                do isp = 1, nbsp
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
@@ -224,7 +224,8 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
                     endif
 !
 !           FIN BOUCLE SUR LES SOUS-POINTS
- 80             continue
+ 80                 continue
+                end do
 !
 !           VPTMA2: VALEUR MAX SUR TOUS LES POINTS
 !           VPTMI2: VALEUR MIN SUR TOUS LES POINTS
@@ -270,7 +271,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
                 endif
 !
 !         FIN BOUCLE SUR LES POINTS
- 70         continue
+            end do
 !
 !         VMAMAX: VALEUR MAX SUR TOUTES LES MAILLES
 !         VMAMIN: VALEUR MIN SUR TOUTES LES MAILLES
@@ -322,7 +323,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
             endif
 !
 !     FIN BOUCLE SUR LES MAILLES
- 60     end do
+        end do
 !
 !
 !     IMPRESSIONS
@@ -346,7 +347,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
      &    'AU SOUS_POINT ',ispmin,' DU POINT ',iptmin
         endif
 !
- 50 end do
+    end do
 !
     2000 format(3(a),e12.5)
     2001 format(3(a),i3,a,i3)

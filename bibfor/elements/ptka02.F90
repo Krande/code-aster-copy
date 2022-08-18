@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ptka02(id, sk, e, a1, a2,&
                   xl, xiy, xiy2, xiz, xiz2,&
                   xjx, xjx2, g, alfay1, alfay2,&
@@ -107,13 +107,13 @@ subroutine ptka02(id, sk, e, a1, a2,&
     parameter  (zero = 0.d0)
     data        ip/ 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66 /
 ! ---------------------------------------------------------------------
-    do 10,i = 1,78
-    sk(i) = zero
-    10 end do
+    do i = 1, 78
+        sk(i) = zero
+    end do
 !
 ! --- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
-        if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
+        if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
     endif
 !
@@ -124,7 +124,7 @@ subroutine ptka02(id, sk, e, a1, a2,&
     sk(ip(7)+1) = -sk(ip(1)+1)
     sk(ip(7)+7) = sk(ip(1)+1)
 !
-    if (ist .eq. 2 .or. ist .eq. 5) goto 9999
+    if (ist .eq. 2 .or. ist .eq. 5) goto 999
 !
 !     2/ FLEXION
 !     2.1) CALCUL DES CONSTANTES
@@ -185,7 +185,7 @@ subroutine ptka02(id, sk, e, a1, a2,&
     sk(ip(12)+8) = -sk(ip(12)+2)
     sk(ip(12)+12) = exl*(vt+q*q*xkk)
 !
-    if (ist .eq. 3 .or. ist .eq. 6) goto 9999
+    if (ist .eq. 3 .or. ist .eq. 6) goto 999
 !
 !     2.2.2/  FLEXION DANS LE PLAN X0Z
     if (id .eq. 2) then
@@ -215,7 +215,7 @@ subroutine ptka02(id, sk, e, a1, a2,&
     sk(ip(10)+4) = -sk(ip(4)+4)
     sk(ip(10)+10) = sk(ip(4)+4)
 !
-    if (ez .eq. zero .and. ey .eq. zero) goto 9999
+    if (ez .eq. zero .and. ey .eq. zero) goto 999
 !
 !     2.2.4/ AVEC EXCENTREMENT, TORSION DANS CE CAS
     sk(ip( 4)+ 4) = sk(ip(4)+4) + ez*ez*sk(ip(2)+2) + ey*ey*sk(ip(3)+3)
@@ -239,5 +239,5 @@ subroutine ptka02(id, sk, e, a1, a2,&
     sk(ip(11)+10) = -sk(ip(11)+4)
     sk(ip(12)+10) = -sk(ip(12)+4)
 !     SORTIE
-9999  continue
+999 continue
 end subroutine

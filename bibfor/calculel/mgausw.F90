@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mgausw(a, b, dim, nordre, nb,&
                   det, iret)
 !
@@ -64,7 +64,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
         det = 1.d0
     endif
 !
-    do 10 i = 1, nordre
+    do i = 1, nordre
 !
 ! ----- RECHERCHE DU MEILLEUR PIVOT
 !
@@ -72,14 +72,14 @@ subroutine mgausw(a, b, dim, nordre, nb,&
         c = a(i,i)
         flag = .false.
 !
-        do 20 k = i+1, nordre
+        do k = i+1, nordre
             d = a(k,i)
             if (abs(c) .lt. abs(d)) then
                 c = d
                 j = k
                 flag = .true.
             endif
- 20     continue
+        end do
 !
 ! ----- DETERMINANT
 !
@@ -114,17 +114,17 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
         if (flag) then
 !
-            do 40 k = i, nordre
+            do k = i, nordre
                 d = a(i,k)
                 a(i,k) = a(j,k)
                 a(j,k) = d
- 40         continue
+            end do
 !
-            do 50 k = 1, nb
+            do k = 1, nb
                 d = b(i,k)
                 b(i,k) = b(j,k)
                 b(j,k) = d
- 50         continue
+            end do
 !
             det = (-1.d0)*det
 !
@@ -132,38 +132,40 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
 ! ----- ELIMINATION
 !
-        do 10 j = i+1, nordre
+        do j = i+1, nordre
 !
             if (a(j,i) .ne. 0.d0) then
 !
                 d = a(j,i)/c
 !
-                do 60 k = 1, nb
+                do k = 1, nb
                     b(j,k) = b(j,k) - d*b(i,k)
- 60             continue
+                end do
 !
-                do 70 k = i+1, nordre
+                do k = i+1, nordre
                     a(j,k) = a(j,k) - d*a(i,k)
- 70             continue
+                end do
 !
             endif
 !
- 10     continue
+        end do
+    end do
 !
 ! --- RESOLUTION
 !
-    do 80 k = 1, nb
+    do k = 1, nb
         b(nordre,k) = b(nordre,k)/c
 !
-        do 80 i = nordre-1, 1, -1
+        do i = nordre-1, 1, -1
             d = 0.d0
-            do 90 j = i+1, nordre
+            do j = i+1, nordre
                 d = d + a(i,j) * b(j, k)
- 90         continue
+            end do
 !
             b(i,k) = (b(i,k) - d) / a(i,i)
 !
- 80     continue
+        end do
+    end do
 !
 100 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                   table, specmr, specmi)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: napexc, nbmode, nbpf
     real(kind=8) :: specmr(nbpf, *), specmi(nbpf, *)
     aster_logical :: intmod
@@ -57,7 +57,7 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
     call jelira(chnumi, 'LONMAX', mxval)
 !
     j = 0
-    do 30 imj = ideb1, ifin1
+    do imj = ideb1, ifin1
         j = j + 1
 !
         ival(2) = imj
@@ -66,20 +66,20 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
         if (intmod) ideb = ideb1
 !
         i = 0
-        do 40 imi = ideb, imj
+        do imi = ideb, imj
             i = i + 1
 !
             ival(1) = imi
 !
-            do 200 i1 = 1, mxval
+            do i1 = 1, mxval
                 if ((zi(lnumi-1+i1) .eq. ival(1)) .and. (zi(lnumj-1+ i1) .eq. ival(2))) then
                     call jeveuo(jexnum(chvale, i1), 'L', ifon)
                 endif
-200         continue
+            end do
 !
             isj = j * ( j - 1 ) / 2 + i
 !
-            do 50 if1 = 1, nbpf
+            do if1 = 1, nbpf
                 if (ival(1) .eq. ival(2)) then
                     specmr(if1,isj) = zr(ifon-1 + if1)
                     specmi(if1,isj) = 0.d0
@@ -87,8 +87,8 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                     specmr(if1,isj) = zr(ifon+ (if1-1)*2)
                     specmi(if1,isj) = zr(ifon+ (if1-1)*2+1)
                 endif
- 50         continue
- 40     continue
+            end do
+        end do
 !
- 30 end do
+    end do
 end subroutine

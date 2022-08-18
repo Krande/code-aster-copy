@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
     implicit none
 !
@@ -58,7 +58,7 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer ::  i
+    integer :: i
     real(kind=8) :: xc, xp, yc, yp, l, zzc, zzp
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -79,25 +79,25 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
     tcoor(2) = yp
     tcoor(3) = zzp
 !
-    do 10, i = 2, nbn, 1
+    do i = 2, nbn, 1
 !
-    xc = vale(1+ (tnd(i)-1)*3 + 1-1)
-    yc = vale(1+ (tnd(i)-1)*3 + 2-1)
-    zzc = vale(1+ (tnd(i)-1)*3 + 3-1)
+        xc = vale(1+ (tnd(i)-1)*3 + 1-1)
+        yc = vale(1+ (tnd(i)-1)*3 + 2-1)
+        zzc = vale(1+ (tnd(i)-1)*3 + 3-1)
 !
-    l = sqrt((xc-xp)*(xc-xp)+(yc-yp)*(yc-yp)+(zzc-zzp)*(zzc-zzp))
+        l = sqrt((xc-xp)*(xc-xp)+(yc-yp)*(yc-yp)+(zzc-zzp)*(zzc-zzp))
 !
-    tabsc(i) = tabsc(i-1) + l
+        tabsc(i) = tabsc(i-1) + l
 !
-    tcoor(3*(i-1) + 1) = xc
-    tcoor(3*(i-1) + 2) = yc
-    tcoor(3*(i-1) + 3) = zzc
+        tcoor(3*(i-1) + 1) = xc
+        tcoor(3*(i-1) + 2) = yc
+        tcoor(3*(i-1) + 3) = zzc
 !
-    xp = xc
-    yp = yc
-    zzp = zzc
+        xp = xc
+        yp = yc
+        zzp = zzc
 !
-    10 end do
+    end do
 !
     call jedema()
 end subroutine

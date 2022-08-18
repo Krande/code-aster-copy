@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgfono(ndim, nno1, nno2, npg, wref,&
                   vff1, vff2, dffr1, geom, tang,&
                   iu, iuc, im, sigp, vect)
@@ -56,32 +56,32 @@ subroutine cgfono(ndim, nno1, nno2, npg, wref,&
 !
     do g = 1, npg
 !
-        call cgcine(ndim, nno1, vff1(1, g), &
-                    wref(g), dffr1(1, g), geom, tang, wg,&
-                    l, b, courb)
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
+                    geom, tang, wg, l, b,&
+                    courb)
 !
 !        CONVENTION DE RANGEMENT SIGP(1,2,3) EXPLICITE CI-DESSOUS
 !          SIGP(     1,G) = SIGCAB*A
 !          SIGP(     2,G) = MU + R*(UPROJ-UCAB-DE)
 !          SIGP(     3,G) = UPROJ-UCAB-DE
 !        VECTEUR FINT:U
-        do 300 n = 1, nno1
-            do 301 i = 1, ndim
+        do n = 1, nno1
+            do i = 1, ndim
                 kk = iu(i,n)
                 t1 = b(i,n)*sigp(1,g)
                 vect(kk) = vect(kk) + wg*t1
-301          continue
+            end do
             kk=iuc(n)
             t1=b(4,n)*sigp(1,g)+l(n)*sigp(2,g)
             vect(kk)=vect(kk)+wg*t1
-300      continue
+        end do
 !
 !        VECTEUR FINT:M
-        do 350 n = 1, nno2
+        do n = 1, nno2
             kk = im(n)
             t1 = vff2(n,g)*sigp(3,g)
             vect(kk) = vect(kk) + wg*t1
-350      continue
+        end do
 !
 !
 !

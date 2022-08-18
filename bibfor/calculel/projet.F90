@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine projet(ndim, npg1, nno, vect, res)
 !
 !
@@ -70,13 +70,13 @@ subroutine projet(ndim, npg1, nno, vect, res)
             mp(3,2) = mp(1,2)
             mp(3,3) = mp(1,1)
 !
-            do 20 i = 1, 3
+            do i = 1, 3
                 s = 0.d0
-                do 10 j = 1, 3
+                do j = 1, 3
                     s = s + mp(i,j)*vect(j)
-10              continue
+                end do
                 res(i) = s
-20          continue
+            end do
             if (nno .eq. 6) then
                 res(4) = de* (res(1)+res(2))
                 res(5) = de* (res(2)+res(3))
@@ -104,13 +104,13 @@ subroutine projet(ndim, npg1, nno, vect, res)
             mpq(4,3) = mpq(1,2)
             mpq(4,4) = mpq(1,1)
 !
-            do 40 i = 1, 4
+            do i = 1, 4
                 s = 0.d0
-                do 30 j = 1, 4
+                do j = 1, 4
                     s = s + mpq(i,j)*vect(j)
-30              continue
+                end do
                 res(i) = s
-40          continue
+            end do
             if (nno .eq. 8) then
                 res(5) = de* (res(1)+res(2))
                 res(6) = de* (res(2)+res(3))
@@ -129,37 +129,37 @@ subroutine projet(ndim, npg1, nno, vect, res)
 !
 !-----CONSTRUCTION DE VLOC
 !
-            do 50 i = 1, 50
+            do i = 1, 50
                 res(i) = zero
-50          continue
+            end do
 !-------- MISE A ZERO DE VLOC
-            do 70 i = 1, 3
-                do 60 j = 1, 27
+            do i = 1, 3
+                do j = 1, 27
                     vloc(i,j) = zero
-60              continue
-70          continue
+                end do
+            end do
 !
             xab = sqrt(trois)
             if (nno .eq. 20 .or. nno .eq. 27) xab = sqrt(cinq/trois)
 !
-            do 90 i = 1, 3
-                do 80 j = 1, nno
+            do i = 1, 3
+                do j = 1, nno
                     vloc(i,j) = xab*vl(i+ (j-1)*3)
-80              continue
-90          continue
+                end do
+            end do
 !
 !       CALCUL AUX NOEUDS
 !
 !-----BOUCLE SUR LE NOMBRE DE NOEUDS NNO
 !
-            do 110 in = 1, nno
+            do in = 1, nno
                 call intrpo(vloc(1, in), vloc(2, in), vloc(3, in), nno, vh)
-                do 100 j = 1, npg1
+                do j = 1, npg1
                     ic = j27(j)
                     if (nno .eq. 8) ic = j8(j)
                     res(in) = res(in) + vh(j)*vect(ic)
-100              continue
-110          continue
+                end do
+            end do
 !
         endif
 !
@@ -186,13 +186,13 @@ subroutine projet(ndim, npg1, nno, vect, res)
             mpt(4,3) = mpt(1,1)
             mpt(4,4) = mpt(1,3)
 !
-            do 130 i = 1, 4
+            do i = 1, 4
                 s = 0.d0
-                do 120 j = 1, 4
+                do j = 1, 4
                     s = s + mpt(i,j)*vect(j)
-120              continue
+                end do
                 res(i) = s
-130          continue
+            end do
             if (nno .eq. 10) then
                 res(5) = de* (res(1)+res(2))
                 res(6) = de* (res(2)+res(3))
@@ -245,13 +245,13 @@ subroutine projet(ndim, npg1, nno, vect, res)
             mpp(6,5) = a
             mpp(6,6) = a
 !
-            do 150 i = 1, 6
+            do i = 1, 6
                 s = 0.d0
-                do 140 j = 1, 6
+                do j = 1, 6
                     s = s + mpp(i,j)*vect(j)
-140              continue
+                end do
                 res(i) = s
-150          continue
+            end do
             if (nno .eq. 15) then
                 res(7) = de* (res(1)+res(2))
                 res(8) = de* (res(2)+res(3))

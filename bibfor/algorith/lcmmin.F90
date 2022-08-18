@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmin(typess, essai, mod, nmat, materf,&
                   nr, nvi, yd, deps, dy,&
                   comp, nbcomm, cpmono, pgl, nfs,&
@@ -146,7 +146,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
         nbfsys=nbcomm(nmat,2)
         nums=0
 !
-        do 111 ifa = 1, nbfsys
+        do ifa = 1, nbfsys
 !
             nomfam=cpmono(5*(ifa-1)+1)
 !       RECUPERATION DU NOMBRE DE SYSTEME DE GLISSEMENT NBSYS
@@ -158,7 +158,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !
             call r8inir(6, 0.d0, evp, 1)
 !
-            do 112 is = 1, nbsys
+            do is = 1, nbsys
                 nums=nums+1
                 dy (ndt+6+3*ifa*(is-1)+3) = vind(6+3*ifa*(is-1)+3)&
                 *(timef-timed)/timef
@@ -169,17 +169,17 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !           RECUPERATION DE MS ET CALCUL DE EVP
                 call lcmmsg(nomfam, nbsys, is, pgl, ms,&
                             ng, lg, 0, q)
-                do 110 i = 1, 6
+                do i = 1, 6
                     evp(i) = evp(i) + ms(i)*dy (ndt+6+3*ifa*(is-1)+2)
-110              continue
-112          continue
-111      continue
+                end do
+            end do
+        end do
 !      ATTRIBUTIION A DY LA VALEUR DE EVP CALCULEE
         dy(ndt+1:ndt+6) = evp(1:6)
 !
-        do 113 i = 1, 6
+        do i = 1, 6
             sigdn(i) = sigd(i)*(timef-timed)/timef
-113      continue
+        end do
         dy(1:ndt) = sigdn(1:ndt)
 !
 !

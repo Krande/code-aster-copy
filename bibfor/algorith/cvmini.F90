@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cvmini(typess, essai, mod, nmat, materf,&
                   timed, timef, yd, epsd, deps,&
                   dy)
@@ -149,9 +149,9 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         call cvmcvx(nmat, materf, sig, yd(ndt+1), seuil)
         if (seuil .le. 0.d0) then
             dp = 0.d0
-            do 1, i=1,6
-            dfds(i) = 0.d0
- 1          continue
+            do i = 1, 6
+                dfds(i) = 0.d0
+            end do
         else
             call chbfs(sig, x1, x2, dfds)
             zz = seuil / ( k0 + ak * r)

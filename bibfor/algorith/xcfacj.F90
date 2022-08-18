@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                   igeom, nno, ndim, nfiss, ifiss,&
                   fisco, nfisc, typma)
@@ -24,7 +24,6 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/confac.h"
@@ -33,6 +32,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 #include "asterfort/padist.h"
 #include "asterfort/reereg.h"
 #include "asterfort/xajpin.h"
+!
     integer :: ptmax, ipt, igeom, nno, ndim
     real(kind=8) :: lsn(*), ptint(*), ainter(*)
     integer :: nfiss, ifiss, fisco(*), nfisc
@@ -79,7 +79,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     call confac(typma, ibid3, ibid, fa, nbf)
 !
 !     BOUCLE SUR LES FACES
-    do 200 ifq = 1, nbf
+    do ifq = 1, nbf
 !
         lajpf = .false.
         if (fa(ifq,4) .eq. 0) then
@@ -94,14 +94,14 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 !       RECHERCHE DES INTERSECTION ENTRE LSN ET LES LSJ SUR LA FACE
 !
         somlsn = 0.d0
-        do 100 i = 1, nnof
+        do i = 1, nnof
             somlsn = somlsn + abs( lsn(fa(ifq,i)) )
-100     continue
+        end do
         if (somlsn .eq. 0.d0) goto 200
 !
-        do 110 ifisc = 1, nfisc
+        do ifisc = 1, nfisc
             chgsgn = .false.
-            do 120 i = 1, nnof
+            do i = 1, nnof
                 na = fa(ifq,i)
                 if (i .eq. 1) then
                     j = nnof
@@ -125,7 +125,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                 if (abs(lsna-lsnb) .gt. r8prem() .and. (lsjb-lsnb*(lsja- lsjb)/(lsna-lsnb))&
                     .lt. prec .or. abs(lsna-lsnb) .le. r8prem() .and. (lsja*lsjb) .lt. r8prem()) &
                 chgsgn = .true.
-120         continue
+            end do
             if (.not. chgsgn) goto 110
 !
 !         ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT À LSN=LSJ=0
@@ -146,47 +146,49 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
             mp(1)=epsi(1)
             mp(2)=epsi(2)
             call elrfvf(alias, mp, ff)
-            do 130 jfisc = ifisc+1, nfisc
+            do jfisc = ifisc+1, nfisc
                 lsj = 0
-                do 140 j = 1, nnof
+                do j = 1, nnof
                     ino = fa(ifq,j)
                     lsj = lsj + lsn( (ino-1)*nfiss+fisco(2*jfisc-1))* fisco(2*jfisc)*ff(j)
-140             continue
+                end do
                 if (lsj .gt. 0) goto 110
-130         continue
+            end do
             lajpf = .true.
-            do 150 i = 1, ndim
+            do i = 1, ndim
                 m(i)=0
-                do 160 j = 1, nnof
+                do j = 1, nnof
                     ino = fa(ifq,j)
                     m(i) = m(i) + zr(igeom-1+ndim*(ino-1)+i) * ff(j)
-160             continue
-150         continue
+                end do
+            end do
 !
-110     continue
+110         continue
+        end do
 !
         if (lajpf) then
 !       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX
 !       DETECTES DANS XCFACE LORSQUE LE PT EST EXACT SUR UNE ARETE
-            do 250 j = 1, ipt
+            do j = 1, ipt
                 dst=padist(ndim,m,ptint(ndim*(j-1)+1))
                 if (dst .le. r8prem()) lajpf = .false.
-250         continue
+            end do
         endif
 !
         if (lajpf) then
 !       ON AJOUTE A LA LISTE LE POINT M
-            do 260 i = 1, ndim
+            do i = 1, ndim
                 a(i) = zr(igeom-1+ndim*(fa(ifq,1)-1)+i)
                 b(i) = zr(igeom-1+ndim*(fa(ifq,2)-1)+i)
                 c(i) = zr(igeom-1+ndim*(fa(ifq,3)-1)+i)
-260         continue
+            end do
             loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
             call xajpin(ndim, ptint, ptmax, ipt, ibid,&
                         m, loncar, ainter, 0, 0,&
                         0.d0, ajout)
         endif
-200 continue
+200     continue
+    end do
 !
 !
 end subroutine

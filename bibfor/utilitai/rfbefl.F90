@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rfbefl(base)
     implicit none
 #include "jeveux.h"
@@ -88,38 +88,38 @@ subroutine rfbefl(base)
     zk24(lpro+3) = paray
     zk24(lpro+4) = 'EE      '
     zk24(lpro+5) = nomfon
-
-    if (parax(1:10).eq.'NB_CONNORS') then
-        !ASSERT(paray(1:9).eq.'VITE_CRIT')
-
+!
+    if (parax(1:10) .eq. 'NB_CONNORS') then
+!ASSERT(paray(1:9).eq.'VITE_CRIT')
+!
         call jeveuo(basefl//'           .REMF', 'L', lremf)
         typflu = zk8(lremf+0)
         call jeveuo(typflu//'           .FSVR', 'L', ifsvr)
         call jeveuo(typflu//'           .FSVI', 'L', ifsvi)
-        nbzex  = zi(ifsvi+1)
+        nbzex = zi(ifsvi+1)
         nbconn = zi(ifsvi+nbzex+2)
         pas = (zr(ifsvr+4)-zr(ifsvr+3)) /(nbconn-1)
-
+!
 !       --- CAS D'UN NOMBRE DE CONNORS UNIQUE (PAS DE DISCRETISATION EN X)
 !       --- FORCER UNE VALEUR MINIMUM DU PAS EN NOMBRE DE CONNORS
-        if (abs(pas).lt.epsi) then
+        if (abs(pas) .lt. epsi) then
             pas = epsi*1.d3
         end if
-
+!
 !------------- REMPLISSAGE DE L'ABSCISSE
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbconn, lvar)
         lfon = lvar+nbconn
         do i = 1, nbconn
             zr(lvar + i - 1) = zr(ifsvr+3)+(i-1)*pas
         end do
-
+!
         call jeveuo(basefl//'.VCN', 'L', ivcn)
 !------------- REMPLISSAGE DE L'ORDONNEE
-        if (paray(1:7).eq.'INSTAB_') then
+        if (paray(1:7) .eq. 'INSTAB_') then
             call jeveuo(basefl//'.VEN', 'L', iven)
             dec = 0
 !           ---- POUR LA METHODE TOUTES COMPOSANTS, DECALER DE NBMODES DANS .VEN
-            if (paray(1:15).eq.'INSTAB_TOUT_CMP') then
+            if (paray(1:15) .eq. 'INSTAB_TOUT_CMP') then
                 call jelira(basefl//'.VEN', 'LONMAX', dec)
                 dec = dec/2
             end if
@@ -141,7 +141,7 @@ subroutine rfbefl(base)
         end if
     else
         ASSERT(parax(1:8).eq.'VITE_FLU')
-
+!
         call getvtx(' ', 'TOUT_ORDRE', scal=ttordr, nbret=n3)
 !
 !     --- RECUPERATION DES OJB ---
@@ -163,10 +163,10 @@ subroutine rfbefl(base)
             call wkvect(numeo, 'V V I', nbno, inumeo)
             call getvis(' ', 'NUME_ORDRE', nbval=nbno, vect=zi(inumeo), nbret=n1)
             min = zi(inumeo)
-            do 10 i = 1, nbno
+            do i = 1, nbno
                 id = min - zi(inumeo + i - 1)
                 if (id .gt. 0) min = zi(inumeo + i - 1)
-10          continue
+            end do
             if (min .gt. npv) then
                 call utmess('F', 'UTILITAI4_9')
             endif
@@ -174,19 +174,19 @@ subroutine rfbefl(base)
 !
 !         --- DETERMINATION DU NUMERO D'ORDRE DU MODE VOULU ---
 !
-        do 20 imod = 1, nbm
+        do imod = 1, nbm
             id = nummod - zi(lnumo + imod - 1)
             if (id .eq. 0) goto 30
-20      end do
+        end do
         call utmess('F', 'UTILITAI4_10')
-30      continue
+ 30     continue
 !
 !         --- CAS 1 : REMPLISSAGE POUR TOUS LES NUMEROS D'ORDRE ---
 !
         if (ttordr .eq. 'OUI') then
             call wkvect(nomfon//'.VALE', 'G V R', 2*npv, lvar)
             lfon = lvar + npv
-            do 40 i = 1, npv
+            do i = 1, npv
                 zr(lvar + i - 1) = zr(lvite + i - 1)
                 if (paray(1:4) .eq. 'FREQ') then
                     ind = 2*nbm*(i - 1) + 2*(imod - 1)
@@ -195,35 +195,35 @@ subroutine rfbefl(base)
                     ind = 2*nbm*(i - 1) + 2*(imod - 1) + 1
                     zr(lfon + i - 1) = zr(lfreq + ind)
                 endif
-40          continue
+            end do
         else
 !
 !         --- CAS 2 : REMPLISSAGE POUR UNE LISTE DE NUMEROS D'ORDRE ---
 !
 !-------------2.1 ON ORDONNE LA LISTE DES NUMEROS D'ORDRE
             if (nbno .gt. 1) then
-                do 41 i = 1, nbno
+                do i = 1, nbno
                     ind = i
                     min = zi(inumeo + i - 1)
-                    do 42 j = i+1, nbno
+                    do j = i+1, nbno
                         id = min - zi(inumeo + j - 1)
                         if (id .gt. 0) then
                             ind = j
                             min = zi(inumeo + j - 1)
                         endif
-42                  continue
+                    end do
                     zi(inumeo + ind - 1) = zi(inumeo + i - 1)
                     zi(inumeo + i - 1) = min
-41              continue
+                end do
             endif
 !
 !-------------2.2 DETERMINATION DU NOMBRE DE NUMEROS D'ORDRE VALIDES
             if (nbno .gt. 1) then
-                do 43 i = 1, nbno
+                do i = 1, nbno
                     if (zi(inumeo + i - 1) .gt. npv) goto 44
                     nbv = nbv + 1
-43              continue
-44              continue
+                end do
+ 44             continue
             else
                 nbv = 1
             endif
@@ -231,7 +231,7 @@ subroutine rfbefl(base)
 !-------------2.3 REMPLISSAGE
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbv, lvar)
             lfon = lvar + nbv
-            do 45 i = 1, nbv
+            do i = 1, nbv
                 ind1 = zi(inumeo + i - 1)
                 zr(lvar + i - 1) = zr(lvite + ind1 - 1)
                 if (paray(1:4) .eq. 'FREQ') then
@@ -241,7 +241,7 @@ subroutine rfbefl(base)
                     ind2 = 2*nbm*(ind1 - 1) + 2*(imod - 1) + 1
                     zr(lfon + i - 1) = zr(lfreq + ind2)
                 endif
-45          continue
+            end do
             call jedetr(numeo)
 !
         endif

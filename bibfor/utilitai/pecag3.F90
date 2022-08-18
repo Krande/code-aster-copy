@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                   nbmail, noment, valpar)
     implicit none
@@ -84,7 +84,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
 !
 !
     if (motcle(1:4) .eq. 'TOUT') then
-        do 10 i = 1, nbnoeu
+        do i = 1, nbnoeu
             x0 = zr(jcoor-1+3*(i-1)+1) - cdx
             y0 = zr(jcoor-1+3*(i-1)+2) - cdy
             x = x0*cosa + y0*sina
@@ -97,14 +97,14 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
             zmax = 0.d0
             zmin= 0.d0
             rmax = max ( rmax , r )
- 10     continue
+        end do
 !
     else if (motcle(1:6) .eq. 'MAILLE') then
-        do 20 im = 1, nbmail
+        do im = 1, nbmail
             call jenonu(jexnom(noma8//'.NOMMAI', noment(im)), ibid)
             call jeveuo(jexnum(mlgcox, ibid), 'L', jdes)
             call jelira(jexnum(mlgcox, ibid), 'LONMAX', nbno)
-            do 22 in = 1, nbno
+            do in = 1, nbno
                 nuno = zi(jdes+in-1)
                 x0 = zr(jcoor-1+3*(nuno-1)+1)-cdx
                 y0 = zr(jcoor-1+3*(nuno-1)+2)-cdy
@@ -118,18 +118,18 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                 zmax = 0.d0
                 zmin = 0.d0
                 rmax = max ( rmax , r )
- 22         continue
- 20     continue
+            end do
+        end do
 !
     else if (motcle(1:8) .eq. 'GROUP_MA') then
-        do 30 ig = 1, nbmail
+        do ig = 1, nbmail
             call jeveuo(jexnom(mlggma, noment(ig)), 'L', jgro)
             call jelira(jexnom(mlggma, noment(ig)), 'LONUTI', nbma)
-            do 32 im = 1, nbma
+            do im = 1, nbma
                 numail = zi(jgro+im-1)
                 call jeveuo(jexnum(mlgcox, numail), 'L', jdes)
                 call jelira(jexnum(mlgcox, numail), 'LONMAX', nbno)
-                do 34 in = 1, nbno
+                do in = 1, nbno
                     nuno = zi(jdes+in-1)
                     x0 = zr(jcoor-1+3*(nuno-1)+1)-cdx
                     y0 = zr(jcoor-1+3*(nuno-1)+2)-cdy
@@ -143,9 +143,9 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                     zmax = 0.d0
                     zmin = 0.d0
                     rmax = max ( rmax , r )
- 34             continue
- 32         continue
- 30     continue
+                end do
+            end do
+        end do
     endif
     rx=max(abs(xmax),(abs(xmin)))
     ry=max(abs(ymax),(abs(ymin)))

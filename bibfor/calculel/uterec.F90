@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine uterec(ndim, iflup, iflum, ino, mno,&
                   jno, nsomm, jac, term22, aux,&
                   ltheta, valthe, valunt, niv, ifm,&
@@ -141,7 +141,7 @@ subroutine uterec(ndim, iflup, iflum, ino, mno,&
     else
 !
 ! CAS 3D
-        do 100 in = 1, nsomm
+        do in = 1, nsomm
             iino = noe(in,ino,ityp)
             i1 = iino-1
             ij = iflup + i1*ndim
@@ -161,7 +161,7 @@ subroutine uterec(ndim, iflup, iflum, ino, mno,&
             endif
             term22 = term22 + term23*term23*jac(in)
             aux = aux + aux1*aux1*jac(in)
-100     continue
+        end do
 !
     endif
 !

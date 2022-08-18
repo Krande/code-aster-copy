@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0315(option, nomte)
     implicit none
 !
@@ -81,12 +81,12 @@ subroutine te0315(option, nomte)
     endif
 !
     k = 0
-    do 20 i = 1, nno
+    do i = 1, nno
         if (option(16:16) .eq. 'R') then
-            do 10 idim = 1, 2
+            do idim = 1, 2
                 k = k + 1
                 acloc(idim,i) = zr(iacce+k-1)
- 10         continue
+            end do
         else if ((option(16:16).eq.'X')) then
             k = k + 1
             acloc(1,i) = zr(itemp+k-1)
@@ -96,15 +96,15 @@ subroutine te0315(option, nomte)
             acloc(1,i) = 0.d0
             acloc(2,i) = zr(itemp+k-1)
         endif
- 20 end do
+    end do
 !
-    do 30 i = 1, nno
+    do i = 1, nno
         zr(ivectt+i-1) = 0.d0
- 30 end do
+    end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 70 kp = 1, npg
+    do kp = 1, npg
         ldec = (kp-1)*nno
 !
         nx = 0.d0
@@ -112,10 +112,10 @@ subroutine te0315(option, nomte)
 !        --- ON CALCULE L ACCEL AU POINT DE GAUSS
         acc(1,kp) = 0.d0
         acc(2,kp) = 0.d0
-        do 40 i = 1, nno
+        do i = 1, nno
             acc(1,kp) = acc(1,kp) + acloc(1,i)*zr(ivf+ldec+i-1)
             acc(2,kp) = acc(2,kp) + acloc(2,i)*zr(ivf+ldec+i-1)
- 40     continue
+        end do
 !
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
@@ -131,15 +131,15 @@ subroutine te0315(option, nomte)
 !
         if (laxi) then
             r = 0.d0
-            do 50 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
- 50         continue
+            end do
             poids = poids*r
         endif
 !
-        do 60 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*flufn(kp)*rho(1)*zr( ivf+ldec+i-1)
- 60     continue
- 70 end do
+        end do
+    end do
 !
 end subroutine

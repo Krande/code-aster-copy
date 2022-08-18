@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chmalg(mate, pgl, ni, nj)
     implicit none
     integer :: ni, nj
@@ -42,52 +42,52 @@ subroutine chmalg(mate, pgl, ni, nj)
     real(kind=8) :: mt(7, 7), matg(7, 7)
 ! .....................................................................
     if (nj .gt. 7) then
-        goto 9999
+        goto 999
     endif
-    do 1 i = 1, 7
-        do 2 j = 1, 7
+    do i = 1, 7
+        do j = 1, 7
             mt(j,i) = 0.d0
- 2      continue
- 1  end do
+        end do
+    end do
 ! --- MATRICE DE TRANSFERT
-    do 10 i = 1, 3
-        do 20 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             mt(i ,j ) = pgl(i,j)
             mt(i+3,j+3) = pgl(i,j)
-20      continue
-10  end do
+        end do
+    end do
 !
     mt(7,7) = 1.d0
 ! --- ON EFFECTUE : MATG() = MATE() * MT()
-    do 40 k = 1, nj
-        do 50 i = 1, ni
+    do k = 1, nj
+        do i = 1, ni
             ii = nj * (i-1)
             matg(i,k) = 0.d0
-            do 60 j = 1, nj
+            do j = 1, nj
                 matg(i,k) = matg(i,k) + mate(ii+j) * mt(j,k)
-60          continue
-50      continue
-40  end do
+            end do
+        end do
+    end do
 ! --- MULTIPLICATION PAR LA MATRICE TRANSPOSEE DE "MT" LORSQUE
 !           "MATE" EST RECTANGULAIRE DE DIMENSIONS 7X7
     if (ni .ne. 1) then
-        do 70 i = 1, ni
+        do i = 1, ni
             ii = nj * (i-1)
-            do 80 k = 1, nj
+            do k = 1, nj
                 mate(ii+k) = 0.d0
-                do 90 j = 1, nj
+                do j = 1, nj
                     mate(ii+k) = mate(ii+k) + mt(j,i)*matg(j,k)
-90              continue
-80          continue
-70      continue
+                end do
+            end do
+        end do
     else
-        do 100 i = 1, ni
+        do i = 1, ni
             ii = nj * (i-1)
-            do 110 j = 1, nj
+            do j = 1, nj
                 mate(ii+j) = matg(i,j)
-110          continue
-100      continue
+            end do
+        end do
     endif
 ! .....................................................................
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bsigma(ip, xl, phiy, phiz, b,&
                   intpol)
     implicit none
@@ -71,11 +71,11 @@ subroutine bsigma(ip, xl, phiy, phiz, b,&
         k = sqrt(0.6d0)
     endif
 !
-    do 2 j = 1, 14
-        do 1 i = 1, 4
+    do j = 1, 14
+        do i = 1, 4
             b(i,j) = 0
- 1      continue
- 2  end do
+        end do
+    end do
 !
     if (intpol .eq. 0) then
         goto 100
@@ -84,7 +84,7 @@ subroutine bsigma(ip, xl, phiy, phiz, b,&
     endif
 !
 ! -------------------------------------------------------
-200  continue
+200 continue
 ! --- INTERPOLATION CUBIQUE COHERENTE AVEC CELLE CHOISIE
 ! --- POUR LE CALCUL DE LA MATRICE DE RIGIDITE MATERIELLE
 !
@@ -118,10 +118,10 @@ subroutine bsigma(ip, xl, phiy, phiz, b,&
     b(4,11) = (-3.d0*k**2+3.d0)/ (4.d0*a)
     b(4,14) = (3.d0*k**2+2.d0*k-1.d0)/ (4.d0)
 !
-    goto 9999
+    goto 999
 !
 ! -------------------------------------------------------
-100  continue
+100 continue
 ! --- INTERPOLATION LINEAIRE POUR TOUS LES DDLS
 !
 ! TX
@@ -145,5 +145,5 @@ subroutine bsigma(ip, xl, phiy, phiz, b,&
     b(4,14) = (1.d0)/ (xl)
 !
 !
-9999  continue
+999 continue
 end subroutine

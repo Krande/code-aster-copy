@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmetdo(sdcriq)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -72,7 +72,7 @@ subroutine nmetdo(sdcriq)
     if (nbocc .eq. 0) then
         call utmess('F', 'INDICATEUR_25')
     else
-        do 10 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvtx('COMPORTEMENT', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
             if (comp1(1:6) .eq. 'KIT_HM') then
                 call getvtx('COMPORTEMENT', 'RELATION_KIT', iocc=iocc, nbval=dimaki,&
@@ -83,21 +83,21 @@ subroutine nmetdo(sdcriq)
                     ASSERT(.false.)
                 else
                     ellisq = .false.
-                    do 101 ii = 1, n2
+                    do ii = 1, n2
                         argii = comel(ii)
                         if ((argii(1:4).eq.'ELAS') .or. (argii(1:9) .eq.'LIQU_SATU')) then
                             idebut = ii + 1
-                            do 102 jj = idebut, n2
+                            do jj = idebut, n2
                                 argjj = comel(jj)
                                 if ((argjj(1:4).eq.'ELAS') .or. (argjj(1:9).eq.'LIQU_SATU')) then
                                     ellisq = .true.
                                 endif
-102                         continue
+                            end do
                         endif
-101                 continue
+                    end do
                 endif
             endif
- 10     continue
+        end do
     endif
 !
     if (.not.ellisq) then

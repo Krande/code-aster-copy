@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine upletr(ndim, mple, mcol)
     implicit none
     integer :: ndim
@@ -46,11 +46,11 @@ subroutine upletr(ndim, mple, mcol)
 ! ---------------------------------------------------------------------
 ! PASSAGE DE MATRICE COLONNE VERS MAT PLEINE (COMPLETEE PAR ANTI
 ! SYMETRIE)
-    do 1,i = 1,ndim
-    do 2,j = 1,i
-    mple(j,i)=mcol(int(i*(i-1)/2)+j)
-    mple(i,j) = - mple(j,i)
- 2  continue
- 1  continue
+    do i = 1, ndim
+        do j = 1, i
+            mple(j,i)=mcol(int(i*(i-1)/2)+j)
+            mple(i,j) = - mple(j,i)
+        end do
+    end do
 !
 end subroutine

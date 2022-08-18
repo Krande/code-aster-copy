@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                   vgli, iadh, wk1, wk2, wk3,&
                   iwk4, tdebut, tfin, nbloc, offset,&
@@ -108,24 +108,24 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
     rad = r8rddg()
     call infniv(ifires, impr)
 !
-    do 1 i = 1, nbpt
+    do i = 1, nbpt
         if (tdebut .le. temps(i)) then
             idebut = i
             goto 2
         endif
- 1  end do
- 2  continue
+    end do
+  2 continue
     if (tfin .ge. temps(nbpt)) then
         ifin = nbpt
         goto 4
     endif
-    do 3 i = 1, nbpt
+    do i = 1, nbpt
         if (temps(i) .ge. tfin) then
             ifin = i
             goto 4
         endif
- 3  end do
- 4  continue
+    end do
+  4 continue
 !
     nbpas = ifin - idebut + 1
     if (nbloc .eq. 0) nbloc = 1
@@ -136,16 +136,16 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         write(ifires,1000)
         write(ifires,1010) nbloc, nbval
         write(ifires,1000)
-        do 5 i = 1, nbloc
+        do i = 1, nbloc
             write(ifires,1020) i, temps(idebut+nbval*(i-1)), temps(&
             idebut+nbval*i-1)
- 5      continue
+        end do
     endif
 !
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpara, npara, tpara)
 !
-    do 10 i = 1, nbobst
+    do i = 1, nbobst
         noeud = noecho(i)
         valek(1) = intitu(i)
         valek(2) = noeud
@@ -164,7 +164,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
 !       --- ANALYSE DES DEPLACEMENTS ---
 !       --------------------------------
 !
-        do 11 j = 1, 3
+        do j = 1, 3
 !
             valek(3) = tvar(j)
             dxmoyt = zero
@@ -176,7 +176,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             idec=3*(i-1)+j
             call dcopy(nbpt, dloc(idec), 3*nbobst, wk1(1), 1)
 !
-            do 30 ibl = 1, nbloc
+            do ibl = 1, nbloc
                 dxmoy = zero
                 dxetyp = zero
                 dxrms = zero
@@ -198,7 +198,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                 dxmint = min( dxmint , dxmin )
                 if (impr .eq. 2) call impdep(ifires, j, ibl, dxmoy, dxetyp,&
                                              dxrms, dxmax, dxmin)
-30          continue
+            end do
             dxmoyt = dxmoyt / ttot
             dxrmst = sqrt( dxrmst / ttot )
             dxetyt = sqrt( dxetyt / ttot )
@@ -214,7 +214,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             para(5) = dxmint
             call tbajli(nomres, ndepl, tdepl, [ibid], para,&
                         [c16b], valek, 0)
-11      continue
+        end do
 !
 !       --------------------------------------------------------
 !       --- ANALYSE DES DEPLACEMENTS EN COORDONNEES POLAIRES ---
@@ -222,9 +222,9 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
 !
         call dcopy(nbpt, dloc(3*(i-1)+2), 3*nbobst, wk1, 1)
         call dcopy(nbpt, dloc(3*(i-1)+3), 3*nbobst, wk2, 1)
-        do 12 in = 1, nbpt
+        do in = 1, nbpt
             wk3(in) = sqrt( wk1(in)*wk1(in) + wk2(in)*wk2(in) )
-12      continue
+        end do
 !
         dxmoyt = zero
         dxetyt = zero
@@ -234,7 +234,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         xtrms = zero
         dxmaxt = -1.d30
         dxmint = -dxmaxt
-        do 13 ibl = 1, nbloc
+        do ibl = 1, nbloc
             dxmoy = zero
             dxetyp = zero
             dxrms = zero
@@ -252,7 +252,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             dxmint = min(dxmint,dxmin)
             if (impr .eq. 2) call impdep(ifires, 4, ibl, dxmoy, dxetyp,&
                                          dxrms, dxmax, dxmin)
-13      continue
+        end do
         dxmoyt = dxmoyt / ttot
         dxrmst = sqrt( dxrmst / ttot )
         dxetyt = sqrt( dxetyt / ttot )
@@ -274,13 +274,13 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
 !       --- ANALYSE DE L ANGLE POLAIRE ---
 !       ----------------------------------
 !
-        do 14 in = 1, nbpt
+        do in = 1, nbpt
             if ((wk1(in).ne.zero) .or. (wk2(in).ne.zero)) then
                 wk3(in) = rad*atan2(wk2(in),wk1(in))
             else
                 wk3(in) = zero
             endif
-14      continue
+        end do
 !
         dxmoyt = zero
         dxetyt = zero
@@ -290,7 +290,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         xtrms = zero
         dxmaxt = -1.d30
         dxmint = -dxmaxt
-        do 15 ibl = 1, nbloc
+        do ibl = 1, nbloc
             dxmoy = zero
             dxetyp = zero
             dxrms = zero
@@ -308,7 +308,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             dxmint = min(dxmint,dxmin)
             if (impr .eq. 2) call impdep(ifires, 5, ibl, dxmoy, dxetyp,&
                                          dxrms, dxmax, dxmin)
-15      continue
+        end do
         dxmoyt = dxmoyt / ttot
         dxrmst = sqrt( dxrmst / ttot )
         dxetyt = sqrt( dxetyt / ttot )
@@ -338,7 +338,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         fxmint = zero
         txchoc = zero
         call dcopy(nbpt, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
-        do 22 ibl = 1, nbloc
+        do ibl = 1, nbloc
             fnmoyt = zero
             fnmoyc = zero
             fnrmst = zero
@@ -363,7 +363,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             fxmint = min(fxmint,fnmin)
             if (impr .eq. 2) call impfn0(ifires, ibl, fnmoyt, fnmoyc, fnrmst,&
                                          fnrmsc, fnmax)
-22      continue
+        end do
         fxmoyt = fxmoyt / ttot
         fxrmst = sqrt( fxrmst / ttot )
         if (txchoc .ne. zero) then
@@ -388,7 +388,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
 !       CALCUL DE LA MOYENNE,ECART TYPE,RMS,MAX DE LA FORCE TANGENTIELLE
 !       ----------------------------------------------------------------
 !
-        do 40 j = 2, 3
+        do j = 2, 3
             fymoyt = zero
             fyetyt = zero
             fyrmst = zero
@@ -398,7 +398,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             fymaxt = zero
             fymint = zero
             call dcopy(nbpt, fcho(3*(i-1)+j), 3*nbobst, wk1, 1)
-            do 23 ibl = 1, nbloc
+            do ibl = 1, nbloc
                 ftmoye = zero
                 ftetyp = zero
                 ftrms = zero
@@ -419,7 +419,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                 if (impr .eq. 2) call impftv(ifires, indic, ibl, ftmoye, ftetyp,&
                                              ftrms, ftmoye, ftetyp, ftrms, ftmax,&
                                              ftmin)
-23          continue
+            end do
             fymoyt = fymoyt / ttot
             fyetyt = sqrt( fyetyt / ttot )
             fyrmst = sqrt( fyrmst / ttot )
@@ -443,7 +443,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             para(5) = fymint
             call tbajli(nomres, ndepl, tdepl, [ibid], para,&
                         [c16b], valek, 0)
-40      continue
+        end do
 !
 !       -------------------------------------------------------
 !       --- CALCUL DU NB DE CHOC, DUREE MOYENNE DE CHOC,... ---
@@ -457,7 +457,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         tchoma = zero
         tchomy = zero
         call dcopy(nbpt, fcho(3*(i-1)+1), 3*nbobst, wk1, 1)
-        do 24 ibl = 1, nbloc
+        do ibl = 1, nbloc
             tchocm = zero
             tchoct = zero
             trebom = zero
@@ -478,7 +478,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             if (impr .eq. 2) call impc0(ifires, ibl, nbchoc, tchocm, tchmax,&
                                         tchmin, nbrebo, trebom, tchoct, temps,&
                                         nbval)
-24      continue
+        end do
         if (nbchot .ne. 0) then
             tchomy = tchocg / nbchot
         else
@@ -522,7 +522,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         call tbajli(nomres, nusur, tusur, [ibid], [pusurn],&
                     [c16b], valek, 0)
 !
-10  end do
+    end do
 !
     1000 format(7x,'---------------------------------------------------')
     1010 format(9x,'STATISTIQUES SUR ',i3,' BLOC(S) DE ',i7,' VALEURS')

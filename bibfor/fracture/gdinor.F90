@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
     implicit none
 !
@@ -72,7 +72,7 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
 !
 !    BOUCLE SUR LES NOEUDS ORDONNES DU FOND DE FISSURE
 !
-    do 1 i = 1, lobj2-1
+    do i = 1, lobj2-1
         dir2x = dir1x
         dir2y = dir1y
         dir2z = dir1z
@@ -112,7 +112,7 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
         zr(in2+3*(i-1) ) = dirmox/norme
         zr(in2+3*(i-1)+1) = dirmoy/norme
         zr(in2+3*(i-1)+2) = dirmoz/norme
- 1  end do
+    end do
 !
 !    TRAITEMENT DU DERNIER NOEUD
 !    PAS DE MOYENNE SI DERNIER NOEUD DIFFERENT DU PREMIER

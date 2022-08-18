@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
                   dt, ir, is, nbsys, nfs,&
                   nsg, hsr, vind, dy, dpdtau,&
@@ -64,7 +64,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     iei=nbcomm(ifa,3)+nmat
     iret=0
 !
-    if ((nuecou .ne. 5).and.(nuecou.ne.8)) then
+    if ((nuecou .ne. 5) .and. (nuecou.ne.8)) then
         ASSERT(.false.)
     endif
 !             MATRICE JACOBIENNE DU SYSTEME :
@@ -89,10 +89,10 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     n     =materf(ifl+5)
     y     =materf(ifl+6)
     beta  =materf(iei+2)
-    if (nuecou.eq.5) then
-       mu    =materf(iei+4)
+    if (nuecou .eq. 5) then
+        mu    =materf(iei+4)
     else if (nuecou.eq.8) then
-       mu    =materf(iei+12)
+        mu    =materf(iei+12)
     endif
     k16b=' '
 !     CALCUL de l'écrouissage RR=TAUr_Forest
@@ -100,7 +100,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
                 ir, nbsys, vind, decal, dy,&
                 nfs, nsg, hsr, 1, expbp,&
                 rr)
-    if (iret .gt. 0) goto 9999
+    if (iret .gt. 0) goto 999
 !
 !     CALCUL de l'écoulement dpr et du critère
     call lcmmfe(taur, materf(nmat+1), materf(1), ifa, nmat,&
@@ -108,7 +108,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
                 dy, rr, r8b, r8b, dt,&
                 r8b, r8b, dpr, critr, sgnr,&
                 nfs, nsg, hsr, iret)
-    if (iret .gt. 0) goto 9999
+    if (iret .gt. 0) goto 999
 !
 !
 !     1. d(Dp_r)/d(Tau_s)
@@ -118,9 +118,9 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
         endif
     endif
 !
-    do 55 iu = 1, nbsys
+    do iu = 1, nbsys
         alphap(iu)=vind(decal+3*(iu-1)+1)+dy(iu)
-55  end do
+    end do
 !
     call lcmmdc(materf(nmat+1), ifa, nmat, nbcomm, alphap,&
                 is, ceff, dcdals)
@@ -131,19 +131,19 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
 !
 !
     somaal=0.d0
-    do 56 i = 1, 12
+    do i = 1, 12
         if (alphap(i) .gt. 0.d0) then
             somaal=somaal+hsr(ir,i)*alphap(i)
         endif
-56  end do
+    end do
 !   rr ne doit pas etre nul car ce sont des densites de dislocations
-    if (abs(rr).gt.1.e-20) then
+    if (abs(rr) .gt. 1.e-20) then
         dtrdas=mu*mu*ceff/2.0d0/rr*(2.0*dcdals*somaal+ceff*hsr(ir,is))
     else
         iret=1
-        goto 9999
+        goto 999
     endif
-
+!
 !
 !     2. d(Dp_r)/d(Omega_s)
 !
@@ -182,6 +182,6 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
 !     3. d(h_r)/d(Omega_s)
     if (is .eq. ir) dhrdas=dhrdas-y/beta
 !
-9999  continue
+999 continue
 !
 end subroutine

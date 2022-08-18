@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
                   nomcmp, nomnoe, nbcmp, nbpoin, docu,&
                   nomtab, iocc, xnovar, ncheff, i1,&
@@ -23,6 +23,8 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -39,8 +41,6 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1, ioc, isd
     real(kind=8) :: releve(*), absc(*), coor(*)
@@ -78,14 +78,14 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    if (docu .ne. 'LSTN') goto 9999
+    if (docu .ne. 'LSTN') goto 999
 !
     call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
     if (nbvari .ne. 0) then
         call rvtec2(releve, absc, itcopt, itsppt, coor,&
                     nomnoe, nbcmp, nbpoin, docu, nomtab,&
                     iocc, xnovar, ncheff, i1)
-        goto 9999
+        goto 999
     endif
 !
     call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
@@ -140,7 +140,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
             call rsnopa(nomres, 0, nomjv, nbacc, nbpr)
             if (nbacc .ne. 0) then
                 call jeveuo(nomjv, 'L', jaces)
-                do 10 iac = 1, nbacc
+                do iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
                                 1, sjv=iadr, styp=ctype, istop=0)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
@@ -171,7 +171,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
                         ik = ik + 1
                         valek(ik) = zk8(iadr)
                     endif
- 10             continue
+                end do
                 call jedetr(nomjv)
             endif
         else if (acces(1:1) .eq. 'M') then
@@ -205,7 +205,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
             vale_r(ir) = zr(adrval + i1-1)
         endif
     endif
-    if (docu .eq. 'LSTN' ) then
+    if (docu .eq. 'LSTN') then
         call tbexip(nomtab, 'NOEUD', exist, typpar)
         if (.not. exist) then
             call tbajpa(nomtab, 1, 'NOEUD', 'K8')
@@ -223,7 +223,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     para(nbpar) = 'COOR_Z'
     ic = 0
     is = 0
-    do 20 ipt = 1, nbpoin, 1
+    do ipt = 1, nbpoin, 1
         nbsp = itsppt(ipt)
         nbco = itcopt(ipt)
         if (nbco .gt. 1 .and. ic .eq. 0) then
@@ -244,11 +244,11 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
             nbpar = nbpar + 1
             para(nbpar) = 'NUME_GAUSS'
         endif
- 20 end do
-    do 30 i2 = 1, nbcmp, 1
+    end do
+    do i2 = 1, nbcmp, 1
         nbpar = nbpar + 1
         para(nbpar) = nomcmp(i2)
- 30 end do
+    end do
 !
     lc = ir+4+nbcmp
     ASSERT(nbpar .le. lck)
@@ -259,7 +259,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     ilign = 0
 !
     ik = ik + 1
-    do 100 ipt = 1, nbpoin, 1
+    do ipt = 1, nbpoin, 1
 !
         nbsp = itsppt(ipt)
         nbco = itcopt(ipt)
@@ -275,32 +275,32 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
         vale_r(1+ir+2) = coor(2+(ipt-1)*3)
         vale_r(1+ir+3) = coor(3+(ipt-1)*3)
 !
-        do 102 ic = 1, nbco, 1
+        do ic = 1, nbco, 1
 !
             valei(ii+1) = ic
 !
-            do 104 is = 1, nbsp, 1
+            do is = 1, nbsp, 1
 !
                 valei(ii+2) = is
 !
-                do 106 i2 = 1, nbcmp, 1
+                do i2 = 1, nbcmp, 1
 !
                     vale_r(1+ir+3+i2) = releve((ipt-1)*ln+lc*(ic-1)+ nbcmp*(is-1)+i2)
 !
-106             continue
+                end do
 !
                 call tbajli(nomtab, nbpar, para, valei, vale_r,&
                             [c16b], valek, ilign)
 !
-104         continue
+            end do
 !
-102     continue
+        end do
 !
-100 end do
+    end do
 !
     AS_DEALLOCATE(vr=vale_r)
     AS_DEALLOCATE(vk24=para)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

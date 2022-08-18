@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpzech(d, z, low, high, mm,&
                   neq, iz)
     implicit none
@@ -34,33 +34,33 @@ subroutine vpzech(d, z, low, high, mm,&
     integer :: i, j, ii, jj
     real(kind=8) :: s
 !     ------------------------------------------------------------------
-    do 10 i = low, high
+    do i = low, high
         s = d(i)
-        do 5 j = 1, mm
+        do j = 1, mm
             z(i,j) = z(i,j)*s
- 5      continue
-10  end do
+        end do
+    end do
 !
 !     --- REPERMUTER LES LIGNES SI CA A ETE FAIT DANS VPZBAL ---
-    do 20 ii = low-1, 1, -1
+    do ii = low-1, 1, -1
         jj = nint(d(ii))
         if (ii .ne. jj) then
-            do 25 j = 1, mm
+            do j = 1, mm
                 s = z(ii,j)
                 z(ii,j) = z(jj,j)
                 z(jj,j) = s
-25          continue
+            end do
         endif
-20  end do
+    end do
 !
-    do 30 ii = high+1, neq
+    do ii = high+1, neq
         jj = nint(d(ii))
         if (ii .ne. jj) then
-            do 35 j = 1, mm
+            do j = 1, mm
                 s = z(ii,j)
                 z(ii,j) = z(jj,j)
                 z(jj,j) = s
-35          continue
+            end do
         endif
-30  end do
+    end do
 end subroutine

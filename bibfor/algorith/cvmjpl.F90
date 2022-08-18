@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                   epsd, deps, sigf, vinf, sigd,&
                   vind, nvi, nr, dsde)
@@ -114,9 +114,9 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       ----------------------------------------------------------------
 !
     nopt = 0
-    do 1 k = 1, 6
+    do k = 1, 6
         dgde3(k) = 0.d0
- 1  continue
+    end do
     if (ioptio .eq. 2) nopt = idnr
 !
     yd(1:ndt) = sigd(1:ndt)
@@ -206,19 +206,19 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n4, n2, dkdx1, 1, 6,&
                 1, 1)
-
+!
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n4, n3, dkdx2, 1, 6,&
                 1, 1)
-
+!
     dkdp=drdy(n4,n4)
-
+!
     dkdr=drdy(n4,n5)
-
+!
     dkdq=drdy(n4,n6)
-
+!
     dkdr=drdy(n4,n5)
-
+!
     dkdq=drdy(n4,n6)
 !
     call lcicma(drdy, nr, nr, 1, ndt,&
@@ -230,11 +230,11 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n5, n3, drdx2, 1, 6,&
                 1, 1)
-
+!
     drdp=drdy(n5,n4)
-
+!
     drdr=drdy(n5,n5)
-
+!
     drdq=drdy(n5,n6)
 !
     call lcicma(drdy, nr, nr, 1, ndt,&
@@ -246,13 +246,13 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcicma(drdy, nr, nr, 1, ndt,&
                 n6, n3, dtdx2, 1, 6,&
                 1, 1)
-
+!
     dtdp=drdy(n6,n4)
-
+!
     dtdr=drdy(n6,n5)
-
+!
     dtdq=drdy(n6,n6)
-
+!
 !
     if (mod(1:6) .eq. 'C_PLAN') then
         call lcicma(drdy, nr, nr, ndt, 1,&
@@ -264,13 +264,13 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
         call lcicma(drdy, nr, nr, ndt, 1,&
                     n3, n8, djde3, 6, 1,&
                     1, 1)
-
+!
         dkde3=drdy(n4,n8)
-
+!
         drde3=drdy(n5,n8)
-
+!
         dtde3=drdy(n6,n8)
-
+!
 !
         call lcicma(drdy, nr, nr, 1, ndt,&
                     n8, n1, dqds, 1, 6,&
@@ -281,18 +281,18 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
         call lcicma(drdy, nr, nr, 1, ndt,&
                     n8, n3, dqdx2, 1, 6,&
                     1, 1)
-
+!
         dqdp = drdy(n8, n4)
-
-
+!
+!
         dqdr = drdy(n8, n5)
-
-
+!
+!
         dqdq = drdy(n8, n6)
-
-
+!
+!
         dqde3 = drdy(n8, n8)
-
+!
     endif
 !
     if (ioptio .eq. 2) then
@@ -338,16 +338,16 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                     1, 1)
 !
         if (mod(1:6) .eq. 'C_PLAN') then
-
+!
             dqdq=drdy(n8, n6)
-
+!
             call lcicma(drdy, nr, nr, 1, ndt,&
                         n8, n7, dqdxxi, 1, 6,&
                         1, 1)
             call lcicma(drdy, nr, nr, ndt, 1,&
                         n7, n8, dxide3, 6, 1,&
                         1, 1)
-
+!
             dtde3=drdy(n6, n8)
         endif
     endif

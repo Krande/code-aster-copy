@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                   jgdeq, grdvie, forvie, post, jdomel,&
                   jnrupt)
@@ -74,9 +74,9 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
     call jemarq()
 !
 ! INITITIALISATION
-    do 100 i = 1, nbvec*nbordr
+    do i = 1, nbvec*nbordr
         zr(jdomel+i) = 0
-100 end do
+    end do
 !
     if (.not. post) then
         call rccome(nommat, 'FATIGUE', icodre(1))
@@ -91,8 +91,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
             call utmess('F', 'FATIGUE1_89', sk=nomcri(1:16))
         endif
 !
-        do 10 ivect = 1, nbvec
-            do 20 icycl = 1, ncycl(ivect)
+        do ivect = 1, nbvec
+            do icycl = 1, ncycl(ivect)
                 adrs = (ivect-1)*nbordr + icycl
 !
                 call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
@@ -109,8 +109,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                 zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
- 20         continue
- 10     continue
+            end do
+        end do
 !
         elseif (( nomcri(1:14) .eq. 'MATAKE_MODI_AV' ) .or. ( nomcri(1:16)&
                                .eq. 'DANG_VAN_MODI_AV' )) then
@@ -119,8 +119,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
             call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
         endif
 !
-        do 30 ivect = 1, nbvec
-            do 40 icycl = 1, ncycl(ivect)
+        do ivect = 1, nbvec
+            do icycl = 1, ncycl(ivect)
                 adrs = (ivect-1)*nbordr + icycl
 !
                 call limend(nommat, zr(jgdeq+adrs), 'WOHLER', kbid, limit)
@@ -134,13 +134,13 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                 zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
- 40         continue
- 30     continue
+            end do
+        end do
 !
     else if (nomcri(1:7) .eq. 'FORMULE') then
 !
-        do 50 ivect = 1, nbvec
-            do 60 icycl = 1, ncycl(ivect)
+        do ivect = 1, nbvec
+            do icycl = 1, ncycl(ivect)
                 adrs = (ivect-1)*nbordr + icycl
 !
                 call limend(nommat, zr(jgdeq+adrs), grdvie, forvie, limit)
@@ -173,8 +173,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 endif
 !
 !
- 60         continue
- 50     continue
+            end do
+        end do
 !
 !
 !

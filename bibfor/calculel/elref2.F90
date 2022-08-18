@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine elref2(nomte, dim, lielrf, ntrou)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+!
     character(len=16) :: nomte
     integer :: dim
     character(len=8) :: lielrf(dim)
@@ -41,7 +41,7 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
 !   SI NOMTE A PLUS D'ELREFE QUE DIM => ERREUR <F>
 !----------------------------------------------------------------------
 !
-    integer :: nute,   ntrou, iad, k
+    integer :: nute, ntrou, iad, k
     character(len=8), pointer :: noelrefe(:) => null()
     integer, pointer :: nbelrefe(:) => null()
 !
@@ -56,9 +56,9 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
 !
     ASSERT(ntrou.le.dim)
 !
-    do 10,k = 1,ntrou
-    lielrf(k) = noelrefe(iad-1+k)
-    10 end do
+    do k = 1, ntrou
+        lielrf(k) = noelrefe(iad-1+k)
+    end do
 !
 !
 end subroutine

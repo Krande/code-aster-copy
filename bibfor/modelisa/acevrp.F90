@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acevrp(nbocc, noma, noemax, noemaf)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -26,8 +28,6 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, noemax
     character(len=8) :: noma
@@ -41,7 +41,7 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
     character(len=24) :: magrma, manoma
     character(len=8) :: k8b
 !-----------------------------------------------------------------------
-    integer :: i,   ii, ij, in, inoe
+    integer :: i, ii, ij, in, inoe
     integer :: ioc, ldgm, ldnm, nb, nbgr, nbgrmx, nbv
     integer :: nm, nn, noema2, noemaf
     character(len=24), pointer :: group_ma(:) => null()
@@ -51,17 +51,17 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
     nbgrmx = 0
     magrma = noma//'.GROUPEMA'
     manoma = noma//'.CONNEX'
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
 !        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
         call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc,&
                     0, k8b, nbgr)
         nbgr = -nbgr
         nbgrmx = max(nbgrmx,nbgr)
-10  end do
+    end do
     AS_ALLOCATE(vk24=group_ma, size=nbgrmx)
     noemax = 0
     noemaf = 0
-    do 11 ioc = 1, nbocc
+    do ioc = 1, nbocc
         noema2 = 0
         call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc,&
                     0, k8b, nbgr)
@@ -70,41 +70,42 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
                     nbgr, group_ma, nbv)
 !
 !        --- ON ECLATE LES GROUP_MA ---
-        do 20 i = 1, nbgr
+        do i = 1, nbgr
             call jelira(jexnom(magrma, group_ma(i)), 'LONUTI', nb)
             call jeveuo(jexnom(magrma, group_ma(i)), 'L', ldgm)
-            do 22 in = 0, nb-1
+            do in = 0, nb-1
                 call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-                do 24 nn = 1, nm
+                do nn = 1, nm
                     inoe = zi(ldnm+nn-1)
                     noema2 = max(noema2,inoe)
-24              continue
-22          continue
-20      continue
+                end do
+            end do
+        end do
         noemaf = max(noemaf,noema2)
         AS_ALLOCATE(vi=parno2, size=noema2)
-        do 41 i = 1, nbgr
+        do i = 1, nbgr
             call jelira(jexnom(magrma, group_ma(i)), 'LONUTI', nb)
             call jeveuo(jexnom(magrma, group_ma(i)), 'L', ldgm)
-            do 43 in = 0, nb-1
+            do in = 0, nb-1
                 call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-                do 45 nn = 1, nm
+                do nn = 1, nm
                     inoe = zi(ldnm+nn-1)
                     parno2(inoe) = parno2(inoe) + 1
-45              continue
-43          continue
-41      continue
+                end do
+            end do
+        end do
         ii = 0
-        do 51 ij = 1, noema2
+        do ij = 1, noema2
             if (parno2(ij) .eq. 0) goto 51
             ii = ii + 1
-51      continue
+ 51         continue
+        end do
         noema2 = ii
         noemax = noemax + noema2
         AS_DEALLOCATE(vi=parno2)
-11  end do
+    end do
     AS_DEALLOCATE(vk24=group_ma)
 !
     call jedema()

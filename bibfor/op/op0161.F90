@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0161()
     implicit none
 !     COMBINAISON FOURIER
@@ -83,10 +83,10 @@ subroutine op0161()
     call wkvect('&&OP0161.NUM_HARMO', 'V V I', nbordr, jnha)
     call wkvect('&&OP0161.COEFFICIE', 'V V R', nbordr, jcoe)
 !
-    do 100 ich = 1, nbcham
+    do ich = 1, nbcham
         nsymb = zk16(jcham+ich-1)
         k = 0
-        do 120 ior = 0, nbordr-1
+        do ior = 0, nbordr-1
             iordr = zi(jordr+ior)
             call rsexch(' ', resuin, nsymb, iordr, nomch,&
                         iret)
@@ -110,9 +110,9 @@ subroutine op0161()
                             0, sjv=jcara, styp=k8b)
                 carele = zk8(jcara)
             endif
-120      continue
+        end do
 !
-        do 130 ian = 1, nbangl
+        do ian = 1, nbangl
 !
 !     STOCKAGE DU NOM DU MODELE
 !     -------------------------
@@ -132,10 +132,10 @@ subroutine op0161()
                         0, sjv=jpara, styp=k8b)
             zk8(jpara)=carele
 !
-130      continue
+        end do
 !
         if (k .ne. 0) then
-            do 110 ian = 1, nbangl
+            do ian = 1, nbangl
                 call rsexch(' ', resu, nsymb, ian, nomch,&
                             iret)
                 if (iret .eq. 110) then
@@ -153,9 +153,9 @@ subroutine op0161()
                 call rsadpa(resu, 'E', 1, 'ANGLE', ian,&
                             0, sjv=jjan, styp=k8b)
                 zr(jjan) = zr(jangl+ian-1)
-110          continue
+            end do
         endif
-100  end do
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cripoi(nbm, b, crit)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -51,10 +51,10 @@ subroutine cripoi(nbm, b, crit)
 !
     sommii = 0.d0
 !
-    do 10 i = 1, nbm
+    do i = 1, nbm
         bii = dcabs2(b(i,i))
         sommii = sommii + bii*bii
-10  end do
+    end do
 !
     if (sommii .lt. tole) then
 !
@@ -67,23 +67,23 @@ subroutine cripoi(nbm, b, crit)
 !
         sommij = 0.d0
 !
-        do 20 i = 2, nbm
+        do i = 2, nbm
             bij = dcabs2(b(i,1))
             sommij = sommij + bij*bij
-20      continue
+        end do
 !
-        do 30 j = 2, nbm
-            do 31 i = 1, j-1
+        do j = 2, nbm
+            do i = 1, j-1
                 bij = dcabs2(b(i,j))
                 sommij = sommij + bij*bij
-31          continue
+            end do
             if (j .lt. nbm) then
-                do 32 i = j+1, nbm
+                do i = j+1, nbm
                     bij = dcabs2(b(i,j))
                     sommij = sommij + bij*bij
-32              continue
+                end do
             endif
-30      continue
+        end do
 !
 !-------3.CALCUL DU CRITERE
 !

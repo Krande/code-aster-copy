@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine radial(nbsig, sigm, sigp, indm, indp,&
                   icine, xm, xp, normdn)
 !
@@ -77,10 +77,10 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
 !
         call dcopy(nbsig, tensm, 1, devm, 1)
         call dcopy(nbsig, tensp, 1, devp, 1)
-        do 10 i = 1, 3
+        do i = 1, 3
             devm(i)=devm(i)-trt1
             devp(i)=devp(i)-trt2
-10      continue
+        end do
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVM(4),1)
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVP(4),1)
         smeq=sqrt(ddot(nbsig,devm,1,devm,1))

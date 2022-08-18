@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                   formar)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: ifr, nparim
     character(len=*) :: table, lipaim(*), formaz, formar
@@ -72,14 +72,14 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     formr = '('//formar(1:ilon)//')'
     id = 0
     if = 0
-    do 2 i = 1, ilon-1
+    do i = 1, ilon-1
         if (formar(i:i) .eq. 'D' .or. formar(i:i) .eq. 'E' .or. formar(i:i) .eq. 'F' .or.&
             formar(i:i) .eq. 'G') then
             id = i+1
         else if (formar(i:i) .eq. '.') then
             if = i-1
         endif
-  2 end do
+    end do
     if (id .eq. if .and. id .ne. 0) then
         read(formar(id:if),'(I1)') ir
     else if (id+1 .eq. if) then
@@ -103,9 +103,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     erreur = .false.
     npara = 0
     ilmp = 0
-    do 10 i = 1, nparim
+    do i = 1, nparim
         inpar = lipaim(i)
-        do 12 j = 1, nbpara
+        do j = 1, nbpara
             knpar = tblp(1+4*(j-1) )
             nomjv = tblp(1+4*(j-1)+2)
             nomjvl = tblp(1+4*(j-1)+3)
@@ -118,11 +118,12 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 ilmp = max ( ilon , ilmp )
                 goto 10
             endif
- 12     continue
+        end do
         erreur = .true.
         valk = inpar
         call utmess('A', 'UTILITAI6_89', sk=valk)
- 10 end do
+ 10     continue
+    end do
     if (erreur) then
         call utmess('F', 'PREPOST_60')
     endif
@@ -131,7 +132,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     chaine = ' '
     chain2 = ' '
     ideb = 2
-    do 20 i = 1, npara
+    do i = 1, npara
         ipar = nom_para(i)
         type = tblp(1+4*(ipar-1)+1)
         ilon = lxlgut( tblp(1+4*(ipar-1)) )
@@ -229,7 +230,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         endif
 !
         ideb = ifin + 2
- 20 end do
+    end do
  22 continue
     if (nparaf .ne. npara) then
         call utmess('A', 'UTILITAI4_84')
@@ -242,10 +243,10 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         write(ifr,form1) chain2(1:ifin)
     endif
 !
-    do 30 i = 1, nblign
+    do i = 1, nblign
         chaine = ' '
         ideb = 2
-        do 32 j = 1, nparaf
+        do j = 1, nparaf
             ipar = nom_para(j)
             type = tblp(1+4*(ipar-1)+1)
             jvale = val_para(j)
@@ -350,11 +351,11 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 endif
                 ideb = ifin + 2
             endif
- 32     continue
+        end do
         call codent(ifin, 'G', chfin)
         form1 = '(A'//chfin//')'
         write(ifr,form1) chaine(1:ifin)
- 30 end do
+    end do
 !
     AS_DEALLOCATE(vi=nom_para)
     AS_DEALLOCATE(vi=val_para)

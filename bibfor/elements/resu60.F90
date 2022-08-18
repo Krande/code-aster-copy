@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine resu60(resu1, resu2)
     implicit none
 !
@@ -142,9 +142,9 @@ subroutine resu60(resu1, resu2)
     call jeveuo(resu2//'           .ORDR', 'E', vi=ordr2)
     call jelira(resu2//'           .ORDR', 'LONUTI', nbsau2)
 !     --- CUMULER LES NUMEROS D'ORDRE POUR CONSERVER LA MONOTONIE
-    do 20 i = 0, nbsau2-1
+    do i = 0, nbsau2-1
         ordr2(1+i) = ordr2(1+i) + ordr1(nbsau1) + 1
- 20 continue
+    end do
 !
     nbsauv = nbsau1 + nbsau2
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sigela(typmod, ndim, e, nu, epse,&
                   sigel)
 !
@@ -62,9 +62,9 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
         epse(3) = coplan * (epse(1)+epse(2))
     endif
 !
-    do 30 k = 4, ndimsi
+    do k = 4, ndimsi
         epse(k) = epse(k)/rac2
-30  end do
+    end do
 !
 !--------------------------------------------------------
 !  -   ON PASSE DANS LE REPERE PROPRE DE EPS
@@ -98,12 +98,12 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
 !----------------------------------------------------------------
 !     CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
 !----------------------------------------------------------------
-    do 50 k = 1, 3
+    do k = 1, 3
         sigelp(k) = lambda*(epsep(1)+epsep(2)+epsep(3))
-50  continue
-    do 60 k = 1, 3
+    end do
+    do k = 1, 3
         sigelp(k) = sigelp(k) + deuxmu*epsep(k)
-60  continue
+    end do
 !
 !------------------------------------------------------------------
 !     ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES ELASTIQUES
@@ -116,7 +116,7 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
     tr(5) = 0.d0
     tr(6) = 0.d0
     call bptobg(tr, sigel, vecpe)
-    do 90 k = 4, ndimsi
+    do k = 4, ndimsi
         sigel(k)=rac2*sigel(k)
-90  continue
+    end do
 end subroutine

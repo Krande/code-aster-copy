@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gchfus(fonct1, fonct2, fonct3)
     implicit none
 #include "jeveux.h"
@@ -35,7 +35,7 @@ subroutine gchfus(fonct1, fonct2, fonct3)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer :: nptf1, nptf2, jprol,  iret, jval, nptf, i
+    integer :: nptf1, nptf2, jprol, iret, jval, nptf, i
     real(kind=8) :: y
     character(len=19) :: fo1, fo2, fo3, fotmp1, fotmp2
     real(kind=8), pointer :: vale(:) => null()
@@ -68,11 +68,11 @@ subroutine gchfus(fonct1, fonct2, fonct3)
     call jeveuo(fotmp2//'.VALE', 'L', jval)
     call jeveuo(fo3//'.VALE', 'E', vr=vale)
 !
-    do 10 i = 1, nptf
+    do i = 1, nptf
         call fointe('A', fotmp1, 1, zk24(jprol+3-1), zr(jval+i-1),&
                     y, iret)
         vale(1+nptf+i-1)=zr(jval+nptf+i-1)+y
-10  end do
+    end do
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefgec(ndim, nbcyl, som, xint, yint,&
                   rint, dcent, ficent, d, fi)
 ! aslint: disable=
@@ -70,7 +70,7 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
 ! --- (DCENT,FICENT) : COORDONNEES POLAIRES DES CENTRES
 ! ---                  DES CYLINDRES INTERIEURS
 !
-    do 10 i = 1, nbcyl
+    do i = 1, nbcyl
         dcent(i) = sqrt( ( xint(i)-xext)*(xint(i)-xext) + (yint(i)-yext) *(yint(i)-yext ) )
         if (dcent(i) .ne. 0.d0) then
             ficent(i) = acos((xint(i)-xext)/dcent(i))
@@ -80,13 +80,13 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
         else
             ficent(i) = 0.d0
         endif
-10  end do
+    end do
 !
 ! --- (D,FI) : COORDONNEES POLAIRES RELATIVES DES CENTRES
 ! ---          DES CYLINDRES LES UNS PAR RAPPORT AUX AUTRES
 !
-    do 30 i = 1, nbcyl
-        do 20 j = 1, nbcyl
+    do i = 1, nbcyl
+        do j = 1, nbcyl
             d(j,i) = sqrt(&
                      ( xint(i)-xint(j))*(xint(i)-xint(j))+ (yint(i)-yint(j))*(yint(i)-yint(j) ))
             if (i .ne. j) then
@@ -108,20 +108,20 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
                 fi(j,i) = 0.d0
             endif
 !
-20      continue
-30  end do
+        end do
+    end do
 !
 ! --- VERIFICATION DE L INCLUSION DE TOUS LES CYLINDRES DANS
 ! --- L ENCEINTE CIRCULAIRE
 !
 !
-    do 40 i = 1, nbcyl
+    do i = 1, nbcyl
         delta = sqrt((xint(i)-xext)**2+(yint(i)*yext)**2)
         if (delta .ge. (rext-rint(i))) then
             write(note(1:3),'(I3.3)') i
             call utmess('F', 'ALGELINE_81', sk=note)
         endif
-40  end do
+    end do
 !
 !
 end subroutine

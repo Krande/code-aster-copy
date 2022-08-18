@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsnor(mater, sig, x, nor, devnul,&
                   trac)
 !
@@ -77,10 +77,10 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
 !
     coef = sqrt(six)*g/qii
     trav2 = zero
-    do 10 i = 1, ndt
+    do i = 1, ndt
         trav = (deux+g*cos3tq)*q(i)+coef*tq(i)
         trav2 = trav2+trav*trav
         nor(i) = trav
- 10 continue
+    end do
     nor(ndt+1) = sqrt(trav2)
 end subroutine

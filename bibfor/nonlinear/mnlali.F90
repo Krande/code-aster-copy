@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
                   adime, ninc, nd, nchoc, h,&
                   hf, ampl, xvect, lnm, num_ordr)
@@ -50,10 +50,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/dscal.h"
-#include "blas/idamax.h"
+#include "asterc/r8depi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -61,10 +58,13 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 #include "asterfort/mnlbil.h"
 #include "asterfort/mnlcir.h"
 #include "asterfort/mnluil.h"
-#include "asterc/r8depi.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
+#include "blas/idamax.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
@@ -157,9 +157,9 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 ! ----------------------------------------------------------------------
     if (reprise) then
         ht=(nbmode-1)/2
-        do 10 j = 1, nbmode
+        do j = 1, nbmode
             i=0
-            do 11 k = 1, neq
+            do k = 1, neq
                 if (zi(icdl-1+k) .eq. 0) then
                     i=i+1
                     if (h .gt. ht .and. j .gt. ht+1) then
@@ -173,16 +173,16 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
                         zr(ivect-1+(j-1)*nd+i)=zr(ilnm-1+(j-1)*neq+k)
                     endif
                 endif
- 11         continue
- 10     continue
+            end do
+        end do
     else
         i=0
-        do 31 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 zr(ivect-1+nd+i)=zr(ilnm-1+k+(num_ordr-1)*neq)
             endif
- 31     continue
+        end do
     endif
 ! ----------------------------------------------------------------------
 ! --- ADIMENSIONNEMENT
@@ -207,7 +207,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
     call wkvect(xtemp, 'V V R', ninc, itemp)
     nt = int(2**int(dlog(2.d0*dble(hf)+1.d0)/dlog(2.d0)+1.d0))
     neqs=0
-    do 20 i = 1, nchoc
+    do i = 1, nchoc
 ! ---   ON RECUPERE LES PARAMETRES DE CHOCS
         alpha=raid(i)/zr(iadim)
         eta=reg(i)
@@ -242,7 +242,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
                         hf, nt, zr(ivect+ nd*(2*h+1)+neqs*(2*hf+1)))
         endif
         neqs=neqs+vneqs(i)
- 20 continue
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- REMPLISSAGE DES PARAMETRES

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine veripl(ma, nbma, linuma, ang, typerr)
     implicit none
 #include "jeveux.h"
@@ -28,7 +28,7 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 #include "asterfort/utmess.h"
 !
     character(len=*) :: ma
-    integer :: nbma,  jconx, ima, k, iprem, numai1, numail, linuma(nbma)
+    integer :: nbma, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
     real(kind=8) :: n1(3), n(3), ab(3), ac(3), nn, n1n, n1n1
     real(kind=8) :: cos2b, cos2a, a(3), b(3), c(3), ang
     character(len=1) :: typerr
@@ -67,49 +67,50 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
     cos2b = cos(ang*r8dgrd())**2
 !
     iprem = 0
-    do 20,ima = 1,nbma
-    numail = linuma(ima)
-    call jeveuo(jexnum(ma2//'.CONNEX', numail), 'L', jconx)
+    do ima = 1, nbma
+        numail = linuma(ima)
+        call jeveuo(jexnum(ma2//'.CONNEX', numail), 'L', jconx)
 !
 !       -- VERIFIER NOMAIL : TRIA OU QUAD ???
 !
 !       CALCUL DE LA NORMALE (N) A LA FACETTE IMA :
-    do 10,k = 1,3
-    a(k) = vale(3* (zi(jconx-1+1)-1)+k)
-    b(k) = vale(3* (zi(jconx-1+2)-1)+k)
-    c(k) = vale(3* (zi(jconx-1+3)-1)+k)
-    ab(k) = b(k) - a(k)
-    ac(k) = c(k) - a(k)
-10  continue
-    n(1) = ab(2)*ac(3) - ab(3)*ac(2)
-    n(2) = ab(3)*ac(1) - ab(1)*ac(3)
-    n(3) = ab(1)*ac(2) - ab(2)*ac(1)
+        do k = 1, 3
+            a(k) = vale(3* (zi(jconx-1+1)-1)+k)
+            b(k) = vale(3* (zi(jconx-1+2)-1)+k)
+            c(k) = vale(3* (zi(jconx-1+3)-1)+k)
+            ab(k) = b(k) - a(k)
+            ac(k) = c(k) - a(k)
+        end do
+        n(1) = ab(2)*ac(3) - ab(3)*ac(2)
+        n(2) = ab(3)*ac(1) - ab(1)*ac(3)
+        n(3) = ab(1)*ac(2) - ab(2)*ac(1)
 !
 !
-    iprem = iprem + 1
-    if (iprem .eq. 1) then
-        n1(1) = n(1)
-        n1(2) = n(2)
-        n1(3) = n(3)
-        numai1 = numail
-        goto 20
-    endif
+        iprem = iprem + 1
+        if (iprem .eq. 1) then
+            n1(1) = n(1)
+            n1(2) = n(2)
+            n1(3) = n(3)
+            numai1 = numail
+            goto 20
+        endif
 !
-    nn = n(1)*n(1) + n(2)*n(2) + n(3)*n(3)
-    n1n = n1(1)*n(1) + n1(2)*n(2) + n1(3)*n(3)
-    n1n1 = n1(1)*n1(1) + n1(2)*n1(2) + n1(3)*n1(3)
+        nn = n(1)*n(1) + n(2)*n(2) + n(3)*n(3)
+        n1n = n1(1)*n(1) + n1(2)*n(2) + n1(3)*n(3)
+        n1n1 = n1(1)*n1(1) + n1(2)*n1(2) + n1(3)*n1(3)
 !
-    cos2a = (n1n*n1n)/ (nn*n1n1)
+        cos2a = (n1n*n1n)/ (nn*n1n1)
 !
-    if (cos2a .lt. cos2b) then
-        call jenuno(jexnum(ma2//'.NOMMAI', numail), nomail)
-        call jenuno(jexnum(ma2//'.NOMMAI', numai1), nomai1)
-        valk(1) = nomai1
-        valk(2) = nomail
-        call utmess(typerr, 'MODELISA7_80', nk=2, valk=valk)
-    endif
+        if (cos2a .lt. cos2b) then
+            call jenuno(jexnum(ma2//'.NOMMAI', numail), nomail)
+            call jenuno(jexnum(ma2//'.NOMMAI', numai1), nomai1)
+            valk(1) = nomai1
+            valk(2) = nomail
+            call utmess(typerr, 'MODELISA7_80', nk=2, valk=valk)
+        endif
 !
-    20 end do
+ 20     continue
+    end do
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismma(questi, nomobz, repi, repkz, ierd)
     implicit none
 !     --     DISMOI(MAILLAGE)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
+#include "asterfort/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/gettco.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
@@ -57,9 +57,9 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     character(len=16) :: typeco
     character(len=1) :: k1bid
     real(kind=8) :: xmax, xmin, ymax, ymin, zmax, zmin
-    integer ::  ibid, ier, ilmaco, ism, k, nbma, nbno
+    integer :: ibid, ier, ilmaco, ism, k, nbma, nbno
     integer :: nbsm, nno, typv
-    character(len=8) ::  typma
+    character(len=8) :: typma
     integer, pointer :: dime(:) => null()
     integer, pointer :: typmail(:) => null()
 !
@@ -97,7 +97,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'PARALLEL_MESH') then
 !     ---------------------------------
         call gettco(nomob, typeco)
-        if( typeco.eq.'MAILLAGE_P' ) then
+        if (typeco .eq. 'MAILLAGE_P') then
             repk = 'OUI'
         else
             repk = 'NON'
@@ -108,10 +108,10 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
 !     ---------------------------------
         nbsm = dime(4)
         repi = 0
-        do 10,ism = 1,nbsm
-        call jelira(jexnum(nomob//'.SUPMAIL', ism), 'LONMAX', nno)
-        repi = max(repi,nno)
-10      continue
+        do ism = 1, nbsm
+            call jelira(jexnum(nomob//'.SUPMAIL', ism), 'LONMAX', nno)
+            repi = max(repi,nno)
+        end do
 !
 !
     else if (questi.eq.'Z_CST') then
@@ -131,8 +131,8 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         else
             repk = 'NON'
         endif
-
-
+!
+!
     else if (questi.eq.'Z_ZERO'.or.questi.eq.'Z_QUASI_ZERO'.or.questi.eq.'DIM_GEOM') then
 !     -----------------------------------------------------------------------------------
         call ltnotb(nomob, 'CARA_GEOM', table)
@@ -144,35 +144,39 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
                     [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX',&
                     k1bid, ibid, zmax, c16b, k1bid,&
                     ier)
-
+!
         if (zmin .eq. zmax .and. zmin .eq. 0.d0) then
             repk = 'OUI'
         else
             repk = 'NON'
         endif
-
+!
         if (questi .eq. 'Z_QUASI_ZERO') then
 !       ------------------------------------
             call tbliva(table, 0, ' ', [ibid], [0.d0],&
                         [c16b], k1bid, 'ABSO', [0.d0], 'X_MIN',&
-                        k1bid, ibid, xmin, c16b, k1bid, ier)
+                        k1bid, ibid, xmin, c16b, k1bid,&
+                        ier)
             call tbliva(table, 0, ' ', [ibid], [0.d0],&
                         [c16b], k1bid, 'ABSO', [0.d0], 'X_MAX',&
-                        k1bid, ibid, xmax, c16b, k1bid, ier)
+                        k1bid, ibid, xmax, c16b, k1bid,&
+                        ier)
             call tbliva(table, 0, ' ', [ibid], [0.d0],&
                         [c16b], k1bid, 'ABSO', [0.d0], 'Y_MIN',&
-                        k1bid, ibid, ymin, c16b, k1bid, ier)
+                        k1bid, ibid, ymin, c16b, k1bid,&
+                        ier)
             call tbliva(table, 0, ' ', [ibid], [0.d0],&
                         [c16b], k1bid, 'ABSO', [0.d0], 'Y_MAX',&
-                        k1bid, ibid, ymax, c16b, k1bid, ier)
-            if (max(abs(zmax),abs(zmin))/max(xmax-xmin,ymax-ymin).lt.1.e-8) then
+                        k1bid, ibid, ymax, c16b, k1bid,&
+                        ier)
+            if (max(abs(zmax),abs(zmin))/max(xmax-xmin,ymax-ymin) .lt. 1.e-8) then
                 repk='OUI'
             else
                 repk='NON'
             endif
             repi=0
         endif
-
+!
         if (questi .eq. 'DIM_GEOM') then
 !       --------------------------------
             repi = dime(6)
@@ -182,8 +186,8 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
             endif
             repk='???'
         endif
-
-
+!
+!
     else if (questi.eq.'DIM_GEOM_B') then
 !     ----------------------------------------
         repi = dime(6)
@@ -195,10 +199,10 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         nbma = dime(3)
         call jeveuo(jexatr(nomob//'.CONNEX', 'LONCUM'), 'L', ilmaco)
         repi = 0
-        do 40,k = 1,nbma
-        nbno = zi(ilmaco+k) - zi(ilmaco-1+k)
-        repi = max(repi,nbno)
-40      continue
+        do k = 1, nbma
+            nbno = zi(ilmaco+k) - zi(ilmaco-1+k)
+            repi = max(repi,nbno)
+        end do
 !
 !
         else if ((questi.eq.'EXI_TRIA3' ) .or. (questi.eq.'EXI_TRIA6'&
@@ -236,16 +240,16 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         repk = 'NON'
         nbma = dime(3)
         call jeveuo(nomob//'.TYPMAIL', 'L', vi=typmail)
-        do 50,k = 1,nbma
-        if (typmail(k) .eq. typv) goto 51
-50      continue
+        do k = 1, nbma
+            if (typmail(k) .eq. typv) goto 51
+        end do
         goto 52
-51      continue
+ 51     continue
         repk='OUI'
-52      continue
-
-
-    else if (questi.eq.'ONLY_SEG2')then
+ 52     continue
+!
+!
+    else if (questi.eq.'ONLY_SEG2') then
 !     ----------------------------------------
         typma='SEG2'
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), typv)
@@ -254,7 +258,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         repk = 'OUI'
         nbma = dime(3)
         call jeveuo(nomob//'.TYPMAIL', 'L', vi=typmail)
-        do k = 1,nbma
+        do k = 1, nbma
             if (typmail(k) .ne. typv) then
                 repk='NON'
                 exit

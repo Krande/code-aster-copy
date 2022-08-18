@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmelnl(BEHinteg,&
-                  fami, kpg, ksp, poum,&
+subroutine nmelnl(BEHinteg, fami, kpg, ksp, poum,&
                   ndim, typmod, imate, compor, crit,&
                   option, eps, sig, vi, dsidep,&
                   energi)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ecpuis.h"
+#include "asterfort/get_elas_para.h"
 #include "asterfort/nmcri1.h"
 #include "asterfort/nmcri2.h"
 #include "asterfort/nmelru.h"
@@ -40,9 +40,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
-#include "asterfort/get_elas_para.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
 !     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES
 !
 ! IN  NDIM    : DIMENSION DE L'ESPACE
@@ -64,7 +63,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 ! OUT ENERGI(2)  : DERIVEE DE L'ENERGIE LIBRE / TEMPERATURE
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-
+!
     integer :: kpg, ksp, ndim, imate, iret, isec, ihyd, ieps
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
@@ -147,9 +146,8 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
                 ksp, secref, iret)
     if (iret .ne. 0) secref=0.d0
-    call get_elas_para(fami    , imate, poum, kpg, ksp, &
-                       elas_id , elas_keyword,&
-                       e_ = e, nu_ = nu, BEHinteg = BEHinteg)
+    call get_elas_para(fami, imate, poum, kpg, ksp,&
+                       elas_id, elas_keyword, e_ = e, nu_ = nu, BEHinteg = BEHinteg)
     if (elas .or. line .or. puis) then
         call rcvalb(fami, kpg, ksp, poum, imate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -433,14 +431,16 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         endif
 !      CORRECTION POUR LES CONTRAINTES PLANES
         if (cplan) then
-            do 130 k = 1, ndimsi
+            do k = 1, ndimsi
                 if (k .eq. 3) goto 130
-                do 140 l = 1, ndimsi
+                do l = 1, ndimsi
                     if (l .eq. 3) goto 140
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
                     k,3)*dsidep(3,l)
-140             continue
-130         continue
+140                 continue
+                end do
+130             continue
+            end do
         endif
     endif
 !====================================================================
@@ -449,8 +449,8 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 ! CALCUL DE L'ENERGIE LIBRE ENERGI(1) ET DE SA DERIVEE / T ENERGI(2)
     if (option(1:7) .eq. 'RUPTURE') then
         divu = 3.d0*epsmo
-        call nmelru(fami, kpg, ksp, poum,&
-                    imate, compor, epseq, p, divu,&
-                    nonlin, energi)
+        call nmelru(fami, kpg, ksp, poum, imate,&
+                    compor, epseq, p, divu, nonlin,&
+                    energi)
     endif
 end subroutine

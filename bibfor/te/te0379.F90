@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0379(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -40,8 +40,8 @@ subroutine te0379(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, nbcmp
     integer :: i, j, itab(3), ierr, ierrn, iret
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call tecach('OOO', 'PERREUR', 'L', iret, nval=3,&
                 itab=itab)
@@ -49,10 +49,10 @@ subroutine te0379(option, nomte)
     ierr=itab(1)
     nbcmp=itab(2)
 !
-    do 10 i = 1, nno
-        do 20 j = 1, nbcmp
+    do i = 1, nno
+        do j = 1, nbcmp
             zr(ierrn+nbcmp*(i-1)+j-1) = zr(ierr-1+j)
-20      continue
-10  end do
+        end do
+    end do
 !
 end subroutine

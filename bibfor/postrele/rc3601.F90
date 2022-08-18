@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc3601(ig, iocs, seisme, npass, ima,&
                   ipt, nbm, adrm, c, k,&
                   cara, nommat, snmax, samax, utot,&
@@ -23,7 +23,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -38,8 +39,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 #include "asterfort/rc36sp.h"
 #include "asterfort/rcma01.h"
 #include "asterfort/rcmo01.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     integer :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
     real(kind=8) :: c(*), k(*), cara(*), snmax, samax, utot, sm, factus(*)
     aster_logical :: seisme
@@ -142,7 +142,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !     -------------
 !
     i1 = 0
-    do 20 is1 = 1, nbsigr
+    do is1 = 1, nbsigr
         ioc1 = zi(jnsg+is1-1)
         if (.not.zl(jcombi+ioc1-1)) goto 20
         if (ioc1 .gt. nbsitu) goto 20
@@ -233,7 +233,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !       -------------
 !
         i2 = i1
-        do 10 is2 = is1 + 1, nbsigr
+        do is2 = is1 + 1, nbsigr
             ioc2 = zi(jnsg+is2-1)
             if (.not.zl(jcombi+ioc2-1)) goto 10
             if (ioc2 .gt. nbsitu) goto 10
@@ -408,9 +408,11 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
                 sm = smm
             endif
 !
- 10     continue
+ 10         continue
+        end do
 !
- 20 end do
+ 20     continue
+    end do
 !
 ! --- CALCUL DU FACTEUR D'USAGE
 !

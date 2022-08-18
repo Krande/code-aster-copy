@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mxmajd(deltat, sddyna)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -86,7 +86,7 @@ subroutine mxmajd(deltat, sddyna)
     call jeveuo(accgep, 'E', jaccgp)
     call jeveuo(accgem, 'E', jaccgm)
 !
-    do 11 imode = 1, nbmodp
+    do imode = 1, nbmodp
         zr(jvitgp+imode-1) = zr(jvitgm+imode-1) + coevi1*zr(jaccgp+ imode-1) + coevi2*zr(jaccgm+i&
                              &mode-1)
         zr(jdepgm+imode-1) = zr(jdepgp+imode-1)
@@ -94,7 +94,7 @@ subroutine mxmajd(deltat, sddyna)
         zr(jaccgm+imode-1) = zr(jaccgp+imode-1)
 !
 !
-11  end do
+    end do
 !
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fcepai(zr)
     implicit none
     real(kind=8) :: zr(*), vf(3)
@@ -42,7 +42,7 @@ subroutine fcepai(zr)
 !     VALEURS DES 3 PARABOLES (POUR LA DISTRIBUTION DE LA TEMPERATURE)
 !     AUX 3 PTS DE D'INTEGRATION PRECEDANTS
 !
-    do 100 i = 1, 3
+    do i = 1, 3
         xi3=zr(j+i)
 !
         vf(1)= 1-xi3*xi3
@@ -50,10 +50,10 @@ subroutine fcepai(zr)
         vf(3)= xi3*(1+xi3)/2.d0
 !
         ll=3*(i-1)
-        do 110 l = 1, 3
+        do l = 1, 3
             i1=6+ll+l
             zr(j+i1)=vf(l)
-110      continue
-100  continue
+        end do
+    end do
 !
 end subroutine

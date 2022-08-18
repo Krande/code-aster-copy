@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fsurf(option, nomte, xi, nb1, vecl,&
                  vectpt)
     implicit none
@@ -64,27 +64,27 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
         call jevech('PFRCO3D', 'L', jpres)
         global=abs(zr(jpres-1+7)).lt.1.d-3
         if (global) then
-            do 20 j = 1, nb1
-                do 10 i = 1, 6
+            do j = 1, nb1
+                do i = 1, 6
                     chgsrg(i,j)=zr(jpres-1+7*(j-1)+i)
- 10             continue
- 20         continue
+                end do
+            end do
         else
-            do 70 j = 1, nb1
-                do 30 i = 1, 5
+            do j = 1, nb1
+                do i = 1, 5
                     chgsrl(i)=zr(jpres-1+7*(j-1)+i)
- 30             continue
+                end do
                 chgsrl(i)=0.d0
-                do 50 jp = 1, 3
-                    do 40 ip = 1, 3
+                do jp = 1, 3
+                    do ip = 1, 3
                         pgl(jp,ip)=vectpt(j,jp,ip)
- 40                 continue
- 50             continue
+                    end do
+                end do
                 call utpvlg(1, 6, pgl, chgsrl, chg)
-                do 60 i = 1, 6
+                do i = 1, 6
                     chgsrg(i,j)=chg(i)
- 60             continue
- 70         continue
+                end do
+            end do
         endif
 !
 !
@@ -102,7 +102,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
 !
         if (global) then
 ! --        LECTURE DES INTERPOLATIONS DE FX, FY, FZ, MX, MY, MZ
-            do 100 j = 1, nb1
+            do j = 1, nb1
                 valpar(1) = xi(1,j)
                 valpar(2) = xi(2,j)
                 valpar(3) = xi(3,j)
@@ -118,12 +118,12 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
                             chgsrg( 5, j), ier)
                 call fointe('FM', zk8(jpres+5), 4, nompar, valpar,&
                             chgsrg( 6, j), ier)
-100         continue
+            end do
 !
         else if (locapr) then
 ! --        BASE LOCALE - CAS D UNE PRESSION
 ! --        LECTURE DES INTERPOLATIONS DE LA PRESSION PRES
-            do 140 j = 1, nb1
+            do j = 1, nb1
                 valpar(1) = xi(1,j)
                 valpar(2) = xi(2,j)
                 valpar(3) = xi(3,j)
@@ -136,21 +136,21 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
                 chgsrl(5) = 0.d0
                 chgsrl(6) = 0.d0
 ! --           CHANGEMENT DE BASE LOCAL --> GLOBAL
-                do 120 jp = 1, 3
-                    do 110 ip = 1, 3
+                do jp = 1, 3
+                    do ip = 1, 3
                         pgl(jp,ip)=vectpt(j,jp,ip)
-110                 continue
-120             continue
+                    end do
+                end do
                 call utpvlg(1, 6, pgl, chgsrl, chg)
-                do 130 i = 1, 6
+                do i = 1, 6
                     chgsrg(i,j)=chg(i)
-130             continue
-140         continue
+                end do
+            end do
         else
 !
 ! --        BASE LOCALE - CAS DE F1, F2, F3, MF1, MF2
 ! --        LECTURE DES INTERPOLATIONS DE F1, F2, F3, MF1, MF2
-            do 180 j = 1, nb1
+            do j = 1, nb1
                 valpar(1) = xi(1,j)
                 valpar(2) = xi(2,j)
                 valpar(3) = xi(3,j)
@@ -166,52 +166,52 @@ subroutine fsurf(option, nomte, xi, nb1, vecl,&
                             chgsrl( 5), ier)
                 chgsrl(6) = 0.d0
 ! --           CHANGEMENT DE BASE LOCAL --> GLOBAL
-                do 160 jp = 1, 3
-                    do 150 ip = 1, 3
+                do jp = 1, 3
+                    do ip = 1, 3
                         pgl(jp,ip)=vectpt(j,jp,ip)
-150                 continue
-160             continue
+                    end do
+                end do
                 call utpvlg(1, 6, pgl, chgsrl, chg)
-                do 170 i = 1, 6
+                do i = 1, 6
                     chgsrg(i,j)=chg(i)
-170             continue
-180         continue
+                end do
+            end do
         endif
 !
     endif
 !
 !
-    do 200 intsn = 1, npgsn
+    do intsn = 1, npgsn
         call vectci(intsn, nb1, xi, zr(lzr), rnormc)
 !
         call forsrg(intsn, nb1, nb2, zr(lzr), chgsrg,&
                     rnormc, vectpt, vecl1)
-200 end do
+    end do
 !
 !     RESTITUTION DE KIJKM1 POUR CONDENSER LES FORCES
 !     ATTENTION LA ROUTINE N'EST PAS UTILISEE DANS LE CAS DES
 !     EFFORTS SUIVANTS (MOMENTS SURFACIQUES)
     i1=5*nb1
-    do 220 j = 1, 2
-        do 210 i = 1, i1
+    do j = 1, 2
+        do i = 1, i1
             k=(j-1)*i1+i
             kijkm1(i,j)=zr(lzr-1+1000+k)
-210     end do
-220 end do
+        end do
+    end do
 !
-    do 240 i = 1, i1
+    do i = 1, i1
         f1=0.d0
-        do 230 k = 1, 2
+        do k = 1, 2
             f1=f1+kijkm1(i,k)*vecl1(i1+k)
-230     continue
+        end do
         vecl1(i)=vecl1(i)-f1
-240 end do
+    end do
 !
 !     EXPANSION DU VECTEUR VECL1 : DUE A L'AJOUT DE LA ROTATION FICTIVE
 !
     call vexpan(nb1, vecl1, vecl)
-    do 90 i = 1, 3
+    do i = 1, 3
         vecl(6*nb1+i)=0.d0
- 90 end do
+    end do
 !
 end subroutine

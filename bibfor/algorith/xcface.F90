@@ -15,16 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                   nfiss, ifiss, fisco, nfisc, noma,&
-                  nmaabs, typdis, pinter, ninter, ainter, nface,&
-                  nptf, cface, minlst)
+                  nmaabs, typdis, pinter, ninter, ainter,&
+                  nface, nptf, cface, minlst)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
@@ -42,6 +41,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 #include "asterfort/xcfacj.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
+!
     real(kind=8) :: lsn(*), lst(*), pinter(*), ainter(*)
     integer :: jgrlsn, igeom, ninter, nface, cface(30, 6), nptf
     integer :: nfiss, ifiss, fisco(*), nfisc, nmaabs
@@ -82,8 +82,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     real(kind=8) :: lsja(nfisc+1), lsjb(nfisc+1), lsjc, beta
     real(kind=8) :: minlsn, minlst, maxlsn, lsnabs, lonref, cridist
     integer :: j, ar(12, 3), nbar, na, nb, nc, ins
-    integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos, ibid2(12,3)
-    integer :: iadzi, iazk24, ndim, ptmax, f(6,8) , nbf
+    integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos, ibid2(12, 3)
+    integer :: iadzi, iazk24, ndim, ptmax, f(6, 8), nbf
     character(len=8) :: typma
     integer :: zxain
     parameter(cridist=1.d-7)
@@ -103,13 +103,13 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !     L'ELEMENT EST-IL TRAVERSE STRICTEMENT PAR LSN=0?
     cut=.false.
     i=1
- 1  continue
+  1 continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
     if (lsn((i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
-        do 30 k = i+1, nnos
+        do k = i+1, nnos
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
             if (lsn((i-1)*nfiss+ifiss)*lsn((k-1)*nfiss+ifiss) .lt. 0.d0) cut=.true.
-30      continue
+        end do
     else if (i.lt.nnos) then
         i=i+1
         goto 1
@@ -125,25 +125,25 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !     ON NE PREND QUE CERTAINS ELEMENTS POUR NE PAS AVOIR DE "DOUBLONS"
     arete = .false.
     lsnabs = 0.d0
-    if(.not.cut) then
-       if (ndim.eq.3) then
-           call confac(typma, ibid2, ibid, f, nbf)
-           do i = 1, nbf
+    if (.not.cut) then
+        if (ndim .eq. 3) then
+            call confac(typma, ibid2, ibid, f, nbf)
+            do i = 1, nbf
                 lsnabs = 0.d0
                 do j = 1, 4
-                  if (f(i,j).ne.0.d0) lsnabs = lsnabs+abs(lsn((f(i,j)-1)*nfiss+ifiss))
+                    if (f(i,j) .ne. 0.d0) lsnabs = lsnabs+abs(lsn((f(i,j)-1)*nfiss+ifiss))
                 end do
-                if (lsnabs.le.cridist*lonref) arete = .true.
-           end do
-       else if (ndim.eq.2) then
-           call conare(typma, ar, nbar)
-           do i = 1, nbar
-               lsnabs = abs(lsn((ar(i,1)-1)*nfiss+ifiss))+abs(lsn((ar(i,2)-1)*nfiss+ifiss))
-               if (lsnabs.le.cridist*lonref) arete = .true.
-           end do
-       endif
-       if (.not.arete) goto 999
-       if (arete.and.minlsn.ge.0.d0) goto 999
+                if (lsnabs .le. cridist*lonref) arete = .true.
+            end do
+        else if (ndim.eq.2) then
+            call conare(typma, ar, nbar)
+            do i = 1, nbar
+                lsnabs = abs(lsn((ar(i,1)-1)*nfiss+ifiss))+abs(lsn((ar(i,2)-1)*nfiss+ifiss))
+                if (lsnabs .le. cridist*lonref) arete = .true.
+            end do
+        endif
+        if (.not.arete) goto 999
+        if (arete .and. minlsn .ge. 0.d0) goto 999
     endif
 !   PREC PERMET D"EVITER LES ERREURS DE PRÉCISION CONDUISANT
 !   A IA=IN=0 POUR LES MAILLES DU FRONT
@@ -192,10 +192,10 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
         if ((lsna*lsnb) .le. 0.d0) then
             lsta=lst((na-1)*nfiss+ifiss)
             lstb=lst((nb-1)*nfiss+ifiss)
-            do 110 i = 1, ndim
+            do i = 1, ndim
                 a(i)=zr(igeom-1+ndim*(na-1)+i)
                 b(i)=zr(igeom-1+ndim*(nb-1)+i)
-110         continue
+            end do
             if (ndim .lt. 3) then
                 a(3)=0.d0
                 b(3)=0.d0
@@ -210,25 +210,25 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
             if (lsna .eq. 0.d0 .and. lsta .le. pre2) then
 !           ON AJOUTE A LA LISTE LE POINT A
                 lajpa = .true.
-                if(minlst.gt.lsta) minlst=lsta
-                if (typdis.ne.'COHESIF'.and.lcont .and. lsta .ge. 0.d0) na=0
+                if (minlst .gt. lsta) minlst=lsta
+                if (typdis .ne. 'COHESIF' .and. lcont .and. lsta .ge. 0.d0) na=0
             endif
             if (lsnb .eq. 0.d0 .and. lstb .le. pre2) then
 !           ON AJOUTE A LA LISTE LE POINT B
                 lajpb = .true.
-                if (typdis.ne.'COHESIF'.and.lcont .and. lstb .ge. 0.d0) nb=0
-                if(minlst.gt.lstb) minlst=lstb
+                if (typdis .ne. 'COHESIF' .and. lcont .and. lstb .ge. 0.d0) nb=0
+                if (minlst .gt. lstb) minlst=lstb
             endif
             if (lsna .ne. 0.d0 .and. lsnb .ne. 0.d0) then
                 beta = lsna/(lsnb-lsna)
-                do 120 i = 1, ndim
+                do i = 1, ndim
                     c(i)=a(i)-beta*(b(i)-a(i))
-120             continue
+                end do
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
                 lstc=lsta-beta*(lstb-lsta)
-                if(typdis.eq.'COHESIF') then
-                    if(minlst.gt.lstc) minlst=lstc
+                if (typdis .eq. 'COHESIF') then
+                    if (minlst .gt. lstc) minlst=lstc
                     lajpc = .true.
                 else
                     if (lstc .le. prec) then
@@ -241,11 +241,11 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
             if (nfisc .gt. 0) then
 !           POUR LES FISSURES SUR LESQUELLES IFISS SE BRANCHE
                 ASSERT(na.gt.0.and.nb.gt.0.and.nc.gt.0)
-                do 130 j = 1, nfisc
+                do j = 1, nfisc
                     lsja(j)=lsn((na-1)*nfiss+fisco(2*j-1))*fisco(2*j)
                     lsjb(j)=lsn((nb-1)*nfiss+fisco(2*j-1))*fisco(2*j)
-130             continue
-                do 140 j = 1, nfisc
+                end do
+                do j = 1, nfisc
                     if (lajpa) then
                         if (lsja(j) .gt. pre2) lajpa = .false.
                         if (lcont .and. lsja(j) .ge. 0) na = 0
@@ -259,9 +259,9 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                         if (lsjc .gt. prec) lajpc = .false.
                         if (lcont .and. lsjc .ge. 0) nc = 0
                     endif
-140             continue
+                end do
             endif
-            do 150 j = nfisc+1, nfiss
+            do j = nfisc+1, nfiss
 !           POUR LES FISSURES QUI SE BRANCHENT SUR IFISS
                 k = fisco(2*j-1)
                 if (k .gt. 0) then
@@ -280,7 +280,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                         if (abs(lsjc) .lt. 1d-12) nc = -abs(nc)
                     endif
                 endif
-150         continue
+            end do
 !
             if (lajpa) call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                    a, longar, ainter, 0, na,&
@@ -310,7 +310,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                     lst, igeom, nno, ndim, typma,&
                     noma, nmaabs)
     endif
- 999 continue
+999 continue
     ninter=ipt
 !
 !     2) DECOUPAGE EN FACETTES TRIANGULAIRES DE LA SURFACE DEFINIE
@@ -322,48 +322,48 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     if (ndim .eq. 3) then
         if (ninter .lt. 3) goto 500
 !
-        do 200 i = 1, 30
-            do 201 j = 1, 6
+        do i = 1, 30
+            do j = 1, 6
                 cface(i,j)=0
-201         continue
-200     continue
+            end do
+        end do
 !
 !       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
         nd(:) = 0.d0
-        do 210 i = 1, nno
-            do 211 j = 1, 3
+        do i = 1, nno
+            do j = 1, 3
                 nd(j)=nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/&
                 nno
-211         continue
-210     continue
+            end do
+        end do
 !
 !       PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
         bar(:) = 0.d0
-        do 220 i = 1, ninter
-            do 221 j = 1, 3
+        do i = 1, ninter
+            do j = 1, 3
                 bar(j)=bar(j)+pinter((i-1)*3+j)/ninter
-221         continue
-220     continue
-        do 230 j = 1, 3
+            end do
+        end do
+        do j = 1, 3
             a(j)=pinter((1-1)*3+j)
             oa(j)=a(j)-bar(j)
-230     continue
+        end do
         noa=sqrt(oa(1)*oa(1) + oa(2)*oa(2) + oa(3)*oa(3))
 !
 !       BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
-        do 240 i = 1, ninter
-            do 241 j = 1, 3
+        do i = 1, ninter
+            do j = 1, 3
                 m(j)=pinter((i-1)*3+j)
                 am(j)=m(j)-a(j)
-241         continue
+            end do
             ps=ddot(3,am,1,nd,1)
 !
             ps1=ddot(3,nd,1,nd,1)
             lambda=-ps/ps1
-            do 242 j = 1, 3
+            do j = 1, 3
                 h(j)=m(j)+lambda*nd(j)
                 oh(j)=h(j)-bar(j)
-242         continue
+            end do
             ps=ddot(3,oa,1,oh,1)
 !
             noh=sqrt(oh(1)*oh(1) + oh(2)*oh(2) + oh(3)*oh(3))
@@ -375,28 +375,28 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
             ps=ddot(3,r3,1,nd,1)
             if (ps .lt. eps) theta(i) = -1 * theta(i) + 2 * r8pi()
 !
-240     continue
+        end do
 !
 !       TRI SUIVANT THETA CROISSANT
-        do 250 pd = 1, ninter-1
+        do pd = 1, ninter-1
             pp=pd
-            do 251 i = pp, ninter
+            do i = pp, ninter
                 if (theta(i) .lt. theta(pp)) pp=i
-251         continue
+            end do
             tampor(1)=theta(pp)
             theta(pp)=theta(pd)
             theta(pd)=tampor(1)
-            do 252 k = 1, 3
+            do k = 1, 3
                 tampor(k)=pinter(3*(pp-1)+k)
                 pinter(3*(pp-1)+k)=pinter(3*(pd-1)+k)
                 pinter(3*(pd-1)+k)=tampor(k)
-252         continue
-            do 253 k = 1, zxain
+            end do
+            do k = 1, zxain
                 tampor(k)=ainter(zxain*(pp-1)+k)
                 ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
                 ainter(zxain*(pd-1)+k)=tampor(k)
-253         continue
-250     continue
+            end do
+        end do
 !
 500     continue
 !
@@ -472,41 +472,41 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !
 !     CAS 2D
     else if (ndim .eq. 2) then
-        do 800 i = 1, 30
-            do 801 j = 1, 6
+        do i = 1, 30
+            do j = 1, 6
                 cface(i,j)=0
-801         continue
-800     continue
+            end do
+        end do
         if (ninter .eq. 2) then
 !         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
             nd(:) = 0.d0
-            do 810 i = 1, nno
-                do 811 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     nd(j)=nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j)&
                     /nno
-811             continue
-810         continue
+                end do
+            end do
 !
-            do 841 j = 1, 2
+            do j = 1, 2
                 a(j)=pinter(j)
                 b(j)=pinter(2+j)
                 ab(j)=b(j)-a(j)
-841         continue
+            end do
 !
             abprim(1)=-ab(2)
             abprim(2)=ab(1)
 !
             if (ddot(2,abprim,1,nd,1) .lt. 0.d0) then
-                do 852 k = 1, 2
+                do k = 1, 2
                     tampor(k)=pinter(k)
                     pinter(k)=pinter(2+k)
                     pinter(2+k)=tampor(k)
-852             continue
-                do 853 k = 1, 4
+                end do
+                do k = 1, 4
                     tampor(k)=ainter(k)
                     ainter(k)=ainter(zxain+k)
                     ainter(zxain+k)=tampor(k)
-853             continue
+                end do
             endif
             nface=1
             nptf=2

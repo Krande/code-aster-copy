@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
                   valmax, ncyc, dommag)
 !       ================================================================
@@ -23,6 +23,8 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/fgdoba.h"
 #include "asterfort/fgdohs.h"
 #include "asterfort/fgdoma.h"
@@ -31,8 +33,6 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 #include "asterfort/fgtaes.h"
 #include "asterfort/rcpare.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=*) :: method
     character(len=8) :: nommat, nomnap, nomfon
     real(kind=8) :: valmin(*), valmax(*), dommag
@@ -54,7 +54,7 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 !       ----------------------------------------------------------------
     integer :: icodwo, icodba, icodhs
     character(len=32) :: pheno
-    character(len=16) :: cara,k16b
+    character(len=16) :: cara, k16b
     aster_logical :: lke, lhaigh
 !
 !-----------------------------------------------------------------------
@@ -99,9 +99,9 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
         call utmess('F', 'PREPOST_4', sk=k16b)
     endif
 !
-    do 100 i = 1, ncyc
+    do i = 1, ncyc
         dommag = dommag + vdommag(i)
-100 end do
+    end do
 !
     AS_DEALLOCATE(vr=vdommag)
 end subroutine

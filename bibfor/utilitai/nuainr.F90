@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nuainr(method, np1, nx1, nc1, ic1,&
                   nuax1, nual1, nuav1, x2, dref,&
                   val2)
@@ -58,28 +58,28 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
 !     -- MISE A ZERO DE K ET F :
 !     -------------------------
     if (nx1 .eq. 1) then
-        do 52 i = 1, nx1+1
-            do 53 j = 1, nx1+1
+        do i = 1, nx1+1
+            do j = 1, nx1+1
                 k1(i,j)= 0.d0
- 53         continue
- 52     continue
+            end do
+        end do
     else if (nx1.eq.2) then
-        do 54 i = 1, nx1+1
-            do 55 j = 1, nx1+1
+        do i = 1, nx1+1
+            do j = 1, nx1+1
                 k2(i,j)= 0.d0
- 55         continue
- 54     continue
+            end do
+        end do
     else if (nx1.eq.3) then
-        do 56 i = 1, nx1+1
-            do 57 j = 1, nx1+1
+        do i = 1, nx1+1
+            do j = 1, nx1+1
                 k3(i,j)= 0.d0
- 57         continue
- 56     continue
+            end do
+        end do
     endif
 !
-    do 58 i = 1, nx1+1
+    do i = 1, nx1+1
         f(i)= 0.d0
- 58 end do
+    end do
 !
     dref2=dref*alpha
 !
@@ -89,17 +89,18 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
         f(1) = 0.d0
 !
         if (nx1 .eq. 1) then
-            do 1 ip1 = 1, np1
+            do ip1 = 1, np1
                 if (.not.nual1((ip1-1)*nc1+ic1)) goto 1
                 d=(nuax1((ip1-1)*1+1)-x2(1))**2
                 w=exp(-(d/dref2)**beta)
                 v1 = nuav1((ip1-1)*nc1+ic1)
                 k0(1,1) = k0(1,1) + w
                 f(1) = f(1) + w*v1
-  1         continue
+  1             continue
+            end do
 !
         else if (nx1.eq.2) then
-            do 2 ip1 = 1, np1
+            do ip1 = 1, np1
                 if (.not.nual1((ip1-1)*nc1+ic1)) goto 2
                 d=(nuax1((ip1-1)*2+1)-x2(1))**2 +(nuax1((ip1-1)*2+2)-&
                 x2(2))**2
@@ -107,10 +108,11 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
                 v1 = nuav1((ip1-1)*nc1+ic1)
                 k0(1,1) = k0(1,1) + w
                 f(1) = f(1) + w*v1
-  2         continue
+  2             continue
+            end do
 !
         else if (nx1.eq.3) then
-            do 3 ip1 = 1, np1
+            do ip1 = 1, np1
                 if (.not.nual1((ip1-1)*nc1+ic1)) goto 3
                 d=(nuax1((ip1-1)*3+1)-x2(1))**2 +(nuax1((ip1-1)*3+2)-&
                 x2(2))**2 +(nuax1((ip1-1)*3+3)-x2(3))**2
@@ -118,7 +120,8 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
                 v1 = nuav1((ip1-1)*nc1+ic1)
                 k0(1,1) = k0(1,1) + w
                 f(1) = f(1) + w*v1
-  3         continue
+  3             continue
+            end do
         endif
 !
 !
@@ -129,7 +132,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
 !     -----------------------------
         if (nx1 .eq. 1) then
 !       --------------
-            do 11 ip1 = 1, np1
+            do ip1 = 1, np1
                 if (.not.nual1((ip1-1)*nc1+ic1)) goto 11
                 d=(nuax1((ip1-1)*1+1)-x2(1))**2
                 w=exp(-(d/dref2)**beta)
@@ -141,12 +144,13 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
                 k1(2,2) = k1(2,2) +w*x1*x1
                 f(1) = f(1) + w*v1
                 f(2) = f(2) + w*v1*x1
- 11         continue
+ 11             continue
+            end do
             k1(2,1)=k1(1,2)
 !
         else if (nx1.eq.2) then
 !       ------------------
-            do 21 ip1 = 1, np1
+            do ip1 = 1, np1
                 if (.not.nual1((ip1-1)*nc1+ic1)) goto 21
                 d=(nuax1((ip1-1)*2+1)-x2(1))**2 +(nuax1((ip1-1)*2+2)-&
                 x2(2))**2
@@ -164,14 +168,15 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
                 f(1) = f(1) + w*v1
                 f(2) = f(2) + w*v1*x1
                 f(3) = f(3) + w*v1*y1
- 21         continue
+ 21             continue
+            end do
             k2(2,1) = k2(1,2)
             k2(3,1) = k2(1,3)
             k2(3,2) = k2(2,3)
 !
         else if (nx1.eq.3) then
 !       ------------------
-            do 31 ip1 = 1, np1
+            do ip1 = 1, np1
                 if (.not.nual1((ip1-1)*nc1+ic1)) goto 31
                 d=(nuax1((ip1-1)*3+1)-x2(1))**2 +(nuax1((ip1-1)*3+2)-&
                 x2(2))**2 +(nuax1((ip1-1)*3+3)-x2(3))**2
@@ -195,7 +200,8 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
                 f(2) = f(2) + w*v1*x1
                 f(3) = f(3) + w*v1*y1
                 f(4) = f(4) + w*v1*z1
- 31         continue
+ 31             continue
+            end do
             k3(2,1) = k3(1,2)
             k3(3,1) = k3(1,3)
             k3(3,2) = k3(2,3)
@@ -215,9 +221,9 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
         endif
 !
         val2 = f(1)
-        do 50 ix1 = 1, nx1
+        do ix1 = 1, nx1
             val2 = val2 + f(ix1+1)*x2(ix1)
- 50     continue
+        end do
 !
     else
         meth2 = method

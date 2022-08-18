@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
                   epm, dp, sp, xi, sigp,&
                   vip)
@@ -53,18 +53,18 @@ subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
                     epm, dp, sp, xi, f,&
                     g, fds, gds, fdp, gdp,&
                     fdx, gdx, dpmax, sig, tang)
-        do 5 k = 1, ndimsi
+        do k = 1, ndimsi
             sigp(k) = sigp(k) - sig(k)
- 5      continue
+        end do
     endif
 !
 !
 !    ACTUALISATION DES VARIABLES INTERNES
     vip(1) = vim(1) + dp
     vip(2) = sp
-    do 10 k = 1, ndimsi
+    do k = 1, ndimsi
         vip(k+2) = epm(k) - xi * (epm(k) - vim(k+2))
-10  end do
+    end do
     vip(9) = type
 !
 !

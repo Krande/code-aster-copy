@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgnal(ifi, nbordr, coord, connex, point,&
                   nocmp, nbcmp, numel, nobj, nbel,&
                   cnsc, cnsl, cnsv, partie, jtype,&
@@ -69,21 +69,21 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
     endif
 !
 !     BOUCLE SUR LES ELEMENTS
-    do 10 iel = 1, nbel
+    do iel = 1, nbel
         ima = zi(jel-1+iel)
         ipoin = point(ima)
 !
-        do 100 j = 1, nbno
+        do j = 1, nbno
             listno(j) = connex(ipoin-1+j)
-100      continue
+        end do
 !
 !        COORDONNEES DES NOEUDS
-        do 110 j = 1, 3
+        do j = 1, 3
             write(ifi,1099) (coord(3*(listno(inoe)-1)+j),inoe=1,nbno)
-110      continue
+        end do
 !
 !        POUR CHAQUE INSTANT...
-        do 120 ior = 1, nbordr
+        do ior = 1, nbordr
             jcnsc = cnsc(ior)
             jcnsl = cnsl(ior)
             jcnsv = cnsv(ior)
@@ -91,41 +91,41 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
             ncmp = zi(jcnsd-1+2)
             if (zk8(jtype-1+ior) .eq. 'R') then
 !           ...EN CHAQUE NOEUD...
-                do 1210 inoe = 1, nbno
+                do inoe = 1, nbno
 !
-                    do 1215 l = 1, nbcmp
+                    do l = 1, nbcmp
                         val(l) = 0.d0
-1215                  continue
+                    end do
 !
 !              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
-                    do 1220 k = 1, ncmp
+                    do k = 1, ncmp
 !
-                        do 1230 l = 1, nbcmp
+                        do l = 1, nbcmp
                             if (zk8(jcnsc-1+k) .eq. nocmp(l)) then
                                 if (zl(jcnsl-1+(listno(inoe)-1)*ncmp+ k)) then
                                     val(l) = zr( jcnsv-1+(listno(inoe)- 1)*ncmp+k)
                                     if (abs(val(l)) .le. 1.d-99) val(l)= 0.d0
                                 endif
                             endif
-1230                      continue
+                        end do
 !
-1220                  continue
+                    end do
 !
 !              ...ET ON IMPRIME LES VALEURS DES COMPOSANTES DE NOCMP
                     write(ifi,1099) (val(l),l=1,nbcmp)
 !
-1210              continue
+                end do
             else if (zk8(jtype-1+ior) .eq. 'C') then
-                do 2210 inoe = 1, nbno
+                do inoe = 1, nbno
 !
-                    do 2215 l = 1, nbcmp
+                    do l = 1, nbcmp
                         val(l) = 0.d0
-2215                  continue
+                    end do
 !
 !              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
-                    do 2220 k = 1, ncmp
+                    do k = 1, ncmp
 !
-                        do 2230 l = 1, nbcmp
+                        do l = 1, nbcmp
                             if (zk8(jcnsc-1+k) .eq. nocmp(l)) then
                                 if (zl(jcnsl-1+(listno(inoe)-1)*ncmp+ k)) then
                                     if (partie .eq. 'REEL') then
@@ -138,19 +138,19 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
                                     if (abs(val(l)) .le. 1.d-99) val(l)= 0.d0
                                 endif
                             endif
-2230                      continue
+                        end do
 !
-2220                  continue
+                    end do
 !
 !              ...ET ON IMPRIME LES VALEURS DES COMPOSANTES DE NOCMP
                     write(ifi,1099) (val(l),l=1,nbcmp)
 !
-2210              continue
+                end do
 !
             endif
-120      continue
+        end do
 !
-10  end do
+    end do
 !
     call jelibe(nobj)
     call jedema()

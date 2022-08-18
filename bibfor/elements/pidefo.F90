@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pidefo(ndim, npg, kpg, compor, fm,&
                   epsm, epsp, epsd, copilo)
 !
@@ -84,8 +84,8 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
         call dcopy(ndimsi, epsm, 1, em, 1)
         call r8inir(ndimsi, 0.d0, epsm, 1)
 !
-        do 50 ij = 1, ndimsi
-            do 55 kl = 1, ndimsi
+        do ij = 1, ndimsi
+            do kl = 1, ndimsi
                 i = indi(ij)
                 j = indj(ij)
                 k = indi(kl)
@@ -93,8 +93,8 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
                 ff = (fm(i,k)*fm(j,l) + fm(i,l)*fm(j,k)) / 2
                 ff = ff * rac2**prac(ij) * rac2**prac(kl)
                 epsm(ij) = epsm(ij) + ff*em(kl)
- 55         continue
- 50     continue
+            end do
+        end do
     endif
 !
 ! --- INCREMENT DE DEFORMATION PROJETE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0122(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -23,9 +23,9 @@ subroutine te0122(option, nomte)
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/tecach.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !
 ! person_in_charge: jerome.laverne at edf.fr
@@ -119,7 +119,7 @@ subroutine te0122(option, nomte)
 !
         if (ndime .eq. 2) then
 !
-            do 10 i = 1, ncmp
+            do i = 1, ncmp
 !
                 ig = ichg-1+i
                 in = ichn-1+i
@@ -134,7 +134,7 @@ subroutine te0122(option, nomte)
 !           NOEUDS 5,7
                 zr(in+4*ncmp) = (zr(ig) + zr(ig+ncmp))/2.d0
                 zr(in+6*ncmp) = (zr(ig) + zr(ig+ncmp))/2.d0
- 10         continue
+            end do
 !
         else
 !
@@ -142,7 +142,7 @@ subroutine te0122(option, nomte)
 !         (POUR L'HEXA20 : 1 2 3 4 , POUR LE PENTA15 : 1 2 3 )
             call ppgan2(jgano, 1, ncmp, zr(ichg), zr(ichn))
 !
-            do 18 i = 1, ncmp
+            do i = 1, ncmp
 !
                 in = ichn-1+i
 !
@@ -162,7 +162,7 @@ subroutine te0122(option, nomte)
                     zr(in + 8*ncmp) = (zr(in+2*ncmp) + zr(in ) )/2.d0
                 endif
 !
-                do 19 j = 1, nno
+                do j = 1, nno
 !             ON REMPLIT LES NOEUDS SOMMETS DE LA 2ND FACE
 !             (POUR L'HEXA20 : 5 6 7 8, POUR LE PENTA15 : 4 5 6)
 !             AINSI QUE LES NOEUDS MILIEU INTERMEDIAIRES
@@ -174,9 +174,9 @@ subroutine te0122(option, nomte)
 !             (POUR L'HEXA20 : 17 18 19 20, POUR LE PENTA15 : 13 14 15)
 !             A L'IDENTIQUE DES NOEUDS MILIEU DE LA PREMIERE FACE
                     zr(in+(j+4*nno-1)*ncmp) = zr(in+(j+2*nno-1)*ncmp)
- 19             continue
+                end do
 !
- 18         continue
+            end do
 !
         endif
 !
@@ -189,14 +189,14 @@ subroutine te0122(option, nomte)
 !
 !         REMARQUE : ICI LA POSITION DES 2 PG DE l'EJ SONT INVERSEES PAR
 !         RAPPORT A LA POS HABITUELLE DES FAM D'EF 1D (SEG2 SEG3) A 2 PG
-            do 11 i = 1, ncmp
+            do i = 1, ncmp
                 ig = ichg-1+i
                 in = ichn-1+i
                 zr(in) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0-sqrt(3.d0) )/2.d0
                 zr(in+3*ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0- sqrt(3.d0))/2.d0
                 zr(in+ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0+sqrt( 3.d0))/2.d0
                 zr(in+2*ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0+ sqrt(3.d0))/2.d0
- 11         continue
+            end do
 !
         else
 !
@@ -204,12 +204,12 @@ subroutine te0122(option, nomte)
             call ppgan2(jgano, 1, ncmp, zr(ichg), zr(ichn))
 !
 !         ON REMPLIT LES NOEUD DE LA DEUXIEME FACE A L'IDENTIQUE
-            do 20 i = 1, ncmp
+            do i = 1, ncmp
                 in = ichn-1+i
-                do 30 j = 1, nno
+                do j = 1, nno
                     zr(in+(j+nno-1)*ncmp) = zr(in+(j-1)*ncmp)
- 30             continue
- 20         continue
+                end do
+            end do
 !
         endif
 !

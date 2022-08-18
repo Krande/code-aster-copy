@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                   tbnozo, nbnozo, nbnoe, xy, aire,&
                   energi, pe)
@@ -77,25 +77,25 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
 ! 1 - COORDONNEES DU NOEUD CONSIDERE INNO
 !
-    do 5 i = 1, 2
+    do i = 1, 2
         coord(i)=xy(i,noeu1)
- 5  end do
+    end do
 !
 ! 2 - CALCUL DES RAYONS DES COUCHES 1,2 ET 3
 !
     nedep=0
-    do 10 j = 1, 3
+    do j = 1, 3
         delta(j) = 1.d+10
         nefin=nedep+nbnozo(j)
-        do 20 inno = nedep+1, nefin
+        do inno = nedep+1, nefin
             noeu2=tbnozo(inno)
             if (noeu2 .ne. noeu1) then
                 dist = sqrt( (coord(1)-xy(1,noeu2))**2 + (coord(2)-xy( 2,noeu2))**2)
                 delta(j) = min(delta(j),dist)
             endif
-20      continue
+        end do
         nedep=nefin
-10  end do
+    end do
 !
 ! 3 - CALCUL DE L ENERGIE POUR DIFFERENTS RAYONS RAYZ
 !     ENER=SOMME(ENERGI(EF)*SPRIM(EF)/AIRE(EF))/AIRTOT
@@ -107,7 +107,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !     CAS 2 : EF EXCLU DU CERCLE      => SPRIM(EF)=0
 !     CAS 3 : EF INCLUE EN PARTIE     => SPRIM(EF) A CALCULER
 !
-    do 30 iint = 1, nbint
+    do iint = 1, nbint
 !
         rayz(iint) = delta(1)+(delta(3)-delta(1))*(iint-1)/(nbint-1)
         ener(iint) = 0.d+0
@@ -115,7 +115,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
 ! 3.1 - BOUCLE SUR LES EFS
 !
-        do 40 inel = 1, nbelt
+        do inel = 1, nbelt
 !
             nuef = tbelzo(inel)
             nsomm=icnc(1,nuef)
@@ -124,7 +124,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
             nint = 0
             ipoi1 = 0
-            do 50 inno = 1, nsomm
+            do inno = 1, nsomm
                 coor(1,inno) = xy(1,icnc(inno+2,nuef))
                 coor(2,inno) = xy(2,icnc(inno+2,nuef))
                 ray = sqrt( (coord(1)-coor(1,inno))**2 +(coord(2)-coor( 2,inno))**2)
@@ -138,7 +138,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                 else
                     ipoi2 = inno
                 endif
-50          continue
+            end do
 !
 ! 3.1.2 - AIRE DE L INTERSECTION SPRIM SELON LES CAS
 !         SI NINT=NSOMM SPRIM = AIRE(EF)
@@ -209,7 +209,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
 ! 2 - FIN DE LA BOUCLE SUR TOUS LES EF
 !
-40      continue
+        end do
 !
         ASSERT(airtot.gt.0.d0.and.ener(iint).gt.0.d0)
         ener(iint) = ener(iint) / airtot
@@ -223,7 +223,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
 ! 3 - FIN DE LA BOUCLE SUR LE CALCUL DE L ENERGIE
 !
-30  end do
+    end do
 !
 ! 4 - CALCUL DU DEGRE DE LA SINGULARITE
 !     PAR LA METHODE DES MOINDRES CARRES

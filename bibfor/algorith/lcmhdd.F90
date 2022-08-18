@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
                   nsg, hsr)
     implicit none
@@ -134,10 +134,11 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
                     1, 1, hgm, 12, 12,&
                     1, 10)
 !
-        do 10 i = 1, 12
-            do 10 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 hsr(nn(i),nn(j))=hgm(i,j)
-10          continue
+            end do
+        end do
 !
     else if (necris(1:10).eq.'MONO_DD_CC') then
 !
@@ -155,9 +156,9 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
         c5=coefh(6)
 !
         call r8inir(3*3, c1, a0, 1)
-        do 12 i = 1, 3
+        do i = 1, 3
             a0(i,i)=c0
-12      continue
+        end do
         call lcicma(a0, 3, 3, 3, 3,&
                     1, 1, hgm, 12, 12,&
                     1, 1)
@@ -268,15 +269,16 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
                     1, 1, hgm, 12, 12,&
                     4, 7)
 !
-        do 11 i = 1, 12
-            do 11 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 hsr(i,j)=hgm(i,j)
-11          continue
+            end do
+        end do
         if (idbg .eq. 1) then
             write(6,*) 'MATRICE D INTERACTION POUR',necris
-            do 13 i = 1, 12
+            do i = 1, 12
                 write(6,'(12(1X,E11.4))') (hgm(i,j),j=1,12)
-13          continue
+            end do
         endif
 !
     endif

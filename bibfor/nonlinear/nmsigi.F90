@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmsigi(ligrmo, compor, sigini)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -73,7 +73,7 @@ subroutine nmsigi(ligrmo, compor, sigini)
         lpain(2) = 'PEPCON2'
         lchout(1) = '&&NMSIGI.PEPCON3'
         lpaout(1) = 'PEPCON3'
-        do 10 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charge, nbret=ibid)
             sigcha = charge//'.CHME.SIGIN'
             call exisd('CHAMP_GD', sigcha, iret)
@@ -86,7 +86,7 @@ subroutine nmsigi(ligrmo, compor, sigini)
                 call detrsd('CHAM_ELEM_S', lchout(1))
                 call copisd('CHAMP_GD', 'V', '&&NMSIGI.PEPCON3', sigini)
             endif
-10      continue
+        end do
         call detrsd('CHAMP_GD', '&&NMSIGI.PEPCON3')
     endif
 !

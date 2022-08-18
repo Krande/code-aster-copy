@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                   chadel, coef, chamaj, ordre)
 !
@@ -88,7 +88,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
     endif
 !
     if (.not.lgrot .and. lendo) then
-        do 10 i = 1, neq
+        do i = 1, neq
             stok = chaini(i)
             chamaj(i) = chaini(i) + coef*chadel(i)
             if (zi(endo+i-1) .ne. 0) then
@@ -119,7 +119,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !
             endif
 !
- 10     continue
+        end do
 !
 !        IF (ORDRE.EQ.0) THEN
 !          WRITE(6,*) 'NB_NO_ENDO=', PTDO
@@ -128,12 +128,12 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !        ENDIF
 !
     else if (.not.lgrot) then
-        do 20 i = 1, neq
+        do i = 1, neq
             chamaj(i) = chaini(i) + coef*chadel(i)
- 20     continue
+        end do
     else
         icomp = 0
-        do 30 i = 1, neq
+        do i = 1, neq
             if (ndro(i) .eq. 0) then
                 chamaj(i) = chaini(i) + coef*chadel(i)
             else if (ndro(i).eq.1) then
@@ -148,7 +148,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
             else
                 ASSERT(.false.)
             endif
- 30     continue
+        end do
     endif
 !
     call jedema()

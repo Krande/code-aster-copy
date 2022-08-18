@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevse(csigm, cinst, csno, csne, lsymm)
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -49,9 +49,9 @@ subroutine rcevse(csigm, cinst, csno, csne, lsymm)
     call wkvect(csne, 'V V R', nbordr, jsne)
     ind = 0
 !
-    do 100 i1 = 1, nbinst
+    do i1 = 1, nbinst
 !
-        do 102 icmp = 1, ncmp
+        do icmp = 1, ncmp
             if (lsymm) then
                 l1 = ncmp*(i1-1) + icmp
                 l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
@@ -67,14 +67,14 @@ subroutine rcevse(csigm, cinst, csno, csne, lsymm)
                 sn1o(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l2)+zr(jsigm-1+l3)
                 sn1e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)-zr(jsigm-1+l3)
             endif
-102      continue
+        end do
         ind = ind + 1
         zr(jsno+ind-1) = 0.d0
         zr(jsne+ind-1) = 0.d0
 !
-        do 110 i2 = i1+1, nbinst
+        do i2 = i1+1, nbinst
 !
-            do 112 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 if (lsymm) then
                     l1 = ncmp*(i2-1) + icmp
                     l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
@@ -90,16 +90,16 @@ subroutine rcevse(csigm, cinst, csno, csne, lsymm)
                     sn2o(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l2)+zr(jsigm-1+ l3)
                     sn2e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)-zr(jsigm-1+ l3)
                 endif
-112          continue
+            end do
             ind = ind + 1
 ! ======================================================================
 ! ---       COMBINAISON DES CONTRAINTES AUX 2 INSTANTS TEMP1 ET TEMP2 :
 ! ======================================================================
-            do 114 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 sn12o(icmp) = sn1o(icmp) - sn2o(icmp)
                 sn12e(icmp) = sn1e(icmp) - sn2e(icmp)
 !CC           ENDIF
-114          continue
+            end do
 ! ======================================================================
 ! ---       CALCUL DES VALEURS PROPRES DE LA DIFFERENCE DES TENSEURS
 ! ---       DE CONTRAINTES LINEARISEES
@@ -117,9 +117,9 @@ subroutine rcevse(csigm, cinst, csno, csne, lsymm)
             call rctres(sn12e, tresca)
             zr(jsne+ind-1) = tresca
 !
-110      continue
+        end do
 !
-100  end do
+    end do
 !
     call jedema()
 end subroutine

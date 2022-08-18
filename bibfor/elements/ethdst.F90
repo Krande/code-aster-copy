@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ethdst(fami, nno, ndim, nbsig, npg,&
                   ipoids, ivf, idfde, xyz, depl,&
                   instan, repere, mater, option, enthth)
@@ -90,7 +90,7 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
 !
 ! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
         enthpg=0.d0
 ! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 3D
 !
@@ -104,17 +104,17 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
                         poidi, dfdx, dfdy)
             if (lteatt('AXIS','OUI')) then
                 rayon = 0.d0
-                do 41 i = 1, nno
+                do i = 1, nno
                     rayon = rayon + zr(ivf+k-1+i)*xyz(2*(i-1)+1)
-41              continue
+                end do
                 poidi=poidi*rayon
             endif
         endif
-        do 30 i = 1, nbsig
+        do i = 1, nbsig
             enthpg = enthpg+epsith(i+nbsig*(igau-1))* sigth(i+nbsig*( igau-1))
-30      continue
+        end do
         enthth = enthth+(enthpg*poidi)
-20  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

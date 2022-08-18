@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcfe(nr, ndt, nvi, vind, df,&
                   gamsns, fe, fp, iret)
     implicit none
@@ -68,13 +68,13 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
         dfpmax=0.d0
         dfpmin=100.d0
-        do 10 i = 1, 3
+        do i = 1, 3
             if (dfp(i,i) .gt. dfpmax) dfpmax=dfp(i,i)
             if (dfp(i,i) .lt. dfpmin) dfpmin=dfp(i,i)
-10      continue
+        end do
         if ((dfpmax.gt.1.d3) .or. (dfpmin.lt.1.d-3)) then
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call lcdetf(3, dfp, det)
@@ -85,7 +85,7 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
             call dscal(9, coef, dfp, 1)
         else
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call matinv('S', 3, dfp, dfpm, det2)
@@ -101,13 +101,13 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !
         dfpmax=0.d0
         dfpmin=100.d0
-        do 20 i = 1, 3
+        do i = 1, 3
             if (dfpm(i,i) .gt. dfpmax) dfpmax=dfpm(i,i)
             if (dfpm(i,i) .lt. dfpmin) dfpmin=dfpm(i,i)
-20      continue
+        end do
         if ((dfpmax.gt.1.d3) .or. (dfpmin.lt.1.d-3)) then
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call lcdetf(3, dfpm, det)
@@ -118,7 +118,7 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
             call dscal(9, coef, dfpm, 1)
         else
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call matinv('S', 3, dfpm, dfp, det2)
@@ -154,6 +154,6 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !
     fp = matmul(dfp,fpm)
 !
-9999  continue
+999 continue
 !
 end subroutine

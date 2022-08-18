@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36f0(nbsigr, nocc, saltij, saltm, trouve,&
                   isk, isl, i1a4, nk, nl)
     implicit none
@@ -40,17 +40,17 @@ subroutine rc36f0(nbsigr, nocc, saltij, saltm, trouve,&
 !
 ! --- RECHERCHE DU SALT MAXI
 !
-    do 20 k = 1, nbsigr
+    do k = 1, nbsigr
 !
         if (( nocc(2*(k-1)+1) .eq. 0 ) .and. ( nocc(2*(k-1)+2) .eq. 0 )) goto 20
         i1 = 4*nbsigr*(k-1)
 !
-        do 22 l = 1, nbsigr
+        do l = 1, nbsigr
 !
             if (( nocc(2*(l-1)+1) .eq. 0 ) .and. ( nocc(2*(l-1)+2) .eq. 0 )) goto 22
             i2 = 4*(l-1)
 !
-            do 24 i = 1, 4
+            do i = 1, 4
                 salt = saltij(i1+i2+i)
                 if (salt .gt. saltm) then
                     trouve = .true.
@@ -69,10 +69,12 @@ subroutine rc36f0(nbsigr, nocc, saltij, saltm, trouve,&
                         nk = nocc(2*(isk-1)+2)
                     endif
                 endif
- 24         continue
+            end do
 !
- 22     continue
+ 22         continue
+        end do
 !
- 20 end do
+ 20     continue
+    end do
 !
 end subroutine

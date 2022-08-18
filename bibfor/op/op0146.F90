@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0146()
     implicit none
 !     OPERATEUR PROJ_SPEC_BASE
@@ -126,18 +126,18 @@ subroutine op0146()
     call wkvect('&&OP0146.TEMP.INDS', 'V V I', nbspec, linds)
     call wkvect('&&OP0146.TEMP.VMOY', 'V V R', nbspec, lvmoy)
 !
-    do 10 is = 1, nbspec
+    do is = 1, nbspec
         spectr = zk8(lspec+is-1)
         vali = spectr//'.VAIN'
         call jeveuo(vali, 'L', ivali)
         zi(linds+is-1) = zi(ivali)
- 10 end do
+    end do
 !
     if (nbspec .gt. 1) then
         nspelo = 0
-        do 20 is = 1, nbspec
+        do is = 1, nbspec
             if (zi(linds+is-1) .lt. 10) nspelo = nspelo + 1
- 20     continue
+        end do
         if (nspelo .gt. 0 .and. nspelo .lt. nbspec) then
             call utmess('F', 'MODELISA5_73')
         endif
@@ -175,12 +175,12 @@ subroutine op0146()
         call getvr8(' ', 'PRECISION', scal=epsi)
 !
         ivitef = 0
-        do 300 i3 = 1, npv
+        do i3 = 1, npv
             val = zr(ivite-1+i3)-vitef
             if (abs(val) .lt. epsi) then
                 ivitef = i3
             endif
-300     continue
+        end do
         if (ivitef .eq. 0) then
             call utmess('F', 'ALGELINE3_25', sr=vitef)
         endif
@@ -198,11 +198,11 @@ subroutine op0146()
 !
         if (zi(linds) .lt. 10) then
             call wkvect('&&OP0146.TEMP.NOZ', 'V V K16', nbspec, lnozo)
-            do 11 is = 1, nbspec
+            do is = 1, nbspec
                 spectr = zk8(lspec+is-1)
                 call jeveuo(spectr//'.VATE', 'L', vk16=vate)
                 zk16(lnozo+is-1) = vate(3)
- 11         continue
+            end do
 !
 !
 ! --- 2.2.VERIFICATION DE L EXISTENCE DES ZONES ASSOCIEES DANS LE   ---
@@ -222,11 +222,11 @@ subroutine op0146()
             call jelira(pvite, 'LONUTI', lnoe)
             lnoe = lnoe / 2
 !
-            do 40 is = 1, nbspec
+            do is = 1, nbspec
                 nomzon = zk16(lnozo+is-1)(1:8)
-                do 30 iz = 1, nzex
+                do iz = 1, nzex
                     if (nomzon .eq. zk8(lfsvk+3+iz)) goto 31
- 30             continue
+                end do
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = nomzon
                 valk(3) = typflu
@@ -235,13 +235,13 @@ subroutine op0146()
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = zk8(lfsvk+iz+3)
                 call utmess('I', 'MODELISA5_75', nk=2, valk=valk)
- 40         continue
+            end do
 !
 ! --- 2.2.ON VERIFIE QUE TOUS LES SPECTRES SONT ASSOCIES A DES ZONES ---
 ! ---     DIFFERENTES ET SONT DIFFERENTS                             ---
 !
-            do 50 is = 1, nbspec-1
-                do 60 js = is+1, nbspec
+            do is = 1, nbspec-1
+                do js = is+1, nbspec
                     if (zk8(lspec+is-1) .eq. zk8(lspec+js-1)) then
                         call utmess('F', 'MODELISA5_76')
                     endif
@@ -253,8 +253,8 @@ subroutine op0146()
                         valk(3) = nomzon
                         call utmess('F', 'MODELISA5_77', nk=3, valk=valk)
                     endif
- 60             continue
- 50         continue
+                end do
+            end do
 !
 ! --- 2.3.CALCUL DES VITESSES MOYENNES DE CHAQUE ZONE D EXCITATION ---
 ! ---     ET DE LA VITESSE MOYENNE DE L ENSEMBLE DES ZONES         ---
@@ -263,36 +263,36 @@ subroutine op0146()
             vmoyto = 0.d0
             alonto = 0.d0
 ! ---    BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
-            do 160 nuzo = 1, nzex
+            do nuzo = 1, nzex
                 pvite = zk8(lfsvk+3+nuzo)
                 pvite = pvite(1:19)//'.VALE'
                 call jeveuo(pvite, 'L', ipv)
 ! ---       RECHERCHE DES EXTREMITES DE LA ZONE 'NUZO'
-                do 120 ik = 1, lnoe
+                do ik = 1, lnoe
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n1 = ik
                         goto 121
                     endif
-120             continue
+                end do
 121             continue
 !
-                do 130 ik = lnoe, 1, -1
+                do ik = lnoe, 1, -1
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n2 = ik
                         goto 131
                     endif
-130             continue
+                end do
 131             continue
 !
                 aire = 0.d0
                 x1 = zr(ipv+n1-1)
                 x2 = zr(ipv+n2-1)
-                do 140 ik = n1+1, n2
+                do ik = n1+1, n2
                     aire = aire + (&
                            zr(ipv+lnoe+ik-1) + zr(ipv+lnoe+ ik-2) ) * ( zr(ipv+ ik-1) - zr(ipv+ i&
                            &k-2)&
                            )/2.d0
-140             continue
+                end do
 !
                 vmoy = aire / (x2-x1)
                 zr(lvmoy+nuzo-1) = vmoy
@@ -300,7 +300,7 @@ subroutine op0146()
                 alonto = alonto + (x2-x1)
 !
 ! ---   FIN DE BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
-160         continue
+            end do
 !
             vmoyto = vmoyto / alonto
 !
@@ -339,9 +339,9 @@ subroutine op0146()
         else
             call wkvect('&&OP0146.TEMP.PASF', 'V V R', nbpf, lpasf)
             pas = (freqf-freqi)/dble(nbpf-1)
-            do 190 ipf = 1, nbpf
+            do ipf = 1, nbpf
                 zr(lpasf+ipf-1) = freqi + dble(ipf-1)*pas
-190         continue
+            end do
         endif
         call wkvect('&&OP0146.TEMP.DISC', 'V V R', 8*dim, idisc)
 !
@@ -366,17 +366,17 @@ subroutine op0146()
                         iv, nmodi, freqi, freqf, nb)
         endif
 !
-        do 200 ipf = 1, nbpf
+        do ipf = 1, nbpf
             zr(lfreq-1+ipf) = zr(lpasf-1+ipf)
-200     continue
+        end do
 !
         ij = 0
-        do 220 im2 = nmodi, nmodf
+        do im2 = nmodi, nmodf
 !
             ideb = im2
             if (casint) ideb = nmodi
 !
-            do 210 im1 = ideb, im2
+            do im1 = ideb, im2
                 ij = ij + 1
 !
                 zi(lnumi-1+ij) = zi(inumo+im2-1)
@@ -391,14 +391,14 @@ subroutine op0146()
                 call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
                 call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
 !
-210         continue
-220     continue
+            end do
+        end do
 !
 !
 ! --- 6.CALCUL DES INTERSPECTRES D'EXCITATIONS MODALES
 ! ---   BOUCLE SUR LE NOMBRE DE SPECTRES
 !
-        do 240 is = 1, nbspec
+        do is = 1, nbspec
             ispect = zi(linds+is-1)
             spectr = zk8(lspec+is-1)
             if (ispect .lt. 10) then
@@ -413,7 +413,7 @@ subroutine op0146()
                 call specep(casint, nomu, spectr, base, vitef,&
                             zi(inumo), nmodi, nmodf, nbm, nbpf)
             endif
-240     end do
+        end do
 ! FINSI ALTERNATIVE SPEC-LONG-COR-5
     endif
 !

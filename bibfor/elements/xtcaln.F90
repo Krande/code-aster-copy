@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtcaln(ndim, tau1, tau2, norm, mprojt)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -69,13 +69,13 @@ subroutine xtcaln(ndim, tau1, tau2, norm, mprojt)
 !
 ! --- MATRICE DE PROJECTION TANGENTE
 !
-    do 121 i = 1, ndim
-        do 111 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
             mprojt(i,j) = -1.d0*norm(i)*norm(j)
-111      continue
-121  end do
-    do 330 i = 1, ndim
+        end do
+    end do
+    do i = 1, ndim
         mprojt(i,i) = 1.d0 + mprojt(i,i)
-330  end do
+    end do
 !
 end subroutine

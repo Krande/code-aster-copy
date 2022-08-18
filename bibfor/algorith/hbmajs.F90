@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hbmajs(dg, nbmat, materf, se, i1e,&
                   sigeqe, etap, sigp)
-    implicit      none
+    implicit none
     integer :: nbmat
     real(kind=8) :: dg, materf(nbmat, 2), se(6), i1e, sigp(6), sigeqe, etap
 ! ======================================================================
@@ -42,15 +42,15 @@ subroutine hbmajs(dg, nbmat, materf, se, i1e,&
 ! ======================================================================
     k = materf(5,1)
     mu = materf(4,1)
-    do 10 ii = 1, ndt
+    do ii = 1, ndt
         dev(ii) = se(ii)*(un-trois*mu*dg/(sigeqe*(etap+un)))
-10  end do
+    end do
     i1 = i1e - neuf*k*etap*dg/(etap+un)
-    do 20 ii = 1, ndt
+    do ii = 1, ndt
         sigp(ii) = dev(ii)
-20  end do
-    do 30 ii = 1, ndi
+    end do
+    do ii = 1, ndi
         sigp(ii) = sigp(ii) + i1/trois
-30  end do
+    end do
 ! ======================================================================
 end subroutine

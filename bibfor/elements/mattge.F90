@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mattge(nomte, dtild, sina, cosa, r,&
                   jacp, vf, dfds, rtangi)
     implicit none
@@ -93,11 +93,11 @@ subroutine mattge(nomte, dtild, sina, cosa, r,&
 !
     else
 !
-        do 20 i = 1, 3
-            do 30 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 dtild1(i,j)=dtild(i,j)
-30          end do
-20      end do
+            end do
+        end do
 !
         mats1(1,1)=-sina*dfds(1)
         mats1(1,2)= cosa*dfds(1)

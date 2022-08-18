@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
+!
+subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp,&
                   mxresf, resufi, resufr, vauc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/wpordc.h"
+!
     integer :: mxresf
     integer :: nbfreq, nbvect, neq, resufi(mxresf, *)
     complex(kind=8) :: vecp(neq, *), vauc(2*neq, *), vp(*)
@@ -51,10 +51,10 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
 !
 ! --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
 !
-    do 1 j = 1, nbvect
+    do j = 1, nbvect
         zi(iadind + j-1) = -2
- 1  end do
-    do 2 j = 1, nbvect
+    end do
+    do j = 1, nbvect
         if (zi(iadind + j-1) .eq. -2) then
             if (dimag(vp(j)) .gt. 0.d0) then
                 zi(iadind + j-1) = 0
@@ -62,7 +62,7 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
                 zi(iadind + j-1) = 1
             endif
         endif
- 2  end do
+    end do
 !
     if (zi(iadind + nbvect-1) .eq. -2) then
         zi(iadind + nbvect-1) = 0
@@ -71,20 +71,20 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
 !
 ! --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
     k = 1
-    do 4 j = 1, nbvect
+    do j = 1, nbvect
         if (zi(iadind + j-1) .eq. 0) then
             if (k .ne. j) then
                 vp(k) = vp(j)
                 zi(iadind + k-1) = zi(iadind + j-1)
-                do 5, i = 1, neq, 1
-                vecp(i,k) = vecp(i,j)
-                vauc(i,k) = vauc(i,j)
-                vauc(i+neq,k) = vauc(i+neq,j)
- 5              continue
+                do i = 1, neq, 1
+                    vecp(i,k) = vecp(i,j)
+                    vauc(i,k) = vauc(i,j)
+                    vauc(i+neq,k) = vauc(i+neq,j)
+                end do
             endif
             k = k + 1
         endif
- 4  end do
+    end do
 !
 !
 !     ---------- FIN DE PARTITION TEST ET ELIMINATION -----------------
@@ -95,13 +95,13 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
                 neq)
 !
 ! --- 5. PREPARATION DE RESUFR
-    do 30 j = 1, nbfreq
+    do j = 1, nbfreq
         am = dble(vp(j))*dble(vp(j))
         om = dimag(vp(j))*dimag(vp(j))
         resufi(j,1) = j
         resufr(j,2) = om
         resufr(j,3) = -dble(vp(j))/sqrt(om + am)
-30  end do
+    end do
 !
 ! --- 6. DESTRUCTION OJB TEMPORAIRE
 !

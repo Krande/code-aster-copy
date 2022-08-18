@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltfmj(nb, n, p, front, frn,&
                   adper, trav, c)
 ! person_in_charge: olivier.boiteau at edf.fr
-use superv_module
+    use superv_module
     implicit none
 ! aslint: disable=C1513
 #include "blas/dgemm.h"
@@ -43,24 +43,24 @@ use superv_module
     !$OMP SHARED(N,M,P,NMB,NB,RESTM,FRONT,ADPER,DECAL,FRN,TRAV,C) &
     !$OMP SHARED(TRA,TRB,ALPHA,BETA) &
     !$OMP SCHEDULE(STATIC,1)
-    do 1000 kb = 1, nmb
+    do kb = 1, nmb
         numpro = asthread_getnum() + 1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
         k = nb*(kb-1) + 1 +p
-        do 100 i = 1, p
+        do i = 1, p
             s = front(adper(i))
             add= n*(i-1) + k
-            do 50 j = 1, nb
+            do j = 1, nb
                 trav(i,j,numpro) = front(add)*s
                 add = add + 1
-50          continue
-100      continue
+            end do
+        end do
 !     BLOC DIAGONAL
 !
 !     SOUS LE BLOC DIAGONAL
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
-        do 500 ib = kb, nmb
+        do ib = kb, nmb
             ia = k + nb*(ib-kb)
             it=1
             call dgemm(tra, trb, nb, nb, p,&
@@ -69,7 +69,7 @@ use superv_module
 !     RECOPIE
 !
 !
-            do 501 i = 1, nb
+            do i = 1, nb
                 i1=i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                 if (ib .eq. kb) then
@@ -79,12 +79,12 @@ use superv_module
                     j1=1
                     ind = adper(k + i1) - decal + nb*(ib-kb) - i1
                 endif
-                do 502 j = j1, nb
+                do j = j1, nb
                     frn(ind) = frn(ind) +c(j,i,numpro)
                     ind = ind +1
-502              continue
-501          continue
-500      continue
+                end do
+            end do
+        end do
         if (restm .gt. 0) then
             ib = nmb + 1
             ia = k + nb*(ib-kb)
@@ -96,31 +96,31 @@ use superv_module
 !     RECOPIE
 !
 !
-            do 801 i = 1, nb
+            do i = 1, nb
                 i1=i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                 j1=1
                 ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                do 802 j = j1, restm
+                do j = j1, restm
                     frn(ind) = frn(ind) +c(j,i,numpro)
                     ind = ind +1
-802              continue
-801          continue
+                end do
+            end do
         endif
-1000  end do
+    end do
     !$OMP END PARALLEL DO
     if (restm .gt. 0) then
         kb = 1+nmb
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
         k = nb*(kb-1) + 1 +p
-        do 101 i = 1, p
+        do i = 1, p
             s = front(adper(i))
             add= n*(i-1) + k
-            do 51 j = 1, restm
+            do j = 1, restm
                 trav(i,j,1) = front(add)*s
                 add = add + 1
-51          continue
-101      continue
+            end do
+        end do
 !     BLOC DIAGONAL
 !
         ib = kb
@@ -132,16 +132,16 @@ use superv_module
 !     RECOPIE
 !
 !
-        do 902 i = 1, restm
+        do i = 1, restm
             i1=i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             j1= i
             ind = adper(k + i1) - decal
-            do 901 j = j1, restm
+            do j = j1, restm
                 frn(ind) = frn(ind) +c(j,i,1)
                 ind = ind +1
-901          continue
-902      continue
+            end do
+        end do
 !
     endif
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=W1303
@@ -116,12 +116,12 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     iszon(jiszon+iszon(jiszon+iaditp-4)-4) = istat(4)
     svuse = svuse + (iszon(jiszon+iaditp-4) - iaditp + 4)
     smxuse = max(smxuse,svuse)
-    do 50 k = 1, (nbluti(ici)-1)/nbenrg(ici)
+    do k = 1, (nbluti(ici)-1)/nbenrg(ici)
         call jxouvr(ico, k+1, mode=2)
         iext(ico) = iext(ico) + 1
-50  end do
+    end do
 !
-    do 100 k = 1, nbluti(ici)
+    do k = 1, nbluti(ici)
         numext = (k-1)/nbenrg(ici)
         iadloc = k - (numext*nbenrg(ici))
         call get_jvbasename(nomba1, numext + 1, noml1)
@@ -134,7 +134,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_48')
         endif
-100  end do
+    end do
     nbext = numext+1
     call jxferm(ici)
     call jxferm(ico)
@@ -147,10 +147,10 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     call get_jvbasename(nomba1, -2, noml1)
     call rmfile(noml1, info, iret)
 !
-    do 300 k = 1, nbext
+    do k = 1, nbext
         call get_jvbasename(nomba1, k, noml1)
         call get_jvbasename(nomba2, k, noml2)
         call cpfile('M', noml2, noml1)
-300  end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

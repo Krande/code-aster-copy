@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
                   impr)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/foec2f.h"
 #include "asterfort/fopro1.h"
 #include "asterfort/jedema.h"
@@ -28,6 +27,7 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: iuni, nbfonc, impr
     real(kind=8) :: valpar(nbfonc)
     character(len=*) :: vecpro(*), chval
@@ -68,22 +68,22 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
     ndom = 1
     call jelira(jexnum(chval, n1), 'LONMAX', n0)
     call jeveuo(jexnum(chval, n1), 'L', lr)
-    do 10 i = n1+1, n2
+    do i = n1+1, n2
         call jelira(jexnum(chval, i), 'LONMAX', n)
         if (n0 .ne. n) then
             ndom = ndom + 1
             goto 12
         else
             call jeveuo(jexnum(chval, i), 'L', lf)
-            do 11 j = 0, n/2 - 1
+            do j = 0, n/2 - 1
                 if (zr(lf+j) .ne. zr(lr+j)) then
                     ndom = ndom + 1
                     goto 12
                 endif
-11          continue
+            end do
         endif
-10  end do
-12  continue
+    end do
+ 12 continue
 !
 !
     if (ndom .eq. 1 .and. n1 .ne. n2) then
@@ -94,33 +94,33 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
         npas = 5
         call jeveuo(jexnum(chval, 1), 'L', lvar)
         lfon = lvar + n
-        do 100 i = n1, n2, npas
+        do i = n1, n2, npas
             nn = min(i+npas-1,n2)
             write( iuni,'(/,1X,A8,4X,9(1X,1PE12.5),1X)' ) nompan,&
             ( valpar(k) , k=i,nn )
             write( iuni,'(1X,A)' ) nompaf
-            do 110 ik = nf1, nf2
+            do ik = nf1, nf2
                 write(iuni,'(1X,1PE12.5,9(1X,1PE12.5))') zr(lvar+ik-1)&
                 , ( zr(lfon+(j-1)*2*n+ik-1) , j=i,nn )
-110          continue
-100      continue
+            end do
+        end do
 !
     else
 !
-        do 200 i = n1, n2
+        do i = n1, n2
             write(iuni,'(///)' )
             write(iuni,*) ' FONCTION NUMERO: ',i
             write(iuni,*) '    PARAMETRE : ',nompan,' = ',valpar(i)
             call fopro1(vecpro, i, prolgd, interp)
             write(iuni,*) '    INTERPOLATION         : ',interp
-            do 210 j = 1, 3
+            do j = 1, 3
                 if (prolgd(1:1) .eq. tprol(j)(1:1)) then
                     write(iuni,*) '    PROLONGEMENT A GAUCHE : ',tprol(j)
                 endif
                 if (prolgd(2:2) .eq. tprol(j)(1:1)) then
                     write(iuni,*) '    PROLONGEMENT A DROITE : ',tprol(j)
                 endif
-210          continue
+            end do
             call jeveuo(jexnum(chval, i), 'L', jv)
             call jelira(jexnum(chval, i), 'LONMAX', n)
             n = n/2
@@ -129,7 +129,7 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
             if (impr .ge. 3) nf2=n
             call foec2f(iuni, zr(jv), n, nf1, nf2,&
                         nompaf, nomres)
-200      continue
+        end do
     endif
     call jedema()
 end subroutine

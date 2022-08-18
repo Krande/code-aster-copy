@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function diincl(sddisc, nomchz, force)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -82,12 +82,12 @@ function diincl(sddisc, nomchz, force)
     diincl = .false.
     call jeveuo(arcexc, 'L', jarexc)
     call jelira(arcexc, 'LONMAX', nb)
-    do 10 i = 1, nb
+    do i = 1, nb
         if (nomcha .eq. zk16(jarexc-1 + i)) then
             diincl = .false.
             goto 999
         endif
- 10 end do
+    end do
     diincl = .true.
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0126()
     implicit none
 !  P. RICHARD     DATE 13/07/90
@@ -72,7 +72,7 @@ subroutine op0126()
 !
     call getfac('LIAISON', nblia)
 !
-    do 10 i = 1, nblia
+    do i = 1, nblia
         call getvtx('LIAISON', 'OPTION', iocc=i, scal=option, nbret=iopt)
         call getvtx('LIAISON', 'SOUS_STRUC_1', iocc=i, scal=sst1, nbret=ibid)
         call getvtx('LIAISON', 'SOUS_STRUC_2', iocc=i, scal=sst2, nbret=ibid)
@@ -97,8 +97,8 @@ subroutine op0126()
             call vecomo(nomres, sst1, sst2, intf1, intf2,&
                         iret, option)
         endif
-10  end do
-20  continue
+    end do
+ 20 continue
 !
 !
 !-----ORIENTATION DES MATRICES DE LIAISON

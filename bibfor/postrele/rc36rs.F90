@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
                   chresu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
@@ -28,6 +27,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
+!
     integer :: nbma, listma(*)
     character(len=8) :: nomres, noma
     character(len=24) :: chindi, chresu
@@ -38,8 +38,8 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid,   im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
-    integer :: jconx2,   npara, nbcin, decin, icmp, iad
+    integer :: ibid, im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
+    integer :: jconx2, npara, nbcin, decin, icmp, iad
     parameter   ( npara = 8 )
     real(kind=8) :: valer(5), type
     complex(kind=8) :: c16b
@@ -80,7 +80,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
     call jeveuo(chresu(1:19)//'.CESV', 'L', vr=cesv)
     nbcmp = cesd(2)
 !
-    do 10 im = 1, nbma
+    do im = 1, nbma
 !
         ima = listma(im)
         call jenuno(jexnum(nommai, ima), valek(1))
@@ -89,7 +89,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
         decal = cesd(5+4*(ima-1)+4)
         decin = cind(5+4*(ima-1)+4)
 !
-        do 20 ipt = 1, nbpt
+        do ipt = 1, nbpt
 !
             icmp = 7
             iad = decin + (ipt-1)*nbcin + icmp
@@ -109,18 +109,18 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
             ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
             call jenuno(jexnum(nomnoe, ino), valek(3))
 !
-            do 30 icmp = 1, nbcmp
+            do icmp = 1, nbcmp
 !
                 iad = decal + (ipt-1)*nbcmp + icmp
                 valer(icmp) = cesv(iad)
 !
-30          continue
+            end do
 !
             call tbajli(nomres, npara, nopara, [ibid], valer,&
                         [c16b], valek, 0)
 !
-20      continue
+        end do
 !
-10  end do
+    end do
 !
 end subroutine

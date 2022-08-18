@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hujpot(mod, mater, vind, depsh, sigd,&
                   sige, etatf, rdctps, iret, aredec)
     implicit none
@@ -206,7 +206,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 ! ----------- DETERMINATION DES CRITERES ACTIFS PRECEDEMMENT ---------
 ! ====================================================================
     j = 0
-    do 400 i = 1, 4
+    do i = 1, 4
 !
         if ((vind(23+i).eq.un) .or. (vind(23+i).eq.zero)) then
             ye(ndt+1+i) = vind(i)
@@ -357,8 +357,9 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
             else
                 if (actif .ge. (-r8prem())) then
                     if (indi(i) .lt. 4) then
-                        call hujcrd(i, mater, sige, vind, seuil, iret)
-                        if(iret .ne. 0) then
+                        call hujcrd(i, mater, sige, vind, seuil,&
+                                    iret)
+                        if (iret .ne. 0) then
                             goto 999
                         endif
                     else
@@ -464,7 +465,8 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
             endif
         endif
 !
-400 continue
+400     continue
+    end do
 !
 !
 ! ======================================================================

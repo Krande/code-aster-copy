@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
                   nbptex)
 !
@@ -62,14 +62,14 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
 !
     nbptex = 0
 !
-    do 10 ipt = 1, nfon
+    do ipt = 1, nfon
 !       COMPTEUR DU NOMBRE D'OCCURENCES DU POINT IPT DANS LE TABLEAU
 !       LISTPT
         nocc = 0
 !       INDICE DU POINT ASSOCIE AU POINT IPT
         ptasso = 0
 !
-        do 11 ima = 1, nmafon
+        do ima = 1, nmafon
             if ((zi(jlistp-1+2*(ima-1)+1).eq.ipt) .and. (zi(jlistp-1+ 2*(ima-1)+2).ne.0)&
                 .and. (ptasso.ne.zi(jlistp-1+2*(ima-1)+ 2) )) then
 !
@@ -85,7 +85,7 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
 !
             if (nocc .eq. 2) goto 10
 !
-11      continue
+        end do
 !
 !       UNE SEULE OCCURENCE DU POINT IPT:
 !       C'EST UN POINT EXTREMITE DU FOND DE FISSURE
@@ -93,7 +93,8 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
             nbptex = nbptex + 1
             zi(jptext-1+nbptex) = ipt
         endif
-10  end do
+ 10     continue
+    end do
 !
 !     ON DOIT AVOIR UN NOMBRE PAIR D'EXTREMITES
     ASSERT(mod(nbptex, 2).eq.0)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec,&
                   nbordr, umin, umax, vmin, vmax,&
                   axeini)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/proax0.h"
@@ -77,21 +77,21 @@ subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec,&
     amaxs2 = 0.0d0
     amaxs4 = 0.0d0
 !
-    do 10 i = 1, nptsec(2)
+    do i = 1, nptsec(2)
         ui = vsec2(2*i - 1)
         vi = vsec2(2*i)
         call proax0(ui, vi, csta, cstb, a1,&
                     b1, u0, v0, rpax1)
         if (rpax1 .gt. amaxs2) amaxs2 = rpax1
-10  end do
+    end do
 !
-    do 20 i = 1, nptsec(4)
+    do i = 1, nptsec(4)
         ui = vsec4(2*i - 1)
         vi = vsec4(2*i)
         call proax0(ui, vi, csta, cstb, a1,&
                     b1, u0, v0, rpax1)
         if (rpax1 .lt. amaxs4) amaxs4 = rpax1
-20  end do
+    end do
 !
 ! PROJECTION SUR L'AXE 2
 !
@@ -102,21 +102,21 @@ subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec,&
     amaxs1 = 0.0d0
     amaxs3 = 0.0d0
 !
-    do 30 i = 1, nptsec(1)
+    do i = 1, nptsec(1)
         ui = vsec1(2*i - 1)
         vi = vsec1(2*i)
         call proax0(ui, vi, csta, cstb, a1,&
                     b1, u0, v0, rpax2)
         if (rpax2 .lt. amaxs1) amaxs1 = rpax2
-30  end do
+    end do
 !
-    do 40 i = 1, nptsec(3)
+    do i = 1, nptsec(3)
         ui = vsec3(2*i - 1)
         vi = vsec3(2*i)
         call proax0(ui, vi, csta, cstb, a1,&
                     b1, u0, v0, rpax2)
         if (rpax2 .gt. amaxs3) amaxs3 = rpax2
-40  end do
+    end do
 !
 ! CALCUL DE L'AMPLITUDE MAX SUR CHACUN DES AXES
 !

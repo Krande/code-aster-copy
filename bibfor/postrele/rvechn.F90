@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvechn(ssch19, sdlieu, sdeval)
     implicit none
 !
@@ -110,10 +110,10 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     call wkvect(oupcmp, 'V V I', nbtcmp, aopcmp)
 !
     nbcmp = 0
-    do 20 i = 1, nbtcmp, 1
+    do i = 1, nbtcmp, 1
         nbcmp = nbcmp + min(zi(aipcmp + i-1),1)
         zi(aopcmp + i-1) = zi(aipcmp + i-1)
- 20 end do
+    end do
     call wkvect(ounoma, 'V V K8', 1, adrou)
     call jeveuo(innoma, 'L', adrin)
     mailla = zk8(adrin)
@@ -125,19 +125,19 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
 !
     call jecrec(ouerre, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbocer)
-    do 30 iocer = 1, nbocer, 1
+    do iocer = 1, nbocer, 1
         call jecroc(jexnum(ouerre, iocer))
         call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp)
         call jeveuo(jexnum(ouerre, iocer), 'E', aoerre)
-        do 31 i = 1, nbcmp, 1
+        do i = 1, nbcmp, 1
             zi(aoerre + i-1) = 0
- 31     continue
- 30 end do
+        end do
+    end do
 !
     call wkvect(nnumnd, 'V V I', nbnpst, anumnd)
-    do 50 i = 1, nbnpst, 1
+    do i = 1, nbnpst, 1
         call jenonu(jexnom(mailla//'.NOMNOE', zk8(adesc + i-1)), zi(anumnd + i-1))
- 50 end do
+    end do
     call wkvect(oupadr, 'V V I', nbnpst, aopadr)
     call jeveuo(invale, 'L', aivale)
     call jeveuo(inpadr, 'L', aipadr)
@@ -145,16 +145,16 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     if (docu .eq. 'CHNO') then
         call wkvect(ouvale, 'V V R', nbcmp*nbnpst, aovale)
         zi(aopadr + 1-1) = 1
-        do 100 i = 1, nbnpst-1, 1
+        do i = 1, nbnpst-1, 1
             zi(aopadr + i+1-1) = zi(aopadr + i-1) + nbcmp
-100     continue
-        do 110 i = 1, nbnpst, 1
+        end do
+        do i = 1, nbnpst, 1
             adrin = zi(aipadr + zi(anumnd + i-1)-1)
             adrou = zi(aopadr + i-1)
-            do 120 j = 1, nbcmp, 1
+            do j = 1, nbcmp, 1
                 zr(aovale + adrou + j-2) = zr(aivale + adrin + j-2)
-120         continue
-110     continue
+            end do
+        end do
 !
     else if (docu .eq. 'CHLM') then
         nindir = '&&RVECHN.TABLE.INDIR'
@@ -170,7 +170,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
         call jeveuo(inpnsp, 'L', aipnsp)
         nnmail = sdeval//'.MAIL'
         nrepma = mailla//'.NOMMAI'
-        do 200 i = 1, nbnpst, 1
+        do i = 1, nbnpst, 1
             pt = 1
             trouve = .false.
             n = zi(anumnd + i-1)
@@ -194,46 +194,46 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
             call jeveuo(jexnum(sdemno//'.NUMA', pt-1), 'L', anuma)
             nsp = zi(aipnsp + zi(anuma)-1)
             nco = zi(aipnco + zi(anuma)-1)
-            do 205 j = 2, nbm, 1
+            do j = 2, nbm, 1
                 nsp = min(nsp,zi(aipnsp + zi(anuma + j-1)-1))
                 nco = min(nco,zi(aipnco + zi(anuma + j-1)-1))
-205         continue
+            end do
             zi(aopnsp + i-1) = nsp
             zi(aopnco + i-1) = nco
-200     continue
+        end do
 !
         zi(aopadr + 1-1) = 1
-        do 240 i = 1, nbnpst-1, 1
+        do i = 1, nbnpst-1, 1
             zi(aopadr + i+1-1) = zi(aopadr+i-1) + nbcmp*zi(aopnbn+i-1) * zi(aopnco+i-1)*zi(aopnsp&
                                  &+i-1)
-240     continue
+        end do
         ilong = zi(aopadr+nbnpst-1) + nbcmp*zi(aopnbn+nbnpst-1)* zi(aopnco+nbnpst-1)*zi(aopnsp+nb&
                 &npst-1) - 1
         call wkvect(ouvale, 'V V R', ilong, aovale)
         call jecrec(nnmail, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE',&
                     nbnpst)
-        do 427 i = 1, nbnpst, 1
+        do i = 1, nbnpst, 1
             l = zi(aopnb2 + i-1)
             call jecroc(jexnum(nnmail, i))
             call jeecra(jexnum(nnmail, i), 'LONMAX', l)
             call jeveuo(jexnum(nnmail, i), 'E', anmail)
             call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + i-1)), 'L', anuma)
-            do 428 j = 1, l, 1
+            do j = 1, l, 1
                 call jenuno(jexnum(nrepma, zi(anuma+j-1)), zk8(anmail+j- 1))
-428         continue
-427     continue
+            end do
+        end do
         call jedetr(sdemno//'.VACP')
         call jedetr(sdemno//'.NUMA')
         call jedetr(sdemno//'.NOCP')
         call jedetr(sdemno//'.NUCP')
         call jedetr(sdemno//'.NUND')
         call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(ainugd)), 'L', acmpgd)
-        do 220 i = 1, nbtcmp, 1
+        do i = 1, nbtcmp, 1
 !
             pt = zi(aopcmp + i-1)
             if (pt .gt. 0) then
                 call tremno(zk8(acmpgd + i-1), ssch19, sdemno)
-                do 221 j = 1, nbnpst, 1
+                do j = 1, nbnpst, 1
                     call jeveuo(jexnum(sdemno//'.VACP', zi(aindir + j- 1)), 'L', sdvacp)
                     call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + j- 1)), 'L', anuma)
                     nsp = zi(aopnsp + j-1)
@@ -244,34 +244,35 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
 !*+*                  LCC = LMC*NBM
                     lcc = lmc
                     lms = 0
-                    do 222 m = 1, nbm, 1
+                    do m = 1, nbm, 1
                         numm = zi(anuma + m-1)
                         nspm = zi(aipnsp + numm-1)
                         ncom = zi(aipnco + numm-1)
-                        do 223 k = 1, nco, 1
+                        do k = 1, nco, 1
                             lsc = (k-1)*lcc
-                            do 224 l = 1, nsp, 1
+                            do l = 1, nsp, 1
                                 indi1 = lnc-1 + lsc + (l-1)*nbcmp + pt-1
                                 indi2 = lms + (k-1)*nspm + l-1
                                 if (zr(sdvacp+indi2) .eq. r8vide()) goto 224
                                 zr(aovale+indi1) = zr(aovale+indi1) + zr(sdvacp+indi2)
-224                         continue
+224                             continue
+                            end do
 !
-223                     continue
+                        end do
                         lms = lms + nspm*ncom
-222                 continue
+                    end do
 !
                     if (nbm .gt. 1) then
-                        do 233 k = 1, nco, 1
+                        do k = 1, nco, 1
                             lsc = (k-1)*lcc
-                            do 234 l = 1, nsp, 1
+                            do l = 1, nsp, 1
                                 indi1 = lnc-1 + lsc + (l-1)*nbcmp + pt-1
                                 zr(aovale+indi1) = zr(aovale+indi1) / nbm
-234                         continue
-233                     continue
+                            end do
+                        end do
                     endif
 !
-221             continue
+                end do
 !
                 call jedetr(sdemno//'.VACP')
                 call jedetr(sdemno//'.NUMA')
@@ -279,7 +280,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
                 call jedetr(sdemno//'.NUCP')
                 call jedetr(sdemno//'.NUND')
             endif
-220     continue
+        end do
         call jedetr(nindir)
     else
     endif

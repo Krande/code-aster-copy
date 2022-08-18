@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jedetv()
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
@@ -113,7 +113,7 @@ subroutine jedetv()
                 ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
                 ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
                 nmax = iszon(jiszon+ibacol+ivnmax )
-                do 10 k = 1, nmax
+                do k = 1, nmax
                     iadmar = iszon( jiszon + ibmarq -1 + 2*k )
                     if (iadmar .ne. 0) then
                         iszon(jiszon+kdesma(1)+iadmar-1) = 0
@@ -133,9 +133,9 @@ subroutine jedetv()
                         endif
                         call jxlibd(ido, k, ic, iaddi, lonoi)
                     endif
-10              continue
+                end do
             endif
-            do 1 k = 1, idnum
+            do k = 1, idnum
                 id(k) = iszon ( jiszon + ibacol + k )
                 if (id(k) .gt. 0) then
                     nom32 = rnom ( jrnom(ic) + id(k) )
@@ -154,8 +154,8 @@ subroutine jedetv()
                         id(k) = 0
                     endif
                 endif
- 1          continue
-            do 2 k = 1, idnum
+            end do
+            do k = 1, idnum
                 if (id(k) .gt. 0) then
                     nom32 = rnom ( jrnom(ic) + id(k) )
                     if (nivo .ge. 2) then
@@ -164,7 +164,7 @@ subroutine jedetv()
                     call jjcren(nom32, -2, iret)
                     call jjmzat(ic, id(k))
                 endif
- 2          continue
+            end do
             crnom = rnom ( jrnom(ic) + ido )
             iadyn = iadm (jiadm(ic) + 2*ido)
             call jjlidy(iadyn, ibacol)

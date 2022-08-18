@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
                   mtrmas, numer, nbddl, noexit, cpexit,&
                   nvasex, vecass)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -52,8 +52,8 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
 ! IN  : VECASS : NOMS DES VECTEURS ASSEM  APPUIS
 !-----------------------------------------------------------------------
 !
-    integer :: iadpim, itrav1, iad,   iret,  i, ibid
-    integer :: idlre1,  i4, i3, i2, i1
+    integer :: iadpim, itrav1, iad, iret, i, ibid
+    integer :: idlre1, i4, i3, i2, i1
     real(kind=8) :: valfi
     character(len=8) :: veass1
     integer, pointer :: listadrmodsta(:) => null()
@@ -79,13 +79,13 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
 !  DES MASSES GENERALISEES, EXCITATION MODALE
 !
     if (excmod .eq. 'OUI') then
-        do 12 i = 1, nbmode
+        do i = 1, nbmode
             zr(iadpim+(i-1)*nbmode+i-1) = 1.d0 / massegene(i)
-12      continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
-    do 233 i1 = 1, napexc
+    do i1 = 1, napexc
 !
         if (graexc .eq. 'DEPL_R') then
             call mrmult('ZERO', iad, zr(listadrmodsta(i1)), zr(itrav1), 1,&
@@ -97,23 +97,23 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
         else
             veass1 = vecass(i1)
             call jeveuo(veass1//'           .VALE', 'L', vr=vale)
-            do 237 i4 = 1, nbddl
+            do i4 = 1, nbddl
                 zr(itrav1-1+i4)=vale(i4)
-237          continue
+            end do
         endif
 !
-        do 234 i2 = 1, nbmode
+        do i2 = 1, nbmode
             ibid = iadpim+(i1-1)*nbmode+i2-1
             zr(ibid) = 0
             if ((graexc.eq.'DEPL_R') .or. (nvasex.ne.0)) then
-                do 235,i3=1,nbddl
-                if (tymmec .eq. 'R') then
-                    valfi = zr(listadrmode(i2)+i3-1)
-                else if (tymmec .eq. 'C') then
-                    valfi = dble(zc(listadrmode(i2)+i3-1))
-                endif
-                zr(ibid) = zr(ibid) + zr(itrav1+i3-1)*valfi
-235              continue
+                do i3 = 1, nbddl
+                    if (tymmec .eq. 'R') then
+                        valfi = zr(listadrmode(i2)+i3-1)
+                    else if (tymmec .eq. 'C') then
+                        valfi = dble(zc(listadrmode(i2)+i3-1))
+                    endif
+                    zr(ibid) = zr(ibid) + zr(itrav1+i3-1)*valfi
+                end do
             else
                 if (tymmec .eq. 'R') then
                     valfi = zr(listadrmode(i2)+idlre1-1)
@@ -123,9 +123,9 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
                 zr(ibid) = valfi
             endif
             zr(ibid) = zr(ibid) / massegene(i2)
-234      continue
-233  end do
+        end do
+    end do
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

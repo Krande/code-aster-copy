@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0156(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -60,11 +60,11 @@ subroutine te0156(option, nomte)
         endif
         call jevech('PVECTUR', 'E', ivectu)
         call terefe('EFFORT_REFE', 'MECA_BARRE', forref)
-        do 101 ino = 1, nno
-            do 102 i = 1, nc
+        do ino = 1, nno
+            do i = 1, nc
                 zr(ivectu+(ino-1)*nc+i-1)=forref
-102         continue
-101     continue
+            end do
+        end do
 !
     else if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontg)
@@ -77,9 +77,9 @@ subroutine te0156(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         nno=2
         nc=3
-        do 13 i = 1, nno*nc
+        do i = 1, nno*nc
             fs(i)=0.d0
- 13     continue
+        end do
         fs(1) = -zr(icontg)
         fs(4) = zr(icontg)
 !
@@ -89,11 +89,11 @@ subroutine te0156(option, nomte)
             call jevech('PDEPLMR', 'L', ideplm)
             call jevech('PDEPLPR', 'L', ideplp)
             if (nomte .eq. 'MECA_BARRE') then
-                do 10 i = 1, 3
+                do i = 1, 3
                     w(i) = zr(igeom-1+i) + zr(ideplm-1+i) + zr(ideplp- 1+i)
                     w(i+3) = zr(igeom+2+i) + zr(ideplm+2+i) + zr( ideplp+2+i)
                     xd(i) = w(i+3) - w(i)
- 10             continue
+                end do
             else if (nomte.eq.'MECA_2D_BARRE') then
                 w(1) = zr(igeom-1+1) + zr(ideplm-1+1) + zr(ideplp-1+1)
                 w(2) = zr(igeom-1+2) + zr(ideplm-1+2) + zr(ideplp-1+2)
@@ -116,9 +116,9 @@ subroutine te0156(option, nomte)
 !        ECRITURE DANS LE VECTEUR VECTU SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
-            do 30 i = 1, 6
+            do i = 1, 6
                 zr(ivectu+i-1)=vect(i)
- 30         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             zr(ivectu) = vect(1)
             zr(ivectu +1) = vect(2)

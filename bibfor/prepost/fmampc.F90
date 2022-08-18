@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterfort/fmdevi.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/fmdevi.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rampmx
 !     NBFONC  : IN  : NOMBRE DE FONCTIONS (6 EN 3D 4 EN 2D)
@@ -30,7 +30,7 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 !     RAMPMX  : OUT : VALEUR AMPLITUDE DE CISSION
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer ::  i1, i2, j
+    integer :: i1, i2, j
     real(kind=8) :: sig(6), rampc
     real(kind=8), pointer :: dev(:) => null()
 !     ------------------------------------------------------------------
@@ -38,16 +38,16 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 !------- CALCUL DU DEVIATEUR -------
 !
     AS_ALLOCATE(vr=dev, size=nbfonc*nbptot)
-    call fmdevi(nbfonc, nbptot, sigm,dev)
+    call fmdevi(nbfonc, nbptot, sigm, dev)
 !
 ! -------- CALCUL AMPLITUDE DE CISSION ------
 !
     rampmx = 0.d0
-    do 100 i1 = 1, nbptot-1
-        do 200 i2 = i1+1, nbptot
-            do 300 j = 1, nbfonc
+    do i1 = 1, nbptot-1
+        do i2 = i1+1, nbptot
+            do j = 1, nbfonc
                 sig(j) = dev(1+(i2-1)*nbfonc+j-1)- dev(1+(i1-1)* nbfonc+j-1 )
-300          continue
+            end do
             if (nbfonc .eq. 6) then
                 rampc = (&
                         sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/ 2.d0 + sig(4)*sig(4) + sig(5)&
@@ -57,8 +57,8 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
                 rampc = ( sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/ 2.d0 + sig(4)*sig(4 )
             endif
             if (rampc .gt. rampmx) rampmx = rampc
-200      continue
-100  end do
+        end do
+    end do
     rampmx = 1.d0/2.d0*sqrt(rampmx)
 !
     AS_DEALLOCATE(vr=dev)

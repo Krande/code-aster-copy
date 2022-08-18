@@ -15,24 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
-                  geoi, vff1, vff2, idfde1, idfde2, &
-                  iw, nddl, neps, b, w, ni2ldc)
+!
+subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
+                  geoi, vff1, vff2, idfde1, idfde2,&
+                  iw, nddl, neps, b, w,&
+                  ni2ldc)
 !
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdmip.h"
-#include "blas/dcopy.h"
 #include "blas/daxpy.h"
-    aster_logical,intent(in) :: axi
-    integer,intent(in) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
-    real(kind=8),intent(in) :: geoi(ndim,nno1)
-    real(kind=8),intent(in) :: vff1(nno1,npg), vff2(nno2,npg)
-    integer,intent(out) :: nddl,neps
-    real(kind=8),intent(out),allocatable :: b(:,:,:)
-    real(kind=8),intent(out),allocatable :: w(:,:),ni2ldc(:,:)
+#include "blas/dcopy.h"
+    aster_logical, intent(in) :: axi
+    integer, intent(in) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
+    real(kind=8), intent(in) :: geoi(ndim, nno1)
+    real(kind=8), intent(in) :: vff1(nno1, npg), vff2(nno2, npg)
+    integer, intent(out) :: nddl, neps
+    real(kind=8), intent(out), allocatable :: b(:, :, :)
+    real(kind=8), intent(out), allocatable :: w(:, :), ni2ldc(:, :)
 ! ----------------------------------------------------------------------
 !  CALCUL DES ELEMENTS CINEMATIQUES POUR LA MODELISATION GRAD_VARI
 ! ----------------------------------------------------------------------
@@ -53,45 +54,45 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
 ! OUT W      POIDS DES POINTS DE GAUSS CONFIG INITIALE
 ! OUT NI2LDC CONVERSION CONTRAINTE STOCKEE -> CONTRAINTE LDC (AVEC RAC2)
 ! ----------------------------------------------------------------------
-    real(kind=8),parameter :: rac2=sqrt(2.d0), r2=0.5*rac2
-    real(kind=8),parameter :: vrac2(6)=[1.d0,1.d0,1.d0,rac2,rac2,rac2]
+    real(kind=8), parameter :: rac2=sqrt(2.d0), r2=0.5*rac2
+    real(kind=8), parameter :: vrac2(6)=[1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
 ! ----------------------------------------------------------------------
-    integer      :: g,  n
-    real(kind=8) :: r, unsurr,w0
-    real(kind=8),allocatable:: dff1(:,:), dff2(:,:)
+    integer :: g, n
+    real(kind=8) :: r, unsurr, w0
+    real(kind=8), allocatable :: dff1(:, :), dff2(:, :)
 ! ----------------------------------------------------------------------
-
+!
 #define to_aster_int(a) int(a, ASTER_INT_SIZE)
 # define iu1(n,i) (n-1)*(ndim+2) + i
 # define iu2(n,i) nno2*2 + (n-1)*ndim + i
-# define ia(n)    (n-1)*(ndim+2) + ndim + 1
-# define il(n)    (n-1)*(ndim+2) + ndim + 2
+# define ia(n) (n-1)*(ndim+2) + ndim + 1
+# define il(n) (n-1)*(ndim+2) + ndim + 2
 ! ----------------------------------------------------------------------
-
+!
     nddl = nno1*ndim + nno2*2
     neps = 3*ndim + 2
     allocate(b(neps,npg,nddl),w(neps,npg),ni2ldc(neps,npg))
     allocate(dff1(nno1,ndim),dff2(nno2,ndim))
-
-
-
+!
+!
+!
 !
 ! - AFFECTATION DE LA MATRICE CINEMATIQUE B
 !
     b = 0.d0
     do g = 1, npg
-
+!
 !       Derivee des fonctions de forme no 2 (r et w non utilise)
         call dfdmip(ndim, nno2, axi, geoi, g,&
                     iw, vff2(1, g), idfde2, r, w0,&
                     dff2)
-
+!
 !       Derivee des fonctions de forme no 1, rayon et poids
         call dfdmip(ndim, nno1, axi, geoi, g,&
                     iw, vff1(1, g), idfde1, r, w0,&
-                        dff1)
+                    dff1)
         w(:,g) = w0
-
+!
         if (ndim .eq. 2) then
             if (axi) then
                 unsurr = 1/r
@@ -99,7 +100,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
                 unsurr = 0
             endif
 !
-            do 10 n = 1, nno2
+            do n = 1, nno2
                 b(1,g,iu1(n,1)) = dff1(n,1)
                 b(2,g,iu1(n,2)) = dff1(n,2)
                 b(3,g,iu1(n,1)) = vff1(n,g)*unsurr
@@ -109,18 +110,18 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
                 b(6,g,il(n)) = vff2(n,g)
                 b(7,g,ia(n)) = dff2(n,1)
                 b(8,g,ia(n)) = dff2(n,2)
-10          continue
+            end do
 !
-            do 20 n = nno2+1, nno1
+            do n = nno2+1, nno1
                 b(1,g,iu2(n,1)) = dff1(n,1)
                 b(2,g,iu2(n,2)) = dff1(n,2)
                 b(3,g,iu2(n,1)) = vff1(n,g)*unsurr
                 b(4,g,iu2(n,1)) = r2*dff1(n,2)
                 b(4,g,iu2(n,2)) = r2*dff1(n,1)
-20          continue
+            end do
 !
         else if (ndim.eq.3) then
-            do 30 n = 1, nno2
+            do n = 1, nno2
                 b(1,g,iu1(n,1)) = dff1(n,1)
                 b(2,g,iu1(n,2)) = dff1(n,2)
                 b(3,g,iu1(n,3)) = dff1(n,3)
@@ -135,9 +136,9 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
                 b(9,g,ia(n)) = dff2(n,1)
                 b(10,g,ia(n)) = dff2(n,2)
                 b(11,g,ia(n)) = dff2(n,3)
-30          continue
+            end do
 !
-            do 40 n = nno2+1, nno1
+            do n = nno2+1, nno1
                 b(1,g,iu2(n,1)) = dff1(n,1)
                 b(2,g,iu2(n,2)) = dff1(n,2)
                 b(3,g,iu2(n,3)) = dff1(n,3)
@@ -147,17 +148,17 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
                 b(5,g,iu2(n,3)) = r2*dff1(n,1)
                 b(6,g,iu2(n,2)) = r2*dff1(n,3)
                 b(6,g,iu2(n,3)) = r2*dff1(n,2)
-40          continue
+            end do
         endif
     end do
-
-
+!
+!
 ! - AFFECTATION DE LA FONCTION DE TRANSFERT SIGMA NICE --> SIGMA LDC
-    do g = 1,npg
+    do g = 1, npg
         ni2ldc(1:2*ndim,g) = vrac2(1:2*ndim)
     end do
     ni2ldc(2*ndim+1:neps,:) = 1.d0
 !
-
+!
     deallocate(dff1,dff2)
 end subroutine

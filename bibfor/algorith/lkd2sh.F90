@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
                   rcos3t, d2shds, iret)
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE SII*H PAR RAPPORT A SIGMA
 !     IN  NMAT   : DIMENSION TABLE DES PARAMETRES MATERIAU
@@ -60,27 +60,27 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !
 ! --- INITIALISATION MATRICE D_IK X D_JL
     dikdjl(:,:) = zero
-    do 10 i = 1, ndt
+    do i = 1, ndt
         dikdjl(i,i) = un
-10  end do
+    end do
 !
 ! --- INITIALISATION MATRICE D_IJ X D_KL
     dijdkl(:,:) = zero
-    do 20 i = 1, ndi
-        do 30 j = 1, ndi
+    do i = 1, ndi
+        do j = 1, ndi
             dijdkl(i,j) = un/trois
-30      continue
-20  end do
+        end do
+    end do
 !
 ! --- CALCUL DERIVEE SII PAR RAPPORT A SIGMA =
 !          SIJ/SII*(K_IK*K_KL-1/3*K_IJ*K_KL)
-    do 40 i = 1, ndt
+    do i = 1, ndt
         dsiids(i) = zero
-        do 50 j = 1, ndt
+        do j = 1, ndt
             dsdsig(j,i) = dikdjl(j,i)-dijdkl(j,i)
             dsiids(i) = dsiids(i) + devsig(j)*dsdsig(j,i)/sii
-50      continue
-40  end do
+        end do
+    end do
 !
 ! --- CALCUL DE DHDS*DSIIDS
     call lcprte(dhds, dsiids, mat1)
@@ -103,12 +103,12 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !
 ! --- CONSTRUCTION DE DHTDSIGMA = DHTDS*DSDSIG
     mat1(1:ndt,1:ndt) = coefh * dsdsig(1:ndt,1:ndt)
-    do 60 i = 1, ndt
+    do i = 1, ndt
         dhtds(i) = zero
-        do 70 j = 1, ndt
+        do j = 1, ndt
             dhtds(i) = dhtds(i) + dhds(j)*mat1(j,i)/sii
-70      continue
-60  end do
+        end do
+    end do
 !
 ! --- CONSTRUCTION PRODUIT TENSORIEL DE MAT1 = DEVSIG*DHTDSIGMA
     call lcprte(devsig, dhtds, mat1)
@@ -121,11 +121,11 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     mat5(1:ndt,1:ndt) = (varh(3)/sii**2) * mat4(1:ndt,1:ndt)
 !
 ! --- MAT4 = MAT2+MAT1+MAT3-MAT5
-    do 80 i = 1, ndt
-        do 90 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             mat4(i,j) = mat2(i,j)+mat1(i,j)+mat3(i,j)-mat5(i,j)
-90      continue
-80  end do
+        end do
+    end do
 !
 ! --- D2SHDS = DSDSIG.MAT4
     d2shds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), mat4(1:ndt,1:ndt))

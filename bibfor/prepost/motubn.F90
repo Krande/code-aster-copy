@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine motubn(tabpus, dinst, nbsect)
     implicit none
 #include "jeveux.h"
@@ -102,7 +102,7 @@ subroutine motubn(tabpus, dinst, nbsect)
 !
     valek(2) = 'SECTEUR'
 !
-    do 20 i = 1, nbsect
+    do i = 1, nbsect
 !
         call tbnuli(nomta, 2, valek, [i], acces(1),&
                     [c16b], k8b, lprec(1), lcrit(1), numeli)
@@ -121,7 +121,7 @@ subroutine motubn(tabpus, dinst, nbsect)
         call tbacce(nomta, numeli, 'V_USUR_TUBE_CUMU', 'E', ibid,&
                     zero, c16b, k8b)
 !
-20  end do
+    end do
 !
     call jedema()
 end subroutine

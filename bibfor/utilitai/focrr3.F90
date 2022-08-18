@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine focrr3(nomfon, resu, nopara, base, ier)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -27,7 +28,6 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/rsadpa.h"
-#include "asterc/r8vide.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutn1.h"
 #include "asterfort/utmess.h"
@@ -45,7 +45,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 ! IN  : BASE   : BASE OU L'ON CREE LA FONCTION
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
-    integer :: nbordr, iret, kordr, lpro, lfon, lvar, iordr,  nbacc, nbpar
+    integer :: nbordr, iret, kordr, lpro, lfon, lvar, iordr, nbacc, nbpar
     integer :: iad1, iad2, nbpt
     real(kind=8) :: rundf
     character(len=8) :: type
@@ -88,47 +88,47 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
     zk24(lpro+3) = nopara(1:8)
     zk24(lpro+4) = 'EE      '
     zk24(lpro+5) = nomfon
-
-
+!
+!
 !   -- calcul du nombre de points de la fonction :
     nbpt=0
     do iordr = 1, nbordr
         call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1),&
                     1, sjv=iad2, styp=type, istop=0)
         if (type(1:1) .ne. 'R') call utmess('F', 'UTILITAI2_6')
-
-        if (zr(iad2).eq.rundf) cycle
+!
+        if (zr(iad2) .eq. rundf) cycle
         nbpt=nbpt+1
     end do
-
-
+!
+!
 !     --- REMPLISSAGE DU .VALE ---
     call wkvect(nomfon//'.VALE', base//' V R', 2*nbpt, lvar)
     lfon = lvar + nbpt
-
+!
     nbpt=0
-    do 20 iordr = 1, nbordr
+    do iordr = 1, nbordr
         call rsadpa(resu, 'L', 1, nomacc, zi(kordr+iordr-1),&
                     1, sjv=iad1, styp=type)
         if (type(1:1) .ne. 'R') then
             call utmess('F', 'UTILITAI2_5')
         endif
-
+!
         call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1),&
                     1, sjv=iad2, styp=type, istop=0)
         if (type(1:1) .ne. 'R') then
             call utmess('F', 'UTILITAI2_6')
         endif
-
-        if (zr(iad2).eq.rundf) cycle
-
+!
+        if (zr(iad2) .eq. rundf) cycle
+!
         nbpt=nbpt+1
         zr(lvar+nbpt-1) = zr(iad1)
         zr(lfon+nbpt-1) = zr(iad2)
-
-20  end do
-
+!
+    end do
+!
     call jedetr(knume)
-
+!
     call jedema()
 end subroutine

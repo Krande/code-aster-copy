@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine poibij(npv, vabs, geom, fsvr, nbm,&
                   vicoq, torco, tcoef, freq, imasse,&
                   maj, vecpr)
@@ -133,7 +133,7 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
     if (imasse .eq. 0) then
 !
-        do 10 iv = 1, npv
+        do iv = 1, npv
 !
             write(ifm,510) iv
             write(ifm,511)
@@ -157,7 +157,7 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
                 call cfrott(visc, rug, hmoy, umoy, cf0,&
                             mcf0)
 !
-                do 20 imod = 1, nbm
+                do imod = 1, nbm
 !
                     fi = freq(2*nbm*(iv-1)+2*(imod-1)+1)
                     ksi = freq(2*nbm*(iv-1)+2*(imod-1)+2)
@@ -179,18 +179,18 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !                                     2
 !---------------B(S) -> B(S) + MAJ * S
 !
-                        do 30 j = 1, nbm
+                        do j = 1, nbm
                             zc(imatb+nbm*(j-1)+j-1) = zc(&
                                                       imatb+nbm*(j- 1)+j-1) + dcmplx(maj(j), 0.d0&
                                                       )*s*s
-30                      continue
+                        end do
 !
                         call cripoi(nbm, zc(imatb), crit)
                         write(ifm,521) imod,crit
 !
                     endif
 !
-20              continue
+                end do
 !
             endif
 !
@@ -198,7 +198,7 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
             write(ifm,530)
             write(ifm,*)
 !
-10      continue
+        end do
 !
 !-----2.2.SINON : ON DOIT PROJETER B(S) SUR LA BASE EN EAU AU REPOS DU
 !         SYSTEME. LES TERMES RESIDUELS SONT DONNES PAR
@@ -209,7 +209,7 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
         call wkvect('&&POIBIJ.TEMP.MAT2', 'V V C', nbm*nbm, imat2)
 !
-        do 110 iv = 1, npv
+        do iv = 1, npv
 !
             write(ifm,510) iv
             write(ifm,511)
@@ -234,7 +234,7 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
                 call cfrott(visc, rug, hmoy, umoy, cf0,&
                             mcf0)
 !
-                do 120 imod = 1, nbm
+                do imod = 1, nbm
 !
                     fi = freq(2*nbm*(iv-1)+2*(imod-1)+1)
                     ksi = freq(2*nbm*(iv-1)+2*(imod-1)+2)
@@ -256,49 +256,49 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !                *
 !---------------B (S) = B(S) * PHI
 !
-                        do 130 j = 1, nbm
-                            do 131 i = 1, nbm
+                        do j = 1, nbm
+                            do i = 1, nbm
                                 zc(imat2+nbm*(j-1)+i-1) = dcmplx(0.d0, 0.d0)
-                                do 132 k = 1, nbm
+                                do k = 1, nbm
                                     zc(imat2+nbm*(j-1)+i-1) = zc(&
                                                               imat2+nbm*(j-1)+i-1) + zc(imatb+ nb&
                                                               &m*(k-1)+i-1) * dcmplx(vecpr(nbm* (&
                                                               &j-1)+k),&
                                                               0.d0&
                                                               )
-132                              continue
-131                          continue
-130                      continue
+                                end do
+                            end do
+                        end do
 !                       T       *
 !---------------B(S) ->  PHI * B (S)
 !
-                        do 140 j = 1, nbm
-                            do 141 i = 1, nbm
+                        do j = 1, nbm
+                            do i = 1, nbm
                                 zc(imatb+nbm*(j-1)+i-1) = dcmplx(0.d0, 0.d0)
-                                do 142 k = 1, nbm
+                                do k = 1, nbm
                                     zc(imatb+nbm*(j-1)+i-1) = zc(&
                                                               imatb+nbm*(j-1)+i-1) + dcmplx( vecp&
                                                               &r(nbm*(i-1)+k),&
                                                               0.d0) * zc(imat2+nbm*(j-1)+k-1&
                                                               )
-142                              continue
-141                          continue
-140                      continue
+                                end do
+                            end do
+                        end do
 !                                     2
 !---------------B(S) -> B(S) + MAJ * S
 !
-                        do 150 j = 1, nbm
+                        do j = 1, nbm
                             zc(imatb+nbm*(j-1)+j-1) = zc(&
                                                       imatb+nbm*(j- 1)+j-1) + dcmplx(maj(j), 0.d0&
                                                       )*s*s
-150                      continue
+                        end do
 !
                         call cripoi(nbm, zc(imatb), crit)
                         write(ifm,521) imod,crit
 !
                     endif
 !
-120              continue
+                end do
 !
             endif
 !
@@ -306,7 +306,7 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
             write(ifm,530)
             write(ifm,*)
 !
-110      continue
+        end do
 !
     endif
 !

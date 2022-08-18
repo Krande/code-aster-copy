@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cbvalr(rouc, neq, smhc, smdi, idlexc,&
                   coefr, coefc, valmi, valmr, valmc)
     implicit none
@@ -40,55 +40,55 @@ subroutine cbvalr(rouc, neq, smhc, smdi, idlexc,&
 !
     if (rouc .eq. 'RR') then
 !     -------------------------------
-        do 20 ilig = 1, neq
+        do ilig = 1, neq
             ifinli = smdi(ilig)
-            do 10 ind = idebli, ifinli
+            do ind = idebli, ifinli
                 kin = kin + 1
                 jcol = smhc(ind)
                 valmr(kin) = valmr(kin) + coefr*valmi(kin)* (1-idlexc( jcol))* (1-idlexc(ilig))
-10          continue
+            end do
             idebli = smdi(ilig) + 1
-20      continue
+        end do
 !
 !
     else if (rouc.eq.'RC') then
 !     -------------------------------
-        do 40 ilig = 1, neq
+        do ilig = 1, neq
             ifinli = smdi(ilig)
-            do 30 ind = idebli, ifinli
+            do ind = idebli, ifinli
                 kin = kin + 1
                 jcol = smhc(ind)
                 valmr(kin) = valmr(kin) + dble(coefc*valmi(kin)* (1-idlexc(jcol))* (1-idlexc(ilig&
                              &)))
-30          continue
+            end do
             idebli = smdi(ilig) + 1
-40      continue
+        end do
 !
 !
     else if (rouc.eq.'CR') then
 !     -------------------------------
-        do 60 ilig = 1, neq
+        do ilig = 1, neq
             ifinli = smdi(ilig)
-            do 50 ind = idebli, ifinli
+            do ind = idebli, ifinli
                 kin = kin + 1
                 jcol = smhc(ind)
                 valmc(kin) = valmc(kin) + coefr*valmi(kin)* (1-idlexc( jcol))* (1-idlexc(ilig))
-50          continue
+            end do
             idebli = smdi(ilig) + 1
-60      continue
+        end do
 !
 !
     else if (rouc.eq.'CC') then
 !     -------------------------------
-        do 80 ilig = 1, neq
+        do ilig = 1, neq
             ifinli = smdi(ilig)
-            do 70 ind = idebli, ifinli
+            do ind = idebli, ifinli
                 kin = kin + 1
                 jcol = smhc(ind)
                 valmc(kin) = valmc(kin) + coefc*valmi(kin)* (1-idlexc( jcol))* (1-idlexc(ilig))
-70          continue
+            end do
             idebli = smdi(ilig) + 1
-80      continue
+        end do
 !
 !
     else

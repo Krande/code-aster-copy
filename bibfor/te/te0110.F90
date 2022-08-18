@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0110(option, nomte)
 ! aslint: disable=W1501
     implicit none
@@ -103,8 +103,8 @@ subroutine te0110(option, nomte)
 !     ---------------
     zero = 0.0d0
     un = 1.0d0
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     nompar(1) = 'INST'
     nompar(2) = 'X'
@@ -129,12 +129,12 @@ subroutine te0110(option, nomte)
     matele(2) = zero
     matele(3) = zero
 !
-    do 20 i = 1, ndimax
-        do 10 j = 1, ndimax
+    do i = 1, ndimax
+        do j = 1, ndimax
             rigith(i,j) = zero
             masse(i,j) = zero
-10      continue
-20  end do
+        end do
+    end do
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
 !     ----------------------------------------------------
@@ -207,7 +207,7 @@ subroutine te0110(option, nomte)
 !.    CAS DES COQUES SURFACIQUES                                  .
 !..................................................................
 !
-    if (nomte.ne.'THCOSE3' .and. nomte.ne.'THCOSE2') then
+    if (nomte .ne. 'THCOSE3' .and. nomte .ne. 'THCOSE2') then
 !
 ! ---   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !       -------------------------------------------------
@@ -229,10 +229,10 @@ subroutine te0110(option, nomte)
 !
 ! ---   NOM DES COMPOSANTES DU TENSEUR DE CONDUCTIVITE HOMOGENEISE :
 !       ----------------------------------------------------------
-            do 30 i = 1, nbres
+            do i = 1, nbres
                 call codent(i, 'G', num)
                 nomres(i) = 'HOM_'//num
-30          continue
+            end do
 !
 ! ---   INTERPOLATION DES TERMES DU TENSEUR DE CONDUCTIVITE
 ! ---   EN FONCTION DU TEMPS :
@@ -252,9 +252,9 @@ subroutine te0110(option, nomte)
 ! ---   DE L'ELEMENT ( PARCE QUE C'EST DANS CE REPERE QUE LE
 ! ---   FLUX THERMIQUE EST LE PLUS SIMPLE A ECRIRE) :
 !       -------------------------------------------
-            do 40 i = 1, 6
+            do i = 1, 6
                 call reflth(ang, valres(3* (i-1)+1), hom(3* (i-1)+1))
-40          continue
+            end do
 !
 ! ---   TENSEUR DE CONDUCTIVITE MEMBRANAIRE :
 !       -----------------------------------
@@ -317,17 +317,17 @@ subroutine te0110(option, nomte)
 ! ---   INITIALISATION DES TENSEURS DE CONDUCTIVITE MEMBRANAIRE,
 ! ---   TRANSVERSE ET DU TENSEUR DE CAPACITE THERMIQUE :
 !       ----------------------------------------------
-            do 80 l = 1, 2
-                do 70 k = 1, l
-                    do 60 i = 1, 3
-                        do 50 j = 1, i
+            do l = 1, 2
+                do k = 1, l
+                    do i = 1, 3
+                        do j = 1, i
                             a(i,j,k,l) = zero
                             b(i,j) = zero
                             m(i,j) = zero
-50                      continue
-60                  continue
-70              continue
-80          continue
+                        end do
+                    end do
+                end do
+            end do
 !
 ! ---   CAPACITE THERMIQUE :
 !       ------------------
@@ -584,9 +584,9 @@ subroutine te0110(option, nomte)
 !     ------------------------------------------------------------
 ! --- CAS OU LES COEFFICIENTS D'ECHANGES SONT DES FONCTIONS :
         if (icoehf .gt. 0) then
-            call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-            do 100 kp = 1, npg2
+            call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                             jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+            do kp = 1, npg2
                 k = (kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                             poids, dfdx, dfdy)
@@ -596,11 +596,11 @@ subroutine te0110(option, nomte)
                 xgau = zero
                 ygau = zero
                 zgau = zero
-                do 90 i = 1, nno
+                do i = 1, nno
                     xgau = xgau + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                     ygau = ygau + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                     zgau = zgau + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-90              continue
+                end do
 !
                 valpar(2) = xgau
                 valpar(3) = ygau
@@ -610,7 +610,7 @@ subroutine te0110(option, nomte)
                             hmoin, ier)
                 call fointe('FM', hfplus, nbvar, nompar, valpar,&
                             hplus, ier)
-100          continue
+            end do
         endif
 !
 ! ---  CONTRIBUTION AU TENSEUR DE CONDUCTIVITE TRANSVERSE B DES
@@ -626,8 +626,8 @@ subroutine te0110(option, nomte)
 ! --- DE L'ELEMENT :
 !     ------------
         call cq3d2d(nno, zr(igeom), un, zero, coor2d)
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- CALCUL DE LA RIGIDITE THERMIQUE DUE A LA PARTIE MEMBRANAIRE
 ! --- DU TENSEUR DE CONDUCTIVITE :
@@ -635,7 +635,7 @@ subroutine te0110(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 180 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
 !
 ! ---   DERIVEES DES FONCTIONS DE FORME ET PRODUIT JACOBIEN*POIDS
@@ -643,26 +643,26 @@ subroutine te0110(option, nomte)
 !       ---------------------------
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
-            do 110 pi = 1, 3
+            do pi = 1, 3
                 tpg(pi) = zero
                 dtpgdx(pi) = zero
                 dtpgdy(pi) = zero
-110          continue
+            end do
 !
 ! ---   TEMPERATURES ET GRADIENTS THERMIQUES AUX POINTS D'INTEGRATION :
 !       -------------------------------------------------------------
-            do 130 gi = 1, nno
-                do 120 pi = 1, 3
+            do gi = 1, nno
+                do pi = 1, 3
                     i = 3* (gi-1) + pi - 1 + itemp
                     tpg(pi) = tpg(pi) + zr(i)*zr(ivf+k+gi-1)
                     dtpgdx(pi) = dtpgdx(pi) + zr(i)*dfdx(gi)
                     dtpgdy(pi) = dtpgdy(pi) + zr(i)*dfdy(gi)
-120              continue
-130          continue
-            do 170 gi = 1, nno
-                do 160 gj = 1, gi
-                    do 150 pi = 1, 3
-                        do 140 pj = 1, pi
+                end do
+            end do
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = a(pi,pj,1,1)*dfdx(gi)*dfdx(gj) + a(pi,pj,2,2)*dfdy(gi)*dfdy(gj) &
                                  &+ a(pi,pj, 1,2)*dfdx(gi)*dfdy(gj) + a(pi,pj,1,2)* dfdy(gi)*dfdx&
                                  &(gj)
@@ -675,11 +675,11 @@ subroutine te0110(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + poids*pk
-140                      continue
-150                  continue
-160              continue
-170          continue
-180      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
 ! --- CALCUL DE LA RIGIDITE THERMIQUE DUE A LA PARTIE TRANSVERSE
 ! --- DU TENSEUR DE CONDUCTIVITE ET CALCUL DE LA MASSE THERMIQUE :
@@ -688,22 +688,22 @@ subroutine te0110(option, nomte)
 ! --- ON PREND LA SECONDE FAMILLE DE POINTS D'INTEGRATION QUI
 ! --- EST D'UN ORDRE PLUS ELEVE :
 !     -------------------------
-        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 230 kp = 1, npg2
+        do kp = 1, npg2
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
 !
-            do 220 gi = 1, nno
+            do gi = 1, nno
                 ivf1 = ivf + k + gi - 1
-                do 210 gj = 1, gi
+                do gj = 1, gi
                     ivf2 = ivf + k + gj - 1
-                    do 200 pi = 1, 3
-                        do 190 pj = 1, pi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = b(pi,pj)*zr(ivf1)*zr(ivf2)
                             pm = m(pi,pj)*zr(ivf1)*zr(ivf2)
 !
@@ -724,17 +724,17 @@ subroutine te0110(option, nomte)
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + poids*pk
                             masse(i,j) = masse(i,j) + poids*pm
-190                      continue
-200                  continue
-210              continue
-220          continue
-230      continue
-        do 250 i = 1, 3*nno
-            do 240 j = 1, i - 1
+                        end do
+                    end do
+                end do
+            end do
+        end do
+        do i = 1, 3*nno
+            do j = 1, i - 1
                 rigith(j,i) = rigith(i,j)
                 masse(j,i) = masse(i,j)
-240          continue
-250      continue
+            end do
+        end do
 !
 !
 !..................................................................
@@ -780,7 +780,7 @@ subroutine te0110(option, nomte)
 ! ---   DETERMINATION DE LA MATRICE MATP DONT LE TERME GENERIQUE
 ! ---   EST MATP(I,J) = SOMME_EPAISSEUR(PI(Z)*PJ(Z).DZ) :
 !       -----------------------------------------------
-        do 260 kp = 1, npg1
+        do kp = 1, npg1
             kq = (kp-1)*3
 !
             poi1 = zr(mzr-1+12+kp)
@@ -794,12 +794,12 @@ subroutine te0110(option, nomte)
             matp(3,1) = matp(1,3)
             matp(3,2) = matp(2,3)
             matp(3,3) = matp(3,3) + poi1*zr(mzr-1+kq+3)**2
-260      continue
+        end do
 !
 ! ---   DETERMINATION DE LA MATRICE MATN DONT LE TERME GENERIQUE
 ! ---   EST MATN(I,J) = SOMME_LONGUEUR (H*NI(X,Y)*NJ(X,Y).DX.DY) :
 !       --------------------------------------------------------
-        do 280 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
 !
             poi2 = zr(ipoids-1+kp)
@@ -811,11 +811,11 @@ subroutine te0110(option, nomte)
                 xgau = zero
                 ygau = zero
                 zgau = zero
-                do 270 i = 1, nno
+                do i = 1, nno
                     xgau = xgau + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                     ygau = ygau + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                     zgau = zgau + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-270              continue
+                end do
 !
                 valpar(2) = xgau
                 valpar(3) = ygau
@@ -837,7 +837,7 @@ subroutine te0110(option, nomte)
             matn(2,1) = matn(1,2)
             matn(2,2) = poi2*hbord*zr(ivf-1+k+2)**2
 !
-            if (nomte.eq.'THCOSE3') then
+            if (nomte .eq. 'THCOSE3') then
                 matn(1,3) = poi2*hbord*zr(ivf-1+k+1)*zr(ivf-1+k+3)
                 matn(2,3) = poi2*hbord*zr(ivf-1+k+2)*zr(ivf-1+k+3)
                 matn(3,1) = matn(1,3)
@@ -887,7 +887,7 @@ subroutine te0110(option, nomte)
             rigith(6,5) = rigith(5,6)
             rigith(6,6) = rigith(6,6) + matn(2,2)*matp(3,3)
 !
-            if (nomte.eq.'THCOSE3') then
+            if (nomte .eq. 'THCOSE3') then
 !
                 rigith(1,7) = rigith(1,7) + matn(1,3)*matp(1,1)
                 rigith(1,8) = rigith(1,8) + matn(1,3)*matp(1,2)
@@ -944,7 +944,7 @@ subroutine te0110(option, nomte)
                 rigith(9,9) = rigith(9,9) + matn(3,3)*matp(3,3)
             endif
 !
-280      continue
+        end do
 !
 !..................................................................
     endif
@@ -958,11 +958,11 @@ subroutine te0110(option, nomte)
 ! --- CHAR_THER_EVOL :
 !     --------------
     nbddl = 3*nno
-    do 300 i = 1, nbddl
-        do 290 j = 1, nbddl
+    do i = 1, nbddl
+        do j = 1, nbddl
             zr(ivectt+i-1) = zr(ivectt+i-1) + (masse(j,i)/deltat- (un- theta)*rigith(j,i))* zr(it&
                              &emp+j-1)
-290      continue
-300  end do
+        end do
+    end do
 !
 end subroutine

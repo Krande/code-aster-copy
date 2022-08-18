@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
                   nterm1, nsomm1, csomm1, tyma, nbno2,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
@@ -160,10 +160,10 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg .eq. 'FPG8') then
 !           -----------------
             npoini = 27
-            do 10 k = 1, npg
+            do k = 1, npg
                 tyma(k) = ihexa8
                 nbno2(k) = 8
- 10         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -389,10 +389,10 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg .eq. 'FPG27') then
 !               ------------------
             npoini = 64
-            do 20 k = 1, npg
+            do k = 1, npg
                 tyma(k) = ihexa8
                 nbno2(k) = 8
- 20         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -997,10 +997,10 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg .eq. 'FPG4') then
 !           -----------------
             npoini = 15
-            do 30 k = 1, npg
+            do k = 1, npg
                 tyma(k) = ihexa8
                 nbno2(k) = 8
- 30         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -1130,14 +1130,14 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg .eq. 'FPG5') then
 !           -----------------
             npoini = 10
-            do 301 k = 1, 4
+            do k = 1, 4
                 tyma(k) = itetr4
                 nbno2(k) = 4
-301         continue
-            do 302 k = 5, 6
+            end do
+            do k = 5, 6
                 tyma(k) = ipyra5
                 nbno2(k) = 5
-302         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -1239,14 +1239,14 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
             npoini = 32
             tyma(1) = itetr4
             nbno2(1) = 4
-            do 42 k = 2, 5
+            do k = 2, 5
                 tyma(k) = ipent6
                 nbno2(k) = 6
- 42         continue
-            do 40 k = 6, 15
+            end do
+            do k = 6, 15
                 tyma(k) = ihexa8
                 nbno2(k) = 8
- 40         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -1540,7 +1540,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
 !     -----------------------------------------------------------------
 !     PENTAEDRES
 !     -----------------------------------------------------------------
-        elseif ( elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18') then
+    else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18') then
 !
         if (fapg .eq. 'FPG1') then
 !           -----------------
@@ -1600,10 +1600,10 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg .eq. 'FPG6') then
 !           -----------------
             npoini = 12
-            do 50 k = 1, npg
+            do k = 1, npg
                 tyma(k) = ipent6
                 nbno2(k) = 6
- 50         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -1720,10 +1720,10 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
             npoini = 48
 !
 !        LES SOUS-ELEMENTS SONT DES H8 SAUF 3 P6 :
-            do 60 k = 1, 21
+            do k = 1, 21
                 tyma(k) = ihexa8
                 nbno2(k) = 8
- 60         continue
+            end do
             tyma(1) = ipent6
             tyma(8) = ipent6
             tyma(15) = ipent6
@@ -2203,14 +2203,14 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg .eq. 'FPG5' .or. fapg .eq. 'FPG10' .or. fapg .eq. 'FPG27') then
 !           -----------------------------------------------
             npoini = 19
-            do 710 k = 1, 4
+            do k = 1, 4
                 tyma(k) = ihexa8
                 nbno2(k) = 8
-710         continue
-            do 711 k = 5, 8
+            end do
+            do k = 5, 8
                 tyma(k) = ipyra5
                 nbno2(k) = 5
-711         continue
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -2397,9 +2397,9 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
 !
 !     -- POUR PRESQUE TOUS LES SCHEMAS 3D, IL Y A IDENTITE: KSE -> KPG:
     nbsel=npg
-    do 5 k = 1, npg
+    do k = 1, npg
         corsel(k)=k
-  5 end do
+    end do
 !
 !     -- EXCEPTION 1
     if (ltetra .and. fapg .eq. 'FPG5') then

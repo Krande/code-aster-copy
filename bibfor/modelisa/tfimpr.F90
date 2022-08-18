@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tfimpr(nom)
     implicit none
 !-----------------------------------------------------------------------
@@ -174,7 +174,7 @@ subroutine tfimpr(nom)
             ip = zi(lfsvi)
             nzex = zi(lfsvi+1)
             if (ip .eq. 1) then
-                do 10 izon = 1, nzex
+                do izon = 1, nzex
                     ir = zi(lfsvi+izon+1)
                     nomzo = zk8(lfsvk+izon+3)
                     write(ifm,105) nomzo
@@ -185,14 +185,14 @@ subroutine tfimpr(nom)
                     else
                         write(ifm,101) txres4(ir-1000)
                     endif
-10              continue
+                end do
             else
-                do 20 izon = 1, nzex
+                do izon = 1, nzex
                     ir = zi(lfsvi+izon+1)
                     nomzo = zk8(lfsvk+izon+3)
                     write(ifm,105) nomzo
                     write(ifm,101) txres2(ir)
-20              continue
+                end do
             endif
             write(ifm,102) texpas(ip)
             write(ifm,103) zr(lfsvr+1)

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     implicit none
 #include "jeveux.h"
@@ -50,7 +50,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
 ! --- VARIABLES LOCALES ---
     character(len=8) :: kmat, kbid
     character(len=24) :: krc
-    integer ::  arc, imat, nbrc, ipos, ncmpmx,  izone, i, nbzone
+    integer :: arc, imat, nbrc, ipos, ncmpmx, izone, i, nbzone
     integer :: l1, nbzmax, k
     integer, pointer :: desc(:) => null()
     character(len=8), pointer :: vale(:) => null()
@@ -71,8 +71,8 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
 !
 !
     nbmtrc = 0
-    do 50 izone = 1, nbzone
-        do 100 i = 1, ncmpmx
+    do izone = 1, nbzone
+        do i = 1, ncmpmx
             imat=(izone-1)*ncmpmx+i
             kmat = vale(imat)
             if (kmat .eq. ' ') goto 50
@@ -81,17 +81,18 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
             call jeveuo(krc, 'L', arc)
             call jelira(krc, 'LONMAX', nbrc)
             ipos=0
-            do k=1,nbrc
-               if ( zk32(arc+k-1) .eq. nomrc) then
-                  ipos=k
-               endif
+            do k = 1, nbrc
+                if (zk32(arc+k-1) .eq. nomrc) then
+                    ipos=k
+                endif
             end do
             if (ipos .gt. 0) then
                 nbmtrc = nbmtrc + 1
                 nommat(nbmtrc) = kmat
             endif
-100      continue
-50  end do
+        end do
+ 50     continue
+    end do
 !
 !
     call jedema()

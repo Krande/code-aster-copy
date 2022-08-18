@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxtloc(flex, memb, mefl, ctor, matloc)
     implicit none
 #include "jeveux.h"
@@ -102,25 +102,25 @@ subroutine dxtloc(flex, memb, mefl, ctor, matloc)
     data jz   / 21 ,  78 , 171 /
 !     ------------------------------------------------------------------
 !                          ---- RAZ MATLOC
-    do 10 i = 1, 171
+    do i = 1, 171
         matloc(i) = 0.0d0
-10  end do
+    end do
 !                          ---- TERMES DE FLEXION
-    do 20 k = 1, 45
+    do k = 1, 45
         matloc(jf(k)) = cf(k) * flex(if(k))
-20  end do
+    end do
 !                          ---- TERMES DE MEMBRANE
-    do 30 k = 1, 21
+    do k = 1, 21
         matloc(jm(k)) = memb(im(k))
-30  end do
+    end do
 !                          ---- TERMES DE COUPLAGE FLEXION/MEMBRANE
-    do 40 k = 1, 36
+    do k = 1, 36
         matloc(jfm(k)) = cfm(k) * mefl(ifm(k))
-40  end do
+    end do
 !                          ---- TERMES DE COUPLAGE MEMBRANE/FLEXION
-    do 50 k = 1, 18
+    do k = 1, 18
         matloc(jmf(k)) = cmf(k) * mefl(imf(k))
-50  end do
+    end do
 !                          ---- TERMES DE ROTATION / Z
     coef = ctor * min ( flex(11),flex(21),flex(41),flex(51),flex(71),flex(81) )
     matloc(jz(1)) = coef

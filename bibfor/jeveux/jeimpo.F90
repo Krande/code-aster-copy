@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeimpo(unit, nomlu, mess)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! IMPRIME LE CONTENU D'UN OBJET JEVEUX
@@ -84,7 +84,7 @@ subroutine jeimpo(unit, nomlu, mess)
 !
     if (iret .eq. 0) then
         call utmess('A', 'JEVEUX_26', sk=noml32(1:24))
-        goto 9999
+        goto 999
     else if (iret .eq. 1) then
 !
 ! ----  CAS D'UN OBJET SIMPLE
@@ -101,7 +101,7 @@ subroutine jeimpo(unit, nomlu, mess)
             iaddi(2) = iadd ( jiadd(iclaos) + 2*idatos )
             if (iaddi(1) .eq. 0) then
                 call utmess('A', 'JEVEUX_27', sk=noml32(1:24))
-                goto 9999
+                goto 999
             endif
             call jjalty(typei, ltypi, 'L', 1, jctab)
             iadmi = iadm ( jiadm(iclaos) + 2*idatos-1 )
@@ -146,7 +146,7 @@ subroutine jeimpo(unit, nomlu, mess)
             if (iadmex .eq. 0) then
                 if (iaddi(1) .eq. 0) then
                     call utmess('A', 'JEVEUX_28', sk=noml32(1:24))
-                    goto 9999
+                    goto 999
                 endif
                 call jjalty(typei, ltypi, 'L', 2, jctab)
                 iadmi = iadm ( jiadm(iclaco) + 2*ixdeso-1 )
@@ -166,7 +166,7 @@ subroutine jeimpo(unit, nomlu, mess)
             ibiadm = iadm ( jiadm(iclaco) + 2*ixiadm-1 )
             ibiadd = iadm ( jiadm(iclaco) + 2*ixiadd-1 )
             ideci = 0
-            do 10 k = 1, nbmax
+            do k = 1, nbmax
                 iadmi = iszon(jiszon + ibiadm - 1 + 2*k-1 )
                 if (iadmi .eq. 0) then
                     iaddi(1) = iszon(jiszon + ibiadd - 1 + 2*k-1 )
@@ -186,7 +186,8 @@ subroutine jeimpo(unit, nomlu, mess)
                             typei, ltypi, lonoi, mess)
                 numec = k
                 call jjlide('JEIMPO', noml32//'$$XNUM  ', 2)
- 10         continue
+ 10             continue
+            end do
         endif
         call jjlide('JEIMPO', noml32, inat)
     else if (inat .eq. 3) then
@@ -208,7 +209,7 @@ subroutine jeimpo(unit, nomlu, mess)
             if (iadmex .eq. 0) then
                 if (iaddi(1) .eq. 0) then
                     call utmess('A', 'JEVEUX_29', sk=noml32(1:24), si=idatoc)
-                    goto 9999
+                    goto 999
                 endif
                 call jjalty(typei, ltypi, 'L', 2, jctab)
                 ibdeso = iadm ( jiadm(iclaco) + 2*ixdeso-1 )
@@ -244,7 +245,7 @@ subroutine jeimpo(unit, nomlu, mess)
                 iaddi(2) = iszon(jiszon + ibiadd - 1 + 2*idatoc )
                 if (iaddi(1) .eq. 0) then
                     call utmess('A', 'JEVEUX_29', sk=noml32(1:24), si=idatoc)
-                    goto 9999
+                    goto 999
                 endif
                 call jjalty(typei, ltypi, 'L', inat, jctab)
                 iadmi = iszon(jiszon + ibiadm - 1 + 2*idatoc-1 )
@@ -263,7 +264,7 @@ subroutine jeimpo(unit, nomlu, mess)
             endif
         endif
     endif
-9999 continue
+999 continue
     if (lcol) then
         call jjlide('JEIMPO', noml32(1:24), 2)
     endif

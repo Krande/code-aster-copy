@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjallc(iclasi, idatci, cel, ibacol)
     implicit none
 #include "jeveux_private.h"
@@ -99,9 +99,9 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
     ibacol = iadmi
     call jjecrs(iadmi, ic, id, 0, cel,&
                 imarq(jmarq(ic)+2*id-1))
-100  continue
+100 continue
 !
-    do 20 k = 2, idnum
+    do k = 2, idnum
 !     ----------- OBJETS ATTRIBUTS DE COLLECTION
         ix = iszon( jiszon + ibacol + k )
         if (ix .gt. 0) then
@@ -152,7 +152,7 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
                         imarq(jmarq(ic)+2*ix-1))
             ipgc = ipgcex
         endif
-20  end do
+    end do
 !
     ix = iszon( jiszon + ibacol + iddeso )
     ltypi = ltyp ( jltyp(ic) + ix )

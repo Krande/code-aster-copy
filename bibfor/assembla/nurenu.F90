@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nurenu(nu, base)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_comm_point.h"
 #include "asterfort/asmpi_info.h"
@@ -31,8 +33,6 @@ subroutine nurenu(nu, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=14) :: nu
     character(len=2) :: base
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -50,13 +50,13 @@ subroutine nurenu(nu, base)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer :: rang, nbproc,   neql, iddl, nbrddl, jnbddl
-    integer :: iproc, nbddpr,  neqg, jnulg, decals, decald, iaux
-    integer ::  njoint, numpro, nbddlj, jjoint,  numddl
+    integer :: rang, nbproc, neql, iddl, nbrddl, jnbddl
+    integer :: iproc, nbddpr, neqg, jnulg, decals, decald, iaux
+    integer :: njoint, numpro, nbddlj, jjoint, numddl
     integer :: num
 !
     character(len=4) :: chnbjo
-    character(len=24) ::  nonbdd, nojoin
+    character(len=24) :: nonbdd, nojoin
     integer, pointer :: tmp(:) => null()
     integer, pointer :: pddl(:) => null()
     integer, pointer :: nequg(:) => null()
@@ -78,18 +78,18 @@ subroutine nurenu(nu, base)
     neqg=nequg(1)
 !
     nbrddl=0
-    do 10 iddl = 0, neql-1
+    do iddl = 0, neql-1
         if (pddl(iddl+1) .eq. rang) nbrddl=nbrddl+1
-10  end do
+    end do
 !
     call wkvect(nonbdd, 'V V I', nbproc, jnbddl)
     zi(jnbddl+rang)=nbrddl
     call asmpi_comm_jev('MPI_SUM', nonbdd)
     nbddpr=zi(jnbddl)
-    do 20 iproc = 1, nbproc-1
+    do iproc = 1, nbproc-1
         zi(jnbddl+iproc)=zi(jnbddl+iproc)+nbddpr
         nbddpr=zi(jnbddl+iproc)
-20  end do
+    end do
     ASSERT(neqg.eq.nbddpr)
 !
     call wkvect(nu//'.NUML.NLGP', base(1:1)//' V I', neql, jnulg)
@@ -98,17 +98,17 @@ subroutine nurenu(nu, base)
     call jedetr(nonbdd)
 !
     decald=1
-    do 30 iddl = 0, neql-1
+    do iddl = 0, neql-1
         if (pddl(iddl+1) .eq. rang) then
             zi(jnulg+iddl)=decals+decald
             decald=decald+1
         endif
-30  end do
+    end do
 !
     call jeveuo(nu//'.NUML.JOIN', 'L', vi=join)
     call jelira(nu//'.NUML.JOIN', 'LONMAX', njoint)
 !
-    do iaux=0,njoint-1
+    do iaux = 0, njoint-1
         numpro=join(iaux+1)
         if (numpro .eq. -1) cycle
 !
@@ -120,20 +120,20 @@ subroutine nurenu(nu, base)
         AS_ALLOCATE(vi=tmp, size=nbddlj)
         if (rang .lt. numpro) then
 !           !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
-            do 50, iddl=0,nbddlj-1
+            do iddl = 0, nbddlj-1
                 numddl=zi(jjoint+iddl)
                 tmp(iddl+1)=zi(jnulg+numddl-1)
-50          continue
+            end do
             call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
                                   vi=tmp)
         else if (rang.gt.numpro) then
 !           !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
             call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
                                   vi=tmp)
-            do 60, iddl=0,nbddlj-1
+            do iddl = 0, nbddlj-1
                 numddl=zi(jjoint+iddl)
                 zi(jnulg+numddl-1)=tmp(iddl+1)
-60          continue
+            end do
         else
             ASSERT(.false.)
         endif

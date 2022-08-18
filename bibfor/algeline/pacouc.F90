@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
                   masg, freq, amor, nbno, indic,&
                   nbpv, w, veci1, vecr4, vecr5,&
@@ -97,9 +97,9 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
         call wkvect('&&PACOUC.TRAV2', 'V V I', 3*nb, jtrav2)
     endif
 !
-    do 10 i = 1, nbpv
+    do i = 1, nbpv
         vgap = vite(i)
-        do 20 j = 1, nbno
+        do j = 1, nbno
             if (veriu0 .and. dble(abs(vgap)) .lt. 1.d-5) then
                 ksi0 = ( amor(j) + kcaj*vecr1(j)) / (masg(j)*4.d0*pi* amor(nbno+j) )
             else
@@ -196,17 +196,17 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
 !
             if (check) then
                 call getvtx(' ', 'STOP_ERREUR', scal=stperr)
-                if (stperr(1:3).eq.'OUI') then
+                if (stperr(1:3) .eq. 'OUI') then
 !                   SI STOP_ERREUR = 'OUI', ERREUR FATALE
-                    call utmess('F+', 'ALGELINE_55', ni=1, vali=[j],&
-                                                     nr=1, valr=[vgap])
-                    call utmess('F' , 'ALGELINE_74')
+                    call utmess('F+', 'ALGELINE_55', ni=1, vali=[j], nr=1,&
+                                valr=[vgap])
+                    call utmess('F', 'ALGELINE_74')
                 else
 !                   SI STOP_ERREUR = 'NON', ALARME ENSUITE STOCKER LES DERNIERS
 !                   PARAMETRES CALCULES (NON CONVERGES)
-                    call utmess('A+', 'ALGELINE_55', ni=1, vali=[j],&
-                                                     nr=1, valr=[vgap])
-                    call utmess('A' , 'ALGELINE_67')
+                    call utmess('A+', 'ALGELINE_55', ni=1, vali=[j], nr=1,&
+                                valr=[vgap])
+                    call utmess('A', 'ALGELINE_67')
                 end if
             end if
 !
@@ -221,7 +221,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
             if (itypfl .eq. 1) then
                 call jeveuo(nom1, 'L', jcompt)
                 call jeveuo(nom2, 'L', jextr)
-                do 30 k = 1, nzone
+                do k = 1, nzone
                     l1 = zi(jcompt+3*(k-1))
                     l2 = zi(jcompt+3*(k-1)+1)
                     l3 = zi(jcompt+3*(k-1)+2)
@@ -237,11 +237,11 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
                     nzone + 3*(k-1) + 1) = l2
                     zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
                     nzone + 3*(k-1) + 2) = l3
- 30             continue
+                end do
             endif
-
- 20     continue
- 10 end do
+!
+        end do
+    end do
 !
     if (.not.check) ier = 0
 !

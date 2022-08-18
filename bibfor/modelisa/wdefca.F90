@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function wdefca(ino, s, alpha, f0, frco,&
                 frli)
     implicit none
@@ -63,7 +63,7 @@ function wdefca(ino, s, alpha, f0, frco,&
 !
     if (ino .eq. 1) then
         wdefca = 0.0d0
-        goto 9999
+        goto 999
     endif
 !
     xref = - frco * alpha(ino) - frli * s(ino)
@@ -71,16 +71,16 @@ function wdefca(ino, s, alpha, f0, frco,&
     xref = dble(exp(xref))
 !
     wdefca = 0.0d0
-    do 10 i = 1, ino-1
+    do i = 1, ino-1
         xi = - frco * alpha(i) - frli * s(i)
         xi = dble(exp(xi))
         xip1 = - frco * alpha(i+1) - frli * s(i+1)
         xip1 = dble(exp(xip1))
         wdefca = wdefca + ( xi - xref/xi + xip1 - xref/xip1 ) / 2.0d0 * ( s(i+1) - s(i) )
-10  end do
+    end do
     wdefca = wdefca * f0
 !
-9999  continue
+999 continue
 !
 ! --- FIN DE WDEFCA.
 end function

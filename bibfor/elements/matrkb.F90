@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
                   alpha, rig1, coef)
     implicit none
@@ -45,31 +45,31 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
 !
     nb2 = nb1 + 1
 !
-    do 402 in = 1, nb2
+    do in = 1, nb2
 !
 !------- ON CONSTRUIT RIGRL
 !
         if (in .le. nb1) then
 !
 !----------- NOEUDS DE SERENDIP
-            do 431 jj = 1, 2
+            do jj = 1, 2
                 jr = 5 * ( in - 1 ) + jj + 3
-                do 441 ii = 1, 2
+                do ii = 1, 2
                     ir = 5 * ( in - 1 ) + ii + 3
                     rigrl ( ii , jj ) = ktdc ( ir , jr )
-441              continue
-431          continue
+                end do
+            end do
 !
         else
 !
 !----------- SUPERNOEUD
-            do 451 jj = 1, 2
+            do jj = 1, 2
                 jr = 5 * nb1 + jj
-                do 461 ii = 1, 2
+                do ii = 1, 2
                     ir = 5 * nb1 + ii
                     rigrl ( ii , jj ) = ktdc ( ir , jr )
-461              continue
-451          continue
+                end do
+            end do
 !
         endif
 !
@@ -78,18 +78,18 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
         if (rigrl ( 1 , 1 ) .lt. xmin) xmin = rigrl ( 1 , 1 )
         if (rigrl ( 2 , 2 ) .lt. xmin) xmin = rigrl ( 2 , 2 )
 !
-402  end do
+    end do
 !
 !
     coef=alpha * xmin
 !
 !     RAIDEUR ASSOCIEE A LA ROTATION FICTIVE = COEF = ALPHA * INF
 !
-    do 20 i = 1, nddlet
-        do 30 j = 1, nddlet
+    do i = 1, nddlet
+        do j = 1, nddlet
             rig1(i,j)=0.d0
-30      end do
-20  end do
+        end do
+    end do
 !
 !     CONSTRUCTION DE KBARRE = KTILD EXTENDU  :  (NDDLET,NDDLET)
 !
@@ -98,57 +98,57 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
 !
     nb2=nb1+1
 !
-    do 40 ib = 1, nb2
+    do ib = 1, nb2
         kompti=kompti+1
-        do 50 jb = 1, nb2
+        do jb = 1, nb2
             komptj=komptj+1
             if ((ib.le.nb1) .and. (jb.le.nb1)) then
-                do 60 i = 1, 5
+                do i = 1, 5
                     i1=5*(ib-1)+i
                     i2=i1+kompti
-                    do 70 j = 1, 5
+                    do j = 1, 5
                         j1=5*(jb-1)+j
                         j2=j1+komptj
                         rig1(i2,j2)=ktdc(i1,j1)
-70                  end do
-60              end do
+                    end do
+                end do
 !
             else if ((ib.le.nb1).and.(jb.eq.nb2)) then
-                do 95 i = 1, 5
+                do i = 1, 5
                     i1=5*(ib-1)+i
                     i2=i1+kompti
-                    do 100 j = 1, 2
+                    do j = 1, 2
                         j1=5*nb1+j
                         j2=j1+komptj
                         rig1(i2,j2)=ktdc(i1,j1)
-100                  end do
-95              end do
+                    end do
+                end do
 !
             else if ((ib.eq.nb2).and.(jb.le.nb1)) then
-                do 85 i = 1, 2
+                do i = 1, 2
                     i1=5*nb1+i
                     i2=i1+kompti
-                    do 90 j = 1, 5
+                    do j = 1, 5
                         j1=5*(jb-1)+j
                         j2=j1+komptj
                         rig1(i2,j2)=ktdc(i1,j1)
-90                  end do
-85              end do
+                    end do
+                end do
 !
             else if ((ib.eq.nb2).and.(jb.eq.nb2)) then
-                do 105 i = 1, 2
+                do i = 1, 2
                     i1=5*nb1+i
                     i2=i1+kompti
-                    do 110 j = 1, 2
+                    do j = 1, 2
                         j1=5*nb1+j
                         j2=j1+komptj
                         rig1(i2,j2)=ktdc(i1,j1)
-110                  end do
-105              end do
+                    end do
+                end do
 !
             endif
 !
-50      end do
+        end do
 !
         if (ib .le. nb1) then
             rig1(6*ib,6*ib)=coef
@@ -157,6 +157,6 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
         endif
 !
         komptj=-1
-40  end do
+    end do
 !
 end subroutine

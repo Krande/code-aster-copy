@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkqbf(qsi, eta, jacob, caraq4, bf)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, jacob(*), caraq4(*), bf(3, 12)
 !     MATRICE B(3,12) AU POINT QSI ETA POUR L'ELEMENT DKQ
 !     ---------------------------------------------------
@@ -128,9 +128,9 @@ subroutine dkqbf(qsi, eta, jacob, caraq4, bf)
     bye(12) = mqsi + eta * mqsi * su8 - qsic * su7
 !
 !     --------------------- CALCUL DE B -------------------------------
-    do 100 i = 1, 12
+    do i = 1, 12
         bf(1,i) = vj11*bxq(i) + vj12*bxe(i)
         bf(2,i) = vj21*byq(i) + vj22*bye(i)
         bf(3,i) = vj11*byq(i) + vj12*bye(i) + vj21*bxq(i) + vj22*bxe( i)
-100  end do
+    end do
 end subroutine

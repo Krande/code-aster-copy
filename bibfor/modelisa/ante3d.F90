@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
                   ksi3)
     implicit none
@@ -101,11 +101,11 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
 ! 1.1    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
-        do 10 i = 1, 4
+        do i = 1, 4
             ksi1 = ksi1 + xbar(i) * xtet(i)
             ksi2 = ksi2 + xbar(i) * ytet(i)
             ksi3 = ksi3 + xbar(i) * ztet(i)
-10      continue
+        end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   CAS D'UN ELEMENT REEL PYRAMIDE
@@ -135,12 +135,12 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
 ! 2.2    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
-        do 20 i = 1, 4
+        do i = 1, 4
             j = isom(i)
             ksi1 = ksi1 + xbar(i) * xpyr(j)
             ksi2 = ksi2 + xbar(i) * ypyr(j)
             ksi3 = ksi3 + xbar(i) * zpyr(j)
-20      continue
+        end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   CAS D'UN ELEMENT REEL PENTAEDRE
@@ -185,12 +185,12 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
 ! 3.2    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
-        do 30 i = 1, 4
+        do i = 1, 4
             j = isom(i)
             ksi1 = ksi1 + xbar(i) * xpen(j)
             ksi2 = ksi2 + xbar(i) * ypen(j)
             ksi3 = ksi3 + xbar(i) * zpen(j)
-30      continue
+        end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   CAS D'UN ELEMENT REEL HEXAEDRE
@@ -260,12 +260,12 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
 ! 4.2    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
-        do 40 i = 1, 4
+        do i = 1, 4
             j = isom(i)
             ksi1 = ksi1 + xbar(i) * xhex(j)
             ksi2 = ksi2 + xbar(i) * yhex(j)
             ksi3 = ksi3 + xbar(i) * zhex(j)
-40      continue
+        end do
 !
     endif
 !

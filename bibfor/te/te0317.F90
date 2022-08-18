@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0317(option, nomte)
 !.......................................................................
     implicit none
@@ -31,11 +31,11 @@ subroutine te0317(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: nomte, option
     real(kind=8) :: poids, nx, ny, norm(2)
     integer :: ipoids, ivf, idfde, igeom
@@ -56,13 +56,13 @@ subroutine te0317(option, nomte)
     if (lteatt('AXIS','OUI')) laxi = .true.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATTTR', 'E', imattt)
-    do 10 i = 1, ndi
+    do i = 1, ndi
         zr(imattt+i-1) = 0.0d0
- 10 end do
+    end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 50 kp = 1, npg
+    do kp = 1, npg
         ldec = (kp-1)*nno
         nx = 0.0d0
         ny = 0.0d0
@@ -76,18 +76,18 @@ subroutine te0317(option, nomte)
 !
         if (laxi) then
             r = 0.d0
-            do 20 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
- 20         continue
+            end do
             poids = poids*r
         endif
 !
-        do 40 i = 1, nno
-            do 30 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 ij = (i-1)*i/2 + j
                 zr(imattt+ij-1) = zr(imattt+ij-1) + poids*norm(2)*zr( ivf+ldec+i-1)* zr(ivf+ldec+&
                                   &j-1)
- 30         continue
- 40     continue
- 50 end do
+            end do
+        end do
+    end do
 end subroutine

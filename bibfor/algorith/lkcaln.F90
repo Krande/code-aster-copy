@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkcaln(s, b, vecn, retcom)
 !
     implicit none
@@ -58,9 +58,9 @@ subroutine lkcaln(s, b, vecn, retcom)
 ! --- CALCUL DE N -------------------------------------------------
 ! =================================================================
     racine = sqrt(b*b + trois)
-    do 10 i = 1, ndt
+    do i = 1, ndt
         vecn(i) = (b*s(i)/sii-kron(i))/racine
-10  end do
+    end do
 ! =================================================================
-1000  continue
+1000 continue
 end subroutine

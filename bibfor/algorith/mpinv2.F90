@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
                   coef, xabs, lfonct, reta, retap,&
                   reta2p)
@@ -118,34 +118,34 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! ===============================
 ! CALCUL DE PHI_TRANSPOSEE * PHI
 ! ===============================
-    do 30 imod = 1, nbmode
-        do 20 jmod = 1, nbmode
+    do imod = 1, nbmode
+        do jmod = 1, nbmode
             zr(lphitp-1 +imod+nbmode*(jmod-1)) = 0.d0
-            do 10 imes = 1, nbmesu
+            do imes = 1, nbmesu
                 zr(lphitp-1 +imod+nbmode*(jmod-1)) = zr(&
                                                      lphitp-1 + imod+nbmode*(jmod-1)) + phi(imes,&
                                                      imod)*phi(imes, jmod&
                                                      )
- 10         continue
- 20     continue
- 30 end do
+            end do
+        end do
+    end do
 !
     if (nbmesu .lt. nbmode) then
 ! ===============================
 ! CALCUL DE PHI * PHI_TRANSPOSEE
 ! ===============================
-        do 40 imes = 1, nbmesu
-            do 50 jmes = 1, nbmesu
+        do imes = 1, nbmesu
+            do jmes = 1, nbmesu
                 zr(lphiph-1 +imes+nbmesu*(jmes-1)) = 0.d0
-                do 60 imod = 1, nbmode
+                do imod = 1, nbmode
                     zr(lphiph-1 +imes+nbmesu*(jmes-1)) = zr(&
                                                          lphiph-1 + imes+nbmesu*(jmes-1)&
                                                          ) + phi(imes,&
                                                          imod)*phi(jmes, imod&
                                                          )
- 60             continue
- 50         continue
- 40     continue
+                end do
+            end do
+        end do
     endif
 !
 ! =======================================
@@ -154,13 +154,13 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 !
 ! DEBUT DE LA BOUCLE SUR LES ABSCISSES
 ! *****************************
-    do 100 iabs = 1, nbabs
+    do iabs = 1, nbabs
 !
         nul = .true.
 !
 ! DEBUT DE LA BOUCLE SUR LES MODES
 ! ********************************
-        do 90 imod = 1, nbmode
+        do imod = 1, nbmode
 !
 ! RECHERCHE DU COEFFICIENT DE PONDERATION
 ! ***************************************
@@ -183,9 +183,9 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! DETERMINATION DE LA MATRICE A INVERSER :
 ! MATSYS(IABS) = PHI_T*PHI + ALPHA(IABS)
 ! ****************************************
-            do 80 jmod = 1, nbmode
+            do jmod = 1, nbmode
                 zr(lmatsy-1 +imod+nbmode*(jmod-1)) = zr( lphitp-1 + imod+nbmode*( jmod-1) )
- 80         continue
+            end do
 !
             zr(lmatsy-1 +imod+nbmode*(imod-1)) = zr( lmatsy-1 +imod+ nbmode*(imod-1 ) ) + alpha
 !
@@ -195,9 +195,9 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! ********************************************************
             zr(lscdmb-1 +imod) = 0.d0
 !
-            do 70 imes = 1, nbmesu
+            do imes = 1, nbmesu
                 zr(lscdmb-1 +imod) = zr(lscdmb-1 +imod) + phi(imes, imod)*rmesu(imes,iabs)
- 70         continue
+            end do
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
                 ibid = iabs-1
@@ -206,7 +206,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 !
 ! FIN DE LA BOUCLE SUR LES MODES
 ! ******************************
- 90     continue
+        end do
 !
 !
 !
@@ -221,20 +221,20 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
             if (regul .eq. 'NON') then
 ! CALCUL MOINDRE NORME
                 call utmess('A', 'ALGORITH15_26')
-                do 82 imes = 1, nbmesu
+                do imes = 1, nbmesu
                     zr(lscdmb-1 +imes) = rmesu(imes,iabs)
-                    do 81 jmes = 1, nbmesu
+                    do jmes = 1, nbmesu
                         zr(lmatsy-1 +imes+nbmode*(jmes-1)) = zr(lphiph-1 +imes+nbmesu*( jmes-1))
- 81                 continue
- 82             continue
+                    end do
+                end do
 !
 ! CHOIX POUR LA METHODE D INVERSION
                 if (method .eq. 'SVD') then
 ! METHODE SVD
 ! CREATION DU VECTEUR SECOND MEMBRE
-                    do 83 jmes = 1, nbmesu
+                    do jmes = 1, nbmesu
                         zr(leta-1 +jmes) = zr(lscdmb-1 +jmes)
- 83                 continue
+                    end do
 !
                     call rslsvd(nbmode, nbmesu, nbmesu, zr(lmatsy), zr( lvals),&
                                 zr(lu), zr(lv), 1, zr(leta), eps,&
@@ -257,11 +257,11 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
                 endif
 !
 ! COPIE DES RESULTATS DANS RETA
-                do 84 jmod = 1, nbmode
-                    do 85 jmes = 1, nbmesu
+                do jmod = 1, nbmode
+                    do jmes = 1, nbmesu
                         reta(jmod,iabs) = zr(leta-1 +jmes)*phi(jmes, jmod)
- 85                 continue
- 84             continue
+                    end do
+                end do
 !
                 goto 100
             endif
@@ -273,9 +273,9 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
         if (method .eq. 'SVD') then
 ! METHODE SVD
 ! CREATION DU VECTEUR SECOND MEMBRE
-            do 71 jmod = 1, nbmode
+            do jmod = 1, nbmode
                 zr(leta-1 +jmod) = zr(lscdmb-1 +jmod)
- 71         continue
+            end do
 !
             call rslsvd(nbmode, nbmode, nbmode, zr(lmatsy), zr(lvals),&
                         zr(lu), zr(lv), 1, zr(leta), eps,&
@@ -299,105 +299,105 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
         endif
 !
 ! COPIE DES RESULTATS DANS RETA
-        do 73 jmod = 1, nbmode
+        do jmod = 1, nbmode
             reta(jmod,iabs) = zr(leta-1 +jmod)
- 73     continue
+        end do
 !
 ! FIN DE LA BOUCLE SUR LES ABSCISSES
 ! ***************************
-100 end do
+100     continue
+    end do
 !
 ! ========================================
 ! CALCUL DE LA VITESSE GENERALISEE : RETAP
 ! ========================================
 !
     ASSERT(nbabs.gt.1)
-    do 200 iabs = 1, nbabs-1
-        do 210 imod = 1, nbmode
+    do iabs = 1, nbabs-1
+        do imod = 1, nbmode
             retap(imod,iabs) = (&
-                               reta(imod,iabs+1) - reta(imod, iabs)) / (xabs(iabs+1) - xabs(i&
-                               &abs)&
+                               reta(imod,iabs+1) - reta(imod, iabs)) / (xabs(iabs+1) - xabs(iabs)&
                                )
-210     continue
-200 end do
-        do 220 imod = 1, nbmode
-            retap(imod,nbabs) = retap(imod,nbabs-1)
-220     continue
-
+        end do
+    end do
+    do imod = 1, nbmode
+        retap(imod,nbabs) = retap(imod,nbabs-1)
+    end do
+!
 !
 ! =============================================
 ! CALCUL DE L'ACCELERATION GENERALISEE : RETA2P
 ! =============================================
 !
-    do 300 iabs = 1, nbabs-1
-        do 310 imod = 1, nbmode
+    do iabs = 1, nbabs-1
+        do imod = 1, nbmode
             reta2p(imod,iabs) = (&
-                                retap(imod,iabs+1) - retap(imod, iabs)) / (xabs(iabs+1) - xab&
-                                &s(iabs)&
+                                retap(imod,iabs+1) - retap(imod, iabs)) / (xabs(iabs+1) - xabs(ia&
+                                &bs)&
                                 )
-310     continue
-300 end do
-    do 320 imod = 1, nbmode
+        end do
+    end do
+    do imod = 1, nbmode
         reta2p(imod,nbabs) = reta2p(imod,nbabs-1)
-320 continue
-
+    end do
+!
 !
     if (nomcha .eq. 'VITE') then
-        do 101 iabs = 1, nbabs
-            do 102 imod = 1, nbmode
+        do iabs = 1, nbabs
+            do imod = 1, nbmode
                 retap(imod,iabs) = reta(imod,iabs)
-102         continue
-101     continue
-        do 103 iabs = 1, nbabs-1
-            do 104 imod = 1, nbmode
+            end do
+        end do
+        do iabs = 1, nbabs-1
+            do imod = 1, nbmode
                 reta2p(imod,iabs) = (&
-                                    retap(imod,iabs+1)-retap( imod,iabs)) / (xabs(iabs+1) - x&
-                                    &abs(iabs)&
+                                    retap(imod,iabs+1)-retap( imod,iabs)) / (xabs(iabs+1) - xabs(&
+                                    &iabs)&
                                     )
-104         continue
-103     continue
-        do 105 imod = 1, nbmode
+            end do
+        end do
+        do imod = 1, nbmode
             reta2p(imod,nbabs) = reta2p(imod,nbabs-1)
-105     continue
-
+        end do
+!
 ! ON FAIT L HYPOTHESE QUE LE DEPLACEMENT INITIAL EST NUL
-        do 106 imod = 1, nbmode
+        do imod = 1, nbmode
             reta(imod,1) = 0.d0
-106     continue
-        do 107 iabs = 2, nbabs
-            do 108 imod = 1, nbmode
+        end do
+        do iabs = 2, nbabs
+            do imod = 1, nbmode
                 reta(imod,iabs) = retap(imod,iabs)*(xabs(iabs)-xabs( iabs-1)) + reta(imod,(iabs-1&
                                   &))
-108         continue
-107     continue
+            end do
+        end do
     endif
 !
     if (nomcha .eq. 'ACCE') then
-        do 201 iabs = 1, nbabs
-            do 202 imod = 1, nbmode
+        do iabs = 1, nbabs
+            do imod = 1, nbmode
                 reta2p(imod,iabs) = reta(imod,iabs)
-202         continue
-201     continue
+            end do
+        end do
 ! ON FAIT L HYPOTHESE QUE VITESSE INITIALE EST NULLE
-        do 203 imod = 1, nbmode
+        do imod = 1, nbmode
             retap(imod,1) = 0.d0
-203     continue
-        do 204 iabs = 2, nbabs
-            do 205 imod = 1, nbmode
+        end do
+        do iabs = 2, nbabs
+            do imod = 1, nbmode
                 retap(imod,iabs)=reta2p(imod,iabs)*(xabs(iabs)-xabs(&
                 iabs-1)) + retap(imod,(iabs-1))
-205         continue
-204     continue
+            end do
+        end do
 ! ON FAIT L HYPOTHESE QUE DEPLACEMENT INITIAL EST NUL
-        do 206 imod = 1, nbmode
+        do imod = 1, nbmode
             reta(imod,1) = 0.d0
-206     continue
-        do 207 iabs = 2, nbabs
-            do 208 imod = 1, nbmode
+        end do
+        do iabs = 2, nbabs
+            do imod = 1, nbmode
                 reta(imod,iabs) = retap(imod,iabs)*(xabs(iabs)-xabs( iabs-1)) + reta(imod,(iabs-1&
                                   &))
-208         continue
-207     continue
+            end do
+        end do
     endif
 !
 ! DESTRUCTION DES VECTEURS DE TRAVAIL

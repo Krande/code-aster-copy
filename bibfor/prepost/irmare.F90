@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irmare(ifc, ndim, nno, coordo, nbma,&
                   connex, point, noma, typma, typel,&
                   lmod, titre, nbtitr, nbgrn, nbgrm,&
@@ -84,9 +84,9 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     format = formar
     fmt='(1X,A8,1X,'//format//',1X,'//format//',1X,'//format//')'
     write (ifc,*)      'TITRE'
-    do 10 it = 1, nbtitr
+    do it = 1, nbtitr
         write (ifc,'(A)') titre(it)
- 10 end do
+    end do
     write (ifc,*)      'FINSF'
     write (ifc,*)      '%'
 !
@@ -102,16 +102,16 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     else
         call utmess('F', 'PREPOST2_77')
     endif
-    do 1 ino = 1, nno
+    do ino = 1, nno
         write (ifc,fmt) nonoe(ino),(coordo(3*(ino-1)+j),j=1,ndim)
-  1 end do
+    end do
 !
 !
 !     ECRITURE DES MAILLES
 !     ---------------------
     itypp = 0
     ifin = 0
-    do 21 ima = 1, nbma
+    do ima = 1, nbma
         itype = typma(ima)
         ipoin=point(ima)
         nnoe=point(ima+1)-ipoin
@@ -136,10 +136,10 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
             write(ifc,1003) nomai(ima),(nonoe(connex(ipoin-1+i)),i=1,&
             7)
             ico = 8
-            do 12 i = 2, nbfois
+            do i = 2, nbfois
                 write(ifc,1004) (nonoe(connex(ipoin-1+k)),k=ico,ico+6)
                 ico=ico+7
- 12         continue
+            end do
             if (nbrest .ne. 0) then
                 write(ifc,1004) (nonoe(connex(ipoin-1+i)),i=ico,nnoe)
             endif
@@ -147,7 +147,8 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
             write(ifc,1003) nomai(ima), (nonoe(connex(ipoin-1+i)),i=1,&
             nnoe)
         endif
- 21 continue
+ 21     continue
+    end do
     if (ifin .eq. 1) then
         write(ifc,*) 'FINSF'
         write(ifc,*) '%'
@@ -156,7 +157,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
 !
 !     ECRITURE DES GROUPES DE NOEUDS
 !     -------------------------------
-    do 752 ign = 1, nbgrn
+    do ign = 1, nbgrn
         call jenuno(jexnum(noma//'.GROUPENO', ign), nomgr)
         call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
         write(ifc,*) 'GROUP_NO'
@@ -167,12 +168,12 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
         endif
         write(ifc,*) 'FINSF'
         write(ifc,*) '%'
-752 end do
+    end do
 !
 !
 !     ECRITURE DES GROUPES DE MAILLES
 !     --------------------------------
-    do 754 igm = 1, nbgrm
+    do igm = 1, nbgrm
         call jenuno(jexnum(noma//'.GROUPEMA', igm), nomgr)
         call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
         write(ifc,*) 'GROUP_MA'
@@ -181,13 +182,14 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
             call jeveuo(jexnum(noma//'.GROUPEMA', igm), 'L', iagrma)
             call wkvect('&&IRMARE.NOMAI', 'V V K8', max(nbm, 1), jmai)
             ipo = 0
-            do 756 jm = 1, nbm
+            do jm = 1, nbm
                 if (lmod) then
                     if (typel(zi(iagrma-1+jm)) .eq. 0) goto 756
                 endif
                 zk8(jmai-1+ipo+1)= nomai(zi(iagrma-1+jm))
                 ipo=ipo+1
-756         continue
+756             continue
+            end do
             if (ipo .ne. 0) then
                 write(ifc,'(7(1X,A8))') (zk8(jmai-1+jm),jm=1,ipo)
             endif
@@ -195,7 +197,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
         endif
         write(ifc,*) 'FINSF'
         write(ifc,*) '%'
-754 end do
+    end do
 !
 !
     write(ifc,*) 'FIN'

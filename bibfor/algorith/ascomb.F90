@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
                   cnchar)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8dgrd.h"
@@ -100,7 +100,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
     if (typres .eq. 'R') then
         call wkvect('&&ASCOMB.COEF', 'V V R8', nbvec, jcoef)
         call wkvect('&&ASCOMB.TYPE', 'V V K8', nbvec, jtype)
-        do 10 ivec = 1, nbvec
+        do ivec = 1, nbvec
 !
 ! ------- NOM DU CHAMNO
 !
@@ -138,7 +138,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 !
             zr(jcoef+ivec-1) = valres
             zk8(jtype+ivec-1) = 'R'
-10      continue
+        end do
     endif
 !
 ! --- CALCUL DES COEFFICIENTS - CAS COMPLEXE
@@ -148,7 +148,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
         call wkvect('&&ASCOMB.COEF', 'V V R8', 2*nbvec, jcoef)
         call wkvect('&&ASCOMB.TYPE', 'V V K8', nbvec, jtype)
         ivecc = 0
-        do 20 ivec = 1, nbvec
+        do ivec = 1, nbvec
 !
 ! ------- NOM DU CHAMNO
 !
@@ -210,7 +210,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
             ivecc = ivecc + 1
             zr(jcoef+ivecc-1) = valim*dble(calpha)+valre*dimag(calpha)
 !
-20      continue
+        end do
     endif
 !
 ! --- COMBINAISON LINEAIRE DES CHAM_NO

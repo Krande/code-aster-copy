@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0109(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -102,16 +102,16 @@ subroutine te0109(option, nomte)
         call utmess('F', 'ELEMENTS3_18', sk=phenom)
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         va1a2(i) = zr(igeom+i+2) - zr(igeom+i-1)
-10  end do
+    end do
     na1a2 = sqrt(va1a2(1)**2+va1a2(2)**2+va1a2(3)**2)
-    do 15 i = 1, 3
+    do i = 1, 3
         va1a2(i) = va1a2(i)/na1a2
-15  end do
+    end do
 !
     x1 = zr(igeom)
     y1 = zr(igeom+1)
@@ -126,9 +126,9 @@ subroutine te0109(option, nomte)
     pvec1(2) = (z2-z1)* (x3-x1) - (z3-z1)* (x2-x1)
     pvec1(3) = (x2-x1)* (y3-y1) - (x3-x1)* (y2-y1)
     npvec1 = sqrt(pvec1(1)**2+pvec1(2)**2+pvec1(3)**2)
-    do 20 i = 1, 3
+    do i = 1, 3
         pvec1(i) = pvec1(i)/npvec1
-20  end do
+    end do
 !
     pvec2(1) = (pvec1(2)*va1a2(3)-pvec1(3)*va1a2(2))
     pvec2(2) = (pvec1(3)*va1a2(1)-pvec1(1)*va1a2(3))
@@ -136,7 +136,7 @@ subroutine te0109(option, nomte)
 !
     call cq3d2d(nno, zr(igeom), 1.d0, 0.d0, coor2d)
 !
-    do 25 nivc = -1, 1
+    do nivc = -1, 1
 !
         if (nivc .lt. 0) then
             px3 = ord - ep/2.d0
@@ -149,7 +149,7 @@ subroutine te0109(option, nomte)
             cdec = 0
         endif
 !
-        do 30 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
@@ -163,7 +163,7 @@ subroutine te0109(option, nomte)
             ti = 0.d0
             ts = 0.d0
 !
-            do 35 i = 1, nno
+            do i = 1, nno
                 dtmdx = dtmdx + zr(itempe+3*i-3)*dfdx(i)
                 dtmdy = dtmdy + zr(itempe+3*i-3)*dfdy(i)
                 dtidx = dtidx + zr(itempe+3*i-2)*dfdx(i)
@@ -173,7 +173,7 @@ subroutine te0109(option, nomte)
                 tm = tm + zr(itempe+3*i-3)*zr(ivf+k+i-1)
                 ti = ti + zr(itempe+3*i-2)*zr(ivf+k+i-1)
                 ts = ts + zr(itempe+3*i-1)*zr(ivf+k+i-1)
-35          continue
+            end do
             fac1 = (1.d0- (px3/h)**2)
             fac2 = -px3* (1.d0-px3/h)/ (2.d0*h)
             fac3 = px3* (1.d0+px3/h)/ (2.d0*h)
@@ -189,8 +189,8 @@ subroutine te0109(option, nomte)
             zr(iflupg+(kp-1)*nbcmp-1+cdec+2) = fx*va1a2(2) + fy*pvec2( 2) + fz*pvec1(2)
             zr(iflupg+(kp-1)*nbcmp-1+cdec+3) = fx*va1a2(3) + fy*pvec2( 3) + fz*pvec1(3)
 !
-30      continue
+        end do
 !
-25  end do
+    end do
 !
 end subroutine

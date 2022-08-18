@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0471(option, nomte)
 !
     implicit none
@@ -79,12 +79,13 @@ subroutine te0471(option, nomte)
     nno1 = zi(icarac )
     nno2 = zi(icarac+1)
     n = 1
-    do 1 i = 1, 2
-        do 1 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             n = n+1
             npg1(i,j) = zi(icarac+n)
             npg2(i,j) = zi(icarac+n+4)
- 1      continue
+        end do
+    end do
     call jevete(ff, 'L', iff)
     npg = npg1(1,1) * npg1(1,1) * npg1(1,2)
     ipoids = iff
@@ -211,29 +212,35 @@ subroutine te0471(option, nomte)
 !     ------------------------------------------
 !     --- INITIALISATION A ZERO DE A, B ET C ---
 !     ------------------------------------------
-    do 50 j = 1, nno1
-        do 50 i = 1, nno1
-            do 50 l = 1, nddl
-                do 50 k = 1, nddl
+    do j = 1, nno1
+        do i = 1, nno1
+            do l = 1, nddl
+                do k = 1, nddl
                     a(k,l,i,j) = 0.d0
-50              continue
+                end do
+            end do
+        end do
+    end do
 ! --- LES MATRICES B ET C NE SONT UTILISEES QUE POUR DES MAILLES HEXA20
-    do 60 j = 1, nno1
-        do 60 i = nno1+1, nno2
-            do 60 l = 1, nddl
+    do j = 1, nno1
+        do i = nno1+1, nno2
+            do l = 1, nddl
                 b(1,l,i,j) = 0.d0
-60          continue
-    do 70 j = nno1+1, nno2
-        do 70 i = nno1+1, 20
+            end do
+        end do
+    end do
+    do j = nno1+1, nno2
+        do i = nno1+1, 20
             c(1,1,i,j) = 0.d0
-70      continue
+        end do
+    end do
 !     ---------------------------------------------------
 !     --- CALCUL DE LA MATRICE ELEMENTAIRE DE RAIDEUR ---
 !     ---------------------------------------------------
 !     --- FLEXION ---
 !     ---------------
     npg = npg1(1,2) * npg1(1,1) * npg1(1,1)
-    do 100 kp = 1, npg
+    do kp = 1, npg
 !
         k1 = (kp-1) * 2 * nno1
         k2 = (kp-1) * nno1
@@ -247,81 +254,81 @@ subroutine te0471(option, nomte)
                     zr( idsxz2+k2), zr(idsyz2+k2), dsdxx, dsdyy, dsdzz,&
                     dsdxy, dsdyz, dsdxz, poids)
 !
-        do 105 j = 1, nno1
+        do j = 1, nno1
             d2fdpl(j) = dsdxx(j)
             d2frot(j) = dsdxx(j+nno1) * xlong
-105      continue
+        end do
 !
         xk(1) = poids
         xk(2) =-poids
 !
-        do 120 i = 1, nno1
-            do 130 j = 1, i
-                do 140 k = 1, 2
+        do i = 1, nno1
+            do j = 1, i
+                do k = 1, 2
                     a(k+1,k+1,i,j) = a(k+1,k+1,i,j) + raid(k) * poids * d2fdpl(i) * d2fdpl(j)
                     a(7-k,k+1,i,j) = a(7-k,k+1,i,j) + raid(k) * xk(k) * d2frot(i) * d2fdpl(j)
                     a(k+1,7-k,i,j) = a(k+1,7-k,i,j) + raid(k) * xk(k) * d2fdpl(i) * d2frot(j)
                     a(7-k,7-k,i,j) = a(7-k,7-k,i,j) + raid(k) * poids * d2frot(i) * d2frot(j)
-140              continue
-130          continue
-120      continue
-100  end do
+                end do
+            end do
+        end do
+    end do
 !     ---------------------------------------------
 !     ---- TRACTION ET COMPRESSION ET TORSION -----
 !     ---------------------------------------------
     npg = npg2(1,1) * npg2(1,1) * npg2(1,2)
-    do 200 kp = 1, npg
+    do kp = 1, npg
         k1 = (kp-1) * nno1
 ! --- CALCUL DES FONCTIONS DE FORME ET DE LEURS DERIVEES
         call dpfch3(nno1, nno1, zr(ipoi3+kp-1), zr(idpdx4+k1), zr( idpdy4+k1),&
                     zr(idpdz4+k1), coord(1), zr(idpdx4+k1), zr(idpdy4+ k1), zr(idpdz4+k1),&
                     dfpdx2, dfpdy2, dfpdz2, poids2)
 !
-        do 210 i = 1, nno1
-            do 220 j = 1, i
+        do i = 1, nno1
+            do j = 1, i
                 a(1,1,i,j) = a(1,1,i,j) + poids2 * ( raid(3) * dfpdx2( i) * dfpdx2(j) )
 !
                 a(4,4,i,j) = a(4,4,i,j) + poids2 * ( rtor * dfpdx2(i) * dfpdx2(j) )
-220          continue
-210      continue
-200  continue
+            end do
+        end do
+    end do
 !     -------------------------------------------------
 !     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL  ---
 !     -------------------------------------------------
-    do 600 i = 1, nno1
-        do 610 j = 1, i
+    do i = 1, nno1
+        do j = 1, i
             call chmalg(a(1, 1, i, j), pgl, nddl, nddl)
-610      continue
-600  end do
+        end do
+    end do
 ! ---------------------------------------------------------------------
 ! --- PASSAGE DE LA MATRICE RECTANGULAIRE A LA MATRICE TRIANGULAIRE ---
 ! ---------------------------------------------------------------------
-    do 400 k = 1, nddl
-        do 410 l = 1, nddl
+    do k = 1, nddl
+        do l = 1, nddl
 !   IL Y A ECRASEMENT SI ON INTERVERTIE L'ORDRE DES BOUCLES 400 ET 410
-            do 420 i = 1, nno1
+            do i = 1, nno1
                 ik = ((i-1)*nddl+k-1) * ((i-1)*nddl+k) / 2
-                do 430 j = 1, i
+                do j = 1, i
                     ijkl = ik + (j-1)*nddl + l
                     zr(imatuu+ijkl-1) = a(k,l,i,j)
-430              continue
-420          continue
-410      continue
-400  end do
+                end do
+            end do
+        end do
+    end do
 !   BOUCLE EXECUTEE QUE POUR DES MAILLES HEXA20
     imatuu = imatuu + (nddl*nno1)*(nddl*nno1 + 1) / 2
-    do 500 i = nno1+1, nno2
+    do i = nno1+1, nno2
         ij = (i-nno1-1)*nddl*nno1 + (i-nno1-1)*(i-nno1)/2
-        do 510 j = 1, nno1
+        do j = 1, nno1
             ijl = ij + (j-1)*nddl
-            do 520 l = 1, nddl
+            do l = 1, nddl
                 zr(imatuu + ijl + (l-1)) = b(1,l,i,j)
-520          continue
-510      continue
+            end do
+        end do
         ijl = ij + nno1 * nddl
-        do 530 j = nno1+1, i
+        do j = nno1+1, i
             zr(imatuu + ijl + (j-nno1-1)) = c(1,1,i,j)
-530      continue
-500  end do
+        end do
+    end do
 !----------------------------------------------------------------------
 end subroutine

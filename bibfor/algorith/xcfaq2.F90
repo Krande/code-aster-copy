@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
-                  nmaabs, pinter, ainter, nface,&
-                  nptf, cface, nbtot, nfiss, ifiss)
+                  nmaabs, pinter, ainter, nface, nptf,&
+                  cface, nbtot, nfiss, ifiss)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
-#include "asterfort/trigom.h"
 #include "asterfort/abscvf.h"
 #include "asterfort/abscvl.h"
 #include "asterfort/assert.h"
@@ -37,6 +35,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xcfacf.h"
 #include "asterfort/xintar.h"
@@ -44,6 +43,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/xmilfi.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
+!
     integer :: jgrlsn, igeom, nface, cface(30, 6), jlsn, jlst
     integer :: nfiss, ifiss, nptf, nbtot, nmaabs
     real(kind=8) :: pinter(*), ainter(*)
@@ -116,13 +116,13 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     nbtot = 0
     cut=.false.
     i=1
- 1  continue
+  1 continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
     if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
-        do 30 k = i+1, nno
+        do k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
             if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut=.true.
-30      continue
+        end do
     else if (i.lt.nno) then
         i=i+1
         goto 1
@@ -138,14 +138,15 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !     ON NE PREND QUE CERTAINS ELEMENTS POUR NE PAS AVOIR DE "DOUBLONS"
     arete = .false.
     lsnabs = 0.d0
-    if(.not.cut) then
-       call conare(typma, ar, nbar)
-       do i = 1, nbar
-           lsnabs = abs(zr(jlsn-1+(ar(i,1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i,2)-1)*nfiss+ifiss))
-           if (lsnabs.le.cridist*lonref) arete = .true.
-       end do
-       if (.not.arete) goto 999
-       if (arete.and.minlsn.ge.0.d0) goto 999
+    if (.not.cut) then
+        call conare(typma, ar, nbar)
+        do i = 1, nbar
+            lsnabs = abs(&
+                     zr(jlsn-1+(ar(i,1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i,2)-1)*nfiss+ifiss))
+            if (lsnabs .le. cridist*lonref) arete = .true.
+        end do
+        if (.not.arete) goto 999
+        if (arete .and. minlsn .ge. 0.d0) goto 999
     endif
     ipt=0
 !     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMET
@@ -157,7 +158,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     call conare(typma, ar, nbar)
 !
 !     BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
-    do 100 ia = 1, nbar
+    do ia = 1, nbar
 !
 !       NUM NO DE L'ELEMENT
         na=ar(ia,1)
@@ -169,11 +170,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
         lsta=zr(jlst-1+na)
         lstb=zr(jlst-1+nb)
         lstm=zr(jlst-1+nm)
-        do 110 i = 1, ndim
+        do i = 1, ndim
             a(i)=zr(igeom-1+ndim*(na-1)+i)
             b(i)=zr(igeom-1+ndim*(nb-1)+i)
             m(i)=zr(igeom-1+ndim*(nm-1)+i)
-110     continue
+        end do
         if (ndim .lt. 3) then
             a(3)=0.d0
             b(3)=0.d0
@@ -236,11 +237,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                             m, ndim, c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
-                do 307 i = 1, ndim
+                do i = 1, ndim
                     tabar(i)=b(i)
                     tabar(ndim+i)=a(i)
                     tabar(2*ndim+i)=m(i)
-307             continue
+                end do
 !          CALCUL DES FF DU SE3 (REEREF N'ACCEPTE PAS NDIM=2 & NNO=3)
                 call abscvl(ndim, tabar, c, sc)
                 call xinvac(elp, ndim, tabar, sc, ksic)
@@ -262,7 +263,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !
         endif
 !
-100 continue
+    end do
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
     call xcfacf(pinter, ptmax, ipt, ainter, zr(jlsn),&
@@ -273,9 +274,9 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     nbtot=ninter+inm
 !
     if (cut .and. ninter .eq. 2 .and. inm .ne. 1) then
-        do 20 j = 1, 3
+        do j = 1, 3
             n(j)=0
- 20     continue
+        end do
 ! LE NEWTON NE PEUT PAS CONVERGER QUAND NDIM=3
 ! IL NOUS MANQUE L INFORMATION SUR LA FACE DE L ELT PARENT
 ! TRANSPORTEE PAS N(3)
@@ -284,11 +285,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
         call xmilfi(elp, n, ndim, nno, pinter,&
                     ndim, igeom, jlsn, 1, 2,&
                     milfi)
-        do 10 j = 1, ndim
+        do j = 1, ndim
             coor2d(j)=pinter(j)
             coor2d(ndim+j)=pinter(ndim+j)
             coor2d(2*ndim+j)=milfi(j)
- 10     continue
+        end do
         ksi=0.d0
         call abscvf(ndim, coor2d, ksi, smilfi)
 !       ON AJOUTE A LA LISTE LE POINT MILFI
@@ -305,40 +306,40 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !     CAS 2D
     if (ndim .eq. 2) then
 !
-        do 800 i = 1, 30
-            do 801 j = 1, 6
+        do i = 1, 30
+            do j = 1, 6
                 cface(i,j)=0
-801         continue
-800     continue
+            end do
+        end do
         if (ninter .eq. 2) then
 !         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
             nd(:) = 0.d0
-            do 810 i = 1, nno
-                do 811 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     nd(j)=nd(j)+zr(jgrlsn-1+2*(i-1)+j)/nno
-811             continue
-810         continue
+                end do
+            end do
 !
-            do 841 j = 1, 2
+            do j = 1, 2
                 a(j)=pinter(j)
                 b(j)=pinter(2+j)
                 ab(j)=b(j)-a(j)
-841         continue
+            end do
 !
             abprim(1)=-ab(2)
             abprim(2)=ab(1)
 !
             if (ddot(2,abprim,1,nd,1) .lt. 0.d0) then
-                do 852 k = 1, 2
+                do k = 1, 2
                     tampor(k)=pinter(k)
                     pinter(k)=pinter(2+k)
                     pinter(2+k)=tampor(k)
-852             continue
-                do 853 k = 1, 4
+                end do
+                do k = 1, 4
                     tampor(k)=ainter(k)
                     ainter(k)=ainter(zxain+k)
                     ainter(zxain+k)=tampor(k)
-853             continue
+                end do
             endif
             nface=1
             nptf=3

@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
                   vim, vp, vecp, dsidep)
-    implicit      none
+    implicit none
 #include "asterc/r8pi.h"
 #include "asterfort/hbderi.h"
 #include "asterfort/hbmata.h"
@@ -85,9 +85,9 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
     seqf=ddot(ndt,sf,1,sf,1)
     sigeqe = sqrt(trois*seqf/deux)+trois*mu*dg/(etap+un)
     i1e = trace(ndi,sigp)+9.0d0*k*etap*dg/(etap+un)
-    do 10 ii = 1, ndt
+    do ii = 1, ndt
         se(ii) = sf(ii)/(1.0d0-3.0d0*mu*dg/((etap+un)*sigeqe))
-10  end do
+    end do
 ! ======================================================================
 ! --- CALCUL DE LA MATRICE TANGENTE ------------------------------------
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nodoub(nbl, nbb, nol, nob, typl,&
                   typb, mailla, double)
 !    P. RICHARD     DATE 16/07/90
@@ -50,11 +50,11 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
 !-----------------------------------------------------------------------
 !
 !
-    if (nbl .eq. 0 .or. nbb .eq. 0) goto 9999
+    if (nbl .eq. 0 .or. nbb .eq. 0) goto 999
 !
     double = .false.
     jf = 1
-    do 10 i = 1, nbl
+    do i = 1, nbl
         jf = jf - 1
         lcou = nol(i)
         lp = 0
@@ -78,9 +78,10 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
 !
         endif
 !
- 10 end do
+ 10     continue
+    end do
 !
-    goto 9999
+    goto 999
 !
-9999 continue
+999 continue
 end subroutine

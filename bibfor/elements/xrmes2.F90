@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
                   jsigse, nno, nbcmp, jcnset, dsg11,&
                   dsg22, dsg12)
@@ -78,7 +78,7 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
     inx=zi(jcnset-1+(ndim+1)*(cpt-1)+in)
     insux=zi(jcnset-1+(ndim+1)*(cpt-1)+insui)
 !
-    do 100 j = 1, nno
+    do j = 1, nno
         inxv=zi(jcnset-1+(ndim+1)*(ivois-1)+j)
         if (inxv .eq. inx) then
             inv=j
@@ -86,7 +86,7 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
         if (inxv .eq. insux) then
             invsui=j
         endif
-100  end do
+    end do
 !
 ! --- LE CAS QUADRATIQUE N'EST PAS PRÉVU CAR LES ELEMENTS SOUS DECOUPE
 ! --- SONT TOUJOURS LINEAIRE !
@@ -117,10 +117,10 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
 !
 ! --- CALCUL DU SAUT DE CONTRAINTES
 !
-    do 200 k = 1, nbnase
+    do k = 1, nbnase
         dsg11(k)=sig11(k)-sigv11(k)
         dsg22(k)=sig22(k)-sigv22(k)
         dsg12(k)=sig12(k)-sigv12(k)
-200  end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0272(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -45,8 +45,8 @@ subroutine te0272(option, nomte)
     integer :: itemps, ivectt, k, i, iflu
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
@@ -54,16 +54,16 @@ subroutine te0272(option, nomte)
     call jevech('PVECTTR', 'E', ivectt)
 !
     theta = zr(itemps+2)
-    do 30 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         z = 0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
             z = z + zr(igeom+2*i-1)*zr(ivf+k+i-1)
-10      continue
+        end do
         poids = poids*r
         valpar(1) = r
         nompar(1) = 'X'
@@ -77,8 +77,8 @@ subroutine te0272(option, nomte)
         call fointe('FM', zk8(iflu), 3, nompar, valpar,&
                     flun, icode)
         flux = theta*flunp1 + (1.0d0-theta)*flun
-        do 20 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(ivf+k+i-1)* flux
-20      continue
-30  end do
+        end do
+    end do
 end subroutine

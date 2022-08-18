@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefrot(ndim, som, vit0, promas, provis,&
                   z, ru, rint, re, cp,&
                   cf, dh, vit, rho, visc,&
@@ -23,7 +23,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
                   axg, xig, afluid, pm, cfg,&
                   vitg, rhog, viscg)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8pi.h"
@@ -124,12 +124,12 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !
 ! --- PROFIL DE MASSE VOLUMIQUE ET DE VISCOSITE AUX POINTS DE
 ! --- DISCRETISATION
-    do 10 i = 1, nbz
+    do i = 1, nbz
         call fointe('F ', promas, 1, nompar, z(i),&
                     rho(i), ier)
         call fointe('F ', provis, 1, nompar, z(i),&
                     visc(i), ier)
-10  end do
+    end do
 !
 ! --- CALCUL DE LA MASSE VOLUMIQUE DE REFERENCE
     rho0 = rho(1)
@@ -137,9 +137,9 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !
 ! --- PROFIL DE VITESSE AUX POINTS DE DISCRETISATION
 !
-    do 30 i = 1, nbz
+    do i = 1, nbz
         vit(i) = rho0 * vit0 / rho(i)
-30  end do
+    end do
     vit(0) = vit0
 !
 !
@@ -149,10 +149,10 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
     a = 0.d0
     b = 0.d0
 !
-    do 40 i = 1, nbcyl
+    do i = 1, nbcyl
         a = a+rint(i)*rint(i)
         b = b+rint(i)
-40  end do
+    end do
 !
 ! --- ENCEINTE CIRCULAIRE
     if (iencei .eq. 1) then
@@ -168,10 +168,10 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 ! --- ENCEINTE RECTANGULAIRE
     else if (iencei.eq.2) then
 !
-        do 50 i = 1, 4
+        do i = 1, 4
             xsom(i) = som(2*i-1)
             ysom(i) = som(2*i)
-50      continue
+        end do
 !
         x12 = xsom(2)-xsom(1)
         y12 = ysom(2)-ysom(1)
@@ -194,7 +194,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
         dh = 100.d0
     endif
 !
-    do 60 i = 1, nbz
+    do i = 1, nbz
 !
 ! --- CALCUL DU NOMBRE DE REYNOLDS BASE SUR LE DIAMETRE
 ! --- HYDRAULIQUE DH ET LA VITESSE AXIALE DU FLUIDE
@@ -252,7 +252,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
             cf(i) = 0.d0
             cp(i) = 0.d0
         endif
-60  end do
+    end do
 !
 !
 !     ----------------------------------------------
@@ -262,8 +262,8 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !
     if (ntypg .ne. 0) then
 !
-        do 18 i = 2, nbz
-            do 19 j = 1, nbgtot
+        do i = 2, nbz
+            do j = 1, nbgtot
                 ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
 !
                 if (ecart .le. 0.d0) then
@@ -278,69 +278,69 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
                     viscg(j)=( visc(i-1)*(z(i)-zg(j))+ visc(i)*(zg(j)-&
                     z(i-1)) )/ (z(i)-z(i-1))
                 endif
-19          continue
-18      continue
+            end do
+        end do
 !
 !     ---------------------------------------------------------
 !     CALCUL DU PROFIL AXIAL DE VITESSE AU NIVEAU DES GRILLES
 !     (CONSERVATION DU DEBIT MASSIQUE)
 !     ---------------------------------------------------------
 !
-        do 15 j = 1, nbgtot
+        do j = 1, nbgtot
             vitg(j)=0.d0
-15      continue
+        end do
 !
         nbplaq=2*(sqrt(dble(nbcyl))+1)
-        do 85 k = 1, ntypg
+        do k = 1, ntypg
             axg(k)=nbplaq*tg(k)*dg(k)-(0.5d0*nbplaq*tg(k))* (0.5d0*&
             nbplaq*tg(k))
             xig(k)=4*dg(k)+sqrt(dble(nbcyl))*4* (dg(k)-0.5d0*nbplaq*&
             tg(k))
-85      continue
+        end do
 !
-        do 11 j = 1, nbgtot
-            do 84 k = 1, ntypg
+        do j = 1, nbgtot
+            do k = 1, ntypg
                 if (itypg(j) .eq. k) then
                     vitg(j)=1.d0/(1.d0-(axg(k)/afluid))* (1.d0/rhog(j)&
                     )*rho0*vit0
                 endif
-84          continue
-11      continue
+            end do
+        end do
 !
 !     ------------------------------------------------------------------
 !     CALCUL DU PROFIL DU NOMBRE DE REYNOLDS STATIONNAIRE
 !     AU NIVEAU DES GRILLES
 !     ------------------------------------------------------------------
 !
-        do 86 k = 1, ntypg
+        do k = 1, ntypg
             zr(idhg+k-1)=4.d0*(afluid-axg(k))/(pm+xig(k))
-86      continue
+        end do
 !
-        do 81 i = 2, nbz
-            do 82 j = 1, nbgtot
+        do i = 2, nbz
+            do j = 1, nbgtot
                 ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
 !
                 if (ecart .le. 0.d0) then
-                    do 87 k = 1, ntypg
+                    do k = 1, ntypg
                         if (itypg(j) .eq. k) then
                             zr(ireg+j-1)=zr(idhg+k-1)*abs(vitg(j))/&
                             viscg(j)
                         endif
-87                  continue
+                    end do
                 endif
-82          continue
-81      continue
+            end do
+        end do
 !
 !     ----------------------------------------------------------------
 !     CALCUL DU PROFIL DU COEFFICIENT DE FROTTEMENT CFG
 !     AU NIVEAU DES GRILLES
 !     ----------------------------------------------------------------
 !
-        do 13 j = 1, nbgtot
+        do j = 1, nbgtot
             cfg(j)=0.d0
-13      continue
+        end do
 !
-        do 14 j = 1, nbgtot
+        do j = 1, nbgtot
 !
             if (vitg(j) .ne. 0.d0) then
 !
@@ -362,12 +362,12 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !     DES GRILLES
 !     ------------------------------------------------------------------
 !
-                do 89 k = 1, ntypg
+                do k = 1, ntypg
                     if (itypg(j) .eq. k) then
                         relim1=23.d0*zr(idhg+k-1)/rugg(k)
                         relim2=560.d0*zr(idhg+k-1)/rugg(k)
                     endif
-89              continue
+                end do
 !
 !              ----------------------------
 !              REGIME HYDRAULIQUEMENT LISSE
@@ -399,7 +399,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
                 cfg(j)=0.d0
             endif
 !
-14      continue
+        end do
 !
     endif
 !

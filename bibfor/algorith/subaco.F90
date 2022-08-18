@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine subaco(nno, dff, geom, cova)
 !
     implicit none
@@ -37,19 +37,19 @@ subroutine subaco(nno, dff, geom, cova)
     real(kind=8) :: norme
 !
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         cova(i,1) = 0.d0
         cova(i,2) = 0.d0
-10  end do
+    end do
 !
 !
 !    CALCUL DES VECTEURS TANGENTS
-    do 20 n = 1, nno
-        do 25 i = 1, 3
+    do n = 1, nno
+        do i = 1, 3
             cova(i,1) = cova(i,1) + dff(1,n)*geom(i,n)
             cova(i,2) = cova(i,2) + dff(2,n)*geom(i,n)
-25      continue
-20  end do
+        end do
+    end do
 !
 !
 !    CALCUL DE LA NORMALE (PRODUIT VECTORIEL DES VECTEURS TANGENTS)

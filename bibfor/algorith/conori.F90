@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine conori(ma)
 !
 !  ROUTINE CONORI
@@ -142,12 +142,12 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DES NOMS DES GROUP_MA DANS .MAIL
 !     ------------------------------------------------------------------
-        do 10 igma = 1, nbgma
+        do igma = 1, nbgma
             call jenuno(jexnum(ma//'.GROUPEMA', igma), kbid)
             if (niv .eq. 2) then
                 write (ifm,*)'   GROUP_MA     : ',kbid
             endif
- 10     continue
+        end do
         write (ifm,*)' '
 !     ------------------------------------------------------------------
 !     CREATION D UN TABLEAU DE TRAVAIL
@@ -162,9 +162,9 @@ subroutine conori(ma)
             write (ifm,*)' '
             write (ifm,*)' LA LISTE DES ORIE_FISSURE'
             write (ifm,*)' '
-            do 20 igco = 1, nbgco
+            do igco = 1, nbgco
                 write (ifm,*)'   ORIE_FISSURE: ',zk24(io8gco+igco-1)
- 20         continue
+            end do
             write (ifm,*)' '
         endif
 !     ------------------------------------------------------------------
@@ -188,7 +188,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES GROUPE_MA_FISSURE
 !     ------------------------------------------------------------------
-        do 90 igco = 1, nbgco
+        do igco = 1, nbgco
 !     ------------------------------------------------------------------
 !     RECHERCHE D EXISTENCE DU GROUP_MA_FISSURE CONSIDERE
 !     ------------------------------------------------------------------
@@ -226,7 +226,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU GROUP_MA
 !     ------------------------------------------------------------------
-                do 80 imag = 1, nbmag
+                do imag = 1, nbmag
                     imac=zi(imigma+imag-1)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
@@ -261,21 +261,21 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                    do 30 icoc = 1, nbcoc
+                    do icoc = 1, nbcoc
                         inoc=zi(imicoc+icoc-1)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DU NOEUD
 !     ------------------------------------------------------------------
                         call jenuno(jexnum(ma//'.NOMNOE', inoc), knoc)
                         macoc(icoc+2)=knoc
- 30                 continue
+                    end do
 !
 !     ------------------------------------------------------------------
 !     SAUVEGARDE DE LA MAILLE DE FISSURE
 !     ------------------------------------------------------------------
-                    do 40 idum = 1, nbcoc+2
+                    do idum = 1, nbcoc+2
                         macos(idum)=macoc(idum)
- 40                 continue
+                    end do
 !     ==================================================================
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
@@ -283,7 +283,7 @@ subroutine conori(ma)
                     lomodi=.false.
                     loreor=.false.
                     nbmac=0
-                    do 60 imarc = 1, nbmarc
+                    do imarc = 1, nbmarc
                         imar=zi(imaz-1+imarc)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
@@ -308,14 +308,14 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                        do 50 icor = 1, nbcor
+                        do icor = 1, nbcor
                             inor=zi(imicor+icor-1)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DU NOEUD
 !     ------------------------------------------------------------------
                             call jenuno(jexnum(ma//'.NOMNOE', inor), knor)
                             macor(icor+2)=knor
- 50                     continue
+                        end do
 !     ==================================================================
 !     ------------------------------------------------------------------
 !     APPEL DE CONTAC
@@ -368,7 +368,7 @@ subroutine conori(ma)
                         endif
 !
 !     ==================================================================
- 60                 continue
+                    end do
                     if (nbmac .eq. 0) then
                         call utmess('F', 'ALGORITH2_30')
                     endif
@@ -390,7 +390,7 @@ subroutine conori(ma)
                             write (ifm,*)' '
                         endif
 !
-                        do 70 icoc = 1, nbcoc
+                        do icoc = 1, nbcoc
                             knoc=macoc(icoc+2)
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ORDRE DU NOEUD
@@ -400,15 +400,15 @@ subroutine conori(ma)
 !     MODIFICATION DE L ORIENTATION DE LA MAILLE
 !     ------------------------------------------------------------------
                             zi(imicoc+icoc-1)=inoc
- 70                     continue
+                        end do
                     endif
 !     ==================================================================
 !
- 80             continue
+                end do
 !     ------------------------------------------------------------------
             endif
 !     ------------------------------------------------------------------
- 90     continue
+        end do
 !
     endif
 !     ------------------------------------------------------------------

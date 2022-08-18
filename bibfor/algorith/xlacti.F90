@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xlacti(typma, ninter, jaint, lact, nlact)
 !
     implicit none
@@ -56,16 +56,16 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
 !
 ! --- INITIALISATIONS
 !
-    do 30 ino = 1, 8
+    do ino = 1, 8
         lact(ino) = 0
         vit(ino) = 0
-30  end do
+    end do
     nlact = 0
     call conare(typma, ar, nbar)
     zxain=xxmmvd('ZXAIN')
 !
 ! --- ON ACTIVE LES NOEUDS CONNECTES AUX POINTS D'INTERSECTION
-    do 10 nli = 1, ninter
+    do nli = 1, ninter
         iar=int(zr(jaint-1+zxain*(nli-1)+1))
         ino=int(zr(jaint-1+zxain*(nli-1)+2))
         nvit=int(zr(jaint-1+zxain*(nli-1)+5))
@@ -84,10 +84,10 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
                 if (vit(ino2) .eq. 0) lact(ino2)=nli
             endif
         endif
-10  end do
+    end do
 ! --- ON COMPTE LE NOMBRE DE NOEUDS ACTIFS
-    do 20 ino = 1, 8
+    do ino = 1, 8
         if (lact(ino) .ne. 0) nlact=nlact+1
-20  end do
+    end do
 !
 end subroutine

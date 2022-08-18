@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine digouj(option, rela_comp, nno, nbt, neq,&
                   nc, icodma, dul, sim, varim,&
                   pgl, klv, klc, varip, fono,&
@@ -123,12 +123,12 @@ subroutine digouj(option, rela_comp, nno, nbt, neq,&
     dp=0.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
-        do 100 i = 1, nc
+        do i = 1, nc
             sip(i) = -dfl(i) + sim(i)
             sip(i+nc) = dfl(i+nc) + sim(i+nc)
             fl(i) = dfl(i) - sim(i)
             fl(i+nc) = dfl(i+nc) + sim(i+nc)
-100     continue
+        end do
 !
         if (rela_comp .eq. 'DIS_GOUJ2E_ELAS') then
             sip(2 ) = sigel

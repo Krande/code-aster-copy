@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine peenca(champ, long, vr, nbmail, nummai)
     implicit none
 #include "jeveux.h"
@@ -52,7 +52,7 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, icoef, idecgr, iel, im, inum
-    integer :: j,   k,   nbgr
+    integer :: j, k, nbgr
     integer :: nel
     character(len=24), pointer :: celk(:) => null()
     real(kind=8), pointer :: celv(:) => null()
@@ -83,16 +83,16 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
     if (scal(1:1) .eq. 'R') then
-        do 12 i = 1, long
+        do i = 1, long
             vr(i) = rzero
-12      continue
+        end do
     else
         call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
 !
     call jeveuo(champ2//'.CELV', 'L', vr=celv)
     if (nbmail .le. 0) then
-        do 30 j = 1, nbgr
+        do j = 1, nbgr
             mode=celd(celd(4+j) +2)
             if (mode .eq. 0) goto 30
             longt = digdel(mode)
@@ -100,18 +100,19 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
             longt = longt * icoef
             nel = nbelem(ligrel,j)
             idecgr=celd(celd(4+j)+8)
-            do 32 k = 1, nel
+            do k = 1, nel
 !
 !              --- TOTALE ---
                 i = 1
                 ztot = celv(idecgr+(k-1)*longt+i-1)
                 vr(1) = vr(1)+ ztot
-32          continue
-30      continue
+            end do
+ 30         continue
+        end do
         vr(2) = 100.0d0
     else
         ztot = rzero
-        do 34 j = 1, nbgr
+        do j = 1, nbgr
             mode=celd(celd(4+j) +2)
             if (mode .eq. 0) goto 34
             longt = digdel(mode)
@@ -119,14 +120,15 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
             longt = longt * icoef
             nel = nbelem(ligrel,j)
             idecgr=celd(celd(4+j)+8)
-            do 36 k = 1, nel
+            do k = 1, nel
                 ztot = ztot + celv(idecgr+(k-1)*longt)
-36          continue
-34      continue
+            end do
+ 34         continue
+        end do
         call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
-        do 40 im = 1, nbmail
+        do im = 1, nbmail
             inum = 0
-            do 42 j = 1, nbgr
+            do j = 1, nbgr
                 mode=celd(celd(4+j) +2)
                 nel = nbelem(ligrel,j)
 !
@@ -139,7 +141,7 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
                 longt = longt * icoef
 !
                 idecgr=celd(celd(4+j)+8)
-                do 44 k = 1, nel
+                do k = 1, nel
                     iel = liel(1+inum+k-1)
                     if (iel .ne. nummai(im)) goto 44
 !
@@ -147,10 +149,13 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
                     i = 1
                     vr(1) = vr(1)+ celv(idecgr+(k-1)*longt+i-1)
                     goto 40
-44              continue
+ 44                 continue
+                end do
                 inum = inum + nel + 1
-42          continue
-40      continue
+ 42             continue
+            end do
+ 40         continue
+        end do
         if (( vr(1).lt.r8prem() ) .and. ( ztot.lt.r8prem() )) then
             vr(2) = 0.0d0
         else

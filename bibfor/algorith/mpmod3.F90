@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                   vnoeud, vrange, vorien, nnoema, ncmpma)
 !
@@ -129,7 +129,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 !     CALCUL DE NNOEMA ET NCMPMA
 !
-    do 150 ich = 1, nbcham
+    do ich = 1, nbcham
         nomcha = zk16(lch-1 +ich)
         call rsexch('F', nommes, nomcha, zi(lord), chamno,&
                     iret)
@@ -143,7 +143,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         nnoema = nnoema + nbnoeu
         ncmpma = ncmpma + nbcmp
 !
-150 end do
+    end do
 !
 ! ORDRE DE RANGEMENT MESURE SELON VRANGE ET VNOEUD
     vnoeud = nomres//'.PROJM    .PJMNO'
@@ -160,7 +160,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 ! BOUCLE SUR LES CHAMPS MESURES
 !
-    do 151 ich = 1, nbcham
+    do ich = 1, nbcham
         nomcha = zk16(lch-1 +ich)
         call rsexch('F', nommes, nomcha, zi(lord), chamno,&
                     iret)
@@ -201,16 +201,16 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                 licmp(7) = 'D3X'
                 licmp(8) = 'D3Y'
                 licmp(9) = 'D3Z'
-                do 120 ino = 1, nbnoeu
-                    do 130 icmp = 1, nbcmp
+                do ino = 1, nbnoeu
+                    do icmp = 1, nbcmp
                         indice = (ino-1)*nbcmp+icmp
                         orien = .false.
                         if (zl(jcnsl-1 + indice)) then
-                            do 140 ii = 1, 9
+                            do ii = 1, 9
                                 if (zk8(jcnsc-1 +icmp) .eq. licmp(ii)) then
                                     orien = .true.
                                 endif
-140                         continue
+                            end do
 ! ON NE TRAITE PAS NON PLUS LES DRX DRY DRZ
                             if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DR') then
                                 orien = .true.
@@ -221,7 +221,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                 zk16(lcham-1 +nbmesu) = nomcha
                                 if (zk8(jcnsc-1 +icmp) .eq. 'D1') then
                                     zk8(lrange-1 +nbmesu) = 'D1'
-                                    do 141 ii = 1, nbcmp
+                                    do ii = 1, nbcmp
                                         if (zcmplx) then
                                             val = dble( zc(jcnsv-1 +(ino-1) *nbcmp+ii ) )
                                         else
@@ -239,11 +239,11 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             zr(lori-1 +(nbmesu-1)*3+3) =&
                                         val
                                         endif
-141                                 continue
+                                    end do
                                 endif
                                 if (zk8(jcnsc-1 +icmp) .eq. 'D2') then
                                     zk8(lrange-1 +nbmesu) = 'D2'
-                                    do 142 ii = 1, nbcmp
+                                    do ii = 1, nbcmp
                                         if (zcmplx) then
                                             val = dble( zc(jcnsv-1 +(ino-1) *nbcmp+ii ) )
                                         else
@@ -261,11 +261,11 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             zr(lori-1 +(nbmesu-1)*3+3) =&
                                         val
                                         endif
-142                                 continue
+                                    end do
                                 endif
                                 if (zk8(jcnsc-1 +icmp) .eq. 'D3') then
                                     zk8(lrange-1 +nbmesu) = 'D3'
-                                    do 143 ii = 1, nbcmp
+                                    do ii = 1, nbcmp
                                         if (zcmplx) then
                                             val = dble( zc(jcnsv-1 +(ino-1) *nbcmp+ii ) )
                                         else
@@ -283,7 +283,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             zr(lori-1 +(nbmesu-1)*3+3) =&
                                         val
                                         endif
-143                                 continue
+                                    end do
                                 endif
 !
                                 if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DX') then
@@ -315,21 +315,21 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                 endif
                             endif
                         endif
-130                 continue
-120             continue
+                    end do
+                end do
             else if (typres(1:9).eq.'MODE_GENE') then
 !  SI RESULTAT DE TYPE MODE_GENE ON SUPPOSE QUE L'ORIENTATION
 !  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 55
 !  BOUCLE SUR LES NUMEROS D ORDRE POUR RECUPERATION DES DDL MESURE
-                do 200 imode = 1, nbord
+                do imode = 1, nbord
                     call rsexch('F', nommes, nomcha, zi(lord-1+imode), chamno,&
                                 iret)
                     call cnocns(chamno, 'V', chs)
                     call jeveuo(chs//'.CNSC', 'L', jcnsc)
                     call jeveuo(chs//'.CNSV', 'L', jcnsv)
                     call jeveuo(chs//'.CNSL', 'L', jcnsl)
-                    do 221 ino = 1, nbnoeu
-                        do 231 icmp = 1, nbcmp
+                    do ino = 1, nbnoeu
+                        do icmp = 1, nbcmp
                             indice = (ino-1)*nbcmp+icmp
                             if (zl(jcnsl-1 + indice)) then
                                 dcapt = .false.
@@ -347,7 +347,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                         compms = zk8(jcnsc-1 +icmp)
                                         dcapt = .true.
                                     endif
-                                    do 210 imesu = 1, nbmesu
+                                    do imesu = 1, nbmesu
                                         inocap = zi(lnoeud-1 +imesu)
                                         chacap = zk16(lcham-1 +imesu)
                                         comcap = zk8(lrange-1 +imesu)
@@ -355,7 +355,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                             .and. (inocap .eq. inomes)) then
                                             dcapt = .false.
                                         endif
-210                                 continue
+                                    end do
                                     if (dcapt) then
                                         nbmesu = nbmesu+1
                                         zi(lnoeud-1 +nbmesu) = ino
@@ -365,11 +365,11 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                                     endif
                                 endif
                             endif
-231                     continue
-221                 continue
-200             continue
+                        end do
+                    end do
+                end do
 !
-                do 121 imesu = 1, nbmesu
+                do imesu = 1, nbmesu
                     if (zk8(lrange-1 +imesu) .eq. 'DX') then
                         zr(lori-1 +(imesu-1)*3+1) = 1.0d0
                         zr(lori-1 +(imesu-1)*3+2) = 0.0d0
@@ -385,13 +385,13 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                         zr(lori-1 +(imesu-1)*3+2) = 0.0d0
                         zr(lori-1 +(imesu-1)*3+3) = 1.0d0
                     endif
-121             continue
+                end do
             endif
         endif
 !
         if (nomgd(1:4) .eq. 'SIEF' .or. nomgd(1:4) .eq. 'EPSI') then
-            do 220 ino = 1, nbnoeu
-                do 230 icmp = 1, nbcmp
+            do ino = 1, nbnoeu
+                do icmp = 1, nbcmp
                     indice = (ino-1)*nbcmp+icmp
                     if (zl(jcnsl-1 + indice)) then
                         nbmesu = nbmesu+1
@@ -399,8 +399,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                         zk16(lcham-1 +nbmesu) = nomcha
                         zk8(lrange-1 +nbmesu) = zk8(jcnsc-1 +icmp)
                     endif
-230             continue
-220         continue
+                end do
+            end do
         endif
 !
         call jeveuo(basemo//'           .ORDR', 'L', lord)
@@ -409,7 +409,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         ch2s='&&PJEFPR.CH2S'
 !
 ! FIN BOUCLE SUR LES NOMCHA
-151 end do
+    end do
 !
     call getvid('MODELE_MESURE', 'MODELE', iocc=1, scal=modmes, nbret=ibid)
 !

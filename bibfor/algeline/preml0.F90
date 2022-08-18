@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine preml0(n1, n2, diag, col, delg,&
                   prno, deeq, nec, p, q,&
                   lbd1, lbd2, rl, rl1, rl2,&
@@ -43,19 +43,19 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !
 !---------------------------------------------INITIALISATIONS
     diag(0) = 0
-    do 10 i = 1, n1
+    do i = 1, n1
         p(i) = 0
         lbd1(i) = 0
         lbd2(i) = 0
         q(i) = 0
         rl1(i) = 0
         rl2(i) = 0
- 10 end do
+    end do
 !---------------------------------------------CALCUL DE ADJNC1
     lmat = diag(n1)
     n2 = 0
     nrl = 0
-    do 30 iddl = 1, n1
+    do iddl = 1, n1
         if (delg(iddl) .eq. 0) then
             n2 = n2 + 1
             p(iddl) = n2
@@ -107,13 +107,13 @@ subroutine preml0(n1, n2, diag, col, delg,&
                 endif
             endif
         endif
- 30 end do
+    end do
 !     CALCUL DE LA TAILLE DE LA LISTE
     lt = 0
-    do 40 i = 1, nrl
+    do i = 1, nrl
         i2 = rl(2,i)
         lt = lt + (diag(i2)-diag(i2-1))
- 40 end do
+    end do
 !     ON MAJORE LT POUR LES PETITS CAS-TESTS
     if (lt .le. 10) then
         lt = lt**2
@@ -123,7 +123,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !
 !     VERIFICATION DES CONNEXIONS DES LAGRANGES
     if (nivdbg) then
-        do 80 i = 1, n1
+        do i = 1, n1
             li = lbd1(i)
             if (li .ne. 0) then
                 idiai1 = diag(li-1) + 1
@@ -134,15 +134,15 @@ subroutine preml0(n1, n2, diag, col, delg,&
                     write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA2: ',lbd2(i)
                     write(ifm,*)'LE LAMBDA1 ',lbd1(i),&
      &               ' A POUR VOISIN INATTENDUS '
-                    do 50 j = idiai1, idiai - 1
+                    do j = idiai1, idiai - 1
                         write(ifm,*) 'LE DDL ', col(j)
                         iconne = iconne + 1
- 50                 continue
+                    end do
                 endif
-                do 70 ii = li + 1, n1
+                do ii = li + 1, n1
                     idiai1 = diag(ii-1) + 1
                     idiai = diag(ii)
-                    do 60 j = idiai1, idiai
+                    do j = idiai1, idiai
                         if (col(j) .eq. li) then
                             if (ii .ne. i .and. ii .ne. lbd2(i)) then
                                 write(ifm,*)'LE DDL BLOQUE: ',i,&
@@ -154,11 +154,11 @@ subroutine preml0(n1, n2, diag, col, delg,&
                                 iconne = iconne + 1
                             endif
                         endif
- 60                 continue
+                    end do
 !
- 70             continue
+                end do
             endif
- 80     end do
+        end do
         if (iconne .gt. 0) then
             call utmess('A', 'ALGELINE5_53')
             write(ifm,*) 2*iconne ,' TERMES SUPPLEMENTAIRES DANS'&
@@ -168,7 +168,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !
     if (niv .eq. 2) then
         ier = 0
-        do 90 i = 1, n1
+        do i = 1, n1
             if (lbd1(i) .ne. 0) then
 !            WRITE (IFM,*) 'LE DDL BLOQUE: ',I,' A POUR LAMBDA1: ',
 !     &        LBD1(I)
@@ -185,6 +185,6 @@ subroutine preml0(n1, n2, diag, col, delg,&
                 call utmess('F', 'ALGELINE5_34', ni=3, vali=vali)
             endif
 !
- 90     continue
+        end do
     endif
 end subroutine

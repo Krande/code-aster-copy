@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
                   npte, nummae, ifac, xp, yp,&
                   coord)
@@ -72,20 +72,20 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
 ! --- RECUPERATION DES NUM LOCAUX DES PTS D'INTER DE LA FACETTE
 !
     coor(:) = 0.d0
-    do 10 i = 1, npte
+    do i = 1, npte
         numpi(i)=0
-10  end do
+    end do
     coord(:) = 0.d0
 !
-    do 20 i = 1, npte
+    do i = 1, npte
         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                     ifiss, (ifac-1)* ndim+i, iad)
         ASSERT(iad.gt.0)
         numpi(i) = zi(jcesv(4)-1+iad)
-20  end do
-    do 30 i = 1, ndim
+    end do
+    do i = 1, ndim
 ! --- BOUCLE SUR LES DIMENSIONS
-        do 40 j = 1, npte
+        do j = 1, npte
 ! --- BOUCLE SUR LES POINTS D'INTERSECTIONS
 ! --- RECUPERATION DE LA COMPOSANTE LOCALE I DE CHACUN DES POINTS
 ! --- D'INTERSECTIONS J DE LA FACETTE
@@ -93,7 +93,7 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
                         ifiss, ndim*( numpi(j)-1)+i, iad)
             ASSERT(iad.gt.0)
             coor(j) = zr(jcesv(3)-1+iad)
-40      continue
+        end do
 ! --- CALCUL DE LA COMPOSANTE I POUR LE POINT DE CONTACT DANS LA
 ! --- MAILLE PARENTE
         if (ndim .eq. 2) then
@@ -105,7 +105,7 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
         else if (ndim.eq.3) then
             coord(i) = coor(1)*(1-xp-yp) + coor(2)*xp + coor(3)*yp
         endif
-30  end do
+    end do
 !
     call jedema()
 end subroutine

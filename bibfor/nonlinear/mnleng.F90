@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
                   nd, nchoc, h, nbpt, xeng)
     implicit none
@@ -49,22 +49,22 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/ddot.h"
-#include "blas/dscal.h"
+#include "asterc/r8pi.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
-#include "asterc/r8pi.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     integer :: imat(2), ind, ninc, nd, h, nbpt, nchoc
     character(len=14) :: xcdl, parcho, xus, xeng
     real(kind=8) :: e
@@ -74,8 +74,8 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     real(kind=8) :: pi
     real(kind=8) :: omega, alpha, jeu, rayon, origx, origy, ratio
     integer :: ix, iy, idy, imdy, iky
-    integer :: ius, ieng, k, icdl, neq,     i
-    integer ::   ireg,    nddl, nddlx, nddly
+    integer :: ius, ieng, k, icdl, neq, i
+    integer :: ireg, nddl, nddlx, nddly
     real(kind=8), pointer :: dye(:) => null()
     real(kind=8), pointer :: kye(:) => null()
     real(kind=8), pointer :: mdye(:) => null()
@@ -115,7 +115,7 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     AS_ALLOCATE(vr=dye, size=neq)
     AS_ALLOCATE(vr=kye, size=neq)
     AS_ALLOCATE(vr=mdye, size=neq)
-    do 100 ind = 1, nbpt-1
+    do ind = 1, nbpt-1
         call dscal(nd*(2*h+1), 0.d0, zr(ix), 1)
         call dscal(nd, 0.d0, zr(iy), 1)
         call dscal(nd, 0.d0, zr(idy), 1)
@@ -131,14 +131,18 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         pi=r8pi()
         call dcopy(nd, zr(ix), 1, zr(iy), 1)
         ratio=4.d0
-        do 10 k = 1, h
+        do k = 1, h
 ! ---     COS
-            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy),1)
-            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy),1)
+            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy),&
+                       1)
+            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy),&
+                       1)
 ! ---     SIN
-            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy),1)
-            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy),1)
-10      continue
+            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy),&
+                       1)
+            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy),&
+                       1)
+        end do
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE K*Y ET M*DY
 ! ----------------------------------------------------------------------
@@ -147,13 +151,13 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         call dscal(nd, 0.d0, kye, 1)
         call dscal(nd, 0.d0, mdye, 1)
         i=0
-        do 20 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 ye(k)=zr(iy-1+i)
                 dye(k)=zr(idy-1+i)
             endif
-20      continue
+        end do
         call mrmult('ZERO', imat(1), ye, kye, 1,&
                     .false._1)
         call mrmult('ZERO', imat(2), dye, mdye, 1,&
@@ -161,43 +165,43 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         call dscal(nd, 0.d0, zr(iky), 1)
         call dscal(nd, 0.d0, zr(imdy), 1)
         i=0
-        do 30 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 zr(iky-1+i)=kye(k)
                 zr(imdy-1+i)=mdye(k)
             endif
-30      continue
+        end do
         e=ddot(nd, zr(iy),1,zr(iky),1)/2
         e=e+ddot(nd,zr(idy),1,zr(imdy),1)/2
-        do 40 k=1,nchoc
+        do k = 1, nchoc
             alpha=raid(k)
             jeu=vjeu(k)
-            if(type(k)(1:4).eq.'PLAN') then
+            if (type(k)(1:4) .eq. 'PLAN') then
                 nddl=vnddl(6*(k-1)+1)
-                if(zr(iy-1+nddl).gt.jeu) then
+                if (zr(iy-1+nddl) .gt. jeu) then
                     e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
                 endif
-            else if(type(k)(1:7).eq.'BI_PLAN') then
+            else if (type(k)(1:7).eq.'BI_PLAN') then
                 nddl=vnddl(6*(k-1)+1)
-                if(zr(iy-1+nddl).gt.jeu) then
+                if (zr(iy-1+nddl) .gt. jeu) then
                     e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
-                else if(zr(iy-1+nddl).lt.(-1.d0*jeu)) then
+                else if (zr(iy-1+nddl).lt.(-1.d0*jeu)) then
                     e=e+0.5*alpha*(zr(iy-1+nddl)+jeu)**2
                 endif
-            else if(type(k)(1:6).eq.'CERCLE') then
+            else if (type(k)(1:6).eq.'CERCLE') then
                 nddlx=vnddl(6*(k-1)+1)
                 nddly=vnddl(6*(k-1)+2)
                 origx=orig(3*(k-1)+1)
                 origy=orig(3*(k-1)+2)
                 rayon=sqrt((zr(iy-1+nddlx)-origx)**2+(zr(iy-1+nddly)-origy)**2)
-                if(rayon.gt.jeu) then
+                if (rayon .gt. jeu) then
                     e=e+alpha*(rayon-jeu)**2
                 endif
             endif
-40      continue
+        end do
         zr(ieng-1+ind)=e
-100  continue
+    end do
 !
     call jedetr('&&MNLENG.X')
     call jedetr('&&MNLENG.Y')
@@ -209,7 +213,7 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     AS_DEALLOCATE(vr=dye)
     AS_DEALLOCATE(vr=kye)
     AS_DEALLOCATE(vr=mdye)
-
+!
     call jedema()
 !
 end subroutine

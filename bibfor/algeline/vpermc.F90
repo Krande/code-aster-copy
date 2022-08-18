@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
                   am, excl, omecor, ernorm)
     implicit none
@@ -70,12 +70,12 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
 !      CALL WKVECT('&&VPERMC.TAMPON.PROV_3' ,'V V C',NEQ,IAUX3)
     call wkvect('&&VPERMC.TYPEDDL      ', 'V V I', neq, iaux4)
 !
-    do 1 i = 1, nbprop
+    do i = 1, nbprop
 !
         ivec=(i-1)*neq+1
-        do 10 j = 0, neq-1
+        do j = 0, neq-1
             vecp(ivec+j) = vecp(ivec+j) * excl(j+1)
-10      continue
+        end do
 !
         ami = am(i)
         fri = fr(i)
@@ -90,17 +90,17 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
             call mcmult('ZERO', lmasse, vecp(ivec), zc(iaux2), 1,&
                         .false._1)
 !
-            do 2 j = 0, neq-1
+            do j = 0, neq-1
                 zc(iaux2+j)=zc(iaux1+j)-freq2*zc(iaux2+j)
- 2          continue
+            end do
 !
 !           --- ON PREND LA NORME EUCLIDIENNE ---
             anorm1 = dcmplx(0.d0,0.d0)
             anorm2 = dcmplx(0.d0,0.d0)
-            do 3 j = 0, neq-1
+            do j = 0, neq-1
                 anorm1 = anorm1 + (dconjg(zc(iaux1+j))*zc(iaux1+j))* excl(j+1)
                 anorm2 = anorm2 + (dconjg(zc(iaux2+j))*zc(iaux2+j))* excl(j+1)
- 3          continue
+            end do
             if (abs(freq2) .gt. xseuil) then
                 if (anorm1 .ne. dcmplx(0.d0,0.d0)) then
                     ernorm(i)= sqrt( abs(anorm2 / anorm1) )
@@ -112,7 +112,7 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
             endif
 !
         endif
- 1  end do
+    end do
 !
     call jedetr('&&VPERMC.TAMP.PROV_1')
     call jedetr('&&VPERMC.TAMP.PROV_2')

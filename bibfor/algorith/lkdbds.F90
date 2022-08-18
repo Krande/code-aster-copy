@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
                   vint, para, val, dbetds, dbetdi)
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE DE N PAR RAPPORT A SIGMA
 !     IN  VAL    : ENTIER PRECISANT DILATANCE EN PRE(0) OU POST-PIC(1)
@@ -148,7 +148,7 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
     call lkdhds(nmat, mater, i1, devsig, dhds,&
                 iret)
 ! --- CALCUL DE D(SIGMAX)/D(DEVSIG) ET D(SIGMIN)/D(DEVSIG)
-    do 10 i = 1, ndt
+    do i = 1, ndt
         dsmids(i) = tiers*(&
                     sqrt(troisd)*sii/(h0c-h0ext)*dhds(i) *coefh-(troisd-(deux*htheta-h0c-h0ext)/(&
                     &deux *(h0c-h0ext)))* sqrt(troisd)*devsig(i)/sii&
@@ -158,23 +158,23 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
                     sqrt(troisd)*sii/(h0c-h0ext)*dhds(i) *coefh+(troisd+(deux*htheta-h0c-h0ext)/ &
                     &(deux*(h0c-h0ext)))* sqrt(troisd)*devsig(i)/sii&
                     )
-10  end do
+    end do
 !
     if (val .eq. 0) then
-        do 20 i = 1, ndt
+        do i = 1, ndt
             dsinds(i) = mu0v*(&
                         (&
                         siglim*(un+xi0v))/(xi0v*sigmax+ siglim)**2*dsmads(i)-dsmids(i)*(un+mvmax)&
                         & *(un+xi0v)* sigmax/ (xi0v*sigmax+siglim&
                         )**2&
                         )
-20      continue
+        end do
 !
     else if (val.eq.1) then
-        do 30 i = 1, ndt
+        do i = 1, ndt
             dsinds(i) = mu1*(un+xi1)/(xi1*alpha+alres)**2* ((-alres*( sigmax+sigtil)/(sigmin+sigt&
                         &il)**2) *dsmids(i)+(alres/( sigmin+sigtil))*dsmads(i))
-30      continue
+        end do
     endif
 !
 ! =================================================================

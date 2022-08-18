@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdmine(kp, nno, pjacob, en, grani,&
                   alfnmk, delnmk, pas, rot0, rotm,&
                   rotkm1, rotk, rmkm1, rmk, omgkm,&
@@ -77,11 +77,11 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
     call promat(rotk, 3, 3, 3, rot0,&
                 3, 3, 3, rotabs)
 !
-    do 2 j = 1, 3
-        do 1 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat2(i,j) = grani(i) * rotabs(j,i)
- 1      end do
- 2  end do
+        end do
+    end do
     call promat(rotabs, 3, 3, 3, amat2,&
                 3, 3, 3, iro)
     call promat(iro, 3, 3, 3, omgk,&
@@ -91,20 +91,20 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
     call antisy(omgk, un, amat2)
     call promat(amat2, 3, 3, 3, iro,&
                 3, 3, 3, omtiro)
-    do 7 j = 1, 3
-        do 6 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat5(i,j) = -iroomt(i,j) + omtiro(i,j)
             amat1(i,j) = (iro(i,j) + delnmk*pas*amat5(i,j)) /alfnmk/ pas/pas
- 6      end do
- 7  end do
+        end do
+    end do
 !
-    do 12 j = 1, 3
-        do 11 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             rotmt(i,j) = rotm(j,i)
             rotkmt(i,j) = rotkm1(j,i)
-11      end do
+        end do
         vect1(j) = rmk(j) - rmkm1(j)
-12  end do
+    end do
 !
     call promat(rotmt, 3, 3, 3, vect1,&
                 3, 3, 1, vect2)
@@ -119,11 +119,11 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
     call promat(rotk, 3, 3, 3, amat4,&
                 3, 3, 3, amat3)
 !
-    do 17 j = 1, 3
-        do 16 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat2(i,j) = amat2(i,j) + amat3(i,j)
-16      end do
-17  end do
+        end do
+    end do
 !
     call promat(amat1, 3, 3, 3, amat2,&
                 3, 3, 3, amat3)
@@ -150,52 +150,52 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
     call antisy(ompgk, un, amat5)
     call promat(iro, 3, 3, 3, amat5,&
                 3, 3, 3, amat6)
-    do 19 j = 1, 3
-        do 18 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat4(i,j) = -amat4(i,j) + amat6(i,j)
-18      end do
-19  end do
+        end do
+    end do
     call antisy(omgk, un, amat5)
     call promat(amat5, 3, 3, 3, iroomt,&
                 3, 3, 3, amat6)
     call promat(omtiro, 3, 3, 3, amat5,&
                 3, 3, 3, amat7)
-    do 21 j = 1, 3
-        do 20 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat5(i,j) = -amat6(i,j) + amat7(i,j)
-20      end do
-21  end do
+        end do
+    end do
 !CC
-    do 32 j = 1, 6
-        do 31 i = 1, 6
+    do j = 1, 6
+        do i = 1, 6
             inert(i,j) = zero
-31      end do
-32  end do
+        end do
+    end do
 !
 !* ON CALCULE CE QU'APPORTE LA MATRICE DE MASSE A LA PARTIE ROTATOIRE,
 !* POUR LE RETRANCHER ICI.
-    do 37 j = 1, 3
-        do 36 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat6(i,j) = grani(i) * rot0(j,i)
-36      end do
-37  end do
+        end do
+    end do
     call promat(rot0, 3, 3, 3, amat6,&
                 3, 3, 3, amat7)
 !
     coef = un/alfnmk/pas/pas
-    do 47 j = 1, 3
-        do 46 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             inert(3+i,3+j) = amat3(i,j) + amat1(i,j) + amat2(i,j) + amat4(i,j) + amat5(i,j) - coe&
                              &f*amat7(i,j)
 !C    INERT(3+I,3+J) = COEF * ( AMAT3(I,J) + AMAT1(I,J) + AMAT2(I,J) +
 !C   &                          AMAT4(I,J) + AMAT5(I,J) - AMAT7(I,J) )
 !    &                          AMAT4(I,J) + AMAT5(I,J)              )
-46      end do
-47  end do
-    do 52 j = 1, nno
-        do 51 i = 1, nno
+        end do
+    end do
+    do j = 1, nno
+        do i = 1, nno
             coef = pjacob * en(i,kp) * en(j,kp)
             call cumuma(i, j, inert, coef, rigi)
-51      end do
-52  end do
+        end do
+    end do
 end subroutine

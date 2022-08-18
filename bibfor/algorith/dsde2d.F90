@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dsde2d(ndim, f, dsde, d)
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -38,18 +38,18 @@ subroutine dsde2d(ndim, f, dsde, d)
 !
     nmax=2*ndim
 !
-    do 100 mn = 1, nmax
-        do 200 op = 1, nmax
+    do mn = 1, nmax
+        do op = 1, nmax
             d(mn,op) = 0.d0
-            do 300 ij = 1, nmax
-                do 400 kl = 1, nmax
+            do ij = 1, nmax
+                do kl = 1, nmax
                     f1 = f(indi(mn),indi(ij))*f(indj(mn),indj(ij))
                     f2 = f(indi(op),indi(kl))*f(indj(op),indj(kl))
                     f3 = f(indi(mn),indj(ij))*f(indj(mn),indi(ij))
                     f4 = f(indi(op),indj(kl))*f(indj(op),indi(kl))
                     d(mn,op) = d(mn,op) +(f1+f3)*(f2+f4)*dsde(ij,kl)* rind(ij)*rind(kl)
-400              continue
-300          continue
-200      continue
-100  end do
+                end do
+            end do
+        end do
+    end do
 end subroutine

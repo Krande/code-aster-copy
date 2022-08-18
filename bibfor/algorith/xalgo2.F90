@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xalgo2(ndim, elrefp, it, nnose,&
-                  cnset, typma, ndime, geom, lsnelp,&
-                  pmilie, ninter, ainter, ar, npts,&
-                  nptm, pmmax, nmilie, mfis, lonref,&
-                  pinref, pintt, pmitt, jonc, exit)
+!
+subroutine xalgo2(ndim, elrefp, it, nnose, cnset,&
+                  typma, ndime, geom, lsnelp, pmilie,&
+                  ninter, ainter, ar, npts, nptm,&
+                  pmmax, nmilie, mfis, lonref, pinref,&
+                  pintt, pmitt, jonc, exit)
     implicit none
 !
 #include "asterf_types.h"
@@ -28,9 +28,9 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
 #include "asterfort/assert.h"
 #include "asterfort/detefa.h"
 #include "asterfort/xajpmi.h"
+#include "asterfort/xmifis.h"
 #include "asterfort/xmilar.h"
 #include "asterfort/xmilfa.h"
-#include "asterfort/xmifis.h"
 #include "asterfort/xstudo.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
@@ -88,13 +88,13 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
 !
     pmilie(1:51) = 0.d0
 !
-    do 204 i = 1, 4
+    do i = 1, 4
         ip1(i)=0
         ip2(i)=0
         pm1a(i)=0
         pm1b(i)=0
         pm2(i)=0
-204 continue
+    end do
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
@@ -103,19 +103,19 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
     if (ninter .eq. 2 .and. npts .eq. 0) then
         a1=nint(ainter(zxain*(1-1)+1))
         a2=nint(ainter(zxain*(2-1)+1))
-        do 205 i = 1, 2
-            do 206 j = 1, 2
+        do i = 1, 2
+            do j = 1, 2
                 if (ar(a1,i) .eq. ar(a2,j)) noeua=ar(a1,i)
-206         continue
-205     continue
+            end do
+        end do
     else if (ninter.eq.3 .and. npts.eq.1) then
         a2=nint(ainter(zxain*(2-1)+1))
         a3=nint(ainter(zxain*(3-1)+1))
-        do 207 i = 1, 2
-            do 208 j = 1, 2
+        do i = 1, 2
+            do j = 1, 2
                 if (ar(a2,i) .eq. ar(a3,j)) noeua=ar(a2,i)
-208         continue
-207     continue
+            end do
+        end do
     else if (ninter.eq.2 .and. npts.eq.1) then
         a2=nint(ainter(zxain*(2-1)+1))
         noeua=ar(a2,1)
@@ -129,7 +129,7 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU PREMIER TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 300 r = 1, ninter
+    do r = 1, ninter
         a2=nint(ainter(zxain*(r-1)+1))
         if (a2 .eq. 0) goto 300
         ip = ip+1
@@ -137,39 +137,40 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
         ia=0
         ib=0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
-        do 320 i = 1, 2
+        do i = 1, 2
             if (ar(a2,i) .eq. noeua) then
                 ia=cnset(nnose*(it-1)+ar(a2,3-i))
                 ib=cnset(nnose*(it-1)+ar(a2,i))
                 im=cnset(nnose*(it-1)+ar(a2,3))
             endif
-320     continue
+        end do
         ASSERT((ia*ib*im) .gt. 0)
         milara(:) = 0.d0
         milarb(:) = 0.d0
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
-                    ia, ib, im, r, ksia, ksib,&
-                    milara, milarb, pintt, pmitt)
+                    ia, ib, im, r, ksia,&
+                    ksib, milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
-                    lonref, ajout)
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                    milara, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksia(j)
             enddo
         endif
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milarb,&
-                    lonref, ajout)
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                    milarb, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksib(j)
             enddo
         endif
-300 continue
+300     continue
+    end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU DEUXIEME TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 400 k = 1, nbpi
+    do k = 1, nbpi
 !      POINT MILIEU ENTRE IP1(R) ET IP2(R)
 !
 !      on ne calcule pas le premier type de point milieu si la
@@ -190,19 +191,19 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
 !
 !        STOCKAGE PMILIE
             mfis=mfis+1
-            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfi,&
-                        lonref, ajout)
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                        milfi, lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
                     pmiref(ndime*(ipm-1)+j)=ksia(j)
                 enddo
             endif
         endif
-400 continue
+    end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU TROISIEME TYPE DE POINT MILIEU   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 500 k = 1, nbpi
+    do k = 1, nbpi
 !      POINT MILIEU ENTRE IP1(R) ET IP2(R)
 !
 !      on calcule le troisieme type de point milieu seulement si
@@ -219,15 +220,15 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
                         pm2(k), typma, pinref, pmiref, ksia,&
                         milfa, pintt, pmitt)
 !
-            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
-                        lonref, ajout)
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                        milfa, lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
                     pmiref(ndime*(ipm-1)+j)=ksia(j)
                 enddo
             endif
         endif
-500 continue
+    end do
 !
     nmilie = ipm
 !

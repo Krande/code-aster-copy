@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0217(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -87,7 +87,7 @@ subroutine te0217(option, nomte)
         valpar(4) = zr(itemps)
     endif
 !
-    do 40 kp = 1, npg1
+    do kp = 1, npg1
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy, dfdz)
@@ -95,11 +95,11 @@ subroutine te0217(option, nomte)
         x = 0.d0
         y = 0.d0
         z = 0.d0
-        do 20 i = 1, nno
+        do i = 1, nno
             x = x + zr(igeom-1+3* (i-1)+1)*zr(ivf+l+i-1)
             y = y + zr(igeom-1+3* (i-1)+2)*zr(ivf+l+i-1)
             z = z + zr(igeom-1+3* (i-1)+3)*zr(ivf+l+i-1)
- 20     continue
+        end do
 !
         poids = poids*valres(1)
 !
@@ -115,10 +115,10 @@ subroutine te0217(option, nomte)
                         grz, ier)
         endif
 !
-        do 30 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids* (+grx*dfdx(i)+ gry*dfdy(i)+grz*dfdz(i))
- 30     continue
+        end do
 !
- 40 end do
+    end do
 !
 end subroutine

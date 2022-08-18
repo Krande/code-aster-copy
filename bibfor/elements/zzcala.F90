@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zzcala(npg, nno, wi, x, y,&
                   xmin, xmax, ymin, ymax, a)
     implicit none
@@ -35,13 +35,13 @@ subroutine zzcala(npg, nno, wi, x, y,&
     integer :: i, ino, ipg, j, nno, npg
     real(kind=8) :: xmax, xmin, ymax, ymin
 !-----------------------------------------------------------------------
-    do 1 ipg = 1, npg
+    do ipg = 1, npg
         xx = 0.d0
         yy = 0.d0
-        do 2 ino = 1, nno
+        do ino = 1, nno
             xx = xx + wi(nno*(ipg-1)+ino)*x(ino)
             yy = yy + wi(nno*(ipg-1)+ino)*y(ino)
- 2      continue
+        end do
         xx = -1.d0+2.d0*(xx-xmin)/(xmax-xmin)
         yy = -1.d0+2.d0*(yy-ymin)/(ymax-ymin)
         b(1) = 1.d0
@@ -53,14 +53,16 @@ subroutine zzcala(npg, nno, wi, x, y,&
         b(7) = yy*b(5)
         b(8) = xx*b(6)
         b(9) = b(6)*b(5)
-        do 3 i = 1, nno
-            do 3 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 a(i,j) = a(i,j) + b(i) * b(j)
- 3          continue
-        do 4 i = 1, nno
-            do 4 j = i+1, nno
+            end do
+        end do
+        do i = 1, nno
+            do j = i+1, nno
                 a(i,j) = a(j,i)
- 4          continue
- 1  end do
+            end do
+        end do
+    end do
 !
 end subroutine

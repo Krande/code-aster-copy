@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
                   instan, numord, val, ncmpve, nbenty,&
                   nbrepg, nvalec, typent, typgeo, nosdfu,&
-                  tymast,   codret)
+                  tymast, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP -  FORMAT MED - ECRITURE
@@ -50,11 +50,11 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mfdraw.h"
+#include "asterfort/as_mfdrpw.h"
 #include "asterfort/as_mfrall.h"
 #include "asterfort/as_mfrblc.h"
 #include "asterfort/as_mfrdea.h"
-#include "asterfort/as_mfdraw.h"
-#include "asterfort/as_mfdrpw.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
@@ -125,7 +125,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
         write (ifm,13002)&
      &    '. PREMIERE ET DERNIERE VALEURS A ECRIRE POUR LA COMPOSANTE',&
      &    iaux, ' : ',val(iaux),val((nvalec*nbrepg-1)*ncmpve+iaux)
-13      continue
+ 13     continue
     endif
     13001 format(2x,'. NBREPG =',i4,', TYPENT =',i4,', TYPGEO =',i4)
     13002 format(2x,a,i3,a3,5g16.6)
@@ -197,10 +197,10 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
 ! 2.3. ==> ECRITURE VRAIE
 !
-    if(nosdfu.ne.' ') then
+    if (nosdfu .ne. ' ') then
 !
-        if(typent.eq.0) then
-            if(nomprf.eq.' ') then
+        if (typent .eq. 0) then
+            if (nomprf .eq. ' ') then
                 call jeveuo(nosdfu//'.MATY', 'L', jnbma)
             else
                 call jeveuo(nosdfu//'.MATYP', 'L', jnbma)
@@ -209,7 +209,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
             nbentl = zi(jnbma+3*(tymast-1)+1)
             nbentt = zi(jnbma+3*(tymast-1)+2)
         else
-            if(nomprf.eq.' ') then
+            if (nomprf .eq. ' ') then
                 call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
             else
                 call jeveuo(nosdfu//'.NBNOP', 'L', jnbno)
@@ -219,7 +219,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
             nbentt = zi(jnbno+2)
         endif
         nbbloc = 1
-        if(nbentl.eq.0) nbbloc = 0
+        if (nbentl .eq. 0) nbbloc = 0
         call as_mfrall(1, filter, codret)
         call as_mfrblc(idfimd, nbentt, nbrepg, ncmpve, 0,&
                        edfuin, 2, nomprf, start, nbentl,&

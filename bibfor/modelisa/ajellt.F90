@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
                   phenoz, modelz, nbno, linoz)
     implicit none
@@ -50,7 +50,6 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ====================== DEBUT DES DECLARATIONS ========================
 #include "jeveux.h"
-!
 #include "asterfort/crelgt.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -64,12 +63,13 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
 !
+!
 ! ----- ARGUMENTS
     character(len=*) :: ligrez, nomaz, typelz, phenoz, modelz, limaz, linoz
 ! ----- VARIABLES LOCALES -------------------------------
 !-----------------------------------------------------------------------
-    integer :: i,   idlima, idlino, idlity
-    integer ::     idpoma, idpono, imodl
+    integer :: i, idlima, idlino, idlity
+    integer :: idpoma, idpono, imodl
     integer :: iret, iret1, iret2, ityp, jdlima, jdlino, jdpm
     integer :: jdtm, lolima, lolimx, lolino, lolinx, lopomx, loponx
     integer :: matard, nbma, nbmadi, nbmail, nbmax, nbno, nbnodi
@@ -298,9 +298,9 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   AFFECTATION DU VECTEUR DES NOEUDS DU LIGRET :
 !       -------------------------------------------
-        do 10 i = 1, nbno
+        do i = 1, nbno
             zi(idlino+zi(idpono+matard-1)+i-1) = zi(jdlino+i-1)
-10      continue
+        end do
 !
         zi(idpono+matard) = zi(idpono+matard-1) + nbno
 !
@@ -323,7 +323,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   AFFECTATION DE LA LISTE DES MAILLES CUMULEES :
 !       --------------------------------------------
-        do 20 i = 1, nbma
+        do i = 1, nbma
             zi(idlima+zi(idpoma+apma(1)-1)+i-1) = zi(jdlima+i-1)
             if (typel .eq. ' ') then
                 numail = zi(jdlima+i-1)
@@ -334,7 +334,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
             endif
 !
             zi(idlity+zi(idpoma+apma(1)-1)+i-1) = ityp
-20      continue
+        end do
 !
         vnbma(1) = vnbma(1) + nbma
 !

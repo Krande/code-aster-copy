@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdhds(nbmat, mater, invar, s, dhds,&
                   retcom)
 !
@@ -89,9 +89,9 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds,&
 ! =================================================================
 ! --- CALCUL FINAL ------------------------------------------------
 ! =================================================================
-    do 10 ii = 1, ndt
+    do ii = 1, ndt
         dhds(ii) = fact1*s(ii)-fact2*t(ii)
-10  end do
+    end do
 ! =================================================================
-1000  continue
+1000 continue
 end subroutine

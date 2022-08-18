@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utersa(ndim, iflup, iflum, ino, mno,&
                   jno, ivois, ma, iel, nbnv,&
                   nbsv, iavalp, iavalm, nsomm, jac,&
@@ -64,10 +64,10 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/indiis.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: iflup, iflum, ndim, ino, mno, jno, ivois, nsomm, ityp, iel, nbnv
     integer :: iavalp, iavalm, nbsv, jad, jadv, noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
@@ -185,7 +185,7 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
     else
 !
 ! CAS 3D
-        do 100 in = 1, nsomm
+        do in = 1, nsomm
 !
 ! NOEUD COURANT
             iino = noe(in,ino,ityp)
@@ -214,7 +214,7 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
             term22 = term22 + term23*term23*jac(in)
             aux1 = (aux1-aux2)*0.5d0
             aux = aux + aux1*aux1*jac(in)
-100     continue
+        end do
 !
     endif
 !

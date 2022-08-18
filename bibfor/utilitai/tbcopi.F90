@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbcopi(base, sd1, sd2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -28,6 +27,7 @@ subroutine tbcopi(base, sd1, sd2)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: base, sd1, sd2
 !
 !   BUT:
@@ -73,7 +73,7 @@ subroutine tbcopi(base, sd1, sd2)
     call jeecra(tab2//'.TBLP', 'LONUTI', ndim)
     call jeveuo(tab2//'.TBLP', 'E', jtblp)
     call jeveuo(tab1//'.TBLP', 'L', ktblp)
-    do 10 i = 1, nbpara
+    do i = 1, nbpara
         zk24(jtblp+4*(i-1) ) = zk24(ktblp+4*(i-1) )
         type = zk24(ktblp+4*(i-1)+1)
         zk24(jtblp+4*(i-1)+1) = type
@@ -89,9 +89,9 @@ subroutine tbcopi(base, sd1, sd2)
         call jeveuo(nomjv, 'E', jnjv)
         nomjv = tab1(1:17)//'LG.'//knume
         call jeveuo(nomjv, 'L', knjv)
-        do 12 j = 1, nbpm
+        do j = 1, nbpm
             zi(jnjv+j-1) = zi(knjv+j-1)
-12      continue
+        end do
         nomjv = tab1//'.'//knume
         call jeveuo(nomjv, 'L', kvale)
         nomjv = tab2//'.'//knume
@@ -101,40 +101,40 @@ subroutine tbcopi(base, sd1, sd2)
         call jeecra(nomjv, 'LONUTI', nbpu)
         call jeveuo(nomjv, 'E', jvale)
         if (type(1:1) .eq. 'I') then
-            do 20 j = 1, nbpm
+            do j = 1, nbpm
                 zi(jvale+j-1) = zi(kvale+j-1)
-20          continue
+            end do
         else if (type(1:1) .eq. 'R') then
-            do 21 j = 1, nbpm
+            do j = 1, nbpm
                 zr(jvale+j-1) = zr(kvale+j-1)
-21          continue
+            end do
         else if (type(1:1) .eq. 'C') then
-            do 22 j = 1, nbpm
+            do j = 1, nbpm
                 zc(jvale+j-1) = zc(kvale+j-1)
-22          continue
+            end do
         else if (type(1:3) .eq. 'K80') then
-            do 23 j = 1, nbpm
+            do j = 1, nbpm
                 zk80(jvale+j-1) = zk80(kvale+j-1)
-23          continue
+            end do
         else if (type(1:3) .eq. 'K32') then
-            do 24 j = 1, nbpm
+            do j = 1, nbpm
                 zk32(jvale+j-1) = zk32(kvale+j-1)
-24          continue
+            end do
         else if (type(1:3) .eq. 'K24') then
-            do 25 j = 1, nbpm
+            do j = 1, nbpm
                 zk24(jvale+j-1) = zk24(kvale+j-1)
-25          continue
+            end do
         else if (type(1:3) .eq. 'K16') then
-            do 26 j = 1, nbpm
+            do j = 1, nbpm
                 zk16(jvale+j-1) = zk16(kvale+j-1)
-26          continue
+            end do
         else if (type(1:2) .eq. 'K8') then
-            do 27 j = 1, nbpm
+            do j = 1, nbpm
                 zk8(jvale+j-1) = zk8(kvale+j-1)
-27          continue
+            end do
         endif
         call jeecra(nomjv, 'LONUTI', nbpu)
-10  end do
+    end do
 !
     call jedema()
 end subroutine

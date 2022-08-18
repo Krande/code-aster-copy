@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0548(option, nomte)
-    implicit   none
-#include "jeveux.h"
 !
+subroutine te0548(option, nomte)
+    implicit none
+#include "jeveux.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -32,6 +31,7 @@ subroutine te0548(option, nomte)
 #include "asterfort/xmoffc.h"
 #include "asterfort/xplmat.h"
 #include "asterfort/xteini.h"
+!
     character(len=16) :: option, nomte
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -65,8 +65,8 @@ subroutine te0548(option, nomte)
 !
 !
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -103,11 +103,11 @@ subroutine te0548(option, nomte)
         end do
     end do
 !
-    do 15 i = 1, nface
-        do 16 j = 1, nptf
+    do i = 1, nface
+        do j = 1, nptf
             cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
-16      continue
-15  continue
+        end do
+    end do
 !
 !     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
     integ = nint(zr(jdonco-1+4))
@@ -127,8 +127,8 @@ subroutine te0548(option, nomte)
         endif
     endif
 !
-    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                     jvf=ivff, jdfde=idfdef)
 !
     call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
@@ -140,10 +140,10 @@ subroutine te0548(option, nomte)
     if (contac .eq. 3) nnol=nnos
 !
 !     BOUCLE SUR LES FACETTES
-    do 100 ifa = 1, nface
+    do ifa = 1, nface
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
-        do 110 ipgf = 1, npgf
+        do ipgf = 1, npgf
 !
 !         INDICE DE CE POINT DE GAUSS DANS PSEUIL
             isspg=npgf*(ifa-1)+ipgf
@@ -154,13 +154,15 @@ subroutine te0548(option, nomte)
             if (ndim .eq. 3) then
                 call xjacff(elref, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, ipgf, nno,&
-                            nnos, igeom, jbasec, g, rbid, ffp,&
-                            ffpc, dfbid, nd, r3bid, r3bid)
+                            nnos, igeom, jbasec, g, rbid,&
+                            ffp, ffpc, dfbid, nd, r3bid,&
+                            r3bid)
             else if (ndim.eq.2) then
                 call xjacf2(elref, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, nptf, ipgf,&
-                            nno, nnos, igeom, jbasec, g, rbid,&
-                            ffp, ffpc, dfbid, nd, r3bid)
+                            nno, nnos, igeom, jbasec, g,&
+                            rbid, ffp, ffpc, dfbid, nd,&
+                            r3bid)
             endif
 !
 !        CALCUL DES FONCTIONS DE FORMES DE CONTACT DANS LE CAS LINEAIRE
@@ -174,13 +176,13 @@ subroutine te0548(option, nomte)
 !
 !         CALCUL DU NOUVEAU SEUIL A PARTIR DES LAMBDA DE DEPPLU
             seuil = 0.d0
-            do 120 i = 1, nnol
+            do i = 1, nnol
                 ffi=ffc(i)
                 ni=i
-                call xplmat(ddls, ddlc, ddlm,&
-                            nno, nnom, ni, pli)
+                call xplmat(ddls, ddlc, ddlm, nno, nnom,&
+                            ni, pli)
                 seuil = seuil + ffi * zr(ideppl-1+pli)
-120          continue
+            end do
 !
 !         LORS D'UNE CONVERGENCE FORCEE, IL SE PEUT QUE LES REACTIONS
 !         SOIENT TROP PETITES. LE POINT DOIT ETRE CONSIDERE GLISSANT.
@@ -190,7 +192,7 @@ subroutine te0548(option, nomte)
 !
             zr(jseuil-1+isspg)=seuil
 !
-110      continue
-100  continue
+        end do
+    end do
 !
 end subroutine

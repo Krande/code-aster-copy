@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcdvmi(sigma, y, f, dfds, d2fds,&
                   seq)
     implicit none
@@ -92,11 +92,12 @@ subroutine lcdvmi(sigma, y, f, dfds, d2fds,&
 !
     d2fds(6,6) = ( 3.d0-dfds(6)*dfds(6) )/seq
 !
-    do 10 i = 1, 6
-        do 10 j = i, 6
+    do i = 1, 6
+        do j = i, 6
             d2fds(j,i) = d2fds(i,j)
-10      continue
+        end do
+    end do
 !
-20  continue
+ 20 continue
 !
 end subroutine

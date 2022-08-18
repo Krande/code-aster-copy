@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0418(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -57,8 +57,8 @@ subroutine te0418(option, nomte)
     zero = 0.d0
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -88,7 +88,7 @@ subroutine te0418(option, nomte)
         call utmess('F', 'ELEMENTS2_77', sk=option)
     endif
 !
-    do 40 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
 !       CALL DFDM1D( NNO,ZR(IPOIDS+KP-1),ZR(IDFDK+K),
 !    &               ZR(IGEOM),DFDX,COUR,JACP,COSA,SINA)
@@ -97,22 +97,22 @@ subroutine te0418(option, nomte)
         dydk = zero
         dzdk = zero
 !
-        do 10 i = 1, nno
+        do i = 1, nno
             dxdk = dxdk + zr(igeom+3* (i-1))*zr(idfdk+k+i-1)
             dydk = dydk + zr(igeom+3* (i-1)+1)*zr(idfdk+k+i-1)
             dzdk = dzdk + zr(igeom+3* (i-1)+2)*zr(idfdk+k+i-1)
-10      continue
+        end do
         jac = sqrt(dxdk**2+dydk**2+dzdk**2)
         jacp = jac*zr(ipoids+kp-1)
         if (option(11:16) .eq. 'FF1D3D') then
             x = zero
             y = zero
             z = zero
-            do 20 i = 1, nno
+            do i = 1, nno
                 x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                 y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                 z = z + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-20          continue
+            end do
             valpar(1) = x
             valpar(2) = y
             valpar(3) = z
@@ -130,7 +130,7 @@ subroutine te0418(option, nomte)
                         mz, icod6)
         endif
 !
-        do 30 i = 1, nno
+        do i = 1, nno
             i1 = 6* (i-1)
             effglb(i1+1) = effglb(i1+1) + jacp*zr(ivf+k+i-1)*fx
             effglb(i1+2) = effglb(i1+2) + jacp*zr(ivf+k+i-1)*fy
@@ -138,19 +138,19 @@ subroutine te0418(option, nomte)
             effglb(i1+4) = effglb(i1+4) + jacp*zr(ivf+k+i-1)*mx
             effglb(i1+5) = effglb(i1+5) + jacp*zr(ivf+k+i-1)*my
             effglb(i1+6) = effglb(i1+6) + jacp*zr(ivf+k+i-1)*mz
-30      continue
+        end do
 !
-40  end do
+    end do
 !
 !     -- AFFECTATION DU RESULTAT:
 !
-    do 50 ino = 1, nno
+    do ino = 1, nno
         zr(ivectu-1+ (ino-1)*6+1) = effglb((ino-1)*6+1)
         zr(ivectu-1+ (ino-1)*6+2) = effglb((ino-1)*6+2)
         zr(ivectu-1+ (ino-1)*6+3) = effglb((ino-1)*6+3)
         zr(ivectu-1+ (ino-1)*6+4) = effglb((ino-1)*6+4)
         zr(ivectu-1+ (ino-1)*6+5) = effglb((ino-1)*6+5)
         zr(ivectu-1+ (ino-1)*6+6) = effglb((ino-1)*6+6)
-50  end do
+    end do
 !
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
                   cnsln, cnslt, grln, grlt, corres,&
                   ndim, ndomp, edomg)
@@ -201,7 +201,7 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
 !        SUBSTITUTE THE PROJECTED VALUES OF THE LEVEL SETS INTO THE
 !        EXISTING LEVEL SET FIELDS ONLY FOR THE NODES IN THE PHYSICAL
 !        MESH INVOLVED IN THE PROJECTION
-    do 3000 i = 1, nunopr
+    do i = 1, nunopr
 !
 !           SUBSTITUTE THE PROJECTED VALUES OF THE NORMAL LEVEL SET INTO
 !           THE EXISTING NORMAL LEVEL SET OF THE PHYSICAL MESH
@@ -213,7 +213,7 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
         cnltv(zi(jnto-1+i)) = tmplt(zi(jnto-1+i))
         zl(jcnltl-1+zi(jnto-1+i)) = .true.
 !
-3000 continue
+    end do
 !
 !        DESTROY THE TEMPORARY PROJECTED LEVEL SETS
     call detrsd('CHAM_NO_S', tmplsn)

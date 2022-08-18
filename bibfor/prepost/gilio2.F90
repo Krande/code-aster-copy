@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gilio2(nfic, iobj, nbele, niv)
     implicit none
 !
@@ -50,7 +50,7 @@ subroutine gilio2(nfic, iobj, nbele, niv)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacnex, iacoul,   iarefe, iasoob
+    integer :: i, iacnex, iacoul, iarefe, iasoob
     integer :: icoj, j, nbfois, nbno, nbref, nbrest, nbsoob
     integer, pointer :: descobj(:) => null()
     character(len=8), pointer :: nomobj(:) => null()
@@ -162,14 +162,14 @@ subroutine gilio2(nfic, iobj, nbele, niv)
 !
 !        -- ON LIT LES NUMEROS DES SOUS-OBJETS:
 !        --------------------------------------
-        do 1,i = 1,nbfois
-        if (niv .eq. 3) then
-            read(nfic,1011) (zi(iasoob-1+j),j=icoj+1,icoj+nbnum)
-        else
-            read(nfic,1010) (zi(iasoob-1+j),j=icoj+1,icoj+nbnum)
-        endif
-        icoj = icoj + nbnum
- 1      continue
+        do i = 1, nbfois
+            if (niv .eq. 3) then
+                read(nfic,1011) (zi(iasoob-1+j),j=icoj+1,icoj+nbnum)
+            else
+                read(nfic,1010) (zi(iasoob-1+j),j=icoj+1,icoj+nbnum)
+            endif
+            icoj = icoj + nbnum
+        end do
         if (nbrest .gt. 0) then
             if (niv .eq. 3) then
                 read(nfic,1011) (zi(iasoob-1+j),j=icoj+1,icoj+nbrest)
@@ -185,16 +185,16 @@ subroutine gilio2(nfic, iobj, nbele, niv)
             nbfois = nbref/nbnum
             nbrest = nbref - nbnum*nbfois
             icoj = 0
-            do 2,i = 1,nbfois
-            if (niv .eq. 3) then
-                read (nfic,1011) (zi(iarefe-1+j),j=icoj+1,icoj+&
+            do i = 1, nbfois
+                if (niv .eq. 3) then
+                    read (nfic,1011) (zi(iarefe-1+j),j=icoj+1,icoj+&
                     nbnum)
-            else
-                read (nfic,1010) (zi(iarefe-1+j),j=icoj+1,icoj+&
+                else
+                    read (nfic,1010) (zi(iarefe-1+j),j=icoj+1,icoj+&
                     nbnum)
-            endif
-            icoj = icoj + nbnum
- 2          continue
+                endif
+                icoj = icoj + nbnum
+            end do
             if (nbrest .gt. 0) then
                 if (niv .eq. 3) then
                     read (nfic,1011) (zi(iarefe-1+j),j=icoj+1,icoj+&
@@ -217,16 +217,16 @@ subroutine gilio2(nfic, iobj, nbele, niv)
             nbfois = nbref/nbnum
             nbrest = nbref - nbnum*nbfois
             icoj = 0
-            do 3,i = 1,nbfois
-            if (niv .eq. 3) then
-                read(nfic,1011) (zi(iarefe-1+j),j=icoj+1,icoj+&
+            do i = 1, nbfois
+                if (niv .eq. 3) then
+                    read(nfic,1011) (zi(iarefe-1+j),j=icoj+1,icoj+&
                     nbnum)
-            else
-                read(nfic,1010) (zi(iarefe-1+j),j=icoj+1,icoj+&
+                else
+                    read(nfic,1010) (zi(iarefe-1+j),j=icoj+1,icoj+&
                     nbnum)
-            endif
-            icoj = icoj + nbnum
- 3          continue
+                endif
+                icoj = icoj + nbnum
+            end do
             if (nbrest .gt. 0) then
                 if (niv .eq. 3) then
                     read (nfic,1011) (zi(iarefe-1+j),j=icoj+1,icoj+&
@@ -245,16 +245,16 @@ subroutine gilio2(nfic, iobj, nbele, niv)
             nbfois = nbele/nbnum
             nbrest = nbele - nbnum*nbfois
             icoj = 0
-            do 4,i = 1,nbfois
-            if (niv .eq. 3) then
-                read (nfic,1011) (zi(iacoul-1+j),j=icoj+1,icoj+&
+            do i = 1, nbfois
+                if (niv .eq. 3) then
+                    read (nfic,1011) (zi(iacoul-1+j),j=icoj+1,icoj+&
                     nbnum)
-            else
-                read (nfic,1010) (zi(iacoul-1+j),j=icoj+1,icoj+&
+                else
+                    read (nfic,1010) (zi(iacoul-1+j),j=icoj+1,icoj+&
                     nbnum)
-            endif
-            icoj = icoj + nbnum
- 4          continue
+                endif
+                icoj = icoj + nbnum
+            end do
             if (nbrest .gt. 0) then
                 if (niv .eq. 3) then
                     read (nfic,1011) (zi(iacoul-1+j),j=icoj+1,icoj+&
@@ -271,16 +271,16 @@ subroutine gilio2(nfic, iobj, nbele, niv)
             nbfois = nbele*nbno/nbnum
             nbrest = nbele*nbno - nbnum*nbfois
             icoj = 0
-            do 5,i = 1,nbfois
-            if (niv .eq. 3) then
-                read (nfic,1011) (zi(iacnex-1+j),j=icoj+1,icoj+&
+            do i = 1, nbfois
+                if (niv .eq. 3) then
+                    read (nfic,1011) (zi(iacnex-1+j),j=icoj+1,icoj+&
                     nbnum)
-            else
-                read (nfic,1010) (zi(iacnex-1+j),j=icoj+1,icoj+&
+                else
+                    read (nfic,1010) (zi(iacnex-1+j),j=icoj+1,icoj+&
                     nbnum)
-            endif
-            icoj = icoj + nbnum
- 5          continue
+                endif
+                icoj = icoj + nbnum
+            end do
             if (nbrest .gt. 0) then
                 if (niv .eq. 3) then
                     read (nfic,1011) (zi(iacnex-1+j),j=icoj+1,icoj+&

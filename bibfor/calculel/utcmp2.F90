@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
                   numcmp, nbcmp)
     implicit none
@@ -67,13 +67,13 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
 !
     if (nomgd(1:6) .eq. 'VARI_R') then
 !     -----------------------------------------
-        do 10 i = 1, nbcmp
+        do i = 1, nbcmp
             nocmp=nomcmp(i)
             ASSERT(nocmp(1:1).eq.'V')
             call lxliis(nocmp(2:8), nucmp, iret)
             ASSERT(iret.eq.0)
             numcmp(i)=nucmp
-10      continue
+        end do
 !
 !
 !     -- CAS NOMGD /= VARI_R

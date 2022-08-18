@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
                   mxiter, ier, nitqr)
     implicit none
@@ -66,38 +66,38 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
     if (neq .eq. 1) goto 99999
 !
 !     --- TRANSFERT DES ELEMENTS SUR-DIAGONAUX ---
-    do 5 i = 2, neq
+    do i = 2, neq
         surdia(i-1) = surdia(i)
- 5  end do
+    end do
 !
 !     --- SI NECESSAIRE CREATION DE LA MATRICE UNITE ---
     if (mxcmp .ge. neq) then
-        do 6 ieq = 1, neq
-            do 7 jeq = 1, neq
+        do ieq = 1, neq
+            do jeq = 1, neq
                 vecpro(ieq,jeq) = zero
- 7          continue
+            end do
             vecpro(ieq,ieq) = un
- 6      continue
+        end do
     endif
 !
     surdia(neq) = zero
     b = zero
     f = zero
-    do 60 j = 1, neq
+    do j = 1, neq
         jter = 0
         h = epsmac*(abs(diag(j))+abs(surdia(j)))
         if (b .lt. h) b = h
 !
 !        --- RECHERCHE DU PLUS PETIT ELEMENT SUR-DIAGONAL ---
-        do 10 m = j, neq
+        do m = j, neq
             k=m
             if (abs(surdia(k)) .le. b) goto 15
-10      continue
-15      continue
+        end do
+ 15     continue
         m = k
         if (m .eq. j) goto 55
-20      continue
-        if (jter .eq. mxiter) goto 9999
+ 20     continue
+        if (jter .eq. mxiter) goto 999
         jter = jter+1
         if (jter .gt. nitqr) then
             nitqr = jter
@@ -110,16 +110,16 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
         if (epsmac*abs(p) .lt. un) r = sqrt(p*p+un)
         diag(j) = surdia(j)/(p+sign(r,p))
         h = g-diag(j)
-        do 25 i = j+1, neq
+        do i = j+1, neq
             diag(i) = diag(i)-h
-25      continue
+        end do
         f = f+h
 !
 !        --- ON APPLIQUE LA TRANSFORMATION QL ---
         p = diag(m)
         c = un
         s = zero
-        do 45 i = m-1, j, -1
+        do i = m-1, j, -1
             g = c*surdia(i)
             h = c*p
             if (abs(p) .ge. abs(surdia(i))) then
@@ -139,22 +139,22 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
             diag(i+1) = h+s*(c*g+s*diag(i))
             if (mxcmp .ge. neq) then
 !              --- CALCUL DU VECTEUR PROPRE ---
-                do 40 k = 1, neq
+                do k = 1, neq
                     h = vecpro(k,i+1)
                     vecpro(k,i+1) = s*vecpro(k,i)+c*h
                     vecpro(k,i) = c*vecpro(k,i)-s*h
-40              continue
+                end do
             endif
-45      continue
+        end do
         surdia(j) = s*p
         diag(j) = c*p
         if (abs(surdia(j)) .gt. b) goto 20
-55      continue
+ 55     continue
         diag(j) = diag(j) + f
-60  end do
+    end do
     goto 99999
 !
-9999  continue
+999 continue
     ier = j
-99999  continue
+99999 continue
 end subroutine

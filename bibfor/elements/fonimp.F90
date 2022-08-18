@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fonimp(resu)
 !
     implicit none
@@ -56,9 +56,9 @@ subroutine fonimp(resu)
     call jeveuo(fondfi, 'L', jfon)
 !
 !
-    do 100 i = 1, lnoff
+    do i = 1, lnoff
 !        WRITE(6,*)'NOEUD ',ZK8(JNOE),ZR(JFON-1+4*(I-1)+4)
-100  end do
+    end do
 !
     call jedema()
 end subroutine

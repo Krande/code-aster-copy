@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgordo(nbextr, ext, ord)
     implicit none
 #include "jeveux.h"
@@ -39,11 +39,11 @@ subroutine fgordo(nbextr, ext, ord)
         ord(2)=ext(1)
     endif
 !
-    do 1 i = 3, nbextr
+    do i = 3, nbextr
         if (ext(i) .lt. ord(1)) then
-            do 31 k = i, 2, -1
+            do k = i, 2, -1
                 ord(k)=ord(k-1)
-31          continue
+            end do
             ord(1)=ext(i)
             goto 1
         endif
@@ -51,15 +51,16 @@ subroutine fgordo(nbextr, ext, ord)
             ord(i)=ext(i)
             goto 1
         endif
-        do 2 j = 1, i-2
+        do j = 1, i-2
             if ((ord(j).le.ext(i)) .and. (ext(i).lt.ord(j+1))) then
-                do 3 k = i, j+2, -1
+                do k = i, j+2, -1
                     ord(k)=ord(k-1)
- 3              continue
+                end do
                 ord(j+1)=ext(i)
                 goto 1
             endif
- 2      continue
- 1  end do
+        end do
+  1     continue
+    end do
 !
 end subroutine

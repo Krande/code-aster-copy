@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfdde(eps, endo, ndim, lambda, mu,&
                  dfde)
 !
@@ -67,41 +67,41 @@ subroutine dfdde(eps, endo, ndim, lambda, mu,&
     treps=eps(1)+eps(2)+eps(3)
 !
     if (treps .lt. 0.d0) then
-        do 8 i = 1, ndim
+        do i = 1, ndim
             dfde(t(i,i))=dfde(t(i,i))+phid*lambda*treps
- 8      continue
+        end do
     endif
 !
     call diago3(eps, veceps, valeps)
     call r8inir(3, 0.d0, vpe, 1)
 !
-    do 819 i = 1, ndim
+    do i = 1, ndim
         if (valeps(i) .lt. 0.d0) then
             vpe(i)=valeps(i)
         else
             vpe(i)=0.d0
         endif
-819  end do
+    end do
 !
     call r8inir(6, 0.d0, tu, 1)
-    do 20 i = 1, ndim
-        do 21 j = i, ndim
-            do 22 k = 1, ndim
+    do i = 1, ndim
+        do j = i, ndim
+            do k = 1, ndim
                 tu(t(i,j))=tu(t(i,j))+veceps(i,k)*vpe(k)*veceps(j,k)
-22          continue
-21      continue
-20  end do
+            end do
+        end do
+    end do
 !
-    do 23 i = 1, ndim
-        do 24 j = i, ndim
+    do i = 1, ndim
+        do j = i, ndim
             if (j .eq. i) then
                 rtemp=1.d0
             else
                 rtemp=rac2
             endif
             dfde(t(i,j))=dfde(t(i,j))+2.d0*mu*phid*tu(t(i,j))*rtemp
-24      continue
-23  end do
+        end do
+    end do
 !
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rot3di(x, sina, cosa, sinb, cosb,&
                   sing, cosg, y)
     implicit none
@@ -55,21 +55,24 @@ subroutine rot3di(x, sina, cosa, sinb, cosb,&
     rz(2,1)=      rz(3,1)
     rz(1,3)=      rz(2,1)
     rz(1,2)=      rz(1,3)
-    do 10 l = 1, 3
-        do 10 k = 1, 3
+    do l = 1, 3
+        do k = 1, 3
             if (abs(rx(k,l)) .lt. 1.d-6) rx(k,l)=0.d0
             if (abs(ry(k,l)) .lt. 1.d-6) ry(k,l)=0.d0
             if (abs(rz(k,l)) .lt. 1.d-6) rz(k,l)=0.d0
-10      continue
-    do 20 j = 1, 3
-        do 20 i = 1, 3
+        end do
+    end do
+    do j = 1, 3
+        do i = 1, 3
             rzyx(i,j)=0.d0
-            do 20 k = 1, 3
+            do k = 1, 3
                 p(k)=0.d0
-                do 15 l = 1, 3
+                do l = 1, 3
                     p(k)=p(k)+rx(i,l)*ry(l,k)
-15              continue
+                end do
                 rzyx(i,j)=rzyx(i,j)+p(k)*rz(k,j)
-20          continue
+            end do
+        end do
+    end do
     call pmavec('ZERO', 3, rzyx, x, y)
 end subroutine

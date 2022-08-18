@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xtlagf(ndim, nnc, jnn, nddls,&
-                  jdepde, ffc,&
-                  nfhe, dlagrf)
+!
+subroutine xtlagf(ndim, nnc, jnn, nddls, jdepde,&
+                  ffc, nfhe, dlagrf)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -58,7 +57,7 @@ subroutine xtlagf(ndim, nnc, jnn, nddls,&
 !
 !
     integer :: idim, ino, nn, nns, nddls
-    integer ::  pl
+    integer :: pl
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,13 +72,13 @@ subroutine xtlagf(ndim, nnc, jnn, nddls,&
 !
 ! --- LAGRANGES DE FROTTEMENT
 !
-    do 221 idim = 2, ndim
-        do 231 ino = 1, nnc
+    do idim = 2, ndim
+        do ino = 1, nnc
             call xplma2(ndim, nn, nns, nddls, ino,&
                         nfhe, pl)
             dlagrf(idim-1) = dlagrf(idim-1)+ ffc(ino)*zr(jdepde-1+pl+ idim-1)
-231      continue
-221  continue
+        end do
+    end do
 !
 !
 end subroutine

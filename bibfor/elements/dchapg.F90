@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dchapg(sig1, sig2, npg, nbsig, decha)
     implicit none
 #include "asterc/r8prem.h"
@@ -52,7 +52,7 @@ subroutine dchapg(sig1, sig2, npg, nbsig, decha)
     un = 1.0d0
     zernor = 10.0d0*r8prem()
 !
-    do 10 igau = 1, npg
+    do igau = 1, npg
 !      CALCUL DU SECOND INVARIANT DU TENSEUR DES CONTRAINTES :
 !
         norm1 = norsig(sig1(1+ (igau-1)*nbsig),nbsig)
@@ -71,6 +71,6 @@ subroutine dchapg(sig1, sig2, npg, nbsig, decha)
         else
             decha(igau) = (norm2-norm1)/norm2
         endif
-10  end do
+    end do
 !
 end subroutine

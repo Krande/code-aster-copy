@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   igeom, pinter, ninter, npts, ainter,&
                   pmilie, nmilie, mfis, tx, txlsn,&
-                  pintt, pmitt, ifiss, nfiss, fisco, &
-                  nfisc, cut, coupe, exit, joncno, condition_joncno)
+                  pintt, pmitt, ifiss, nfiss, fisco,&
+                  nfisc, cut, coupe, exit, joncno,&
+                  condition_joncno)
     implicit none
 !
 #include "asterf_types.h"
@@ -37,8 +38,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/xalgo2.h"
 #include "asterfort/xalgo3.h"
 #include "asterfort/xdblsn.h"
-#include "asterfort/xerfis.h"
 #include "asterfort/xelrex.h"
+#include "asterfort/xerfis.h"
 #include "asterfort/xinter.h"
 #include "asterfort/xstjon.h"
 #include "asterfort/xxmmvd.h"
@@ -123,8 +124,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
 !     TABLEAU DES COORDONNEES DES NOEUDS DE L'ELEMENT ENFANT POUR LA FISSURE
 !     COURANTE
-    do 50 j = 1, nnose
-        do 51 i = 1, ndim
+    do j = 1, nnose
+        do i = 1, ndim
             if (((nnop.eq.20).or.(nnop.eq.15).or.(nnop.eq.13).or. (nnop.eq.8)) .and.&
                 (cnset(nnose*(it-1)+j).gt.nnop) .and. (cnset(nnose*(it-1)+j).lt.1000)) then
                 val = tx(i,(cnset(nnose*(it-1)+j)-nnop))
@@ -136,15 +137,15 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                 val = pmitt(ndim*(cnset(nnose*(it-1)+j)-2001)+i)
             endif
             tabco(ndim*(j-1)+i)=val
- 51     continue
- 50 continue
+        end do
+    end do
 !
     tabls(:) = 0.d0
     somlsn(:) = 0.d0
     cut=.false.
 !
 !     TABLEAU DES LSN DES NOEUDS DE L'ELEMENT ENFANT
-    do 40 j = 1, nnose
+    do j = 1, nnose
         na=cnset(nnose*(it-1)+j)
         if (((nnop.eq.20).or.(nnop.eq.15).or.(nnop.eq.13).or.( nnop.eq.8)) .and.&
             (na.gt.nnop) .and. (na.lt.1000)) then
@@ -171,9 +172,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                 end do
             end do
         endif
-        if (abs(val).le.1.d-8) val =0.d0
+        if (abs(val) .le. 1.d-8) val =0.d0
         tabls(j)=val
- 40 continue
+    end do
 !  EN CAS DE JONCTION, SI ON EST PAS DU COTÃ~I INTERSECTÃ~I, ON SORT
     do i = 1, nfisc
         if (fisco(2*i)*somlsn(i) .gt. 0) goto 999
@@ -192,15 +193,15 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !     TABLEAU DES LSN DES NOEUDS DE L'ELEMENT PARENT COMPLET POUR LA FISSURE COURANTE
     lsnelp(:) = 0.d0
     do j = 1, nnop
-       lsnelp(j) = zr(jlsn-1+(j-1)*nfiss+ifiss)
+        lsnelp(j) = zr(jlsn-1+(j-1)*nfiss+ifiss)
     end do
 !
 !     TABLEAU DES COORDONNEES DES NOEUDS DE L'ELEMENT PARENT COMPLET
     geom(:) = 0.d0
     do i = 1, ndim
-       do j = 1, nnop
-          geom((j-1)*ndim+i) = zr(igeom-1+(j-1)*ndim+i)
-       end do
+        do j = 1, nnop
+            geom((j-1)*ndim+i) = zr(igeom-1+(j-1)*ndim+i)
+        end do
     end do
 !     BOUCLE SUR LES ARETES DU SOUS ELEMENT POUR AJUSTEMENT DES
 !     LEVEL SET NORMALES
@@ -217,22 +218,22 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
         lsnm=tabls(ntm)
 !     BLINDAGE PARTIEL : FISSURE RENTRANTE SUR UNE ARETE
         if (lsna .eq. 0 .and. lsnb .eq. 0) then
-           tabls(ntm) = 0.d0
+            tabls(ntm) = 0.d0
         else if (lsna .eq. 0 .and. lsnb*lsnm .lt. 0) then
-           tabls(ntm) = 0.d0
+            tabls(ntm) = 0.d0
         else if (lsnb .eq. 0 .and. lsna*lsnm .lt. 0) then
-           tabls(ntm) = 0.d0
+            tabls(ntm) = 0.d0
         endif
     end do
 !
 !     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
-    do 30 ia = 1, nbar
+    do ia = 1, nbar
         if ((tabls(ar(ia,1))*tabls(ar(ia,2))) .lt. 0.d0) cut = .true.
- 30 continue
-   if (cut) coupe(ifiss) = 1
+    end do
+    if (cut) coupe(ifiss) = 1
 !
 !     BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
-    do 100 ia = 1, nbar
+    do ia = 1, nbar
 !
 !       RECUPERATION NUM ENFANT DES NOEUDS DE L'ARETE
         nta=ar(ia,1)
@@ -254,11 +255,11 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
         m(:) = 0.d0
 !
 !       RECUPERATION COORDONNEES DES NOEUDS EXTREMITE DE L'ARETE
-        do 101 i = 1, ndim
+        do i = 1, ndim
             a(i)=tabco(ndim*(nta-1)+i)
             b(i)=tabco(ndim*(ntb-1)+i)
             m(i)=tabco(ndim*(ntm-1)+i)
-101     continue
+        end do
 !
 !       LONGUEUR DE L'ARETE
         longar=padist(ndim,a,b)
@@ -278,22 +279,23 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
                 if (ajout) then
                     do k = 1, ndime
-                        if (na.lt.1000) then
-                           pinref(ndime*(ipi-1)+k)=xref(ndime*(na-1)+k)
+                        if (na .lt. 1000) then
+                            pinref(ndime*(ipi-1)+k)=xref(ndime*(na-1)+k)
                         else
-                           do i = 1, ndim
-                              newpt(i) = a(i)
-                           end do
-                           call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
-                                       cref, ff)
-                           pinref(ndime*(ipi-1)+k)=cref(k)
+                            do i = 1, ndim
+                                newpt(i) = a(i)
+                            end do
+                            call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
+                                        cref, ff)
+                            pinref(ndime*(ipi-1)+k)=cref(k)
                         endif
                     enddo
                 endif
 !
-                if (condition_joncno .and. nfiss.ge.2 .and. nfisc.ge.1) then
-                   call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
-                               txlsn, n=na, c=a)
+                if (condition_joncno .and. nfiss .ge. 2 .and. nfisc .ge. 1) then
+                    call xstjon(elrefp, ndim, joncno, jlsn, igeom,&
+                                nfiss, nfisc, fisco, nnops, txlsn,&
+                                n=na, c=a)
                 endif
 !
             endif
@@ -307,22 +309,23 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
                 if (ajout) then
                     do k = 1, ndime
-                        if (nb.lt.1000) then
-                           pinref(ndime*(ipi-1)+k)=xref(ndime*(nb-1)+k)
+                        if (nb .lt. 1000) then
+                            pinref(ndime*(ipi-1)+k)=xref(ndime*(nb-1)+k)
                         else
-                           do i = 1, ndim
-                              newpt(i) = b(i)
-                           end do
-                           call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
-                                       cref, ff)
-                           pinref(ndime*(ipi-1)+k)=cref(k)
+                            do i = 1, ndim
+                                newpt(i) = b(i)
+                            end do
+                            call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
+                                        cref, ff)
+                            pinref(ndime*(ipi-1)+k)=cref(k)
                         endif
                     enddo
                 endif
 !
-                if (condition_joncno .and. nfiss.ge.2 .and. nfisc.ge.1) then
-                   call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
-                               txlsn, n=nb, c=b)
+                if (condition_joncno .and. nfiss .ge. 2 .and. nfisc .ge. 1) then
+                    call xstjon(elrefp, ndim, joncno, jlsn, igeom,&
+                                nfiss, nfisc, fisco, nnops, txlsn,&
+                                n=nb, c=b)
                 endif
 !
             endif
@@ -339,15 +342,15 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
                     if (ajout) then
                         do k = 1, ndime
-                            if (nm.lt.1000) then
-                               pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
+                            if (nm .lt. 1000) then
+                                pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
                             else
-                               do i = 1, ndim
-                                  newpt(i) = m(i)
-                               end do
-                               call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
-                                           cref, ff)
-                               pinref(ndime*(ipi-1)+k)=cref(k)
+                                do i = 1, ndim
+                                    newpt(i) = m(i)
+                                end do
+                                call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
+                                            cref, ff)
+                                pinref(ndime*(ipi-1)+k)=cref(k)
                             endif
                         enddo
                     endif
@@ -358,23 +361,24 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
                     if (ajout) then
                         do k = 1, ndime
-                            if (nm.lt.1000) then
-                               pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
+                            if (nm .lt. 1000) then
+                                pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
                             else
-                               do i = 1, ndim
-                                  newpt(i) = m(i)
-                               end do
-                               call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
-                                           cref, ff)
-                               pinref(ndime*(ipi-1)+k)=cref(k)
+                                do i = 1, ndim
+                                    newpt(i) = m(i)
+                                end do
+                                call reeref(elrefp, nnop, zr(igeom), newpt, ndim,&
+                                            cref, ff)
+                                pinref(ndime*(ipi-1)+k)=cref(k)
                             endif
                         enddo
                     endif
                 endif
 !
-                if (condition_joncno .and. nfiss.ge.2 .and. nfisc.ge.1) then
-                   call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
-                               txlsn, n=nm, c=m)
+                if (condition_joncno .and. nfiss .ge. 2 .and. nfisc .ge. 1) then
+                    call xstjon(elrefp, ndim, joncno, jlsn, igeom,&
+                                nfiss, nfisc, fisco, nnops, txlsn,&
+                                n=nm, c=m)
                 endif
 !
             endif
@@ -382,8 +386,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !         SI LA FISSURE COUPE AILLEURS
             if (lsna .ne. 0 .and. lsnb .ne. 0 .and. lsnm .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-                call xinter(ndim, ndime, elrefp, geom, lsnelp, na, nb,&
-                            nm, pintt, pmitt, lsna, lsnb, lsnm, cref, c)
+                call xinter(ndim, ndime, elrefp, geom, lsnelp,&
+                            na, nb, nm, pintt, pmitt,&
+                            lsna, lsnb, lsnm, cref, c)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
@@ -392,27 +397,28 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                             c, longar, ainter, ia, 0,&
                             alpha, ajout)
 !
-                if (ajout .and. nfiss.ge.2 .and. nfisc.ge.1) then
-                   do  i = 1, nfisc
-                      najonc=.false.
-                      nbjonc=.false.
-                      if (na.gt.1000) then
-                         najonc=.true.
-                      else
-                         if (zr(jlsn-1+(na-1)*nfiss+fisco(2*i-1)).eq.0.d0) najonc=.true.
-                      endif
-                      if (nb.gt.1000) then
-                         nbjonc=.true.
-                      else
-                         if (zr(jlsn-1+(nb-1)*nfiss+fisco(2*i-1)).eq.0.d0) nbjonc=.true.
-                      endif
-                      if (condition_joncno.and.najonc.and.nbjonc) then
-                         call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
-                                     txlsn, c=cref)
+                if (ajout .and. nfiss .ge. 2 .and. nfisc .ge. 1) then
+                    do i = 1, nfisc
+                        najonc=.false.
+                        nbjonc=.false.
+                        if (na .gt. 1000) then
+                            najonc=.true.
+                        else
+                            if (zr(jlsn-1+(na-1)*nfiss+fisco(2*i-1)) .eq. 0.d0) najonc=.true.
+                        endif
+                        if (nb .gt. 1000) then
+                            nbjonc=.true.
+                        else
+                            if (zr(jlsn-1+(nb-1)*nfiss+fisco(2*i-1)) .eq. 0.d0) nbjonc=.true.
+                        endif
+                        if (condition_joncno .and. najonc .and. nbjonc) then
+                            call xstjon(elrefp, ndim, joncno, jlsn, igeom,&
+                                        nfiss, nfisc, fisco, nnops, txlsn,&
+                                        c=cref)
 !           IL S'AGIT D'UN POINT DE JONCTION DE FISSURE, ON LE MARQUE AVEC UN ALPHA EGAL A -1
-                         ainter(zxain*(ipi-1)+4) = -1.d0
-                      endif
-                   end do
+                            ainter(zxain*(ipi-1)+4) = -1.d0
+                        endif
+                    end do
                 endif
 !
                 if (ajout) then
@@ -425,7 +431,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
         endif
 !
-100 continue
+    end do
 !
 !       NB DE POINTS D'INTERSECTION
     ninter=ipi
@@ -435,55 +441,55 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     nptm  =inm
 !
 !     TRI DES POINTS D'INTERSECTION PAR ORDRE CROISSANT DES ARETES
-    do 200 pd = 1, ninter-1
+    do pd = 1, ninter-1
         pp=pd
-        do 201 i = pp, ninter
+        do i = pp, ninter
             if (ainter(zxain*(i-1)+1) .lt. ainter(zxain*(pp-1)+1)) pp=i
-201     continue
-        do 202 k = 1, 4
+        end do
+        do k = 1, 4
             tampor(k)=ainter(zxain*(pp-1)+k)
             ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
             ainter(zxain*(pd-1)+k)=tampor(k)
-202     continue
-        do 203 k = 1, ndim
+        end do
+        do k = 1, ndim
             tampor(k)=pinter(ndim*(pp-1)+k)
             pinter(ndim*(pp-1)+k)=pinter(ndim*(pd-1)+k)
             pinter(ndim*(pd-1)+k)=tampor(k)
-203     continue
+        end do
 !  TRAITEMENT DE PINREF
-        do 204 k = 1, ndime
+        do k = 1, ndime
             tampor(k)=pinref(ndime*(pp-1)+k)
             pinref(ndime*(pp-1)+k)=pinref(ndime*(pd-1)+k)
             pinref(ndime*(pd-1)+k)=tampor(k)
-204     continue
-200 continue
+        end do
+    end do
 !
 !      ON RAMENE LES CONFIGURATIONS RASANTES DEGENEREES AUX CONFIGURATIONS CLASSIQUES
     if ((ndime.eq.3) .and. (ifiss.eq.1) .and. cut) then
-       call xdblsn(ninter, npts, ndim, ar,&
-                   pinref, pinter, ainter, cnset, nnose, it)
+        call xdblsn(ninter, npts, ndim, ar, pinref,&
+                    pinter, ainter, cnset, nnose, it)
     endif
 !      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
 !      IP1 IP2 ET IP3 ONT UN SOMMET EN COMMUN
 !      IP1 ET IP4 N ONT PAS DE SOMMET COMMUN
     if (ninter .eq. 4 .and. npts .eq. 0) then
         a1=nint(ainter(1))
-        do 220 ia = 2, 3
+        do ia = 2, 3
             a2=nint(ainter(zxain*(ia-1)+1))
             papillon=.true.
-            do 224 i = 1, 2
-                do 225 j = 1, 2
+            do i = 1, 2
+                do j = 1, 2
                     if (ar(a1,i) .eq. ar(a2,j)) papillon=.false.
-225             continue
-224         continue
+                end do
+            end do
             if (papillon) then
 !        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C
-                do 226 k = 1, 4
+                do k = 1, 4
                     tampor(k)=ainter(zxain*(ia-1)+k)
                     ainter(zxain*(ia-1)+k)=ainter(zxain*(4-1)+k)
                     ainter(zxain*(4-1)+k)=tampor(k)
-226             continue
-                do 227 k = 1, ndim
+                end do
+                do k = 1, ndim
                     tampor(k)=pinter(ndim*(ia-1)+k)
                     pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
                     pinter(ndim*(4-1)+k)=tampor(k)
@@ -491,9 +497,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                     tampor(k)=pinref(ndim*(ia-1)+k)
                     pinref(ndim*(ia-1)+k)=pinref(ndim*(4-1)+k)
                     pinref(ndim*(4-1)+k)=tampor(k)
-227             continue
+                end do
             endif
-220     continue
+        end do
     endif
 !
 !       LA CONFIG 3D / NINTER=4,NPTS=2 / NE RESSEMBLE PAS AUTRES
@@ -501,36 +507,36 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !       POINT D INTERSECTION SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M
 !       L ALGO NE DOIT PAS LE TRAITER COMME UN POINT D INTERSECTION CLASSIQUE
 !             ==> C EST UN CAS DEGENERE TRES ENNUYEUX
-    if (ndime.eq.3.and.ninter .eq. 4 .and. npts.eq.2.and.cut) then
+    if (ndime .eq. 3 .and. ninter .eq. 4 .and. npts .eq. 2 .and. cut) then
 !      SOLUTION : ON MET LE POINT MILIEU EN DERNIERE POSITION => POUR LE DISTINGUER DES AUTRES PI
-      noeua=nint(ainter(2))
-      noeub=nint(ainter(zxain+2))
-      im=0
-      do 230 i=1,6
-        do 231 j=1,2
-          if (cnset(nnose*(it-1)+ar(i,j)).eq.noeua.and.&
-            cnset(nnose*(it-1)+ar(i,3-j)).eq.noeub) im=i
-231     continue
-230   continue
-      ASSERT(im.gt.0)
-      do ipt=1,ninter-1
-        if (nint(ainter(zxain*(ipt-1)+1)).eq.im) then
-          do i=1,(zxain-1)
-            rbid=ainter(zxain*(ninter-1)+i)
-            ainter(zxain*(ninter-1)+i)=ainter(zxain*(ipt-1)+i)
-            ainter(zxain*(ipt-1)+i)=rbid
-          enddo
-          do  k=1,ndim
-            tampor(k)=pinter(ndim*(ninter-1)+k)
-            pinter(ndim*(ninter-1)+k)=pinter(ndim*(ipt-1)+k)
-            pinter(ndim*(ipt-1)+k)=tampor(k)
+        noeua=nint(ainter(2))
+        noeub=nint(ainter(zxain+2))
+        im=0
+        do i = 1, 6
+            do j = 1, 2
+                if (cnset(nnose*(it-1)+ar(i,j)) .eq. noeua .and. cnset(nnose*(it-1)+ar(i,3-j))&
+                    .eq. noeub) im=i
+            end do
+        end do
+        ASSERT(im.gt.0)
+        do ipt = 1, ninter-1
+            if (nint(ainter(zxain*(ipt-1)+1)) .eq. im) then
+                do i = 1, (zxain-1)
+                    rbid=ainter(zxain*(ninter-1)+i)
+                    ainter(zxain*(ninter-1)+i)=ainter(zxain*(ipt-1)+i)
+                    ainter(zxain*(ipt-1)+i)=rbid
+                enddo
+                do k = 1, ndim
+                    tampor(k)=pinter(ndim*(ninter-1)+k)
+                    pinter(ndim*(ninter-1)+k)=pinter(ndim*(ipt-1)+k)
+                    pinter(ndim*(ipt-1)+k)=tampor(k)
 !  TRAITEMENT DE PINREF
-            tampor(k)=pinref(ndim*(ninter-1)+k)
-            pinref(ndim*(ninter-1)+k)=pinref(ndim*(ipt-1)+k)
-            pinref(ndim*(ipt-1)+k)=tampor(k)
-         enddo
-        endif
-      enddo
+                    tampor(k)=pinref(ndim*(ninter-1)+k)
+                    pinref(ndim*(ninter-1)+k)=pinref(ndim*(ipt-1)+k)
+                    pinref(ndim*(ipt-1)+k)=tampor(k)
+                enddo
+            endif
+        enddo
 !    ON FORCE ainter(zxain*(4-1)+1)=0
 !       CAR LE NOEUD MILIEU EST REELLEMENT DANS LE PLAN DE LA FISSURE
 !       ainter(zxain*(4-1)+1)=0.d0
@@ -539,59 +545,59 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !       LA CONFIG 3D / NINTER=4,NPTS=1 / NE RESSEMBLE PAS AUTRES
 !       CONFIG IMPLEMENTEES POUR CETTE CONFIG ON TRI LES POINTS POUR QUE LE
 !       POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
-    if (ndime.eq.3.and.ninter .eq. 4 .and. npts.eq.1.and.cut) then
+    if (ndime .eq. 3 .and. ninter .eq. 4 .and. npts .eq. 1 .and. cut) then
 !       DETERMINATION DU DEUXIEME NOEUD
-       noeua = 0
-       noeub = 0
-       do i = 2, 4
-          a1 = nint(ainter(zxain*(i-1)+1))
-          if (tabls(ar(a1,1)).eq.0.d0) then
-             noeub = i
-             noeua = ar(a1,2)
-          elseif (tabls(ar(a1,2)).eq.0.d0) then
-             noeub=i
-             noeua = ar(a1,1)
-          endif
-       end do
-       ASSERT(noeub.gt.0)
-       if (noeub.ne.2) then
-          do i = 1, zxain-1
-             rbid=ainter(zxain*(2-1)+i)
-             ainter(zxain*(2-1)+i)=ainter(zxain*(noeub-1)+i)
-             ainter(zxain*(noeub-1)+i)=rbid
-          enddo
-          do k = 1, ndim
-             tampor(k)=pinter(ndim*(2-1)+k)
-             pinter(ndim*(2-1)+k)=pinter(ndim*(noeub-1)+k)
-             pinter(ndim*(noeub-1)+k)=tampor(k)
-             tampor(k)=pinref(ndim*(2-1)+k)
-             pinref(ndim*(2-1)+k)=pinref(ndim*(noeub-1)+k)
-             pinref(ndim*(noeub-1)+k)=tampor(k)
-          enddo
-       endif
+        noeua = 0
+        noeub = 0
+        do i = 2, 4
+            a1 = nint(ainter(zxain*(i-1)+1))
+            if (tabls(ar(a1,1)) .eq. 0.d0) then
+                noeub = i
+                noeua = ar(a1,2)
+            else if (tabls(ar(a1,2)).eq.0.d0) then
+                noeub=i
+                noeua = ar(a1,1)
+            endif
+        end do
+        ASSERT(noeub.gt.0)
+        if (noeub .ne. 2) then
+            do i = 1, zxain-1
+                rbid=ainter(zxain*(2-1)+i)
+                ainter(zxain*(2-1)+i)=ainter(zxain*(noeub-1)+i)
+                ainter(zxain*(noeub-1)+i)=rbid
+            enddo
+            do k = 1, ndim
+                tampor(k)=pinter(ndim*(2-1)+k)
+                pinter(ndim*(2-1)+k)=pinter(ndim*(noeub-1)+k)
+                pinter(ndim*(noeub-1)+k)=tampor(k)
+                tampor(k)=pinref(ndim*(2-1)+k)
+                pinref(ndim*(2-1)+k)=pinref(ndim*(noeub-1)+k)
+                pinref(ndim*(noeub-1)+k)=tampor(k)
+            enddo
+        endif
 !       DETERMINATION DU TROISIEME NOEUD
-       do i = 3, 4
-          a1 = nint(ainter(zxain*(i-1)+1))
-          if (ar(a1,1).eq.noeua .or. ar(a1,2).eq.noeua) then
-             noeuc=i
-          endif
-       end do
-       ASSERT(noeuc.gt.0)
-       if (noeuc.ne.3) then
-          do i = 1, zxain-1
-             rbid=ainter(zxain*(3-1)+i)
-             ainter(zxain*(3-1)+i)=ainter(zxain*(noeuc-1)+i)
-             ainter(zxain*(noeuc-1)+i)=rbid
-          enddo
-          do k = 1, ndim
-             tampor(k)=pinter(ndim*(3-1)+k)
-             pinter(ndim*(3-1)+k)=pinter(ndim*(noeuc-1)+k)
-             pinter(ndim*(noeuc-1)+k)=tampor(k)
-             tampor(k)=pinref(ndim*(3-1)+k)
-             pinref(ndim*(3-1)+k)=pinref(ndim*(noeuc-1)+k)
-             pinref(ndim*(noeuc-1)+k)=tampor(k)
-          enddo
-       endif
+        do i = 3, 4
+            a1 = nint(ainter(zxain*(i-1)+1))
+            if (ar(a1,1) .eq. noeua .or. ar(a1,2) .eq. noeua) then
+                noeuc=i
+            endif
+        end do
+        ASSERT(noeuc.gt.0)
+        if (noeuc .ne. 3) then
+            do i = 1, zxain-1
+                rbid=ainter(zxain*(3-1)+i)
+                ainter(zxain*(3-1)+i)=ainter(zxain*(noeuc-1)+i)
+                ainter(zxain*(noeuc-1)+i)=rbid
+            enddo
+            do k = 1, ndim
+                tampor(k)=pinter(ndim*(3-1)+k)
+                pinter(ndim*(3-1)+k)=pinter(ndim*(noeuc-1)+k)
+                pinter(ndim*(noeuc-1)+k)=tampor(k)
+                tampor(k)=pinref(ndim*(3-1)+k)
+                pinref(ndim*(3-1)+k)=pinref(ndim*(noeuc-1)+k)
+                pinref(ndim*(noeuc-1)+k)=tampor(k)
+            enddo
+        endif
     endif
 !
     if (.not.cut) goto 999
@@ -601,23 +607,23 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     jonc = .false.
     inter = 0
     do i = 1, ifiss
-       inter = inter + coupe(i)
+        inter = inter + coupe(i)
     end do
-    if (inter.gt.1) jonc = .true.
+    if (inter .gt. 1) jonc = .true.
 !
 ! VERIFICATION DES CONFIGURATIONS AUTORISEES
-    if (ifiss.eq.1) then
-       call xerfis(ndime, ninter, npts, nptm)
+    if (ifiss .eq. 1) then
+        call xerfis(ndime, ninter, npts, nptm)
     endif
 !
 ! CALCUL DES POINTS MILIEUX
 !
     pmmax=pmmaxi(ndim)
-    if (ndim .le. 2) call xalgo2(ndim, elrefp, it, nnose,&
-                                 cnset, typma, ndime, geom, lsnelp,&
-                                 pmilie, ninter, ainter, ar, npts,&
-                                 nptm, pmmax, nmilie, mfis, lonref,&
-                                 pinref, pintt, pmitt, jonc, exit)
+    if (ndim .le. 2) call xalgo2(ndim, elrefp, it, nnose, cnset,&
+                                 typma, ndime, geom, lsnelp, pmilie,&
+                                 ninter, ainter, ar, npts, nptm,&
+                                 pmmax, nmilie, mfis, lonref, pinref,&
+                                 pintt, pmitt, jonc, exit)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
     if (ndim .eq. 3) call xalgo3(ndim, elrefp, nnop, it, nnose,&

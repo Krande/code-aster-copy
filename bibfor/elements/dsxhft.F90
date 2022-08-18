@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dsxhft(df, jacob, hft2)
-    implicit  none
+    implicit none
     real(kind=8) :: df(3, 3), jacob(*), hft2(2, 6)
 !     MATRICE PRODUIT HF.T2(2,6)
 !     -----------------------------------------------------------------
@@ -52,15 +52,17 @@ subroutine dsxhft(df, jacob, hft2)
     t2(3,2) = vj12 * vj22
     t2(3,3) = vj11 * vj22 + vj12 * vj21
 !
-    do 100 j = 1, 2
-        do 100 k = 1, 6
+    do j = 1, 2
+        do k = 1, 6
             hft2(j,k) = 0.d0
-100      continue
-    do 110 j = 1, 3
-        do 110 k = 1, 3
+        end do
+    end do
+    do j = 1, 3
+        do k = 1, 3
             hft2(1,j) = hft2(1,j) + hf(1,k) * t2(k,j)
             hft2(1,j+3) = hft2(1,j+3) + hf(1,k+3) * t2(k,j)
             hft2(2,j) = hft2(2,j) + hf(2,k) * t2(k,j)
             hft2(2,j+3) = hft2(2,j+3) + hf(2,k+3) * t2(k,j)
-110      continue
+        end do
+    end do
 end subroutine

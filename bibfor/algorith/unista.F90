@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine unista(h, ldh, v, ldv, ddlsta,&
                   n, vectp, csta, beta, etat,&
                   ldynfa, ddlexc, redem)
@@ -123,14 +123,14 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
         gama = abs(beta)+1.d0
 !
-        do 10 i = 1, ldh
-            do 20 j = 1, ldh
+        do i = 1, ldh
+            do j = 1, ldh
                 zr(q+(j-1)*ldh+i-1) = -h(i,j)
-20          continue
-10      continue
-        do 30 i = 1, ldh
+            end do
+        end do
+        do i = 1, ldh
             zr(q+(i-1)*(ldh+1)) = gama+zr(q+(i-1)*(ldh+1))
-30      continue
+        end do
 !
 !     2ND APPEL A LA METHODE DES PUISSANCES
 !
@@ -147,36 +147,36 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
                 .true._1)
 !
     vtest = 0.d0
-    do 50 i = 1, ldv
+    do i = 1, ldv
         vtest = vtest +zr(vectt+i-1)*zr(xsol+i-1)
         if (ddlsta(i) .eq. 0 .and. proj .eq. 1) then
             if (zr(vectt+i-1) .lt. zero) then
                 ASSERT(.false.)
             endif
         endif
-50  end do
+    end do
 !
     write (ifm,*) 'VAL1_STAB : ',vtest
 !
     if (vtest .lt. 0.d0 .or. etat .eq. 0) then
-        do 90 i = 1, ldv
+        do i = 1, ldv
             vectp(i) = zr(vectt+i-1)
-90      continue
+        end do
         csta = vtest
         goto 300
     endif
 !
 !     CALCUL DU CRITERE
 !
-    do 60 i = 1, ldh
-        do 70 j = 1, ldh
+    do i = 1, ldh
+        do j = 1, ldh
             if (i .eq. j) then
                 zr(b+(i-1)*ldh+j-1) = 1.d0
             else
                 zr(b+(i-1)*ldh+j-1) = 0.d0
             endif
-70      continue
-60  end do
+        end do
+    end do
 !
     cara='NFSP'
 !
@@ -193,26 +193,26 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1,&
                 .true._1)
     vtest = 0.d0
-    do 55 i = 1, ldv
+    do i = 1, ldv
         vtest = vtest +zr(vect2+i-1)*zr(xsol+i-1)
-55  end do
+    end do
 !
 !      WRITE (IFM,*) 'VAL_PROPRE_MAX : ',VTEST
 !
-    do 15 i = 1, ldh
-        do 25 j = 1, ldh
+    do i = 1, ldh
+        do j = 1, ldh
             zr(q+(i-1)*ldh+j-1) = -zr(b+(i-1)*ldh+j-1)- zr(b+(j-1)* ldh+i-1)
-25      continue
-15  end do
-    do 35 i = 1, ldh
+        end do
+    end do
+    do i = 1, ldh
 !        Q(I,I) = 2*VTEST*(1.D0/4.D0)+Q(I,I)
         zr(q+(i-1)*ldh+i-1) = 2*vtest*(1.5d0/2.d0)+ zr(q+(i-1)*ldh+i- 1)
-35  end do
+    end do
 !
     if (redem .eq. 0) then
-        do 80 i = 1, ldv
+        do i = 1, ldv
             vectp(i) = zr(vectt+i-1)
-80      continue
+        end do
     endif
 !
     indico = 1
@@ -226,14 +226,14 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1,&
                 .true._1)
     vtest = 0.d0
-    do 65 i = 1, ldv
+    do i = 1, ldv
         vtest = vtest +vectp(i)*zr(xsol+i-1)
         if (ddlsta(i) .eq. 0) then
             if (vectp(i) .lt. zero) then
                 ASSERT(.false.)
             endif
         endif
-65  end do
+    end do
 !
     write (ifm,*) 'VAL2_STAB : ',vtest
     write (ifm,9070)
@@ -241,7 +241,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
     csta = vtest
 !
-300  continue
+300 continue
 !
     redem = redem +1
 !

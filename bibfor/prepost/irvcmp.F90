@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irvcmp(ncmpmx, nomcgd, nomcmp, nbcmpt)
-    implicit   none
+    implicit none
     integer :: ncmpmx, nbcmpt
     character(len=*) :: nomcgd(*), nomcmp
 !     BUT :   TROUVER SI UNE COMPOSANTE EST PRESENTE DANS LA GRANDEUR
@@ -30,12 +30,12 @@ subroutine irvcmp(ncmpmx, nomcgd, nomcmp, nbcmpt)
 ! ----------------------------------------------------------------------
     integer :: icmp
 !
-    do 10 icmp = 1, ncmpmx
+    do icmp = 1, ncmpmx
         if (nomcmp .eq. nomcgd(icmp)) then
             nbcmpt=nbcmpt+1
             goto 12
         endif
-10  end do
-12  continue
+    end do
+ 12 continue
 !
 end subroutine

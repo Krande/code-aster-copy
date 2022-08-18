@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                   grdmod)
     implicit none
@@ -78,7 +78,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
         call getvr8('BASE_MODALE', 'BANDE', iocc=1, nbval=2, vect=bande,&
                     nbret=ibid)
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmod1(1), ilmode)
-        do 126 im = 1, nbmod1(1)
+        do im = 1, nbmod1(1)
             imod1 = zi(lnumor+im-1)
             call rsadpa(modmec, 'L', 1, 'FREQ', imod1,&
                         0, sjv=iad, styp=k8b)
@@ -87,7 +87,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                 nbmode = nbmode + 1
                 zi(ilmode-1+nbmode) = imod1
             endif
-126      continue
+        end do
         if (nbmode .eq. 0) then
             call utmess('F', 'ALGORITH10_31')
         endif
@@ -95,11 +95,11 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmode, ilmode)
         call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbmode, vect=zi(ilmode),&
                     nbret=ibid)
-        do 232 im = 1, nbmode
+        do im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1(1)) then
                 call utmess('F', 'ALGORITH10_32')
             endif
-232      continue
+        end do
     endif
 !
 !----AMORTISSEMENTS MODAUX RETENUS
@@ -114,32 +114,32 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
         endif
     else
         call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amunif, nbret=ibid)
-        do 127 im = 1, nbmode
+        do im = 1, nbmode
             zr(ilamor-1+im) = amunif
-127      continue
+        end do
     endif
 !
 !------CONSITUTION DE LA LISTE DES ADRESSES DES MODES DYNAMIQUES
 !
     grdmod = 'DEPL'
     call wkvect('&&OP0131.LISTADRMODE', 'V V I', nbmode, ilamod)
-    do 211 im = 1, nbmode
+    do im = 1, nbmode
         imod1 = zi(ilmode+im-1)
         call rsexch('F', modmec, grdmod, imod1, nomcha,&
                     iret)
         call jeveut(nomcha(1:19)//'.VALE', 'L', zi(ilamod+im-1))
-211  end do
+    end do
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=tymmec)
 !
 !-----RECUPERATION DE LA MASSE GENERALISEE
 !
     call wkvect('&&OP0131.MASSEGENE', 'V V R8', nbmode, iadrmg)
-    do 231 im = 1, nbmode
+    do im = 1, nbmode
         imod1 = zi(ilmode+im-1)
         call rsadpa(modmec, 'L', 1, 'MASS_GENE', imod1,&
                     0, sjv=iad, styp=k8b)
         zr(iadrmg+im-1) = zr(iad)
-231  end do
+    end do
 !
     call jedetr('&&RECMOD.NUMERO.ORDRE')
     call jedema()

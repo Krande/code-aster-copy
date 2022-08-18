@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                   icabl, nbnoca, xnoca, ynoca, znoca,&
                   ncncin, nmabet)
@@ -69,6 +69,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
@@ -85,8 +87,6 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 #include "asterfort/tbajli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
@@ -99,7 +99,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     integer :: nselec
     parameter     (nselec=5)
     integer :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
-    integer ::   jnoca,  jnunob,   jxca
+    integer :: jnoca, jnunob, jxca
     integer :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
     integer :: noebe(nselec), numail, nbval, nbval2, iret, ibid, noebec
     real(kind=8) :: d2, d2min(nselec), dx, dy, dz, rbid, x3dca(3)
@@ -218,14 +218,14 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     nblign = tbnp(2)
     ideca = nblign - nbno
     call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
-    do 10 ipara = 1, nbpara
+    do ipara = 1, nbpara
         if (tblp(1+4*(ipara-1)) .eq. parcr) then
             nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
         endif
-10  end do
-11  continue
+    end do
+ 11 continue
 !
 !.... COORDONNEES DES NOEUDS
 !
@@ -258,7 +258,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 !.... CALCUL DE LA LONGUEUR TOTALE DU CABLE
 !
-    do 101 inoca = 1, (nbno-1)
+    do inoca = 1, (nbno-1)
 !
         nnoeca = zk8(jnoca+ideca+inoca-1)
 !
@@ -293,7 +293,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         xnorm = sqrt(xnorm2)
         longca = longca + xnorm
 !
-101  end do
+    end do
 !
     if (niv .eq. 2) then
         write(ifm,*) '------------------------------------------'
@@ -312,7 +312,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 ! 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
 ! ---
-    do 100 inoca = 1, nbno
+    do inoca = 1, nbno
 !
 !
         nnoeca = zk8(jnoca+ideca+inoca-1)
@@ -385,7 +385,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !     CAS 2 : ON ATTACHE UN SEUL NOEUD DU BETON AU NOEUD CABLE
 !     ---------------------------------------------------------
 !
-112      continue
+112     continue
         if (niv .eq. 2) then
             write(ifm,*) '-> ON ATTACHE LE NOEUD OU LA MAILLE BETON '//&
      &             'LA PLUS PROCHE'
@@ -399,33 +399,33 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 ! ON DETERMINE LES NSELEC NOEUDS LES PLUS PROCHES
 !
-        do 114 ibe = 1, nselec
+        do ibe = 1, nselec
             d2min(ibe) = r8maem()
             noebe(ibe) = 0
-114      continue
+        end do
 !
         noebec=0
-        do 110 inobe = 1, nbnobe
+        do inobe = 1, nbnobe
             noe = zi(jnunob+inobe-1)
             dx = x3dca(1) - zr(jcoor+3*(noe-1) )
             dy = x3dca(2) - zr(jcoor+3*(noe-1)+1)
             dz = x3dca(3) - zr(jcoor+3*(noe-1)+2)
             d2 = dx * dx + dy * dy + dz * dz
-            do 111 ibe = 1, nselec
+            do ibe = 1, nselec
                 if (d2 .lt. d2min(ibe)) then
-                    do 122 jbe = 0, nselec-ibe-1
+                    do jbe = 0, nselec-ibe-1
                         d2min(nselec-jbe)=d2min(nselec-jbe-1)
                         noebe(nselec-jbe)=noebe(nselec-jbe-1)
-122                  continue
+                    end do
                     d2min(ibe)=d2
                     noebe(ibe)=noe
                     goto 113
                 endif
-111          continue
-113          continue
+            end do
+113         continue
             d2_min_max(inobe) = d2
             no_min_max(inobe) = noe
-110      continue
+        end do
 !
         if (niv .eq. 2) then
             write(ifm,*) '   INFOS : DISTANCE MINIMALE : ',sqrt(d2min(1))
@@ -434,7 +434,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! 2.2.2  TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 ! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
 !
-        do 115 ibe = 1, nselec
+        do ibe = 1, nselec
 !          ATTENTION IL PEUT Y AVOIR MOINS QUE NSELEC NOEUDS
 !          DE BETON
             if (noebe(ibe) .eq. 0) goto 116
@@ -446,14 +446,14 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                 noebec = noebe(ibe)
                 goto 116
             endif
-115      continue
-116      continue
+        end do
+116     continue
 !
 ! -  TEST DE COINCIDENCE GEOGRAPHIQUEMENT AVEC LE NOEUD BETON LE PLUS PROCHE
 !
-         if (immer > 0 .and. sqrt(d2min(1)) < 1d2*r8prem()*xnorm) then
-             immer = 2
-         endif
+        if (immer > 0 .and. sqrt(d2min(1)) < 1d2*r8prem()*xnorm) then
+            immer = 2
+        endif
 !
 ! 2.2.3  EN CAS D'ECHEC DE LA TENTATIVE PRECEDENTE
 ! .....
@@ -462,17 +462,17 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !.......... ON CREE UNE LISTE ORDONNEE DES NOEUDS DE LA STRUCTURE BETON
 !.......... DU PLUS PROCHE AU PLUS ELOIGNE DU NOEUD CABLE CONSIDERE
 !
-            do 120 inob1 = 1, nbnobe-1
+            do inob1 = 1, nbnobe-1
                 d2minc = d2_min_max(inob1)
                 noebec = no_min_max(inob1)
                 inobe = inob1
-                do 121 inob2 = inob1+1, nbnobe
+                do inob2 = inob1+1, nbnobe
                     if (d2_min_max(inob2) .lt. d2minc) then
                         d2minc = d2_min_max(inob2)
                         noebec = no_min_max(inob2)
                         inobe = inob2
                     endif
-121              continue
+                end do
                 if (inobe .gt. inob1) then
                     d2 = d2_min_max(inob1)
                     noe = no_min_max(inob1)
@@ -481,7 +481,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                     d2_min_max(inobe) = d2
                     no_min_max(inobe) = noe
                 endif
-120          continue
+            end do
 !
             if (niv .eq. 2) then
                 write(ifm,*) '   INFOS : DISTANCE MINIMALE : ',sqrt(d2)
@@ -494,7 +494,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !.......... ON EFFECTUE DE NOUVELLES TENTATIVES EN UTILISANT LES NOEUDS
 !.......... DE LA LISTE ORDONNEE PRECEDENTE, DU SECOND JUSQU'AU DERNIER
 !.......... REPETER
-            do 130 inobe = nselec, nbnobe
+            do inobe = nselec, nbnobe
                 noebec = no_min_max(inobe)
 !............. TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 !............. AUXQUELLES APPARTIENT LE NOEUD BETON COURANT
@@ -503,8 +503,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                             xbar(1), immer)
 !............. SORTIE DU BLOC REPETER EN CAS DE SUCCES
                 if (immer .ge. 0) goto 131
-130          continue
-131          continue
+            end do
+131         continue
 !
         endif
 !
@@ -532,7 +532,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         call tbajli(tablca, 3, param, [immer], [rbid],&
                     [cbid], voisin(1), ideca+ inoca)
 !
-100  end do
+100     continue
+    end do
 !
 !  FIN BOUCLE SUR NBNO
 !

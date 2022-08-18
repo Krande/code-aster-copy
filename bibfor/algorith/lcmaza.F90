@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, epsm, deps, vim,&
-                  option, sig,&
-                  vip, dsidep)
+                  option, sig, vip, dsidep)
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/bptobg.h"
+#include "asterfort/get_varc.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lcumvi.h"
 #include "asterfort/r8inir.h"
@@ -31,7 +31,6 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-#include "asterfort/get_varc.h"
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
     character(len=*) :: fami
@@ -100,16 +99,16 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 !                            INITIALISATION
 ! ======================================================================
-
-
+!
+!
 !
 ! - Get temperatures
 !
-    call get_varc(fami , kpg  , ksp , 'T',&
-                  tm, tp, tref)
-
+    call get_varc(fami, kpg, ksp, 'T', tm,&
+                  tp, tref)
+!
 ! -- OPTION ET MODELISATION
-
+!
     rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
     resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
 ! M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV
@@ -200,7 +199,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                 0)
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdess = valres(2)
-
+!
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
     nomres(1) = 'EPSD0'
     nomres(2) = 'AC'
@@ -442,9 +441,9 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         tr(5) = 0.d0
         tr(6) = 0.d0
         call bptobg(tr, sig, vecpe)
-        do 90 j = 4, ndimsi
+        do j = 4, ndimsi
             sig(j)=rac2*sig(j)
- 90     continue
+        end do
     endif
 ! ======================================================================
 !     CALCUL  DE LA MATRICE TANGENTE DSIDEP
@@ -495,27 +494,29 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             tr(5) = 0.d0
             tr(6) = 0.d0
             call bptobg(tr, sigel, vecpe)
-            do 120 j = 4, ndimsi
+            do j = 4, ndimsi
                 sigel(j)=rac2*sigel(j)
-120         continue
-            do 220 i = 1, 6
-                do 221 j = 1, 6
+            end do
+            do i = 1, 6
+                do j = 1, 6
                     dsidep (i,j) = dsidep (i,j) - coef * sigel(i)*&
                     epsplu(j)
-221             continue
-220         continue
+                end do
+            end do
 ! -- CORRECTION CONTRAINTES PLANES
             if (cplan) then
-                do 300 j = 1, ndimsi
+                do j = 1, ndimsi
                     if (j .eq. 3) goto 300
-                    do 310 l = 1, ndimsi
+                    do l = 1, ndimsi
                         if (l .eq. 3) goto 310
                         if (dsidep(3,3) .ne. 0.d0) then
                             dsidep(j,l)=dsidep(j,l) - 1.d0/dsidep(3,3)&
                             *dsidep(j,3)*dsidep(3,l)
                         endif
-310                 continue
-300             continue
+310                     continue
+                    end do
+300                 continue
+                end do
             endif
         endif
     endif

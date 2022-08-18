@@ -15,21 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
                   ddls, dfdi, ff, idepl, igthet,&
-                  ithet, jac, ndim, nnop,&
-                  nnos, tau1, tau2, nd, xg)
+                  ithet, jac, ndim, nnop, nnos,&
+                  tau1, tau2, nd, xg)
     implicit none
 !
+#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "blas/ddot.h"
 #include "asterfort/indent.h"
 #include "asterfort/normev.h"
 #include "asterfort/prmave.h"
 #include "asterfort/provec.h"
 #include "asterfort/transp.h"
-#include "jeveux.h"
+#include "blas/ddot.h"
 !
 ! Calcul de facteurs d'intensité des contraintes équivalents
 !   avec XFEM + éléments cohésifs (option CALC_K_G_COHE)
@@ -53,7 +53,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 ! In nd => normale à la facette
 ! In tau1 => tangente 1
 ! In xg => coordonnées du point de Gauss
-
+!
 !
 !
     integer :: ndim, nnop
@@ -75,16 +75,16 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !     BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
 !     DIMENSIONNEMENT A 3 ET NON NDIM POUR POUVOIR UTILISER NORMEV.F
     pm(:,:) = 0.d0
-    do 117 i = 1, ndim
+    do i = 1, ndim
         pm(1,i) = nd(i)
-117  continue
-    do 118 i = 1, ndim
+    end do
+    do i = 1, ndim
         pm(2,i) = tau1(i)
-118  continue
+    end do
     if (ndim .eq. 3) then
-        do 119 i = 1, ndim
+        do i = 1, ndim
             pm(3,i) = tau2(i)
-119      continue
+        end do
     endif
     call transp(pm, ndim, ndim, ndim, ptr,&
                 ndim)
@@ -93,11 +93,11 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     ptp(:) = 0.d0
     vec(:) = 0.d0
     do ino = 1, nnop
-        do 110 i = 1, ndim
+        do i = 1, ndim
             ptp(i) = ptp(i) + basloc(3*ndim*(ino-1)+i) * ff(ino)
             e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff(ino)
             e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff(ino)
-110      continue
+        end do
     end do
 !
 ! E1 == NORMALE (N)
@@ -109,9 +109,9 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     theta(:) = 0.d0
 !
     do i = 1, ndim
-        do 301 ino = 1, nnop
+        do ino = 1, nnop
             theta(i) = theta(i) + ff(ino) * zr(ithet-1+ndim*(ino-1)+i)
-301      continue
+        end do
 !
 !       ON REMPLACE E2 PAR THETA: REDRESSEMENT EN BORD DE FISSURE
         e2(i) = theta(i)
@@ -125,7 +125,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     call normev(theta, norme_theta)
     call provec(temp, e1, theta)
     call normev(theta, norme)
-    do i = 1,ndim
+    do i = 1, ndim
         theta(i) = norme_theta*theta(i)
     end do
 !
@@ -144,25 +144,25 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !    call normev(e2, norme)
 !
 !   OPTION 3 : DIRECTION TANGENTE = DIRECTION AU FOND
-    do i=1,ndim
+    do i = 1, ndim
         vec(i) = xg(i) - ptp(i)
     end do
 !   Seule modification par rapport à avant :
 !   on va prendre la projection dans le plan
     cmp_hp = ddot(3,vec,1,e3,1)
-    do i=1,ndim
+    do i = 1, ndim
         vec(i) = vec(i) - cmp_hp*e3(i)
     end do
-    call normev(vec,norme)
+    call normev(vec, norme)
     sens = ddot(3,vec,1,e2,1)
-    if(norme.ne.0.d0) then
-        if(sens.lt.0.d0) then
-            do i=1,ndim
-               e2(i) = -vec(i)
+    if (norme .ne. 0.d0) then
+        if (sens .lt. 0.d0) then
+            do i = 1, ndim
+                e2(i) = -vec(i)
             end do
         else
-            do i=1,ndim
-               e2(i) = vec(i)
+            do i = 1, ndim
+                e2(i) = vec(i)
             end do
         endif
     endif
@@ -176,9 +176,9 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     lambl(:) = 0.d0
     do ino = 1, nnop
         call indent(ino, ddls, ddlm, nnos, ii)
-        do 280 j = 1, ndim
+        do j = 1, ndim
             lambl(j) = lambl(j) + zr(idepl-1+ii+ddld+j)*ff(ino)
-280      continue
+        end do
     end do
     call prmave(0, ptr, ndim, ndim, ndim,&
                 lambl, ndim, lamb, ndim, ier)
@@ -191,18 +191,18 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     do ino = 1, nnop
         am(:) = 0.d0
         call indent(ino, ddls, ddlm, nnos, ii)
-        do 291 j = 1, ndim
-            do 292 l = 1, ndim
+        do j = 1, ndim
+            do l = 1, ndim
                 am(j) = am(j) + ptr(j,l)*zr(idepl-1+ddld+ndim+ii+l)
-292          continue
-291      continue
+            end do
+        end do
 !
         do j = 1, ndim
             do l = 1, ndim
                 grdep(j,l) = grdep(j,l) + dfdi(ino,l)*am(j)
             end do
         end do
-     end do
+    end do
 !
 !     -----------------------------------
 !     4) CALCUL EFFECTIF DE G, K1, K2, K3
@@ -218,12 +218,12 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     grde2 = 0.d0
     grde3 = 0.d0
     do j = 1, ndim
-        do 540 l = 1, ndim
+        do l = 1, ndim
             grde1 = grde1 + e1(j)*grdep(j,l)*theta(l)
             grde2 = grde2 + e2(j)*grdep(j,l)*theta(l)
             grde3 = grde3 + e3(j)*grdep(j,l)*theta(l)
             g = g - lamb(j)*grdep(j,l)*theta(l)
-540      continue
+        end do
     end do
     lamb1 = ddot(3,lamb,1,e1,1)
     lamb2 = ddot(3,lamb,1,e2,1)

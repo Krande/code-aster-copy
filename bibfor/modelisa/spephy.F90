@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                   freq, cham, specmr, specmi, disc,&
                   nnoe, nomcmp, nuor, nbmr, nbn,&
@@ -128,34 +128,34 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     ival(2) = nuor(1)
     ival(3) = nuor(1)
     exiind = .false.
-    do 200 i1 = 1, mxval
+    do i1 = 1, mxval
         if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+i1) .eq. ival(3))) exiind = &
                                                                                .true.
-200 continue
+    end do
 !
     if (.not. exiind) goto 20
 !
 !     --- RECUPERATION DES FONCTIONS (SPECTRES) ET STOCKAGE DANS
 !     ---          SPECMR,SPECMI
 !
-    do 30 imj = 1, nbmr
+    do imj = 1, nbmr
 !
         ival(2) = nuor(imj)
 !
         ideb = imj
         if (intmod) ideb = 1
 !
-        do 40 imi = ideb, imj
+        do imi = ideb, imj
 !
             ival(3) = nuor(imi)
 !
             exiind = .false.
-            do 210 i1 = 1, mxval
+            do i1 = 1, mxval
                 if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+ i1) .eq. ival(3))) then
                     exiind = .true.
                     call jeveuo(jexnum(chvale, i1), 'L', ifon)
                 endif
-210         continue
+            end do
 !
             if (.not.exiind) then
                 valk(1)(1:10) = 'INTE_SPEC'
@@ -165,12 +165,12 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 !
             isj = (imj* (imj-1))/2 + imi
             if (isj .eq. 1) then
-                do 51 if1 = 1, nbpf
+                do if1 = 1, nbpf
                     disc(if1) = zr(lfreq+ (if1-1))
- 51             continue
+                end do
             endif
 !
-            do 50 if1 = 1, nbpf
+            do if1 = 1, nbpf
                 if (ival(2) .eq. ival(3)) then
                     specmr(if1,isj) = zr(ifon+(if1-1))
                     specmi(if1,isj) = 0.d0
@@ -178,10 +178,10 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                     specmr(if1,isj) = zr(ifon+ (if1-1)*2)
                     specmi(if1,isj) = zr(ifon+ (if1-1)*2+1)
                 endif
- 50         continue
- 40     continue
+            end do
+        end do
 !
- 30 continue
+    end do
 !
 !    --- CREATION ET REMPLISSAGE DES FONCTIONS - SPECTRES REPONSES
 !
@@ -191,9 +191,9 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     chcmpj = nomu//'.CMPJ'
     chvals = nomu//'.VALE'
     call wkvect(nomu//'.DISC', 'G V R', nbpf, lfreqs)
-    do 80 il = 1, nbpf
+    do il = 1, nbpf
         zr(lfreqs+il-1) = disc(il)
- 80 continue
+    end do
 !
     if (intphy) then
         mxvals = nbn*(nbn+1)/2
@@ -209,7 +209,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                 mxvals)
 !
     ij = 0
-    do 60 inj = 1, nbn
+    do inj = 1, nbn
 !
         kval(3) = nnoe(inj)
         kval(4) = nomcmp
@@ -217,7 +217,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
         idebn = inj
         if (intphy) idebn = 1
 !
-        do 70 ini = idebn, inj
+        do ini = idebn, inj
 !
             ij = ij+1
             kval(1) = nnoe(ini)
@@ -239,17 +239,17 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
             call jeecra(jexnum(chvals, ij), 'LONUTI', nbabs)
             call jeveuo(jexnum(chvals, ij), 'E', ispec)
 !
-            do 90 il = 1, nbpf
+            do il = 1, nbpf
 !
                 specr = 0.d0
                 speci = 0.d0
 !
-                do 100 im2 = 1, nbmr
+                do im2 = 1, nbmr
 !
                     idebm = im2
                     if (intmod) idebm = 1
 !
-                    do 110 im1 = idebm, im2
+                    do im1 = idebm, im2
                         i1 = imod1 + im1 - 1
                         i2 = imod1 + im2 - 1
                         ism = (im2* (im2-1))/2 + im1
@@ -302,8 +302,8 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                         endif
 !                 -----
 !
-110                 continue
-100             continue
+                    end do
+                end do
 !
                 if (ioptch .eq. 2) then
                     specr = specr * 4.d0 * pi * pi
@@ -318,11 +318,11 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                     zr(ispec+2*(il-1) ) = specr
                     zr(ispec+2*(il-1)+1) = speci
                 endif
- 90         continue
+            end do
 !
- 70     continue
+        end do
 !
- 60 continue
+    end do
  20 continue
 !
     call jedema()

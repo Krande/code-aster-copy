@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdfds(nbmat, mater, s, para, var,&
                   ds2hds, ucri, dfdsig)
-    implicit      none
+    implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
@@ -80,16 +80,16 @@ subroutine lkdfds(nbmat, mater, s, para, var,&
     call r8inir(6, 0.d0, a, 1)
     call r8inir(6, 0.d0, dfdsig, 1)
 !
-    do 10 i = 1, ndt
+    do i = 1, ndt
         a(i) = var(1) * ds2hds(i) + var(2)* kron (i)
-10  end do
+    end do
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         if (ucri .le. r8prem()) then
             dfdsig(i) = ds2hds(i)
         else
             dfdsig(i) = ds2hds(i) - fact1*((ucri)**fact3)*a(i)
         endif
-20  end do
+    end do
 ! =================================================================
 end subroutine

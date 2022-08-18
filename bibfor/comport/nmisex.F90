@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, deps,&
                   sigm, vim, option, sigp, vip,&
@@ -402,8 +402,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
             end do
             if (plasti .and. sigeps .ge. 0.d0) then
                 a = 1.d0+1.5d0*deuxmu*dp/rp
-                coef = -(1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/ rp**2 *(1.d0 - dp*rprim/rp &
-                        &)/a
+                coef = -(1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/ rp**2 *(1.d0 - dp*rprim/rp )/a
                 do k = 1, ndimsi
                     do l = 1, ndimsi
                         dsidep(k,l) = coef*sigdv(k)*sigdv(l)
@@ -411,7 +410,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                 end do
             endif
         endif
-
+!
 !
 !       -- 8.2 PARTIE ELASTIQUE:
         do k = 1, 3
@@ -426,16 +425,18 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
-            do 136 k = 1, ndimsi
+            do k = 1, ndimsi
                 if (k .eq. 3) goto 136
 !
-                do 137 l = 1, ndimsi
+                do l = 1, ndimsi
                     if (l .eq. 3) goto 137
 !
                     dsidep(k,l) = dsidep(k,l) - 1.d0/dsidep(3,3)* dsidep(k,3)*dsidep(3,l)
 !
-137             continue
-136         continue
+137                 continue
+                end do
+136             continue
+            end do
         endif
     else
         ASSERT(ASTER_FALSE)

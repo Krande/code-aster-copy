@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcha0(tychap, tyvarz, novarz, vachap)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -65,9 +65,9 @@ subroutine nmcha0(tychap, tyvarz, novarz, vachap)
     call nmchai(tychap, 'LONMAX', nbvar)
 !
     if (tyvari .eq. 'ALLINI') then
-        do 12 i = 1, nbvar
+        do i = 1, nbvar
             vachap(i) = k19bla
-12      continue
+        end do
     else
         call nmchai(tychap, tyvari, index)
         if ((index.le.0) .or. (index.gt.nbvar)) then

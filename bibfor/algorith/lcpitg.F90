@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcpitg(compor, df, line, dp, dvbe,&
                   dtaudf)
 !
@@ -102,23 +102,23 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
 !
 ! 2 - DERIVEE DE DVBE PAR RAPPORT A BETR = DVBBTR
 !
-    do 110 ij = 1, 6
-        do 120 kl = 1, 6
+    do ij = 1, 6
+        do kl = 1, 6
             dvbbtr(ij,kl)= a2*(id(ij,kl)-kr(ij)*kr(kl)/3.d0) + a3*&
             dvbe(ij)*dvbe(kl) + a4*dvbe(ij)*kr(kl)
-120      continue
-110  end do
+        end do
+    end do
 !
 !
 ! 3 - DERIVEE DE DVBE PAR RAPPORT A DF = DVBEDF
 !
-    do 130 ij = 1, 6
-        do 140 k = 1, 3
-            do 150 l = 1, 3
+    do ij = 1, 6
+        do k = 1, 3
+            do l = 1, 3
                 dvbedf(ij,k,l) = ddot(6,dvbbtr(ij,1),6,dbtrdf(1,k,l), 1)
-150          continue
-140      continue
-130  end do
+            end do
+        end do
+    end do
 !
 !
 ! 4 - MATRICE TANGENTE = DTAUDF
@@ -127,12 +127,12 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
     dtaudb = mu
     dtaudj = 0.5d0*(2.d0*unk*jp-cother*(1.d0-1.d0/(jp**2.d0)))
 !
-    do 170 ij = 1, 6
-        do 180 k = 1, 3
-            do 190 l = 1, 3
+    do ij = 1, 6
+        do k = 1, 3
+            do l = 1, 3
                 dtaudf(ij,k,l) = dtaudb*dvbedf(ij,k,l) + dtaudj*kr(ij) *djdf(k,l)
-190          continue
-180      continue
-170  end do
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0470(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -77,12 +77,13 @@ subroutine te0470(option, nomte)
     nno1 = zi(icarac )
     nno2 = zi(icarac+1)
     n = 1
-    do 1 i = 1, 2
-        do 1 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             n = n+1
             npg1(i,j) = zi(icarac+n)
             npg2(i,j) = zi(icarac+n+4)
- 1      continue
+        end do
+    end do
 ! --- ADRESSES DES FONCTIONS DE FORMES
     call jevete(ff, 'L', iff)
     npg = npg1(1,1)*npg1(1,1)*npg1(1,2)
@@ -214,22 +215,28 @@ subroutine te0470(option, nomte)
 !     ------------------------------------------
 !     --- INITIALISATION A ZERO DE A, B ET C ---
 !     ------------------------------------------
-    do 50 j = 1, nno1
-        do 50 i = 1, nno1
-            do 50 l = 1, nddl
-                do 50 k = 1, nddl
+    do j = 1, nno1
+        do i = 1, nno1
+            do l = 1, nddl
+                do k = 1, nddl
                     a(k,l,i,j) = 0.d0
-50              continue
+                end do
+            end do
+        end do
+    end do
 ! --- LES MATRICES B ET C NE SONT UTILISEES QUE POUR DES MAILLES HEXA20
-    do 60 j = 1, nno1
-        do 60 i = nno1+1, nno2
-            do 60 l = 1, nddl
+    do j = 1, nno1
+        do i = nno1+1, nno2
+            do l = 1, nddl
                 b(1,l,i,j) = 0.d0
-60          continue
-    do 70 j = nno1+1, nno2
-        do 70 i = nno1+1, 20
+            end do
+        end do
+    end do
+    do j = nno1+1, nno2
+        do i = nno1+1, 20
             c(1,1,i,j) = 0.d0
-70      continue
+        end do
+    end do
 !     ---------------------------------------------
 !     --- CHANGEMENT DE SIGNES POUR LE PASSAGE  ---
 !     --- DDL ROTATION A DERIVEE DEPLACEMENT    ---
@@ -247,7 +254,7 @@ subroutine te0470(option, nomte)
 !     --- MATRICE DE MASSE : POUTRE-FLEXION ---
 !     -----------------------------------------
     npg = npg1(2,1) * npg1(2,1) * npg1(2,2)
-    do 100 kp = 1, npg
+    do kp = 1, npg
 !
         k1 = (kp-1) * 2 * nno1
         k2 = (kp-1) * nno1
@@ -256,15 +263,15 @@ subroutine te0470(option, nomte)
                     zr(iddz2g+k2), coord(1), zr(iddx2g+k2), zr(iddy2g+ k2), zr(iddz2g+k2),&
                     dpdx, dpdy, dpdz, poids2)
 !
-        do 110 i = 1, nno1
+        do i = 1, nno1
             ffdpl2(i) = zr(ivf2p + k1 + i - 1)
             ffrot2(i) = zr(ivf2p + k1 + i + nno1 - 1 ) * xlong
-110      continue
+        end do
 ! --- REMPLISSAGE MATRICE ELEMENTAIRE
-        do 120 i = 1, nno1
-            do 130 j = 1, i
-                do 140 k = 1, 2
-                    do 150 l = 1, 2
+        do i = 1, nno1
+            do j = 1, i
+                do k = 1, 2
+                    do l = 1, 2
                         a(k+1,l+1,i,j) = a(k+1,l+1,i,j) + mass(k,l) * poids2 * ffdpl2(i) * ffdpl2&
                                          &(j)
                         a(7-k,l+1,i,j) = a(7-k,l+1,i,j) + xk(k) * mass(k,l) * poids2 * ffrot2(i) &
@@ -273,33 +280,33 @@ subroutine te0470(option, nomte)
                                          &* ffrot2(j)
                         a(7-k,7-l,i,j) = a(7-k,7-l,i,j) + xk(k)*xk(l)* mass(k,l) * poids2 * ffrot&
                                          &2(i) * ffrot2(j)
-150                  continue
-140              continue
-130          continue
-120      continue
-100  continue
+                    end do
+                end do
+            end do
+        end do
+    end do
 !      ---------------------------------------------------
 !      --- MATRICE DE MASSE : COUPLAGE POUTRE / FLUIDE ---
 !      ---------------------------------------------------
     npg = npg2(2,2) * npg2(2,1) * npg2(2,1)
-    do 200 kp = 1, npg
+    do kp = 1, npg
 !
         k1 = (kp-1) * 2 * nno1
         k2 = (kp-1) * nno2
         k3 = (kp-1) * nno1
 ! --- CALCUL DES FONCTIONS DE FORME ET DE LEURS DERIVEES
-        do 210 i = 1, nno1
+        do i = 1, nno1
             ffdpl4(i) = zr(ivf4p + k1 + i - 1)
             ffrot4(i) = zr(ivf4p + k1 + i + nno1 - 1 ) * xlong
-210      continue
+        end do
 !
         call dpfch3(nno1, nno2, zr(ipoi4+kp-1), zr(iddx4f+k2), zr( iddy4f+k2),&
                     zr(iddz4f+k2), coord(1), zr(iddx4g+k3), zr(iddy4g+ k3), zr(iddz4g+k3),&
                     dfpdx4, dfpdy4, dfpdz4, poids4)
 ! --- REMPLISSAGE DES MATRICES ELEMENTAIRES
-        do 220 i = 1, nno1
-            do 230 j = 1, i
-                do 240 k = 1, 2
+        do i = 1, nno1
+            do j = 1, i
+                do k = 1, 2
                     a(7,k+1,i,j) = a(7,k+1,i,j) - poids4 * ffdpl4(j) * (d(k,1) * dfpdy4(i) + d(k,&
                                    &2) * dfpdz4(i))
                     a(7,7-k,i,j) = a(7,7-k,i,j) - poids4 * xk(k) * ffrot4(j) * (d(k,1) * dfpdy4(i&
@@ -308,27 +315,27 @@ subroutine te0470(option, nomte)
                                    &2) * dfpdz4(j))
                     a(7-k,7,i,j) = a(7-k,7,i,j) - poids4 * xk(k) * ffrot4(i) * (d(k,1) * dfpdy4(j&
                                    &) + d(k,2) * dfpdz4( j))
-240              continue
-230          continue
-220      continue
+                end do
+            end do
+        end do
 !
-        do 250 i = nno1+1, nno2
-            do 260 j = 1, nno1
-                do 270 k = 1, 2
+        do i = nno1+1, nno2
+            do j = 1, nno1
+                do k = 1, 2
                     b(1,k+1,i,j) = b(1,k+1,i,j) - poids4 * ffdpl4(j) * (d(k,1) * dfpdy4(i) + d(k,&
                                    &2) * dfpdz4(i))
                     b(1,7-k,i,j) = b(1,7-k,i,j) - poids4 * xk(k) * ffrot4(j) * (d(k,1) * dfpdy4(i&
                                    &) + d(k,2) * dfpdz4( i))
-270              continue
-260          continue
-250      continue
+                end do
+            end do
+        end do
 !
-200  continue
+    end do
 !      --------------------------------------------------------------
 !      --- MATRICE DE MASSE : FLUIDE ET POUTRE-TRACTION ET TORSON ---
 !      --------------------------------------------------------------
     npg = npg2(1,1) * npg2(1,1) * npg2(1,2)
-    do 300 kp = 1, npg
+    do kp = 1, npg
 !
         k1 = (kp-1) * nno1
         k2 = (kp-1) * nno2
@@ -337,12 +344,12 @@ subroutine te0470(option, nomte)
                     zr(iddz3f+k2), coord(1), zr(iddx3g+k1), zr(iddy3g+ k1), zr(iddz3g+k1),&
                     dfpdx3, dfpdy3, dfpdz3, poids3)
 !
-        do 301 i = 1, nno1
+        do i = 1, nno1
             ffdpl2(i) = zr(ivf3g + k1 + i - 1)
-301      continue
+        end do
 !
-        do 310 i = 1, nno1
-            do 320 j = 1, i
+        do i = 1, nno1
+            do j = 1, i
                 a(1,1,i,j) = a(1,1,i,j) + poids3 * ( mass(3,3) * ffdpl2(i) * ffdpl2(j) )
 !
                 a(4,4,i,j) = a(4,4,i,j) + poids3 * ( mtor * ffdpl2(i) * ffdpl2(j) )
@@ -350,66 +357,66 @@ subroutine te0470(option, nomte)
                 a(7,7,i,j) = a(7,7,i,j) - poids3 * ( rdp(1,1) * dfpdy3(i) * dfpdy3(j) + rdp(1,2) &
                              &* dfpdz3(i) * dfpdy3( j) + rdp(2,1) * dfpdy3(i) * dfpdz3(j) + rdp(2&
                              &,2) * dfpdz3(i) * dfpdz3(j) + rdp(3,3) * dfpdx3(i) * dfpdx3( j) )
-320          continue
-310      continue
-        do 340 i = nno1+1, nno2
-            do 350 j = 1, nno1
+            end do
+        end do
+        do i = nno1+1, nno2
+            do j = 1, nno1
                 b(1,7,i,j) = b(1,7,i,j) - poids3 * ( rdp(1,1) * dfpdy3(i) * dfpdy3(j) + rdp(1,2) &
                              &* dfpdz3(i) * dfpdy3( j) + rdp(2,1) * dfpdy3(i) * dfpdz3(j) + rdp(2&
                              &,2) * dfpdz3(i) * dfpdz3(j) + rdp(3,3) * dfpdx3(i) * dfpdx3( j) )
-350          continue
-340      continue
-        do 360 i = nno1+1, nno2
-            do 370 j = nno1+1, i
+            end do
+        end do
+        do i = nno1+1, nno2
+            do j = nno1+1, i
                 c(1,1,i,j) = c(1,1,i,j) - poids3 * ( rdp(1,1) * dfpdy3(i) * dfpdy3(j) + rdp(1,2) &
                              &* dfpdz3(i) * dfpdy3( j) + rdp(2,1) * dfpdy3(i) * dfpdz3(j) + rdp(2&
                              &,2) * dfpdz3(i) * dfpdz3(j) + rdp(3,3) * dfpdx3(i) * dfpdx3( j) )
-370          continue
-360      continue
+            end do
+        end do
 !
-300  end do
+    end do
 !     -------------------------------------------------
 !     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL  ---
 !     -------------------------------------------------
-    do 600 i = 1, nno1
-        do 610 j = 1, i
+    do i = 1, nno1
+        do j = 1, i
             call chmalg(a(1, 1, i, j), pgl, nddl, nddl)
-610      continue
-600  end do
-    do 620 i = nno1+1, nno2
-        do 630 j = 1, nno1
+        end do
+    end do
+    do i = nno1+1, nno2
+        do j = 1, nno1
             call chmalg(b(1, 1, i, j), pgl, 1, nddl)
-630      continue
-620  end do
+        end do
+    end do
 ! ---------------------------------------------------------------------
 ! --- PASSAGE DE LA MATRICE RECTANGULAIRE A LA MATRICE TRIANGULAIRE ---
 ! ---------------------------------------------------------------------
-    do 400 k = 1, nddl
-        do 410 l = 1, nddl
+    do k = 1, nddl
+        do l = 1, nddl
 !   IL Y A ECRASEMENT SI ON INTERVERTIE L'ORDRE DES BOUCLES 400 ET 410
-            do 420 i = 1, nno1
+            do i = 1, nno1
                 ik = ((i-1)*nddl+k-1) * ((i-1)*nddl+k) / 2
-                do 430 j = 1, i
+                do j = 1, i
                     ijkl = ik + (j-1)*nddl + l
                     zr(imatuu+ijkl-1) = a(k,l,i,j)
-430              continue
-420          continue
-410      continue
-400  end do
+                end do
+            end do
+        end do
+    end do
 !   BOUCLE EXECUTEE QUE POUR DES MAILLES HEXA20
     imatuu = imatuu + (nddl*nno1)*(nddl*nno1 + 1) / 2
-    do 500 i = nno1+1, nno2
+    do i = nno1+1, nno2
         ij = (i-nno1-1)*nddl*nno1 + (i-nno1-1)*(i-nno1)/2
-        do 510 j = 1, nno1
+        do j = 1, nno1
             ijl = ij + (j-1)*nddl
-            do 520 l = 1, nddl
+            do l = 1, nddl
                 zr(imatuu + ijl + (l-1)) = b(1,l,i,j)
-520          continue
-510      continue
+            end do
+        end do
         ijl = ij + nno1 * nddl
-        do 530 j = nno1 + 1, i
+        do j = nno1 + 1, i
             zr(imatuu + ijl + (j-nno1-1)) = c(1,1,i,j)
-530      continue
-500  end do
+        end do
+    end do
 !
 end subroutine

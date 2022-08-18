@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkds2h(nbmat, mater, invar, s, dhds,&
                   ds2hds, retcom)
 !
@@ -92,19 +92,19 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 ! =================================================================
 !
     call r8inir(6, 0.d0, a, 1)
-    do 10 i = 1, ndt
+    do i = 1, ndt
         a(i) = fact1*dhds(i)*sii + htheta*s(i)/sii
-10  end do
+    end do
 !
 ! =================================================================
 ! --- CALCUL DU SECOND  TERME
 ! =================================================================
     call r8inir(6*6, 0.d0, b, 1)
-    do 20 i = 1, ndt
-        do 30 k = 1, ndt
+    do i = 1, ndt
+        do k = 1, ndt
             b(i,k) = iden6(i,k) - kron(i)*kron(k)/trois
-30      end do
-20  end do
+        end do
+    end do
 !
 ! =================================================================
 ! --- RESULTAT FINAL
@@ -115,5 +115,5 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
     ds2hds(1:ndt) = matmul(bt(1:ndt,1:ndt), a(1:ndt))
 !
 ! =================================================================
-1000  continue
+1000 continue
 end subroutine

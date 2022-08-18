@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fpres(nomte, xi, nb1, vecl, vectpt)
     implicit none
 #include "jeveux.h"
@@ -49,58 +49,58 @@ subroutine fpres(nomte, xi, nb1, vecl, vectpt)
 ! --- CAS DES CHARGEMENTS DE PRESSION : Z LOCAL
 !
     call jevech('PPRESSR', 'L', jpres)
-    do 70 j = 1, nb1
-        do 30 i = 1, 6
+    do j = 1, nb1
+        do i = 1, 6
             chgsrl(i)=0.d0
-30      continue
+        end do
 !-----------------------------------------------------
 !  LE SIGNE MOINS CORRESPOND A LA CONVENTION :
 !      UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
         chgsrl(3)= - zr(jpres-1+j)
 !-----------------------------------------------------
-        do 50 jp = 1, 3
-            do 40 ip = 1, 3
+        do jp = 1, 3
+            do ip = 1, 3
                 pgl(jp,ip)=vectpt(j,jp,ip)
-40          continue
-50      continue
+            end do
+        end do
         call utpvlg(1, 6, pgl, chgsrl, chg)
-        do 60 i = 1, 6
+        do i = 1, 6
             chgsrg(i,j)=chg(i)
-60      continue
-70  continue
+        end do
+    end do
 !
-    do 200 intsn = 1, npgsn
+    do intsn = 1, npgsn
         call vectci(intsn, nb1, xi, zr(lzr), rnormc)
 !
         call forsrg(intsn, nb1, nb2, zr(lzr), chgsrg,&
                     rnormc, vectpt, vecl1)
-200  end do
+    end do
 !
 !     RESTITUTION DE KIJKM1 POUR CONDENSER LES FORCES
 !     ATTENTION LA ROUTINE N'EST PAS UTILISEE DANS LE CAS DES
 !     EFFORTS SUIVANTS (MOMENTS SURFACIQUES)
 !
     i1=5*nb1
-    do 220 j = 1, 2
-        do 210 i = 1, i1
+    do j = 1, 2
+        do i = 1, i1
             k=(j-1)*i1+i
             kijkm1(i,j)=zr(lzr-1+1000+k)
-210      continue
-220  end do
+        end do
+    end do
 !
-    do 240 i = 1, i1
+    do i = 1, i1
         f1=0.d0
-        do 230 k = 1, 2
+        do k = 1, 2
             f1=f1+kijkm1(i,k)*vecl1(i1+k)
-230      continue
+        end do
         vecl1(i)=vecl1(i)-f1
-240  end do
+    end do
 !
 !     EXPANSION DU VECTEUR VECL1 : DUE A L'AJOUT DE LA ROTATION FICTIVE
 !
     call vexpan(nb1, vecl1, vecl)
-    do 90 i = 1, 3
+    do i = 1, 3
         vecl(6*nb1+i)=0.d0
-90  end do
+    end do
 !
 end subroutine

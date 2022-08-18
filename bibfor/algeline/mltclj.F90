@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltclj(nb, n, ll, m, it,&
                   p, front, frn, adper, trav,&
                   c)
-use superv_module
+    use superv_module
     implicit none
 ! aslint: disable=C1513
 #include "blas/zgemm.h"
@@ -48,25 +48,25 @@ use superv_module
     !$OMP SHARED(FRONT,ADPER,DECAL,FRN,TRAV,IT,C) &
     !$OMP SHARED(TRA,TRB,ALPHA,BETA) &
     !$OMP SCHEDULE(STATIC,1)
-        do 1000 kb = 1, nmb
+        do kb = 1, nmb
             numpro = asthread_getnum() + 1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
             k = nb*(kb-1) + 1 +p
-            do 100 i = it, p
+            do i = it, p
                 s = front(adper(i))
                 add= n*(i-1) + k
-                do 50 j = 1, nb
+                do j = 1, nb
                     trav(i,j,numpro) = front(add)*s
                     add = add + 1
-50              continue
-100          continue
+                end do
+            end do
 !     BLOC DIAGONAL
 !
 !     SOUS LE BLOC DIAGONAL
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
 !
-            do 500 ib = kb, nlb
+            do ib = kb, nlb
                 ia = n*(it-1) + k + nb*(ib-kb)
                 call zgemm(tra, trb, nb, nb, nbl,&
                            alpha, front(ia), n, trav(it, 1, numpro), p,&
@@ -74,7 +74,7 @@ use superv_module
 !     RECOPIE
 !
 !
-                do 35 i = 1, nb
+                do i = 1, nb
                     i1=i-1
 !              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                     if (ib .eq. kb) then
@@ -84,12 +84,12 @@ use superv_module
                         j1=1
                         ind = adper(k + i1) - decal + nb*(ib-kb) - i1
                     endif
-                    do 34 j = j1, nb
+                    do j = j1, nb
                         frn(ind) = frn(ind) +c(j,i,numpro)
                         ind = ind +1
-34                  continue
-35              continue
-500          continue
+                    end do
+                end do
+            end do
             if (restl .gt. 0) then
                 ib = nlb + 1
                 ia = n*(it-1) +k + nb*(ib-kb)
@@ -99,35 +99,35 @@ use superv_module
 !           RECOPIE
 !
 !
-                do 45 i = 1, nb
+                do i = 1, nb
                     i1=i-1
                     j1=1
                     ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                    do 44 j = j1, restl
+                    do j = j1, restl
                         frn(ind) = frn(ind) +c(j,i,numpro)
                         ind = ind +1
-44                  continue
-45              continue
+                    end do
+                end do
             endif
-1000      end do
+        end do
     else
-        do 2000 kb = 1, nmb
+        do kb = 1, nmb
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
             k = nb*(kb-1) + 1 +p
-            do 2100 i = it, p
+            do i = it, p
                 s = front(adper(i))
                 add= n*(i-1) + k
-                do 250 j = 1, nb
+                do j = 1, nb
                     trav(i,j,1) = front(add)*s
                     add = add + 1
-250              continue
-2100          continue
+                end do
+            end do
 !     BLOC DIAGONAL
 !
 !     SOUS LE BLOC DIAGONAL
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
-            do 2500 ib = kb, nlb
+            do ib = kb, nlb
                 ia = n*(it-1) + k + nb*(ib-kb)
                 call zgemm(tra, trb, nb, nb, nbl,&
                            alpha, front(ia), n, trav(it, 1, 1), p,&
@@ -135,7 +135,7 @@ use superv_module
 !     RECOPIE
 !
 !
-                do 235 i = 1, nb
+                do i = 1, nb
                     i1=i-1
                     if (ib .eq. kb) then
                         j1= i
@@ -144,12 +144,12 @@ use superv_module
                         j1=1
                         ind = adper(k + i1) - decal + nb*(ib-kb) - i1
                     endif
-                    do 234 j = j1, nb
+                    do j = j1, nb
                         frn(ind) = frn(ind) +c(j,i,1)
                         ind = ind +1
-234                  continue
-235              continue
-2500          continue
+                    end do
+                end do
+            end do
             if (restl .gt. 0) then
                 ib = nlb + 1
                 ia = n*(it-1) +k + nb*(ib-kb)
@@ -159,37 +159,37 @@ use superv_module
 !           RECOPIE
 !
 !
-                do 245 i = 1, nb
+                do i = 1, nb
                     i1=i-1
 !              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                     j1=1
                     ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                    do 244 j = j1, restl
+                    do j = j1, restl
                         frn(ind) = frn(ind) +c(j,i,1)
                         ind = ind +1
-244                  continue
-245              continue
+                    end do
+                end do
             endif
-2000      end do
+        end do
     endif
     if (restm .gt. 0) then
         kb = 1+nmb
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
         k = nb*(kb-1) + 1 +p
-        do 101 i = it, p
+        do i = it, p
             s = front(adper(i))
             add= n*(i-1) + k
-            do 51 j = 1, restm
+            do j = 1, restm
                 trav(i,j,1) = front(add)*s
                 add = add + 1
-51          continue
-101      continue
+            end do
+        end do
 !     BLOC DIAGONAL
 !
 !     SOUS LE BLOC DIAGONAL
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
-        do 600 ib = kb, nlb
+        do ib = kb, nlb
             ia = n*(it-1 ) + k + nb*(ib-kb)
             call zgemm(tra, trb, nb, restm, nbl,&
                        alpha, front(ia), n, trav(it, 1, 1), p,&
@@ -197,7 +197,7 @@ use superv_module
 !     RECOPIE
 !
 !
-            do 55 i = 1, restm
+            do i = 1, restm
                 i1=i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                 if (ib .eq. kb) then
@@ -207,12 +207,12 @@ use superv_module
                     j1=1
                     ind = adper(k + i1) - decal + nb*(ib-kb) - i1
                 endif
-                do 54 j = j1, nb
+                do j = j1, nb
                     frn(ind) = frn(ind) +c(j,i,1)
                     ind = ind +1
-54              continue
-55          continue
-600      continue
+                end do
+            end do
+        end do
         if (restl .gt. 0) then
             ib = nlb + 1
             ia = n*(it-1) + k + nb*(ib-kb)
@@ -222,16 +222,16 @@ use superv_module
 !     RECOPIE
 !
 !
-            do 65 i = 1, restm
+            do i = 1, restm
                 i1=i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                 j1=1
                 ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                do 64 j = j1, restl
+                do j = j1, restl
                     frn(ind) = frn(ind) +c(j,i,1)
                     ind = ind +1
-64              continue
-65          continue
+                end do
+            end do
         endif
     endif
 end subroutine

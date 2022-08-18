@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0408(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -67,12 +67,12 @@ subroutine te0408(option, nomte)
         tpinf=0.d0
         tpmoy=0.d0
         tpsup=0.d0
-        do 10 ino = 1, nno
+        do ino = 1, nno
             call dxtpif(zr(itempp+3*(ino-1)), zl(itabp(8)+3*(ino-1)))
             tpmoy=tpmoy+zr(itempp-1+3*(ino-1)+1)/dble(nno)
             tpinf=tpinf+zr(itempp-1+3*(ino-1)+2)/dble(nno)
             tpsup=tpsup+zr(itempp-1+3*(ino-1)+3)/dble(nno)
- 10     continue
+        end do
 !
         cp1=tpmoy
         cp2=(tpsup-tpinf)/h
@@ -101,8 +101,8 @@ subroutine te0408(option, nomte)
     zmin=-h/2.d0
 !
 !
-    do 30 icou = 1, nbcou
-        do 20 igauh = 1, npgh
+    do icou = 1, nbcou
+        do igauh = 1, npgh
             isp=(icou-1)*npgh+igauh
 !
             if (igauh .eq. 1) then
@@ -123,7 +123,7 @@ subroutine te0408(option, nomte)
             endif
 !
             zr(jresu-1+isp)=tpc
- 20     continue
- 30 end do
+        end do
+    end do
 !
 end subroutine

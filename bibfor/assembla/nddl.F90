@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function nddl(ili, nunoel, nec, idprn1, idprn2)
 ! aslint: disable=
     implicit none
@@ -28,19 +28,19 @@ function nddl(ili, nunoel, nec, idprn1, idprn2)
 !----------------------------------------------------------------------
 !     FONCTION D ACCES A PRNO
 !----------------------------------------------------------------------
-    integer ::  idprn1, idprn2, iec, j, k, nec, lshift
+    integer :: idprn1, idprn2, iec, j, k, nec, lshift
 !
 !-----------------------------------------------------------------------
-#define zzprno(ili,nunoel,l)   zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define zzprno(ili,nunoel,l) zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !---- DEBUT
     nddl = 0
-    do 100 iec = 1, nec
-        do 10 j = 1, 30
+    do iec = 1, nec
+        do j = 1, 30
             k = iand(zzprno(ili,nunoel,iec+2),lshift(1,j))
             if (k .gt. 0) then
                 nddl = nddl + 1
 !
             endif
-10      continue
-100  end do
+        end do
+    end do
 end function

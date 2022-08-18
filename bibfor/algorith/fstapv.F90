@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
                   fnmoyc, fnrmst, fnrmsc, fnmax, fnmin,&
                   fmaxmo, fminmo, sfn, sfn2, tchoc,&
@@ -82,16 +82,16 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
 !
 !           RECHERCHE DES EXTREMAS ABSOLUS
 !
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
         if (fn(i) .gt. fnmax) fnmax = fn(i)
         if (fn(i) .lt. fnmin) fnmin = fn(i)
-10  end do
+    end do
 !
 !
 !
 ! --- RECHERCHE DES EXTREMAS RELATIFS
 !
-    do 20 i = 2, nbpt-1
+    do i = 2, nbpt-1
 !
         if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
             smaxr = smaxr + fn(i)
@@ -102,7 +102,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
             sminr = sminr + fn(i)
             nbminr = nbminr + 1
         endif
-20  end do
+    end do
 !
 !
 ! --- MOYENNE DES EXTREMAS RELATIFS
@@ -122,7 +122,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
 !
 ! --- CALCUL DE LA FORCE MOYENNE
 !
-    do 30 i = 1, nbpt
+    do i = 1, nbpt
         if ((abs(fn(i))) .gt. offset) then
             zr(ift+i-1) = fn(i)
             zr(itct+i-1) = 1.d0
@@ -130,7 +130,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
             zr(ift+i-1) = 0.d0
             zr(itct+i-1) = 0.d0
         endif
-30  end do
+    end do
     call trapez(t, zr(ift), nbpt, sfn)
     call trapez(t, zr(itct), nbpt, tchoc)
     ttot = t(nbpt)-t(1)
@@ -144,13 +144,13 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
 !
 ! --- CALCUL DE LA FORCE QUADRATIQUE MOYENNE
 !
-    do 50 i = 1, nbpt
+    do i = 1, nbpt
         if (abs(fn(i)) .gt. offset) then
             zr(ift+i-1) = fn(i)*fn(i)
         else
             zr(ift+i-1) = 0.d0
         endif
-50  end do
+    end do
     call trapez(t, zr(ift), nbpt, sfn2)
     fnrmst = sqrt(sfn2/ttot)
     if (tchoc .gt. 0.d0) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0003()
     implicit none
 ! person_in_charge: mathieu.courtois at edf.fr
@@ -44,8 +44,8 @@ subroutine op0003()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: i, iret, ibid, ival, jval,  ifm
-    integer ::  lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
+    integer :: i, iret, ibid, ival, jval, ifm
+    integer :: lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
     integer :: jnoe, n, nbval, lval, lfon
     integer :: nbcoup, nbcou2
     integer :: nblr, nblv, nbrma, nbln, nbvc, nbvr, nbla, nblo
@@ -93,9 +93,9 @@ subroutine op0003()
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvc, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
         call getvr8(' ', 'VALE_C', nbval=nbvc, vect=zr(lpara), nbret=l)
-        do 2 i = 0, nbcoup-1
+        do i = 0, nbcoup-1
             zr(lpar2+i) = zr(lpara+3*i)
- 2      continue
+        end do
 !        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
         if (verif .eq. 'CROISSANT') then
             iret=2
@@ -113,9 +113,9 @@ subroutine op0003()
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvr, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
         call getvr8(' ', 'VALE', nbval=nbvr, vect=zr(lpara), nbret=l)
-        do 4 i = 0, nbcoup-1
+        do i = 0, nbcoup-1
             zr(lpar2+i) = zr(lpara+2*i)
- 4      continue
+        end do
 !        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
         if (verif .eq. 'CROISSANT') then
             iret=2
@@ -198,23 +198,23 @@ subroutine op0003()
         call defcur(zr(jval), zk8(jnoe), nblv, zr(lval), nbval,&
                     nommai, nbrma, prolgd, k8b)
 !
-        do 9 ival = 0, nblv-1
+        do ival = 0, nblv-1
             if (zr(jval+ival) .lt. min1) min1=zr(jval+ival)
- 9      continue
+        end do
     else if (nbvc.ne.0) then
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nbvc, jval)
         call getvr8(' ', 'VALE_C', nbval=nbvc, vect=zr(jval), nbret=n)
         call wkvect(nomfon//'.VALE', 'G V R', nbvc, lval)
         nbcoup = nbvc / 3
         lfon = lval + nbcoup - 1
-        do 10 ival = 0, nbcoup-1
+        do ival = 0, nbcoup-1
             zr(lval+ ival ) = zr(jval+3*ival)
             zr(lfon+(ival*2)+1) = zr(jval+3*ival+1)
             zr(lfon+(ival*2)+2) = zr(jval+3*ival+2)
             if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
             if (zr(lfon+(ival*2)+1) .lt. min2) min2=zr(lfon+(ival*2)+1)
             if (zr(lfon+(ival*2)+2) .lt. min3) min3=zr(lfon+(ival*2)+2)
-10      continue
+        end do
 !
     else if (nbvr.ne.0 .and. nbln.eq.0) then
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nbvr, jval)
@@ -222,12 +222,12 @@ subroutine op0003()
         call wkvect(nomfon//'.VALE', 'G V R', nbvr, lval)
         nbcoup = nbvr / 2
         lfon = lval + nbcoup
-        do 20 ival = 0, nbcoup-1
+        do ival = 0, nbcoup-1
             zr(lval+ival) = zr(jval+2*ival)
             zr(lfon+ival) = zr(jval+2*ival+1)
             if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
             if (zr(lfon+ival) .lt. min2) min2=zr(lfon+ival)
-20      continue
+        end do
 !
     else if (nblr.ne.0) then
         call getvid(' ', 'VALE_PARA', scal=listpa, nbret=n1)
@@ -251,12 +251,12 @@ subroutine op0003()
         call jeveuo(listpa//'.VALE', 'L', vr=par)
         call jeveuo(listfo//'.VALE', 'L', vr=fon)
         lfon = lval + nbcoup
-        do 30 ival = 0, nbcoup-1
+        do ival = 0, nbcoup-1
             zr(lval+ival) = par(ival+1)
             zr(lfon+ival) = fon(ival+1)
             if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
             if (zr(lfon+ival) .lt. min2) min2=zr(lfon+ival)
-30      continue
+        end do
     else if (nbla.ne.0) then
         call wkvect(nomfon//'.VALE', 'G V R', nbla*2, lval)
         call getvr8(' ', 'ABSCISSE', nbval=nbla, vect=zr(lval), nbret=n)

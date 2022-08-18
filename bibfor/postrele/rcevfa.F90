@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                   csne, cspo, cspe, kemixt, cspto,&
                   cspte, cspmo, cspme, cfao, cfae)
@@ -79,13 +79,13 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 ! ---     - DU NBRE DE CYCLES ADMISSIBLE NADM (AVEC LA COURBE DE WOHLER)
 ! ---     - DU FACTEUR D USAGE
 !         --------------------------------------------------------
-    do 10 i1 = 1, nbinst
+    do i1 = 1, nbinst
 !
         ind = ind + 1
         zr(jfao-1+5*(ind-1)+4) = 0.d0
         zr(jfae-1+5*(ind-1)+4) = 0.d0
 !
-        do 12 i2 = i1+1, nbinst
+        do i2 = i1+1, nbinst
 !
             ind = ind + 1
             sno = zr(jsno+ind-1)
@@ -179,9 +179,9 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 !
             endif
 !
- 12     continue
+        end do
 !
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

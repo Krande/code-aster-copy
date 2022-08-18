@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssdmrg(mag)
     implicit none
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -33,8 +35,6 @@ subroutine ssdmrg(mag)
 #include "asterfort/jexnum.h"
 #include "asterfort/ssdmu1.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine ssdmrg(mag)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iacoo2
-    integer ::  iasupi, iasupj, iconf, ii, inoi, inoj
+    integer :: iasupi, iasupj, iconf, ii, inoi, inoj
     integer :: iocc, isma, j, jj, jsma, n1, nbnoi
     integer :: nbnoj, nbsma, nbsmar, nnnoe, nocc
     integer, pointer :: liis(:) => null()
@@ -64,7 +64,7 @@ subroutine ssdmrg(mag)
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('RECO_GLOBAL', nocc)
-    if (nocc .eq. 0) goto 9999
+    if (nocc .eq. 0) goto 999
 !
 !     -- ON RECUPERE CERTAINES DIMENSIONS:
 !     ------------------------------------
@@ -83,69 +83,71 @@ subroutine ssdmrg(mag)
 !
 !     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
 !     -----------------------------------------
-    do 2, iocc=1,nocc
+    do iocc = 1, nocc
 !
 !     -- ON RECUPERE LA LISTE DES MAILLES A TRAITER :
 !     -----------------------------------------------
-    call getvtx('RECO_GLOBAL', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
-    if (n1 .eq. 1) then
-        nbsmar= nbsma
-        do 3, i=1,nbsmar
-        liis(i)=i
- 3      continue
-    else
-        call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc,&
-                    nbsma, lik8, n1)
-        if (n1 .lt. 0) then
-            call utmess('F', 'SOUSTRUC_63')
-        endif
-        nbsmar= n1
-        do 4, i=1,nbsmar
-        call jenonu(jexnom(mag//'.SUPMAIL', lik8(i)), isma)
-        liis(i)=isma
- 4      continue
-    endif
-!
-    call getvr8('RECO_GLOBAL', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
-    call getvtx('RECO_GLOBAL', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
-!
-    do 5, i=1,nbsmar
-    isma=liis(i)
-    call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupi)
-    nbnoi=dime_2(4*(isma-1)+1)+dime_2(4*(isma-1)+2)
-    di=para_r(14*(isma-1)+13)
-    do 6, j=i+1,nbsmar
-    jsma=liis(j)
-    call jeveuo(jexnum(mag//'.SUPMAIL', jsma), 'L', iasupj)
-    nbnoj=dime_2(4*(jsma-1)+1)+dime_2(4*(jsma-1)&
-                +2)
-    dj=para_r(14*(jsma-1)+13)
-    dj=min(di,dj)
-    do 7, ii=1,nbnoi
-    inoi=zi(iasupi-1+ii)
-!               -- SI C'EST UN NOEUD DE LAGRANGE, ON SAUTE :
-    if (inoi .gt. nnnoe) goto 7
-    do 8, jj=1,nbnoj
-    inoj=zi(iasupj-1+jj)
-    if (inoj .gt. nnnoe) goto 8
-    call ssdmu1(dj, crit, prec, zr(iacoo2+3*(inoi-1)), zr(iacoo2+3*(inoj-1)),&
-                iconf)
-    if (iconf .eq. 0) then
-        if (inoi .lt. inoj) then
-            noeud_conf(inoj)=inoi
+        call getvtx('RECO_GLOBAL', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
+        if (n1 .eq. 1) then
+            nbsmar= nbsma
+            do i = 1, nbsmar
+                liis(i)=i
+            end do
         else
-            noeud_conf(inoi)=inoj
+            call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc,&
+                        nbsma, lik8, n1)
+            if (n1 .lt. 0) then
+                call utmess('F', 'SOUSTRUC_63')
+            endif
+            nbsmar= n1
+            do i = 1, nbsmar
+                call jenonu(jexnom(mag//'.SUPMAIL', lik8(i)), isma)
+                liis(i)=isma
+            end do
         endif
-    endif
- 8  continue
- 7  continue
- 6  continue
- 5  continue
 !
-    2 end do
+        call getvr8('RECO_GLOBAL', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+        call getvtx('RECO_GLOBAL', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
+!
+        do i = 1, nbsmar
+            isma=liis(i)
+            call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupi)
+            nbnoi=dime_2(4*(isma-1)+1)+dime_2(4*(isma-1)+2)
+            di=para_r(14*(isma-1)+13)
+            do j = i+1, nbsmar
+                jsma=liis(j)
+                call jeveuo(jexnum(mag//'.SUPMAIL', jsma), 'L', iasupj)
+                nbnoj=dime_2(4*(jsma-1)+1)+dime_2(4*(jsma-1)&
+                +2)
+                dj=para_r(14*(jsma-1)+13)
+                dj=min(di,dj)
+                do ii = 1, nbnoi
+                    inoi=zi(iasupi-1+ii)
+!               -- SI C'EST UN NOEUD DE LAGRANGE, ON SAUTE :
+                    if (inoi .gt. nnnoe) goto 7
+                    do jj = 1, nbnoj
+                        inoj=zi(iasupj-1+jj)
+                        if (inoj .gt. nnnoe) goto 8
+                        call ssdmu1(dj, crit, prec, zr(iacoo2+3*(inoi-1)), zr(iacoo2+3*(inoj-1)),&
+                                    iconf)
+                        if (iconf .eq. 0) then
+                            if (inoi .lt. inoj) then
+                                noeud_conf(inoj)=inoi
+                            else
+                                noeud_conf(inoi)=inoj
+                            endif
+                        endif
+  8                     continue
+                    end do
+  7                 continue
+                end do
+            end do
+        end do
+!
+    end do
 !
 !
-9999  continue
+999 continue
 ! --- MENAGE
     AS_DEALLOCATE(vk8=lik8)
     AS_DEALLOCATE(vi=liis)

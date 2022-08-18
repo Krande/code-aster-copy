@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcalfe(he, lsng, lstg, baslog, fe,&
                   dgdgl, iret)
 !
@@ -53,7 +53,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !----------------------------------------------------------------
 !
     integer :: i, j, k
-    real(kind=8) ::p(3, 3), invp(3, 3)
+    real(kind=8) :: p(3, 3), invp(3, 3)
     real(kind=8) :: rg, tg, dgdpo(4, 2), dgdlo(4, 3)
 !
 !     RECUPERATION DE LA BASE LOCALE ASSOCIÉE AU PT
@@ -78,7 +78,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !     FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE -> FE
     call xdeffe(rg, tg, fe)
 !
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
 !     CALCUL DES DÉRIVÉES
 !     -------------------
@@ -87,22 +87,22 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
     call xderfe(rg, tg, dgdpo)
 !
 !     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
-    do 131 i = 1, 4
+    do i = 1, 4
         dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
         dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
         dgdlo(i,3)=0.d0
-131  end do
+    end do
 !
 !     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
-    do 132 i = 1, 4
-        do 133 j = 1, 3
+    do i = 1, 4
+        do j = 1, 3
             dgdgl(i,j)=0.d0
-            do 134 k = 1, 3
+            do k = 1, 3
                 dgdgl(i,j)=dgdgl(i,j)+dgdlo(i,k)*invp(k,j)
-134          continue
-133      continue
-132  end do
+            end do
+        end do
+    end do
 !
-9999  continue
+999 continue
 !
 end subroutine

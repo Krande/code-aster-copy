@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
                   valcmp, taberr)
     implicit none
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/iposdg.h"
 #include "asterfort/jedema.h"
@@ -32,6 +31,7 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
 #include "asterfort/jexnum.h"
 #include "asterfort/ncpact.h"
 #include "asterfort/wkvect.h"
+!
     integer :: modloc(*), tcmp(*), nbc, taberr(*), nbsp
     real(kind=8) :: tvale(*), valcmp(*)
 !
@@ -114,29 +114,29 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
         zi(asgtnd + 1-1) = 1
         zi(acpact + 1-1) = nbrcpa
 !
-        do 5, k = 1, nbc, 1
-        i=1
-        zi(aposcp+k-1) = iposdg(modloc(5+(i-1)*nbec),tcmp(k))
+        do k = 1, nbc, 1
+            i=1
+            zi(aposcp+k-1) = iposdg(modloc(5+(i-1)*nbec),tcmp(k))
 !
- 5      continue
+        end do
 !
-        do 10, i = 2, nbnmai, 1
+        do i = 2, nbnmai, 1
 !
-        call ncpact(modloc(5 + nbec*(i-1)), nbec, nbrcpa)
+            call ncpact(modloc(5 + nbec*(i-1)), nbec, nbrcpa)
 !
-        zi(asgtnd + i-1) = zi(asgtnd + i-1-1) + nbrcpa*nbsp
-        zi(acpact + i-1) = nbrcpa
+            zi(asgtnd + i-1) = zi(asgtnd + i-1-1) + nbrcpa*nbsp
+            zi(acpact + i-1) = nbrcpa
 !
-        adrnd = (i-1)*nbc
+            adrnd = (i-1)*nbc
 !
-        do 11, k = 1, nbc, 1
+            do k = 1, nbc, 1
 !
-        zi(aposcp+adrnd+k-1)=iposdg(modloc(5+(i-1)*nbec),tcmp(&
+                zi(aposcp+adrnd+k-1)=iposdg(modloc(5+(i-1)*nbec),tcmp(&
                 k))
 !
-11      continue
+            end do
 !
-10      continue
+        end do
 !
     else
 !
@@ -148,53 +148,53 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
         call wkvect('&&EXCHEM.ADRSGTNOEUD', 'V V I', nbnmai, asgtnd)
         call wkvect('&&EXCHEM.POSCMP', 'V V I', nbc*nbnmai, aposcp)
 !
-        do 20, i = 1, nbnmai, 1
+        do i = 1, nbnmai, 1
 !
-        zi(asgtnd + i-1) = (i-1)*nbrcpa*nbsp + 1
-        zi(acpact + i-1) = nbrcpa
+            zi(asgtnd + i-1) = (i-1)*nbrcpa*nbsp + 1
+            zi(acpact + i-1) = nbrcpa
 !
-        adrnd = (i-1)*nbc
+            adrnd = (i-1)*nbc
 !
-        do 21, k = 1, nbc, 1
+            do k = 1, nbc, 1
 !
-        zi(aposcp + adrnd + k-1) = iposdg(modloc(5),tcmp(k))
+                zi(aposcp + adrnd + k-1) = iposdg(modloc(5),tcmp(k))
 !
-21      continue
+            end do
 !
-20      continue
-!
-    endif
-!
-    do 100, i = 1, nbnmai, 1
-!
-    adrnd = zi(asgtnd + i-1)
-    nbrcpa = zi(acpact + i-1)
-!
-    do 110, j = 1, nbsp, 1
-!
-    do 120, k = 1, nbc, 1
-!
-    poscmp = zi(aposcp + (i-1)*nbc + k-1)
-!
-    if (poscmp .gt. 0) then
-!
-        valcmp(((i-1)*nbsp + j-1)*nbc+k) = tvale( adrnd + ( j-1)*nbrcpa + poscmp-1)
-!
-        taberr(k) = 1
-!
-    else
-!
-        valcmp(((i-1)*nbsp + j-1)*nbc+k) = r8vide()
-!
-        taberr(k) = 0
+        end do
 !
     endif
 !
-120  continue
+    do i = 1, nbnmai, 1
 !
-110  continue
+        adrnd = zi(asgtnd + i-1)
+        nbrcpa = zi(acpact + i-1)
 !
-    100 end do
+        do j = 1, nbsp, 1
+!
+            do k = 1, nbc, 1
+!
+                poscmp = zi(aposcp + (i-1)*nbc + k-1)
+!
+                if (poscmp .gt. 0) then
+!
+                    valcmp(((i-1)*nbsp + j-1)*nbc+k) = tvale( adrnd + ( j-1)*nbrcpa + poscmp-1)
+!
+                    taberr(k) = 1
+!
+                else
+!
+                    valcmp(((i-1)*nbsp + j-1)*nbc+k) = r8vide()
+!
+                    taberr(k) = 0
+!
+                endif
+!
+            end do
+!
+        end do
+!
+    end do
 !
     call jedetr('&&EXCHEM.NBRCMPACTIVE')
     call jedetr('&&EXCHEM.ADRSGTNOEUD')

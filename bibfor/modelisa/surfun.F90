@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine surfun(char, noma)
 !
 !
-    implicit    none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cudisi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -30,6 +29,7 @@ subroutine surfun(char, noma)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: char
     character(len=8) :: noma
 !
@@ -108,7 +108,7 @@ subroutine surfun(char, noma)
         write (ifm,*)
 !
 !
-        do 10 ino = 1, nnocu
+        do ino = 1, nnocu
 !
             numno = zi(jnoeu+ino-1)
             call jenuno(jexnum(noeuma, numno), nomno)
@@ -122,13 +122,13 @@ subroutine surfun(char, noma)
 !
             write (ifm,1040) '     (ai,Ai)'
 !
-            do 20 icmp = jdecal, jdecal+nbcmp-1
+            do icmp = jdecal, jdecal+nbcmp-1
                 write (ifm,1042) '     ( ',zk8(jcoefg-1+icmp),' , ',&
      &                         zk8(jcmpg-1+icmp),' )'
-20          continue
+            end do
             write (ifm,1060) '     (C)'
             write (ifm,1062) '     ( ',zk8(jcoefd-1+ino),' )'
-10      continue
+        end do
 !
     endif
 !

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                   kwork, sommw, tspaq, i, vala,&
                   coefpa, ncycl, jvmin, jvmax, jomin,&
@@ -264,14 +264,15 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                 valpar(29) = 0.d0
                 valpar(30) = 0.d0
 !
-                do 75 j = 1, np
+                do j = 1, np
                     do ipar = 1, nparma
                         if (nompf(j) .eq. nompar(ipar)) then
                             valpu(j) = valpar(ipar)
                             goto 75
                         endif
                     end do
- 75             continue
+ 75                 continue
+                end do
 !
                 call fointe('F', nomfor, np, nompf, valpu,&
                             zr(jgdreq+ad1), ibid)

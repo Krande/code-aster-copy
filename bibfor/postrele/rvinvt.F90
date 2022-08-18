@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvinvt(tensor, vonm, tres, trac, detr)
     implicit none
 #include "asterc/r8vide.h"
@@ -61,13 +61,13 @@ subroutine rvinvt(tensor, vonm, tres, trac, detr)
     detr = 0.0d0
     trac = 0.0d0
 !
-    do 10, i = 1, 6, 1
-    if (tensor(i) .eq. r8vide()) then
-        t(i) = 0.d0
-    else
-        t(i) = tensor(i)
-    endif
-    10 end do
+    do i = 1, 6, 1
+        if (tensor(i) .eq. r8vide()) then
+            t(i) = 0.d0
+        else
+            t(i) = tensor(i)
+        endif
+    end do
 !
     unsur3 = 1.0d0/3.0d0
     nbvp = 3
@@ -77,13 +77,13 @@ subroutine rvinvt(tensor, vonm, tres, trac, detr)
 !
     call rvdet3(t, detr)
 !
-    do 20, i = 1, 3 ,1
-    trac = trac + t(i)
-    20 end do
+    do i = 1, 3, 1
+        trac = trac + t(i)
+    end do
 !
-    do 30, i = 1, 3 ,1
-    t(i) = t(i) - trac*unsur3
-    30 end do
+    do i = 1, 3, 1
+        t(i) = t(i) - trac*unsur3
+    end do
 !
     call rsvnmi(t, vonm)
 !

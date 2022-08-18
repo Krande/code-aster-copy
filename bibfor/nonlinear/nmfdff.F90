@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmfdff(ndim, nno, axi, g, r,&
                   rigi, matsym, fr, vff, dff,&
                   def, pff)
@@ -40,25 +40,25 @@ subroutine nmfdff(ndim, nno, axi, g, r,&
 !
     if (ndim .eq. 3) then
 !
-        do 40 n = 1, nno
-            do 30 i = 1, 3
+        do n = 1, nno
+            do i = 1, 3
                 def(1,n,i) = fr(i,1)*dff(n,1)
                 def(2,n,i) = fr(i,2)*dff(n,2)
                 def(3,n,i) = fr(i,3)*dff(n,3)
                 def(4,n,i) = (fr(i,1)*dff(n,2) + fr(i,2)*dff(n,1))/ rac2
                 def(5,n,i) = (fr(i,1)*dff(n,3) + fr(i,3)*dff(n,1))/ rac2
                 def(6,n,i) = (fr(i,2)*dff(n,3) + fr(i,3)*dff(n,2))/ rac2
- 30         continue
- 40     continue
+            end do
+        end do
 !
         if (rigi) then
-            do 125 n = 1, nno
+            do n = 1, nno
                 if (matsym) then
                     nmax = n
                 else
                     nmax = nno
                 endif
-                do 126 m = 1, nmax
+                do m = 1, nmax
                     pff(1,n,m) = dff(n,1)*dff(m,1)
                     pff(2,n,m) = dff(n,2)*dff(m,2)
                     pff(3,n,m) = dff(n,3)*dff(m,3)
@@ -68,41 +68,41 @@ subroutine nmfdff(ndim, nno, axi, g, r,&
                     rac2
                     pff(6,n,m) =(dff(n,2)*dff(m,3)+dff(n,3)*dff(m,2))/&
                     rac2
-126             continue
-125         continue
+                end do
+            end do
         endif
 !
     else if (ndim.eq.2) then
 !
-        do 41 n = 1, nno
-            do 31 i = 1, 2
+        do n = 1, nno
+            do i = 1, 2
                 def(1,n,i) = fr(i,1)*dff(n,1)
                 def(2,n,i) = fr(i,2)*dff(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (fr(i,1)*dff(n,2) + fr(i,2)*dff(n,1))/ rac2
- 31         continue
- 41     continue
+            end do
+        end do
 ! 5.2.5 - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         if (axi) then
-            do 50 n = 1, nno
+            do n = 1, nno
                 def(3,n,1) = fr(3,3)*vff(n,g)/r
- 50         continue
+            end do
         endif
         if (rigi) then
-            do 135 n = 1, nno
+            do n = 1, nno
                 if (matsym) then
                     nmax = n
                 else
                     nmax = nno
                 endif
-                do 136 m = 1, nmax
+                do m = 1, nmax
                     pff(1,n,m) = dff(n,1)*dff(m,1)
                     pff(2,n,m) = dff(n,2)*dff(m,2)
                     pff(3,n,m) = 0.d0
                     pff(4,n,m) =(dff(n,1)*dff(m,2)+dff(n,2)*dff(m,1))/&
                     rac2
-136             continue
-135         continue
+                end do
+            end do
         endif
 !
     endif

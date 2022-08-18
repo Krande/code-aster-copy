@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dinon3(neq, ul, dul, utl, nno,&
                   nbcomp, varimo, raide, nbpar, param,&
                   okdire, varipl)
@@ -80,7 +80,7 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
     zero = 0.0d0
     un = 1.0d0
 !
-    do 20 ii = 1, nbcomp
+    do ii = 1, nbcomp
 !        INDEX DES VARIABLES INTERNES
         iplas = 3*(ii-1)+1
         icumu = 3*(ii-1)+2
@@ -162,6 +162,6 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
                 endif
             endif
         endif
- 20 end do
+    end do
 !
 end subroutine

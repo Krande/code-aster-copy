@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc,&
                   noml)
     implicit none
@@ -48,7 +48,7 @@ subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc,&
     character(len=8) :: noma
     character(len=16) :: mcf, tymocl(2), limocl(2)
     character(len=24) :: liste1
-    integer ::  k, n1, j1, j2, ima
+    integer :: k, n1, j1, j2, ima
     integer, pointer :: typmail(:) => null()
 !
     call jemarq()
@@ -69,11 +69,11 @@ subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc,&
     zi(j2)=n1
     if (n1 .gt. 0) then
         call jeveuo(liste1, 'L', j1)
-        do 1, k=1,n1
-        ima=zi(j1-1+k)
-        zi(j2+2*(k-1)+1)=ima
-        zi(j2+2*(k-1)+2)=typmail(ima)
- 1      continue
+        do k = 1, n1
+            ima=zi(j1-1+k)
+            zi(j2+2*(k-1)+1)=ima
+            zi(j2+2*(k-1)+2)=typmail(ima)
+        end do
     endif
 !
 !

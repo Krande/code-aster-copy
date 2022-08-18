@@ -15,25 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xalg42(ndim, elrefp, it, nnose,&
-                  cnset, typma, ndime, geom, lsnelp,&
-                  pmilie, ninter, ainter, ar, npts,&
-                  nptm, pmmax, nmilie, mfis, lonref,&
-                  pinref, pintt, pmitt, jonc, exit)
+!
+subroutine xalg42(ndim, elrefp, it, nnose, cnset,&
+                  typma, ndime, geom, lsnelp, pmilie,&
+                  ninter, ainter, ar, npts, nptm,&
+                  pmmax, nmilie, mfis, lonref, pinref,&
+                  pintt, pmitt, jonc, exit)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detefa.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/assert.h"
 #include "asterfort/xajpmi.h"
-#include "asterfort/xmilar.h"
 #include "asterfort/xmifis.h"
-#include "asterfort/xxmmvd.h"
-#include "asterfort/detefa.h"
+#include "asterfort/xmilar.h"
 #include "asterfort/xstudo.h"
+#include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
     integer :: ndim, ndime, it, nnose, cnset(*), exit(2)
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
@@ -86,20 +86,20 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
 !
     pmilie(1:51) = 0.d0
 !
-    do 204 i = 1, 4
+    do i = 1, 4
         ip1(i)=0
         ip2(i)=0
         pm1a(i)=0
         pm1b(i)=0
         pm2(i)=0
-204 continue
+    end do
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU PREMIER TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 300 r = 1, ninter
+    do r = 1, ninter
         a2=nint(ainter(zxain*(r-1)+1))
 ! POUR EMPECHER L ALGO DE CALCULER TROP DE POINTS MILIEUX
 ! COMME LE NOEUD MILIEU EST EN 4EME POSITION QUAND NINTER=4,NPTS=2
@@ -124,28 +124,29 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
         milarb(:) = 0.d0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
-                    ia, ib, im, r, ksia, ksib,&
-                    milara, milarb, pintt, pmitt)
+                    ia, ib, im, r, ksia,&
+                    ksib, milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
-                    lonref, ajout)
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                    milara, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksia(j)
             enddo
         endif
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milarb,&
-                    lonref, ajout)
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                    milarb, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
                 pmiref(ndime*(ipm-1)+j)=ksib(j)
             enddo
         endif
-300 continue
+300     continue
+    end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU DEUXIEME TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    do 400 k = 1, nbpi
+    do k = 1, nbpi
 !      POINT MILIEU ENTRE IP1(R) ET IP2(R)
 !
 !      on ne calcule pas le premier type de point milieu si la
@@ -168,15 +169,15 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
 !        STOCKAGE PMILIE
-            call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfi,&
-                        lonref, ajout)
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                        milfi, lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
                     pmiref(ndime*(ipm-1)+j)=ksia(j)
                 enddo
             endif
         endif
-400 continue
+    end do
 !
     ASSERT(ipm.eq.4.and.mfisloc.eq.2)
 !

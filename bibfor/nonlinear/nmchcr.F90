@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function nmchcr(dp)
 !.======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -140,18 +140,18 @@ function nmchcr(dp)
 !
 ! CALCUL DE LA NORMALE
     seq = zero
-    do 10 i = 1, ndimsi
+    do i = 1, ndimsi
         if (nbvar .eq. 1) then
             s(i) = sigedv(i) -deux/trois*mp*alfam(i)
         else if (nbvar.eq.2) then
             s(i) = sigedv(i) -deux/trois*mp*alfam(i) -deux/trois*m2p* alfa2m(i)
         endif
         seq = seq + s(i)*s(i)
-10  end do
+    end do
     seq = sqrt(trois/deux*seq)
-    do 20 i = 1, ndimsi
+    do i = 1, ndimsi
         norm(i)=sqrt(1.5d0)*s(i)/seq
-20  end do
+    end do
 !
 !     R(P) SANS EFFET DE MEMOIRE
     if (memo .eq. 0) then
@@ -170,26 +170,26 @@ function nmchcr(dp)
                    1)
 !
         grjeps=0.0d0
-        do 122 i = 1, ndimsi
+        do i = 1, ndimsi
             grjeps=grjeps+(epspp(i)-ksim(i))**2
-122      continue
+        end do
         grjeps=sqrt(grjeps*1.5d0)
         critme=grjeps/1.5d0-qm
         if (critme .le. 0.0d0) then
             dq=0.0d0
-            do 123 i = 1, ndimsi
+            do i = 1, ndimsi
                 dksi(i)=0.0d0
-123          continue
+            end do
         else
             dq=etam*critme
             coef=etam*qm+dq
-            do 124 i = 1, ndimsi
+            do i = 1, ndimsi
                 if (coef .gt. r8miem()) then
                     dksi(i)=(1.d0-etam)*dq*(epspp(i)-ksim(i))/coef
                 else
                     dksi(i)=0.d0
                 endif
-124          continue
+            end do
 !            test partie positive de <n:n*>. Utilité ?
 !            NNE=0.D0
 !            DO I=1,NDIMSI
@@ -204,9 +204,9 @@ function nmchcr(dp)
 !            ENDIF
         endif
         q=qm+dq
-        do 125 i = 1, ndimsi
+        do i = 1, ndimsi
             ksi(i)=ksim(i)+dksi(i)
-125      continue
+        end do
         gq=qmmem+(q0mem-qmmem)*exp(-2.d0*mumem*q)
         dr=b*(gq-rm)*dp/(1.d0+b*dp)
         rp = rm + dr
@@ -233,14 +233,14 @@ function nmchcr(dp)
 !
 ! POUR NORMER L'EQUATION
     denom = zero
-    do 30 i = 1, ndimsi
+    do i = 1, ndimsi
         if (nbvar .eq. 1) then
             sdenom(i) = sigedv(i) -deux/trois*cinf*alfam(i)
         else if (nbvar.eq.2) then
             sdenom(i) = sigedv(i) -deux/trois*cinf*alfam(i) -deux/ trois*c2inf*alfa2m(i)
         endif
         denom=denom+sdenom(i)*sdenom(i)
-30  end do
+    end do
     denom = sqrt(trois/deux*denom)
 !
     rppmdp = rpp + (trois/deux*deuxmu+mp*n1+m2p*n2)*dp

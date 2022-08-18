@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcejfr(BEHinteg,&
-                  fami, kpg, ksp, ndim, mate,&
-                  option, epsm, deps, sigma, dsidep,&
-                  vim, vip, typmod, instam, instap)
+!
+subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
+                  mate, option, epsm, deps, sigma,&
+                  dsidep, vim, vip, typmod, instam,&
+                  instap)
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/matinv.h"
@@ -260,10 +260,10 @@ implicit none
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
     if (ifhyme) then
 !
-        do 10 n = 1, ndim-1
+        do n = 1, ndim-1
             gp(n) = epsm(ndim+n)
             if (resi) gp(n) = gp(n) + deps(ndim+n)
- 10     continue
+        end do
 !
         presg = epsm(2*ndim)
         if (resi) presg = presg + deps(2*ndim)
@@ -274,9 +274,9 @@ implicit none
 !     LAMBDA = accumutation de deplacement tang en valeur absolue
 !     PLASTI = vecteur de deplacement plastique tangentiel
     lambda=vim(1)
-    do 11 i = 2, ndim
+    do i = 2, ndim
         plasti(i) = vim(i+1)
- 11 end do
+    end do
 !     IDICATEUR DE PLASTIFICATION A L'INSTANT ACTUEL
     if (elas) then
         ifplas = 0
@@ -295,9 +295,9 @@ implicit none
 !
 ! CALCUL DE LA CONTRAINTE HYDRO : DEBIT (LOI CUBIQUE)
     if (ifhyme) then
-        do 44 n = 1, ndim-1
+        do n = 1, ndim-1
             sigma(ndim+n) = -rhof*gp(n)*(max(amin,a(1)+amin))**3/(12* visf)
- 44     continue
+        end do
     endif
 !
 !     CONTRAINTE NORMALE DE CONTACT PENALISE +
@@ -312,21 +312,21 @@ implicit none
     endif
 !
 !     CONTRAINTE TANGENTIELLE
-    do 20 i = 2, ndim
+    do i = 2, ndim
         sigma(i) = kt*( a(i)-plasti(i) )
- 20 end do
+    end do
 !
 !     DIRECTION DE GLISSEMENT = SIGMA TANG SANS INCREMENT PLASTIQUE
-    do 27 i = 2, ndim
+    do i = 2, ndim
         tau(i) = sigma(i)
- 27 end do
+    end do
 !
 !     MODULE DE SIGMA TANGENTE SANS INCREMENT PLASTIQUE
 !     NB:SI ABSTAU==0 ON EST TOUJOURS DANS LE REGIME ELASTIQUE
     abstau=0.d0
-    do 30 i = 2, ndim
+    do i = 2, ndim
         abstau = abstau+tau(i)**2
- 30 end do
+    end do
     abstau=sqrt(abstau)
 !
 ! ###########################################################
@@ -340,17 +340,17 @@ implicit none
     if (criter .le. 0.d0) then
 !     PAS DE PLASTICITE
         ifplas=0
-        do 32 i = 2, ndim
+        do i = 2, ndim
             dplas(i) = 0.d0
- 32     continue
+        end do
         dlam=0.d0
     else
 !     AVEC LA PLASTICITE
         ifplas=1
-        do 34 i = 2, ndim
+        do i = 2, ndim
             dplas(i) = criter/(kt+kappa)*tau(i)/abstau
             sigma(i) = sigma(i)-kt*dplas(i)
- 34     continue
+        end do
         dlam=criter/(kt+kappa)
     endif
 !
@@ -382,20 +382,20 @@ implicit none
 !
     vip(1) = lambda+dlam
     vip(2) = ifplas
-    do 36 i = 2, ndim
+    do i = 2, ndim
         vip(i+1) = vim(i+1)+dplas(i)
- 36 end do
+    end do
     vip(5) = max(nint(vim(5)),ifouv)
 !
     vip(6)=vim(6)
-    do 37 i = 2, ndim
+    do i = 2, ndim
         vip(6) = vip(6)+sigma(i)**2
         vip(6)=sqrt(vip(6))
- 37 end do
+    end do
     vip(7) = a(1) + oset
-    do 38 i = 2, ndim
+    do i = 2, ndim
         vip(i+6)=a(i)
- 38 end do
+    end do
 !
 !     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE SCIAGE
 !     LE SCIAGE FAIT DIMINUER L'EPAISSEUR DU JOINT
@@ -466,7 +466,7 @@ implicit none
 ! #####################################
 !
 5000 continue
-    if (.not. rigi) goto 9999
+    if (.not. rigi) goto 999
 !
 !     INITIALISATION DE DSIDEP
     call r8inir(6*6, 0.d0, dsidep, 1)
@@ -477,15 +477,15 @@ implicit none
     if (ifhyme) then
 !
 !       TERME : DW/DGP  (POUR KTAN P P)
-        do 42 n = 1, ndim-1
+        do n = 1, ndim-1
 !
             dsidep(ndim+n,ndim+n)=-rhof*(max(amin,a(1)+amin))**3/(12*&
             visf)
 !
- 42     continue
+        end do
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
-        do 43 n = 1, ndim-1
+        do n = 1, ndim-1
 !
             if (a(1) .lt. 0.d0) then
                 dsidep(ndim+n,1) = 0.d0
@@ -493,7 +493,7 @@ implicit none
                 dsidep(ndim+n,1) = -3*rhof*gp(n)*(a(1)+amin)**2/(12* visf)
             endif
 !
- 43     continue
+        end do
 !
     endif
 !
@@ -504,24 +504,24 @@ implicit none
         dsidep(1,1)=0.d0
     endif
 ! DSIGMA_N/DDELTA_T
-    do 40 i = 2, ndim
+    do i = 2, ndim
         dsidep(1,i)=0.d0
- 40 end do
+    end do
 ! DSIGMA_T/DDELTA_N
-    do 50 i = 2, ndim
+    do i = 2, ndim
         if ((ifouv.eq.0) .and. (ifplas.eq.1)) then
             dsidep(i,1)=-tau(i)*mu*kn*kt/abstau/(kt+kappa)
         else
             dsidep(i,1)=0.d0
         endif
- 50 end do
+    end do
 ! DSIGMA_T/DDELTA_T
     if (ifplas .eq. 1) then
         coefhd= - (kappa*lambda+adhe-mu*sigma(1)) *kt**2/abstau**3/(&
         kt+kappa)
         coefd=kappa*kt/(kt+kappa) - coefhd*abstau**2
-        do 60 j = 2, ndim
-            do 70 i = j, ndim
+        do j = 2, ndim
+            do i = j, ndim
                 if (i .eq. j) then
                     kronec=1
                 else
@@ -529,12 +529,12 @@ implicit none
                 endif
                 dsidep(j,i) = coefhd*tau(j)*tau(i) + coefd*kronec
                 dsidep(i,j) = coefhd*tau(i)*tau(j) + coefd*kronec
- 70         continue
- 60     continue
+            end do
+        end do
     else
-        do 80 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i)=kt
- 80     continue
+        end do
     endif
 !
 !
@@ -554,12 +554,12 @@ implicit none
 !     POUR LE JOINT SANS ECROUISSAGE LA PARTIE TANGENTIELLE EST DECALEE
     if (kappa .eq. 0.d0) then
 !     COMPLETEMENT CASSE TANGENTE
-        do 90 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i) = dsidep(i,i) + kt*rigart
- 90     continue
+        end do
     endif
 !
 !
-9999 continue
+999 continue
 !
 end subroutine

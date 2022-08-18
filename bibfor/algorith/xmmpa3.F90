@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,27 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, jac, nfh, nd,&
                   cpenco, singu, fk, ddls, ddlm,&
-                  jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
-                  ifa, mmat)
+                  jheavn, ncompn, nfiss, ifiss, jheafa,&
+                  ncomph, ifa, mmat)
 !
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: mmat(216, 216), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac
     real(kind=8) :: cpenco
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 !
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
@@ -79,30 +79,31 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
     lmultc = nfiss.gt.1
     coefj = xcalc_saut(1,0,1,-88)
     if (.not.lmultc) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+        hea_fa(1)=xcalc_code(1,he_inte=[-1])
+        hea_fa(2)=xcalc_code(1,he_inte=[+1])
     endif
 ! I.1 CALCUL DE A
-    do 130 i = 1, nnol
+    do i = 1, nnol
 !
         pli=pla(i)
         ffi=ffc(i)
 !
-        do 131 j = 1, nno
+        do j = 1, nno
             call indent(j, ddls, ddlm, nnos, jn)
-            do 134 jfh = 1, nfh
+            do jfh = 1, nfh
                 if (lmultc) then
-                    coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
-                                       zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
-                                       zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
-                                       zi(jheavn-1+ncompn*(j-1)+ncompn))
+                    coefj = xcalc_saut(&
+                            zi(jheavn-1+ncompn*(j-1)+jfh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
+                            zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                            zi(jheavn-1+ncompn*(j-1)+ncompn)&
+                            )
                 else
-                    coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
-                                       hea_fa(1), &
-                                       hea_fa(2),&
-                                       zi(jheavn-1+ncompn*(j-1)+ncompn))
+                    coefj = xcalc_saut(&
+                            zi(jheavn-1+ncompn*(j-1)+jfh), hea_fa(1), hea_fa(2),&
+                            zi(jheavn-1+ncompn*(j-1)+ncompn)&
+                            )
                 endif
-                do 132 l = 1, ndim
+                do l = 1, ndim
                     mmat(pli,jn+ndim*jfh+l) = mmat(pli,jn+ndim*jfh+l) + coefj * ffi * ffp(j) * nd&
                                               &(l) * jac
 !
@@ -110,42 +111,41 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
                     mmat(jn+ndim*jfh+l,pli) = mmat(jn+ndim*jfh+l,pli) + coefj * ffi * ffp(j) * nd&
                                               &(l) * jac
-132             continue
+                end do
 !
-134         continue
-            do 133 l = 1, singu*ndim
-              do alpj = 1 , ndim
-                mmat(pli,jn+ndim*(1+nfh)+alpj) = mmat(&
-                                              pli,&
-                                              jn+ndim*(1+nfh) +alpj) + 2.d0 * ffi * &
-                                              fk(j,alpj,l) * n&
-                                              &d(l&
-                                              ) * jac
+            end do
+            do l = 1, singu*ndim
+                do alpj = 1, ndim
+                    mmat(pli,jn+ndim*(1+nfh)+alpj) = mmat(&
+                                                     pli,&
+                                                     jn+ndim*(1+nfh) +alpj) + 2.d0 * ffi * fk(j,&
+                                                     alpj, l) * nd(l&
+                                                     ) * jac
 !
-                mmat(jn+ndim*(1+nfh)+alpj,pli)= mmat(jn+ndim*(1+nfh)+alpj,&
+                    mmat(jn+ndim*(1+nfh)+alpj,pli)= mmat(jn+ndim*(1+nfh)+alpj,&
                 pli) + 2.d0 * ffi * fk(j,alpj,l) * nd(l) * jac
-              enddo
-133         continue
+                enddo
+            end do
 !
-131     continue
+        end do
 !
-130 end do
+    end do
 !
 !     CALCUL DE C
 !
-    do 220 i = 1, nnol
+    do i = 1, nnol
 !
         pli=pla(i)
         ffi=ffc(i)
 !
-        do 221 j = 1, nnol
+        do j = 1, nnol
 !
             plj=pla(j)
             ffj=ffc(j)
 !
             mmat(pli,plj) = mmat(pli,plj) - ffj * ffi * jac / cpenco
 !
-221     continue
-220 end do
+        end do
+    end do
 !
 end subroutine

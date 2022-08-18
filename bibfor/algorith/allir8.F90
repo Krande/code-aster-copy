@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine allir8(base, nolir8, nbr8, lr8)
     implicit none
 #include "jeveux.h"
@@ -56,12 +56,12 @@ subroutine allir8(base, nolir8, nbr8, lr8)
         zr(jval) = lr8(1)
         zr(jbor) = lr8(1)
     else
-        do 10 i = 1, nbb
+        do i = 1, nbb
             zr(jpas-1+i) = lr8(i+1) - lr8(i)
             zi(jnbp-1+i) = 1
             zr(jval-1+i) = lr8(i)
             zr(jbor-1+i) = lr8(i)
-10      continue
+        end do
         zr(jval-1+nbr8) = lr8(nbr8)
         zr(jbor-1+nbr8) = lr8(nbr8)
     endif

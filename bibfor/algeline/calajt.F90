@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calajt(j1, j, diag, col, n,&
                   itab, deb, tab, suiv, lt,&
                   ier)
@@ -27,11 +27,11 @@ subroutine calajt(j1, j, diag, col, n,&
 !     ON AJOUTE LES NOEUDS COL(J1) A COL(J-1) DANS LA LISTE
 !     DES VOISINS DE COL(J)
     oj = col(j)
-    do 1 k = j1, j-1
+    do k = j1, j-1
         ok = col(k)
-        do 2 l = diag(oj-1)+1, diag(oj)-1
+        do l = diag(oj-1)+1, diag(oj)-1
             if (col(l) .eq. ok) goto 3
- 2      continue
+        end do
 !     OK N' EST PAS UN VOISIN INITIAL DE OJ ON L INSERE DANS
 !     LA LISTE DES VOISINS
         if (deb(oj) .eq. 0) then
@@ -46,7 +46,7 @@ subroutine calajt(j1, j, diag, col, n,&
         else
             it = deb(oj)
             pred =it
-10          continue
+ 10         continue
             if (it .gt. 0) then
                 if (tab(it) .eq. ok) goto 9
                 pred = it
@@ -62,10 +62,10 @@ subroutine calajt(j1, j, diag, col, n,&
             tab(itab) = ok
             suiv(pred) = itab
             suiv(itab) = 0
- 9          continue
+  9         continue
         endif
- 3      continue
- 1  end do
+  3     continue
+    end do
     ier = -itab
-22  continue
+ 22 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
                   nmzef, nmzeg, nmief, nmprox, depsp,&
                   ddissi, dc1, dc2, dtg, bbok,&
@@ -80,7 +80,7 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !      NCRIT = CRITNU(ZIMAT,NMNBN,NMDPLA,DEPSLO,DTG,NORMM)
     ncrit = critnu(zimat,nmnbn,depslo,dtg,normm)
 !
-    do 190 nbb = 1, nbbmax
+    do nbb = 1, nbbmax
 !
 !       NEWZFG(1) = NEWZEF
 !       NEWZFG(2) = NEWZEG
@@ -106,22 +106,22 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
         if (ier .gt. 0) goto 200
 !
 !     MISE A JOUR DES VARIABLE
-        do 125 j = 1, 6
+        do j = 1, 6
             nmnbn(j) = newnbn(j)
-125     continue
+        end do
 !
-        do 140 j = 1, 3
-            do 130 i = 1, 2
+        do j = 1, 3
+            do i = 1, 2
                 nmplas(i,j) = newpla(i,j)
-130         continue
-140     continue
+            end do
+        end do
 !
-        do 160 j = 1, 2
-            do 150 i = 1, 2
+        do j = 1, 2
+            do i = 1, 2
                 nmdpla(i,j) = newdpl(i,j)
                 nmddpl(i,j) = newddp(i,j)
-150         continue
-160     continue
+            end do
+        end do
 !
         nmzef = newzef
         nmzeg = newzeg
@@ -131,9 +131,9 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !          NMPROX(J) = NEWPRO(J)
 ! 170    CONTINUE
 !
-        do 180 j = 1, 6
+        do j = 1, 6
             depsp(j) = depsp(j) + depsbb(j)
-180     continue
+        end do
 !
         ddissi = ddissi + ddisbb
 !
@@ -159,7 +159,7 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
         if (ncrnew .gt. 0) then
             ncrit = ncrnew
         endif
-190 end do
+    end do
 !
 200 continue
 !

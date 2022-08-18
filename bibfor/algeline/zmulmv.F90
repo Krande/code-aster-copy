@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zmulmv(trans, m, n, alpha, a,&
                   lda, x, incx, beta, y,&
                   incy)
@@ -87,26 +87,26 @@ subroutine zmulmv(trans, m, n, alpha, a,&
 !
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         kx = ix
-        do 10 i = 1, n
+        do i = 1, n
             call zaxpy(m, alpha*x(kx), a(lda*(i-1)+1), 1, y,&
                        incy)
             kx = kx + incx
-10      continue
+        end do
     else if (trans(1:1).eq.'T' .or. trans(1:1).eq.'t') then
 !
         ky = iy
-        do 20 i = 1, n
+        do i = 1, n
             y(ky) = y(ky) + alpha*zdotu(m,a(lda*(i-1)+1),1,x,incx)
             ky = ky + incy
-20      continue
+        end do
 !
     else
         ky = iy
-        do 30 i = 1, n
+        do i = 1, n
             y(ky) = y(ky) + alpha*zdotc(m,a(lda*(i-1)+1),1,x,incx)
             ky = ky + incy
-30      continue
+        end do
     endif
 !
-999  continue
+999 continue
 end subroutine

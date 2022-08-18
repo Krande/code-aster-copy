@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcjoba(ndim, typmod, imate, crit, sum,&
                   dsu, vim, option, sig, vip,&
                   dsidep, iret)
@@ -298,7 +298,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
             if (fini .gt. 0.d0) then
                 conv = .false.
-                do 40 k = 1, itemax
+                do k = 1, itemax
                     taofro = dsidep(2,2)*dft*(eps(2)-gamfro)
                     if ((taofro-x0) .ge. 0.d0) then
                         xmul = +1.d0
@@ -323,7 +323,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 ! --------EVALUATION DE LA CONVERGENCE
                     conv = ((abs(fx/fini) .le. 0.d0) .or. (lamdap .le. crit(3)) )
                     if (conv) goto 100
- 40             continue
+                end do
 !
                 if (.not. conv) then
                     iret = 1

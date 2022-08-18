@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
                   jac, tau1, tau2, lact, vtmp)
 !
@@ -23,7 +23,7 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 #include "jeveux.h"
 #include "blas/ddot.h"
     integer :: ndim, nnol
-    integer ::  pla(27), lact(8)
+    integer :: pla(27), lact(8)
     real(kind=8) :: vtmp(400), tau1(3), tau2(3)
     real(kind=8) :: ffc(8), jac, reac12(3)
 !
@@ -78,7 +78,7 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 ! ----------------------------------------------------------------------
 !
     tt(:) = 0.d0
-    do 165 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
@@ -86,9 +86,10 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 !
         tt(1)=ddot(ndim,tau1(1),1,reac12,1)
         if (ndim .eq. 3) tt(2)=ddot(ndim,tau2(1),1,reac12,1)
-        do 167 k = 1, ndim-1
+        do k = 1, ndim-1
             vtmp(pli+k) = vtmp(pli+k) + tt(k)*ffi*jac
-167      continue
-165  continue
+        end do
+165     continue
+    end do
 !
 end subroutine

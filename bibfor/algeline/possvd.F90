@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine possvd(nm, m, n, w, matu,&
                   u, matv, v, eps, rg,&
                   rv1)
@@ -88,22 +88,22 @@ subroutine possvd(nm, m, n, w, matu,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     if (n .gt. 1) then
-        do 10 j = 1, n-1
+        do j = 1, n-1
             jmax = j
             wmax = w(j)
-            do 20 i = j+1, n
+            do i = j+1, n
                 if (w(i) .gt. wmax) then
                     jmax = i
                     wmax = w(i)
                 endif
- 20         continue
+            end do
             if (jmax .ne. j) then
                 w(jmax) = w(j)
                 w(j) = wmax
                 if (matu) call dswap(m, u(1, j), 1, u(1, jmax), 1)
                 if (matv) call dswap(n, v(1, j), 1, v(1, jmax), 1)
             endif
- 10     continue
+        end do
     endif
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,9 +117,9 @@ subroutine possvd(nm, m, n, w, matu,&
         if (rgmax .gt. 1) then
             call dcopy(rgmax, w(1), 1, rv1(1), 1)
             call dscal(rgmax, 1.0d0/rv1(1), rv1(1), 1)
-            do 30 j = 2, rgmax
+            do j = 2, rgmax
                 if (rv1(j) .lt. eps) goto 40
- 30         continue
+            end do
  40         continue
             rg = j - 1
         else

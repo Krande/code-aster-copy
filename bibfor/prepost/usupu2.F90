@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
                   nbinst, temps, puusur, vustub, vusob,&
                   pus, pmoye, pourpu, poupre)
@@ -26,6 +26,8 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
 ! OUT : PUUSUR : PUISSANCE USURE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -42,8 +44,6 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
 #include "asterfort/stapu2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
     character(len=8) :: noeu
     character(len=16) :: nomk16
     character(len=19) :: trange
@@ -67,8 +67,8 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: vint(:) => null()
-    integer          , pointer :: nltype(:) => null()
-    integer          , pointer :: vindx (:) => null()
+    integer, pointer :: nltype(:) => null()
+    integer, pointer :: vindx (:) => null()
     character(len=24), pointer :: nlname(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -76,71 +76,71 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     nbpt = 0
 !
     call getvid(' ', 'RESU_GENE', scal=trange, nbret=nt)
-    if (nt.eq.0) goto 999
-
+    if (nt .eq. 0) goto 999
+!
     call jeveuo(trange//'.DESC', 'L', vi=desc)
     nbnoli = desc(3)
-
+!
     nomk16 = trange(1:16)
-    call jeveuo(nomk16//'.NL.TYPE', 'L', vi  =nltype)
-    call jeveuo(nomk16//'.NL.VIND', 'L', vi  =vindx)
+    call jeveuo(nomk16//'.NL.TYPE', 'L', vi =nltype)
+    call jeveuo(nomk16//'.NL.VIND', 'L', vi =vindx)
     call jeveuo(nomk16//'.NL.INTI', 'L', vk24=nlname)
-    call jeveuo(nomk16//'.NL.VINT', 'L', vr  =vint)
+    call jeveuo(nomk16//'.NL.VINT', 'L', vr =vint)
     nbvint = vindx(nbnoli+1)-1
 !
     AS_ALLOCATE(vi=chindx, size=nbnoli)
-
+!
     nbchoc = 0
     do i = 1, nbnoli
-        if (nltype(i).eq.NL_CHOC) then
+        if (nltype(i) .eq. NL_CHOC) then
             nbchoc = nbchoc + 1
             chindx(nbchoc) = i
         end if
     end do
-
-    if (nbchoc.eq.0) call utmess('F', 'PREPOST4_84')
-
+!
+    if (nbchoc .eq. 0) call utmess('F', 'PREPOST4_84')
+!
     nbtot = nbchoc
-
-    call jeveuo(trange//'.DISC', 'L'     , vr=disc)
+!
+    call jeveuo(trange//'.DISC', 'L', vr=disc)
     call jelira(trange//'.DISC', 'LONMAX', nbpt)
-
+!
     AS_ALLOCATE(vr =fcho, size=  3*nbtot*nbpt)
     AS_ALLOCATE(vr =dloc, size=2*3*nbtot*nbpt)
     AS_ALLOCATE(vr =vcho, size=  3*nbtot*nbpt)
     AS_ALLOCATE(vk8=ncho, size=  2*nbtot)
-
+!
     do ic = 1, nbchoc
         i = chindx(ic)
         do j = 1, nbpt
-            fcho((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+1)
-            fcho((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+2)
-            fcho((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+3)
-
-            dloc((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+4)
-            dloc((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+5)
-            dloc((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+6)
+            fcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+1)
+            fcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+2)
+            fcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+3)
+!
+            dloc((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+4)
+            dloc((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+5)
+            dloc((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+6)
             dec = 3*nbtot*nbpt
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+7)
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+8)
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+9)
-
-            vcho((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+10)
-            vcho((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+11)
-            vcho((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+12)
+!
+            vcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+10)
+            vcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+11)
+            vcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+12)
         end do
-        ncho(ic)       = nlname((i-1)*5+2)(1:8)
+        ncho(ic) = nlname((i-1)*5+2)(1:8)
         ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
     end do
-
-
+!
+!
     call getvr8(' ', 'PUIS_USURE', scal=puusur, nbret=n1)
     if (n1 .ne. 0) then
         call impus(ifires, 0, puusur)
         goto 999
     endif
 !
-
+!
     call getvis(' ', 'NB_BLOC', scal=nbloc, nbret=n1)
     if (n1 .eq. 0) nbloc = 1
     call getvr8(' ', 'INST_INIT', scal=tdebut, nbret=n2)
@@ -148,19 +148,19 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     call getvtx(' ', 'NOEUD', scal=noeu, nbret=n4)
 !
 !           --- RECHERCHE DU NOEUD DE CHOC ---
-    do 10 ichoc = 1, nbchoc
+    do ichoc = 1, nbchoc
         if (ncho(ichoc) .eq. noeu) goto 12
-10  continue
-
+    end do
+!
     lg = max(1,lxlgut(noeu))
     call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
     goto 999
-
-12  continue
+!
+ 12 continue
 !
     tmax = disc(nbpt)
     tmin = disc(1)
-
+!
     if (n2 .eq. 0) then
         tdebut = tmin
     else
@@ -174,23 +174,23 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     if (tdebut .ge. tfin) then
         call utmess('F', 'PREPOST4_47')
     endif
-
-    do 14 j = 1, nbpt
+!
+    do j = 1, nbpt
         if (disc(j) .ge. tdebut) then
             idebut = j
             goto 15
         endif
-14  continue
-15  continue
-
-    do 16 j = 1, nbpt
+    end do
+ 15 continue
+!
+    do j = 1, nbpt
         if (disc(j) .ge. tfin) then
             ifin = j
             goto 17
         endif
-16  continue
-17  continue
-
+    end do
+ 17 continue
+!
     nbpas = ifin - idebut + 1
     if (nbloc .eq. 0) nbloc = 1
     nbval = nbpas / nbloc
@@ -216,13 +216,13 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     call jedetr('&&USURPU.WK4')
     call jedetr('&&USURPU.WK5')
     call jedetr('&&USURPU.WK6')
-
+!
     AS_DEALLOCATE(vi=chindx)
     AS_DEALLOCATE(vr =dloc)
     AS_DEALLOCATE(vr =fcho)
     AS_DEALLOCATE(vr =vcho)
     AS_DEALLOCATE(vk8=ncho)
-
+!
 999 continue
     call jedema()
 end subroutine

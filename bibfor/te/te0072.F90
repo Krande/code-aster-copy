@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0072(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -79,53 +79,53 @@ subroutine te0072(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i) = 0.d0
- 10 end do
+    end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    do 80 ise = 1, nse
+    do ise = 1, nse
 !
-        do 30 i = 1, nno
-            do 20 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
- 20         continue
- 30     continue
+            end do
+        end do
 !
-        do 70 kp = 1, npg
+        do kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         coorse, nx, ny, poids)
             r = 0.d0
             tpg = 0.d0
-            do 40 i = 1, nno
+            do i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
                 tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
- 40         continue
+            end do
             if (laxi) poids = poids*r
             if (option(11:14) .eq. 'TEXT') then
-                do 50 i = 1, nno
+                do i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     vectt(c(ise,i)) = vectt(&
                                       c(ise,i)) + poids*zr(li)* zr(icoefh)* (zr(itex)- (1.0d0-the&
                                       &ta)*tpg&
                                       )
- 50             continue
+                end do
             else if (option(11:14).eq.'RAYO') then
-                do 60 i = 1, nno
+                do i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     vectt(c(ise,i)) = vectt(&
                                       c(ise,i)) + poids*zr(li)* sigma*epsil* ((tpinf+tz0)**4- (1.&
                                       &0d0-theta)* (tpg+tz0)**4&
                                       )
- 60             continue
+                end do
             endif
- 70     continue
- 80 end do
+        end do
+    end do
 !
-    do 90 i = 1, nnop2
+    do i = 1, nnop2
         zr(ivectt-1+i) = vectt(i)
- 90 end do
+    end do
 !
 end subroutine

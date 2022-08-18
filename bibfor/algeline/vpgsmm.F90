@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
-                  typeps, vaux, ddlexc, delta, dsor,&
-                  omecor)
+!
+subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha,&
+                  lmatb, typeps, vaux, ddlexc, delta,&
+                  dsor, omecor)
 !---------------------------------------------------------------------
 !
 !
@@ -42,17 +42,17 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
-! DECLARATION PARAMETRES D'APPELS
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/wkvect.h"
+!
+!-----------------------------------------------------------------------
+! DECLARATION PARAMETRES D'APPELS
     integer :: nbeq, nfreq, nconv, lmatb, ddlexc(nbeq), typeps
     real(kind=8) :: vect(nbeq, nconv), alpha, vaux(nbeq), delta(nconv), dsor(nfreq+1, 2), omecor
 !
@@ -73,21 +73,21 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
 !      alpha=-alpha
     if (lcheck) then
         write(ifm,*)'m-orthogonalite std avant vpgsmm'
-        do 10 i = 1, nconv
+        do i = 1, nconv
             call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
                         .false._1)
             auxri=0.d0
-            do 11 j = 1, i
+            do j = 1, i
                 auxri1=0.d0
-                do 12 k = 1, nbeq
+                do k = 1, nbeq
                     auxri1 = auxri1 + vect(k,j) * vaux(k) * ddlexc(k)
- 12             continue
+                end do
                 auxri1=abs(auxri1)
                 if (j .ne. i) auxri=auxri+auxri1
- 11         continue
+            end do
             write(ifm,*)'sigma(j=1,i-1) abs<vj,mvi>=',i,auxri
             write(ifm,*)'               abs<vi,mvi>=     ',auxri1
- 10     continue
+        end do
     endif
 !
     if (alpha .lt. 0.d0) then
@@ -100,12 +100,12 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
 !
     call wkvect('&&VPGSMM.REORTHO.PART1', 'V V I', nconv, ireor1)
     call wkvect('&&VPGSMM.REORTHO.PART2', 'V V I', 2*nconv, ireor2)
-    do 66 i = 1, nconv
+    do i = 1, nconv
         zi(ireor1+i-1)=-999
         zi(ireor2+i-1)=-999
         zi(ireor2+nconv+i-1)=-999
 !         write(6,*)i,dsor(i,1)
- 66 continue
+    end do
 !
 ! Critères de test dependant de CALC_* / SEUIL_* (*=FREQ ou CHAR_CRIT):
 ! * en dessous de seuilr: modes rigides
@@ -115,7 +115,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
     seuilr=100.d0*omecor
     seuilp=omecor
     compt1=0
-    do 67 i = 1, nconv-1
+    do i = 1, nconv-1
         auxri=dsor(i,1)
         auxri1=dsor(i+1,1)
         ltest=.false.
@@ -137,7 +137,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
                 zi(ireor1+i)  =zi(ireor1+i-1)
             endif
         endif
- 67 continue
+    end do
     i=1
     compt1=0
     compt2=1
@@ -145,7 +145,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
     iauxi=zi(ireor1+i-1)
     if (iauxi .ne. -999) then
         compt1=compt1+1
-        do 69 j = i+1, nconv
+        do j = i+1, nconv
             iauxj=zi(ireor1+j-1)
             if (iauxj .ne. iauxi) then
                 compt2=1
@@ -155,7 +155,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
                 zi(ireor2+compt1-1)=i
                 zi(ireor2+nconv+compt1-1)=compt2
             endif
- 69     continue
+        end do
  70     continue
         i=j
         if (i .lt. nconv) goto 68
@@ -168,7 +168,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
     iauxj=1
     if ((lcheck) .or. (niv.ge.2)) write(ifm, *)'<vpgsmm> m-reorthogonalisation partielle sur ',&
                                   compt1, ' paquets'
-    do 71 i = 1, compt1
+    do i = 1, compt1
         iauxi=zi(ireor2+i-1)
         nconvl=zi(ireor2+nconv+i-1)
 ! gardes-fous
@@ -190,28 +190,28 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
             ASSERT(.false.)
         endif
         iauxj=iauxi
- 71 continue
+    end do
     call jedetr('&&VPGSMM.REORTHO.PART1')
     call jedetr('&&VPGSMM.REORTHO.PART2')
 !
  72 continue
     if (lcheck) then
         write(ifm,*)'m-orthogonalite std apres vpgsmm'
-        do 80 i = 1, nconv
+        do i = 1, nconv
             call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
                         .false._1)
             auxri=0.d0
-            do 81 j = 1, i
+            do j = 1, i
                 auxri1=0.d0
-                do 82 k = 1, nbeq
+                do k = 1, nbeq
                     auxri1 = auxri1 + vect(k,j) * vaux(k) * ddlexc(k)
- 82             continue
+                end do
                 auxri1=abs(auxri1)
                 if (j .ne. i) auxri=auxri+auxri1
- 81         continue
+            end do
             write(ifm,*)'sigma(j=1,i-1) abs<vj,mvi>=',i,auxri
             write(ifm,*)'               abs<vi,mvi>=     ',auxri1
- 80     continue
+        end do
     endif
 !
 !     FIN DE VPGSMM

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ve0124(typres)
     implicit none
     character(len=16), intent(inout) :: typres
@@ -42,7 +42,7 @@ subroutine ve0124(typres)
     call getfac('AFFE', iocc)
 !
     if (typres .eq. 'EVOL_THER') then
-        do 700 k = 1, iocc
+        do k = 1, iocc
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_7')
@@ -51,10 +51,10 @@ subroutine ve0124(typres)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_8')
             endif
-700      continue
+        end do
 !
     else if (typres .eq. 'MULT_ELAS') then
-        do 702 k = 1, iocc
+        do k = 1, iocc
             call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_9')
@@ -67,10 +67,10 @@ subroutine ve0124(typres)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_10')
             endif
-702      continue
+        end do
 !
     else if (typres .eq. 'FOURIER_ELAS') then
-        do 704 k = 1, iocc
+        do k = 1, iocc
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_11')
@@ -83,10 +83,10 @@ subroutine ve0124(typres)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_12')
             endif
-704      continue
+        end do
 !
     else if (typres .eq. 'FOURIER_THER') then
-        do 705 k = 1, iocc
+        do k = 1, iocc
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_13')
@@ -99,7 +99,7 @@ subroutine ve0124(typres)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_14')
             endif
-705      continue
+        end do
     endif
 !
     call getfac('PERM_CHAM', iocc)

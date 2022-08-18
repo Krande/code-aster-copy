@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine comptv(nbpt, fn, offset, t, nbchoc,&
                   tchmin, tchmax, tchoct, tchocm, nbrebo,&
                   trebot, trebom)
@@ -57,7 +57,7 @@ subroutine comptv(nbpt, fn, offset, t, nbchoc,&
     idebur = 1
     ifin = 1
 !
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
 !
         if (abs(fn(i)) .le. offset) then
 !
@@ -98,7 +98,7 @@ subroutine comptv(nbpt, fn, offset, t, nbchoc,&
 !
         endif
 !
-10  continue
+    end do
 !
     tchoct = tchocm
     if (nbchoc .ne. 0) then

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
                   dfrdkf, coor, dfrdeg, dfrdng, dfrdkg,&
                   dfdx, dfdy, dfdz, jac)
@@ -59,17 +59,17 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
 !
 !     --- CALCUL DE LA MATRICE JACOBIENNE (TRANSFORMATION GEOMETRIQUE)
 !
-    do 100 i = 1, nno
+    do i = 1, nno
         ii = 3*(i-1)
         de = dfrdeg(i)
         dn = dfrdng(i)
         dk = dfrdkg(i)
-        do 110 j = 1, 3
+        do j = 1, 3
             g(1,j) = g(1,j) + coor(ii+j) * de
             g(2,j) = g(2,j) + coor(ii+j) * dn
             g(3,j) = g(3,j) + coor(ii+j) * dk
-110      continue
-100  end do
+        end do
+    end do
 !
 !     --- CALCUL DE L'INVERSE DE LA MATRICE JACOBIENNE
 !
@@ -94,11 +94,11 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
 !     --- CALCUL DES DERIVEES EN ESPACE DES FONCTIONS DE FORME
 !         DES VARIABLES
 !
-    do 200 i = 1, nnf
+    do i = 1, nnf
         dfdx(i) = (j11*dfrdef(i)+j12*dfrdnf(i)+j13*dfrdkf(i))/jac
         dfdy(i) = (j21*dfrdef(i)+j22*dfrdnf(i)+j23*dfrdkf(i))/jac
         dfdz(i) = (j31*dfrdef(i)+j32*dfrdnf(i)+j33*dfrdkf(i))/jac
-200  end do
+    end do
 !
 !
     jac = abs(jac) * poids

@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine merit3(modele, nchar, lchar, mate, mateco, cara,&
-                  time, matel, prefch, numero, base)
+!
+subroutine merit3(modele, nchar, lchar, mate, mateco,&
+                  cara, time, matel, prefch, numero,&
+                  base)
     implicit none
 !
 !
@@ -109,7 +110,7 @@ subroutine merit3(modele, nchar, lchar, mate, mateco, cara,&
     lpaout(1) = 'PMATTTR'
     lchout(1) = prefch(1:8)//'.ME000'
     if (lchar(1) (1:8) .ne. '        ') then
-        do 10 ichar = 1, nchar
+        do ichar = 1, nchar
             nomcha = lchar(ichar)
             convch = nomcha//'.CHTH'//'.CONVE'//'.VALE'
             call jeexin(convch, iret)
@@ -152,7 +153,7 @@ subroutine merit3(modele, nchar, lchar, mate, mateco, cara,&
                             'OUI')
                 call reajre(matel, lchout(1), base)
             endif
-10      continue
+        end do
 !
     endif
 !

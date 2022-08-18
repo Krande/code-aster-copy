@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeprsg(cunit, tgr, info)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -54,18 +54,18 @@ subroutine jeprsg(cunit, tgr, info)
 !-----------------------------------------------------------------------
     julist = iunifi(cunit)
     if (julist .eq. 0) goto 90
-    do 10 k = 1, 132
+    do k = 1, 132
         init(k:k) = '.'
         diese(k:k) = '#'
- 10 end do
+    end do
     ente = ' '
-    do 20 k = 1, 132
+    do k = 1, 132
         ente(k:k) = '-'
- 20 end do
-    do 30 k = 1, 132, 10
+    end do
+    do k = 1, 132, 10
         ente(k:k) = '+'
- 30 end do
-    do 80 iz = 1, 2
+    end do
+    do iz = 1, 2
         id = idinit(iz)
         if (id .eq. 0) goto 80
         ida = idinit(iz)
@@ -106,9 +106,9 @@ subroutine jeprsg(cunit, tgr, info)
                 else
                     chaine = init
                 endif
-                do 50 k = nbc + 1, (nn/132) - 1
+                do k = nbc + 1, (nn/132) - 1
                     write (julist,'(A,/,A,/,A,/)') ente,chaine,ente
- 50             continue
+                end do
                 chaine = init
                 if (iszon(jiszon+id+3) .eq. istat(2)) then
                     chaine(1:nc) = diese
@@ -141,10 +141,10 @@ subroutine jeprsg(cunit, tgr, info)
         nc = mod(nn,132)
         if (nn/132 .gt. nbc) then
             if (info .eq. 1) then
-                do 70 k = nbc, (nn/132) - 1
+                do k = nbc, (nn/132) - 1
                     write (julist,'(A,/,A,/,A,/)') ente,chaine,ente
                     chaine = init
- 70             continue
+                end do
             endif
         endif
         chaine(nc:132) = ' '
@@ -155,7 +155,8 @@ subroutine jeprsg(cunit, tgr, info)
             write (julist,'(A)')&
      &      '----------------------------------------------------------'
         endif
- 80 end do
+ 80     continue
+    end do
  90 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

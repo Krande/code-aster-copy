@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                   nommet)
 ! person_in_charge: van-xuan.tran at edf.fr
@@ -23,6 +23,8 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cer3pt.h"
 #include "asterfort/dimax1.h"
 #include "asterfort/dimax2.h"
@@ -32,8 +34,6 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 #include "asterfort/jerazo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: jvecpg, jdtau, jvecn, nbordr, nbvec
     character(len=16) :: nommet
 ! ---------------------------------------------------------------------
@@ -93,7 +93,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !-----------------------------------------------------------------------
 !
     cetir = sqrt(3.0d0/4.0d0)
-
+!
     epsilo = 1.0d-6
     epsil1 = 1.0d-4
 !
@@ -111,7 +111,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
     n1 = 0
 !
-    do 30 ivect = 1, nbvec
+    do ivect = 1, nbvec
         cumin = r8maem()
         cumax = -r8maem()
         cvmin = r8maem()
@@ -123,12 +123,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         call jerazo('&&RAYCIR.DOM1', nbordr*2, 1)
         call jerazo('&&RAYCIR.DOM2', nbordr*2, 1)
 !
-        do 40 iordr = 1, nbordr
+        do iordr = 1, nbordr
             n1 = n1 + 1
             cui = zr( jvecpg + (n1-1)*2 )
             cvi = zr( jvecpg + (n1-1)*2 + 1 )
-
- !
+!
+            !
             if (cui .lt. cumin) then
                 cumin = cui
             endif
@@ -141,7 +141,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
             if (cvi .gt. cvmax) then
                 cvmax = cvi
             endif
-40      continue
+        end do
 !
 !-----------------------------------------------------------------------
 !   ------------------------------------
@@ -231,7 +231,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         nbptd1 = 0
         nbptd2 = 0
         n1 = n1 - nbordr
-        do 50 iordr = 1, nbordr
+        do iordr = 1, nbordr
             n1 = n1 + 1
             cui = zr( jvecpg + (n1-1)*2 ) - cuo1
             cvi = zr( jvecpg + (n1-1)*2 + 1 ) - cvo1
@@ -245,7 +245,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
             distd2 = sqrt((cuomi2 - cui)**2 + (cvomi2 - cvi)**2)
 !
             indsec = 0
-            do 60 i = 1, 4
+            do i = 1, 4
                 if ((dists(i) .gt. diamin) .and. (indsec .eq. 0)) then
                     if (cui .ge. 0.0d0) then
                         if (cvi .ge. 0.0d0) then
@@ -273,7 +273,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                         endif
                     endif
                 endif
-60          continue
+            end do
 !
             if ((distd1 .gt. raymin) .or. (disto1 .gt. raymin)) then
                 zr(jdom1 + nbptd1*2) = cui
@@ -286,7 +286,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 zr(jdom2 + nbptd2*2 + 1) = cvi
                 nbptd2 = nbptd2 + 1
             endif
-50      continue
+        end do
 !
 ! RECHERCHE DES 2 POINTS LES PLUS ELOIGNES PARMI LES POINTS DES
 ! SECTEURS 1, 2, 3 ET 4.
@@ -302,12 +302,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !       | Sect. 4                 Sect. 3 |
 !       -----------------------------------
 !
-        do 70 i = 1, 6
+        do i = 1, 6
             dmaxi(i) = 0.0d0
-70      continue
-        do 80 i = 1, 24
+        end do
+        do i = 1, 24
             coorpt(i) = 0.0d0
-80      continue
+        end do
         if (( nbpts1 .gt. 0 ) .and. ( nbpts2 .gt. 0 )) then
             if ((oricad .eq. 'HORIZ') .or. ((oricad .eq. 'VERTI') .and. (etir .ge. cetir))) then
                 call dimax1(jsec1, jsec2, nbpts1, nbpts2, dmaxi(1),&
@@ -360,12 +360,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
         dmax = 0.0d0
         n = 0
-        do 90 i = 1, 6
+        do i = 1, 6
             if (dmaxi(i) .gt. dmax) then
                 dmax = dmaxi(i)
                 n = i
             endif
-90      continue
+        end do
         cuppe1 = coorpt((n-1)*4 + 1)
         cvppe1 = coorpt((n-1)*4 + 2)
         cuppe2 = coorpt((n-1)*4 + 3)
@@ -422,7 +422,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
         nboucl = 0
 !
-100      continue
+100     continue
 !
         nboucl = nboucl + 1
 !
@@ -463,7 +463,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 ray3pt = r8maem()
                 k = 0
 !
-                do 110 i = 1, 3
+                do i = 1, 3
                     cupn0 = zr(jcoorp + i*2)
                     cvpn0 = zr(jcoorp + i*2 + 1)
                     cupn1 = zr(jcoorp + i*2 + 2)
@@ -492,7 +492,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                         vcer3pt(1 + 5) = cvpn2
                     endif
 !
-110              continue
+                end do
                 if (k .eq. 0) then
                     call utmess('F', 'PREPOST4_59')
                 endif
@@ -527,7 +527,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 cvpn2 = cvpn
                 write(6,*) 'raycir 521', cupn0, cvpn0, cupn1,&
                           cvpn1, cupn2,cvpn2
-
+!
                 call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
                             cvpn2, cuon, cvon, ray3pt)
 !
@@ -558,7 +558,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 ray3pt = r8maem()
                 k = 0
 !
-                do 120 i = 1, 3
+                do i = 1, 3
                     cupn0 = zr(jcoorp + i*2)
                     cvpn0 = zr(jcoorp + i*2 + 1)
                     cupn1 = zr(jcoorp + i*2 + 2)
@@ -587,7 +587,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                         vcer3pt(1 + 5) = cvpn2
                     endif
 !
-120              continue
+                end do
                 if (k .eq. 0) then
                     call utmess('F', 'PREPOST4_59')
                 endif
@@ -622,11 +622,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
             endif
         endif
 !
-30  end do
+ 30     continue
+    end do
 !
     goto 999
 !
-777  continue
+777 continue
 !
 !
 !-----------------------------------------------------------------------
@@ -643,13 +644,13 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
 ! INITIALISATION
 !
-    do 200 ivect = 1, nbvec
+    do ivect = 1, nbvec
         cuo1 = 0.0d0
         cvo1 = 0.0d0
-        do 210 iordr = 1, nbordr
+        do iordr = 1, nbordr
             cuo1 = cuo1 + zr( jvecpg + (iordr-1)*2 + (ivect-1)*nbordr* 2 )
             cvo1 = cvo1 + zr( jvecpg + (iordr-1)*2 + (ivect-1)*nbordr* 2 + 1 )
-210      continue
+        end do
 !
         cuo1 = cuo1/nbordr
         cvo1 = cvo1/nbordr
@@ -662,7 +663,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         n = 0
         nbr = 0
 !
-300      continue
+300     continue
 !
         n = n + 1
         if (n .gt. nbordr) then
@@ -671,7 +672,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
         cutau = zr(jvecpg + (n-1)*2 + (ivect-1)*nbordr*2)
         cvtau = zr(jvecpg + (n-1)*2 + (ivect-1)*nbordr*2 + 1)
-
+!
 !
         dist = sqrt((cutau - cuon)**2 + (cvtau - cvon)**2)
         p = dist - rayon
@@ -692,10 +693,10 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
             zi(jvecn + (ivect-1)) = ivect
         endif
 !
-200  end do
+    end do
 !
 !
-999  continue
+999 continue
 !
 ! MENAGE
 !

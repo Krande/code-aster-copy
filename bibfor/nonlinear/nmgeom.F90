@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmgeom(ndim, nno, axi, grand, geom,&
                   kpg, ipoids, ivf, idfde, depl,&
                   ldfdi, poids, dfdi, f, eps,&
@@ -89,65 +89,65 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
     if (axi) then
         r = 0.d0
         ur = 0.d0
-        do 10 n = 1, nno
+        do n = 1, nno
             r = r + zr(ivf-1+n+(kpg-1)*nno)*geom(1,n)
             ur = ur + zr(ivf-1+n+(kpg-1)*nno)*depl(1,n)
- 10     continue
+        end do
         if (ldfdi) poids = poids*r
     endif
 !
 ! - CALCUL DES GRADIENT : GRAD(U) ET F
 !
-    do 13 i = 1, 3
-        do 16 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             f(i,j) = kron(i,j)
             grad(i,j) = 0.d0
- 16     continue
- 13 end do
+        end do
+    end do
 !
     if (tridim) then
-        do 20 n = 1, nno
-            do 22 i = 1, 3
-                do 24 j = 1, 3
+        do n = 1, nno
+            do i = 1, 3
+                do j = 1, 3
                     grad(i,j) = grad(i,j) + dfdi(n,j)*depl(i,n)
- 24             continue
- 22         continue
- 20     continue
+                end do
+            end do
+        end do
     else
-        do 30 n = 1, nno
-            do 32 i = 1, 2
-                do 34 j = 1, 2
+        do n = 1, nno
+            do i = 1, 2
+                do j = 1, 2
                     grad(i,j) = grad(i,j) + dfdi(n,j)*depl(i,n)
- 34             continue
- 32         continue
- 30     continue
+                end do
+            end do
+        end do
     endif
 !
     if (grand) then
-        do 40 i = 1, 3
-            do 42 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 f(i,j) = f(i,j) + grad(i,j)
- 42         continue
- 40     continue
+            end do
+        end do
         if (axi) f(3,3) = 1.d0 + ur/r
     endif
 !
 ! - CALCUL DES DEFORMATIONS : E
 !
-    do 90 i = 1, ndim
-        do 100 j = 1, i
+    do i = 1, ndim
+        do j = 1, i
             tmp = grad(i,j) + grad(j,i)
 !
             if (grand) then
-                do 110 k = 1, ndim
+                do k = 1, ndim
                     tmp = tmp + grad(k,i)*grad(k,j)
-110             continue
+                end do
             endif
 !
             epstab(i,j) = 0.5d0*tmp
 !
-100     continue
- 90 end do
+        end do
+    end do
 !
     eps(1) = epstab(1,1)
     eps(2) = epstab(2,2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0135(option, nomte)
 !
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
+!
     character(len=16) :: option, nomte
 !----------------------------------------------------------------------
 !
@@ -41,8 +41,8 @@ subroutine te0135(option, nomte)
     real(kind=8) :: ux(3), uy(3), uz(3)
     real(kind=8) :: ang(3)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     ASSERT(nnos.le.4)
 !
     call jevech('PCAORIE', 'L', jorie)
@@ -72,10 +72,10 @@ subroutine te0135(option, nomte)
     uz(3) = pgl(3,3)
 !
 !
-    do 12 i = 1, 3
+    do i = 1, 3
         zr(jrepl1-1+i)=ux(i)
         zr(jrepl2-1+i)=uy(i)
         zr(jrepl3-1+i)=uz(i)
-12  end do
+    end do
 !
 end subroutine

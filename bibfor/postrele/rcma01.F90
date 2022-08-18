@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
                   vale)
     implicit none
@@ -53,7 +53,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
     integer :: vali(2)
     character(len=24) :: valk
 !
-    integer ::   jcesl, nbcmp, decma, decmb, icmp, iad, in, imb
+    integer :: jcesl, nbcmp, decma, decmb, icmp, iad, in, imb
     real(kind=8) :: ec, e, nu, alpha, ea, alphaa, eb, alphab
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: cesd(:) => null()
@@ -131,14 +131,14 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
     else if (nbm .eq. 2) then
         ea = e
         alphaa = alpha
-        do 104 in = 1, nbm
+        do in = 1, nbm
             if (adrm(in) .ne. ima) then
                 imb = adrm(in)
                 goto 106
             endif
-104      continue
+        end do
         call utmess('F', 'POSTRCCM_19')
-106      continue
+106     continue
         decmb = cesd(5+4*(imb-1)+4)
         icmp = 2
         iad = decmb + (ipt-1)*nbcmp + icmp

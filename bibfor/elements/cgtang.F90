@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgtang(ndim, nno, npg, geom, dffr,&
                   t)
     implicit none
@@ -37,20 +37,20 @@ subroutine cgtang(ndim, nno, npg, geom, dffr,&
 !
 !
     do ig = 1, npg
-        do 20 i = 1, ndim
+        do i = 1, ndim
             t(i,ig)=0.d0
-            do 30 n = 1, nno
+            do n = 1, nno
                 t(i,ig)=t(i,ig)+geom(i,n)*dffr(n,ig)
-30          continue
-20      continue
+            end do
+        end do
         nor=0.d0
-        do 25 i = 1, ndim
+        do i = 1, ndim
             nor=nor+t(i,ig)**2
-25      continue
+        end do
         nor=sqrt(nor)
-        do 27 i = 1, ndim
+        do i = 1, ndim
             t(i,ig)=t(i,ig)/nor
-27      continue
+        end do
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function iunifi(name)
     implicit none
     integer :: iunifi
@@ -66,19 +66,19 @@ function iunifi(name)
     iunifi = 0
 !
 !     VALEUR PAR DEFAUT POUR LES NOMS INTERNES
-    do 10 i = 1, mximpr
+    do i = 1, mximpr
         if (name16 .eq. nompr(i)) then
             iunifi = unitpr(i)
             goto 99
         endif
-10  end do
+    end do
 !
-    do 20 i = 1, nbfile
+    do i = 1, nbfile
         if (name16 .eq. ddname(i)) then
             iunifi = unitfi(i)
             goto 99
         endif
-20  end do
+    end do
 !
-99  continue
+ 99 continue
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function lexseg(connex, typmai, nbrma, n1, n2)
     implicit none
 !     FONCTION BOOLEENNE INDIQUANT L'EXISTENCE DANS LE MAILLAGE D'UNE
@@ -40,13 +40,13 @@ function lexseg(connex, typmai, nbrma, n1, n2)
     integer :: mi, nuextr, nuorig
 !-----------------------------------------------------------------------
     lexseg = .false.
-    do 10 mi = 1, nbrma
+    do mi = 1, nbrma
         call i2extf(mi, 1, connex(1:15), typmai(1:16), nuorig,&
                     nuextr)
         if (nuorig .eq. n1 .and. nuextr .eq. n2) then
             lexseg = .true.
             goto 11
         endif
- 10 end do
+    end do
  11 continue
 end function

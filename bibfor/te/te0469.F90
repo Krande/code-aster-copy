@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0469(option, nomte)
 !.......................................................................
     implicit none
@@ -34,12 +34,12 @@ subroutine te0469(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/vff3d.h"
+!
+!-----------------------------------------------------------------------
     integer :: i, idecno, idecpg, idfdk, idflin, ier, igau
     integer :: igeom, ino, ipoids, itemps, ivectu, ivf, jgano
     integer :: nbnomx, ndim, nno, nnos, npg
@@ -57,24 +57,24 @@ subroutine te0469(option, nomte)
 ! --- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! --- INTEGRATION ET INTERPOLATION
 !      ----------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
     zero = 0.0d0
 !
-    do 10 i = 1, nbnomx
+    do i = 1, nbnomx
         fx(i) = zero
         fy(i) = zero
         fz(i) = zero
-10  end do
+    end do
 !
-    do 20 i = 1, npg
+    do i = 1, npg
         fxlin(i) = zero
         fylin(i) = zero
         fzlin(i) = zero
-20  end do
+    end do
 !
 ! --- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 !     ----------------------------------------------
@@ -92,24 +92,24 @@ subroutine te0469(option, nomte)
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-        do 40 igau = 1, npg
+        do igau = 1, npg
 !
             idecpg = nno* (igau-1)
 !
 !
 ! ---    CALCUL DE LA FORCE LINEIQUE AUX POINTS D'INTEGRATION :
 !        -----------------------------------------------------
-            do 30 ino = 1, nno
+            do ino = 1, nno
 !
                 fxlin(igau) = fxlin(igau) + zr(ivf+idecpg+ino-1)* zr(idflin+1-1)
                 fylin(igau) = fylin(igau) + zr(ivf+idecpg+ino-1)* zr(idflin+2-1)
                 fzlin(igau) = fzlin(igau) + zr(ivf+idecpg+ino-1)* zr(idflin+3-1)
-30          continue
-40      continue
+            end do
+        end do
 !
 ! ---    BOUCLE SUR LES POINTS D'INTEGRATION
 !        -----------------------------------
-        do 60 igau = 1, npg
+        do igau = 1, npg
 !
             idecpg = nno* (igau-1)
 !
@@ -121,14 +121,14 @@ subroutine te0469(option, nomte)
 ! ---    CALCUL DE LA CONTRIBUTION AU VECTEUR DES FORCES NODALES
 ! ---    DU CHARGEMENT LINEIQUE AU POINT D'INTEGRATION COURANT :
 !        -----------------------------------------------------
-            do 50 ino = 1, nno
+            do ino = 1, nno
 !
                 fx(ino) = fx(ino) + zr(ivf+idecpg+ino-1)*fxlin(igau)* jacob
                 fy(ino) = fy(ino) + zr(ivf+idecpg+ino-1)*fylin(igau)* jacob
                 fz(ino) = fz(ino) + zr(ivf+idecpg+ino-1)*fzlin(igau)* jacob
-50          continue
+            end do
 !
-60      continue
+        end do
 !
 ! --- OPTION 'CHAR_MECA_FF1D3D'
 ! --- CAS OU LES DONNEES DES FORCES LINEIQUES SONT DES FONCTIONS
@@ -156,25 +156,25 @@ subroutine te0469(option, nomte)
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-        do 100 igau = 1, npg
+        do igau = 1, npg
 !
             idecpg = nno* (igau-1)
 !
-            do 70 i = 1, 3
+            do i = 1, 3
                 xyzgau(i) = zero
                 forlin(i) = zero
-70          continue
+            end do
 !
 ! ---    CALCUL DES COORDONNEES DU POINT D'INTEGRATION COURANT :
 !        -----------------------------------------------------
-            do 80 ino = 1, nno
+            do ino = 1, nno
 !
                 idecno = 3* (ino-1) - 1
 !
                 xyzgau(1) = xyzgau(1) + zr(ivf+idecpg+ino-1)* zr( igeom+1+idecno)
                 xyzgau(2) = xyzgau(2) + zr(ivf+idecpg+ino-1)* zr( igeom+2+idecno)
                 xyzgau(3) = xyzgau(3) + zr(ivf+idecpg+ino-1)* zr( igeom+3+idecno)
-80          continue
+            end do
 !
 ! ---    INTERPOLATION DES FORCES LINEIQUES EN FONCTION DES
 ! ---    COORDONNEES ET DU TEMPS :
@@ -198,14 +198,14 @@ subroutine te0469(option, nomte)
 ! ---    CALCUL DE LA CONTRIBUTION AU VECTEUR DES FORCES NODALES
 ! ---    DU CHARGEMENT LINEIQUE AU POINT D'INTEGRATION COURANT :
 !        -----------------------------------------------------
-            do 90 ino = 1, nno
+            do ino = 1, nno
 !
                 fx(ino) = fx(ino) + zr(ivf+idecpg+ino-1)*forlin(1)* jacob
                 fy(ino) = fy(ino) + zr(ivf+idecpg+ino-1)*forlin(2)* jacob
                 fz(ino) = fz(ino) + zr(ivf+idecpg+ino-1)*forlin(3)* jacob
-90          continue
+            end do
 !
-100      continue
+        end do
 !
     endif
 !
@@ -213,10 +213,10 @@ subroutine te0469(option, nomte)
 !      ---------------------------------------------------------------
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 110 ino = 1, nno
+    do ino = 1, nno
         zr(ivectu+3* (ino-1)+1-1) = fx(ino)
         zr(ivectu+3* (ino-1)+2-1) = fy(ino)
         zr(ivectu+3* (ino-1)+3-1) = fz(ino)
-110  end do
+    end do
 !
 end subroutine

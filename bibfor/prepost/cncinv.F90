@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cncinv(mail, lima, nlima, base, nomz)
 !
 ! person_in_charge: jacques.pellet at edf.fr
@@ -59,7 +59,8 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !  FONCTIONS EXTERNES
 !  ------------------
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -70,8 +71,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
 !
 !  -----------------------------------------
 !
@@ -84,7 +84,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
     character(len=8) :: mail
     character(len=1) :: base
     integer :: lima(*), nlima, nno, nma, ima, nare
-    integer :: i, j, n, p0, p1, p2, p3,  q1, q2, q3
+    integer :: i, j, n, p0, p1, p2, p3, q1, q2, q3
     integer, pointer :: indice(:) => null()
 !
 ! --- LECTURE DONNEES
@@ -114,43 +114,44 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !
     if (nlima .eq. 0) then
 !
-        do 10 i = 1, nma
+        do i = 1, nma
             indice(i) = i
-10      continue
+        end do
 !
     else
 !
-        do 20 i = 1, nma
+        do i = 1, nma
             indice(i) = lima(i)
-20      continue
+        end do
 !
     endif
 !
-    do 30 i = 1, nno
+    do i = 1, nno
         zi(q1-1+i) = 0
-30  end do
+    end do
 !
 ! --- NOMBRE DE MAILLES POUR CHAQUE NOEUD
 !
-    do 40 i = 1, nma
+    do i = 1, nma
 !
         ima = indice(i)
         p0 = zi(p2-1+ima)
         n = zi(p2+ima)-p0
         p0 = p1 + p0 - 1
 !
-        do 40 j = 1, n
+        do j = 1, n
             p3 = q1-1+zi(p0)
             p0 = p0 + 1
             zi(p3) = zi(p3) + 1
-40      continue
+        end do
+    end do
 !
 ! --- NOMBRE TOTAL D'ARETES NOEUD/MAILLE
 !
     nare = 0
     zi(q2) = 0
 !
-    do 50 i = 1, nno
+    do i = 1, nno
 !
         n = zi(q1-1+i)
         if (n .eq. 0) n = 1
@@ -158,7 +159,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
         nare = nare + n
         zi(q2+i) = nare
 !
-50  end do
+    end do
 !
 ! --- ALLOCATION DU GRAPHE NOEUD/MAILLE
 !
@@ -166,38 +167,39 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
                 nno)
     call jeecra(nom, 'LONT', nare)
 !
-    do 60 i = 1, nno
+    do i = 1, nno
 !
         n = zi(q1-1+i)
         if (n .eq. 0) n = 1
         call jecroc(jexnum(nom, i))
         call jeecra(jexnum(nom, i), 'LONMAX', n)
 !
-60  end do
+    end do
 !
 ! --- GRAPHE NOEUD/MAILLE
 !
     call jeveuo(nom, 'E', q3)
 !
-    do 70 i = 1, nare
+    do i = 1, nare
         zi(q3-1+i) = 0
-70  end do
+    end do
 !
-    do 80 i = 1, nma
+    do i = 1, nma
 !
         ima = indice(i)
         p0 = zi(p2-1+ima)
         n = zi(p2+ima)-p0
         p0 = p1 + p0 - 1
 !
-        do 80 j = 1, n
+        do j = 1, n
 !
             q1 = q2-1+zi(p0)
             p0 = p0 + 1
             zi(q3+zi(q1)) = i
             zi(q1) = zi(q1) + 1
 !
-80      continue
+        end do
+    end do
 !
 ! --- DESALLOCATION
 !
@@ -205,7 +207,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
     call jedetr('&&CNCINV.NMAILLE')
     call jedetr('&&CNCINV.POINTEUR')
 !
-90  continue
+ 90 continue
 !
     call jedema()
 !

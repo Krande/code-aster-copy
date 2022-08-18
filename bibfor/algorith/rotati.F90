@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rotati(euler, rot)
     implicit none
 !    M. CORUS     DATE 03/02/10
@@ -109,20 +109,20 @@ subroutine rotati(euler, rot)
     rot(3,2)=0.d0
     rot(3,3)=0.d0
 !
-    do 20 j1 = 1, 3
-        do 30 i1 = 1, 3
-            do 40 k1 = 1, 3
+    do j1 = 1, 3
+        do i1 = 1, 3
+            do k1 = 1, 3
                 rotd(i1,j1)=rotd(i1,j1)+rotb(i1,k1)*rota(k1,j1)
-40          continue
-30      continue
-20  end do
+            end do
+        end do
+    end do
 !
-    do 50 j1 = 1, 3
-        do 60 i1 = 1, 3
-            do 70 k1 = 1, 3
+    do j1 = 1, 3
+        do i1 = 1, 3
+            do k1 = 1, 3
                 rot(i1,j1)=rot(i1,j1)+rotc(i1,k1)*rotd(k1,j1)
-70          continue
-60      continue
-50  end do
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcalf2(he, lsng, lstg, baslog, fe,&
                   dgdgl, iret)
 !
@@ -26,9 +26,9 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/xbasgl.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
-#include "asterfort/xbasgl.h"
     real(kind=8) :: he, lsng, lstg, baslog(6), fe(4), dgdgl(4, 2)
     integer :: iret
 !
@@ -86,19 +86,19 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
     call xderfe(rg, tg, dgdpo)
 !
 !     DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
-    do 131 i = 1, 4
+    do i = 1, 4
         dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
         dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
-131  end do
+    end do
 !
 !     DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
-    do 132 i = 1, 4
-        do 133 j = 1, 2
+    do i = 1, 4
+        do j = 1, 2
             dgdgl(i,j)=0.d0
-            do 134 k = 1, 2
+            do k = 1, 2
                 dgdgl(i,j)=dgdgl(i,j)+dgdlo(i,k)*invp(k,j)
-134          continue
-133      continue
-132  end do
+            end do
+        end do
+    end do
 !
 end subroutine

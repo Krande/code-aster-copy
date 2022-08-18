@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lceob1(intmax, tole, eps, bm, dm,&
                   lambda, mu, alpha, ecrob, ecrod,&
                   seuil, bdim, b, d, mult,&
@@ -83,9 +83,9 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
     mult=0.d0
     un=1.d0
     deux=2.d0
-    do 100 i = 1, 6
+    do i = 1, 6
         b(i)=bm(i)
-100 end do
+    end do
     d=dm
 !-------------------------------------------------------
 !-------------------------------------------------------

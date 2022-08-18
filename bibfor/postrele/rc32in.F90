@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc32in()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/utmess.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     RECUPERATION
 !          DE  C1, C2, K1, K2, C3, K3      SOUS INDI_SIGM
@@ -51,11 +51,11 @@ subroutine rc32in()
         call getvr8('INDI_SIGM', 'K3', scal=zr(jvalin+4), iocc=1, nbret=n1)
         call getvr8('INDI_SIGM', 'C3', scal=zr(jvalin+5), iocc=1, nbret=n1)
 !
-        call getvr8('TUYAU', 'R', scal=zr(jvalin+6),iocc=1, nbret=n1)
-        call getvr8('TUYAU', 'EP', scal=zr(jvalin+7),iocc=1, nbret=n1)
-        do 20 i =1,8
+        call getvr8('TUYAU', 'R', scal=zr(jvalin+6), iocc=1, nbret=n1)
+        call getvr8('TUYAU', 'EP', scal=zr(jvalin+7), iocc=1, nbret=n1)
+        do i = 1, 8
             zr(jvalin+i+10) = 1
- 20     continue
+        end do
         zr(jvalin+15) =0
         zr(jvalin+17) =0
 !------ cas corps-tubulure
@@ -65,16 +65,16 @@ subroutine rc32in()
             call getvr8('INDI_SIGM', 'C2_TUBU', scal=zr(jvalin+12), iocc=1, nbret=n2b)
             call getvr8('INDI_SIGM', 'K2_CORP', scal=zr(jvalin+13), iocc=1, nbret=n2c)
             call getvr8('INDI_SIGM', 'C2_CORP', scal=zr(jvalin+14), iocc=1, nbret=n2d)
-            call getvr8('TUYAU', 'R_TUBU', scal=zr(jvalin+15),iocc=1, nbret=n2e)
-            call getvr8('TUYAU', 'I_TUBU', scal=zr(jvalin+16),iocc=1, nbret=n2f)
-            call getvr8('TUYAU', 'R_CORP', scal=zr(jvalin+17),iocc=1, nbret=n2g)
-            call getvr8('TUYAU', 'I_CORP', scal=zr(jvalin+18),iocc=1, nbret=n2h)
+            call getvr8('TUYAU', 'R_TUBU', scal=zr(jvalin+15), iocc=1, nbret=n2e)
+            call getvr8('TUYAU', 'I_TUBU', scal=zr(jvalin+16), iocc=1, nbret=n2f)
+            call getvr8('TUYAU', 'R_CORP', scal=zr(jvalin+17), iocc=1, nbret=n2g)
+            call getvr8('TUYAU', 'I_CORP', scal=zr(jvalin+18), iocc=1, nbret=n2h)
             if (n2a*n2b*n2c*n2d*n2e*n2f*n2g*n2h .eq. 0) then
                 call utmess('F', 'POSTRCCM_46')
             endif
             call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1a)
             call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1b)
-            call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1c)
+            call getvr8('TUYAU', 'I', scal=zr(jvalin+8), iocc=1, nbret=n1c)
             if (n1a+n1b+n1c .ne. 0) then
                 call utmess('F', 'POSTRCCM_46')
             else
@@ -85,20 +85,20 @@ subroutine rc32in()
         else
             call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1a)
             call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1b)
-            call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1c)
+            call getvr8('TUYAU', 'I', scal=zr(jvalin+8), iocc=1, nbret=n1c)
             if (n1a*n1b*n1c .eq. 0) call utmess('F', 'POSTRCCM_46')
         endif
 ! ----- cas du b3200 sans indices de contraintes
     else
-        do 10 j =1,19
+        do j = 1, 19
             zr(jvalin+j-1) = 1
- 10     continue
+        end do
         zr(jvalin+15) =0
         zr(jvalin+17) =0
     endif
 !
 ! --- facteur de concentration de contrainte (b3200 uniquement)
-    zr(jvalin+9)  = 1
+    zr(jvalin+9) = 1
     zr(jvalin+10) = 1
 !
     call getvr8('FACT_SIGM', 'KT_SN', iocc=1, nbval=0, nbret=ktsn)

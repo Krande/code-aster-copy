@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
                   nomin, cmpmin, valmin, noamax, cmamax,&
                   vaamax, noamin, cmamin, vaamin)
@@ -23,6 +23,8 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
@@ -32,8 +34,6 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: ioc
     real(kind=8) :: valmin, valmax, vaamin, vaamax
@@ -46,11 +46,11 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::    jcnsl,  nbno, ncmp, nbn
+    integer :: jcnsl, nbno, ncmp, nbn
     integer :: ibid, nbnoeu, idnoeu, nbc, nbcmp
     integer :: i100, i110, icp, ino, inomax, inomin, inamax, inamin
     real(kind=8) :: x
-    character(len=8) ::  nocmp, ma
+    character(len=8) :: nocmp, ma
     character(len=16) :: motcle(4), typmcl(4)
     character(len=19) :: chams1
     character(len=24) :: mesnoe
@@ -112,7 +112,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
     inamin = 0
     vaamin = r8vide()
 !
-    do 100 i100 = 1, nbcmp
+    do i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp = nom_cmp(i100)
             icp = indik8( cnsc, nocmp, 1, ncmp )
@@ -122,7 +122,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
             nocmp = cnsc(i100)
         endif
 !
-        do 110 i110 = 1, nbnoeu
+        do i110 = 1, nbnoeu
             if (nbn .gt. 0) then
                 ino = zi(idnoeu+i110-1)
             else
@@ -159,9 +159,10 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 !
             endif
 !
-110      continue
+        end do
 !
-100  end do
+100     continue
+    end do
 !
     if (inomax .eq. 0) call utmess('F', 'POSTRELE_18')
     call jenuno(jexnum(ma//'.NOMNOE', inomax), nomax)

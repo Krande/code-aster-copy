@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkcalg(dfdsig, vecn, g, devgii)
 !
-    implicit      none
+    implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/r8inir.h"
     real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
@@ -42,9 +42,9 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 !
     fact1 = dot_product(dfdsig(1:ndt), vecn(1:ndt))
 !
-    do 10 i = 1, ndt
+    do i = 1, ndt
         g(i) = dfdsig(i) - fact1 * vecn(i)
-10  end do
+    end do
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR DE G ET DE SA NORME ---------------------
 ! =================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fft(s, n, ifft)
     implicit none
 #include "jeveux.h"
-#include "blas/zscal.h"
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/veri32.h"
+#include "blas/zscal.h"
 !-----------------------------------------------------------------------
 ! IN,OUT : S    FONCTION A TRANSFORMER
 ! IN     : N    NOMBRE DE POINTS DE LA FONCTION
@@ -59,39 +59,39 @@ subroutine fft(s, n, ifft)
     nm1=n-1
     j = 1
     nv2=n/2
-    do 8 i = 1, nm1
+    do i = 1, nm1
         if (i .ge. j) goto 5
         t=s(j)
         s(j)=s(i)
         s(i)=t
- 5      continue
+  5     continue
         k=nv2
- 6      continue
+  6     continue
         if (k .ge. j) goto 7
         j=j-k
         k=k/2
         goto 6
- 7      continue
+  7     continue
         j=j+k
- 8  continue
-    do 20 l = 1, m
+    end do
+    do l = 1, m
 !        if (l .gt. 30) call veri32()
         le=2**l
         le1=le/2
         u=(1.d0,0.d0)
         w=dcmplx(cos(-pi/dble(le1)),sin(-pi/dble(le1)))
-        do 21 j = 1, le1
-            do 10 i = j, n, le
+        do j = 1, le1
+            do i = j, n, le
                 ip=i+le1
                 t=s(ip)*u
                 s(ip)=s(i)-t
                 s(i)=s(i)+t
-10          continue
+            end do
             u=u*w
-21      continue
-20  continue
+        end do
+    end do
     if (ifft .lt. 0) then
-      calpha=dcmplx(1.d0,0.d0)/(n2*1.d0)
-      call zscal(n2,calpha,s,1)
+        calpha=dcmplx(1.d0,0.d0)/(n2*1.d0)
+        call zscal(n2, calpha, s, 1)
     endif
 end subroutine

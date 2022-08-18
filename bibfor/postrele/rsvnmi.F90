@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsvnmi(t, vm)
     implicit none
 !
@@ -30,17 +30,17 @@ subroutine rsvnmi(t, vm)
     inv = 0.0d0
     vm = 0.0d0
 !
-    do 10, i = 1, 3, 1
+    do i = 1, 3, 1
 !
-    inv = inv + t(i)*t(i)
+        inv = inv + t(i)*t(i)
 !
-    10 end do
+    end do
 !
-    do 20, i = 4, 6, 1
+    do i = 4, 6, 1
 !
-    inv = inv + 2.0d0*t(i)*t(i)
+        inv = inv + 2.0d0*t(i)*t(i)
 !
-    20 end do
+    end do
 !
     vm = sqrt(3.0d0*inv*0.5d0)
 !

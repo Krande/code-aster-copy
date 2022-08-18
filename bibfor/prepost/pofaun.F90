@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pofaun()
     implicit none
 !     COMMANDE POST_FATIGUE :
@@ -26,6 +26,8 @@ subroutine pofaun()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/fgcoke.h"
 #include "asterfort/fgcorr.h"
 #include "asterfort/fgcota.h"
@@ -58,8 +60,6 @@ subroutine pofaun()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
     integer :: ivke, ivcorr, ivpoin, nbpoin, ivmax, ivmin, ivtrav
@@ -118,9 +118,9 @@ subroutine pofaun()
 !     --- IMPRESSION DE LA FONCTION ----
     if (niv .eq. 2) then
         write (ifm,'(1X,A)') 'VALEURS DE LA FONCTION CHARGEMENT:'
-        do 10 i = 1, nbpts
+        do i = 1, nbpts
             write (ifm,1000) zr(ifonc+i-1),zr(ifonc+nbpts+i-1)
- 10     continue
+        end do
     endif
 !
 !
@@ -298,13 +298,13 @@ subroutine pofaun()
 !
     nbp = 4
     if (kdomm .eq. ' ') nbp = 3
-    do 20 i = 1, nbcycl
+    do i = 1, nbcycl
         val(1) = zr(ivmin+i-1)
         val(2) = zr(ivmax+i-1)
         val(3) = zr(ivdome+i-1)
         call tbajli(result, nbp, nomppf, [i], val,&
                     [cbid], k8b, 0)
- 20 end do
+    end do
 !
 !     --- CALCUL DU DOMMAGE TOTAL ---
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine deflg3(gn, feta, xi, me, t,&
                   tl)
     implicit none
@@ -44,98 +44,98 @@ subroutine deflg3(gn, feta, xi, me, t,&
     call tnsvec(6, 3, t33, t, 1.d0/sqrt(2.d0))
 !
 !     A,B sont les composantes, J,I sont les modes propres
-    do 40 i = 1, 3
-        do 41 j = 1, 3
-            do 42 a = 1, 3
-                do 43 b = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do a = 1, 3
+                do b = 1, 3
                     dzeta(i,j)=dzeta(i,j)+t33(a,b)*gn(a,i)*gn(b,j)
-43              continue
-42          continue
-41      continue
-40  end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 44 i = 1, 3
-        do 45 a = 1, 3
-            do 46 b = 1, 3
-                do 47 c = 1, 3
-                    do 48 d = 1, 3
+    do i = 1, 3
+        do a = 1, 3
+            do b = 1, 3
+                do c = 1, 3
+                    do d = 1, 3
                         tl(a,b,c,d)=tl(a,b,c,d)+ 0.25d0*feta(i)*dzeta(&
                         i,i)*me(a,b,i,i)*me(c,d,i,i)
-48                  continue
-47              continue
-46          continue
-45      continue
-44  end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 49 i = 1, 3
-        do 50 j = 1, 3
-            do 51 k = 1, 3
-                do 52 a = 1, 3
-                    do 53 b = 1, 3
-                        do 54 c = 1, 3
-                            do 55 d = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, 3
+                do a = 1, 3
+                    do b = 1, 3
+                        do c = 1, 3
+                            do d = 1, 3
                                 if ((j.ne.i) .and. (j.ne.k) .and. (k.ne.i)) then
                                     tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*&
                                     feta(4)*dzeta(i,j)*me(a,b,i,k)*me(&
                                     c,d,j,k)
                                 endif
-55                          continue
-54                      continue
-53                  continue
-52              continue
-51          continue
-50      continue
-49  end do
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 56 i = 1, 3
-        do 57 j = 1, 3
-            do 58 a = 1, 3
-                do 59 b = 1, 3
-                    do 60 c = 1, 3
-                        do 61 d = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do a = 1, 3
+                do b = 1, 3
+                    do c = 1, 3
+                        do d = 1, 3
                             if (j .ne. i) then
                                 tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*xi(i,j)*&
                                 dzeta(i,j)*me(a,b,i,j)*me(c,d,j,j)
                             endif
-61                      continue
-60                  continue
-59              continue
-58          continue
-57      continue
-56  end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 62 i = 1, 3
-        do 63 j = 1, 3
-            do 64 a = 1, 3
-                do 65 b = 1, 3
-                    do 66 c = 1, 3
-                        do 67 d = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do a = 1, 3
+                do b = 1, 3
+                    do c = 1, 3
+                        do d = 1, 3
                             if (j .ne. i) then
                                 tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*xi(i,j)*&
                                 dzeta(i,j)*me(a,b,j,j)*me(c,d,i,j)
                             endif
-67                      continue
-66                  continue
-65              continue
-64          continue
-63      continue
-62  end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 68 i = 1, 3
-        do 69 j = 1, 3
-            do 70 a = 1, 3
-                do 71 b = 1, 3
-                    do 72 c = 1, 3
-                        do 73 d = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do a = 1, 3
+                do b = 1, 3
+                    do c = 1, 3
+                        do d = 1, 3
                             if (j .ne. i) then
                                 tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*xi(i,j)*&
                                 dzeta(j,j)*me(a,b,i,j)*me(c,d,i,j)
                             endif
-73                      continue
-72                  continue
-71              continue
-70          continue
-69      continue
-68  end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

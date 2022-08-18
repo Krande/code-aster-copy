@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmedsq(sg, qg, dsdug, d, npg,&
                   typmod, imate, bum, bdu, sign,&
                   vim, option, geom, nno, lgpg,&
@@ -87,26 +87,26 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
 !
     alphap(1) = 0.d0
     alphap(2) = 0.d0
-    do 80 i = 1, 4
+    do i = 1, 4
         da = 0.d0
         dda = 0.d0
-        do 70 j = 1, 2
+        do j = 1, 2
             da = da + d(i,j)*alpham(j)
             dda = dda + d(i,j)*(alphap(j)-alpham(j))
- 70     continue
+        end do
         epsm(i) = bum(i) + da
         deps(i) = bdu(i) + dda
- 80 end do
+    end do
 !
     call r8inir(6, 0.d0, sig, 1)
     call nmedel(2, typmod, imate, deps, sign,&
                 option, sig, dsidep)
 !
-    do 40 i = 1, 2
-        do 50 kl = 1, 4
+    do i = 1, 2
+        do kl = 1, 4
             sg(i) = sg(i) - d(kl,i)*sig(kl)/long
- 50     continue
- 40 end do
+        end do
+    end do
 !
 !
 ! CALCUL DE DSDUG :
@@ -115,29 +115,29 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
 ! POUR LE CALCUL DE LA MATRICE TANGENTE  (DSDUG = Dt DSIDEP DEF / LONG)
 !
 !
-    do 41 k = 1, 4
+    do k = 1, 4
 !
-        do 51 n = 1, nno
-            do 52 i = 1, 2
+        do n = 1, nno
+            do i = 1, 2
 !
                 kl=2*(n-1)+i
-                do 53 j = 1, 4
+                do j = 1, 4
                     mtemp(k,kl) = mtemp(k,kl) + dsidep(k,j)*def(j,n,i)
- 53             continue
+                end do
 !
- 52         continue
- 51     continue
+            end do
+        end do
 !
- 41 end do
+    end do
 !
 !
-    do 42 i = 1, 2
-        do 43 j = 1, 8
-            do 44 kl = 1, 4
+    do i = 1, 2
+        do j = 1, 8
+            do kl = 1, 4
                 dsdug(i,j) = dsdug(i,j) - d(kl,i)*mtemp(kl,j)/long
- 44         continue
- 43     continue
- 42 end do
+            end do
+        end do
+    end do
 !
 !
 ! CALCUL DE QG :
@@ -147,54 +147,54 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
 !
     alphap(1) = 1.d0
     alphap(2) = 0.d0
-    do 81 i = 1, 4
+    do i = 1, 4
         da = 0.d0
         dda = 0.d0
-        do 71 j = 1, 2
+        do j = 1, 2
             da = da + d(i,j)*alpham(j)
             dda = dda + d(i,j)*(alphap(j)-alpham(j))
- 71     continue
+        end do
         epsm(i) = bum(i) + da
         deps(i) = bdu(i) + dda
- 81 end do
+    end do
 !
     call r8inir(6, 0.d0, sig, 1)
     call nmedel(2, typmod, imate, deps, sign,&
                 option, sig, dsidep)
 !
-    do 100 i = 1, 2
-        do 110 kl = 1, 4
+    do i = 1, 2
+        do kl = 1, 4
             qg(i,1) = qg(i,1) - d(kl,i)*sig(kl)/long
-110     continue
+        end do
         qg(i,1) = qg(i,1) - sg(i)
-100 end do
+    end do
 !
 !
 !     DEUXIEME COLONNE :
 !
     alphap(1) = 0.d0
     alphap(2) = 1.d0
-    do 82 i = 1, 4
+    do i = 1, 4
         da = 0.d0
         dda = 0.d0
-        do 72 j = 1, 2
+        do j = 1, 2
             da = da + d(i,j)*alpham(j)
             dda = dda + d(i,j)*(alphap(j)-alpham(j))
- 72     continue
+        end do
         epsm(i) = bum(i) + da
         deps(i) = bdu(i) + dda
- 82 end do
+    end do
 !
     call r8inir(6, 0.d0, sig, 1)
     call nmedel(2, typmod, imate, deps, sign,&
                 option, sig, dsidep)
 !
-    do 160 i = 1, 2
-        do 170 kl = 1, 4
+    do i = 1, 2
+        do kl = 1, 4
             qg(i,2) = qg(i,2) - d(kl,i)*sig(kl)/long
-170     continue
+        end do
         qg(i,2) = qg(i,2) - sg(i)
-160 end do
+    end do
 !
 !
 ! ON IMPOSE SG=0 SI RIGI_MECA_TANG, QG LUI N'EST PAS

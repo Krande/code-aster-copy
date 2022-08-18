@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function meiden(scal, ncmp, i1, i3, nec,&
                 i2, i4)
     implicit none
@@ -56,38 +56,38 @@ function meiden(scal, ncmp, i1, i3, nec,&
     meiden = .false.
 !
 !     -- ON TESTE D'ABORD L'EGALITE DES DESCIPTEUR GRANDEUR:
-    do 1 iec = 1, nec
-        if (zi(i2+iec) .ne. zi(i4+iec)) goto 9999
-  1 end do
+    do iec = 1, nec
+        if (zi(i2+iec) .ne. zi(i4+iec)) goto 999
+    end do
 !
 !     -- ON TESTE ENSUITE LES VALEURS:
     if (scal(1:1) .eq. 'I') then
-        do 2 i = 1, ncmp
-            if (zi(i1+i) .ne. zi(i3+i)) goto 9999
-  2     continue
+        do i = 1, ncmp
+            if (zi(i1+i) .ne. zi(i3+i)) goto 999
+        end do
     else if (scal(1:1).eq.'R') then
-        do 3 i = 1, ncmp
-            if (zr(i1+i) .ne. zr(i3+i)) goto 9999
-  3     continue
+        do i = 1, ncmp
+            if (zr(i1+i) .ne. zr(i3+i)) goto 999
+        end do
     else if (scal(1:1).eq.'C') then
-        do 4 i = 1, ncmp
-            if (zc(i1+i) .ne. zc(i3+i)) goto 9999
-  4     continue
+        do i = 1, ncmp
+            if (zc(i1+i) .ne. zc(i3+i)) goto 999
+        end do
     else if (scal(1:3).eq.'K8 ') then
-        do 5 i = 1, ncmp
-            if (zk8(i1+i) .ne. zk8(i3+i)) goto 9999
-  5     continue
+        do i = 1, ncmp
+            if (zk8(i1+i) .ne. zk8(i3+i)) goto 999
+        end do
     else if (scal(1:3).eq.'K16') then
-        do 6 i = 1, ncmp
-            if (zk16(i1+i) .ne. zk16(i3+i)) goto 9999
-  6     continue
+        do i = 1, ncmp
+            if (zk16(i1+i) .ne. zk16(i3+i)) goto 999
+        end do
     else if (scal(1:3).eq.'K24') then
-        do 7 i = 1, ncmp
-            if (zk24(i1+i) .ne. zk24(i3+i)) goto 9999
-  7     continue
+        do i = 1, ncmp
+            if (zk24(i1+i) .ne. zk24(i3+i)) goto 999
+        end do
     else
         ASSERT(.false.)
     endif
     meiden = .true.
-9999 continue
+999 continue
 end function

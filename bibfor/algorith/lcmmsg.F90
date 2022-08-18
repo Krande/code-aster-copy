@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
                   ng, mg, ir, q)
     implicit none
@@ -349,12 +349,12 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         m(12,2)=1.d0
         m(12,3)=1.d0
 !        N ET L DOIVENT ETRE UNITAIRES
-        do 20 j = 1, 12
-            do 10 k = 1, 3
+        do j = 1, 12
+            do k = 1, 3
                 m(j,k)=m(j,k)/sqrt2
                 n(j,k)=n(j,k)/sqrt3
-10          continue
-20      continue
+            end do
+        end do
     else if (nomfam.eq.'CUBIQUE1') then
 !        BCC LATTICE, {110} SLIP
         n(1,1)=1.d0
@@ -432,12 +432,12 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         m(12,3)=-1.d0
 !
 !        N ET L DOIVENT ETRE UNITAIRES
-        do 40 j = 1, 12
-            do 30 k = 1, 3
+        do j = 1, 12
+            do k = 1, 3
                 m(j,k)=m(j,k)/sqrt3
                 n(j,k)=n(j,k)/sqrt2
-30          continue
-40      continue
+            end do
+        end do
     else if (nomfam.eq.'CUBIQUE2') then
 !        BCC LATTICE, {211} SLIP
         n(1,1)=2.d0
@@ -513,12 +513,12 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         m(12,2)=1.d0
         m(12,3)=1.d0
 !        N ET L DOIVENT ETRE UNITAIRES
-        do 60 j = 1, 12
-            do 50 k = 1, 3
+        do j = 1, 12
+            do k = 1, 3
                 m(j,k)=m(j,k)/sqrt3
                 n(j,k)=n(j,k)/sqrt(6.d0)
-50          continue
-60      continue
+            end do
+        end do
     else if (nomfam.eq.'BCC24') then
 !        BCC LATTICE, {110} SLIP
         n(1,1)=0.d0
@@ -593,12 +593,12 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         m(12,1)=1.d0
         m(12,2)=1.d0
         m(12,3)=1.d0
-        do 80 j = 1, 12
-            do 70 k = 1, 3
+        do j = 1, 12
+            do k = 1, 3
                 m(j,k)=m(j,k)/sqrt3
                 n(j,k)=n(j,k)/sqrt2
-70          continue
-80      continue
+            end do
+        end do
 !        BCC LATTICE, {211} SLIP
         n(13,1)=2.d0
         n(13,2)=-1.d0
@@ -674,12 +674,12 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         m(24,2)=1.d0
         m(24,3)=1.d0
 !        N ET L DOIVENT ETRE UNITAIRES
-        do 100 j = 13, 24
-            do 90 k = 1, 3
+        do j = 13, 24
+            do k = 1, 3
                 m(j,k)=m(j,k)/sqrt3
                 n(j,k)=n(j,k)/sqrt(6.d0)
-90          continue
-100      continue
+            end do
+        end do
     else if (nomfam.eq.'UNIAXIAL') then
         n(1,1)=1.d0
         n(1,2)=0.d0
@@ -688,22 +688,22 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         m(1,2)=0.d0
         m(1,3)=0.d0
     else if (nomfam(1:4).eq.'UTIL') then
-        do 120 i = 1, nbsys
+        do i = 1, nbsys
             norn=sqrt(tbsys(i,1)**2+tbsys(i,2)**2+tbsys(i,3)**2)
             norm=sqrt(tbsys(i,4)**2+tbsys(i,5)**2+tbsys(i,6)**2)
-            do 110 j = 1, 3
+            do j = 1, 3
                 n(i,j)=tbsys(i,j)/norn
                 m(i,j)=tbsys(i,j+3)/norm
-110          continue
-120      continue
+            end do
+        end do
 !
     endif
 !     POUR LE SYSTEME K, EXPRESSION DE N ET L DANS REPERE GLOBAL
     k=nusys
-    do 130 j = 1, 3
+    do j = 1, 3
         nl(j)=n(k,j)
         ml(j)=m(k,j)
-130  end do
+    end do
     call utpvlg(1, 3, pgl2, nl, ng)
     call utpvlg(1, 3, pgl2, ml, mg)
 !     rotation de reseau
@@ -715,13 +715,13 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
     else
         ASSERT(ir.eq.0)
     endif
-    do 140 j = 1, 3
+    do j = 1, 3
         mus(j)=ng(j)*mg(j)
-140  end do
+    end do
 !     SQRT(2) PAR HOMOGENEITE AVEC NMPL3D.
     mus(4)=0.5d0*(ng(1)*mg(2)+ng(2)*mg(1))*sqrt2
     mus(5)=0.5d0*(ng(1)*mg(3)+ng(3)*mg(1))*sqrt2
     mus(6)=0.5d0*(ng(2)*mg(3)+ng(3)*mg(2))*sqrt2
 !
-150  continue
+150 continue
 end subroutine

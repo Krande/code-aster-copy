@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vphqrp(mat, neq, mxeq, icode, w,&
                   z, iz, wk, mxiter, ier,&
                   nitqr)
@@ -102,12 +102,12 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
 !
     if (icode .eq. 1) then
 !        --- FORMATION DE LA MATRICE IDENTITE DANS Z
-        do 25 i = 1, neq*neq
+        do i = 1, neq*neq
             z(i) = 0.d0
-25      continue
-        do 30 i = 1, neq*neq, neq+1
+        end do
+        do i = 1, neq*neq, neq+1
             z(i) = 1.d0
-30      continue
+        end do
         call vpzrbk(z, mat, wk(1, n2), neq, neq,&
                     k, l)
     endif
@@ -135,18 +135,18 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
 !
 !     --- CONVERSION DES VALEURS PROPRES (W) EN FORMAT COMPLEXE
 !
-    do 45 i = 1, neq
+    do i = 1, neq
         npi = neq+i
         wk(i,1) = w(npi)
-45  end do
+    end do
     jw = neq+neq
     j = neq
-    do 50 i = 1, neq
+    do i = 1, neq
         w(jw-1) = w(j)
         w(jw) = wk(j,1)
         jw = jw-2
         j = j-1
-50  end do
+    end do
 !
 !        TRAITEMENT DES VECTEURS PROPRES
 !        IE. : LES CONVERTIR  EN FORMAT COMPLEXE DANS Z(IZ,NEQ)
@@ -154,46 +154,46 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
     if (icode .eq. 1) then
 !
         j = neq
-60      continue
-        if (j .lt. 1) goto 9999
+ 60     continue
+        if (j .lt. 1) goto 999
         if (w(j+j) .ne. 0.d0) then
 !           TRANSLATER LA PAIRE DE VECTEURS COMPLEXES CONJUGUES
             is = iz2*(j-1)+1
             ig = neq*(j-2)+1
             igz = ig+neq
 !           TRANSLATER LE VECTEUR COMPLEXE CONJUGE
-            do 65 i = 1, neq
+            do i = 1, neq
                 z(is) = z(ig)
                 z(is+1) = -z(igz)
                 is = is+2
                 ig = ig+1
                 igz = igz+1
-65          continue
+            end do
 !           TRANSLATER LE VECTEUR COMPLEXE
             is = iz2*(j-2)+1
             ig = is+iz2
-            do 70 i = 1, neq
+            do i = 1, neq
                 z(is) = z(ig)
                 z(is+1) = -z(ig+1)
                 is = is+2
                 ig = ig+2
-70          continue
+            end do
             j = j-2
             goto 60
         endif
 !        TRANSLATER LE VECTEUR REEL
         is = iz2*(j-1)+neq+neq
         ig = neq*j
-        do 80 i = 1, neq
+        do i = 1, neq
             z(is-1) = z(ig)
             z(is) = 0.d0
             is = is-2
             ig = ig-1
-80      continue
+        end do
         j = j-1
         goto 60
     endif
 !
-9999  continue
+999 continue
     ier = jer
 end subroutine

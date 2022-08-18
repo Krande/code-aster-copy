@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 !     COMMANDE : POST_RELEVE_T
 !                DETERMINE LA MOYENNE SUR DES ENTITES POUR UN CHAM_NO
@@ -24,24 +24,24 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ioc, nbcmp
     real(kind=8) :: som(1)
     character(len=8) :: nocmp(1)
     character(len=*) :: champ
 !
-    integer ::    jcnsl,  nbno, ncmp, nbn
+    integer :: jcnsl, nbno, ncmp, nbn
     integer :: ibid, nbnoeu, idnoeu, nbc
     integer :: i100, i110, icp, ino
     real(kind=8) :: x
-    character(len=8) ::  ma
+    character(len=8) :: ma
     character(len=16) :: motcle(4), typmcl(4)
     character(len=19) :: chams1
     character(len=24) :: mesnoe
@@ -93,7 +93,7 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
         nbcmp = ncmp
     endif
 !
-    do 100 i100 = 1, nbcmp
+    do i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp(i100) = nom_cmp(i100)
             icp = indik8( cnsc, nocmp(i100), 1, ncmp )
@@ -104,7 +104,7 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
         endif
         som(i100) = 0.d0
 !
-        do 110 i110 = 1, nbnoeu
+        do i110 = 1, nbnoeu
             if (nbn .gt. 0) then
                 ino = zi(idnoeu+i110-1)
             else
@@ -118,10 +118,11 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 !
             endif
 !
-110      continue
+        end do
         som(i100) = som(i100)/nbnoeu
 !
-100  end do
+100     continue
+    end do
 !
 ! --- MENAGE
     call detrsd('CHAM_NO_S', chams1)

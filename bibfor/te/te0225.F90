@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0225(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -57,9 +57,9 @@ subroutine te0225(option, nomte)
     data zero,un,deux/0.d0,1.d0,2.d0/
 !     ------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icaco)
@@ -87,7 +87,7 @@ subroutine te0225(option, nomte)
 !
 !     ** BOUCLE CONCERNANT LES POINTS DE GAUSS **************
 !
-        do 40 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nno
             call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                         cour, jac, cosa, sina)
@@ -99,15 +99,15 @@ subroutine te0225(option, nomte)
                         2, tpg1, iret3)
             call rcvarc(' ', 'TEMP', '+', fami, kp,&
                         3, tpg3, iret4)
-            do 10 i = 1, nno
+            do i = 1, nno
                 r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-10          continue
+            end do
             if (nomte .eq. 'MECXSE3 ') jac = jac*r
 !
 !---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 !---- COMME POUR LA LONGUEUR
 !
-            do 30 ip = 1, npg
+            do ip = 1, npg
                 x3 = zr(jcoopg+ip-1)
                 tpg = tpg1* (un-x3**2) + x3* (tpg3* (un+x3)-tpg2* (un- x3))/ deux
                 call rcvalb('RIGI', 1, 1, '+', zi(imate),&
@@ -127,15 +127,15 @@ subroutine te0225(option, nomte)
                 coef = valres(1)*jac*epsthe*zr(ipoids+ip-1)* (h/deux)
                 coef = coef/ (un-nu)
 !
-                do 20 i = 1, nno
+                do i = 1, nno
                     j = 3* (i-1)
                     zr(ivectt+j) = zr(ivectt+j) + coef* (axis*zr(ivf+ k+i-1)/r-dfdx(i)*sina)
                     zr(ivectt+j+1) = zr(ivectt+j+1) + coef*dfdx(i)* cosa
                     zr(ivectt+j+2) = zr(ivectt+j+2) - coef*x3*h/deux* (axis*zr(ivf+k+i-1)*sina/ r&
                                      &-dfdx(i))
-20              continue
-30          continue
-40      continue
+                end do
+            end do
+        end do
     else
 !  ==== CALCUL ANISOTROPE  =====
         call utmess('F', 'ELEMENTS3_49')

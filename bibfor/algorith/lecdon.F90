@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lecdon(ficext, unitpa, prdeff)
     implicit none
 #include "asterf_types.h"
@@ -182,7 +182,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
 !
 !     BOUCLE DE LECTURE SUR LES PALIERS
 !     ---------------------------------
-        do 100 ipal = 1, nbpal
+        do ipal = 1, nbpal
             cnod='        '
             read(unitpa,*)numpal,cnod,ctype
             typpal(numpal)=ctype
@@ -208,7 +208,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
 !   REMPLISSAGE "COMMON" ASTER POUR LES NUMEROS DES NOEUDS DES PALIERS
 !   ------------------------------------------------------------------
             zi(znpal+1+(ipal-1))=ipal
-100     end do
+        end do
 !
 !     FIN DE BOUCLE DE LECTURE SUR LES PALIERS
 !     ----------------------------------------
@@ -220,10 +220,10 @@ subroutine lecdon(ficext, unitpa, prdeff)
             write(ifm,*)'ASTEREDYOS: ',nomprg,&
      &              ' - FIN LECTURE DU FICHIER FIC_DON '
             write(ifm,*)'ASTEREDYOS: ',nomprg,' - NOMBRE DE PALIERS: ',nbpal
-            do 110 ipal = 1, nbpal
+            do ipal = 1, nbpal
                 write(ifm,*)'ASTEREDYOS PALIER :',ipal,' TYPE :',&
                 typpal(ipal), ' NOEUD ASTER : ',cnpal(ipal)
-110         continue
+            end do
         endif
 !
         if (ulisop ( unitpa, k16nom ) .ne. 0) call ulopen(-unitpa, ' ', ' ', 'NEW', 'O')
@@ -237,7 +237,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
             call utmess('F', 'EDYOS_43')
         endif
         zi(znpal)=nbpal
-        do 201 ipal = 1, nbpal
+        do ipal = 1, nbpal
             call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=0, nbret=n2)
             if (abs(n2) .eq. 0) then
                 call getvtx('PALIER_EDYOS', 'NOEUD', iocc=ipal, nbval=0, nbret=n2)
@@ -259,11 +259,11 @@ subroutine lecdon(ficext, unitpa, prdeff)
                         nbret=n2)
             zk8(zcpal+(2*palmax)+(ipal-1))=cnpal(ipal)
             zk8(zcpal+(ipal-1))=ctype
-201     continue
+        end do
 !
         niv = 3
 !
-        do 101 ipal = 1, nbpal
+        do ipal = 1, nbpal
 !
             if (ipal .lt. 10) then
                 write(carac1,'(I1)')ipal
@@ -277,7 +277,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
                             zk8(zcpal+(ipal-1)), ' -- ', finpal(ipal), ' -- ',&
                             zk8(zcpal+(2*palmax)+(ipal-1))
             zi(znpal+1+(ipal-1))=ipal
-101     continue
+        end do
         if (niv .ge. 2) then
             write(ifm,*)'ASTEREDYOS: ',nomprg,&
      &              ' - FIN LECTURE ARGUMENTS PALIERS '

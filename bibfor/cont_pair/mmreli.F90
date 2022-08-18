@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
                   ksi1, ksi2, dksi1, dksi2, alpha)
 ! person_in_charge: mickael.abbas at edf.fr
@@ -86,7 +86,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
                 ksia1, ksia2, ga1)
     if (ga1 .le. (g0+omega1*gp0)) then
         alpha = alpha1
-        goto 9999
+        goto 999
     endif
     res1 = ga1-g0-gp0*alpha1
 !
@@ -103,7 +103,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
                 ksia1, ksia2, ga2)
     if (ga2 .le. (g0+omega1*gp0*alpha2)) then
         alpha = alpha2
-        goto 9999
+        goto 999
     endif
     res2 = ga2-g0-gp0*alpha2
 !
@@ -111,7 +111,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
 !
 ! --- ADAPTATION DU PARAMETRE D'AVANCEMENT AVEC APPROXIMATION CUBIQUE
 !
-    do 1 iada = 1, nadamx
+    do iada = 1, nadamx
 !
         ASSERT(abs(alpha1 - alpha2).gt.r8prem())
         unsdet = (1.d0 / (alpha1 - alpha2))
@@ -122,7 +122,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
         res1 = res2
         if (abs(coeffa) .le. r8prem()) then
             alpha = alpha2
-            goto 9999
+            goto 999
         endif
         alpha2 = (-coeffb+sqrt(coeffb*coeffb-3.d0*coeffa*gp0))/ (3.d0*coeffa)
         if (alpha2 .lt. amin*alpha1) alpha2=amin*alpha1
@@ -133,13 +133,13 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
                     ksia1, ksia2, ga2)
         if (ga2 .le. (g0+omega1*gp0*alpha2)) then
             alpha = alpha2
-            goto 9999
+            goto 999
         endif
         res2 = ga2-g0-gp0*alpha2
 !
- 1  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 !
-9999  continue
+999 continue
 end subroutine

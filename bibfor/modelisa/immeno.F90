@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
                   numail, nbcnx, cxma, xyzma, itetra,&
                   xbar, immer)
@@ -82,7 +82,6 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/immehx.h"
 #include "asterfort/immepn.h"
 #include "asterfort/immepy.h"
@@ -93,6 +92,7 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+!
 !
 ! ARGUMENTS
 ! ---------
@@ -132,7 +132,7 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
 !
     nbm = zi(jdrvlc + noebe+1-1) - zi(jdrvlc + noebe-1)
     iadr = zi(jdrvlc + noebe-1)
-    do 10 imail = 1, nbm
+    do imail = 1, nbm
         numai0 = zi(jcncin+iadr-1+imail-1)
         numail = zi(jlimab+numai0-1)
         call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx)
@@ -141,13 +141,13 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
 !........RECUPERATION DES NUMEROS ET DES COORDONNEES DES NOEUDS
 !........DE LA MAILLE
 !
-        do 30 inoma = 1, nbcnx
+        do inoma = 1, nbcnx
             noe = zi(jcxma+inoma-1)
             cxma(inoma) = noe
             xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
             xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
             xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
-30      continue
+        end do
 !
 !........TEST D'APPARTENANCE DU NOEUD CABLE AU DOMAINE GEOMETRIQUE
 !........DEFINI PAR LA MAILLE
@@ -166,11 +166,11 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
                         immer)
         endif
 !
-        if (immer .ge. 0) goto 9999
+        if (immer .ge. 0) goto 999
 !
-10  end do
+    end do
 !
-9999  continue
+999 continue
     call jedema()
 !
 ! --- FIN DE IMMENO.

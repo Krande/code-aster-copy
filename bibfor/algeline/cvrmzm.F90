@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cvrmzm(n, a, lda, b, ldb)
     implicit none
     integer :: n, lda, ldb
@@ -53,10 +53,11 @@ subroutine cvrmzm(n, a, lda, b, ldb)
         goto 9000
     endif
 !       --- A EST COPIEE DANS B
-    do 10 j = n, 1, -1
-        do 10 i = n, 1, -1
+    do j = n, 1, -1
+        do i = n, 1, -1
             b(i,j) = dcmplx(a(i,j),0.0d0)
-10      continue
+        end do
+    end do
 !
-9000  continue
+9000 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine optimw(method, nrupt, x, y, prob,&
                   sigw, nt, nur, nbres, calm,&
                   cals, mk, sk, mkp, skp,&
@@ -79,7 +79,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
             sxixi = 0.d0
             sxiyi = 0.d0
 !
-            do 10 i = 1, nrupt
+            do i = 1, nrupt
 !
                 prob(i) = i
                 s1 = nrupt
@@ -91,21 +91,21 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 sxixi = sxixi + x(i)*x(i)
                 sxiyi = sxiyi + x(i)*y(i)
 !
- 10         continue
+            end do
 !
             sxiyj = 0.d0
             sxixj = 0.d0
 !
-            do 20 i = 1, nrupt
+            do i = 1, nrupt
 !
-                do 30 j = 1, nrupt
+                do j = 1, nrupt
 !
                     sxiyj = sxiyj + x(i)*y(j)
                     sxixj = sxixj + x(i)*x(j)
 !
- 30             continue
+                end do
 !
- 20         continue
+            end do
 !
             unsurn = nrupt
             unsurn = 1.d0/unsurn
@@ -123,13 +123,13 @@ subroutine optimw(method, nrupt, x, y, prob,&
             if (impr) write(ifm,*) 'M(K) =',mkp,'SIGU(K) = ',skp(1)
 !
             sxi =0.d0
-            do 40 j = 1, nrupt
+            do j = 1, nrupt
 !
                 prov = (1.d0-exp(-(sigw(j)/sk(1))**mk))
                 if (prov .ne. 1.d0) prov = log ( log (1.d0/(1.d0-prov) ) )
                 sxi = sxi + (y(j)- prov)**2
 !
- 40         continue
+            end do
             if (impr) write(ifm, * ) 'ECART THEORIE-EXPERIENCE AU DEBUT DE L''ITERATION : ', sxi
 !
         else
@@ -139,24 +139,24 @@ subroutine optimw(method, nrupt, x, y, prob,&
             sxixi = 0.d0
             sxiyi = 0.d0
 !
-            do 110 itp = 1, nbtp
+            do itp = 1, nbtp
 !
                 snt = 0.d0
 !
-                do 120 ir = 1, nbres
+                do ir = 1, nbres
 !
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-120             continue
+                end do
 !
-                do 130 i = 1, nrupt
+                do i = 1, nrupt
 !
                     irg = 1
-                    do 140 k = 1, i-1
+                    do k = 1, i-1
                         if (indtp(nur(k)) .eq. itp) then
                             irg = irg+1
                         endif
-140                 continue
+                    end do
 !
                     if (indtp(nur(i)) .eq. itp) then
 !
@@ -169,41 +169,41 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                     endif
 !
-130             continue
+                end do
 !
-110         continue
+            end do
 !
             s1 = 0.d0
             s2 = 0.d0
 !
-            do 210 itp = 1, nbtp
+            do itp = 1, nbtp
 !
                 sxiyj = 0.d0
                 sxixj = 0.d0
                 snt = 0.d0
 !
-                do 200 ir = 1, nbres
+                do ir = 1, nbres
 !
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-200             continue
+                end do
 !
-                do 300 i = 1, nrupt
+                do i = 1, nrupt
 !
-                    do 400 j = 1, nrupt
+                    do j = 1, nrupt
 !
                         if (indtp(nur(i)) .eq. itp .and. indtp(nur(j)) .eq. itp) then
                             sxiyj = sxiyj + x(i)*y(j)
                             sxixj = sxixj + x(i)*x(j)
                         endif
 !
-400                 continue
+                    end do
 !
-300             continue
+                end do
                 s1 = s1 + sxiyj/snt
                 s2 = s2 + sxixj/snt
 !
-210         continue
+            end do
 !
             if ((.not.calm)) then
                 mkp = (s1-sxiyi) / ( s2-sxixi )
@@ -217,41 +217,41 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
 !          (M ET SIGMA-U) OU (SIGMA-U) SONT A RECALER
 !
-                do 211 itp = 1, nbtp
+                do itp = 1, nbtp
 !
                     snt = 0.d0
 !
-                    do 101 ir = 1, nbres
+                    do ir = 1, nbres
 !
                         if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-101                 continue
+                    end do
 !
                     sxi = 0.d0
                     syi = 0.d0
 !
-                    do 201 i = 1, nrupt
+                    do i = 1, nrupt
 !
                         if (indtp(nur(i)) .eq. itp) then
                             syi = syi + y(i)
                             sxi = sxi + x(i)
                         endif
 !
-201                 continue
+                    end do
 !
                     skp(itp) = exp ( (sxi-(1.d0/mkp)*syi)/snt )
                     if (impr) write(ifm,*) 'S(K) (',itp,')=',skp(itp)
 !
-211             continue
+                end do
 !
             else if (cals) then
 !
-                do 301 ir = 1, nbtp
+                do ir = 1, nbtp
 !
                     skp(ir) = sk(ir)
                     if (impr) write(ifm,*) 'S(K) (',ir,')=',skp(ir)
 !
-301             continue
+                end do
 !
             endif
 !
@@ -283,27 +283,27 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
 !          CALCUL DU SIGMA-U
 !
-            do 12 itp = 1, nbtp
+            do itp = 1, nbtp
 !
                 snt = 0.d0
-                do 11 ir = 1, nbres
+                do ir = 1, nbres
 !
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
- 11             continue
+                end do
 !
                 swm = 0.d0
-                do 31 i = 1, nrupt
+                do i = 1, nrupt
 !
                     if (indtp(nur(i)) .eq. itp) then
                         swm = swm + sigw(i) ** mkp
                     endif
 !
- 31             continue
+                end do
 !
                 skp(itp) = ( swm / snt ) ** ( unsurm )
 !
- 12         continue
+            end do
 !
         else if (calm) then
 !
@@ -312,33 +312,33 @@ subroutine optimw(method, nrupt, x, y, prob,&
             mkp = mk
             unsurm = 1.d0/mkp
 !
-            do 52 itp = 1, nbtp
+            do itp = 1, nbtp
 !
                 snt = 0.d0
-                do 51 ir = 1, nbres
+                do ir = 1, nbres
                     if (indtp(ir) .eq. itp) snt = snt + nt(ir)
- 51             continue
+                end do
 !
                 swm = 0.d0
-                do 41 i = 1, nrupt
+                do i = 1, nrupt
 !
                     if (indtp(nur(i)) .eq. itp) then
                         swm = swm + sigw(i) ** mkp
                     endif
 !
- 41             continue
+                end do
 !
                 skp(itp) = ( swm / snt ) ** ( unsurm )
 !
- 52         continue
+            end do
 !
         else if (cals) then
 !
 !        SIGMA-U EST CALE
 !
-            do 71 ir = 1, nbtp
+            do ir = 1, nbtp
                 skp(ir) = sk(ir)
- 71         continue
+            end do
             prec = 1.d-8
             mg = 1.d0
             md = mk
@@ -354,9 +354,9 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
         if (impr) then
             write(ifm,*) 'M(K) =',mkp
-            do 61 ir = 1, nbtp
+            do ir = 1, nbtp
                 write(ifm,*) 'S(K) (',ir,')=',skp(ir)
- 61         continue
+            end do
         endif
 !
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
                   diax, nbnfen, noefen, disfen)
     implicit none
@@ -90,14 +90,14 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
     indap = 1
     xap = 0.d0
-    do 10 ino = 1, nbn
+    do ino = 1, nbn
         if (nuno(ino) .eq. nunoap) then
             indap = ino
             xap = diax(ino)
             goto 11
         endif
-10  end do
-11  continue
+    end do
+ 11 continue
 !
 ! --- 3.TESTS DE RECOUVREMENT PAR RAPPORT AU DOMAINE DE DEFINITION
 ! ---   DU MAILLAGE
@@ -146,7 +146,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 !.....REPETER
 !
-20  continue
+ 20 continue
     ino = ino + 1
     if (ino .gt. lp-1) goto 21
     nunog = nuno(indap-ino)
@@ -188,7 +188,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 !.....SORTIE EN ERREUR FATALE LE CAS ECHEANT
 !
-21  continue
+ 21 continue
     if (nbnop .eq. 1) then
         call utmess('F', 'MODELISA4_56')
     endif
@@ -208,7 +208,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 !.....REPETER
 !
-30  continue
+ 30 continue
     ino = ino + 1
     if (ino .gt. ls-1) goto 31
     nunog = zi(inunos+nbnos-1)
@@ -256,7 +256,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 !.....SORTIE EN ERREUR FATALE LE CAS ECHEANT
 !
-31  continue
+ 31 continue
     if (nbnos .eq. 1) then
         call utmess('F', 'MODELISA4_59')
     endif
@@ -275,14 +275,14 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !.....LISTE DES NUMEROS DES NOEUDS APPARTENANT A LA FENETRE EXCITEE
 !.....DISCRETISATION SPATIALE CORRESPONDANTE (TRANSLATEE)
 !
-    do 40 ino = 1, nbnop
+    do ino = 1, nbnop
         noefen(ino) = zi(inunop+lp-nbnop+ino-1)
         disfen(ino) = zr(idiscp+lp-nbnop+ino-1) - xdecal
-40  end do
-    do 50 ino = 2, nbnos
+    end do
+    do ino = 2, nbnos
         noefen(nbnop+ino-1) = zi(inunos+ino-1)
         disfen(nbnop+ino-1) = zr(idiscs+ino-1) - xdecal
-50  end do
+    end do
 !
 ! --- MENAGE
 !

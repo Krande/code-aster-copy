@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeccta(colle1)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -32,6 +31,7 @@ subroutine jeccta(colle1)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+!
     character(len=*) :: colle1
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -77,26 +77,26 @@ subroutine jeccta(colle1)
     call jeveuo(colle1, 'L', jcoll1)
     call jeveuo(colle2, 'E', jcoll2)
     if (type .eq. 'I') then
-        do 10,k=1,lont2
-        zi(jcoll2-1+k)=zi(jcoll1-1+k)
-10      continue
+        do k = 1, lont2
+            zi(jcoll2-1+k)=zi(jcoll1-1+k)
+        end do
     else if (type.eq.'R') then
-        do 20,k=1,lont2
-        zr(jcoll2-1+k)=zr(jcoll1-1+k)
-20      continue
+        do k = 1, lont2
+            zr(jcoll2-1+k)=zr(jcoll1-1+k)
+        end do
     else if (type.eq.'C') then
-        do 30,k=1,lont2
-        zc(jcoll2-1+k)=zc(jcoll1-1+k)
-30      continue
+        do k = 1, lont2
+            zc(jcoll2-1+k)=zc(jcoll1-1+k)
+        end do
     else
         ASSERT(.false.)
     endif
 !
-    do 40,k=1,nbobj
-    n1=zi(jloncu-1+k+1)-zi(jloncu-1+k)
-    call jecroc(jexnum(colle2, k))
-    call jeecra(jexnum(colle2, k), 'LONMAX', n1)
-    40 end do
+    do k = 1, nbobj
+        n1=zi(jloncu-1+k+1)-zi(jloncu-1+k)
+        call jecroc(jexnum(colle2, k))
+        call jeecra(jexnum(colle2, k), 'LONMAX', n1)
+    end do
 !
 !
 !     RECOPIE DE COLLE2 DANS COLLE1 :

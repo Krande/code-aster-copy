@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0419(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/btdfn.h"
 #include "asterfort/btdmsn.h"
 #include "asterfort/btdmsr.h"
@@ -34,6 +33,7 @@ subroutine te0419(option, nomte)
 #include "asterfort/trnflg.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vexpan.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -85,20 +85,20 @@ subroutine te0419(option, nomte)
 !     RECUPERATION DE LA TEMPERATURE DE REFERENCE
 !
 !
-    do 5 i = 1, nddle
+    do i = 1, nddle
         forcth(i)=0.d0
- 5  end do
+    end do
 !
     call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&
                 vectn, vectpt)
 !
     kwgt=0
-    do 100 inte = 1, npge
+    do inte = 1, npge
         ksi3s2=epsval(inte)/2.d0
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
-        do 150 intsr = 1, npgsr
+        do intsr = 1, npgsr
             call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr,&
                         zr(lzr), epais, vectn, vectg, vectt,&
                         hsfm, hss)
@@ -109,9 +109,9 @@ subroutine te0419(option, nomte)
             call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
                         epais, vectpt, hsj1m, hsj1s, btdm,&
                         btds)
-150      end do
+        end do
 !
-        do 200 intsn = 1, npgsn
+        do intsn = 1, npgsn
 !
 !     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
@@ -147,28 +147,28 @@ subroutine te0419(option, nomte)
                         wgt, indic, young, nu, alpha,&
                         temper, forthi)
 !
-            do 11 i = 1, nddle
+            do i = 1, nddle
                 forcth(i)=forcth(i)+forthi(i)
-11          end do
+            end do
 !
-200      end do
-100  end do
+        end do
+    end do
 !
     call vexpan(nb1, forcth, vecl)
-    do 90 i = 1, 3
+    do i = 1, 3
         vecl(6*nb1+i)=0.d0
-90  end do
+    end do
 !
-    do 15 ib = 1, nb2
-        do 16 i = 1, 2
-            do 17 j = 1, 3
+    do ib = 1, nb2
+        do i = 1, 2
+            do j = 1, 3
                 vecpt(ib,i,j)=vectpt(ib,i,j)
-17          end do
-16      end do
+            end do
+        end do
         vecpt(ib,3,1)=vectn(ib,1)
         vecpt(ib,3,2)=vectn(ib,2)
         vecpt(ib,3,3)=vectn(ib,3)
-15  end do
+    end do
 !
     call trnflg(nb2, vecpt, vecl, zr(jvecg))
 !

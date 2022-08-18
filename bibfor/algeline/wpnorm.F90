@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
                   ddlexc, vecpro, resufr, coef)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -30,8 +32,6 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr(*), ddlexc(*)
@@ -63,7 +63,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: im, ieq,  ldynam
+    integer :: im, ieq, ldynam
     character(len=1) :: typcst(2)
     character(len=19) :: matmod
     real(kind=8) :: rnorm, rx1, rx2, constr(4), fr, am, zero
@@ -82,32 +82,32 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
     if (norm .eq. 'AVEC_CMP' .or. norm .eq. 'EUCL') then
 !
 !        --- NORMALISATION SUR LES DDL NON EXCLUS
-        do 2 im = 1, nbmode
+        do im = 1, nbmode
             rnorm = 0.0d0
             if (norm .eq. 'EUCL') then
-                do 4 ieq = 1, neq
+                do ieq = 1, neq
                     xx1 = vecpro(ieq,im) * ddlexc(ieq)
                     rnorm = rnorm + dble(xx1*dconjg(xx1))
- 4              continue
+                end do
                 rnorm = sqrt( rnorm )
             else
-                do 6 ieq = 1, neq
+                do ieq = 1, neq
                     rx1 = abs( vecpro(ieq,im)*ddlexc(ieq) )
                     rnorm = max( rx1 , rnorm )
- 6              continue
+                end do
             endif
             rx1 = 1.0d0 / rnorm
             coef(im) = rx1
-            do 8 ieq = 1, neq
+            do ieq = 1, neq
                 vecpro(ieq,im) = vecpro(ieq,im) * rx1
- 8          continue
+            end do
             if (para .eq. 'OUI') then
                 rx2 = rx1 * rx1
                 resufr(im,4) = resufr(im,4) * rx2
                 resufr(im,5) = resufr(im,5) * rx2
                 resufr(im,6) = resufr(im,6) * rx2
             endif
- 2      continue
+        end do
 !
     else if (norm.eq.'MASS_GENE' .or. norm.eq.'RIGI_GENE') then
 !
@@ -128,7 +128,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
             constr(1) = -1.d0
             constr(2) = 0.d0
         endif
-        do 30 im = 1, nbmode
+        do im = 1, nbmode
             fr = sqrt( resufr(im,2) )
             am = resufr(im,3)
             am = -abs( am*fr ) / sqrt( 1.0d0 - am*am )
@@ -146,21 +146,21 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
             call mcmult('ZERO', ldynam, vecpro(1, im), xxxx_gene_2, 1,&
                         .true._1)
             xnorm = czero
-            do 31 ieq = 1, neq
+            do ieq = 1, neq
                 xnorm = xnorm + vecpro(ieq,im) * xxxx_gene_2(ieq)
-31          continue
+            end do
             xnorm = 1.d0 / sqrt(xnorm)
             coef(im) = dble(xnorm)
-            do 32 ieq = 1, neq
+            do ieq = 1, neq
                 vecpro(ieq,im) = vecpro(ieq,im) * xnorm
-32          continue
+            end do
             if (para .eq. 'OUI') then
                 xnorm = xnorm * xnorm
                 resufr(im,4) = resufr(im,4) * dble(xnorm)
                 resufr(im,5) = resufr(im,5) * dble(xnorm)
                 resufr(im,6) = resufr(im,6) * dble(xnorm)
             endif
-30      continue
+        end do
 ! --- MENAGE
         AS_DEALLOCATE(vc=xxxx_gene_2)
         call detrsd('MATR_ASSE', '&&WPNORM.MATR.DYNAMIC')

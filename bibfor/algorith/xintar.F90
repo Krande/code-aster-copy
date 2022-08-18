@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xintar(lsna, lsnb, lsnm, a, b,&
                   m, ndim, intar)
     implicit none
@@ -61,18 +61,17 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
     lsnl(2)=lsnb
     lsnl(3)=lsnm
 !
-    do 100 i = 1, ndim
+    do i = 1, ndim
         col(i)=a(i)
         col(ndim+i)=b(i)
         col(ndim*2+i)=m(i)
-100  end do
+    end do
 !
     rbid = 0.d0
     xe(:) = 0.d0
-    call xnewto(elp, name, n,&
-                ndim, [rbid], ndim, [rbid], lsnl,&
-                ibid, ibid, itemax,&
-                epsmax, xe)
+    call xnewto(elp, name, n, ndim, [rbid],&
+                ndim, [rbid], lsnl, ibid, ibid,&
+                itemax, epsmax, xe)
     call reerel(elp, nno, ndim, col, xe,&
                 intar)
 !

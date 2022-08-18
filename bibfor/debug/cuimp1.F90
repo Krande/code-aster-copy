@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cuimp1(deficu, resocu, ifm)
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cudisd.h"
 #include "asterfort/cudisi.h"
@@ -75,7 +75,7 @@ subroutine cuimp1(deficu, resocu, ifm)
 !
 ! --- BOUCLE SUR LES LIAISONS
 !
-    do 500 iliai = 1, nbliai
+    do iliai = 1, nbliai
 !
 ! --- NOEUD ET COMPOSANTE DE LA LIAISON
 !
@@ -90,11 +90,11 @@ subroutine cuimp1(deficu, resocu, ifm)
 !
         actif = 0
 !
-        do 10 iliac = 1, nbliac
+        do iliac = 1, nbliac
             if (zi(jliac-1+iliac) .eq. iliai) then
                 actif = 1
             endif
-10      continue
+        end do
 !
 ! --- IMPRESSION
 !
@@ -105,7 +105,7 @@ subroutine cuimp1(deficu, resocu, ifm)
         endif
         write (ifm,1000) iliai,'(',noe,' - ',cmp,') :',&
      &                   chaiac,jeu,')'
-500  end do
+    end do
 !
     1000 format (' <LIA_UNIL> <> LIAISON ',i5,a1,a8,a3,a8,a4,a15,e10.3,a1)
 !

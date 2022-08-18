@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                   lcrit, prec, crit)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jecreo.h"
@@ -33,8 +35,6 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 #include "asterfort/tbtr01.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: npara
     real(kind=8) :: prec
@@ -158,7 +158,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
             ideb = ii
             ifin = ii
             n = zi(jnume+ii-1)
-            do 34 jj = ii+1, nblign
+            do jj = ii+1, nblign
                 ifin = jj
                 m = zi(jnume+jj-1)
                 if (type(1:1) .eq. 'I') then
@@ -209,7 +209,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                         goto 36
                     endif
                 endif
- 34         continue
+            end do
  36         continue
             nbuti = ifin-ideb+1
             if (nbuti .gt. 1) then

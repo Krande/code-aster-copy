@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dinon4(neq, ul, dul, utl, nno,&
                   nbcomp, varimo, raide, nbpar, param,&
                   okdire, varipl)
@@ -75,7 +75,7 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
 !************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
     r8min = r8miem()
 !
-    do 20 ii = 1, nbcomp
+    do ii = 1, nbcomp
 !        INDEX DES VARIABLES INTERNES
         ivari = ii
 !        PAR DEFAUT LES VARIABLES N'EVOLUENT PAS
@@ -129,6 +129,7 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
                 raide(ii) = kfin
             endif
         endif
- 20 end do
+ 20     continue
+    end do
 !
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                   nomtab, iocc, xnovar, ncheff, i1)
     implicit none
@@ -132,7 +132,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
             call rsnopa(nomres, 0, nomjv, nbacc, nbpr)
             if (nbacc .ne. 0) then
                 call jeveuo(nomjv, 'L', jaces)
-                do 70 iac = 1, nbacc
+                do iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
                                 1, sjv=iadr, styp=ctype)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
@@ -163,7 +163,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                         ik = ik + 1
                         valek(ik) = zk8(iadr)
                     endif
- 70             continue
+                end do
                 call jedetr(nomjv)
             endif
         else if (acces(1:1) .eq. 'M') then
@@ -219,16 +219,16 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
     nopara(nbpar) = 'QUANTITE'
 !
     if (nbvari .eq. 0) then
-        do 50 icp = 1, nbcmp2
+        do icp = 1, nbcmp2
             nbpar = nbpar + 1
             nopara(nbpar) = nomcmp(icp)
- 50     continue
+        end do
     else
-        do 52 icp = 1, nbcmp2
+        do icp = 1, nbcmp2
             call codent(zi(jvari+icp-1), 'G', kii)
             nbpar = nbpar + 1
             nopara(nbpar) = 'V'//kii
- 52     continue
+        end do
     endif
 !
     ASSERT(nbpar .le. 15)
@@ -241,30 +241,30 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
     ilign = 0
     ik = ik + 1
 !
-    do 20 ico = 1, nbco
+    do ico = 1, nbco
         i20 = l * ( ico - 1 )
         valei(ii+1) = ico
 !
-        do 10 isp = 1, nbsp
+        do isp = 1, nbsp
             i10 = 6 * ( isp - 1 )
             valei(ii+2) = isp
 !
-            do 40 i = 1, 6
+            do i = 1, 6
                 valek(ik) = nompar(i)
 !
-                do 30 icp = 1, nbcmp2
+                do icp = 1, nbcmp2
                     i30 = m * ( icp - 1 )
                     valer(ir+icp) = t(i30+i20+i10+i)
 !
- 30             continue
+                end do
 !
                 call tbajli(nomtab, nbpar, nopara, valei, valer,&
                             [c16b], valek, ilign)
- 40         continue
+            end do
 !
- 10     continue
+        end do
 !
- 20 end do
+    end do
 !
     call jedema()
 end subroutine

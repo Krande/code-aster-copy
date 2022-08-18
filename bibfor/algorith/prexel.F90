@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
                   cmpmax, valmax, mamin, nomin, ispmin,&
                   cmpmin, valmin, maamax, noamax, isamax,&
@@ -26,6 +26,8 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
@@ -36,8 +38,6 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: ioc, ispmax, ispmin, isamax, isamin
     real(kind=8) :: valmin, valmax, vaamin, vaamax
@@ -50,7 +50,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  jcesd,  jcesl,  nbma, ncmp, nbm
+    integer :: jcesd, jcesl, nbma, ncmp, nbm
     integer :: ibid, nbmail, idmail, nbc, nbcmp
     integer :: i100, i110, icp, imai, nbpt, nbsp, ipt, isp, iad
     integer :: imamax, iptmax, imamin, iptmin, jcone
@@ -127,7 +127,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     isamin = 0
     vaamin = r8vide()
 !
-    do 100 i100 = 1, nbcmp
+    do i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp = nom_cmp(i100)
             icp = indik8( cesc, nocmp, 1, ncmp )
@@ -137,7 +137,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
             nocmp = cesc(i100)
         endif
 !
-        do 110 i110 = 1, nbmail
+        do i110 = 1, nbmail
             if (nbm .ne. 0) then
                 imai = zi(idmail+i110-1)
             else
@@ -146,48 +146,49 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
             nbpt = zi(jcesd-1+5+4*(imai-1)+1)
             nbsp = zi(jcesd-1+5+4*(imai-1)+2)
             call jeveuo(jexnum(ma//'.CONNEX', imai), 'L', jcone)
-            do 120,ipt = 1,nbpt
-            do 130,isp = 1,nbsp
-            call cesexi('C', jcesd, jcesl, imai, ipt,&
-                        isp, icp, iad)
-            if (iad .gt. 0) then
-                x = cesv(iad)
-                if (x .gt. valmax) then
-                    imamax = imai
-                    iptmax = zi(jcone+ipt-1)
-                    ispmax = isp
-                    cmpmax = nocmp
-                    valmax = x
-                endif
-                if (abs(x) .gt. vaamax) then
-                    imaaax = imai
-                    ipamax = zi(jcone+ipt-1)
-                    isamax = isp
-                    cmamax = nocmp
-                    vaamax = abs(x)
-                endif
-                if (x .lt. valmin) then
-                    imamin = imai
-                    iptmin = zi(jcone+ipt-1)
-                    ispmin = isp
-                    cmpmin = nocmp
-                    valmin = x
-                endif
-                if (abs(x) .lt. vaamin) then
-                    imaain = imai
-                    ipamin = zi(jcone+ipt-1)
-                    isamin = isp
-                    cmamin = nocmp
-                    vaamin = abs(x)
-                endif
-            endif
-130          continue
-120          continue
-110      continue
-100  end do
+            do ipt = 1, nbpt
+                do isp = 1, nbsp
+                    call cesexi('C', jcesd, jcesl, imai, ipt,&
+                                isp, icp, iad)
+                    if (iad .gt. 0) then
+                        x = cesv(iad)
+                        if (x .gt. valmax) then
+                            imamax = imai
+                            iptmax = zi(jcone+ipt-1)
+                            ispmax = isp
+                            cmpmax = nocmp
+                            valmax = x
+                        endif
+                        if (abs(x) .gt. vaamax) then
+                            imaaax = imai
+                            ipamax = zi(jcone+ipt-1)
+                            isamax = isp
+                            cmamax = nocmp
+                            vaamax = abs(x)
+                        endif
+                        if (x .lt. valmin) then
+                            imamin = imai
+                            iptmin = zi(jcone+ipt-1)
+                            ispmin = isp
+                            cmpmin = nocmp
+                            valmin = x
+                        endif
+                        if (abs(x) .lt. vaamin) then
+                            imaain = imai
+                            ipamin = zi(jcone+ipt-1)
+                            isamin = isp
+                            cmamin = nocmp
+                            vaamin = abs(x)
+                        endif
+                    endif
+                end do
+            end do
+        end do
+100     continue
+    end do
 !
     if (imamax .eq. 0) call utmess('F', 'POSTRELE_19')
-
+!
     call jenuno(jexnum(ma//'.NOMMAI', imamax), mamax)
     call jenuno(jexnum(ma//'.NOMMAI', imamin), mamin)
     call jenuno(jexnum(ma//'.NOMNOE', iptmax), nomax)

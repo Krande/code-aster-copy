@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
                   rke, lhaigh, rcorr, dom)
     implicit none
@@ -45,7 +45,7 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
     real(kind=8) :: delta, val(2), rbid
     integer :: icodre(2)
     character(len=16) :: nomres(2)
-    character(len=8) ::  nompar
+    character(len=8) :: nompar
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar
@@ -57,11 +57,11 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
     nomres(2) = 'BETA_BASQUIN'
     call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                 2, nomres, val, icodre, 2)
-    do 10 i = 1, nbcycl
+    do i = 1, nbcycl
         delta = (1.d0/2.d0)*abs(sigmax(i)-sigmin(i))
         if (lke) delta = delta * rke(i)
         if (lhaigh) delta = delta / rcorr(i)
         dom(i) = val(1)* delta**val(2)
- 10 end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sesqui(mat, vect, ndim, normec)
-    implicit   none
+    implicit none
     integer :: ndim
     complex(kind=8) :: mat(*), vect(ndim), normec
 !
@@ -38,16 +38,16 @@ subroutine sesqui(mat, vect, ndim, normec)
 !-----------------------------------------------------------------------
 !
     normec = dcmplx(0.d0,0.d0)
-    do 10 i = 1, ndim
+    do i = 1, ndim
         idiag = i*(i-1)/2+1
-        do 20 j = 1, ndim
+        do j = 1, ndim
             if (j .ge. i) then
                 jdiag = j*(j-1)/2+1
                 normec = normec + vect(j)*mat(jdiag+j-i)*dconjg(vect( i))
             else
                 normec = normec + vect(j)*dconjg(mat(idiag+i-j))* dconjg(vect(i))
             endif
-20      continue
-10  continue
+        end do
+    end do
 !
 end subroutine

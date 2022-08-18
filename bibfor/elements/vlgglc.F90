@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                   pgl4, v, code, p, vtemp)
     implicit none
@@ -39,15 +39,15 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 !
 !  INITIALISATION A L'IDENTITE DE LA MATRICE DE PASSAGE P
 !
-    do 10, i=1, nbrddl
-    do 20 j = 1, nbrddl
-        if (i .eq. j) then
-            p(i,j)=1.d0
-        else
-            p(i,j)=0.d0
-        endif
-20  continue
-    10 end do
+    do i = 1, nbrddl
+        do j = 1, nbrddl
+            if (i .eq. j) then
+                p(i,j)=1.d0
+            else
+                p(i,j)=0.d0
+            endif
+        end do
+    end do
 !
 !  REMPLISSAGE DES DE BLOC DE LA MATRICE P CORRESPONDANT AUX DDL
 !  DE POUTRE (UX, UY, UZ, TETAX, TETAY, ET TETAZ) PAR LA MATRICE
@@ -55,49 +55,49 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 !
     l=1
     m=(l-1)*nbrddl/nno
-    do 40, i=1,3
-    do 50, j=1,3
-    p(m+i,m+j)=pgl1(i,j)
-    p(m+3+i,m+3+j)=pgl1(i,j)
-50  continue
-40  continue
+    do i = 1, 3
+        do j = 1, 3
+            p(m+i,m+j)=pgl1(i,j)
+            p(m+3+i,m+3+j)=pgl1(i,j)
+        end do
+    end do
 !
     l=2
     m=(l-1)*nbrddl/nno
-    do 41, i=1,3
-    do 51, j=1,3
-    p(m+i,m+j)=pgl2(i,j)
-    p(m+3+i,m+3+j)=pgl2(i,j)
-51  continue
-41  continue
+    do i = 1, 3
+        do j = 1, 3
+            p(m+i,m+j)=pgl2(i,j)
+            p(m+3+i,m+3+j)=pgl2(i,j)
+        end do
+    end do
 !
     l=3
     m=(l-1)*nbrddl/nno
-    do 42, i=1,3
-    do 52, j=1,3
-    p(m+i,m+j)=pgl3(i,j)
-    p(m+3+i,m+3+j)=pgl3(i,j)
-52  continue
-42  continue
+    do i = 1, 3
+        do j = 1, 3
+            p(m+i,m+j)=pgl3(i,j)
+            p(m+3+i,m+3+j)=pgl3(i,j)
+        end do
+    end do
 !
     if (nno .eq. 4) then
 !
         l=4
         m=(l-1)*nbrddl/nno
-        do 43 i = 1, 3
-            do 53 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 p(m+i,m+j)=pgl4(i,j)
                 p(m+3+i,m+3+j)=pgl4(i,j)
-53          continue
-43      continue
+            end do
+        end do
 !
     endif
 !
 ! INITIALISATION A ZERO DU VECTEUR VTEMP
 !
-    do 60, i=1,nbrddl
-    vtemp(i) = 0.d0
-    60 end do
+    do i = 1, nbrddl
+        vtemp(i) = 0.d0
+    end do
 !
 !  CAS D'UN PASSAGE LOCAL -> GLOBAL
 !
@@ -105,21 +105,21 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 !
 ! CALCUL DE VTEMP = PRODUIT (TRANSPOSEE P) * V
 !
-        do 70, i=1,nbrddl
-        do 90, l=1,nbrddl
-        vtemp(i)=vtemp(i)+p(l,i)*v(l)
-90      continue
-        70     end do
+        do i = 1, nbrddl
+            do l = 1, nbrddl
+                vtemp(i)=vtemp(i)+p(l,i)*v(l)
+            end do
+        end do
 !
     else if (code.eq.'GL') then
 !
 ! CALCUL DE VTEMP = P * V
 !
-        do 100, i=1,nbrddl
-        do 110, l=1,nbrddl
-        vtemp(i)=vtemp(i)+p(i,l)*v(l)
-110      continue
-100      continue
+        do i = 1, nbrddl
+            do l = 1, nbrddl
+                vtemp(i)=vtemp(i)+p(i,l)*v(l)
+            end do
+        end do
 !
     else
         call utmess('F', 'ELEMENTS4_58', sk=code)
@@ -127,8 +127,8 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 !
 ! STOCKAGE DE VTEMP DANS V
 !
-    do 120, i=1,nbrddl
-    v(i) = vtemp(i)
-    120 end do
+    do i = 1, nbrddl
+        v(i) = vtemp(i)
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pjeftc(ma1, ma2, resuou, base)
 ! person_in_charge: nicolas.greffet at edf.fr
 ! ======================================================================
@@ -75,7 +75,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 !     ---------------------------------------------
     if (nbocc .gt. 0) then
 !
-        do 10 iocc = 1, nbocc
+        do iocc = 1, nbocc
 !
 !         -- NOMS DES GROUPES DE MAILLES ET DE NOEUDS COUPLES :
 !         -----------------------------------------------------------
@@ -97,7 +97,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
                 call detrsd('CORRESP_2_MAILLA', corre3)
             endif
             call detrsd('CORRESP_2_MAILLA', corre1)
-10      continue
+        end do
         call copisd('CORRESP_2_MAILLA', 'G', corre2, resuou)
         call detrsd('CORRESP_2_MAILLA', corre2)
     else

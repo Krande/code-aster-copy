@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine slegro(iunv, imod, datset)
     implicit none
 !     =================
@@ -141,9 +141,9 @@ subroutine slegro(iunv, imod, datset)
                 goto 1
             else
                 nblign = int(nbenti/nbrlig)
-                do 145 i = 1, nblign
+                do i = 1, nblign
                     read(iunv,'(I3)')
-145             continue
+                end do
                 if (nbenti .gt. (nbrlig*nblign)) read(iunv,'(I3)')
                 goto 1
             endif
@@ -174,7 +174,7 @@ subroutine slegro(iunv, imod, datset)
             nbtest=1
         endif
 !
-        do 2 i = 1, nblign
+        do i = 1, nblign
 !
             if (datset .eq. 752 .or. datset .eq. 2417 .or. datset .eq. 2429 .or. datset&
                 .eq. 2430 .or. datset .eq. 2432) then
@@ -185,7 +185,7 @@ subroutine slegro(iunv, imod, datset)
                 1,nbrlig)
             endif
 !
-            do 3 j = 1, nbrlig
+            do j = 1, nbrlig
                 if (entcod(j) .eq. 7) then
                     call codnop(chnode, prfnoe, 1, 1)
                     call codent(nument(j), 'G', chnode(2:8))
@@ -213,9 +213,9 @@ subroutine slegro(iunv, imod, datset)
                     nbmail= nbmail+ 1
                     zk8(jgrm-1+nbmail) = chmail
                 endif
-  3         continue
+            end do
 !
-  2     continue
+        end do
 !
         if (nbenti .gt. (nbrlig*nblign)) then
             if (datset .eq. 752 .or. datset .eq. 2417 .or. datset .eq. 2429 .or. datset&
@@ -226,7 +226,7 @@ subroutine slegro(iunv, imod, datset)
                 read (iunv,'(2(I10,I10,20X))') (entcod(j),nument(j),j=&
                 1,nbrlig)
             endif
-            do 4 j = 1, (nbenti-nbrlig*nblign)
+            do j = 1, (nbenti-nbrlig*nblign)
                 if (entcod(j) .eq. 7) then
 !
 ! --> ECRITURE DES NOEUDS (APPARTENANT A UN GROUPE) SUR
@@ -254,7 +254,7 @@ subroutine slegro(iunv, imod, datset)
                     nbmail= nbmail+ 1
                     zk8(jgrm-1+nbmail) = chmail
                 endif
-  4         continue
+            end do
         endif
 !
 ! --> ECRITURE SUR LE FICHIER NEUTRE DES GROUPES DE NOEUDS

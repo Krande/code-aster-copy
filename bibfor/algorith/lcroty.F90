@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function lcroty(t, prec, itemax)
     implicit none
 #include "asterfort/utmess.h"
@@ -40,19 +40,19 @@ function lcroty(t, prec, itemax)
     if (t .le. exp(1.d0)) then
 !
         y = 0.d0
-        do 10 iter = 1, itemax
+        do iter = 1, itemax
             h = y*exp(y) - t
             dh = (1+y) * exp(y)
             if (abs(h) .le. prec*t) goto 100
             y = y - h/dh
-10      continue
+        end do
 !
 !
 ! 2 - NEWTON AVEC CHANGEMENT DE VARIABLE U=EXP(Y)
 !
     else
         u = t
-        do 20 iter = 1, itemax
+        do iter = 1, itemax
             h = u*log(u) - t
             dh = 1 + log(u)
             if (abs(h) .le. prec*t) then
@@ -60,12 +60,12 @@ function lcroty(t, prec, itemax)
                 goto 100
             endif
             u = u - h/dh
-20      continue
+        end do
     endif
 !
     call utmess('F', 'ALGORITH3_55')
 !
 !
-100  continue
+100 continue
     lcroty = y
 end function

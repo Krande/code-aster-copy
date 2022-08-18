@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
                   dmc, an, am)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dsqbfa.h"
 #include "asterfort/dsqbfb.h"
@@ -98,9 +98,9 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     real(kind=8) :: aa(4, 4), aai(4, 4), caraq4(25), jacob(5)
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(elrefe='SE2', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx,&
+                     jdfd2=idfd2, jgano=jgano)
     nc = 4
 !
 ! --- INITIALISATIONS :
@@ -111,17 +111,19 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     deux = 2.0d0
     trois = 3.0d0
 !
-    do 10 i = 1, 4
-        do 10 j = 1, 8
+    do i = 1, 4
+        do j = 1, 8
             am(i,j) = zero
             al(i,j) = zero
-10      continue
+        end do
+    end do
 !
-    do 20 i = 1, 4
-        do 20 j = 1, 12
+    do i = 1, 4
+        do j = 1, 12
             an(i,j) = zero
             aw(i,j) = zero
-20      continue
+        end do
+    end do
 !
     call gquad4(xyzl, caraq4)
     l(1) = caraq4( 9)
@@ -154,44 +156,50 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --- BOUCLE SUR LES COTES DU QUADRILATERE :
 !     ------------------------------------
 !
-    do 30 ic = 1, nc
+    do ic = 1, nc
 !
-        do 40 i = 1, 2
-            do 40 j = 1, 4
+        do i = 1, 2
+            do j = 1, 4
                 db(i,j) = zero
-40          continue
+            end do
+        end do
 !
-        do 50 i = 1, 2
-            do 50 j = 1, 12
+        do i = 1, 2
+            do j = 1, 12
                 dcidfb(i,j) = zero
                 dcb(i,j) = zero
-50          continue
+            end do
+        end do
 !
-        do 60 i = 1, 2
-            do 60 j = 1, 8
+        do i = 1, 2
+            do j = 1, 8
                 dcidmc(i,j) = zero
-60          continue
+            end do
+        end do
 !
 ! ---   INTEGRATION SUR LE COTE COURANT :
 !       -------------------------------
-        do 70 int = 1, 2
+        do int = 1, 2
 !
 ! ---       INITIALISATIONS :
 !           ---------------
-            do 80 i = 1, 2
-                do 80 j = 1, 4
+            do i = 1, 2
+                do j = 1, 4
                     dfcbfa(i,j) = zero
-80              continue
+                end do
+            end do
 !
-            do 90 i = 1, 2
-                do 90 j = 1, 8
+            do i = 1, 2
+                do j = 1, 8
                     dmctbm(i,j) = zero
-90              continue
+                end do
+            end do
 !
-            do 100 i = 1, 2
-                do 100 j = 1, 12
+            do i = 1, 2
+                do j = 1, 12
                     dfcbfb(i,j) = zero
-100              continue
+                end do
+            end do
 !
 ! ---       COORDONNEES DU POINT D'INTEGRATION COURANT :
 !           ------------------------------------------
@@ -233,20 +241,21 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
 ! ---       CALCUL DU PRODUIT DFC_T*BFA :
 !           ---------------------------
-            do 110 j = 1, 4
-                do 110 k = 1, 3
+            do j = 1, 4
+                do k = 1, 3
                     dfcbfa(1,j) = dfcbfa(1,j) + dfc(k,1)*bfa(k,j)
                     dfcbfa(2,j) = dfcbfa(2,j) + dfc(k,2)*bfa(k,j)
-110              continue
+                end do
+            end do
 !
 ! ---       CALCUL DU PRODUIT DCI*(BCA - DFC_T*BFA) :
 !           --------------------------------------
-            do 120 j = 1, 4
+            do j = 1, 4
                 db(1,j) = db(1,j) + dci(1,1) * (bca(1,j)-dfcbfa(1,j)) + dci(1,2) * (bca(2,j)-dfcb&
                           &fa(2,j))
                 db(2,j) = db(2,j) + dci(2,1) * (bca(1,j)-dfcbfa(1,j)) + dci(2,2) * (bca(2,j)-dfcb&
                           &fa(2,j))
-120          continue
+            end do
 !
 !================================================================
 ! --- DETERMINATION DE LA MATRICE AB QUI EST TELLE QUE          =
@@ -270,18 +279,19 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
 ! ---      CALCUL DU PRODUIT DFC_T*BFB :
 !          ---------------------------
-            do 130 j = 1, 12
-                do 130 k = 1, 3
+            do j = 1, 12
+                do k = 1, 3
                     dfcbfb(1,j) = dfcbfb(1,j) + dfc(k,1)*bfb(k,j)
                     dfcbfb(2,j) = dfcbfb(2,j) + dfc(k,2)*bfb(k,j)
-130              continue
+                end do
+            end do
 !
 ! ---      CALCUL DU PRODUIT DCI*DFC_T*BFB :
 !          -------------------------------
-            do 140 j = 1, 12
+            do j = 1, 12
                 dcidfb(1,j) = dcidfb(1,j) + dci(1,1)*dfcbfb(1,j) + dci(1,2)*dfcbfb(2,j)
                 dcidfb(2,j) = dcidfb(2,j) + dci(2,1)*dfcbfb(1,j) + dci(2,2)*dfcbfb(2,j)
-140          continue
+            end do
 !
 !===================================================================
 ! ---      DETERMINATION DE LA MATRICE AL QUI EST TELLE QUE        =
@@ -302,20 +312,21 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
 ! ---     CALCUL DU TERME BCM-DMC_T*BM :
 !         ----------------------------
-            do 150 j = 1, 8
+            do j = 1, 8
                 dmctbm(1,j) = dmctbm(1,j) + bcm(1,j)
                 dmctbm(2,j) = dmctbm(2,j) + bcm(2,j)
-                do 150 k = 1, 3
+                do k = 1, 3
                     dmctbm(1,j) = dmctbm(1,j) - dmc(k,1)*bm(k,j)
                     dmctbm(2,j) = dmctbm(2,j) - dmc(k,2)*bm(k,j)
-150              continue
+                end do
+            end do
 !
 ! ---     CALCUL DU PRODUIT DCI*(BCM-DMC_T*BM) :
 !         ------------------------------------
-            do 160 j = 1, 8
+            do j = 1, 8
                 dcidmc(1,j) = dcidmc(1,j) + dci(1,1)*dmctbm(1,j) + dci(1,2)*dmctbm(2,j)
                 dcidmc(2,j) = dcidmc(2,j) + dci(2,1)*dmctbm(1,j) + dci(2,2)*dmctbm(2,j)
-160          continue
+            end do
 !
 !======================================================================
 ! --- DETERMINATION DE LA MATRICE AW QUI EST TELLE QUE
@@ -337,12 +348,12 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
 !=======================================================================
 !
-            do 170 j = 1, 12
+            do j = 1, 12
                 dcb(1,j) = dcb(1,j) + dci(1,1)*bcb(1,j) + dci(1,2)* bcb(2,j)
                 dcb(2,j) = dcb(2,j) + dci(2,1)*bcb(1,j) + dci(2,2)* bcb(2,j)
-170          continue
+            end do
 !
-70      continue
+        end do
 !     -------------------------------------------------------------
 ! --  FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION DU COTE COURANT
 !     -------------------------------------------------------------
@@ -361,9 +372,9 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y                  =
 !===================================================================
 !
-        do 180 j = 1, 4
+        do j = 1, 4
             aa(ic,j) = - (x(ic) * db(1,j) + y(ic) * db(2,j))*undemi
-180      continue
+        end do
         aa(ic,ic) = aa(ic,ic) + deux/trois * l(ic)
 !
 !================================================================
@@ -380,9 +391,9 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y               =
 !================================================================
 !
-        do 190 j = 1, 12
+        do j = 1, 12
             ab(ic,j) = - (x(ic)*dcidfb(1,j) + y(ic)*dcidfb(2,j))* undemi
-190      end do
+        end do
 !
 !===================================================================
 ! ---      DETERMINATION DE LA MATRICE AL QUI EST TELLE QUE        =
@@ -398,9 +409,9 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y                  =
 !===================================================================
 !
-        do 200 j = 1, 8
+        do j = 1, 8
             al(ic,j) = (x(ic)*dcidmc(1,j) + y(ic)*dcidmc(2,j))*undemi
-200      continue
+        end do
 !
 !======================================================================
 ! --- DETERMINATION DE LA MATRICE AW QUI EST TELLE QUE
@@ -422,11 +433,11 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
 !=======================================================================
 !
-        do 210 j = 1, 12
+        do j = 1, 12
             aw(ic,j) = (x(ic)*dcb(1,j) + y(ic)*dcb(2,j))*undemi
-210      continue
+        end do
 !
-30  end do
+    end do
 !     -------------------------------------------
 ! --  FIN DE LA BOUCLE SUR LES COTES DE L'ELEMENT
 !     -------------------------------------------
@@ -460,13 +471,14 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! ---    INVERSION DE LA MATRICE AA =
 !====================================
 !
-    do 220 i = 1, 4
-        do 220 j = 1, 4
+    do i = 1, 4
+        do j = 1, 4
             aai(i,j) = zero
-220      continue
-    do 230 i = 1, 4
+        end do
+    end do
+    do i = 1, 4
         aai(i,i) = un
-230  end do
+    end do
     call mgauss('NFVP', aa, aai, 4, 4,&
                 4, det, iret)
 !
@@ -478,11 +490,13 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --- UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)              =
 !===================================================================
 !
-    do 240 i = 1, 4
-        do 240 k = 1, 4
-            do 240 j = 1, 12
+    do i = 1, 4
+        do k = 1, 4
+            do j = 1, 12
                 an(i,j) = an(i,j) + aai(i,k) * (aw(k,j)+ab(k,j))
-240          continue
+            end do
+        end do
+    end do
 !
 !===================================================================
 ! --- DETERMINATION DE LA MATRICE AM QUI EST TELLE QUE             =
@@ -490,10 +504,12 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --- SOIT AM = AAI*AL                                             =
 !===================================================================
 !
-    do 250 i = 1, 4
-        do 250 k = 1, 4
-            do 250 j = 1, 8
+    do i = 1, 4
+        do k = 1, 4
+            do j = 1, 8
                 am(i,j) = am(i,j) + aai(i,k) * al(k,j)
-250          continue
+            end do
+        end do
+    end do
 !
 end subroutine

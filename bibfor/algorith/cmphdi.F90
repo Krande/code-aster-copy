@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
                   xcrit, ceigen, cmod, ndimax, cmat1,&
                   cmat2, cvect, cvect1, alpha, beta,&
@@ -99,25 +99,25 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !        INITIALISATION DES VECTEURS POUR LES ITERATIONS
 !
-    do 66 iv = 1, ndim
+    do iv = 1, ndim
         cvect(iv)=dcmplx(0.d0,0.d0)
         cvec0(iv)=dcmplx(0.d0,0.d0)
         cmod0(iv)=dcmplx(0.d0,0.d0)
- 66 end do
+    end do
 !
     call cvalea(ndim, cmod, ndimax, nbmod)
 !
 !        BOUCLE SUR LES MODES
 !
-    do 10 j = 1, nbmod
+    do j = 1, nbmod
 !
 !        INITIALISATION DE LA MATRICE SHIFTEE, ET COPIE DANS LES
 !        MATRICES DE TRAVAIL
 !
         cshift=dcmplx((alpha(j)+beta(j))/2.d0,0.d0)
-        do 20 i = 1, ndim*(ndim+1)/2
+        do i = 1, ndim*(ndim+1)/2
             cmat1(i)=ck(i)-cshift*cm(i)
- 20     continue
+        end do
 !
 !        CALCUL DE LA MATRICE CM*(CK-SHIFT*CM)**-1
 !
@@ -130,17 +130,17 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !   CALCUL DE LA MATRICE INVERSE DU PROBLEME
 !
-        do 50 iv = 1, ndim
+        do iv = 1, ndim
             ivdiag = iv*(iv-1)/2+1
-            do 60 i = 1, ndim
+            do i = 1, ndim
                 if (i .le. iv) then
                     cmat2(i,iv)=cm(ivdiag+iv-i)
                 else
                     idiag = i*(i-1)/2+1
                     cmat2(i,iv)=dconjg(cm(idiag+i-iv))
                 endif
- 60         continue
- 50     continue
+            end do
+        end do
         call rrldc(cmat1, ndim, cmat2, ndim)
 !
 !        INITIALISATION DES VARIABLES DE LA BOUCLE
@@ -184,6 +184,6 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         valr(3)=dimag(ceigen(j))
         call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
                     valr=valr)
- 10 end do
+    end do
 !
 end subroutine

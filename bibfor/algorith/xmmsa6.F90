@@ -15,15 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
-                  tau1, tau2, cohes, job, rela,&
-                  alpha, dsidep, sigma, p, am, raug)
+!
+subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut,&
+                  nd, tau1, tau2, cohes, job,&
+                  rela, alpha, dsidep, sigma, p,&
+                  am, raug)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/lcejex.h"
 #include "asterfort/lcecli.h"
+#include "asterfort/lcejex.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: wsaut(3), lamb(3), am(3), dsidep(6, 6)
     real(kind=8) :: tau1(3), tau2(3), nd(3)
@@ -64,7 +65,7 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
     integer :: i
 !
     real(kind=8) :: vim(9), vip(9)
-    real(kind=8) ::  dsid2d(6, 6), dam(3)
+    real(kind=8) :: dsid2d(6, 6), dam(3)
     real(kind=8) :: sigma(6)
 !
     character(len=16) :: option
@@ -84,20 +85,20 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
 !
 ! avec la nouvelle formulation, le saut est directement dans
 ! la bonne base
-    do 10 i = 1, ndim
+    do i = 1, ndim
         am(i) = wsaut(i)
-10  end do
+    end do
 !
-    do 7 i = 1, ndim
+    do i = 1, ndim
         p(1,i) = nd(i)
- 7  end do
-    do 8 i = 1, ndim
+    end do
+    do i = 1, ndim
         p(2,i) = tau1(i)
- 8  end do
+    end do
     if (ndim .eq. 3) then
-        do 9 i = 1, ndim
+        do i = 1, ndim
             p(3,i) = tau2(i)
- 9      continue
+        end do
     endif
 !
 ! --- CALCUL DU SAUT DE DEPLACEMENT AM EN BASE LOCALE
@@ -109,7 +110,7 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
 !
     if (job .ne. 'SAUT_LOC') then
         vim(1)=cohes(1)
-        if(rela.eq.1.d0) then
+        if (rela .eq. 1.d0) then
             vim(2) = cohes(2)
         else
             if (cohes(2) .le. 0.d0) then
@@ -138,7 +139,7 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
                     vim, vip, raug)
 !
         alpha(1) = vip(1)
-        if(rela.eq.1.d0) then
+        if (rela .eq. 1.d0) then
             alpha(2) = vip(2)
         else
             if (vip(2) .eq. 0.d0) then

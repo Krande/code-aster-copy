@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                   nsingm, ffe, ffm, jdepde, fk_escl,&
-                  fk_mait, jddle, jddlm, nfhe, nfhm, lmulti,&
-                  heavn, heavfa, ddeple, ddeplm)
+                  fk_mait, jddle, jddlm, nfhe, nfhm,&
+                  lmulti, heavn, heavfa, ddeple, ddeplm)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -33,7 +33,7 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
     integer :: jdepde, ndeple, jddle(2), jddlm(2)
     real(kind=8) :: ffm(20), ffe(20)
     real(kind=8) :: ddeple(3), ddeplm(3)
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3)
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -91,63 +91,63 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
     imait(1) = 1
     imait(2) = 1
     if (.not.lmulti) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+        hea_fa(1)=xcalc_code(1,he_inte=[-1])
+        hea_fa(2)=xcalc_code(1,he_inte=[+1])
     endif
 !
 !
-    do 200 idim = 1, ndim
-        do 210 inoe = 1, ndeple
+    do idim = 1, ndim
+        do inoe = 1, ndeple
             call indent(inoe, ddles, ddlem, nnes, in)
             if (nnm .ne. 0) then
                 if (lmulti) then
-                    do 30 ifh = 1, nfhe
+                    do ifh = 1, nfhe
                         iescl(1+ifh)=xcalc_heav(heavn(nfhe*(inoe-1)+ifh),&
                                                 heavfa(1),&
                                                 heavn(nfhe*nne+nfhm*nnm+inoe))
- 30                 continue
+                    end do
                 else
-                        iescl(2)=xcalc_heav(heavn(inoe),&
+                    iescl(2)=xcalc_heav(heavn(inoe),&
                                             hea_fa(1),&
                                             heavn(nfhe*nne+nfhm*nnm+inoe))
                 endif
-                do 40 iddl = 1, 1+nfhe
+                do iddl = 1, 1+nfhe
                     pl = in + (iddl-1)*ndim + idim
                     ddeple(idim) = ddeple(idim)+ ffe(inoe)*iescl(iddl)*zr(jdepde-1+ pl)
- 40             continue
+                end do
             endif
-            do alp = 1,ndim*nsinge
+            do alp = 1, ndim*nsinge
                 pl = in + (1+nfhe+nsinge-1)*ndim + alp
                 ddeple(idim) = ddeple(idim) -fk_escl(inoe,alp,idim)*zr(jdepde-1+pl)
             enddo
-210      continue
-200  end do
+        end do
+    end do
 !
-    do 201 idim = 1, ndim
-        do 220 inom = 1, nnm
+    do idim = 1, ndim
+        do inom = 1, nnm
             call indent(inom, ddlms, ddlmm, nnms, in)
             in = in + nddle
             if (lmulti) then
-                do 70 ifh = 1, nfhm
+                do ifh = 1, nfhm
                     imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh),&
                                             heavfa(2),&
                                             heavn((1+nfhe)*nne+nfhm*nnm+inom))
- 70             continue
+                end do
             else
-                    imait(2)=xcalc_heav(heavn(nne+inom),&
+                imait(2)=xcalc_heav(heavn(nne+inom),&
                                         hea_fa(2),&
                                         heavn((1+nfhe)*nne+nfhm*nnm+inom))
             endif
-            do 80 iddl = 1, 1+nfhm
+            do iddl = 1, 1+nfhm
                 pl = in + (iddl-1)*ndim + idim
                 ddeplm(idim) = ddeplm(idim) + ffm(inom)*imait(iddl)*zr(jdepde-1+pl)
- 80         continue
-            do alp = 1,ndim*nsingm
+            end do
+            do alp = 1, ndim*nsingm
                 pl = in + (1+nfhm+nsingm-1)*ndim + alp
                 ddeplm(idim) = ddeplm(idim) +fk_mait(inom,alp,idim)*zr(jdepde-1+pl)
             enddo
-220      continue
-201  end do
+        end do
+    end do
 !
 !
 end subroutine

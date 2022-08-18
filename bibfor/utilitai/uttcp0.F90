@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine uttcp0(indi, para, nbv, temps)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -73,9 +73,9 @@ subroutine uttcp0(indi, para, nbv, temps)
         call utmess('F', 'UTILITAI5_54')
     endif
 !
-    do 1 k = 1, 7
+    do k = 1, 7
         t(k) = 0.d0
- 1  end do
+    end do
     kpara = para
 !
 !     TEMPS RESTANT
@@ -87,7 +87,7 @@ subroutine uttcp0(indi, para, nbv, temps)
     t(1) = tpres
     if (indi .eq. 0) then
         nbt = 1
-        goto 9999
+        goto 999
     else
         nbt = 7
     endif
@@ -114,7 +114,7 @@ subroutine uttcp0(indi, para, nbv, temps)
         if (parini(indi) .ne. 'FIN' .and. parini(indi) .ne. 'INIT') then
             valk(1)=kpara
             valk(2)=parini(indi)
-            call utmess('F', 'UTILITAI5_56',nk=2,valk=valk)
+            call utmess('F', 'UTILITAI5_56', nk=2, valk=valk)
         endif
         parini(indi) = 'DEBUT'
         uscpui(indi) = tcsm(1)
@@ -127,7 +127,7 @@ subroutine uttcp0(indi, para, nbv, temps)
         if (parini(indi) .ne. 'DEBUT') then
             valk(1)=kpara
             valk(2)=parini(indi)
-            call utmess('F', 'UTILITAI5_56',nk=2,valk=valk)
+            call utmess('F', 'UTILITAI5_56', nk=2, valk=valk)
         endif
         parini(indi) = 'FIN'
         nbappe(indi) = nbappe(indi) + 1
@@ -145,11 +145,11 @@ subroutine uttcp0(indi, para, nbv, temps)
         call utmess('F', 'UTILITAI5_57', sk=kpara)
     endif
 !
-9999  continue
+999 continue
 !
 !     RENVOI DU NB DEMANDE DE VALEURS
 !
-    do 100 k = 1, min(nbv, nbt)
+    do k = 1, min(nbv, nbt)
         temps(k) = t(k)
-100  end do
+    end do
 end subroutine

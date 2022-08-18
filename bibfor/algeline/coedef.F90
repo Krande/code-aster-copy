@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coedef(imod, fremod, nbm, young, poiss,&
                   rho, icoq, nbno, numno, nunoe0,&
                   nbnoto, coordo, iaxe, kec, geom,&
@@ -166,7 +166,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
 !
     call wkvect('&&COEDEF.TEMP.NOGEN', 'V V I', nbno, inogen)
     nbnoge = 0
-    do 20 ino = 1, nbno
+    do ino = 1, nbno
         numnoe = numno(ino)
         xno = coordo(idir1,numnoe)
         difx = dble(abs(xno-xgen))
@@ -181,7 +181,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
                 endif
             endif
         endif
-20  end do
+    end do
 !
     if (nbnoge .lt. 4) then
         call utmess('F', 'ALGELINE_25')
@@ -194,7 +194,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
     call wkvect('&&COEDEF.TEMP.ZAXE', 'V V R', nbnoge, izaxe)
     call wkvect('&&COEDEF.TEMP.DR  ', 'V V R', nbnoge, idr)
 !
-    do 30 ino = 1, nbnoge
+    do ino = 1, nbnoge
         numnoe = zi(inogen+ino-1)
         if (kec .eq. 1) then
             zr(izaxe+ino-1) = coordo(iaxe,numnoe) - z0
@@ -204,7 +204,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
         dx = defm(1,numnoe,imod)
         dy = defm(2,numnoe,imod)
         zr(idr+ino-1) = dble(cos(thetag))*dx+dble(sin(thetag))*dy
-30  end do
+    end do
 !
 !
 ! --- 5.DETERMINATION DES COEFFICIENTS DE LA DEFORMEE AXIALE
@@ -218,7 +218,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
 !
     deltai = tcoef(1+itab,imod)
 !
-    do 40 iz = 1, nbnoge
+    do iz = 1, nbnoge
         zz = deltai*zr(izaxe+iz-1)/long
         dr = zr(idr+iz-1)
         cosiz = dble(cos(zz))
@@ -239,25 +239,25 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
         zr(ivecb+1) = zr(ivecb+1) + dr * siniz
         zr(ivecb+2) = zr(ivecb+2) + dr * coshiz
         zr(ivecb+3) = zr(ivecb+3) + dr * sinhiz
-40  end do
+    end do
 !
 ! --- 5.2.CREATION DE LA MATRICE A
 !
     call wkvect('&&COEDEF.TEMP.MATA', 'V V R', 16, imata)
 !
-    do 50 ic = 1, 4
+    do ic = 1, 4
         idec1 = ic*(ic-1)/2
-        do 51 il = 1, ic
+        do il = 1, ic
             idec = idec1 + il
             zr(imata+4*(ic-1)+il-1) = zr(icoea+idec-1)
-51      continue
-50  end do
-    do 60 ic = 1, 3
-        do 61 il = ic+1, 4
+        end do
+    end do
+    do ic = 1, 3
+        do il = ic+1, 4
             idec = il*(il-1)/2+ic
             zr(imata+4*(ic-1)+il-1) = zr(icoea+idec-1)
-61      continue
-60  end do
+        end do
+    end do
 !
 ! --- 5.3.RESOLUTION DU SYSTEME LINEAIRE
 !
@@ -269,7 +269,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
     somm1 = 0.d0
     somm2 = 0.d0
 !
-    do 80 iz = 1, nbnoge
+    do iz = 1, nbnoge
         dr = zr(idr+iz-1)
         somm1 = somm1 + dr * dr
         zz = deltai*zr(izaxe+iz-1)/long
@@ -279,7 +279,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
         sinhiz = dble(sinh(zz))
         fonc = zr(ivecb)*cosiz + zr(ivecb+1)*siniz + zr(ivecb+2)* coshiz + zr(ivecb+3)*sinhiz
         somm2 = somm2 + (dr-fonc) * (dr-fonc)
-80  end do
+    end do
 !
     err = dble(sqrt(somm2/somm1)) * 100.d0
 !
@@ -295,9 +295,9 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
     if (dble(abs(drnoe0)) .lt. drmax*tole) then
         call utmess('F', 'ALGELINE_26')
     endif
-    do 90 ib = 1, 4
+    do ib = 1, 4
         tcoef(1+itab+ib,imod) = zr(ivecb+ib-1)*drmax/drnoe0
-90  end do
+    end do
 !
 !
 ! --- 6.IMPRESSION DES RESULTATS DANS LE FICHIER MESSAGE

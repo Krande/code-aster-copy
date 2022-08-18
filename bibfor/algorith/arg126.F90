@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine arg126(nomres)
     implicit none
 !  P. RICHARD     DATE 13/10/93
@@ -94,11 +94,11 @@ subroutine arg126(nomres)
                 nbsst)
     call jecrec(trasst, 'G V R', 'NU', 'CONTIG', 'CONSTANT',&
                 nbsst)
-    do 300 i = 1, nbsst
+    do i = 1, nbsst
         call jecroc(jexnum(nommcl, i))
         call jecroc(jexnum(rotsst, i))
         call jecroc(jexnum(trasst, i))
-300  end do
+    end do
     call jeecra(nommcl, 'LONT', nbsst)
     call jeecra(rotsst, 'LONT', 3*nbsst)
     call jeecra(trasst, 'LONT', 3*nbsst)
@@ -106,7 +106,7 @@ subroutine arg126(nomres)
 !
 !-----BOUCLE SUR LES SOUS-STRUCTURES DEFINIES-------------------------
 !
-    do 10 i = 1, nbsst
+    do i = 1, nbsst
         call getvtx(clesst, clenom, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .ne. 1) then
@@ -139,15 +139,15 @@ subroutine arg126(nomres)
         call getvr8(clesst, clerot, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .eq. 0) then
-            do 30 j = 1, 3
+            do j = 1, 3
                 zr(ldrot+j-1)=0.d+00
-30          continue
+            end do
         else if (ioc.eq.3) then
             call getvr8(clesst, clerot, iocc=i, nbval=3, vect=zr(ldrot),&
                         nbret=ibid)
-            do 20 j = 1, 3
+            do j = 1, 3
                 zr(ldrot+j-1)=zr(ldrot+j-1)*pi/180.d+00
-20          continue
+            end do
         else
             valk (1) = nomsst
             vali (1) = ioc
@@ -163,9 +163,9 @@ subroutine arg126(nomres)
         call getvr8(clesst, cletra, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .eq. 0) then
-            do 40 j = 1, 3
+            do j = 1, 3
                 zr(ldtra+j-1)=0.d+00
-40          continue
+            end do
         else if (ioc.eq.3) then
             call getvr8(clesst, cletra, iocc=i, nbval=3, vect=zr(ldtra),&
                         nbret=ibid)
@@ -177,7 +177,7 @@ subroutine arg126(nomres)
         endif
 !
 !
-10  end do
+    end do
 !
 !-----RECUPERATION DU NOMBRE DE LIAISONS DEFINIES-----------------------
 !
@@ -195,13 +195,13 @@ subroutine arg126(nomres)
 !
 !-----BOUCLE SUR LES LIAISONS------------------------------------------
 !
-    do 140 i = 1, nblia
+    do i = 1, nblia
         call jecroc(jexnum(famli, i))
         call jeveuo(jexnum(famli, i), 'E', ldlid)
 !
 !  BOUCLE SUR LES SOUS-STRUCTURES DE LA LIAISON
 !
-        do 150 j = 1, 2
+        do j = 1, 2
             call getvtx(clelia, clel(j), iocc=i, nbval=0, nbret=ioc)
             ioc=-ioc
             if (ioc .ne. 1) then
@@ -223,11 +223,11 @@ subroutine arg126(nomres)
                 endif
                 zk8(ldlid+(j-1)*2)=nomcou
             endif
-150      continue
+        end do
 !
 !  BOUCLE SUR LES INTERFACES
 !
-        do 160 j = 3, 4
+        do j = 3, 4
             call getvtx(clelia, clel(j), iocc=i, nbval=0, nbret=ioc)
             ioc=-ioc
             if (ioc .ne. 1) then
@@ -257,10 +257,10 @@ subroutine arg126(nomres)
                 call utmess('F', 'ALGORITH12_2', nk=3, valk=valk, si=vali(1))
             endif
             zk8(ldlid+(j-3)*2+1)=nomcou
-160      continue
+        end do
 !  ON INITIALISE L'ORDONANCEMENT A NON
         zk8(ldlid+4)='NON'
-140  end do
+    end do
 !
 !
 !

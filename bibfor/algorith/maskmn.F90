@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine maskmn(nbcmp, nbno, nbec, mcoddl, imask,&
                   numord, nbdef)
 !    P. RICHARD     DATE 20/02/91
@@ -60,31 +60,31 @@ subroutine maskmn(nbcmp, nbno, nbec, mcoddl, imask,&
 !
 !      IF(NBNO.EQ.0) RETURN
 !
-    do 10 i = 1, nbecmx
+    do i = 1, nbecmx
         icoco(i) = 0
         icici(i) = 0
-10  continue
+    end do
 !
-    do 20 i = 1, nbno
+    do i = 1, nbno
 !
         call isgeco(mcoddl((i-1)*nbec+1, 1), mcoddl((i-1)*nbec+1, 2), nbcmp, -1, icoco)
         call isgeco(icoco, imask((i-1)*nbec+1), nbcmp, -1, icici)
 !
         iexcmp = 0
-        do 30 iec = 1, nbec
+        do iec = 1, nbec
             imask((i-1)*nbec+iec) = icici(iec)
             if (icici(iec) .gt. 1) then
                 iexcmp = 1
             endif
-30      continue
+        end do
         if (iexcmp .eq. 1) then
             numord(i)=nbdef+1
             call isdeco(icici, idec, nbcmp)
-            do 40 j = 1, nbcmp
+            do j = 1, nbcmp
                 nbdef=nbdef+idec(j)
-40          continue
+            end do
         endif
 !
-20  end do
+    end do
 !
 end subroutine

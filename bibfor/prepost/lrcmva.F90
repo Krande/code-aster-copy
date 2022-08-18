@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
                   nomcmr, nbcmfi, nmcmfi, nbcmpv, ncmpvm,&
                   numcmp, nochmd, adsl, adsv, codret)
@@ -124,7 +124,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
 ! 1.1. ==> REPERAGE DU NUMERO DE LA COMPOSANTE DU CHAMP ASTER DANS
 !          LAQUELLE AURA LIEU LE TRANSFERT DE LA IAUX-EME COMPOSANTE LUE
 !
-110  continue
+110 continue
 !
     nrcmp = 0
 !
@@ -164,7 +164,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
             ncmpdb = jaux + 1
             goto 12
         endif
-111      continue
+111     continue
         goto 11
 !
 ! 1.1.2. ==> QUAND ON STOCKE A L'IDENTIQUE, ON RECHERCHE LE NUMERO DE
@@ -187,7 +187,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
 !
 ! 1.2. ==> SI AUCUNE COMPOSANTE N'A ETE TROUVEE, MALAISE ...
 !
-12  continue
+ 12 continue
 !
     if (nrcmp .eq. 0) then
         call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
@@ -207,7 +207,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
         laux = laux + nbcmfi
         zl(adsl+kaux) = .true.
         zr(adsv+kaux) = zr(laux)
-131      continue
+131     continue
 !
     else
 !
@@ -225,7 +225,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
         laux = laux + nbcmfi
         zl(adsl+kaux) = .true.
         zr(adsv+kaux) = zr(laux)
-132      continue
+132     continue
 !
     endif
 !
@@ -256,7 +256,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
             saux08 = nomcmr(jaux)
             write(ifm,2002) saux08
         endif
-22      continue
+ 22     continue
         write(ifm,*) ' '
     endif
 !

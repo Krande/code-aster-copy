@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
                   noecho, modsst)
     implicit none
@@ -38,7 +38,6 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dcapno.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -52,6 +51,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
 #include "asterfort/orient.h"
 #include "asterfort/posddl.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     integer :: nbmode, ddl(6), neq
@@ -81,9 +81,9 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
     call jenonu(jexnom(numgen(1:19)//'.LILI', soutr), ibid)
     call jeveuo(jexnum(numgen(1:19)//'.ORIG', ibid), 'L', llors)
     call jelira(jexnum(numgen(1:19)//'.ORIG', ibid), 'LONMAX', nsst)
-    do 10 i = 1, nsst
+    do i = 1, nsst
         if (zi(llors+i-1) .eq. nusst) nutars=i
-10  end do
+    end do
 !
     call jenonu(jexnom(numgen(1:19)//'.LILI', soutr), ibid)
     call jeveuo(jexnum(numgen(1:19)//'.PRNO', ibid), 'L', llprs)
@@ -111,7 +111,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
                 ddl(6))
 !
     call wkvect('&&RESMOD.COORDO', 'V V R', 3, jcoord)
-    do 20 i = 1, nbmode
+    do i = 1, nbmode
         modsst(i,1)=0.d0
         modsst(i,2)=0.d0
         modsst(i,3)=0.d0
@@ -121,7 +121,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
         zr(jcoord) = 0.d0
         zr(jcoord+1) = 0.d0
         zr(jcoord+2) = 0.d0
-        do 30 j = 1, neqgen
+        do j = 1, neqgen
             call dcapno(basmod, depl, j, chamba)
             call jeveuo(chamba, 'E', lchab)
             modsst(i,1)=modsst(i,1)+bmodal(ieq+j-1,i)*zr(lchab+ddl(1)-&
@@ -138,7 +138,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
                 modsst(i,6)=modsst(i,6)+bmodal(ieq+j-1,i)*zr(lchab+&
                 ddl(6)-1)
             endif
-30      continue
+        end do
         zr(jcoord) = modsst(i,1)
         zr(jcoord+1) = modsst(i,2)
         zr(jcoord+2) = modsst(i,3)
@@ -155,7 +155,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
         modsst(i,4) = coord(1)
         modsst(i,5) = coord(2)
         modsst(i,6) = coord(3)
-20  end do
+    end do
     call jedetr('&&RESMOD.COORDO')
 !
     call jedema()

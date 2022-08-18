@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0042(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -105,9 +105,9 @@ subroutine te0042(option, nomte)
             endif
         endif
     else
-        do 10 i = 1, nbterm
+        do i = 1, nbterm
             mat(i) = zr(ldis+i-1)
- 10     continue
+        end do
     endif
 !
 !     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
@@ -140,13 +140,13 @@ subroutine te0042(option, nomte)
 !     ON CHANGE LE SIGNE DES EFFORTS SUR LE PREMIER NOEUD, POUR LES
 !     ELEMENTS A 2 NOEUDS
     if (nno .eq. 1) then
-        do 50 i = 1, neq
+        do i = 1, neq
             zr(jeffo+i-1) = flr(i)
- 50     continue
+        end do
     else
-        do 60 i = 1, nc
+        do i = 1, nc
             zr(jeffo+i-1) = -flr(i)
             zr(jeffo+i+nc-1) = flr(i+nc)
- 60     continue
+        end do
     endif
 end subroutine

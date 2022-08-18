@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                   nomcp, nbcpnc, nbcpcd, option, quant,&
                   sdlieu, codir, valdir, sdcalq, courbe)
@@ -25,6 +25,8 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jacobi.h"
@@ -40,8 +42,6 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 #include "asterfort/rvpstd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=24) :: sdeval, quant, sdlieu
     character(len=19) :: sdcalq
@@ -274,9 +274,9 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     else
         call jelira(npnbne, 'LONMAX', lpnbn)
         call jeveuo(npnbne, 'L', apnbne)
-        do 10 i = 1, lpnbn, 1
+        do i = 1, lpnbn, 1
             nbpt = nbpt + zi(apnbne+i-1)
- 10     continue
+        end do
         call jeveuo(npncoe, 'L', apncoe)
         call jeveuo(npnspe, 'L', apnspe)
         icoef = zi(apncoe+1-1)*zi(apnspe+1-1)
@@ -290,7 +290,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         call wkvect('&&RVCALQ.CHNO.PNSP', 'V V I', lpadr, apnspe)
         call wkvect('&&RVCALQ.CHNO.PNCO', 'V V I', lpadr, apncoe)
         call wkvect('&&RVCALQ.CHNO.PNBN', 'V V I', lpadr, apnbne)
-        do 20 i = 1, lpadr, 1
+        do i = 1, lpadr, 1
             zi(apadrq+i-1) = 1 + (i-1)*lnq
             zi(apnbnq+i-1) = 1
             zi(apncoq+i-1) = 1
@@ -298,10 +298,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             zi(apnbne+i-1) = 1
             zi(apncoe+i-1) = 1
             zi(apnspe+i-1) = 1
- 20     continue
+        end do
     else
         zi(apadrq+1-1) = 1
-        do 30 i = 1, lpnbn - 1, 1
+        do i = 1, lpnbn - 1, 1
             nbco = zi(apncoe+i-1)
             nbsp = zi(apnspe+i-1)
             nbnd = zi(apnbne+i-1)
@@ -309,7 +309,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             zi(apadrq+i) = zi(apadrq+i-1) + lnq*nbnd*nbsp*nbco
             zi(apncoq+i-1) = nbco
             zi(apnspq+i-1) = nbsp
- 30     continue
+        end do
         zi(apnbnq+lpnbn-1) = zi(apnbne+lpnbn-1)
         zi(apncoq+lpnbn-1) = zi(apncoe+lpnbn-1)
         zi(apnspq+lpnbn-1) = zi(apnspe+lpnbn-1)
@@ -318,7 +318,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     k1 = quant(1:1)
     if (k1 .eq. 'I') then
         if (tq .eq. 'T3') then
-            do 70 ipadr = 1, lpadr, 1
+            do ipadr = 1, lpadr, 1
                 idece = zi(apadre+ipadr-1)
                 idecq = zi(apadrq+ipadr-1)
                 nbsp = zi(apnspe+ipadr-1)
@@ -328,24 +328,24 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                 tndq = 4*nbsp
                 tcoq = tndq*nbnd
                 tcoe = tnde*nbnd
-                do 60 ico = 1, nbco, 1
+                do ico = 1, nbco, 1
                     adre = (ico-1)*tcoe
                     adrq = (ico-1)*tcoq
-                    do 50 ind = 1, nbnd, 1
-                        do 40 isp = 1, nbsp, 1
+                    do ind = 1, nbnd, 1
+                        do isp = 1, nbsp, 1
                             call rvinvt(zr(avalee+idece-1+adre+ (isp- 1)*6),&
                                         zr(avaleq+idecq-1+adrq+ (isp-1)*4),&
                                         zr(avaleq+idecq-1+adrq+ (isp-1)*4+1),&
                                         zr(avaleq+idecq-1+adrq+ (isp-1)*4+2),&
                                         zr(avaleq+idecq-1+adrq+ (isp-1)*4+3))
- 40                     continue
+                        end do
                         adre = adre + tnde
                         adrq = adrq + tndq
- 50                 continue
- 60             continue
- 70         continue
+                    end do
+                end do
+            end do
         else
-            do 110 ipadr = 1, lpadr, 1
+            do ipadr = 1, lpadr, 1
                 idece = zi(apadre+ipadr-1)
                 idecq = zi(apadrq+ipadr-1)
                 nbsp = zi(apnspe+ipadr-1)
@@ -355,11 +355,11 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                 tndq = lnq*nbsp
                 tcoq = tndq*nbnd
                 tcoe = tnde*nbnd
-                do 100 ico = 1, nbco, 1
+                do ico = 1, nbco, 1
                     adre = (ico-1)*tcoe
                     adrq = (ico-1)*tcoq
-                    do 90 ind = 1, zi(apnbnq+ipadr-1), 1
-                        do 80 isp = 1, nbsp, 1
+                    do ind = 1, zi(apnbnq+ipadr-1), 1
+                        do isp = 1, nbsp, 1
                             if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
                                 a = 0.d0
                             else
@@ -478,12 +478,12 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                             zr(avaleq+idecq-1+adrq+ (isp-1)*8+6) = tr
                             zr(avaleq+idecq-1+adrq+ (isp-1)*8+7) =&
                             det
- 80                     continue
+                        end do
                         adre = adre + tnde
                         adrq = adrq + tndq
- 90                 continue
-100             continue
-110         continue
+                    end do
+                end do
+            end do
         endif
     else if (k1.eq.'E') then
         if (tq .eq. 'T3') then
@@ -492,7 +492,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             toldyn = 1.d-2
             itype = 0
             iordre = 0
-            do 150 ipadr = 1, lpadr, 1
+            do ipadr = 1, lpadr, 1
                 idece = zi(apadre+ipadr-1)
                 idecq = zi(apadrq+ipadr-1)
                 nbsp = zi(apnspe+ipadr-1)
@@ -502,11 +502,11 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                 tndq = lnq*nbsp
                 tcoq = tndq*nbnd
                 tcoe = tnde*nbnd
-                do 140 ico = 1, nbco, 1
+                do ico = 1, nbco, 1
                     adre = (ico-1)*tcoe
                     adrq = (ico-1)*tcoq
-                    do 130 ind = 1, zi(apnbnq+ipadr-1), 1
-                        do 120 isp = 1, nbsp, 1
+                    do ind = 1, zi(apnbnq+ipadr-1), 1
+                        do isp = 1, nbsp, 1
                             if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
                                 ar(1) = 0.d0
                             else
@@ -559,14 +559,14 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                             zr(indice+9) = vecpro(1,3)
                             zr(indice+10) = vecpro(2,3)
                             zr(indice+11) = vecpro(3,3)
-120                     continue
+                        end do
                         adre = adre + tnde
                         adrq = adrq + tndq
-130                 continue
-140             continue
-150         continue
+                    end do
+                end do
+            end do
         else
-            do 190 ipadr = 1, lpadr, 1
+            do ipadr = 1, lpadr, 1
                 idece = zi(apadre+ipadr-1)
                 idecq = zi(apadrq+ipadr-1)
                 nbsp = zi(apnspe+ipadr-1)
@@ -576,11 +576,11 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                 tndq = lnq*nbsp
                 tcoq = tndq*nbnd
                 tcoe = tnde*nbnd
-                do 180 ico = 1, nbco, 1
+                do ico = 1, nbco, 1
                     adre = (ico-1)*tcoe
                     adrq = (ico-1)*tcoq
-                    do 170 ind = 1, zi(apnbnq+ipadr-1), 1
-                        do 160 isp = 1, nbsp
+                    do ind = 1, zi(apnbnq+ipadr-1), 1
+                        do isp = 1, nbsp
                             if (zr(avalee+idece-1+adre+(isp-1)*6) .eq. r8vide()) then
                                 a = 0.d0
                             else
@@ -652,16 +652,16 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                             zr(indice+5) = vp2
                             zr(indice+6) = 0.d0
                             zr(indice+7) = 1.d0
-160                     continue
+                        end do
                         adre = adre + tnde
                         adrq = adrq + tndq
-170                 continue
-180             continue
-190         continue
+                    end do
+                end do
+            end do
         endif
     else if (quant(1:7).eq.'TRACE_D') then
         if (docu .eq. 'CHLM') then
-            do 230 ipadr = 1, lpadr, 1
+            do ipadr = 1, lpadr, 1
                 idece = zi(apadre+ipadr-1)
                 idecq = zi(apadrq+ipadr-1)
                 nbsp = zi(apnspe+ipadr-1)
@@ -671,43 +671,43 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                 tndq = lnq*nbsp
                 tcoq = tndq*nbnd
                 tcoe = tnde*nbnd
-                do 220 ico = 1, nbco, 1
+                do ico = 1, nbco, 1
                     adre = (ico-1)*tcoe
                     adrq = (ico-1)*tcoq
-                    do 210 ind = 1, zi(apnbnq+ipadr-1), 1
-                        do 200 isp = 1, nbsp, 1
+                    do ind = 1, zi(apnbnq+ipadr-1), 1
+                        do isp = 1, nbsp, 1
                             call rvpstd(zr(avalee+idece-1+adre+ (isp- 1)*lne), tq, codir, valdir,&
                                         zr(avaleq+idecq- 1+adrq+ (isp- 1)*lnq))
-200                     continue
+                        end do
                         adre = adre + tnde
                         adrq = adrq + tndq
-210                 continue
-220             continue
-230         continue
+                    end do
+                end do
+            end do
         else
-            do 240 ipadr = 1, lpadr, 1
+            do ipadr = 1, lpadr, 1
                 idece = zi(apadre+ipadr-1)
                 idecq = zi(apadrq+ipadr-1)
                 nbnd = zi(apnbne+ipadr-1)
                 call rvpstd(zr(avalee+idece-1), tq, codir, valdir, zr(avaleq+idecq-1))
-240         continue
+            end do
         endif
 !
     else if (quant(1:7).eq.'TRACE_N') then
         call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
         if (docu .eq. 'CHNO') then
             call jelira(npadrq, 'LONMAX', l)
-            do 250 n = 1, l, 1
+            do n = 1, l, 1
                 idece = zi(apadre+n-1)
                 idecq = zi(apadrq+n-1)
                 v2(1) = vec2(2*(n-1)+1)
                 v2(2) = vec2(2*(n-1)+2)
                 call rvpstd(zr(avalee+idece-1), tq, 4, v2, zr(avaleq+ idecq-1))
-250         continue
+            end do
         else
             if (docul .eq. 'LSTN') then
                 call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
-                do 290 m = 1, l, 1
+                do m = 1, l, 1
                     idece = zi(apadre+m-1)
                     idecq = zi(apadrq+m-1)
                     nbsp = zi(apnspe+m-1)
@@ -719,24 +719,24 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                     tcoe = tnde*nbnd
                     v2(1) = vec2(2*(m-1)+1)
                     v2(2) = vec2(2*(m-1)+2)
-                    do 280 ico = 1, nbco, 1
+                    do ico = 1, nbco, 1
                         adre = (ico-1)*tcoe
                         adrq = (ico-1)*tcoq
-                        do 270 ind = 1, zi(apnbnq+m-1), 1
-                            do 260 isp = 1, nbsp, 1
+                        do ind = 1, zi(apnbnq+m-1), 1
+                            do isp = 1, nbsp, 1
                                 call rvpstd(zr(avalee+idece-1+adre+( isp-1)*lne), tq, 4, v2,&
                                             zr(avaleq+idecq- 1+adrq+(isp-1)*lnq))
-260                         continue
+                            end do
                             adre = adre + tnde
                             adrq = adrq + tndq
-270                     continue
-280                 continue
-290             continue
+                        end do
+                    end do
+                end do
             else
                 mder = 0
-                do 330 ioc = 1, nboc, 1
+                do ioc = 1, nboc, 1
                     call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', l)
-                    do 320 m = mder + 1, mder + l - 1, 1
+                    do m = mder + 1, mder + l - 1, 1
                         n = m + ioc - 1
                         idece = zi(apadre+m-1)
                         idecq = zi(apadrq+m-1)
@@ -749,28 +749,28 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                         tcoe = tnde*nbnd
                         v2(1) = vec2(2*(m-1)+1)
                         v2(2) = vec2(2*(m-1)+2)
-                        do 310 ico = 1, nbco, 1
+                        do ico = 1, nbco, 1
                             adre = (ico-1)*tcoe
                             adrq = (ico-1)*tcoq
-                            do 300 isp = 1, nbsp, 1
+                            do isp = 1, nbsp, 1
                                 call rvpstd(zr(avalee+idece-1+adre+( isp-1)*lne), tq, 4, v2,&
                                             zr(avaleq+idecq- 1+adrq+(isp-1)*lnq))
                                 call rvpstd(zr(avalee+idece-1+adre+( isp-1+nbsp)*lne), tq, 4, v2,&
                                             zr(avaleq+ idecq-1+adrq+(isp-1+nbsp)*lnq))
-300                         continue
-310                     continue
-320                 continue
+                            end do
+                        end do
+                    end do
                     mder = mder + l - 1
-330             continue
+                end do
             endif
         endif
     else if (repere(1:1).eq.'L' .and. tridim) then
 !               -------------------------------
         call wkvect(nnocpq, 'V V K8', nbcpcd, anocpq)
         call jeveuo(courbe//'S1   '//'.DESC', 'L', vr=desc)
-        do 340 i = 1, nbcpcd, 1
+        do i = 1, nbcpcd, 1
             zk8(anocpq+i-1) = nomcp(i)
-340     continue
+        end do
         call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
         call jelira(npadrq, 'LONMAX', nbadrq)
         call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
@@ -781,7 +781,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         call wkvect('&&RVCALQ.NUM.CP.CD', 'V V I', nbcpcd, anumcp)
         call numek8(zk8(acpgd), nomcp, nc, nbcpcd, zi(anumcp))
         ioc = 1
-        do 400 i = 1, nbadrq, 1
+        do i = 1, nbadrq, 1
             adre = zi(apadre+i-1)
             adrq = zi(apadrq+i-1)
             nbsp = zi(apnspe+i-1)
@@ -824,14 +824,14 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                 1000       format( 'OCCURRENCE ', i4 )
                 1002       format( 1p, a5, e12.5, 2x, e12.5, 2x, e12.5 )
             endif
-            do 390 ico = 1, nbco, 1
-                do 380 j = 1, nbnd, 1
-                    do 370 isp = 1, nbsp, 1
+            do ico = 1, nbco, 1
+                do j = 1, nbnd, 1
+                    do isp = 1, nbsp, 1
                         idece = (ico-1)*tcoe + (j-1)*tnde + (isp-1)* lne
                         idecq = (ico-1)*tcoq + (j-1)*tndq + (isp-1)* lnq
                         pt = 1
                         if (tq .eq. 'V3') then
-                            do 350 k = 1, nbcpcd, 1
+                            do k = 1, nbcpcd, 1
                                 num = zi(anumcp+k-1)
                                 if (num .ge. 1 .and. num .le. 3) then
                                     idec = 0
@@ -865,9 +865,9 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                                 endif
                                 zr(avaleq+adrq+idecq+pt-2) = val
                                 pt = pt + 1
-350                         continue
+                            end do
                         else if (tq.eq.'T3') then
-                            do 360 k = 1, nbcpcd, 1
+                            do k = 1, nbcpcd, 1
                                 num = zi(anumcp+k-1)
                                 kd1 = zi(apcmpe+1-1)
                                 kd2 = zi(apcmpe+2-1)
@@ -920,31 +920,31 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                                 endif
                                 zr(avaleq+adrq+idecq+pt-2) = val
                                 pt = pt + 1
-360                         continue
+                            end do
                         else if (tq.eq.'AS') then
                             call jelira(nvalee, 'LONMAX', l)
-                            do 362 il = 1, l, 1
+                            do il = 1, l, 1
                                 zr(avaleq+il-1) = zr(avalee+il-1)
-362                         continue
+                            end do
                         else
                             call utmess('F', 'POSTRELE_14', sk=k4)
                         endif
-370                 continue
-380             continue
-390         continue
-400     continue
+                    end do
+                end do
+            end do
+        end do
         call jedetr('&&RVCALQ.NUM.CP.CD')
 !
     else
         call wkvect(nnocpq, 'V V K8', nbcpcd, anocpq)
-        do 410 i = 1, nbcpcd, 1
+        do i = 1, nbcpcd, 1
             zk8(anocpq+i-1) = nomcp(i)
-410     continue
+        end do
         if (repere(1:1) .eq. 'G') then
             call jelira(nvalee, 'LONMAX', l)
-            do 420 i = 1, l, 1
+            do i = 1, l, 1
                 zr(avaleq+i-1) = zr(avalee+i-1)
-420         continue
+            end do
         else
             call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
 !
@@ -957,7 +957,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             call wkvect('&&RVCALQ.NUM.CP.CD', 'V V I', nbcpcd, anumcp)
             call numek8(zk8(acpgd), nomcp, nc, nbcpcd, zi(anumcp))
             ioc = 1
-            do 500 i = 1, nbadrq, 1
+            do i = 1, nbadrq, 1
                 adre = zi(apadre+i-1)
                 adrq = zi(apadrq+i-1)
                 nbsp = zi(apnspe+i-1)
@@ -988,12 +988,12 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                         v2x = vec1(2* (i-1)+1)
                         v2y = vec1(2* (i-1)+2)
                     endif
-                    do 430 j = 1, nbnd, 1
+                    do j = 1, nbnd, 1
                         vv1x(j) = v1x
                         vv1y(j) = v1y
                         vv2x(j) = v2x
                         vv2y(j) = v2y
-430                 continue
+                    end do
                 else
                     if (i .lt. l) then
                         n = i + ioc - 1
@@ -1025,18 +1025,18 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                         vv2y(2) = -vec2(2*n+2)
                     endif
                 endif
-                do 490 ico = 1, nbco, 1
-                    do 480 j = 1, nbnd, 1
+                do ico = 1, nbco, 1
+                    do j = 1, nbnd, 1
                         v1x = vv1x(j)
                         v1y = vv1y(j)
                         v2x = vv2x(j)
                         v2y = vv2y(j)
-                        do 470 isp = 1, nbsp, 1
+                        do isp = 1, nbsp, 1
                             idece = (ico-1)*tcoe + (j-1)*tnde + (isp- 1)*lne
                             idecq = (ico-1)*tcoq + (j-1)*tndq + (isp- 1)*lnq
                             pt = 1
                             if (tq .eq. 'V3') then
-                                do 440 k = 1, nbcpcd, 1
+                                do k = 1, nbcpcd, 1
                                     num = zi(anumcp+k-1)
                                     if (num .eq. 1) then
                                         kd1 = zi(apcmpe+1-1)
@@ -1103,9 +1103,9 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                                     endif
                                     zr(avaleq+adrq+idecq+pt-2) = val
                                     pt = pt + 1
-440                             continue
+                                end do
                             else if (tq.eq.'T3') then
-                                do 450 k = 1, nbcpcd, 1
+                                do k = 1, nbcpcd, 1
                                     num = zi(anumcp+k-1)
                                     if (num .eq. 1) then
                                         kd1 = zi(apcmpe+1-1)
@@ -1201,7 +1201,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                                     endif
                                     zr(avaleq+adrq+idecq+pt-2) = val
                                     pt = pt + 1
-450                             continue
+                                end do
                             else
                                 kd1 = zi(apcmpe+7-1)
                                 kd2 = zi(apcmpe+8-1)
@@ -1239,7 +1239,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                                 else
                                     sxy = zr(avalee+adre+idece+(j-1)* lne+kd3-2)
                                 endif
-                                do 460 k = 1, nbcpcd, 1
+                                do k = 1, nbcpcd, 1
                                     num = zi(anumcp+k-1)
                                     if (num .eq. 7) then
                                         val = v1x* (v1x*txx+v1y*txy) + v1x* (v1x*txy+v1y*tyy)
@@ -1256,16 +1256,16 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                                     endif
                                     zr(avaleq+adrq+idecq+pt-2) = val
                                     pt = pt + 1
-460                             continue
+                                end do
                             endif
-470                     continue
-480                 continue
-490             continue
+                        end do
+                    end do
+                end do
                 AS_DEALLOCATE(vr=vv1x)
                 AS_DEALLOCATE(vr=vv1y)
                 AS_DEALLOCATE(vr=vv2x)
                 AS_DEALLOCATE(vr=vv2y)
-500         continue
+            end do
             call jedetr('&&RVCALQ.NUM.CP.CD')
         endif
     endif

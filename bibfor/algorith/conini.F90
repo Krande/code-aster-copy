@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine conini(ma, noecon, maicon, marcon, nbmar,&
                   nbnoe, nbmarc, nommar, jmicor, mbcor,&
                   nomtyr, nbgco, io8gco)
@@ -122,13 +122,13 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !
 !     ==================================================================
 !
-    do 10 inoe = 1, nbnoe
+    do inoe = 1, nbnoe
         noecon(inoe)=0
- 10 end do
+    end do
 !
-    do 20 imai = 1, nbmar
+    do imai = 1, nbmar
         maicon(imai)=0
- 20 end do
+    end do
 !
     nbmarc=0
     ierr=0
@@ -136,7 +136,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES GROUPE_MA_FISSURE
 !     ------------------------------------------------------------------
-    do 60 igco = 1, nbgco
+    do igco = 1, nbgco
 !     ------------------------------------------------------------------
 !     RECHERCHE D EXISTENCE DU GROUP_MA_FISSURE CONSIDERE
 !     ------------------------------------------------------------------
@@ -164,7 +164,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU GROUP_MA
 !     ------------------------------------------------------------------
-            do 50 imag = 1, nbmag
+            do imag = 1, nbmag
                 imac=zi(imigma+imag-1)
                 maicon(imac)=maicon(imac)+1
 !     ------------------------------------------------------------------
@@ -208,15 +208,15 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                do 40 icoc = 1, nbcoc
+                do icoc = 1, nbcoc
                     inoc=zi(imicoc+icoc-1)
                     noecon(inoc)=noecon(inoc)+1
- 40             continue
- 50         continue
+                end do
+            end do
 !     ------------------------------------------------------------------
         endif
 !     ------------------------------------------------------------------
- 60 end do
+    end do
     if (inval) then
         call utmess('F', 'ALGORITH2_28')
     endif
@@ -237,7 +237,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
 !     ------------------------------------------------------------------
-    do 80 imar = 1, nbmar
+    do imar = 1, nbmar
         if (maicon(imar) .ne. 0) goto 80
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
@@ -259,11 +259,11 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
         nbcom=0
-        do 70 icor = 1, nbcor
+        do icor = 1, nbcor
             inor=zi(imicor+icor-1)
             if (noecon(inor) .ne. 0) nbcom=nbcom+1
 !
- 70     continue
+        end do
         if (nbcom .ge. itest) then
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
@@ -282,7 +282,8 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
                 marcon(nbmarc)=imar
             endif
         endif
- 80 end do
+ 80     continue
+    end do
 !     ==================================================================
 !CC      ON COMMENTE JEMARQ CAR ADRESSES PASSEES EN ARGUMENT
 !CC      CALL JEDEMA()

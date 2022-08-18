@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mdall2(nomres, basemo, res, nbo, nbmode)
     implicit none
 #include "jeveux.h"
@@ -39,7 +39,7 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iinst, inord,  iptem, jacce, jvite, jdepl, jpass
+    integer :: iinst, inord, iptem, jacce, jvite, jdepl, jpass
     integer :: ibid, jinst, jordr, nbmode, nbo
     real(kind=8) :: dtbid
     character(len=8) :: k8b
@@ -57,24 +57,24 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
     call mdallo(nomres, 'TRAN', nbo, sauve='GLOB', base=basemo,&
                 nbmodes=nbmode, jordr=jordr, jdisc=jinst, jdepl=jdepl, jvite=jvite,&
                 jacce=jacce, jptem=jpass, dt=dtbid)
-
+!
 !
 !---- EN ABSENCE D'INFORMATION SUR LE PAS DE TEMPS, LE .PTEM EST
 !---- EST FORCE A ZERO
     if (nbo .ne. 0) then
-        do 66 iptem = 0, nbo-1
+        do iptem = 0, nbo-1
             zr(jpass+iptem) = dtbid
-66      continue
+        end do
     endif
 ! --- REMPLISSAGE DU .ORDR ET DU .DISC
 !
     call jeveuo(res//'           .ORDR', 'E', vi=ordr)
-    do 10 inord = 1, nbo
+    do inord = 1, nbo
         zi(jordr-1+inord) = ordr(inord)
         call rsadpa(res, 'L', 1, 'INST', ordr(inord),&
                     0, sjv=iinst, styp=k8b)
         zr(jinst-1+inord) = zr(iinst)
-10  continue
+    end do
 !
 !
     call jedema()

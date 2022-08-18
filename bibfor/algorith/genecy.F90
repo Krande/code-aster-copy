@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine genecy(cmod1, cmod2, neq, lmat, para,&
                   nbsec, beta1, beta2, ctrav)
 !    C. VARE     DATE 20/01/94
@@ -50,9 +50,9 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 !
     para(1)=zero
     para(2)=zero
-    do 5 i = 1, neq
+    do i = 1, neq
         ctrav(i) = dcmplx(0.d0,0.d0)
- 5  end do
+    end do
 !
 !------CALCUL DU PRODUIT MATRICE ASSEMBLEE REELLE-MODE COMPLEXE---------
 !
@@ -61,7 +61,7 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 !
 !-------------------BOUCLE SUR LES SECTEURS-----------------------------
 !
-    do 10 i = 1, nbsec
+    do i = 1, nbsec
 !
 !  CALCUL DU DEPHASAGE DU SECTEUR COURANT (ET DU CONJUGUE)
 !
@@ -73,14 +73,14 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 !
 !  BOUCLE SUR LES DDL ASSEMBLES POUR PRODUITS SCALAIRES
 !
-        do 20 j = 1, neq
+        do j = 1, neq
             xrea=xrea+dble(cfact1*cmod1(j))*dble(cfact2*ctrav(j))
             xima=xima+dimag(cfact1*cmod1(j))*dimag(cfact2*ctrav(j))
-20      continue
+        end do
 !
         para(1)=para(1)+xrea
         para(2)=para(2)+xima
 !
-10  end do
+    end do
 !
 end subroutine

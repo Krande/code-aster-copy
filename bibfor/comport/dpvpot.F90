@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpvpot(mod, vim, vip, nbmat, mater,&
                   sig, dt, dp, plas, dsidep)
 !
-    implicit      none
+    implicit none
 #include "asterfort/dpvpdv.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
@@ -133,7 +133,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! --- CAS ELASTIQUE ---------------------------------------------------
     if ((plas.eq.0.0d0) .or. (dp.eq.0.d0) .or. (abs(dp).lt.tol)) then
         dsidep(1:ndt,1:ndt) =dsede(1:ndt,1:ndt)
-        goto 9999
+        goto 999
     else
 ! =================================================================
 ! ----  CALCUL DU DEVIATEUR - DE LA CONTRAINTE EQUIVALENTE  -------
@@ -165,14 +165,14 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CALCUL DE DSIDEP ------------------------------------------------
 ! =====================================================================
-        do 30 ii = 1, ndi
-            do 40 jj = 1, ndi
+        do ii = 1, ndi
+            do jj = 1, ndi
                 dsdsig(ii,jj) = - un/trois
-40          continue
-30      continue
-        do 50 ii = 1, ndt
+            end do
+        end do
+        do ii = 1, ndt
             dsdsig(ii,ii) = dsdsig(ii,ii) + un
-50      continue
+        end do
 !
 !
 ! =====================================================================
@@ -218,7 +218,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
             fonc = fonc
         else
             dsidep(1:ndt,1:ndt) =dsede(1:ndt,1:ndt)
-            goto 9999
+            goto 999
         endif
 !
         const1 = n * const * fonc**(n-un)
@@ -226,7 +226,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 !
         if (dfdp .eq. zero) then
             dsidep(1:ndt,1:ndt) =dsede(1:ndt,1:ndt)
-            goto 9999
+            goto 999
         else
             denom = -un / dfdp
         endif
@@ -253,11 +253,11 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- SYMETRISATION  --------------------------------------------------
 ! =====================================================================
-        do 68 ii = 1, ndt
-            do 67 jj = 1, ndt
+        do ii = 1, ndt
+            do jj = 1, ndt
                 matr1(ii,jj) = un/deux*(matr1a(ii,jj)+matr1b(ii,jj))
-67          continue
-68      continue
+            end do
+        end do
 !
         scal3 = -trois*mu/seq
 !
@@ -287,11 +287,11 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
         dsdeps(1:ndt,1:ndt) = inter1(1:ndt,1:ndt) + part3(1:ndt,1:ndt)
 !
         dsdept(1:ndt,1:ndt) = transpose(dsdeps(1:ndt,1:ndt))
-        do 980 ii = 1, ndt
-            do 990 jj = 1, ndt
+        do ii = 1, ndt
+            do jj = 1, ndt
                 dsdeps(ii,jj) = un/deux*(dsdeps(ii,jj)+dsdept(ii,jj))
-990          continue
-980      continue
+            end do
+        end do
 ! =====================================================================
 ! --- CALCUL  DU TERME DI/DEPS ----------------------------------------
 ! =====================================================================
@@ -318,15 +318,15 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- SYMETRISATION  --------------------------------------------------
 ! =====================================================================
-        do 98 ii = 1, ndt
-            do 99 jj = 1, ndt
+        do ii = 1, ndt
+            do jj = 1, ndt
                 inter2(ii,jj) = un/deux*(int2a(ii,jj)+int2b(ii,jj))
-99          continue
-98      continue
+            end do
+        end do
         inter2(1:ndt,1:ndt) = unstr * inter2(1:ndt,1:ndt)
         dsidep(1:ndt,1:ndt) = dsdeps(1:ndt,1:ndt) + inter2(1:ndt,1:ndt)
     endif
 ! =====================================================================
-9999  continue
+999 continue
 ! =====================================================================
 end subroutine

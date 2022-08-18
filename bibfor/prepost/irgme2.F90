@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                   tabl, tabv, partie, jtype, nbno,&
                   listno, nbcmp, ifi, iadmax)
@@ -73,8 +73,8 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
     isp=1
     iadmax=0
     k = 0
-    call r8inir(6 , 0.d0, val2,1)
-    do 11 ior = 1, nbord2
+    call r8inir(6, 0.d0, val2, 1)
+    do ior = 1, nbord2
         jcesd = tabd(ior)
         jcesl = tabl(ior)
         jcesv = tabv(ior)
@@ -86,14 +86,14 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
 !
         itrou=0
         if (zk8(jtype-1+ior) .eq. 'R') then
-            do 14 j = 1, nbno
+            do j = 1, nbno
                 ino=listno(j)
                 itrou=0
-                do 13 ipt = 1, nbpt
+                do ipt = 1, nbpt
                     inold=zi(jcnold-1+ipt)
                     if (ino .eq. inold) then
                         itrou=1
-                        do 16 k = 1, nbcmp
+                        do k = 1, nbcmp
                             call cesexi('C', jcesd, jcesl, imaold, ipt,&
                                         isp, k, iad)
                             if (iad .gt. 0) then
@@ -105,26 +105,26 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                                 vale = 0.d0
                                 val2(k) = vale
                             endif
-16                      continue
+                        end do
                     endif
                     write(ifi,1010) val2(1),val2(4),val2(5),val2(4),&
                     val2(2), val2(6),val2(5),val2(6),val2(3)
                     goto 15
-13              continue
+                end do
                 if (itrou .eq. 0) then
                     call utmess('F', 'PREPOST2_58')
                 endif
-15              continue
-14          continue
+ 15             continue
+            end do
         else if (zk8(jtype-1+ior).eq.'C') then
-            do 24 j = 1, nbno
+            do j = 1, nbno
                 ino=listno(j)
                 itrou=0
-                do 23 ipt = 1, nbpt
+                do ipt = 1, nbpt
                     inold=zi(jcnold-1+ipt)
                     if (ino .eq. inold) then
                         itrou=1
-                        do 26 k = 1, nbcmp
+                        do k = 1, nbcmp
                             call cesexi('C', jcesd, jcesl, imaold, ipt,&
                                         isp, k, iad)
                             if (iad .gt. 0) then
@@ -140,19 +140,19 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                                 vale = 0.d0
                                 val2(k) = vale
                             endif
-26                      continue
+                        end do
                     endif
                     write(ifi,1010) val2(1),val2(4),val2(5),val2(4),&
                     val2(2), val2(6),val2(5),val2(6),val2(3)
                     goto 25
-23              continue
+                end do
                 if (itrou .eq. 0) then
                     call utmess('F', 'PREPOST2_58')
                 endif
-25              continue
-24          continue
+ 25             continue
+            end do
         endif
-11  end do
+    end do
 !
     call jedema()
 !

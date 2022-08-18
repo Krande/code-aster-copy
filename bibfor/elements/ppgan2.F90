@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
     implicit none
 #include "jeveux.h"
@@ -74,17 +74,17 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !     V(NOEUD) = P * V(GAUSS)
 !
     jmat = jgano + 2
-    do 40 icmp = 1, ncmp
-        do 30 ino = 1, nno
-            do 20 isp = 1, nbsp
+    do icmp = 1, ncmp
+        do ino = 1, nno
+            do isp = 1, nbsp
                 s = 0.d0
-                do 10 ipg = 1, npg
+                do ipg = 1, npg
                     s = s + zr(jmat-1+(ino-1)*npg+ipg) * vpg((ipg-1)* ncmp*nbsp+(isp-1)*ncmp+icmp&
                         )
-10              continue
+                end do
                 vno((ino-1)*ncmp*nbsp+(isp-1)*ncmp+icmp) = s
-20          continue
-30      continue
-40  end do
+            end do
+        end do
+    end do
 !
 end subroutine

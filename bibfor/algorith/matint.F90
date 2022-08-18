@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matint(kr, mr, direc, vtest, rayon)
 !
     implicit none
@@ -61,15 +61,15 @@ subroutine matint(kr, mr, direc, vtest, rayon)
 !
     call jemarq()
 !
-    do 10 i1 = 1, 12
-        do 20 j1 = 1, 12
+    do i1 = 1, 12
+        do j1 = 1, 12
             t(i1,j1)=0.d0
             kr(i1,j1)=0.d0
             mr(i1,j1)=0.d0
             kini(i1,j1)=0.d0
             mini(i1,j1)=0.d0
-20      continue
-10  end do
+        end do
+    end do
 !
     s=pi*(rayon**2)
     i=pi*(rayon**4)/2
@@ -95,7 +95,7 @@ subroutine matint(kr, mr, direc, vtest, rayon)
     v3(2)=v1(3)*v2(1)-v1(1)*v2(3)
     v3(3)=v1(1)*v2(2)-v1(2)*v2(1)
 !
-    do 30 i1 = 1, 4
+    do i1 = 1, 4
 !
         t(1+(i1-1)*3,1+(i1-1)*3)=v1(1)
         t(2+(i1-1)*3,1+(i1-1)*3)=v1(2)
@@ -109,7 +109,7 @@ subroutine matint(kr, mr, direc, vtest, rayon)
         t(2+(i1-1)*3,3+(i1-1)*3)=v3(2)
         t(3+(i1-1)*3,3+(i1-1)*3)=v3(3)
 !
-30  end do
+    end do
 !
 !-- poutre d'axe +X, DDL :
 !-- X1 Y1 Z1 RX1 RY1 RZ1 X2 Y2 Z2 RX2 RY2 RZ2
@@ -146,11 +146,11 @@ subroutine matint(kr, mr, direc, vtest, rayon)
     kini(6,8)= -6.d0*e*i/(l**2)
     kini(6,12)=2.d0*e*i/l
 !
-    do 40 i1 = 1, 4
-        do 50 j1 = 1, 12
+    do i1 = 1, 4
+        do j1 = 1, 12
             kini(i1+6,j1)=-kini(i1,j1)
-50      continue
-40  end do
+        end do
+    end do
 !
     kini(11,3)=-6.d0*e*i/(l**2)
     kini(11,5)= 2.d0*e*i/l
@@ -217,23 +217,23 @@ subroutine matint(kr, mr, direc, vtest, rayon)
     mini(9,11)=11.d0*l/210
     mini(11,9)=11.d0*l/210
 !
-    do 110 i1 = 1, 12
-        do 120 j1 = 1, 12
+    do i1 = 1, 12
+        do j1 = 1, 12
             mini(i1,j1)=mini(i1,j1)*rho*s
-120      continue
-110  end do
+        end do
+    end do
 !
 !-- DANS LA BASE GLOBALE, KR=T*KINI*T^T
-    do 130 j1 = 1, 12
-        do 140 k1 = 1, 12
-            do 150 l1 = 1, 12
-                do 160 i1 = 1, 12
+    do j1 = 1, 12
+        do k1 = 1, 12
+            do l1 = 1, 12
+                do i1 = 1, 12
                     mr(i1,j1)=mr(i1,j1)+t(i1,k1)*mini(k1,l1)*t(j1,l1)
                     kr(i1,j1)=kr(i1,j1)+t(i1,k1)*kini(k1,l1)*t(j1,l1)
-160              continue
-150          continue
-140      continue
-130  end do
+                end do
+            end do
+        end do
+    end do
 !
 !---------C
 !--     --C

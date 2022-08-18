@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xhlag4(ffc, idepl, idepm, lact, ndim,&
                   nnops, pla, lamb, nvec, champ)
     implicit none
-#include "asterfort/assert.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -46,27 +46,28 @@ subroutine xhlag4(ffc, idepl, idepm, lact, ndim,&
 ! --- RÉACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
 ! --- RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 ! --- (DEPDEL+DEPMOI)
-    if(champ.eq.'LAMBDA') then
+    if (champ .eq. 'LAMBDA') then
         indcha = 0
-    else if(champ.eq.'W') then
+    else if (champ.eq.'W') then
         indcha = 1
-    else if(champ.eq.'MU') then
+    else if (champ.eq.'MU') then
         indcha = 2
     else
         ASSERT(.false.)
     endif
     lamb(:) = 0.d0
-    do 1 i = 1, nnops
+    do i = 1, nnops
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
 !
         if (nli .eq. 0) goto 1
-        do 2 j = 1, ndim
+        do j = 1, ndim
             lamb(j) = lamb(j) + ffi * zr(idepl-1+2+indcha*ndim+pli+j)
             if (nvec .eq. 2) then
                 lamb(j) = lamb(j) + ffi * zr(idepm-1+2+indcha*ndim+pli+j)
             endif
- 2      continue
- 1  continue
+        end do
+  1     continue
+    end do
 end subroutine

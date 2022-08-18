@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fcent(nomte, xi, nb1, vecl)
     implicit none
 #include "jeveux.h"
@@ -57,15 +57,15 @@ subroutine fcent(nomte, xi, nb1, vecl)
 !
     call r8inir(42, 0.d0, vecl1, 1)
 !
-    do 40 intsn = 1, npgsn
+    do intsn = 1, npgsn
         call vectci(intsn, nb1, xi, zr(lzr), rnormc)
         call forcen(rnormc, intsn, nb1, xi, zr(lzr),&
                     rho, epais, vomega, vecl1, xa)
-40  end do
+    end do
 !
     call vexpan(nb1, vecl1, vecl)
-    do 60 i = 1, 3
+    do i = 1, 3
         vecl(6*nb1+i)=0.d0
-60  end do
+    end do
 !
 end subroutine

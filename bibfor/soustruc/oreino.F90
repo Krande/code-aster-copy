@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine oreino(noma, lnoeud, nbno, nori, next,&
                   coor, crit, prec, iera, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: lnoeud(*), nbno, nori, next, ier, iera
     real(kind=8) :: coor(*), prec
@@ -48,7 +48,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 !     IN  : PREC  : PRECISION
 !     IN  : IER   : CODE RETOUR,  = 0  OK
 !-----------------------------------------------------------------------
-    integer :: i, j, k, n,  inoe, inod
+    integer :: i, j, k, n, inoe, inod
     real(kind=8) :: xa, ya, za, xb, yb, zb, xab, yab, zab, ab2, xm, ym, zm, xam
     real(kind=8) :: yam, zam, c, c2, xv, yv, zv, v2, r8b, ecart, valr
     character(len=8) :: nomn
@@ -59,7 +59,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     call jemarq()
     nomnoe = noma//'.NOMNOE         '
 !
-    ier  = 0
+    ier = 0
 !
     xa = coor(3*(nori-1)+1)
     ya = coor(3*(nori-1)+2)
@@ -76,14 +76,14 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     if (ab2 .eq. 0.0d0) then
         call utmess('A', 'SOUSTRUC_20')
         ier = ier + 1
-        goto 9999
+        goto 999
     endif
 !
     AS_ALLOCATE(vr=bary, size=nbno)
 !
 !     --- CALCUL DE LA CORDONNEE BARYCENTRIQUE ---
 !
-    do 100 inoe = 1, nbno
+    do inoe = 1, nbno
         inod = lnoeud(inoe)
         xm = coor(3*(inod-1)+1)
         ym = coor(3*(inod-1)+2)
@@ -106,7 +106,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
         else
             call utmess('A', 'SOUSTRUC_21')
             ier = ier + 1
-            goto 9999
+            goto 999
         endif
         r8b = sqrt( r8b )
         if (r8b .gt. prec) then
@@ -133,12 +133,12 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
             endif
         endif
         bary(inoe) = c
-100  end do
+    end do
 !
 !     --- TRI PAR BUBBLE SORT ---
 !
-    do 300 k = 1, nbno-1
-        do 200 i = nbno-1, k, -1
+    do k = 1, nbno-1
+        do i = nbno-1, k, -1
             j = i+1
             if (bary(i) .gt. bary(j)) then
                 c=bary(j)
@@ -148,19 +148,19 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
                 lnoeud(j)=lnoeud(i)
                 lnoeud(i)=n
             endif
-200      continue
-300  end do
+        end do
+    end do
 !
 !     --- VERIFICATION QUE DEUX NOEUDS CONSECUTIFS
 !                          N'ONT PAS LA MEME PROJECTION ---
-    do 400 inoe = 1, nbno-1
+    do inoe = 1, nbno-1
         if (bary(inoe) .eq. bary(inoe+1)) then
             call utmess('A', 'SOUSTRUC_23')
             ier = ier + 1
         endif
-400  end do
+    end do
 !
-9999  continue
+999 continue
 !
     AS_DEALLOCATE(vr=bary)
 !

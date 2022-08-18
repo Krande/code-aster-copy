@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mlnclm(nb, n, p, frontl, frontu,&
                   adper, tu, tl, ad, eps,&
                   ier, cl, cu)
@@ -47,7 +47,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
     incx = 1
     incy = 1
 !
-    do 1000 kb = 1, npb
+    do kb = 1, npb
 !     K : INDICE (DANS LA MATRICE FRONTALE ( DE 1 A P)),
 !     DE LA PREMIERE COLONNE DU BLOC
         k = nb*(kb-1) + 1
@@ -55,19 +55,19 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
 !     BLOC DIAGONAL
         call mlncld(nb, frontl(adk), frontu(adk), adper, tu,&
                     tl, ad, eps, ier)
-        if (ier .gt. 0) goto 9999
+        if (ier .gt. 0) goto 999
 !
 !     NORMALISATION DES BLOCS SOUS LE BLOC DIAGONAL
 !
         ll = ll -nb
         ia = adk + nb
-        do 55 i = 1, nb
+        do i = 1, nb
             ind = ia +n*(i-1)
             if (i .gt. 1) then
-                do 51 l = 1, i-1
+                do l = 1, i-1
                     tu(l) = frontu(n*(k+l-2)+k+i-1)
                     tl(l) = frontl(n*(k+l-2)+k+i-1)
-51              continue
+                end do
             endif
             call zgemv(tra, ll, i-1, alpha, frontl(ia),&
                        n, tu, incx, beta, frontl(ind),&
@@ -78,11 +78,11 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
             adki = adper(k+i-1)
 !        LA PARTIE INFERIEURE  SEULE EST DIVISEE PAR LE TERME DIAGONAL,
 !        PAS LA PARTIE SUPERIEURE
-            do 53 j = 1, ll
+            do j = 1, ll
                 frontl(ind) = frontl(ind)/frontl(adki)
                 ind = ind +1
-53          continue
-55      continue
+            end do
+        end do
 !
         decal = kb*nb
         ll = n- decal
@@ -91,7 +91,7 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
         call mlnclj(nb, n, ll, m, k,&
                     decal, frontl, frontu, frontl(ind), frontu(ind),&
                     adper, tu, tl, cl, cu)
-1000  end do
+    end do
 !     COLONNES RESTANTES
     if (restp .gt. 0) then
 !     K : INDICE (DANS LA MATRICE FRONTALE ( DE 1 A P)),
@@ -102,19 +102,19 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
 !     BLOC DIAGONAL
         call mlncld(restp, frontl(adk), frontu(adk), adper, tu,&
                     tl, ad, eps, ier)
-        if (ier .gt. 0) goto 9999
+        if (ier .gt. 0) goto 999
 !
 !     NORMALISATION DES BLOCS SOUS LE BLOC DIAGONAL
 !
         ll = n-p
         ia = adk +restp
-        do 65 i = 1, restp
+        do i = 1, restp
             ind = ia +n*(i-1)
             if (i .gt. 1) then
-                do 59 l = 1, i-1
+                do l = 1, i-1
                     tu(l) = frontu(n*(k+l-2)+k+i-1)
                     tl(l) = frontl(n*(k+l-2)+k+i-1)
-59              continue
+                end do
             endif
             call zgemv(tra, ll, i-1, alpha, frontl(ia),&
                        n, tu, incx, beta, frontl(ind),&
@@ -124,13 +124,13 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
                        incy)
             adki = adper(k+i-1)
 !              SEUL FRONTL EST DIVISE PAR LE TERME DIAGONAL
-            do 63 j = 1, ll
+            do j = 1, ll
                 frontl(ind) = frontl(ind)/frontl(adki)
                 ind = ind +1
-63          continue
-65      continue
+            end do
+        end do
 !
     endif
-9999  continue
+999 continue
     if (ier .gt. 0) ier = ier + nb*(kb-1)
 end subroutine

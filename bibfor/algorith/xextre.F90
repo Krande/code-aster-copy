@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                   jdirol, jnvdir)
     implicit none
@@ -76,7 +76,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
 !     BOUCLE SUR LE NOMBRE DE POINTS DU FOND DE LA MAILLE
 !     QUI SONT SUR UNE FACE DE BORD
 !     (CAS GENERAL NPTBOM=1)
-    do 300 i = 1, nptbom
+    do i = 1, nptbom
 !
         sens = 1.d0
 !
@@ -134,7 +134,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
 !C--     CAS 3: LA MAILLE A PLUSIEURS FACES DE BORD
         else if ((nbfacb.gt.1).and.(nptbom.eq.1)) then
 !          ON CHOISIT LA BONNE NORMALE
-            do 330 h = 1, nbfacb
+            do h = 1, nbfacb
 !            N.VDIROLD
                 proj = vectn(&
                        1+3*(h-1))*vdirol(1)+ vectn(2+3*(h-1))* vdirol(2)+ vectn(3+3*(h-1))*vdirol&
@@ -146,7 +146,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                     ind = h
                 endif
 !
-330         continue
+            end do
 !
             normal(1) = vectn(1+3*(ind-1))
             normal(2) = vectn(2+3*(ind-1))
@@ -174,20 +174,20 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
 !          SI LE VECTEUR DE DIRECTION DE PROPAGATION
 !          N'A PAS ENCORE ETE RECALCULE, ON LE REMPLACE DANS LA BASE
             if ((.not. zl(jborl-1+iptbor(i))) .or. (vecmax)) then
-                do 340 k = 1, 3
+                do k = 1, 3
                     zr(jbas-1+6*(iptbor(i)-1)+k+3) = sens*vdir(k)
                     zl(jborl-1+iptbor(i)) = .true.
-340             continue
+                end do
 !          SINON ON L'AJOUTE (ON NORMALISE LE VECTEUR PAR LA SUITE, CE
 !          QUI REVIENT A FAIRE UNE MOYENNE DES VECTEURS CALCULES)
             else
-                do 350 k = 1, 3
+                do k = 1, 3
                     temp = zr(jbas-1+6*(iptbor(i)-1)+k+3)
                     zr(jbas-1+6*(iptbor(i)-1)+k+3) = temp + sens*vdir( k)
-350             continue
+                end do
             endif
         endif
-300 end do
+    end do
 !
     call jedema()
 end subroutine

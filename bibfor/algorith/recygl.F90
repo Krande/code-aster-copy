@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !    P. RICHARD     DATE 10/02/92
 !-----------------------------------------------------------------------
@@ -62,7 +62,7 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, icomp, idia, iret
-    integer :: llref,  mdiapa, nbdia, nbmcal, nbmor, nbsec
+    integer :: llref, mdiapa, nbdia, nbmcal, nbmor, nbsec
     integer, pointer :: cycl_desc(:) => null()
     integer, pointer :: cycl_nbsc(:) => null()
     integer, pointer :: cycl_diam(:) => null()
@@ -123,7 +123,7 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
     nbdia=nbdia/2
 !
     icomp=0
-    do 10 i = 1, nbdia
+    do i = 1, nbdia
         idia=cycl_diam(i)
         nbmcal=cycl_diam(1+nbdia+i-1)
         if (idia .eq. 0 .or. idia .eq. mdiapa) then
@@ -131,7 +131,7 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
         else
             icomp=icomp+2*nbmcal
         endif
-10  end do
+    end do
 !
     nbmor=icomp
 !

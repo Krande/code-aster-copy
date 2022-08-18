@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
                   iadsc3, nindex, ilnoex, lifex2)
 !    C. DUVAL
@@ -44,7 +44,6 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -59,13 +58,14 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 #include "asterfort/rccome.h"
 #include "asterfort/reseci.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nmnoe1, nmnoe2, chamat, celem, mailla, mater
     character(len=16) :: graexc, kbid
     character(len=24) :: k24bd1
     character(len=24) :: lifex2, lifex3
     character(len=11) :: k11
 !-----------------------------------------------------------------------
-    integer :: iad1, iaddx,  iadfx2, iadfx3, iadlma, iadr
+    integer :: iad1, iaddx, iadfx2, iadfx3, iadlma, iadr
     integer :: iadrho, iadsc3, iadsec, iapp1, iapp1b, iapp2, iapp2b
     integer :: icode, idec1, iexc1, ifreq1, igrma1, igrma2, ij1
     integer :: ij2, ilfex2, ilfex3, ilien1, ilien2, ilima, ilnoex
@@ -79,7 +79,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    if (graexc(1:5) .ne. 'SOUR_') goto 9999
+    if (graexc(1:5) .ne. 'SOUR_') goto 999
 !
     pi=r8pi()
 !
@@ -89,7 +89,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     call wkvect('&&OP0131.RHO', 'V V R8', nindex, iadrho)
     call wkvect('&&OP0131.DX', 'V V R8', nindex, iaddx)
     call wkvect('&&OP0131.SECTFLUID', 'V V R8', 2*nindex, iadsec)
-    do 306 iexc1 = 1, nindex
+    do iexc1 = 1, nindex
 !
 !-----ON RECHERCHE LA PREMIERE MAILLE CONTENANT LE NOEUD:IMAI1
 !
@@ -123,25 +123,25 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
         call jelira(k24bd1, 'NMAXOC', inbmai)
         inoe1=1
         inoe2=1
-        do 307 imai1 = 1, inbmai
+        do imai1 = 1, inbmai
             call jeveuo(jexnum(k24bd1, imai1), 'L', iad1)
             call jelira(jexnum(k24bd1, imai1), 'LONMAX', inbnoe)
-            do 308 inoe1 = 1, inbnoe
+            do inoe1 = 1, inbnoe
                 inuno3=zi(iad1-1+inoe1)
                 if (inuno1 .eq. inuno3) then
                     inoe2=100
                     if ((graexc.eq.'SOUR_PRESS') .or. (graexc.eq. 'SOUR_FORCE')) then
-                        do 319 inoe2 = 1, inbnoe
+                        do inoe2 = 1, inbnoe
                             inuno4=zi(iad1-1+inoe2)
                             if (inuno2 .eq. inuno4) goto 309
-319                      continue
+                        end do
                     else
                         goto 309
                     endif
                 endif
-308          continue
-307      continue
-309      continue
+            end do
+        end do
+309     continue
 !
 !-------ON RECUPERE LES SECTIONS FLUIDES DE LA MAILLE IMAI1
 !
@@ -157,7 +157,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !
         call jeveuo(chamat//'.CHAMP_MAT .DESC', 'L', vi=desc)
         inlien=desc(3)
-        do 310 ilien1 = 1, inlien
+        do ilien1 = 1, inlien
             icode=desc(1+3-1+2*(ilien1-1)+1)
             if (icode .eq. 1) then
 !----- -----DANS CE CAS TOUTES LES MAILLES ONT LE MEME CHAMAT
@@ -170,17 +170,17 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !        ET QUI A UN MATERIAU AFFECTE
 !
                 call jelira(mailla//'.GROUPEMA', 'NUTIOC', ingrma)
-                do 312 igrma1 = 1, ingrma
+                do igrma1 = 1, ingrma
                     call jeveuo(jexnum(mailla//'.GROUPEMA', igrma1), 'L', iad1)
                     call jelira(jexnum(mailla//'.GROUPEMA', igrma1), 'LONUTI', inbmai)
-                    do 313 imai2 = 1, inbmai
+                    do imai2 = 1, inbmai
                         imai3=zi(iad1-1+imai2)
                         if (imai3 .eq. imai1) then
                             goto 314
                         endif
-313                  continue
-312              continue
-314              continue
+                    end do
+                end do
+314             continue
                 igrma2=desc(1+3-1+2*ilien1)
                 if (igrma1 .eq. igrma2) then
                     ilien2=ilien1
@@ -191,15 +191,15 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
                 ilima=desc(1+3-1+2*ilien1)
                 call jeveuo(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'L', iadlma)
                 call jelira(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'LONMAX', nmalim)
-                do 326 ima1 = 1, nmalim
+                do ima1 = 1, nmalim
                     if (zi(iadlma-1+ima1) .eq. imai1) then
                         ilien2=ilien1
                         goto 311
                     endif
-326              continue
+                end do
             endif
-310      continue
-311      continue
+        end do
+311     continue
 !
 !--------POUR LE LIEN ILIEN2 ON VA RECUPERER LE MATERIAU PUIS
 !        LA MASSE VOLUMIQUE
@@ -210,19 +210,19 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
         k24bd1 = mater//k11//'.VALK'
         call jeveuo(k24bd1, 'L', iad1)
         call jelira(k24bd1, 'LONMAX', invalk)
-        do 317 ivalk1 = 1, invalk
+        do ivalk1 = 1, invalk
             kbid=zk16(iad1-1+ivalk1)
             if (kbid(1:3) .eq. 'RHO') then
                 inurho=ivalk1
                 goto 318
             endif
-317     continue
+        end do
 318     continue
         k24bd1=mater//k11//'.VALR'
         call jeveuo(k24bd1, 'L', iad1)
         rho=zr(iad1-1+inurho)
         zr(iadrho-1+iexc1)=rho
-306  end do
+    end do
 !
 !---2-----MULTIPLICATION PAR LE BON COEF :
 !          RHOI*RHOJ*OMEGA**2 POUR DEBIT VOLUME
@@ -232,11 +232,11 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !
 !
     call jeveuo(lifex2, 'L', ilfex2)
-    do 320 iapp1 = 1, nindex
-        do 321 iapp2 = iapp1, nindex
+    do iapp1 = 1, nindex
+        do iapp2 = iapp1, nindex
             ij1=((iapp2-1)*iapp2)/2+iapp1
             iadr=zi(ilfex2-1+ij1)
-            do 323 ifreq1 = 1, npdsc3
+            do ifreq1 = 1, npdsc3
                 idec1=npdsc3+2*(ifreq1-1)+1
                 if (graexc .eq. 'SOUR_DEBI_VOLU') then
                     rho1=zr(iadrho-1+iapp1)
@@ -265,9 +265,9 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
                     zr(iadr-1+idec1)=zr(iadr-1+idec1)/dx1/dx2
                     zr(iadr-1+idec1+1)=zr(iadr-1+idec1+1)/dx1/dx2
                 endif
-323          continue
-321      continue
-320  end do
+            end do
+        end do
+    end do
 !
 !
 !---3-----DUPLICATION DE L INTERSPECTRE DANS LE CAS DE SOURCE DE
@@ -279,9 +279,9 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
         inbfx3=(2*nindex*(2*nindex+1))/2
         lifex3 = '&&OP0131.LIADFX3'
         call wkvect('&&OP0131.LIADFX3', 'V V I', inbfx3, ilfex3)
-        do 322 iapp1 = 1, 2*nindex
+        do iapp1 = 1, 2*nindex
             ipar1=mod(iapp1,2)
-            do 324 iapp2 = iapp1, 2*nindex
+            do iapp2 = iapp1, 2*nindex
                 ipar2=mod(iapp2,2)
                 if (ipar1 .eq. ipar2) then
                     sign=1.d0
@@ -300,14 +300,14 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
                 iapp2b=(iapp2+ipar2)/2
                 ij2=(iapp2b*(iapp2b-1))/2+iapp1b
                 iadfx2=zi(ilfex2-1+ij2)
-                do 325 ifreq1 = npdsc3+1, 3*npdsc3
+                do ifreq1 = npdsc3+1, 3*npdsc3
                     zr(iadfx3-1+ifreq1)=zr(iadfx2-1+ifreq1)*sign
-325              continue
-324          end do
-322      end do
+                end do
+            end do
+        end do
         lifex2=lifex3
 !
     endif
-9999  continue
+999 continue
     call jedema()
 end subroutine

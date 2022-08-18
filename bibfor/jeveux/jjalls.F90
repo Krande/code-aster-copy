@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjalls(lonoi, ic, genri, typei, lty,&
                   ci, itab, jitab, iadmi, iadyn)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -191,9 +191,9 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
     if (linit) then
         init = 0
         if (typei(1:1) .eq. 'K') init = iblanc
-        do 20 i = 1, lsi
+        do i = 1, lsi
             iszon ( jiszon+iadmi+i-1 ) = init
- 20     continue
+        end do
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

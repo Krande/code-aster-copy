@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ualfva(mataz, basz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -33,6 +32,7 @@ subroutine ualfva(mataz, basz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=*) :: mataz, basz
 !     creation de l'objet mataz.VALM a partir de l'objet mataz.UALF
 !     l'objet .UALF doit contenir la matrice initiale non factorisee :
@@ -63,41 +63,41 @@ subroutine ualfva(mataz, basz)
     integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !   ------------------------------------------------------------------
-
-
+!
+!
     call jemarq()
     matas=mataz
     base=basz
     if (base .eq. ' ') call jelira(matas//'.UALF', 'CLAS', cval=base)
-
+!
 !   -- .VALM ne doit pas exister :
     call jeexin(matas//'.VALM', iret)
     ASSERT(iret.eq.0)
-
+!
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
     nu=refa(2)(1:14)
     stomor=nu//'.SMOS'
-
+!
 !   -- On ne sait traiter que les matrices generalisees :
     ASSERT(refa(10).eq.'GENE')
-
+!
     call jeveuo(stomor//'.SMDE', 'L', vi=smde)
     neq=smde(1)
     nbloc= smde(3)
     call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
     itbloc= smde(2)
-
+!
     call jelira(matas//'.UALF', 'NMAXOC', nblocl)
     ASSERT(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
     nblocm=1
     if (nblocl .eq. 2*nbloc) nblocm=2
-
+!
 !   -- reel ou complexe ?
     call jelira(matas//'.UALF', 'TYPE', cval=tyrc)
     ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
-
-
+!
+!
 !     1. Allocation de .VALM :
 !     ----------------------------------------
     call jecrec(matas//'.VALM', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
@@ -106,18 +106,18 @@ subroutine ualfva(mataz, basz)
     do kblocm = 1, nblocm
         call jecroc(jexnum(matas//'.VALM', kblocm))
     enddo
-
-
+!
+!
 !     2. Remplissage de .VALM :
 !     ----------------------------------------
     do kblocm = 1, nblocm
         call jeveuo(jexnum(matas//'.VALM', kblocm), 'E', jvale)
         ibloav=0+nbloc*(kblocm-1)
         ismdi0=0
-        do 1 ieq = 1, neq
+        do ieq = 1, neq
             iscdi=smdi(ieq)
             ibloc=1+nbloc*(kblocm-1)
-
+!
 !          -- on ramene le bloc en memoire si necessaire:
             if (ibloc .ne. ibloav) then
                 call jeveuo(jexnum(matas//'.UALF', ibloc), 'L', jualf)
@@ -126,11 +126,11 @@ subroutine ualfva(mataz, basz)
                 endif
                 ibloav=ibloc
             endif
-
+!
             ismdi=smdi(ieq)
             nbterm=ismdi-ismdi0
-
-            do 2 kterm = 1, nbterm
+!
+            do kterm = 1, nbterm
                 ilig=zi4(jsmhc-1+ismdi0+kterm)
                 if (tyrc .eq. 'R') then
                     zr(jvale-1+ismdi0+kterm)=zr(jualf-1+ iscdi +ilig-&
@@ -139,17 +139,17 @@ subroutine ualfva(mataz, basz)
                     zc(jvale-1+ismdi0+kterm)=zc(jualf-1+ iscdi +ilig-&
                     ieq)
                 endif
-  2         continue
+            end do
             ASSERT(ilig.eq.ieq)
-
+!
             ismdi0=ismdi
-  1     continue
+        end do
     end do
-
-
-
+!
+!
+!
     call jedetr(matas//'.UALF')
-
+!
     call jedema()
 !     CALL CHEKSD('sd_matr_asse',MATAS,IRET)
 end subroutine

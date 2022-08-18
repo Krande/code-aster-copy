@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgnte(ifi, nbordr, coord, connex, point,&
                   njvmai, nbmai, cnsv, partie, jtype,&
                   cnsd)
@@ -62,30 +62,30 @@ subroutine irgnte(ifi, nbordr, coord, connex, point,&
         nbno = 8
     endif
 !
-    do 10 imai = 1, nbmai
+    do imai = 1, nbmai
 !
         ima = zi(jmai-1+imai)
 !
         ipoin = point(ima)
 !
-        do 20 inoe = 1, nbno
+        do inoe = 1, nbno
 !
             listno(inoe) = connex(ipoin + inoe - 1 )
 !
-20      continue
+        end do
 !
-        do 12 j = 1, 3
+        do j = 1, 3
             write(ifi,1000) (coord(3*(listno(inoe)-1)+j),inoe=1,nbno)
-12      continue
+        end do
 !
-        do 14 ior = 1, nbordr
+        do ior = 1, nbordr
 !
             jcnsv = cnsv(ior)
             jcnsd = cnsd(ior)
             ncmp = zi(jcnsd-1+2)
             if (zk8(jtype-1+ior) .eq. 'R') then
 !
-                do 16 inoe = 1, nbno
+                do inoe = 1, nbno
 !
                     if (njvmai(10:12) .eq. 'SEG' .or. njvmai(10:12) .eq. 'TRI' .or.&
                         njvmai(10:12) .eq. 'QUA') then
@@ -111,13 +111,13 @@ subroutine irgnte(ifi, nbordr, coord, connex, point,&
 !
                     endif
 !
-16              continue
+                end do
 !
             else if (zk8(jtype-1+ior).eq.'C') then
 !
                 if (partie .eq. 'REEL') then
 !
-                    do 26 inoe = 1, nbno
+                    do inoe = 1, nbno
 !
                         if (njvmai(10:12) .eq. 'SEG' .or. njvmai(10:12) .eq. 'TRI' .or.&
                             njvmai(10:12) .eq. 'QUA') then
@@ -144,9 +144,9 @@ subroutine irgnte(ifi, nbordr, coord, connex, point,&
 !
                         endif
 !
-26                  continue
+                    end do
                 else if (partie.eq.'IMAG') then
-                    do 36 inoe = 1, nbno
+                    do inoe = 1, nbno
 !
                         if (njvmai(10:12) .eq. 'SEG' .or. njvmai(10:12) .eq. 'TRI' .or.&
                             njvmai(10:12) .eq. 'QUA') then
@@ -171,11 +171,11 @@ subroutine irgnte(ifi, nbordr, coord, connex, point,&
                             zr(jcnsv-1+(listno(inoe)-1)*ncmp+6),&
                             zr(jcnsv-1+(listno(inoe)-1)*ncmp+3)
                         endif
-36                  continue
+                    end do
                 endif
             endif
-14      continue
-10  end do
+        end do
+    end do
 !
     call jelibe(njvmai)
 !

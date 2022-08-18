@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine titre1(st, nomobj, base, nbtitr, titdon,&
                   lgdon, formr, nomsym, iordr)
     implicit none
-#include "jeveux.h"
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -45,14 +45,14 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 !-----------------------------------------------------------------------
     parameter            (mxligs=50 )
     character(len=1) :: kavant, kcoura
-    
+!
 !     ------------------------------------------------------------------
     call jemarq()
     call wkvect('&&TITRE1.TAMPON.SORTIE', 'V V K80', mxligs, ldons)
     ldons1 = ldons
-    
+!
     lDefault = ASTER_TRUE
-    if (nbtitr.lt.0)then
+    if (nbtitr .lt. 0) then
         lDefault = ASTER_FALSE
         nbtitr = -nbtitr
     endif
@@ -67,20 +67,20 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 !     --- TANT QU'IL Y A DES LIGNES FAIRE ---
     icols = 0
     iligd = 1
-    
+!
     if (nbtitr .gt. mxligs) then
         vali(1) = mxligs
         vali(2) = nbtitr
         call utmess('A', 'UTILITAI4_89', ni=2, vali=vali)
         nbtitr = mxligs
     endif
-1000  continue
+1000 continue
     if (iligd .le. nbtitr .and. iligd .le. mxligs) then
 !
 !        --- TANT QU'IL Y A DES COLONNES FAIRE ---
         icold = 1
         mxcold = lgdon(iligd)
-1100      continue
+1100     continue
         if (icold .le. mxcold) then
             if (titdon(iligd)(icold:icold) .eq. '&' .and. lDefault) then
 !
@@ -98,19 +98,19 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
                     kavant = zk80(ldons1)(icols:icols)
                     kcoura = titdon(iligd)(icold:icold)
                     if (kavant .ne. ' ' .and. kcoura .ne. ' ') then
-200                      continue
+200                     continue
                         icols = icols - 1
                         if (icols .gt. 0) then
                             kavant = zk80(ldons1)(icols:icols)
                             if (kavant .ne. ' ') goto 200
                             ideb = icols + 1
                             icols = 0
-                            do 201 i = ideb, 80
+                            do i = ideb, 80
                                 icols = icols + 1
                                 kavant = zk80(ldons1)(i:i)
                                 zk80(ldons1+1)(icols:icols) = kavant
                                 zk80(ldons1)(i:i) = ' '
-201                          continue
+                            end do
                             icols = icols + 1
                             ldons1 = ldons1 + 1
                         else
@@ -134,7 +134,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
         iligd = iligd + 1
         goto 1000
     endif
-1200  continue
+1200 continue
 !
 !     --- RECOPIE DANS L'OBJET FINAL ----
     iligs = ldons1-ldons+1
@@ -152,13 +152,13 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
         call wkvect(nomobj, base(1:1)//' V K80', iligs, lsort)
         lonmax = 0
     endif
-    do 2000 ilig = 1, iligs
+    do ilig = 1, iligs
         if (ilig .gt. mxligs) then
             goto 2001
         endif
         zk80(lsort+lonmax+ilig-1) = zk80(ldons+ilig-1)
-2000  end do
-2001  continue
+    end do
+2001 continue
 !C
 !C ----- DEBUG
 !C

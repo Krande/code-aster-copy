@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
                   vff1, vff2, idfde1, idfde2, geom,&
                   typmod, mat, ddl, sigm, vect)
@@ -98,7 +98,7 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
-    do 1000 g = 1, npg
+    do g = 1, npg
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
@@ -109,9 +109,9 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
         call nmmabu(ndim, nno1, nax, grand, dfdi1,&
                     b)
         if (axi) then
-            do 50 n = 1, nno1
+            do n = 1, nno1
                 b(3,1,n) = vff1(n,g)/r
- 50         continue
+            end do
         endif
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A
@@ -121,51 +121,51 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
                     dfdi2)
 !
         av = 0
-        do 150 n = 1, nno2
+        do n = 1, nno2
             av = av + vff2(n,g)*ddl(ia(n))
-150     continue
+        end do
 !
-        do 200 i = 1, ndim
+        do i = 1, ndim
             ag(i) = 0
-            do 202 n = 1, nno2
+            do n = 1, nno2
                 ag(i) = ag(i) + dfdi2(nno2*(i-1)+n)*ddl(ia(n))
-202         continue
-200     continue
+            end do
+        end do
 !
-        do 210 kl = 1, 3
+        do kl = 1, 3
             sigma(kl) = sigm(kl,g)
-210     continue
-        do 220 kl = 4, ndimsi
+        end do
+        do kl = 4, ndimsi
             sigma(kl) = sigm(kl,g)*rac2
-220     continue
+        end do
         bp = sigm(ndimsi+1,g)
 !
 !      VECTEUR FINT:U
 !
-        do 300 n = 1, nno1
-            do 310 i = 1, ndim
+        do n = 1, nno1
+            do i = 1, ndim
                 kk = iu(nno1*(i-1)+n)
                 t1 = 0
-                do 320 kl = 1, ndimsi
+                do kl = 1, ndimsi
                     t1 = t1 + sigma(kl)*b(kl,i,n)
-320             continue
+                end do
                 vect(kk) = vect(kk) + wg*t1
-310         continue
-300     continue
+            end do
+        end do
 !
 !      VECTEUR FINT:A
 !
-        do 350 n = 1, nno2
+        do n = 1, nno2
             t1 = vff2(n,g)*bp
             t2 = 0
-            do 370 i = 1, ndim
+            do i = 1, ndim
                 t2 = t2 + c*dfdi2(nno2*(i-1)+n)*ag(i)
-370         continue
+            end do
             kk = ia(n)
             vect(kk) = vect(kk) + wg*(t2+t1)
-350     continue
+        end do
 !
-1000 end do
+    end do
 !
 !
 end subroutine

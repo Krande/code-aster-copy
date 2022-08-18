@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0045(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -88,9 +88,9 @@ subroutine te0045(option, nomte)
     call jevech('PGEOMER', 'L', lcoor)
     call jevech('PCAORIE', 'L', lorien)
     call jevech('PMASSINE', 'E', lcastr)
-    do 2 i = 0, 9
+    do i = 0, 9
         zr(lcastr+i) = zero
- 2  end do
+    end do
     call matrot(zr(lorien), pgl)
 !
 !     REPERE DE LA MATRICE DE MASSE ?
@@ -103,9 +103,9 @@ subroutine te0045(option, nomte)
                 call ut2mlg(nno, nc, pgl, zr(lmass), mat1)
             endif
         else
-            do 10 i = 1, nbterm
+            do i = 1, nbterm
                 mat1(i) = zr(lmass+i-1)
-10          continue
+            end do
         endif
     else if (infodi.eq.2) then
         if (irepm .eq. 2) then
@@ -115,9 +115,9 @@ subroutine te0045(option, nomte)
                 call ut2plg(nno, nc, pgl, zr(lmass), mat2)
             endif
         else
-            do 11 i = 1, nbterm
+            do i = 1, nbterm
                 mat2(i) = zr(lmass+i-1)
-11          continue
+            end do
         endif
     endif
 !
@@ -130,16 +130,16 @@ subroutine te0045(option, nomte)
         zr(lcastr+3) = zr(lcoor+2)
         if (infodi .eq. 1) then
 !           --- MASSE ---
-            do 12 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat1(i)
-12          continue
+            end do
             zr(lcastr) = zr(lcastr) + mat1(2) + mat1(4) + mat1(5)
             zr(lcastr) = zr(lcastr) / trois
         else if (infodi.eq.2) then
 !           --- MASSE ---
-            do 13 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat2(i)
-13          continue
+            end do
             zr(lcastr) = zr(lcastr) / trois
         endif
 !
@@ -150,9 +150,9 @@ subroutine te0045(option, nomte)
         zr(lcastr+3) = zr(lcoor+2)
         if (infodi .eq. 1) then
 !           --- MASSE ---
-            do 22 i = 1, nc
+            do i = 1, nc
                 zr(lcastr) = zr(lcastr) + mat1(i)
-22          continue
+            end do
             zr(lcastr) = zr(lcastr) + mat1(2) + mat1(4) + mat1(5)
             zr(lcastr) = zr(lcastr) / trois
 !           --- INERTIE ---
@@ -164,9 +164,9 @@ subroutine te0045(option, nomte)
             zr(lcastr+9) = mat1(20)
         else if (infodi.eq.2) then
 !           --- MASSE ---
-            do 24 i = 1, nc
+            do i = 1, nc
                 zr(lcastr) = zr(lcastr) + mat2(i)
-24          continue
+            end do
             zr(lcastr) = zr(lcastr) / trois
 !           --- INERTIE ---
             zr(lcastr+4) = mat2(22)
@@ -183,16 +183,16 @@ subroutine te0045(option, nomte)
         zr(lcastr+2) = zr(lcoor+1)
         if (infodi .eq. 1) then
 !           --- MASSE ---
-            do 15 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat1(i)
-15          continue
+            end do
             zr(lcastr) = zr(lcastr) + mat1(2)
             zr(lcastr) = zr(lcastr) / deux
         else if (infodi.eq.2) then
 !           --- MASSE ---
-            do 17 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat2(i)
-17          continue
+            end do
             zr(lcastr) = zr(lcastr) / deux
         endif
 !
@@ -221,18 +221,18 @@ subroutine te0045(option, nomte)
         zr(lcastr+3) = ( zr(lcoor+2) + zr(lcoor+5) ) / deux
         if (infodi .eq. 1) then
 !           --- MASSE ---
-            do 32 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat1(i)
-32          continue
+            end do
             zr(lcastr) = zr(lcastr)+mat1(2)+mat1(4)+mat1(5)+mat1(7) + mat1(8)+mat1(9)+mat1(11)+ma&
                          &t1(12)+mat1(13) + mat1(14)+ mat1(16)+mat1(17)+mat1(18)+mat1(19) + mat1(&
                          &20)
             zr(lcastr) = zr(lcastr) / trois
         else if (infodi.eq.2) then
 !           --- MASSE ---
-            do 33 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat2(i)
-33          continue
+            end do
             zr(lcastr) = zr(lcastr) / trois
         endif
 !
@@ -244,20 +244,20 @@ subroutine te0045(option, nomte)
         if (infodi .eq. 1) then
 !           --- MASSE ---
             zr(lcastr) = mat1(2) + mat1(4) + mat1(5) + mat1(35) + mat1(43) + mat1(44)
-            do 42 i = 1, 3
+            do i = 1, 3
                 i1 = 21 + i
                 i2 = 28 + i
                 i3 = 36 + i
                 zr(lcastr) = zr(lcastr)+mat1(i1)+mat1(i2)+mat1(i3)
-42          continue
+            end do
             zr(lcastr) = deux * zr(lcastr)
             zr(lcastr) = zr(lcastr) + mat1(1) +mat1(3) +mat1(6) + mat1(28)+mat1(36)+mat1(45)
             zr(lcastr) = zr(lcastr) / trois
         else if (infodi.eq.2) then
 !           --- MASSE ---
-            do 43 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat2(i)
-43          continue
+            end do
             zr(lcastr) = zr(lcastr) / trois
         endif
 !
@@ -267,16 +267,16 @@ subroutine te0045(option, nomte)
         zr(lcastr+2) = ( zr(lcoor+1) + zr(lcoor+3) ) / deux
         if (infodi .eq. 1) then
 !        --- MASSE ---
-            do 35 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat1(i)
-35          continue
+            end do
             zr(lcastr) = zr(lcastr)+mat1(2)+mat1(4)+mat1(5)+mat1(7) + mat1(8)+mat1(9)
             zr(lcastr) = zr(lcastr) / deux
         else if (infodi.eq.2) then
 !           --- MASSE ---
-            do 37 i = 1, nbterm
+            do i = 1, nbterm
                 zr(lcastr) = zr(lcastr) + mat2(i)
-37          continue
+            end do
             zr(lcastr) = zr(lcastr) / deux
         endif
 !

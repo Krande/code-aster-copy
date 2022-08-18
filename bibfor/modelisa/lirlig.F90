@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lirlig(ifl, cnl, lig, ilec)
     implicit none
 #include "asterfort/codent.h"
@@ -38,13 +38,13 @@ subroutine lirlig(ifl, cnl, lig, ilec)
 !
     cnl = ' '
     read(unit=ifl,fmt=1,end=100) lirlg
-    do 10 i = 81, 255
+    do i = 81, 255
         if (lirlg(i:i) .eq. '%') goto 12
         if (lirlg(i:i) .ne. ' ') then
             call utmess('F', 'MODELISA4_92', sk=lirlg)
         endif
-10  continue
-12  continue
+    end do
+ 12 continue
     lig = lirlg(1:80)
 !
     if (ilec .eq. 1) then
@@ -58,9 +58,9 @@ subroutine lirlig(ifl, cnl, lig, ilec)
     cnl(1:14) = '(LIGNE       )'
     call codent(nl, 'D', cnl(8:13))
 !
-    goto 9999
+    goto 999
 !
-100  continue
+100 continue
     if (nl1 .eq. 0) then
         call utmess('F', 'MODELISA4_94')
     else
@@ -69,5 +69,5 @@ subroutine lirlig(ifl, cnl, lig, ilec)
 !
     1   format(a80)
 !
-9999  continue
+999 continue
 end subroutine

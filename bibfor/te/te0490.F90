@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0490(option, nomte)
 !
 ! aslint: disable=,W0104
@@ -129,9 +129,10 @@ subroutine te0490(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8vide.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/diago3.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/enelpg.h"
 #include "asterfort/eps1mc.h"
@@ -141,6 +142,7 @@ subroutine te0490(option, nomte)
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/ortrep.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rctype.h"
@@ -149,8 +151,6 @@ subroutine te0490(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-#include "asterfort/diago3.h"
-#include "asterfort/r8inir.h"
 !-----------------------------------------------------------------------
     integer :: idconm, idene1, idene2, idepl, ideplm, idepmm
     integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, itemps
@@ -160,9 +160,9 @@ subroutine te0490(option, nomte)
     parameter (mxcmel = 162)
     parameter (nbsgm  =   6)
     real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e
-    real(kind=8) :: lame, mu, vecp(3,3), epm(3)
+    real(kind=8) :: lame, mu, vecp(3, 3), epm(3)
     real(kind=8) :: enelas, eneldv, enelsp, enelto, eplaeq, eplast, epseq
-    real(kind=8) :: enelastr, enelpart1, enelpart2, trepstraction,  welastr
+    real(kind=8) :: enelastr, enelpart1, enelpart2, trepstraction, welastr
     real(kind=8) :: epsthe, omega, p, poids, psi, rp
     real(kind=8) :: rprim, sigeq, sigy, tempg, trepsm, trois, trsig
     real(kind=8) :: un, undemi, untier, volume, welas, wtotal
@@ -357,11 +357,11 @@ subroutine te0490(option, nomte)
 !                      ===========================
 !
     if (option .eq. 'INDIC_ENER' .or. option .eq. 'ENEL_ELEM' .or. option .eq.&
-        'ENER_TOTALE'.or. option .eq. 'ENTR_ELEM') then
+        'ENER_TOTALE' .or. option .eq. 'ENTR_ELEM') then
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !
-        do 10 igau = 1, npg
+        do igau = 1, npg
 !
             omega = zero
             psi = zero
@@ -370,10 +370,10 @@ subroutine te0490(option, nomte)
 !
 !-----------Initialisation contrainte 6 composantes pour diago3.h
             call r8inir(nbsgm, zero, sigma, 1)
-
-            do 20 i = 1, nbsig
+!
+            do i = 1, nbsig
                 sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
- 20         continue
+            end do
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !
@@ -412,7 +412,7 @@ subroutine te0490(option, nomte)
             e = valres(1)
             nu = valres(2)
 !
-
+!
             deuxmu = e/(un+nu)
             k = untier*e/(un - deux*nu)
             lame = (e*nu)/((1+nu)*(1-2*nu))
@@ -446,49 +446,47 @@ subroutine te0490(option, nomte)
                 epsel(4) = c1*sigma(4)
                 epsel(5) = c1*sigma(5)
                 epsel(6) = c1*sigma(6)
-
+!
             endif
-
+!
 !
 ! --- PARTIE SPHERIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE POSITIVE OU NULLE:
 !
-
+!
             trepstraction = epsel(1) + epsel(2) + epsel(3)
             if (trepstraction .le. zero) then
-                     trepstraction = zero
+                trepstraction = zero
             endif
-
+!
             enelpart1 = undemi*lame*trepstraction*trepstraction
-
+!
 !
 ! --- CALCUL DES DEFORMATIONS ELASTIQUES PRINCIPALES POSITIVES OU NULLES:
-            call diago3(epsel,vecp,epm)
-
+            call diago3(epsel, vecp, epm)
+!
             if (epm(1) .le. zero) then
-                  epm(1) = zero
+                epm(1) = zero
             endif
             if (epm(2) .le. zero) then
-                  epm(2) = zero
+                epm(2) = zero
             endif
             if (epm(3) .le. zero) then
-                  epm(3) = zero
+                epm(3) = zero
             endif
-
+!
 !
 ! --- PARTIE DE L'ENERGIE DE DEFORMATION ELASTIQUE (DIRECTIONS PRINCIPALES) POSITIVE OU NULLE:
 !
-
-            enelpart2 = mu*(epm(1)*epm(1)+&
-                     &epm(2)*epm(2)+&
-                     &epm(3)*epm(3))
-
+!
+            enelpart2 = mu*(epm(1)*epm(1)+epm(2)*epm(2)+epm(3)*epm(3))
+!
 !
 ! --- ENERGIE DE DEFORMATION ELASTIQUE DE TRACTION:
 !
             enelastr = enelpart1 + enelpart2
-
+!
 ! --- TRAITEMENT DE L'OPTION ENEL_ELTR :
-
+!
             if (option .eq. 'ENTR_ELEM') then
 !
                 welastr = welastr + enelastr*poids
@@ -598,33 +596,33 @@ subroutine te0490(option, nomte)
 !           NI VMIS_ISOT_ NI ELAS
 !
                     if (idconm .ne. 0) then
-                        do 25 i = 1, nbsig
+                        do i = 1, nbsig
                             sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
- 25                     continue
+                        end do
                     endif
 !
 ! ---       TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
 !           ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
 !           NI VMIS_ISOT_ NI ELAS
 !
-                    do 30 i = 1, nbsig
+                    do i = 1, nbsig
                         epsi(i)= epss(i+(igau-1)*nbsig)
- 30                 continue
+                    end do
 !
 ! ---      TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION PRECEDENT
 !          ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
 !          NI VMIS_ISOT_ NI ELAS
 !
                     if (ideplm .ne. 0) then
-                        do 35 i = 1, nbsig
+                        do i = 1, nbsig
                             epsim(i) = epssm(i+(igau-1)*nbsig)
- 35                     continue
+                        end do
                     endif
 !
                     if ((idconm.ne.0) .and. (ideplm.ne.0)) then
-                        do 50 i = 1, nbsig
+                        do i = 1, nbsig
                             delta(i)=epsi(i)-epsim(i)
- 50                     continue
+                        end do
 !
 !---          CALCUL DES TERMES A SOMMER
 !
@@ -829,7 +827,8 @@ subroutine te0490(option, nomte)
                 endif
             endif
 !
- 10     continue
+ 10         continue
+        end do
 !
 ! ----   RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
 ! ----   AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
@@ -865,7 +864,7 @@ subroutine te0490(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !
-        do 60 igau = 1, npg
+        do igau = 1, npg
 !
 !
 !
@@ -883,9 +882,9 @@ subroutine te0490(option, nomte)
 !
 ! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
-            do 70 i = 1, nbsig
+            do i = 1, nbsig
                 sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
- 70         continue
+            end do
 !
 ! --- CALCUL DES DEFORMATIONS ELASTIQUES AU POINT
 ! --- D'INTEGRATION COURANT EN CONSIDERANT LE MATERIAU ISOTROPE :
@@ -931,12 +930,12 @@ subroutine te0490(option, nomte)
             if (compor(1) .eq. 'VMIS_CINE_LINE') then
                 nbsig2 = 7
                 ASSERT(idvari.ne.1)
-                do 75 i = 1, nbsig
+                do i = 1, nbsig
                     x(i) = zr(idvari+(igau-1)*nbsig2+i-1)
- 75             continue
-                do 80 i = 1, nbsig
+                end do
+                do i = 1, nbsig
                     sigma(i) = sigma(i) - x(i)
- 80             continue
+                end do
             endif
 !
 ! --- CALCUL DU TRAVAIL PLASTIQUE AU POINT D'INTEGRATION COURANT :
@@ -1036,7 +1035,7 @@ subroutine te0490(option, nomte)
                 indigl = indigl + (un - eplast/eplaeq)*poids
             endif
 !
- 60     continue
+        end do
 !
 ! ---- RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
 ! ---- AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                   matma, dcent, cp, cf, vit,&
                   rho, pstat, dpstat, rint, phix,&
@@ -27,6 +27,8 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 !
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -36,8 +38,6 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 #include "asterfort/mefin4.h"
 #include "asterfort/mefin5.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ndim(14), numgrp(*), nbmod, nbz
     real(kind=8) :: matma(*), dcent(*)
     real(kind=8) :: cp(*), cf(*), vit(0:*), rho(0:*), pstat(*), dpstat(*)
@@ -106,7 +106,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
     real(kind=8) :: ecart
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  idphxg, idphyg, ig, ih, imataa, imatra
+    integer :: idphxg, idphyg, ig, ih, imataa, imatra
     integer :: iphixg, iphiyg, ippxx, ippxy, ippyx, ippyy, ivnxx
     integer :: ivnxy, ivnyx, ivnyy, nbcyl, nbgtot
     integer :: ntypg
@@ -165,17 +165,17 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 !
     if (ntypg .ne. 0) then
 !
-        do 45 k = 1, ntypg
+        do k = 1, ntypg
             aireg(k) = axg(k)/dble(nbcyl)
-45      continue
+        end do
 !
 !---  CALCUL (PAR INTERPOLATION  LINEAIRE) DES DEFORMEES MODALES
 !---  ET DE LEUR GRADIENT AUX COTES ZG DES GRILLES
 !
-        do 30 imod = 1, nbmod
-            do 37 igrp = 1, nbgrp
-                do 32 i = 2, nbz
-                    do 33 j = 1, nbgtot
+        do imod = 1, nbmod
+            do igrp = 1, nbgrp
+                do i = 2, nbz
+                    do j = 1, nbgtot
                         ecart = (z(i)-zg(j))*(z(i-1)-zg(j))
                         if (ecart .le. 0.d0) then
                             zr(iphixg+(imod-1)*nbgrp*nbgtot+(igrp-1)*&
@@ -199,24 +199,24 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                             i-1) )
 !
                         endif
-33                  continue
-32              continue
-37          continue
-30      continue
+                    end do
+                end do
+            end do
+        end do
 !
     endif
 !
-    do 4 jmod = 1, nbmod
-        do 41 imod = 1, nbmod
+    do jmod = 1, nbmod
+        do imod = 1, nbmod
 !
-            do 411 jgrp = 1, nbgrp
-                do 4111 igrp = 1, nbgrp
+            do jgrp = 1, nbgrp
+                do igrp = 1, nbgrp
 !
-                    do 41112 i = 1, nbcyl
+                    do i = 1, nbcyl
                         if (numgrp(i) .eq. igrp) then
                             rayo = rint(i)
                         endif
-41112                  continue
+                    end do
                     aire = pi*rayo*rayo
 !
 ! --- CONTRIBUTION DES EFFORTS NORMAUX DE FROTTEMENT VISQUEUX
@@ -226,9 +226,9 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 !
                     ncyl = 0
                     if (igrp .eq. jgrp) then
-                        do 41111 i = 1, nbcyl
+                        do i = 1, nbcyl
                             if (numgrp(i) .eq. igrp) ncyl = ncyl - 1
-41111                      continue
+                        end do
                     endif
 !
                     mata(imod,jmod) = mata(imod,jmod)-rho0*abs(vit0)* rayo* ( ( dcent(ivnxx+nbcyl&
@@ -311,21 +311,21 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                                       &nbz,nbgrp,imod, igrp,jmod,jgrp,z,phiy,phiy,vit,zr(ig),zr(i&
                                       &h)) )
 !
-4111              continue
-411          continue
+                end do
+            end do
 !
-            do 412 igrp = 1, nbgrp
+            do igrp = 1, nbgrp
 !
                 ncyl = 0
-                do 4121 i = 1, nbcyl
+                do i = 1, nbcyl
                     if (numgrp(i) .eq. igrp) ncyl = ncyl + 1
-4121              continue
+                end do
 !
-                do 4122 i = 1, nbcyl
+                do i = 1, nbcyl
                     if (numgrp(i) .eq. igrp) then
                         rayo = rint(i)
                     endif
-4122              continue
+                end do
                 aire = pi*rayo*rayo
 !C
 ! ---    CONTRIBUTION DES EFFORTS DE PRESSION STATIONNAIRE
@@ -339,23 +339,23 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                                   &bgrp,imod, igrp,jmod, igrp,z,phix,phix,dpstat,zr(ig))+ mefin5(&
                                   & nbz,nbgrp,imod,igrp,jmod, igrp,z,phiy,phiy,dpstat,zr( ig)))
 !
-412          continue
+            end do
 !
 !---    CONTRIBUTION DES EFFORTS DE CONTRAINTES SUR LES GRILLES
 !           ---> TERMES D'AMORTISSEMENT ET DE RAIDEUR AJOUTES
 !
             if (ntypg .ne. 0) then
 !
-                do 36 kg = 1, nbgtot
+                do kg = 1, nbgtot
 !
-                    do 34 jgrp = 1, nbgrp
-                        do 341 igrp = 1, nbgrp
+                    do jgrp = 1, nbgrp
+                        do igrp = 1, nbgrp
 !
                             ncyl = 0
                             if (igrp .eq. jgrp) then
-                                do 35 i = 1, nbcyl
+                                do i = 1, nbcyl
                                     if (numgrp(i) .eq. igrp) ncyl = ncyl-1
-35                              continue
+                                end do
                             endif
 !
                             ngz1 = (igrp-1)*nbgtot+kg
@@ -363,83 +363,83 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 !
 !---   AMORTISSEMENT AJOUTE
 !
-                            do 46 k = 1, ntypg
+                            do k = 1, ntypg
                                 if (itypg(kg) .eq. k) then
                                     mata(imod,jmod) = mata(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * aireg(k) * cpg(k) * ( ( dc&
-                                                      &ent(ivnxx+nbcyl*(jgrp-1)+ igrp) + dble(ncy&
-                                                      &l) ) * zr(iphixg+( imod-1)*nbgtot*nbgrp+ng&
-                                                      &z1-1) * zr(iphixg+(jmod-1)*nbgtot*nbgrp+ n&
-                                                      &gz2-1) + dcent(ivnxy+nbcyl*(jgrp- 1)+igrp)&
-                                                      & * zr(iphixg+(imod-1)* nbgtot*nbgrp+ngz1-1&
-                                                      &) * zr(iphiyg+( jmod-1)*nbgtot*nbgrp+ngz2-&
-                                                      &1) + dcent(ivnyx+nbcyl*(jgrp-1)+igrp) * zr&
-                                                      &(iphiyg+(imod-1)*nbgtot*nbgrp+ ngz1-1) * z&
-                                                      &r(iphixg+(jmod-1)* nbgtot*nbgrp+ngz2-1) + &
-                                                      &( dcent( ivnyy+nbcyl*(jgrp-1)+igrp) + dble&
-                                                      &( ncyl) ) * zr(iphiyg+(imod-1)* nbgtot*nbg&
-                                                      &rp+ngz1-1) * zr(iphiyg+( jmod-1)*nbgtot*nb&
-                                                      &grp+ngz2-1) )
+                                                      &tg(kg)) * aireg(k) * cpg(k) * ( ( dcent(iv&
+                                                      &nxx+nbcyl*(jgrp-1)+ igrp) + dble(ncyl) ) *&
+                                                      & zr(iphixg+( imod-1)*nbgtot*nbgrp+ngz1-1) &
+                                                      &* zr(iphixg+(jmod-1)*nbgtot*nbgrp+ ngz2-1)&
+                                                      & + dcent(ivnxy+nbcyl*(jgrp- 1)+igrp) * zr(&
+                                                      &iphixg+(imod-1)* nbgtot*nbgrp+ngz1-1) * zr&
+                                                      &(iphiyg+( jmod-1)*nbgtot*nbgrp+ngz2-1) + d&
+                                                      &cent(ivnyx+nbcyl*(jgrp-1)+igrp) * zr(iphiy&
+                                                      &g+(imod-1)*nbgtot*nbgrp+ ngz1-1) * zr(iphi&
+                                                      &xg+(jmod-1)* nbgtot*nbgrp+ngz2-1) + ( dcen&
+                                                      &t( ivnyy+nbcyl*(jgrp-1)+igrp) + dble( ncyl&
+                                                      &) ) * zr(iphiyg+(imod-1)* nbgtot*nbgrp+ngz&
+                                                      &1-1) * zr(iphiyg+( jmod-1)*nbgtot*nbgrp+ng&
+                                                      &z2-1) )
 !
                                     mata(imod,jmod) = mata(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * aireg(k) * cdg(k) * ( ( dc&
-                                                      &ent(ivnxx+nbcyl*(jgrp-1)+ igrp) + dble(ncy&
-                                                      &l) ) * zr(iphixg+( imod-1)*nbgtot*nbgrp+ng&
-                                                      &z1-1) * zr(iphixg+(jmod-1)*nbgtot*nbgrp+ n&
-                                                      &gz2-1) + dcent(ivnxy+nbcyl*(jgrp- 1)+igrp)&
-                                                      & * zr(iphixg+(imod-1)* nbgtot*nbgrp+ngz1-1&
-                                                      &) * zr(iphiyg+( jmod-1)*nbgtot*nbgrp+ngz2-&
-                                                      &1) + dcent(ivnyx+nbcyl*(jgrp-1)+igrp) * zr&
-                                                      &(iphiyg+(imod-1)*nbgtot*nbgrp+ ngz1-1) * z&
-                                                      &r(iphixg+(jmod-1)* nbgtot*nbgrp+ngz2-1) + &
-                                                      &( dcent( ivnyy+nbcyl*(jgrp-1)+igrp) + dble&
-                                                      &( ncyl) ) * zr(iphiyg+(imod-1)* nbgtot*nbg&
-                                                      &rp+ngz1-1) * zr(iphiyg+( jmod-1)*nbgtot*nb&
-                                                      &grp+ngz2-1) )
+                                                      &tg(kg)) * aireg(k) * cdg(k) * ( ( dcent(iv&
+                                                      &nxx+nbcyl*(jgrp-1)+ igrp) + dble(ncyl) ) *&
+                                                      & zr(iphixg+( imod-1)*nbgtot*nbgrp+ngz1-1) &
+                                                      &* zr(iphixg+(jmod-1)*nbgtot*nbgrp+ ngz2-1)&
+                                                      & + dcent(ivnxy+nbcyl*(jgrp- 1)+igrp) * zr(&
+                                                      &iphixg+(imod-1)* nbgtot*nbgrp+ngz1-1) * zr&
+                                                      &(iphiyg+( jmod-1)*nbgtot*nbgrp+ngz2-1) + d&
+                                                      &cent(ivnyx+nbcyl*(jgrp-1)+igrp) * zr(iphiy&
+                                                      &g+(imod-1)*nbgtot*nbgrp+ ngz1-1) * zr(iphi&
+                                                      &xg+(jmod-1)* nbgtot*nbgrp+ngz2-1) + ( dcen&
+                                                      &t( ivnyy+nbcyl*(jgrp-1)+igrp) + dble( ncyl&
+                                                      &) ) * zr(iphiyg+(imod-1)* nbgtot*nbgrp+ngz&
+                                                      &1-1) * zr(iphiyg+( jmod-1)*nbgtot*nbgrp+ng&
+                                                      &z2-1) )
                                 endif
-46                          continue
+                            end do
 !
 ! ---  RAIDEUR AJOUTEE
 !
-                            do 47 k = 1, ntypg
+                            do k = 1, ntypg
                                 if (itypg(kg) .eq. k) then
                                     matr(imod,jmod) = matr(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * aireg(k) * cdg(k) * vitg( &
-                                                      &kg) * ( dcent(ivnxx+nbcyl*(jgrp-1) +igrp) &
-                                                      &* zr(iphixg+(imod-1)*nbgrp* nbgtot+ngz1-1)&
-                                                      & * zr(idphxg+( jmod-1)*nbgrp*nbgtot+ngz2-1&
-                                                      &) + dcent(ivnxy+nbcyl*(jgrp-1)+igrp) * zr(&
-                                                      &iphixg+(imod-1)*nbgrp*nbgtot+ ngz1-1) * zr&
-                                                      &(idphyg+(jmod-1)* nbgrp*nbgtot+ngz2-1) + d&
-                                                      &cent( ivnyx+nbcyl*(jgrp-1)+igrp) * zr(iphi&
-                                                      &yg+(imod-1)*nbgrp*nbgtot+ ngz1-1) * zr(idp&
-                                                      &hxg+(jmod-1)* nbgrp*nbgtot+ngz2-1) + dcent&
-                                                      &( ivnyy+nbcyl*(jgrp-1)+igrp) * zr(iphiyg+(&
-                                                      &imod-1)*nbgrp*nbgtot+ ngz1-1) * zr(idphyg+&
-                                                      &(jmod-1)* nbgrp*nbgtot+ngz2-1) )
+                                                      &tg(kg)) * aireg(k) * cdg(k) * vitg( kg) * &
+                                                      &( dcent(ivnxx+nbcyl*(jgrp-1) +igrp) * zr(i&
+                                                      &phixg+(imod-1)*nbgrp* nbgtot+ngz1-1) * zr(&
+                                                      &idphxg+( jmod-1)*nbgrp*nbgtot+ngz2-1) + dc&
+                                                      &ent(ivnxy+nbcyl*(jgrp-1)+igrp) * zr(iphixg&
+                                                      &+(imod-1)*nbgrp*nbgtot+ ngz1-1) * zr(idphy&
+                                                      &g+(jmod-1)* nbgrp*nbgtot+ngz2-1) + dcent( &
+                                                      &ivnyx+nbcyl*(jgrp-1)+igrp) * zr(iphiyg+(im&
+                                                      &od-1)*nbgrp*nbgtot+ ngz1-1) * zr(idphxg+(j&
+                                                      &mod-1)* nbgrp*nbgtot+ngz2-1) + dcent( ivny&
+                                                      &y+nbcyl*(jgrp-1)+igrp) * zr(iphiyg+(imod-1&
+                                                      &)*nbgrp*nbgtot+ ngz1-1) * zr(idphyg+(jmod-&
+                                                      &1)* nbgrp*nbgtot+ngz2-1) )
 !
                                     matr(imod,jmod) = matr(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * aireg(k) * cpg(k) * vitg( &
-                                                      &kg) * ( ( dcent(ivnxx+nbcyl*(jgrp- 1)+igrp&
-                                                      &) + dble(ncyl) ) * zr( iphixg+(imod-1)*nbg&
-                                                      &rp*nbgtot+ngz1- 1) * zr(idphxg+(jmod-1)*nb&
-                                                      &grp* nbgtot+ngz2-1) + dcent(ivnxy+ nbcyl*(&
-                                                      &jgrp-1)+igrp) * zr(iphixg+( imod-1)*nbgrp*&
-                                                      &nbgtot+ngz1-1) * zr(idphyg+(jmod-1)*nbgrp*&
-                                                      &nbgtot+ ngz2-1) + dcent(ivnyx+nbcyl*(jgrp-&
-                                                      & 1)+igrp) * zr(iphiyg+(imod-1)* nbgrp*nbgt&
-                                                      &ot+ngz1-1) * zr(idphxg+( jmod-1)*nbgrp*nbg&
-                                                      &tot+ngz2-1) + ( dcent(ivnyy+nbcyl*(jgrp-1)&
-                                                      &+igrp) + dble(ncyl) ) * zr(iphiyg+( imod-1&
-                                                      &)*nbgrp*nbgtot+ngz1-1) * zr(idphyg+(jmod-1&
-                                                      &)*nbgrp*nbgtot+ ngz2-1) )
+                                                      &tg(kg)) * aireg(k) * cpg(k) * vitg( kg) * &
+                                                      &( ( dcent(ivnxx+nbcyl*(jgrp- 1)+igrp) + db&
+                                                      &le(ncyl) ) * zr( iphixg+(imod-1)*nbgrp*nbg&
+                                                      &tot+ngz1- 1) * zr(idphxg+(jmod-1)*nbgrp* n&
+                                                      &bgtot+ngz2-1) + dcent(ivnxy+ nbcyl*(jgrp-1&
+                                                      &)+igrp) * zr(iphixg+( imod-1)*nbgrp*nbgtot&
+                                                      &+ngz1-1) * zr(idphyg+(jmod-1)*nbgrp*nbgtot&
+                                                      &+ ngz2-1) + dcent(ivnyx+nbcyl*(jgrp- 1)+ig&
+                                                      &rp) * zr(iphiyg+(imod-1)* nbgrp*nbgtot+ngz&
+                                                      &1-1) * zr(idphxg+( jmod-1)*nbgrp*nbgtot+ng&
+                                                      &z2-1) + ( dcent(ivnyy+nbcyl*(jgrp-1)+igrp)&
+                                                      & + dble(ncyl) ) * zr(iphiyg+( imod-1)*nbgr&
+                                                      &p*nbgtot+ngz1-1) * zr(idphyg+(jmod-1)*nbgr&
+                                                      &p*nbgtot+ ngz2-1) )
 !
                                 endif
-47                          continue
+                            end do
 !
-341                      continue
-34                  continue
-36              continue
+                        end do
+                    end do
+                end do
 !
             endif
 !
@@ -451,8 +451,8 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                 matr(imod,jmod) = matr(imod,jmod)+matma(imatra+imod)
             endif
 !
-41      end do
- 4  end do
+        end do
+    end do
 !
 ! --- MENAGE
 !

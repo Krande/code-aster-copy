@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                   ul, dul, utl, sim, varim,&
                   klv, klv2, varip)
@@ -236,9 +236,9 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                     call dicor3(k01, dur, dryr, sim, si,&
                                 dnsdu, dmsdt, dnsdt)
 !
-                    do 5 i = 4, 7
+                    do i = 4, 7
                         varip(i) = varim(i)
- 5                  continue
+                    end do
                 else
 !
 ! ** ON PASSE EN MECANISME 2
@@ -300,9 +300,9 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
                     call dicor3(k01, dur, dryr, sim, si,&
                                 dnsdu, dmsdt, dnsdt)
-                    do 10 i = 4, 7
+                    do i = 4, 7
                         varip(i) = varim(i)
-10                  continue
+                    end do
 !
                 else
 !
@@ -355,9 +355,9 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                                 dmsdt, dnsdt)
                     call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2,&
                                 dmsdt2, dnsdt2)
-                    do 15 i = 4, 7
+                    do i = 4, 7
                         varip(i) = varim(i)
-15                  continue
+                    end do
                 else
                     if (iterat .eq. 1) then
                         if (feq2 .ge. c2) then
@@ -506,15 +506,15 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         endif
                         goto 20
                     endif
-19                  continue
+ 19                 continue
                     call dicor0(k02, varim(2), varip(2), varip(3), dnsdu,&
                                 dmsdt, dnsdt)
                     call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2,&
                                 dmsdt2, dnsdt2)
-20                  continue
-                    do 25 i = 4, 7
+ 20                 continue
+                    do i = 4, 7
                         varip(i) = varim(i)
-25                  continue
+                    end do
 !
                 else
 !
@@ -609,9 +609,9 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
             if (varim(3) .eq. 2.d0) dnsdu2 = rg2*nu2/dxu2/p2
             if (varim(3) .eq. 2.d0) dmsdt2 = rg2*mu2/dryu2/p2
         endif
-        do 30 i = 4, 7
+        do i = 4, 7
             varip(i) = varim(i)
-30      continue
+        end do
 !
     endif
 !

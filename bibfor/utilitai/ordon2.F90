@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ordon2(vale, nb)
 ! aslint: disable=W1306
     implicit none
@@ -39,10 +39,10 @@ subroutine ordon2(vale, nb)
     call dcopy(nb, vale(nb+1), 2, yrbid, 1)
     call dcopy(nb, vale(nb+2), 2, yibid, 1)
     call ordr8(xbid, nb, iord)
-    do 101 i = 1, nb
+    do i = 1, nb
         vale(i)=xbid(iord(i))
         vale(nb+1+2*(i-1))=yrbid(iord(i))
         vale(nb+2+2*(i-1))=yibid(iord(i))
-101  end do
+    end do
 !
 end subroutine

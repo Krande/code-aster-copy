@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine medom2(modele, mate, mateco, cara, kcha, ncha,&
-                  result, nuord, nbordr, base,&
+subroutine medom2(modele, mate, mateco, cara, kcha,&
+                  ncha, result, nuord, nbordr, base,&
                   npass, ligrel)
 !
-implicit none
+    implicit none
 !
+#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -62,13 +63,12 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: nbmxba
     parameter (nbmxba=2)
 !
     integer :: nbordr, npass, nbligr, i, kmod, nbmaal
-    integer :: iligrs, imodls, ibases,  n1, n2, n3
+    integer :: iligrs, imodls, ibases, n1, n2, n3
 !
     character(len=1) :: baslig
     character(len=24) :: ligrel, ligr1, noojb
@@ -83,8 +83,8 @@ implicit none
 !
 !     RECUPERATION DU MODELE, CARA, CHARGES A PARTIR DU RESULTAT ET DU
 !     NUMERO ORDRE
-    call medom1(modele, mate, mateco, cara, kcha, ncha,&
-                result, nuord)
+    call medom1(modele, mate, mateco, cara, kcha,&
+                ncha, result, nuord)
 !
 !     RECUPERATION DU LIGREL DU MODELE
 !
@@ -106,12 +106,12 @@ implicit none
 !     ON REGARDE SI LE MODELE A DEJA ETE RENCONTRE
     kmod=indik8(zk8(imodls-1),modele,1,nbligr+1)
     baslig=' '
-    do 10,i = 1,nbligr
-    if (zk8(imodls-1+i) .eq. modele) then
-        kmod=1
-        baslig=zk8(ibases-1+i)(1:1)
-    endif
-    10 end do
+    do i = 1, nbligr
+        if (zk8(imodls-1+i) .eq. modele) then
+            kmod=1
+            baslig=zk8(ibases-1+i)(1:1)
+        endif
+    end do
 !
 !     SI OUI, ON REGARDE SI LE LIGREL A ETE CREE SUR LA MEME BASE
 !     QUE LA BASE DEMANDEE

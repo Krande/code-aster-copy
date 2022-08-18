@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function indk32(lk32, k32z, rang, nbk32)
     implicit none
     integer :: indk32
@@ -46,16 +46,16 @@ function indk32(lk32, k32z, rang, nbk32)
 !
     k32 = k32z
     j = 0
-    do 10 i = 1, nbk32
+    do i = 1, nbk32
         lk32z = lk32(i)
         if (lk32z .eq. k32) then
             j = j + 1
             if (j .eq. rang) goto 20
         endif
-10  end do
+    end do
     indk32 = 0
     goto 30
-20  continue
+ 20 continue
     indk32 = i
-30  continue
+ 30 continue
 end function

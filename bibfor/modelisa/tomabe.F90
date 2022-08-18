@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                   mail2d, nbnobe, nunobe, xflu, xret,&
                   regl)
@@ -203,10 +203,10 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         numail = zi(jnumab+imail-1)
         call jelira(jexnum(conxma, numail), 'LONMAX', nbconx)
         call jeveuo(jexnum(conxma, numail), 'L', jconx)
-        do 41 ino = 1, nbconx
+        do ino = 1, nbconx
             numnoe = zi(jconx+ino-1)
             zi(jncoch+numnoe-1) = zi(jncoch+numnoe-1) + 1
- 41     continue
+        end do
     end do
 !
 ! 2.3 DECOMPTE DES NOEUDS ET RELEVE DE LEUR NUMERO
@@ -305,7 +305,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         call jelira(rcvalr, 'LONMAX', nbcste)
         trouv1 = .false.
         trouv2 = .false.
-        do 150 icste = 1, nbcste
+        do icste = 1, nbcste
             if (zk16(jvalk+icste-1) .eq. bpelb(1)) then
                 trouv1 = .true.
                 xflu = zr(jvalr+icste-1)
@@ -315,7 +315,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 xret = zr(jvalr+icste-1)
             endif
             if (trouv1 .and. trouv2) goto 151
-150     continue
+        end do
 !
 !
 !

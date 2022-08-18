@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
                   fabord)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -29,6 +28,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: nunoa, nunob, nunoc
     character(len=8) :: noma
     character(len=19) :: cnxinv
@@ -83,7 +83,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     nbmaco=0
 !
 !     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD A
-    do 100 imaa = 1, nmanoa
+    do imaa = 1, nmanoa
         numaa = zi(jmanoa-1+imaa)
 !
         itypma = zi(jma-1+numaa)
@@ -96,7 +96,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
         if (ndime .ne. 3) goto 100
 !
 !       BOUCLE SUR LES MAILLES CONTENANT LE NOEUD B
-        do 110 imab = 1, nmanob
+        do imab = 1, nmanob
             numab = zi(jmanob-1+imab)
 !
             itypma = zi(jma-1+numab)
@@ -110,7 +110,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !         SI LA MAILLE EST EN COMMUN AUX NOEUDS A ET B,
 !         ON BOUCLE SUR LES MAILLES CONTENANT LE NOEUD C
             if (numaa .eq. numab) then
-                do 120 imac = 1, nmanoc
+                do imac = 1, nmanoc
                     numac = zi(jmanoc-1+imac)
 !
                     itypma = zi(jma-1+numac)
@@ -126,10 +126,13 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !             ONT EN COMMUN
                     if (numab .eq. numac) nbmaco=nbmaco+1
 !
-120             continue
+120                 continue
+                end do
             endif
-110     continue
-100 end do
+110         continue
+        end do
+100     continue
+    end do
 !
     ASSERT(nbmaco.gt.0)
 !

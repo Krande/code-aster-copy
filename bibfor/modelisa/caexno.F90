@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
                   iocc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -29,6 +28,7 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/palino.h"
+!
     character(len=24) :: lvav, noma
     character(len=*) :: motfac, mcgrno, mcno, lvavz, nomaz
     integer :: iocc
@@ -89,22 +89,23 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
     call jeveuo(jexnum(lvav, iocc), 'E', idlvav)
     nbcpl = zi(idlvav)
     l = 0
-    do 2 i = 1, nbcpl
+    do i = 1, nbcpl
         l = l+1
-        do 3 j = 1, nbex
+        do j = 1, nbex
             if ((zi(idlvav+2*(i-1)+1).eq.zi(idlex+j)) .or.&
                 (zi(idlvav+ 2*(i-1)+2).eq.zi(idlex+j))) then
                 l = l-1
                 goto 2
             endif
- 3      continue
+        end do
         zi(idlvav+2*(l-1)+1) = zi(idlvav+2*(i-1)+1)
         zi(idlvav+2*(l-1)+2) = zi(idlvav+2*(i-1)+2)
- 2  end do
+  2     continue
+    end do
     zi(idlvav) = l
-998  continue
+998 continue
     call jedetr('&&CAEXNO.LISTENOEUD')
-999  continue
+999 continue
 ! FIN -----------------------------------------------------------------
     call jedema()
 end subroutine

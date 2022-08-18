@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxeffi(option, nomte, pgl, cont, ind,&
                   effint)
     implicit none
@@ -99,13 +99,13 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 !===============================================================
 !     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     -------------------------------------------------
-    do 100 ipg = 1, npg
+    do ipg = 1, npg
         call r8inir(3, zero, n, 1)
         call r8inir(3, zero, m, 1)
         call r8inir(2, zero, t, 1)
 !
-        do 110 icou = 1, nbcou
-            do 120 igauh = 1, npgh
+        do icou = 1, nbcou
+            do igauh = 1, npgh
                 icpg = nbcon*npgh*nbcou*(ipg-1) + nbcon*npgh*(icou-1) + nbcon*(igauh-1)
 !
                 if (igauh .eq. 1) then
@@ -136,18 +136,18 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
                 t(1) = t(1) + coehsd*cont(icpg+5)
                 t(2) = t(2) + coehsd*cont(icpg+6)
 !
-120         continue
-110     continue
+            end do
+        end do
 !
-        do 140 k = 1, 3
+        do k = 1, 3
             effint((ipg-1)*ind+k) = n(k)
             effint((ipg-1)*ind+k+3) = m(k)
-140     continue
+        end do
         if (ind .gt. 6) then
             effint((ipg-1)*ind+7) = t(1)
             effint((ipg-1)*ind+8) = t(2)
         endif
 !
-100 end do
+    end do
 !
 end subroutine

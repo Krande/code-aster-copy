@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36in(noma, nbma, listma, chindi)
     implicit none
 #include "jeveux.h"
@@ -44,7 +44,7 @@ subroutine rc36in(noma, nbma, listma, chindi)
 !     ------------------------------------------------------------------
 !
     integer :: n1, n2, nbindi, iocc, nbcmp, decal, ipt, icmp, iad, nbpt
-    integer ::   jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
+    integer :: jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
     integer :: jmail, nbtou, im1
     parameter  ( nbcmp = 7 )
     real(kind=8) :: vale(nbcmp)
@@ -91,101 +91,104 @@ subroutine rc36in(noma, nbma, listma, chindi)
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-    do 10, iocc = 1, nbindi, 1
+    do iocc = 1, nbindi, 1
 !
-    call getvr8(motclf, 'C1', iocc=iocc, scal=vale(1), nbret=n1)
-    call getvr8(motclf, 'C2', iocc=iocc, scal=vale(2), nbret=n1)
-    call getvr8(motclf, 'C3', iocc=iocc, scal=vale(3), nbret=n1)
-    call getvr8(motclf, 'K1', iocc=iocc, scal=vale(4), nbret=n1)
-    call getvr8(motclf, 'K2', iocc=iocc, scal=vale(5), nbret=n1)
-    call getvr8(motclf, 'K3', iocc=iocc, scal=vale(6), nbret=n1)
+        call getvr8(motclf, 'C1', iocc=iocc, scal=vale(1), nbret=n1)
+        call getvr8(motclf, 'C2', iocc=iocc, scal=vale(2), nbret=n1)
+        call getvr8(motclf, 'C3', iocc=iocc, scal=vale(3), nbret=n1)
+        call getvr8(motclf, 'K1', iocc=iocc, scal=vale(4), nbret=n1)
+        call getvr8(motclf, 'K2', iocc=iocc, scal=vale(5), nbret=n1)
+        call getvr8(motclf, 'K3', iocc=iocc, scal=vale(6), nbret=n1)
 !
-    call getvtx(motclf, 'TYPE_ELEM_STANDARD', iocc=iocc, scal=type, nbret=n1)
-    if (n1 .eq. 0) then
-        vale(7) = 0.d0
-    else
-        if (type(1:3) .eq. 'DRO') vale(7) = 10.d0
-        if (type(1:3) .eq. 'COU') vale(7) = 20.d0
-        if (type(1:3) .eq. 'TRN') vale(7) = 30.d0
-        if (type(1:3) .eq. 'TEE') vale(7) = 40.d0
-    endif
-!
-    call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
-    call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
-    if (n1+n2 .ne. 0) then
-        call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
-                    2, motcln, typmcn, mesnoe, nbnoeu)
-        call jeveuo(mesnoe, 'L', jnoeu)
-    else
-        nbnoeu = 0
-    endif
-!
-    call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
-    if (nbtou .ne. 0) then
-        do 100 im = 1, nbma
-            ima = listma(im)
-            nbpt = cesd(5+4*(ima-1)+1)
-            decal= cesd(5+4*(ima-1)+4)
-            do 110,ipt = 1,nbpt
-            do 120,icmp = 1,nbcmp
-            iad = decal + (ipt-1)*nbcmp + icmp
-            cesv(iad) = vale(icmp)
-120          continue
-110          continue
-100      continue
-!
-    else
-        call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
-                    2, motcls, typmcs, mesmai, nbmail)
-        call jeveuo(mesmai, 'L', jmail)
-!
-        if (nbnoeu .eq. 0) then
-            do 200 im = 1, nbmail
-                ima = zi(jmail+im-1)
-                do 202 im1 = 1, nbma
-                    if (listma(im1) .eq. ima) goto 204
-202              continue
-                goto 200
-204              continue
-                nbpt = cesd(5+4*(ima-1)+1)
-                decal= cesd(5+4*(ima-1)+4)
-                do 210,ipt = 1,nbpt
-                ino = connex(zi(jconx2+ima-1)+ipt-1)
-                do 220,icmp = 1,nbcmp
-                iad = decal + (ipt-1)*nbcmp + icmp
-                cesv(iad) = vale(icmp)
-220              continue
-210              continue
-200          continue
+        call getvtx(motclf, 'TYPE_ELEM_STANDARD', iocc=iocc, scal=type, nbret=n1)
+        if (n1 .eq. 0) then
+            vale(7) = 0.d0
         else
-            do 300 im = 1, nbmail
-                ima = zi(jmail+im-1)
-                do 302 im1 = 1, nbma
-                    if (listma(im1) .eq. ima) goto 304
-302              continue
-                goto 300
-304              continue
+            if (type(1:3) .eq. 'DRO') vale(7) = 10.d0
+            if (type(1:3) .eq. 'COU') vale(7) = 20.d0
+            if (type(1:3) .eq. 'TRN') vale(7) = 30.d0
+            if (type(1:3) .eq. 'TEE') vale(7) = 40.d0
+        endif
+!
+        call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
+        call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
+        if (n1+n2 .ne. 0) then
+            call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
+                        2, motcln, typmcn, mesnoe, nbnoeu)
+            call jeveuo(mesnoe, 'L', jnoeu)
+        else
+            nbnoeu = 0
+        endif
+!
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+        if (nbtou .ne. 0) then
+            do im = 1, nbma
+                ima = listma(im)
                 nbpt = cesd(5+4*(ima-1)+1)
                 decal= cesd(5+4*(ima-1)+4)
-                do 310,ipt = 1,nbpt
-                ino = connex(zi(jconx2+ima-1)+ipt-1)
-                do 320,in = 1,nbnoeu
-                if (zi(jnoeu+in-1) .eq. ino) then
-                    do 330,icmp = 1,nbcmp
-                    iad = decal + (ipt-1)*nbcmp + icmp
-                    cesv(iad) = vale(icmp)
-330                  continue
-                    goto 310
-                endif
-320              continue
-310              continue
-300          continue
-            call jedetr(mesnoe)
-        endif
-        call jedetr(mesmai)
-    endif
+                do ipt = 1, nbpt
+                    do icmp = 1, nbcmp
+                        iad = decal + (ipt-1)*nbcmp + icmp
+                        cesv(iad) = vale(icmp)
+                    end do
+                end do
+            end do
 !
-    10 end do
+        else
+            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
+                        2, motcls, typmcs, mesmai, nbmail)
+            call jeveuo(mesmai, 'L', jmail)
+!
+            if (nbnoeu .eq. 0) then
+                do im = 1, nbmail
+                    ima = zi(jmail+im-1)
+                    do im1 = 1, nbma
+                        if (listma(im1) .eq. ima) goto 204
+                    end do
+                    goto 200
+204                 continue
+                    nbpt = cesd(5+4*(ima-1)+1)
+                    decal= cesd(5+4*(ima-1)+4)
+                    do ipt = 1, nbpt
+                        ino = connex(zi(jconx2+ima-1)+ipt-1)
+                        do icmp = 1, nbcmp
+                            iad = decal + (ipt-1)*nbcmp + icmp
+                            cesv(iad) = vale(icmp)
+                        end do
+                    end do
+200                 continue
+                end do
+            else
+                do im = 1, nbmail
+                    ima = zi(jmail+im-1)
+                    do im1 = 1, nbma
+                        if (listma(im1) .eq. ima) goto 304
+                    end do
+                    goto 300
+304                 continue
+                    nbpt = cesd(5+4*(ima-1)+1)
+                    decal= cesd(5+4*(ima-1)+4)
+                    do ipt = 1, nbpt
+                        ino = connex(zi(jconx2+ima-1)+ipt-1)
+                        do in = 1, nbnoeu
+                            if (zi(jnoeu+in-1) .eq. ino) then
+                                do icmp = 1, nbcmp
+                                    iad = decal + (ipt-1)*nbcmp + icmp
+                                    cesv(iad) = vale(icmp)
+                                end do
+                                goto 310
+                            endif
+                        end do
+310                     continue
+                    end do
+300                 continue
+                end do
+                call jedetr(mesnoe)
+            endif
+            call jedetr(mesmai)
+        endif
+!
+    end do
 !
     call jedema()
 end subroutine

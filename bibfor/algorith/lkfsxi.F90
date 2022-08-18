@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
                   plas, xi, para, vara, dfdsdx,&
                   dpardx)
@@ -109,9 +109,9 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
 ! --------------------------------------
 ! --- VECTEUR IDENTITE
     vident(:) = zero
-    do 10 i = 1, ndi
+    do i = 1, ndi
         vident(i) = un
- 10 end do
+    end do
 !
 ! --- NORME DU DEVIATEUR DES CONTRAINTES
     sii = norm2(devsig(1:ndt))
@@ -177,12 +177,12 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
 ! --------------------------------------
     terexp = agx*sii*htheta+bgx*i1+dgx
     if (terexp .gt. zero) then
-        do 20 i = 1, ndt
+        do i = 1, ndt
             dfdsdx(i) = -damdx*sigc*h0c*terexp**(amx-un)* (agx*dshds( i)+bgx*vident(i))- amx*sigc&
                         &*h0c*((damdx*log(terexp)+(amx- un)/terexp *(dagdx*sii*htheta+dbgdx*i1+dd&
                         &gdx))*terexp** (amx-un))*(agx*dshds(i)+bgx*vident(i))- amx*sigc*h0c* ter&
                         &exp**(amx-un)* (dagdx*dshds(i)+dbgdx*vident(i))
- 20     continue
+        end do
     else
         dfdsdx(:) = zero
     endif

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asmpi_comm_jev(optmpi, nomjev)
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE : SUR-COUCHE MPI
@@ -36,8 +36,8 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "asterf.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
@@ -64,7 +64,6 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
     integer :: jnomjv, iexi, bcrank, ibid
     integer :: iobj, nbobj, nlong
     mpi_int :: nbpro4, mpicou, nbv
-    mpi_int, parameter :: pr0=0
     character(len=1) :: typsca, xous
     character(len=8) :: kbid, stock
     aster_logical :: unseul
@@ -100,7 +99,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
     bcrank=0
 !
-    do 10 iobj = 1, nbobj
+    do iobj = 1, nbobj
         if (unseul) then
             ASSERT (nbobj.eq.1)
             call jeveuo(nomjev, 'E', jnomjv)
@@ -131,7 +130,8 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         endif
 !
         if (xous .eq. 'X' .and. stock .ne. 'CONTIG') call jelibe(jexnum(nomjev, iobj))
- 10 continue
+ 10     continue
+    end do
 !
 !
 999 continue

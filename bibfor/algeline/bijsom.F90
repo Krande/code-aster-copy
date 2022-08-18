@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bijsom(umoy, rhof, r1, r2, long,&
                   cf0, icoq, jcoq, jmod, nbm,&
                   rki, thetai, thetaj, tcoef, ysol,&
@@ -97,12 +97,12 @@ subroutine bijsom(umoy, rhof, r1, r2, long,&
 !
 !-----1.2.CONTRIBUTIONS DES POINTS INTERMEDIAIRES
 !
-        do 10 k = 2, 100
+        do k = 2, 100
             p = ysol(3,k)
             z = dble(k-1)*dz
             wj = defaxe(jcoq,jmod,z,long,nbm,tcoef)
             som = som + p*coep*wj
-10      continue
+        end do
 !
 !-----1.3.CONTRIBUTION DU DERNIER POINT
 !
@@ -123,13 +123,13 @@ subroutine bijsom(umoy, rhof, r1, r2, long,&
 !
 !-----2.2.CONTRIBUTIONS DES POINTS INTERMEDIAIRES
 !
-        do 20 k = 2, 100
+        do k = 2, 100
             p = ysol(3,k)
             v = ysol(2,k)
             z = dble(k-1)*dz
             wj = defaxe(jcoq,jmod,z,long,nbm,tcoef)
             som = som + (p*coep+0.5d0*rhof*cf0*umoy*v)*wj
-20      continue
+        end do
 !
 !-----2.3.CONTRIBUTION DU DERNIER POINT
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matvec(nordre, amat, nombv, v1, v2,&
                   vecres)
     implicit none
@@ -42,22 +42,22 @@ subroutine matvec(nordre, amat, nombv, v1, v2,&
 !-----------------------------------------------------------------------
     zero = 0.d0
     if (nombv .eq. 1) then
-        do 1 i = 1, nordre
+        do i = 1, nordre
             vsom(i) = v1(i)
- 1      continue
+        end do
     else if (nombv.eq.2) then
-        do 2 i = 1, nordre
+        do i = 1, nordre
             vsom(i) = v1(i) + v2(i)
- 2      continue
+        end do
     else
         call utmess('F', 'ELEMENTS2_34')
     endif
     k = 0
-    do 12 i = 1, nordre
+    do i = 1, nordre
         vecres(i) = zero
-        do 11 j = 1, nordre
+        do j = 1, nordre
             k = k + 1
             vecres(i) = vecres(i) + amat(k) * vsom(j)
-11      continue
-12  end do
+        end do
+    end do
 end subroutine

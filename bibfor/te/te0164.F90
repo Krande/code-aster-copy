@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0164(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -48,15 +48,15 @@ subroutine te0164(option, nomte)
         nc = 3
         call terefe('EFFORT_REFE', 'MECA_BARRE', forref)
         call jevech('PVECTUR', 'E', ivectu)
-        do 101 ino = 1, nno
-            do 102 i = 1, nc
+        do ino = 1, nno
+            do i = 1, nc
                 zr(ivectu+(ino-1)*nc+i-1)=forref
-102          continue
-101      continue
+            end do
+        end do
 !
     else if (option.eq.'FORC_NODA') then
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
         call jevete('&INEL.CABPOU.YTY', 'L', iyty)
         nordre = 3*nno
 !        PARAMETRES EN ENTREE
@@ -69,24 +69,24 @@ subroutine te0164(option, nomte)
         call jevech('PVECTUR', 'E', jefint)
 !
         if (ideplp .eq. 0) then
-            do 10 i = 1, 3*nno
+            do i = 1, 3*nno
                 w(i) = zr(idepla-1+i)
-10          continue
+            end do
         else
-            do 20 i = 1, 3*nno
+            do i = 1, 3*nno
                 w(i) = zr(idepla-1+i) + zr(ideplp-1+i)
-20          continue
+            end do
         endif
-        do 40 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nordre*nordre
             jacobi=sqrt(biline(nordre,zr(igeom),zr(iyty+k),zr(igeom)))
             nx = zr(lsigma-1+kp)
             call matvec(nordre, zr(iyty+k), 2, zr(igeom), w,&
                         ytywpq)
             coef = nx*zr(ipoids-1+kp)/jacobi
-            do 30 i = 1, nordre
+            do i = 1, nordre
                 zr(jefint-1+i) = zr(jefint-1+i) + coef*ytywpq(i)
-30          continue
-40      continue
+            end do
+        end do
     endif
 end subroutine

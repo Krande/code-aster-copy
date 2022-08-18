@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
                   frere, seq, lgsn, lfront, adress,&
                   local, adpile, nbass, pile, lgpile,&
@@ -31,7 +31,6 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
@@ -44,6 +43,7 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
 #include "asterfort/mltc21.h"
 #include "asterfort/mltclm.h"
 #include "asterfort/mltcmj.h"
+!
     integer :: pmin, nbb
     parameter (pmin=10)
     integer :: nbloc, ncbloc(*), decal(*)
@@ -63,15 +63,15 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
     itemp = 1
     mem = 0
     isnd = 0
-    do 10 i = 1, lgpile
+    do i = 1, lgpile
         pile(i) = 0.d0
-10  end do
-    do 70 ib = 1, nbloc
+    end do
+    do ib = 1, nbloc
         call jeveuo(jexnum(factol, ib), 'E', ifacl)
         if (typsym .eq. 0) then
             call jeveuo(jexnum(factou, ib), 'E', ifacu)
         endif
-        do 60 nc = 1, ncbloc(ib)
+        do nc = 1, ncbloc(ib)
             isnd = isnd + 1
             sni = seq(isnd)
             p = lgsn(sni)
@@ -81,19 +81,19 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
             lm1 = lmatf
             if (typsym .eq. 0) lmatf = 2*lmatf
 !         CHANGTPOUR L' APPEL A DGEMV
-            do 19 i = 1, p
+            do i = 1, p
                 adper(i) = (i-1)*n+i
-19          continue
-            do 20 i = p, n - 1
+            end do
+            do i = p, n - 1
                 adper(i+1) = 1 + (n+ (n-i+1))*i/2
-20          continue
+            end do
             sn = fils(sni)
-            do 30 j = 1, lmatf
+            do j = 1, lmatf
                 pile(itemp+j-1) = 0.d0
-30          continue
+            end do
             adfacl = ifacl - 1 + decal(sni)
             if (typsym .eq. 0) adfacu = ifacu - 1 + decal(sni)
-40          continue
+ 40         continue
 !     DO WHILE (SN.NE.0)
             if (sn .ne. 0) then
                 nl = lgsn(sn)
@@ -116,29 +116,29 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
             if (p .le. pmin .and. typsym .ne. 0) then
                 call mltc21(p, zc(adfacl), pile(itemp), n, t1,&
                             t2, eps, ier)
-                if (ier .ne. 0) goto 9999
+                if (ier .ne. 0) goto 999
             else
                 if (typsym .eq. 0) then
                     call mlnclm(nbb, n, p, zc(adfacl), zc(adfacu),&
                                 adper, t1, t2, ad, eps,&
                                 ier, cl, cu)
-                    if (ier .ne. 0) goto 9999
+                    if (ier .ne. 0) goto 999
                     call mlncmj(nbb, n, p, zc(adfacl), zc(adfacu),&
                                 pile( itemp), pile(itemp+lm1), adper, t1, t2,&
                                 cl, cu)
                 else
                     call mltclm(nbb, n, p, zc(adfacl), adper,&
                                 t1, ad, eps, ier, cl)
-                    if (ier .ne. 0) goto 9999
+                    if (ier .ne. 0) goto 999
                     call mltcmj(nbb, n, p, zc(adfacl), pile(itemp),&
                                 adper, t1, cl)
                 endif
             endif
             if (fils(sni) .ne. 0) then
                 mem = max(mem, (itemp+lmatf-1))
-                do 50 j = 1, lmatf
+                do j = 1, lmatf
                     pile(adpile(fils(sni))+j-1) = pile(itemp+j-1)
-50              continue
+                end do
                 adpile(sni) = adpile(fils(sni))
                 itemp = adpile(sni) + lmatf
             else
@@ -146,11 +146,11 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
                 itemp = itemp + lmatf
             endif
             mem = max(mem,itemp)
-60      continue
+        end do
         call jelibe(jexnum(factol, ib))
         if (typsym .eq. 0) call jelibe(jexnum(factou, ib))
-70  end do
-9999  continue
+    end do
+999 continue
     if (ier .ne. 0) ier =ier +supnd(sni)-1
     call jedema()
 end subroutine

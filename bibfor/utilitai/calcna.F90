@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
                   nbvalf, valef, noparf)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jecrec.h"
@@ -32,6 +31,7 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbvalp, nbvalf
     real(kind=8) :: valep(*), valef(*)
     character(len=19) :: nomfin, nomfon
@@ -55,20 +55,20 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
     call jecrec(nomfon//'.VALE', ' G V R', 'NU', 'CONTIG', 'VARIABLE',&
                 nbvalp)
     call jeecra(nomfon//'.VALE', 'LONT', lont)
-    do 10 i = 1, nbvalp
+    do i = 1, nbvalp
         call jecroc(jexnum(nomfon//'.VALE', i))
         call jeecra(jexnum(nomfon//'.VALE', i), 'LONMAX', 2*nbvalf)
         call jeecra(jexnum(nomfon//'.VALE', i), 'LONUTI', 2*nbvalf)
         call jeveuo(jexnum(nomfon//'.VALE', i), 'E', lval)
         lfon = lval + nbvalf
         vale(2) = valep(i)
-        do 20 ival = 0, nbvalf-1
+        do ival = 0, nbvalf-1
             zr(lval+ival) = valef(ival+1)
             vale(1) = zr(lval+ival)
             call fointe('F', nomfin, 2, nopara, vale,&
                         zr(lfon+ival), ier)
-20      continue
-10  end do
+        end do
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !
@@ -82,17 +82,17 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
     zk24(lprol+4) = 'EE              '
     zk24(lprol+5) = nomfon
     zk24(lprol+6) = noparf
-    do 30 ival = 1, nbvalp
+    do ival = 1, nbvalp
         zk24(lprol+6+(2*ival-1)) = 'LIN LIN         '
         zk24(lprol+6+(2*ival )) = 'EE              '
-30  continue
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
 !
     call wkvect(nomfon//'.PARA', 'G V R', nbvalp, lpara)
-    do 40 ival = 1, nbvalp
+    do ival = 1, nbvalp
         zr(lpara+ival-1) = valep(ival)
-40  continue
+    end do
 !
     call jedema()
 end subroutine

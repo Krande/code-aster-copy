@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0105(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -46,8 +46,8 @@ subroutine te0105(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, ndim, jgano, i, k, ier
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     zero = 0.d0
     un = 1.d0
@@ -68,18 +68,18 @@ subroutine te0105(option, nomte)
 !
         call cq3d2d(nno, zr(igeom), 1.d0, zero, coor2d)
 !
-        do 40 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
             x = zero
             y = zero
             z = zero
-            do 10 i = 1, nno
+            do i = 1, nno
                 x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                 y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                 z = z + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-10          continue
+            end do
             valpar(1) = x
             valpar(2) = y
             valpar(3) = z
@@ -96,13 +96,13 @@ subroutine te0105(option, nomte)
             pc(1) = zero
             pc(2) = theta* (fmonp1) + (un-theta)* (fmon)
             pc(3) = theta* (fplnp1) + (un-theta)* (fpln)
-            do 30 gi = 1, nno
-                do 20 pi = 1, 3
+            do gi = 1, nno
+                do pi = 1, 3
                     i = 3* (gi-1) + pi - 1 + ivectt
                     zr(i) = zr(i) + pc(pi)*zr(ivf+k+gi-1)*poids
-20              continue
-30          continue
-40      continue
+                end do
+            end do
+        end do
 !
         else if (nomte.eq.'THCPSE3' .or. nomte.eq.'THCASE3')&
     then
@@ -111,16 +111,16 @@ subroutine te0105(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'INST'
 !
-        do 80 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
             call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
                         cour, poids, cosa, sina)
             x = zero
             y = zero
-            do 50 i = 1, nno
+            do i = 1, nno
                 x = x + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
                 y = y + zr(igeom+2* (i-1)+1)*zr(ivf+k+i-1)
-50          continue
+            end do
 !
             if (nomte .eq. 'THCASE3') poids = poids*x
 !
@@ -139,13 +139,13 @@ subroutine te0105(option, nomte)
             pc(1) = zero
             pc(2) = theta* (fmonp1) + (un-theta)* (fmon)
             pc(3) = theta* (fplnp1) + (un-theta)* (fpln)
-            do 70 gi = 1, nno
-                do 60 pi = 1, 3
+            do gi = 1, nno
+                do pi = 1, 3
                     i = 3* (gi-1) + pi - 1 + ivectt
                     zr(i) = zr(i) + pc(pi)*zr(ivf+k+gi-1)*poids
-60              continue
-70          continue
-80      continue
+                end do
+            end do
+        end do
 !
         else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
     then
@@ -166,17 +166,17 @@ subroutine te0105(option, nomte)
         rp2 = 0.33333333333333d0
         rp3 = 0.33333333333333d0
 !
-        do 110 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
 !
             x = zero
             y = zero
             z = zero
-            do 90 i = 1, nno
+            do i = 1, nno
                 x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
                 y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
                 z = y + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
-90          continue
+            end do
 !
             valpar(1) = x
             valpar(2) = y
@@ -203,16 +203,16 @@ subroutine te0105(option, nomte)
             matnp(5) = rp2*poid*zr(ivf-1+k+2)
             matnp(6) = rp3*poid*zr(ivf-1+k+2)
 !
-            if (nomte.eq.'THCOSE3') then
+            if (nomte .eq. 'THCOSE3') then
                 matnp(7) = rp1*poid*zr(ivf-1+k+3)
                 matnp(8) = rp2*poid*zr(ivf-1+k+3)
                 matnp(9) = rp3*poid*zr(ivf-1+k+3)
             endif
 !
-            do 100 i = 1, 3*nno
+            do i = 1, 3*nno
                 zr(ivectt-1+i) = zr(ivectt-1+i) + coef*long*matnp(i)
-100          continue
-110      continue
+            end do
+        end do
 !
     endif
 !

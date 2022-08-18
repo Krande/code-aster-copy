@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ptktfv(itype, sk, e, rof, ce,&
                   a1, ai1, a2, ai2, xl,&
                   xiy1, xiy2, xiz1, xiz2, xjx1,&
@@ -89,12 +89,13 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
 ! FUN1     - AIRES ET CONSTANTE DE TORSION EQUIVALENTES
 ! FUN2     - MOMENTS D INERTIE EQUIVALENTS
 !     ------------------------------------------------------------------
-    integer :: ip(16), i, k
+    integer :: i, k
     real(kind=8) :: zero
     real(kind=8) :: c2, c4, c8, c9, c12, c60
     real(kind=8) :: exl, xl2, xl3, phiy, phiz, asy, asz
     real(kind=8) :: aa, asy1, asy2, asz1, asz2, xjx, vt, q, xkk
     real(kind=8) :: se, ce2
+    integer, parameter :: ip(16) = (/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/)
 !
     zero = 0.d0
     c2 = 2.d0
@@ -103,17 +104,14 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
     c9 = 9.d0
     c12 = 12.d0
     c60 = 60.d0
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    data ip/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
-! ---------------------------------------------------------------------
-    do 1,i=1,136
-    sk(i) = zero
-    1 end do
+!
+    do i = 1, 136
+        sk(i) = zero
+    end do
 !
 !     -- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
-        if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
+        if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
     endif
 !
@@ -237,7 +235,7 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
     sk(ip(12)+11) = sk(ip( 4)+ 3)
     sk(ip(13)+12) = - sk(ip(13)+ 4)
     sk(ip(14)+12) = - sk(ip(14)+ 4)
-10  continue
+ 10 continue
 !
 !     CONTRIBUTION DU FLUIDE
 !
@@ -250,5 +248,5 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
     sk(ip( 7)+ 7) = xl * (c9*ai1 -ai2 + c12*se) / (rof * ce2 * c60)
     sk(ip(15)+ 7) = xl * (ai1 +ai2 + c8*se) / (rof * ce2 * c60)
     sk(ip(15)+15) = xl * (-ai1 +c9*ai2 + c12*se) / (rof * ce2 * c60)
-9999  continue
+999 continue
 end subroutine

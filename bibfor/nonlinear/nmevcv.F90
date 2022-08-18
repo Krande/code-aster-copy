@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmevcv(sderro, fonact, nombcl)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -95,7 +95,7 @@ subroutine nmevcv(sderro, fonact, nombcl)
 ! --- EVALUATION DE LA CONVERGENCE
 !
     cveven = .true.
-    do 10 ieven = 1, zeven
+    do ieven = 1, zeven
         teven = zk16(jeeniv-1+ieven)(1:9)
         neven = zk16(jeenom-1+ieven)(1:9)
         feven = zk24(jeefct-1+ieven)
@@ -118,7 +118,7 @@ subroutine nmevcv(sderro, fonact, nombcl)
             endif
             cveven = cveven.and.(.not.dv).and.cv
         endif
- 10 end do
+    end do
 !
 ! --- RECUPERE CONVERGENCES PRECEDENTES
 !

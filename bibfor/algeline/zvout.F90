@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zvout(lout, n, cx, idigit, ifmt)
 !
 !     SUBROUTINE ARPACK ECRIVANT DES VECTEURS DE COMPLEXE.
@@ -56,13 +56,13 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !
 !
     lll = min( len( ifmt ), 80 )
-    do 1 i = 1, lll
+    do i = 1, lll
         line( i: i ) = '-'
-  1 end do
+    end do
 !
-    do 2 i = lll + 1, 80
+    do i = lll + 1, 80
         line( i: i ) = ' '
-  2 end do
+    end do
 !
     write( lout, 2000 )ifmt, line( 1: lll )
     2000 format ( /1x, a  /1x, a )
@@ -78,36 +78,36 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
     if (idigit .lt. 0) then
         ndigit = -idigit
         if (ndigit .le. 4) then
-            do 30 k1 = 1, n, 2
+            do k1 = 1, n, 2
                 k2 = min( n, k1+1 )
                 if (k1 .ne. n) then
                     write( lout, 9998 )k1, k2, ( cx( i ), i = k1, k2 )
                 else
                     write( lout, 9997 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
- 30         continue
+            end do
         else if (ndigit.le.6) then
-            do 40 k1 = 1, n, 2
+            do k1 = 1, n, 2
                 k2 = min( n, k1+1 )
                 if (k1 .ne. n) then
                     write( lout, 9988 )k1, k2, ( cx( i ), i = k1, k2 )
                 else
                     write( lout, 9987 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
- 40         continue
+            end do
         else if (ndigit.le.8) then
-            do 50 k1 = 1, n, 2
+            do k1 = 1, n, 2
                 k2 = min( n, k1+1 )
                 if (k1 .ne. n) then
                     write( lout, 9978 )k1, k2, ( cx( i ), i = k1, k2 )
                 else
                     write( lout, 9977 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
- 50         continue
+            end do
         else
-            do 60 k1 = 1, n
+            do k1 = 1, n
                 write( lout, 9968 )k1, k1, cx( i )
- 60         continue
+            end do
         endif
 !
 !=======================================================================
@@ -116,7 +116,7 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !
     else
         if (ndigit .le. 4) then
-            do 70 k1 = 1, n, 4
+            do k1 = 1, n, 4
                 k2 = min( n, k1+3 )
                 if ((k1+3) .le. n) then
                     write( lout, 9958 )k1, k2, ( cx( i ), i = k1, k2 )
@@ -127,9 +127,9 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+3-n) .eq. 1) then
                     write( lout, 9955 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
- 70         continue
+            end do
         else if (ndigit.le.6) then
-            do 80 k1 = 1, n, 3
+            do k1 = 1, n, 3
                 k2 = min( n, k1+2 )
                 if ((k1+2) .le. n) then
                     write( lout, 9948 )k1, k2, ( cx( i ), i = k1, k2 )
@@ -138,9 +138,9 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+2-n) .eq. 2) then
                     write( lout, 9946 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
- 80         continue
+            end do
         else if (ndigit.le.8) then
-            do 90 k1 = 1, n, 3
+            do k1 = 1, n, 3
                 k2 = min( n, k1+2 )
                 if ((k1+2) .le. n) then
                     write( lout, 9938 )k1, k2, ( cx( i ), i = k1, k2 )
@@ -149,16 +149,16 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
                 else if ((k1+2-n) .eq. 2) then
                     write( lout, 9936 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
- 90         continue
+            end do
         else
-            do 100 k1 = 1, n, 2
+            do k1 = 1, n, 2
                 k2 = min( n, k1+1 )
                 if ((k1+2) .le. n) then
                     write( lout, 9928 )k1, k2, ( cx( i ), i = k1, k2 )
                 else if ((k1+2-n) .eq. 1) then
                     write( lout, 9927 )k1, k2, ( cx( i ), i = k1, k2 )
                 endif
-100         continue
+            end do
         endif
     endif
     write( lout, 9994 )

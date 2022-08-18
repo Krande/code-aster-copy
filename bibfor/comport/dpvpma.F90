@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
                   materf, matcst, ndt, ndi, nvi,&
                   indal)
-    implicit     none
+    implicit none
 #include "asterfort/rcvala.h"
     integer :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
@@ -73,22 +73,24 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
     nomc(16) = 'BETA_PIC '
     nomc(17) = 'BETA_ULT '
 !
-    do 101 i = 1, nbmat
-        do 102 j = 1, 2
+    do i = 1, nbmat
+        do j = 1, 2
             materd(i,j) = 0.d0
-102      continue
-101  end do
+        end do
+    end do
 !
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
     call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempd], 3, nomc(1), materd(1, 1), cerr(1), 0)
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1),&
+                0)
     indal=1
     if (cerr(3) .ne. 0) indal=0
 !
     call rcvala(imat, ' ', 'VISC_DRUC_PRAG', 1, 'TEMP',&
-                [tempd], 14, nomc(4), materd(1, 2), cerr(4), 0)
+                [tempd], 14, nomc(4), materd(1, 2), cerr(4),&
+                0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
@@ -104,10 +106,10 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! --- DEFINITION D'UN MATERIAU FINAL ------------------------------
 ! =================================================================
-    do 10 ii = 1, nbmat
+    do ii = 1, nbmat
         materf(ii,1) = materd(ii,1)
         materf(ii,2) = materd(ii,2)
-10  end do
+    end do
     matcst = 'OUI'
 ! =================================================================
 ! --- NOMBRE DE COMPOSANTES ---------------------------------------

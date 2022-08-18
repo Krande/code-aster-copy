@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                  jlnsl, nbno, jcoor, jcoorg, nbmaf,&
                  jdlima, nbsef, jdlise, jconx1, jconx2,&
@@ -27,6 +27,8 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -39,8 +41,6 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xorima.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: noma
@@ -83,12 +83,12 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !     TABLEAU POUR STOCKER LE NOMBRE DE NOEUDS SOMMETS
 !     DES MAILLES DE FISSURE
     AS_ALLOCATE(vi=nbno_ma_fondfiss, size=nbmaf)
-    do 5 imafis = 1, nbmaf
+    do imafis = 1, nbmaf
         nmaabs=zi(jdlima+imafis-1)
         itypma=zi(jma-1+nmaabs)
         call panbno(itypma, nbnott)
         nbno_ma_fondfiss(imafis)=nbnott(1)
-  5 end do
+    end do
 !
 !     VERIFICATION DE L'ORIENTATION DES MAILLES DE LA FISSURES
     sens='&&XLS3D.ORI_MAFIS'
@@ -98,7 +98,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !
 !     BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE
-    do 11 ino = 1, nbno
+    do ino = 1, nbno
 !
         p(1)=zr(jcrd-1+3*(ino-1)+1)
         p(2)=zr(jcrd-1+3*(ino-1)+2)
@@ -109,14 +109,14 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
         dmin=r8maem()
 !       RECHERCHE DE LA MAILLE LA PLUS PROCHE :
 !       BOUCLE SUR NOEUDS DE MAFIS
-        do 2 imafis = 1, nbmaf
+        do imafis = 1, nbmaf
             nmaabs=zi(jdlima-1+(imafis-1)+1)
             nbnoma=zi(jconx2+nmaabs) - zi(jconx2+nmaabs-1)
             if ((nbnoma.eq.4) .or. (nbnoma.eq.8)) ntri=4
             if ((nbnoma.eq.3) .or. (nbnoma.eq.6)) ntri=1
 !
 !         BOUCLE SUR LE NOMBRE DE TRIANGLES DE LA MAILLE
-            do 21 itri = 1, ntri
+            do itri = 1, ntri
 !
                 inoma=1
                 if (itri .eq. 4) inoma=4
@@ -139,12 +139,12 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                 c(2)=zr(jcoor-1+3*(nuno(inoma)-1)+2)
                 c(3)=zr(jcoor-1+3*(nuno(inoma)-1)+3)
 !
-                do 211 i = 1, 3
+                do i = 1, 3
                     ab(i)=b(i)-a(i)
                     bc(i)=c(i)-b(i)
                     ap(i)=p(i)-a(i)
                     ac(i)=c(i)-a(i)
-211             continue
+                end do
 !
 !           CALCUL DE LA NORMALE A LA MAILLE TRIA3
 !           PROJECTION DE P SUR LA MAILLE VOIR R5.03.50-B
@@ -186,10 +186,10 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                 if (eps1 .gt. 1.d0) eps1=1.d0
                 if (eps2 .gt. 1.d0) eps2=1.d0
 !
-                do 212 i = 1, 3
+                do i = 1, 3
                     m(i)=a(i)+eps1*ab(i)+eps2*ac(i)
                     pm(i)=m(i)-p(i)
-212             continue
+                end do
 !
 !           CALCUL DE LA DISTANCE PM
                 d=padist(3,p,m)
@@ -200,9 +200,9 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                     xln=zi(jsens-1+imafis)*ddot(3,vn,1,pm,1)
                 endif
 !
- 21         continue
+            end do
 !
-  2     continue
+        end do
 !
         zr(jlnsv-1+(ino-1)+1)=xln
         zl(jlnsl-1+(ino-1)+1)=.true.
@@ -220,7 +220,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
         anglem=r8maem()
 !
 !       RECHERCHE DU SEGMENT LE PLUS PROCHE : BOUCLE SUR SEG DE FONFIS
-        do 3 isefis = 1, nbsef
+        do isefis = 1, nbsef
 !
             nseabs=zi(jdlise-1+(isefis-1)+1)
             call jenuno(jexnum(noma//'.NOMMAI', nseabs), nomail)
@@ -232,33 +232,33 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !         BOUCLE SUR LES MAILLES DE MAFIS POUR TROUVER LA BONNE MAILLE
             ma2ff=.false.
-            do 31 imafis = 1, nbmaf
+            do imafis = 1, nbmaf
 !
                 nmaabs=zi(jdlima-1+(imafis-1)+1)
 !           ON RECUPERE LES NUMEROS DS NOEUDS DE LA MAILLE ET ON TESTE
                 n1=0
                 n2=0
 !
-                do 32 inoma = 1, nbno_ma_fondfiss(imafis)
+                do inoma = 1, nbno_ma_fondfiss(imafis)
                     num=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
                     if (nunose(1) .eq. num) n1=1
                     if (nunose(2) .eq. num) n2=1
 !             POUR RECUPERER UN 3EME POINT (SOMMET) DE LA MAILLE
 !             QUI NE SOIT PAS SUR LE FOND
                     if ((nunose(1).ne.num) .and. (nunose(2).ne.num)) nunoc=num
- 32             continue
+                end do
 !
                 if ((n1*n2) .eq. 1) then
 !
                     ma2ff=.true.
-                    do 33 i = 1, 3
+                    do i = 1, 3
                         a(i)=zr(jcoor-1+3*(nunose(1)-1)+i)
                         b(i)=zr(jcoor-1+3*(nunose(2)-1)+i)
                         c(i)=zr(jcoor-1+3*(nunoc-1)+i)
                         ab(i)=b(i)-a(i)
                         ap(i)=p(i)-a(i)
                         ac(i)=c(i)-a(i)
- 33                 continue
+                    end do
 !
 !             CALCUL DE LA NORMALE A LA MAILLE
                     call provec(ab, ac, vn)
@@ -276,19 +276,19 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                     ps1=ddot(3,ab,1,ab,1)
                     eps=ps/ps1
 !
-                    do 344 i = 1, 3
+                    do i = 1, 3
                         mprim(i)=a(i)+eps*ab(i)
-344                 continue
+                    end do
 !
 !             ON RAMENE M SUR LES BORDS S'IL LE FAUT
                     if (eps .gt. 1.d0) eps=1.d0
                     if (eps .lt. 0.d0) eps=0.d0
 !
-                    do 34 i = 1, 3
+                    do i = 1, 3
                         m(i)=a(i)+eps*ab(i)
                         pm(i)=m(i)-p(i)
                         pmprim(i)=mprim(i)-p(i)
- 34                 continue
+                    end do
 !
 !              CALCUL DE L'ANGLE (PM,PM')
 !                  OU M EST LE PROJETE RAMENE
@@ -322,18 +322,18 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
                 endif
 !
- 31         continue
+            end do
 !
             if (.not.ma2ff) then
                 call utmess('F', 'XFEM2_17')
             endif
-  3     continue
+        end do
 !
 888     continue
         zr(jltsv-1+(ino-1)+1)=xlt
         zl(jltsl-1+(ino-1)+1)=.true.
 !
- 11 end do
+    end do
 !
     AS_DEALLOCATE(vi=nbno_ma_fondfiss)
     call jedetr('&&XLS3D.ORI_MAFIS')

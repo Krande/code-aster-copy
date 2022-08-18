@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmvco5(ndim, nno, nnol, pla, nd,&
                   tau1, tau2, mu, ddls, jac,&
                   ffc, ffp, nnos, ddlm, wsaut,&
@@ -77,16 +77,16 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
     am(:) = 0.d0
     coefi=xcalc_saut(1,0,1)
 !
-    do 17 i = 1, ndim
+    do i = 1, ndim
         p(1,i) = nd(i)
-17  continue
-    do 18 i = 1, ndim
+    end do
+    do i = 1, ndim
         p(2,i) = tau1(i)
-18  continue
+    end do
     if (ndim .eq. 3) then
-        do 19 i = 1, ndim
+        do i = 1, ndim
             p(3,i) = tau2(i)
-19      continue
+        end do
     endif
 ! calcul du saut de deplacement am en base locale
     call prmave(0, p, 3, ndim, ndim,&
@@ -102,33 +102,33 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
 ! et qu on a accès à WSAUT(3)
 !    valeur de w au point de Gauss
 ! remplissage L1mu
-    do 1 i = 1, nno
+    do i = 1, nno
         call indent(i, ddls, ddlm, nnos, iin)
-        do 2 j = 1, ndim
+        do j = 1, ndim
             vtmp(iin+ndim+j) = vtmp(iin+ndim+j)+ coefi*mug(j)*ffp(i)* jac
- 2      continue
- 1  end do
+        end do
+    end do
 ! remplissage L1u
-    do 3 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
-        do 4 j = 1, ndim
+        do j = 1, ndim
             vtmp(pli+2*ndim-1+j) = vtmp(pli+2*ndim-1+j) - am(j)*ffc(i)*jac
- 4      continue
- 3  end do
+        end do
+    end do
 ! remplissage L1w
-    do 5 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
-        do 6 j = 1, ndim
+        do j = 1, ndim
             vtmp(pli+2*ndim-1+j) = vtmp(pli+2*ndim-1+j) - wsaut(j)*ffc(i)*jac
- 6      continue
- 5  end do
+        end do
+    end do
 ! remplissage L2mu
-    do 12 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
-        do 13 j = 1, ndim
+        do j = 1, ndim
             vtmp(pli-1+ndim+j) = vtmp(pli-1+ndim+j) - mu(j)*ffc(i)* jac
-13      continue
-12  end do
+        end do
+    end do
 ! le remplissage de L2w a été enlevé
 !
 end subroutine

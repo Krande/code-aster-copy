@@ -15,18 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
                   igeom, elrefp, inoloc, nbnoma, jcesd3,&
-                  jcesl3, jcesv3, numa2, iheav, nfiss, vhea,&
-                  jcesd8, jcesl8, jcesv8, lfiss, vtot)
+                  jcesl3, jcesv3, numa2, iheav, nfiss,&
+                  vhea, jcesd8, jcesl8, jcesv8, lfiss,&
+                  vtot)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1306
     implicit none
-#include "jeveux.h"
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/iselli.h"
@@ -48,27 +49,27 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 ! ----------------------------------------------------------------------
 !
 !     BOUCLE SUR LES SOUS ELEMENTS
-    do 70 ise = 1, nse
+    do ise = 1, nse
 !       RECUPERATION DES COORDONNEES DES NOEUDS DU SOUS ELEMENT
-        do 80 i = 1, ndim+1
+        do i = 1, ndim+1
             ino2 = zi(jcnse-1+nnose*(ise-1)+i)
-            ! on ne recupere pas les noeuds milieux
+! on ne recupere pas les noeuds milieux
             ASSERT(ino2 .le. 2000)
             if (ino2 .gt. 1000) then
-                do 90 j = 1, ndim
+                do j = 1, ndim
                     co(i,j)=zr(jpint-1+ndim*(ino2-1000-1)+j)
-90              continue
+                end do
             else
-                do 100 j = 1, ndim
+                do j = 1, ndim
                     co(i,j)=zr(igeom-1+ndim*(ino2-1)+j)
-100              continue
+                end do
             endif
-80      continue
-        do 110 i = 1, ndim
-            do 120 j = 1, ndim
+        end do
+        do i = 1, ndim
+            do j = 1, ndim
                 mat(i,j)=co(1,j)-co(i+1,j)
-120          continue
-110      continue
+            end do
+        end do
 !
 !       CALCUL DU VOLUME DU SOUS ELEMENTS (DÉTERMINANT)
 !
@@ -86,44 +87,46 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !       CALCUL DU BARYCENTRE
 !
         bary(:) = 0.d0
-        do 170 j = 1, ndim
-            do 180 i = 1, ndim+1
+        do j = 1, ndim
+            do i = 1, ndim+1
                 bary(j) = bary(j)+co(i,j)
-180          continue
+            end do
             bary(j) = bary(j)/(ndim+1)
-170      continue
+        end do
 !
 !        CALCUL DES DERIVEES DES FONCTIONS DE FORME
 !
-        call reeref(elrefp, nbnoma, zr(igeom), bary, ndim, xe, ff, dfdi=dfdi)
+        call reeref(elrefp, nbnoma, zr(igeom), bary, ndim,&
+                    xe, ff, dfdi=dfdi)
         deriv =0.d0
-        do 190 i = 1, ndim
+        do i = 1, ndim
             deriv = max(abs(dfdi(inoloc,i)),deriv)
-190      continue
+        end do
 !       EN QUADRATIQUE : AUGMENTATION DU NOMBRE DE POINTS
         if (.not.iselli(elrefp)) then
-            do 200 k = 1, ndim+1
+            do k = 1, ndim+1
                 point(:) = 0.d0
-                do 210 j = 1, ndim
+                do j = 1, ndim
                     point(j) = (bary(j)+co(k,j))/2
-210              continue
-                call reeref(elrefp, nbnoma, zr(igeom), point, ndim, xe, ff, dfdi=dfdi)
-                do 220 i = 1, ndim
+                end do
+                call reeref(elrefp, nbnoma, zr(igeom), point, ndim,&
+                            xe, ff, dfdi=dfdi)
+                do i = 1, ndim
                     deriv = max(abs(dfdi(inoloc,i)),deriv)
-220              continue
-200          continue
+                end do
+            end do
         endif
         vse = vse*deriv**2
 !
 !  EN QUADRATIQUE :: MULTIPLICATION PAR UN TERME CORRECTIF CAR L INTEGRATION EST IMPRECISE
 !    ASYMPTOTIQUEMENT DFDI EST PROCHE DE EPS=VSE**1/NDIM
 !    L INTEGRALE DE DFDI**2 VARIE EN EPS**3
-        if (.not.iselli(elrefp).and.lfiss) vse = vse*vse**(3/ndim)
+        if (.not.iselli(elrefp) .and. lfiss) vse = vse*vse**(3/ndim)
 !       DETERMINATION DU SIGNE DU SOUS ELEMENT
         do i = 1, nfiss
-           call cesexi('S', jcesd3, jcesl3, numa2, 1,&
-                       i, ise, iad)
-           he(i) = zi(jcesv3-1+iad)
+            call cesexi('S', jcesd3, jcesl3, numa2, 1,&
+                        i, ise, iad)
+            he(i) = zi(jcesv3-1+iad)
         end do
 !       CALCUL DU CODE DU SOUS ELEMENT
         hea_se=xcalc_code(nfiss, he_real=[he])
@@ -131,10 +134,10 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
         call cesexi('C', jcesd8, jcesl8, numa2, inoloc,&
                     1, iheav, iad)
         hea_no = zi(jcesv8-1+iad)
-        if (hea_se.eq.hea_no) then
-           vhea = vhea + vse
+        if (hea_se .eq. hea_no) then
+            vhea = vhea + vse
         endif
         vtot = vtot + vse
-70  continue
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cumuma(i, j, pmat, coef, gmat)
 !
 ! FONCTION: CUMULE LES ELEMENTS DE LA MATRICE PMAT, MULTIPLIES PAR COEF,
@@ -39,11 +39,11 @@ subroutine cumuma(i, j, pmat, coef, gmat)
 !-----------------------------------------------------------------------
     i1 = (i-1) * 6
     j1 = (j-1) * 6
-    do 12 j2 = 1, 6
+    do j2 = 1, 6
         jj = j1 + j2
-        do 11 i2 = 1, 6
+        do i2 = 1, 6
             ii = i1 + i2
             gmat(ii,jj) = gmat(ii,jj) + coef*pmat(i2,j2)
-11      end do
-12  end do
+        end do
+    end do
 end subroutine

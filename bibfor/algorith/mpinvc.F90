@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                   coef, xabs, lfonct, ceta, cetap,&
                   ceta2p)
@@ -121,34 +121,34 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 ! ===============================
 ! CALCUL DE PHI_TRANSPOSEE * PHI
 ! ===============================
-    do 30 imod = 1, nbmode
-        do 20 jmod = 1, nbmode
+    do imod = 1, nbmode
+        do jmod = 1, nbmode
             zr(lphitp-1 +imod+nbmode*(jmod-1)) = 0.d0
-            do 10 imes = 1, nbmesu
+            do imes = 1, nbmesu
                 zr(lphitp-1 +imod+nbmode*(jmod-1)) = zr(&
                                                      lphitp-1 + imod+nbmode*(jmod-1)) + phi(imes,&
                                                      imod)*phi(imes, jmod&
                                                      )
- 10         continue
- 20     continue
- 30 end do
+            end do
+        end do
+    end do
 !
     if (nbmesu .lt. nbmode) then
 ! ===============================
 ! CALCUL DE PHI * PHI_TRANSPOSEE
 ! ===============================
-        do 40 imes = 1, nbmesu
-            do 50 jmes = 1, nbmesu
+        do imes = 1, nbmesu
+            do jmes = 1, nbmesu
                 zr(lphiph-1 +imes+nbmesu*(jmes-1)) = 0.d0
-                do 60 imod = 1, nbmode
+                do imod = 1, nbmode
                     zr(lphiph-1 +imes+nbmesu*(jmes-1)) = zr(&
                                                          lphiph-1 + imes+nbmesu*(jmes-1)&
                                                          ) + phi(imes,&
                                                          imod)*phi(jmes, imod&
                                                          )
- 60             continue
- 50         continue
- 40     continue
+                end do
+            end do
+        end do
     endif
 !
 ! =======================================
@@ -157,13 +157,13 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 !
 ! DEBUT DE LA BOUCLE SUR LES ABSCISSES (FREQUENCE)
 ! *****************************
-    do 100 iabs = 1, nbabs
+    do iabs = 1, nbabs
 !
         nul = .true.
 !
 ! DEBUT DE LA BOUCLE SUR LES MODES
 ! ********************************
-        do 90 imod = 1, nbmode
+        do imod = 1, nbmode
 !
 ! RECHERCHE DU COEFFICIENT DE PONDERATION
 ! ***************************************
@@ -186,9 +186,9 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 ! DETERMINATION DE LA MATRICE A INVERSER :
 ! MATSYS(IABS) = PHI_T*PHI + ALPHA(IABS)
 ! ****************************************
-            do 80 jmod = 1, nbmode
+            do jmod = 1, nbmode
                 zr(lmatsy-1 +imod+nbmode*(jmod-1)) = zr( lphitp-1 + imod+nbmode*( jmod-1) )
- 80         continue
+            end do
 !
             zr(lmatsy-1 +imod+nbmode*(imod-1)) = zr( lmatsy-1 +imod+ nbmode*(imod-1 ) ) + alpha
 !
@@ -199,12 +199,12 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
             zr(lsecmb-1 +imod) = 0.d0
             zr(lsecmb-1 +nbmode+imod) = 0.d0
 !
-            do 70 imes = 1, nbmesu
+            do imes = 1, nbmesu
                 cval = cmesu(imes,iabs)
 ! TRAITEMENT PARTIE REELLE / PARTIE IMAGINAIRE
                 zr(lsecmb-1 +imod) = zr(lsecmb-1 +imod) +phi(imes, imod)*dble(cval)
                 zr(lsecmb-1 +nbmode+imod) = zr(lsecmb-1 +nbmode+imod) +phi(imes,imod)*dimag(cval)
- 70         continue
+            end do
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
                 ibid = iabs-1
@@ -216,7 +216,7 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 !
 ! FIN DE LA BOUCLE SUR LES MODES
 ! ******************************
- 90     continue
+        end do
 !
 !
 ! RESOLUTION DU SYSTEME :
@@ -229,24 +229,24 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
             if (regul .eq. 'NON') then
 ! CALCUL MOINDRE NORME
                 call utmess('A', 'ALGORITH15_26')
-                do 71 imes = 1, nbmesu
+                do imes = 1, nbmesu
                     cval = cmesu(imes,iabs)
 ! TRAITEMENT PARTIE REELLE / PARTIE IMAGINAIRE
                     zr(lsecmb-1 +imes) = dble(cval)
                     zr(lsecmb-1 +nbmode+imes) = dimag(cval)
-                    do 77 jmes = 1, nbmesu
+                    do jmes = 1, nbmesu
                         zr(lmatsy-1 +imes+nbmode*(jmes-1)) = zr(lphiph-1 +imes+nbmesu*( jmes-1))
- 77                 continue
- 71             continue
+                    end do
+                end do
 !
 ! CHOIX POUR LA METHODE D INVERSION
                 if (method .eq. 'SVD') then
 ! METHODE SVD
 ! CREATION DU VECTEUR SECOND MEMBRE
-                    do 75 jmes = 1, nbmesu
+                    do jmes = 1, nbmesu
                         zr(leta-1 +jmes) = zr(lsecmb-1 +jmes)
                         zr(leta-1 +nbmode+jmes) = zr(lsecmb-1 +nbmode+ jmes)
- 75                 continue
+                    end do
 !
                     call rslsvd(nbmode, nbmesu, nbmesu, zr(lmatsy), zr( lvals),&
                                 zr(lu), zr(lv), 2, zr(leta), eps,&
@@ -271,14 +271,14 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 ! COPIE DES RESULTATS DANS CETA
                 cval = dcmplx(zero,depi*xabs(iabs))
                 rval = -depi*depi*xabs(iabs)*xabs(iabs)
-                do 76 jmod = 1, nbmode
-                    do 74 jmes = 1, nbmesu
+                do jmod = 1, nbmode
+                    do jmes = 1, nbmesu
                         ceta(jmod,iabs) = phi(jmes,jmod) *dcmplx(zr( leta-1 +jmes),zr(leta-1 +nbm&
                                           &ode+jmes))
- 74                 continue
+                    end do
                     cetap(jmod,iabs) = cval * ceta(jmod,iabs)
                     ceta2p(jmod,iabs) = rval * ceta(jmod,iabs)
- 76             continue
+                end do
 !
                 goto 100
             endif
@@ -290,10 +290,10 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
         if (method .eq. 'SVD') then
 ! METHODE SVD
 ! CREATION DU VECTEUR SECOND MEMBRE
-            do 81 jmod = 1, nbmode
+            do jmod = 1, nbmode
                 zr(leta-1 +jmod) = zr(lsecmb-1 +jmod)
                 zr(leta-1 +nbmode+jmod) = zr(lsecmb-1 +nbmode+jmod)
- 81         continue
+            end do
 !
             call rslsvd(nbmode, nbmode, nbmode, zr(lmatsy), zr( lvals),&
                         zr(lu), zr(lv), 2, zr(leta), eps,&
@@ -318,37 +318,38 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 ! RECUPERATION DES RESULTATS
         cval = dcmplx(zero,depi*xabs(iabs))
         rval = -depi*depi*xabs(iabs)*xabs(iabs)
-        do 73 jmod = 1, nbmode
+        do jmod = 1, nbmode
             ceta(jmod,iabs)=dcmplx(zr(leta-1+jmod),zr(leta-1+nbmode+&
             jmod))
             cetap(jmod,iabs) = cval * ceta(jmod,iabs)
             ceta2p(jmod,iabs) = rval * ceta(jmod,iabs)
- 73     continue
+        end do
 !
 ! FIN DE LA BOUCLE SUR LES ABSCISSES (FREQUENCE)
 ! ***************************
-100 end do
+100     continue
+    end do
 !
     if (nomcha .eq. 'VITE') then
         cval = dcmplx(zero,depi*xabs(iabs))
-        do 200 iabs = 1, nbabs
-            do 201 jmod = 1, nbmode
+        do iabs = 1, nbabs
+            do jmod = 1, nbmode
                 cetap(jmod,iabs) = ceta(jmod,iabs)
                 ceta2p(jmod,iabs) = cval * cetap(jmod,iabs)
                 ceta(jmod,iabs) = -cval * cetap(jmod,iabs)
-201         continue
-200     continue
+            end do
+        end do
     endif
 !
     if (nomcha .eq. 'ACCE') then
         cval = dcmplx(zero,depi*xabs(iabs))
-        do 202 iabs = 1, nbabs
-            do 203 jmod = 1, nbmode
+        do iabs = 1, nbabs
+            do jmod = 1, nbmode
                 ceta2p(jmod,iabs) = ceta(jmod,iabs)
                 cetap(jmod,iabs) = -cval * ceta2p(jmod,iabs)
                 ceta(jmod,iabs) = -cval * cetap(jmod,iabs)
-203         continue
-202     continue
+            end do
+        end do
     endif
 !
 ! DESTRUCTION DES VECTEURS DE TRAVAIL

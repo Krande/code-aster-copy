@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xtlagc(ndim, nnc, jnn, nddls,&
-                  jdepde, ffc,&
-                  nfhe, lmulti, heavno, dlagrc)
+!
+subroutine xtlagc(ndim, nnc, jnn, nddls, jdepde,&
+                  ffc, nfhe, lmulti, heavno, dlagrc)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -74,12 +73,12 @@ subroutine xtlagc(ndim, nnc, jnn, nddls,&
 !
 ! --- LAGRANGE DE CONTACT
 !
-    do 230 ino = 1, nnc
+    do ino = 1, nnc
         call xplma2(ndim, nn, nns, nddls, ino,&
                     nfhe, pl)
         if (lmulti) pl = pl + (heavno(ino)-1)*ndim
         dlagrc = dlagrc+ffc(ino)*zr(jdepde-1+pl+1-1)
-230 continue
+    end do
 !
 !
 end subroutine

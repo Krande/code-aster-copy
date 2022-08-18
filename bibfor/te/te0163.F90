@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0163(option, nomte)
 !
 !
@@ -56,15 +56,15 @@ subroutine te0163(option, nomte)
     real(kind=8) :: poids(20)
 ! --------------------------------------------------------------------------------------------------
     integer :: i, idfdk, ilapl, ilist, ima, ipoids, ivect
-    integer :: ivf, j, jgano,  jlima, k, kp
+    integer :: ivf, j, jgano, jlima, k, kp
     integer :: igeom, nbma, nbma2, nddl, ndim, nno, nnos
     integer :: no1, no2, npg
     real(kind=8), pointer :: vale(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     zero = 0.d0
 !
     if (nomte .eq. 'MECA_POU_D_T_GD') then
@@ -107,7 +107,7 @@ subroutine te0163(option, nomte)
         f1 = g1/s
         f2 = g2/s
         f3 = g3/s
-        do 40 kp = 1, npg
+        do kp = 1, npg
             k = (kp-1)*nno
             if (ima .eq. 1) call vff3d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom+1), poids(kp))
             r1 = -vale(1+3*no2-3)
@@ -145,14 +145,17 @@ subroutine te0163(option, nomte)
             s = s/d/2.d0
             do i = 1, nno
                 do j = 1, 3
-                    zr(ivect-1+j+nddl* (i-1)) = zr(ivect-1+j+nddl*(i- 1)) + &
-                                                s*u(j)*poids(kp)*zr(ivf+k+i-1)
+                    zr(ivect-1+j+nddl* (i-1)) = zr(&
+                                                ivect-1+j+nddl*(i- 1)) + s*u(j)*poids(kp)*zr(ivf+&
+                                                &k+i-1&
+                                                )
                 enddo
             enddo
-40      continue
+ 40         continue
+        end do
     enddo
 !
-60  continue
+ 60 continue
 !
     call jedema()
 end subroutine

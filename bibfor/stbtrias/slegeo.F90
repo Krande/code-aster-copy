@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine slegeo(iunv, imod)
     implicit none
 !     =================
@@ -92,7 +92,7 @@ subroutine slegeo(iunv, imod)
     chlign='NBLIGT=      '
     chlige='NBLIGE=      '
 !
- 1  continue
+  1 continue
     read(iunv,'(A)')cbuf
     read(cbuf,'(4X,I2)') ind
     nblign=0
@@ -229,24 +229,24 @@ subroutine slegeo(iunv, imod)
         endif
         if (ityp .eq. 7) then
             if (idiv .ne. 0) then
-                do 20 i = 1, idiv
+                do i = 1, idiv
                     read(iunv,'(8I10)') (nument(k),k=1,8)
-                    do 25 k = 1, 8
+                    do k = 1, 8
                         call codnop(chnode, prfnoe, 1, 1)
                         call codent(nument(k), 'G', chnode(2:8))
                         nuobj(k)=chnode
-25                  continue
+                    end do
                     write(imod,'(8(2X,A))') (nuobj(j),j=1,8)
-20              continue
+                end do
             endif
 !
             if (irest .ne. 0) then
                 read (iunv,'(8I10)') (nument(i),i=1,8)
-                do 30 k = 1, irest
+                do k = 1, irest
                     call codnop(chnode, prfnoe, 1, 1)
                     call codent(nument(k), 'G', chnode(2:8))
                     nuobj(k)=chnode
-30              continue
+                end do
                 write(imod,'(8(2X,A))') (nuobj(j),j=1,irest)
             endif
             write(imod,'(A)') 'FINSF'
@@ -255,24 +255,24 @@ subroutine slegeo(iunv, imod)
         else
 !
             if (idiv .ne. 0) then
-                do 40 i = 1, idiv
+                do i = 1, idiv
                     read(iunv,'(8I10)') (nument(k),k=1,8)
-                    do 45 k = 1, 8
+                    do k = 1, 8
                         call codnop(chmail, prfmai, 1, 1)
                         call codent(nument(k), 'G', chmail(2:8))
                         nuobj(k)=chmail
-45                  continue
+                    end do
                     write(imod,'(8(2X,A))') (nuobj(j),j=1,8)
-40              continue
+                end do
             endif
 !
             if (irest .ne. 0) then
                 read (iunv,'(8I10)') (nument(i),i=1,8)
-                do 50 k = 1, irest
+                do k = 1, irest
                     call codnop(chmail, prfmai, 1, 1)
                     call codent(nument(k), 'G', chmail(2:8))
                     nuobj(k)=chmail
-50              continue
+                end do
                 write(imod,'(8(2X,A))') (nuobj(j),j=1,irest)
             endif
             write(imod,'(A)') 'FINSF'
@@ -283,7 +283,7 @@ subroutine slegeo(iunv, imod)
         write(imes,*) 'JE N''Y COMPRENDS PLUS RIEN'
     endif
     goto 1
-1000  continue
+1000 continue
     write(imes,*) 'NOMBRE DE CURVES :',icompc
     write(imes,*) 'NOMBRE DE M. AREAS:',icompa
     write(imes,*) 'NOMBRE DE M. VOLUMES:',icompv

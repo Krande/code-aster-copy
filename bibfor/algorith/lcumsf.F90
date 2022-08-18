@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
                   cmat, nmat, isph, tdt, hini,&
                   hfin, varf)
@@ -118,30 +118,30 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
 !          CFD(I,J)  = 0D0
 !12      CONTINUE
 !11    CONTINUE
-    do 11 i = 1, 6
+    do i = 1, 6
         afpd(i) = 0.d0
         afd(i) = 0.d0
         sigfi(i) = 0.d0
-        do 12 j = 1, 6
+        do j = 1, 6
             bfd(i,j) = 0d0
             cfd(i,j) = 0d0
-12      continue
-11  end do
-    do 13 i = 1, 6
+        end do
+    end do
+    do i = 1, 6
         sigidv(i) = 0.d0
         sigfdv(i) = 0.d0
-13  end do
+    end do
 !
 ! TEST DE COUPLAGE AVEC ICOU
 !
     if (icou .eq. 0) then
-        do 10 i = 1, nstrs
+        do i = 1, nstrs
             sigfi(i) = sigi(i)
-10      continue
+        end do
     else
-        do 20 i = 1, nstrs
+        do i = 1, nstrs
             sigfi(i) = sigf(i)
-20      continue
+        end do
     endif
 !
 ! CALCUL DES CONTRAINTES SPHERIQUES INI ET FIN
@@ -202,9 +202,9 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
 !
 !  => EQUATION (3.11-3)
 !
-    do 30 i = 1, nstrs
+    do i = 1, nstrs
         efde(i) = afd(i) + efde(i) + bfd(i,i) * sigi(i) + cfd(i,i) * sigfi(i)
-30  continue
+    end do
 !
 !  FLUAGE PROPRE
 !
@@ -247,15 +247,15 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
         call lcumfd(vari, nvari, nstrs, cmat, nmat,&
                     1, tdt, hini, hfin, afpd,&
                     bfpd, cfpd)
-        do 40 i = 1, nstrs
+        do i = 1, nstrs
             epsdvr(i) = epsdvr(i) + afpd(i)+ bfpd*sigidv(i) + cfpd* sigfdv(i)
-40      continue
+        end do
         call lcumfd(vari, nvari, nstrs, cmat, nmat,&
                     2, tdt, hini, hfin, afpd,&
                     bfpd, cfpd)
-        do 50 i = 1, nstrs
+        do i = 1, nstrs
             epsdvi(i) = epsdvi(i) + afpd(i) + bfpd*sigidv(i) + cfpd* sigfdv(i)
-50      continue
+        end do
     endif
 !
 !  SAUVEGARDE DES DEFORMATIONS DE FLUAGE
@@ -291,6 +291,6 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
     varf(19) = efde(5)
     varf(20) = efde(6)
 !
-60  continue
+ 60 continue
 !
 end subroutine

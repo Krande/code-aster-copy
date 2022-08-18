@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0529(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -63,8 +63,8 @@ subroutine te0529(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 !      ----------------------------------------------
@@ -80,11 +80,11 @@ subroutine te0529(option, nomte)
     xyz(1) = 0.d0
     xyz(2) = 0.d0
     xyz(3) = 0.d0
-    do 300 i = 1, nno
-        do 310 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-310      continue
-300  end do
+        end do
+    end do
     call ortrep(ndim, xyz, repere)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
@@ -103,7 +103,7 @@ subroutine te0529(option, nomte)
     call r8inir(135, 0.d0, epvc, 1)
 !
 !
-    do 200 igau = 1, npg
+    do igau = 1, npg
 !
 !      CALCUL AU POINT DE GAUSS DE LA TEMPERATURE ET
 !       DU REPERE D'ORTHOTROPIE
@@ -111,10 +111,10 @@ subroutine te0529(option, nomte)
         xyzgau(1) = 0.d0
         xyzgau(2) = 0.d0
         xyzgau(3) = 0.d0
-        do 55 idim = 1, ndim
+        do idim = 1, ndim
             xyzgau(idim) = xyzgau(idim) + zr(ivf+idim-1+nno*(igau-1))* zr(igeom+idim-1+ndim*(idim&
                            &-1))
-55      continue
+        end do
 !
 !
         optio2 = 'EPVC_ELGA_TEMP'
@@ -134,24 +134,24 @@ subroutine te0529(option, nomte)
         call epstmc(fami, ndim, instan, '+', igau,&
                     1, xyzgau, repere, zi( imate), optio2,&
                     epspt)
-        do 60 i = 1, 3
+        do i = 1, 3
             epvc(i+nbcmp*(igau-1)) = epsth(i)
-60      continue
+        end do
         epvc(4+nbcmp*(igau-1) )= epsse(1)
         epvc(5+nbcmp*(igau-1) )= epshy(1)
         epvc(6+nbcmp*(igau-1) )= epspt(1)
 !
-200  continue
+    end do
 !
 !         --------------------
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 ! ---- POINTS D'INTEGRATION :
 !      --------------------
-    do 80 igau = 1, npg
-        do 70 isig = 1, nbcmp
+    do igau = 1, npg
+        do isig = 1, nbcmp
             zr(idefo+nbcmp* (igau-1)+isig-1) = epvc(nbcmp* (igau-1)+ isig)
-70      continue
-80  continue
+        end do
+    end do
 !
 !
 end subroutine

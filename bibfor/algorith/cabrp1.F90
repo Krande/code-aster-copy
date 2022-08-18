@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
                   idfde, idfde2, geom, dimdef, dimuel,&
                   ndim, nddls, nddlm, nno, nnos,&
@@ -62,11 +62,11 @@ subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- INITIALISATION DE LA MATRICE B -----------------------------------
 ! ======================================================================
-    do 100 i = 1, dimuel
-        do 200 j = 1, dimdef
+    do i = 1, dimuel
+        do j = 1, dimdef
             b(j,i)=0.d0
-200     continue
-100 end do
+        end do
+    end do
     adder1 = regula(1)
     adder2 = regula(2)
     adder3 = regula(3)
@@ -101,40 +101,40 @@ subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- SUR LES NOEUDS SOMMETS -------------------------------------------
 ! ======================================================================
-    do 10 n = 1, nnos
-        do 20 i = 1, ndim
+    do n = 1, nnos
+        do i = 1, ndim
             b(adder1,(n-1)*nddls+i) = b(adder1,(n-1)*nddls+i)-dfdi(n, i)
- 20     continue
+        end do
         b(adder1,(n-1)*nddls+ndim+2) = b(adder1, (n-1)*nddls+ndim+2) + zr(ivf2+n+(kpi-1)*nnos-1)
- 10 end do
+    end do
 ! ======================================================================
 ! --- SUR LES NOEUDS MILIEUX -------------------------------------------
 ! ======================================================================
-    do 30 n = 1, nnom
-        do 40 i = 1, ndim
+    do n = 1, nnom
+        do i = 1, ndim
             b(adder1,nnos*nddls+(n-1)*nddlm+i)= b(adder1,nnos*nddls+(&
             n-1)*nddlm+i)-dfdi(n+nnos,i)
- 40     continue
- 30 end do
+        end do
+    end do
 ! ======================================================================
 ! --- POUR LES GRADIENTS DE VARIATIONS VOLUMIQUE ET LES VAR VOL --------
 ! --- ON UTILISE LES FONCTIONS DE FORME D'ORDRE 1 ----------------------
 ! ======================================================================
 ! --- SUR LES NOEUDS SOMMETS -------------------------------------------
 ! ======================================================================
-    do 50 n = 1, nnos
-        do 60 i = 1, ndim
+    do n = 1, nnos
+        do i = 1, ndim
             b(adder2-1+i,(n-1)*nddls+ndim+2)= b(adder2-1+i,(n-1)*&
             nddls+ndim+2)+dfdi2(n,i)
- 60     continue
- 50 end do
+        end do
+    end do
 ! ======================================================================
 ! --- POUR LE MULTIPLICATEUR DE LAGRANGE -------------------------------
 ! --- (PRES) -----------------------------------------------------------
 ! ======================================================================
-    do 300 n = 1, nnos
+    do n = 1, nnos
         b(adder3,(n-1)*nddls+ndim+1)=b(adder3,(n-1)*nddls+ndim+1)+&
         zr(ivf2+n+(kpi-1)*nnos-1)
-300 end do
+    end do
 ! ======================================================================
 end subroutine

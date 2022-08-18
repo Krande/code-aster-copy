@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
                   ynoca, znoca, comima, gromai)
     implicit none
@@ -65,6 +65,8 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -79,8 +81,6 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mailla
     character(len=19) :: xnoca, ynoca, znoca, tablca
@@ -144,13 +144,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     nbpara = tbnp(1)
     nblign = tbnp(2)
     call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
-    do 10 ipara = 1, nbpara
+    do ipara = 1, nbpara
         if (tblp(1+4*(ipara-1)) .eq. parcr) then
             nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 20
         endif
- 10 end do
+    end do
 !
  20 continue
     idecal = nblign - nbno
@@ -172,7 +172,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     nonoma = mailla//'.NOMNOE'
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
-    do 30 ino = 1, nbno
+    do ino = 1, nbno
         call jenonu(jexnom(nonoma, zk8(jnoca+idecal+ino-1)), numnoe)
         zr(jx+idecal+ino-1) = zr(jcoor+3*(numnoe-1) )
         zr(jy+idecal+ino-1) = zr(jcoor+3*(numnoe-1)+1)
@@ -185,7 +185,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         if (zr(jx+idecal+ino-1) .gt. xmax) xmax=zr(jx+idecal+ino-1)
         if (zr(jy+idecal+ino-1) .gt. ymax) ymax=zr(jy+idecal+ino-1)
         if (zr(jz+idecal+ino-1) .gt. zmax) zmax=zr(jz+idecal+ino-1)
- 30 end do
+    end do
 !     CONSTRUCTION DES 6 PLANS DEFINISSANT DE PAVE CONTENANT LE CABLE
     call jeveuo(gromai, 'L', jgmai)
     rr = zr(jgmai)
@@ -210,7 +210,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !
 !.... N.B. LE PASSAGE PREALABLE DANS LA ROUTINE TOPOCA GARANTIT NBNO > 2
 !
-    do 40 ino = 2, nbno
+    do ino = 2, nbno
         dx = zr(jx+idecal+ino-1) - zr(jx+idecal+ino-2)
         dy = zr(jy+idecal+ino-1) - zr(jy+idecal+ino-2)
         dz = zr(jz+idecal+ino-1) - zr(jz+idecal+ino-2)
@@ -237,7 +237,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             alpha_disc(ino) = alphcu
         endif
 !
- 40 end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   INTERPOLATION SPLINE CUBIQUE DE LA TRAJECTOIRE DU CABLE
@@ -281,7 +281,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     nbvar = 0
     d1m = d1x1
     svar = 0
-    do 45 ino = 2, nbno-1
+    do ino = 2, nbno-1
         dcp = corde_cumu(ino+1) - corde_cumu(ino)
         d1p = ( zr(jx+idecal+ino) - zr(jx+idecal+ino-1) ) / dcp
         if (d1p .gt. d1m) then
@@ -291,13 +291,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             if (svar .eq. 1) nbvar = nbvar + 1
             svar = -1
         endif
- 45 end do
+    end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
-    do 46 ino = 2, nbno
+    do ino = 2, nbno
         if (vd2x(ino)*vd2x(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
- 46 end do
+    end do
 !
     if (nbvar2 .ge. nbvar+10) then
         vali(1) = icabl
@@ -315,7 +315,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     nbvar = 0
     d1m = d1y1
     svar = 0
-    do 55 ino = 2, nbno-1
+    do ino = 2, nbno-1
         dcp = corde_cumu(ino+1) - corde_cumu(ino)
         d1p = ( zr(jy+idecal+ino) - zr(jy+idecal+ino-1) ) / dcp
         if (d1p .gt. d1m) then
@@ -325,13 +325,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             if (svar .eq. 1) nbvar = nbvar + 1
             svar = -1
         endif
- 55 end do
+    end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
-    do 56 ino = 2, nbno
+    do ino = 2, nbno
         if (vd2y(ino)*vd2y(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
- 56 end do
+    end do
 !
     if (nbvar2 .ge. nbvar+10) then
         vali(1) = icabl
@@ -349,7 +349,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     nbvar = 0
     d1m = d1z1
     svar = 0
-    do 65 ino = 2, nbno-1
+    do ino = 2, nbno-1
         dcp = corde_cumu(ino+1) - corde_cumu(ino)
         d1p = ( zr(jz+idecal+ino) - zr(jz+idecal+ino-1) ) / dcp
         if (d1p .gt. d1m) then
@@ -359,13 +359,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             if (svar .eq. 1) nbvar = nbvar + 1
             svar = -1
         endif
- 65 end do
+    end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
-    do 66 ino = 2, nbno
+    do ino = 2, nbno
         if (vd2z(ino)*vd2z(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
- 66 end do
+    end do
 !
     if (nbvar2 .ge. nbvar+10) then
         vali(1) = icabl
@@ -384,7 +384,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     absc_curv(1) = 0.0d0
     zr(jalph) = 0.0d0
 !
-    do 50 ino = 2, nbno
+    do ino = 2, nbno
 !
         corde = corde_cumu(1+ino-2)
         dc = ( corde_cumu(ino) - corde ) / dble ( nbsub )
@@ -416,7 +416,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !
 !....... CONTRIBUTION DES POINTS INTERMEDIAIRES
 !
-        do 60 isub = 1, nbsub-1
+        do isub = 1, nbsub-1
             corde = corde + dc
             call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde,&
                         d1x, iret)
@@ -440,7 +440,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             det2 = d1z * d2x - d1x * d2z
             det3 = d1x * d2y - d1y * d2x
             alpha = alpha + dble(sqrt(det1*det1+det2*det2+det3*det3)) / normv2
- 60     continue
+        end do
 !
 !....... CONTRIBUTION DU DERNIER POINT
 !
@@ -475,7 +475,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         alpha = alpha * dc
         zr(jalph+ino-1) = zr(jalph+ino-2) + alpha
 !
- 50 end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 6   MISE A JOUR DES OBJETS DE SORTIE
@@ -483,19 +483,19 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !
 888 continue
     if (lsplin) then
-        do 70 ino = 1, nbno
+        do ino = 1, nbno
             valpar(1) = absc_curv(ino)
             valpar(2) = zr(jalph+ino-1)
             call tbajli(tablca, 2, param, [ibid], valpar,&
                         [cbid], k3b, idecal+ ino)
- 70     continue
+        end do
     else
-        do 71 ino = 1, nbno
+        do ino = 1, nbno
             valpar(1) = corde_cumu(ino)
             valpar(2) = alpha_disc(ino)
             call tbajli(tablca, 2, param, [ibid], valpar,&
                         [cbid], k3b, idecal+ ino)
- 71     continue
+        end do
     endif
 !
 ! --- MENAGE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                   llistt, ntypm)
     implicit none
@@ -130,7 +130,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
     idtyp = 1
     iftyp = nbma
     ityp1 = -1
-    do 1 i1 = 1, nbma
+    do i1 = 1, nbma
         numa1 = zi(idl1+2*i1-1)
         call jenuno(jexnum(nomma//'.NOMMAI', numa1), nomma1)
         ityp = zi(idl1+2*i1)
@@ -162,7 +162,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                     mrot, t, zr(idcoo1))
         dmin = 999999999999.d0
         tot_error = 0
-        do 2 j = jdeb, jfin
+        do j = jdeb, jfin
             err = 0
             jtyp = zi(idl2+2*j)
             if (jtyp .ne. ityp1) then
@@ -178,19 +178,21 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                 ima2 = zi(idl2+2*j-1)
                 call jenuno(jexnum(nomma//'.NOMMAI', ima2), nomma2)
                 call pacoor(nomma, ima2, nbnott(1), zr(idcoo2))
-                call padtma(zr(idcoo1), zr(idcoo2), nbnott, zi(idwcpl), d, err)
+                call padtma(zr(idcoo1), zr(idcoo2), nbnott, zi(idwcpl), d,&
+                            err)
                 tot_error= tot_error + err
-                if (d .lt. dmin .and. err.eq.0) then
+                if (d .lt. dmin .and. err .eq. 0) then
                     dmin = d
                     numa2 = ima2
                     j2 = j
-                    do 3 ino = 1, nbntot
+                    do ino = 1, nbntot
                         zi(idcopl-1+ino) = zi(idwcpl-1+ino)
-  3                 continue
+                    end do
                 endif
             endif
-  2     continue
-        if (tot_error.eq.jfin) then
+  2         continue
+        end do
+        if (tot_error .eq. jfin) then
             call utmess('F', 'MODELISA6_8')
         end if
         if (idtyp .eq. nbma+1) then
@@ -230,12 +232,12 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
         endif
         call jeveuo(jexnum(connex, numa1), 'L', idno1)
         call jeveuo(jexnum(connex, numa2), 'L', idno2)
-        do 4 k = 1, nbntot
+        do k = 1, nbntot
             zi(idlt+2*k+1) = zi(idno1-1+k)
             zi(idlt+2*k+2) = zi(idno2-1+zi(idcopl-1+k))
-  4     continue
+        end do
         idlt = idlt+2+2*nbntot
-  1 end do
+    end do
     call jelibe(jexnum(lt, ntypm))
     call jedetr(biject)
     call jedetr(coor1)

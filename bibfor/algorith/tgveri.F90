@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tgveri(option, carcri, compor, nno, geom,&
                   ndim, nddl, deplp, sdepl, vectu,&
                   svect, ncont, contp, scont, nvari,&
@@ -84,15 +84,15 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !
     iret=0
     if (abs(carcri(2)) .lt. 0.1d0) then
-        goto 9999
+        goto 999
     else
 ! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
         if (compor(5)(1:7) .eq. 'DEBORST') then
-            goto 9999
+            goto 999
         endif
     endif
     if (option(1:9) .eq. 'RIGI_MECA') then
-        goto 9999
+        goto 999
     endif
 !
 ! --  INITIALISATION (PREMIER APPEL)
@@ -101,7 +101,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !
 !       PERTURBATION OU VERIFICATION => FULL_MECA
         if (option .ne. 'FULL_MECA') then
-            goto 9999
+            goto 999
         endif
 !
 !       CALCUL de la valeur de la perturbation
@@ -110,12 +110,12 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !
         maxdep=0.d0
         maxgeo=0.d0
-        do 555 i = 1, nddl
+        do i = 1, nddl
             maxdep=max(maxdep,abs(deplp(i)))
-555     continue
-        do 556 i = 1, nno*ndim
+        end do
+        do i = 1, nno*ndim
             maxgeo=max(maxgeo,abs(geom(i)))
-556     continue
+        end do
         pertu=carcri(7)
         if (maxdep .gt. pertu*maxgeo) then
             epsilo=pertu*maxdep
@@ -136,14 +136,14 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !       ARCHIVAGE DE LA MATRICE TANGENTE COHERENTE
         if (matsym) then
             k = 0
-            do 557 i = 1, nddl
-                do 558 j = 1, i
+            do i = 1, nddl
+                do j = 1, i
                     v = matuu(k+1)
                     k = k + 1
                     smatr((i-1)*nddl+j) = v
                     smatr((j-1)*nddl+i) = v
-558             continue
-557         continue
+                end do
+            end do
         else
             call dcopy(nddl*nddl, matuu, 1, smatr, 1)
         endif
@@ -180,19 +180,19 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
         call r8inir(ncont, 0.d0, contp, 1)
         call r8inir(nddl, 0.d0, vectu, 1)
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !    CALCUL DE LA MATRICE TANGENTE
 !
-    do 559 i = 1, nddl
-        do 560 j = 1, nddl
+    do i = 1, nddl
+        do j = 1, nddl
             fm = varia((2*j-2)*nddl+i)
             fp = varia((2*j-1)*nddl+i)
             v = (fp-fm)/(2*epsilo)
             matper((i-1)*nddl+j) = v
-560     continue
-559 end do
+        end do
+    end do
 !
 !    MENAGE POUR ARRET DE LA ROUTINE
 !
@@ -244,7 +244,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !         CALL JELIBE(MATRC)
     endif
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                   ener)
     implicit none
@@ -143,7 +143,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-    do 10 int = 1, npg
+    do int = 1, npg
 !
 !============================================================
 ! --- CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT POUR    =
@@ -240,21 +240,21 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---   CALCUL DES SOMMES KF + KC = KFC :
 !       -------------------------------
-        do 20 i = 1, 12
-            do 30 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 kfc11(i,j) = kf11(i,j) + kbb(i,j)
- 30         continue
- 20     continue
-        do 40 i = 1, 12
-            do 50 j = 1, 4
+            end do
+        end do
+        do i = 1, 12
+            do j = 1, 4
                 kfc12(i,j) = kf12(i,j) + kba(i,j) + kfcg11(i,j)
- 50         continue
- 40     continue
-        do 60 i = 1, 4
-            do 70 j = 1, 4
+            end do
+        end do
+        do i = 1, 4
+            do j = 1, 4
                 kfc22(i,j) = kf22(i,j) + kaa(i,j) + kfc21(i,j) + kfc21(j,i)
- 70         continue
- 60     continue
+            end do
+        end do
 !
         if (coupmf .or. exce) then
 !
@@ -297,33 +297,33 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---     DETERMINATION DU TERME [PM]T*([KMA]*T+[KMF12]T) :
 !         -----------------------------------------------
-            do 80 i = 1, 8
-                do 90 j = 1, 8
-                    do 100 k = 1, 4
+            do i = 1, 8
+                do j = 1, 8
+                    do k = 1, 4
                         kmpmt(i,j) = kmpmt(i,j) + pm(k,i)*(kma(j,k)+ kmf12(j,k))
-100                 continue
- 90             continue
- 80         continue
+                    end do
+                end do
+            end do
 !
 ! ---     DETERMINATION DU TERME ([KMA]+[KMF12])*[PM] :
 !         --------------------------------------------
-            do 110 i = 1, 8
-                do 120 j = 1, 8
-                    do 130 k = 1, 4
+            do i = 1, 8
+                do j = 1, 8
+                    do k = 1, 4
                         kmpm(i,j) = kmpm(i,j) + (kma(i,k)+kmf12(i,k))* pm(k,j)
-130                 continue
-120             continue
-110         continue
+                    end do
+                end do
+            end do
 !
 ! ---     DETERMINATION DU TERME [KMA]*[PB] :
 !         ---------------------------------
-            do 140 i = 1, 8
-                do 150 j = 1, 12
-                    do 160 k = 1, 4
+            do i = 1, 8
+                do j = 1, 12
+                    do k = 1, 4
                         kmapb(i,j) = kmapb(i,j) + kma(i,k)*pb(k,j)
-160                 continue
-150             continue
-140         continue
+                    end do
+                end do
+            end do
 !
         endif
 !=======================================================================
@@ -339,31 +339,33 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
         call utbtab('ZERO', 4, 12, kfc22, pb,&
                     xab5, flexi)
 !
-        do 170 i = 1, 12
-            do 170 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 kfb(i,j) = zero
-170         continue
+            end do
+        end do
 !
-        do 180 i = 1, 12
-            do 190 j = 1, 12
-                do 200 k = 1, 4
+        do i = 1, 12
+            do j = 1, 12
+                do k = 1, 4
                     kfb(i,j) = kfb(i,j) + kfc12(i,k)*pb(k,j)
-200             continue
+                end do
                 kfc(j,i) = kfb(i,j)
-190         continue
-180     continue
+            end do
+        end do
 !
-        do 210 i = 1, 12
-            do 220 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flexi(i,j) = flexi(i,j) + kfc11(i,j) + kfb(i,j) + kfc( i,j)
-220         continue
-210     continue
+            end do
+        end do
 !
         wgt = zr(ipoids+int-1)*jacob(1)
-        do 230 i = 1, 12
-            do 230 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flex(i,j) = flex(i,j) + flexi(i,j)*wgt
-230         continue
+            end do
+        end do
 !
 !============================================================
 ! --- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE          =
@@ -395,14 +397,14 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 ! FINALEMENT ON DECIDE DE REACTIVER CES TERMES EN ATTENDANT
 ! DES ANOMALIES TROP IMPORTANTES
 ! ---------------------------------------------------------------
-        do 240 i = 1, 8
-            do 250 j = 1, 8
+        do i = 1, 8
+            do j = 1, 8
                 memb(i,j) = memb(i,j) + (memexc(i,j)+membi(i,j)+kmpm( i,j)+kmpmt(i,j) +membcf(i,j&
                             &))*wgt
 !     +                            MEMBI(I,J)*WGT
 !*****************************************************************
-250         continue
-240     continue
+            end do
+        end do
 !
 !====================================================================
 ! --- CALCUL DE LA MATRICE DE RIGIDITE DE COUPLAGE MEMBRANE-FLEXION =
@@ -413,35 +415,35 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 !
         if (coupmf .or. exce) then
 !
-            do 260 i = 1, 8
-                do 270 j = 1, 12
+            do i = 1, 8
+                do j = 1, 12
                     kmf(i,j) = zero
-270             continue
-260         continue
+                end do
+            end do
 !
 ! ---     CALCUL DU TERME  [PM]T*([KF22] + [KAA])*[PB]
 !         --------------------------------------------
             call utctab('ZERO', 4, 12, 8, kfc22,&
                         pb, pm, xab5, kmf)
 !
-            do 280 i = 1, 8
-                do 290 j = 1, 12
-                    do 300 k = 1, 4
+            do i = 1, 8
+                do j = 1, 12
+                    do k = 1, 4
                         kmf(i,j) = kmf(i,j) + (kmf12(i,k)+kmc(i,k))* pb(k,j) + pm(k,i)*kfc12(j,k)
-300                 continue
+                    end do
                     mefli(i,j) = kmf11(i,j) + kmf(i,j) + kmb(i,j) + kmapb(i,j)
-290             continue
-280         continue
+                end do
+            end do
 !
-            do 310 i = 1, 8
-                do 320 j = 1, 12
+            do i = 1, 8
+                do j = 1, 12
                     mefl(i,j) = mefl(i,j) + mefli(i,j)*wgt
-320             continue
-310         continue
+                end do
+            end do
 !
         endif
 !
- 10 end do
+    end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxqloc(flex, memb, mefl, ctor, rig)
@@ -453,9 +455,9 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                     depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
-            do 330 i = 1, 24
+            do i = 1, 24
                 enerth = enerth + depl(i)*bsigth(i)
-330         continue
+            end do
             ener(1) = ener(1) - enerth
         endif
     endif

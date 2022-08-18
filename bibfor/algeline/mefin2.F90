@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function mefin2(nbz, nbgrp, imod, icyl, jmod,&
                 jcyl, z, f1, f2, g)
     implicit none
@@ -64,21 +64,21 @@ function mefin2(nbz, nbgrp, imod, icyl, jmod,&
 !
     g(1) = (f2(nbz2+2,jmod)-f2(nbz2+1,jmod))/ (z(2)-z(1))
 !
-    do 1 n = 2, nbz-1
+    do n = 2, nbz-1
         g(n) = (&
                (&
                f2(n+nbz2+1,jmod)-f2(n+nbz2,jmod))*(z(n+1)-z(n)) +(f2(n+nbz2-1,jmod)-f2(n+nbz2,jmo&
                &d))*(z(n-1)-z(n))) /((z(n+1)- z(n))*(z(n+1)-z(n)) +(z(n-1)-z(n))*(z(n-1)-z(n)&
                )&
                )
- 1  end do
+    end do
 !
     g(nbz) = (f2(nbz*jcyl,jmod)-f2(nbz*jcyl-1,jmod))/ (z(nbz)-z(nbz-1))
 !
     mefin2 = 0.d0
 !
-    do 2 n = 1, nbz-1
+    do n = 1, nbz-1
         mefin2 = mefin2+0.5d0*( z(n+1)-z(n))* (f1(n+nbz1+1,imod)*g(n+1) +f1(n+nbz1,imod)*g(n))
- 2  end do
+    end do
 !
 end function

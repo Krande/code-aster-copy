@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine verigd(nomgdz, lcmp, ncmp, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
@@ -78,9 +78,9 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
     if (ncmp .gt. 3000) then
         call utmess('F', 'POSTRELE_13')
     endif
-    do 10,k = 1,ncmp
-    lcmp2(k) = lcmp(k)
-    10 end do
+    do k = 1, ncmp
+        lcmp2(k) = lcmp(k)
+    end do
 !
 !
 !     3. LCMP2 N'A PAS DE DOUBLONS :
@@ -107,20 +107,20 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
         endif
     else
 !       -- POUR NOMGD=VARI_* : CMP='V1','V2',..,'V999'
-        do 20,k = 1,ncmp
-        call lxliis(lcmp2(k) (2:8), ibid, i1)
-        if ((lcmp2(k) (1:1).ne.'V') .or. (i1.gt.0)) then
-            valk(1) = lcmp2(k)
-            valk(2) = nomgd
-            call utmess('A', 'POSTRELE_56', nk=2, valk=valk)
-            iret = 3
-            goto 30
-        endif
-20      continue
+        do k = 1, ncmp
+            call lxliis(lcmp2(k) (2:8), ibid, i1)
+            if ((lcmp2(k) (1:1).ne.'V') .or. (i1.gt.0)) then
+                valk(1) = lcmp2(k)
+                valk(2) = nomgd
+                call utmess('A', 'POSTRELE_56', nk=2, valk=valk)
+                iret = 3
+                goto 30
+            endif
+        end do
     endif
 !
 !
-30  continue
+ 30 continue
     call jedema()
 !
 end subroutine

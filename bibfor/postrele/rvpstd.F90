@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvpstd(valee, type, codir, valdir, valeq)
     implicit none
 !
@@ -71,23 +71,23 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         else if (type .eq. 'T3') then
 !
-            do 10 i = 1, 3
+            do i = 1, 3
                 if (valee(i) .eq. r8vide()) then
                     valeq(i) = 0.d0
                 else
                     valeq(i) = valee(i)*valdir(1)
                 endif
-10          continue
+            end do
 !
         else
 !
-            do 12 i = 1, 4
+            do i = 1, 4
                 if (valee(i) .eq. r8vide()) then
                     valeq(i) = 0.d0
                 else
                     valeq(i) = valee(i)*valdir(1)
                 endif
-12          continue
+            end do
 !
         endif
 !
@@ -105,23 +105,23 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         else if (type .eq. 'T3') then
 !
-            do 22 i = 1, 3
+            do i = 1, 3
                 if (valee(indir1(i)) .eq. r8vide()) then
                     valeq(i) = 0.d0
                 else
                     valeq(i) = valee(indir1(i))*valdir(2)
                 endif
-22          continue
+            end do
 !
         else
 !
-            do 24 i = 1, 4
+            do i = 1, 4
                 if (valee(indir2(i)) .eq. r8vide()) then
                     valeq(i) = 0.d0
                 else
                     valeq(i) = valee(indir2(i))*valdir(2)
                 endif
-24          continue
+            end do
 !
         endif
 !
@@ -139,13 +139,13 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         else
 !
-            do 30 i = 1, 3
+            do i = 1, 3
                 if (valee(indir3(i)) .eq. r8vide()) then
                     valeq(i) = 0.d0
                 else
                     valeq(i) = valee(indir3(i))*valdir(3)
                 endif
-30          continue
+            end do
 !
         endif
 !
@@ -155,25 +155,25 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         if (type .eq. 'V3') then
 !
-            do 40 i = 1, 2
+            do i = 1, 2
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-40          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(2)*valdir(2)
 !
         else if (type .eq. 'T3') then
 !
-            do 42 i = 1, 5
+            do i = 1, 5
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-42          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(3)*valdir(2)
             valeq(2) = valee(3)*valdir(1) + valee(2)*valdir(2)
             valeq(3) = valee(4)*valdir(1) + valee(5)*valdir(2)
 !
         else
 !
-            do 44 i = 1, 6
+            do i = 1, 6
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-44          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(3)*valdir(2)
             valeq(2) = valee(3)*valdir(1) + valee(2)*valdir(2)
             valeq(3) = valee(4)*valdir(1) + valee(6)*valdir(2)
@@ -187,16 +187,16 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         if (type .eq. 'V3') then
 !
-            do 50 i = 1, 2
+            do i = 1, 2
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-50          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(2)*valdir(3)
 !
         else
 !
-            do 52 i = 1, 5
+            do i = 1, 5
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-52          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(4)*valdir(3)
             valeq(2) = valee(3)*valdir(1) + valee(5)*valdir(3)
             valeq(3) = valee(4)*valdir(1) + valee(2)*valdir(3)
@@ -209,16 +209,16 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         if (type .eq. 'V3') then
 !
-            do 60 i = 1, 2
+            do i = 1, 2
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-60          continue
+            end do
             valeq(1) = valee(1)*valdir(2) + valee(2)*valdir(3)
 !
         else
 !
-            do 62 i = 1, 5
+            do i = 1, 5
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-62          continue
+            end do
             valeq(1) = valee(3)*valdir(2) + valee(4)*valdir(3)
             valeq(2) = valee(1)*valdir(2) + valee(5)*valdir(3)
             valeq(3) = valee(5)*valdir(2) + valee(2)*valdir(3)
@@ -231,16 +231,16 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !
         if (type .eq. 'V3') then
 !
-            do 70 i = 1, 3
+            do i = 1, 3
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-70          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(2)*valdir(2) + valee(3)*valdir(3)
 !
         else
 !
-            do 72 i = 1, 6
+            do i = 1, 6
                 if (valee(i) .eq. r8vide()) valee(i) = 0.d0
-72          continue
+            end do
             valeq(1) = valee(1)*valdir(1) + valee(4)*valdir(2) + valee(5)*valdir(3)
             valeq(2) = valee(4)*valdir(1) + valee(2)*valdir(2) + valee(6)*valdir(3)
             valeq(3) = valee(5)*valdir(1) + valee(6)*valdir(2) + valee(3)*valdir(3)

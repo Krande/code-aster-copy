@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpvpre(mod, nvi, option, crit, instam,&
                   instap, nbmat, materf, sigm, deps,&
                   vim, vip, sig, nbre, dsidep,&
@@ -132,9 +132,9 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! --- MISE A JOUR DES CONTRAINTES TENANT COMPTE DE DP SI VISCOPLASTICIT
 ! =====================================================================
         if (plas .eq. 0.0d0) then
-            do 10 ii = 1, ndt
+            do ii = 1, ndt
                 sig(ii) = sige(ii)
- 10         continue
+            end do
 !
             vip(1) = vim(1)
             vip(3) = vim(3)

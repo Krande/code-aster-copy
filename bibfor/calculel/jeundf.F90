@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeundf(obj, undf0_)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-  implicit none
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
@@ -56,25 +56,25 @@ subroutine jeundf(obj, undf0_)
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
-
+!
 !
 ! - Parameter: is undefined a zero ?
 !
     undf0 = ASTER_FALSE
-    if ( present(undf0_)) then
+    if (present(undf0_)) then
         undf0 = undf0_
     endif
-
+!
     obj2=obj
 !
     if (undf0) then
-       i1undf=0
-       r1undf=0.d0
+        i1undf=0
+        r1undf=0.d0
     else
-       i1undf=ismaem()
-       r1undf=r8nnem()
+        i1undf=ismaem()
+        r1undf=r8nnem()
     endif
-
+!
     c1undf=dcmplx(r1undf,r1undf)
     k8df='XXXXXXXX'
     k16df=k8df//k8df
@@ -114,41 +114,41 @@ subroutine jeundf(obj, undf0_)
 !
 !
     if (typsca .eq. 'I') then
-        do 10,k=1,long
-        zi(iad-1+k)=i1undf
-10      continue
+        do k = 1, long
+            zi(iad-1+k)=i1undf
+        end do
     else if (typsca.eq.'L') then
-        do 20,k=1,long
-        zl(iad-1+k)=.false.
-20      continue
+        do k = 1, long
+            zl(iad-1+k)=.false.
+        end do
     else if (typsca.eq.'R') then
-        do 30,k=1,long
-        zr(iad-1+k)=r1undf
-30      continue
+        do k = 1, long
+            zr(iad-1+k)=r1undf
+        end do
     else if (typsca.eq.'C') then
-        do 40,k=1,long
-        zc(iad-1+k)=c1undf
-40      continue
+        do k = 1, long
+            zc(iad-1+k)=c1undf
+        end do
     else if (typsca.eq.'K8') then
-        do 50,k=1,long
-        zk8(iad-1+k)=k8df
-50      continue
+        do k = 1, long
+            zk8(iad-1+k)=k8df
+        end do
     else if (typsca.eq.'K16') then
-        do 60,k=1,long
-        zk16(iad-1+k)=k16df
-60      continue
+        do k = 1, long
+            zk16(iad-1+k)=k16df
+        end do
     else if (typsca.eq.'K24') then
-        do 70,k=1,long
-        zk24(iad-1+k)=k24df
-70      continue
+        do k = 1, long
+            zk24(iad-1+k)=k24df
+        end do
     else if (typsca.eq.'K32') then
-        do 80,k=1,long
-        zk32(iad-1+k)=k32df
-80      continue
+        do k = 1, long
+            zk32(iad-1+k)=k32df
+        end do
     else if (typsca.eq.'K80') then
-        do 90,k=1,long
-        zk80(iad-1+k)=k80df
-90      continue
+        do k = 1, long
+            zk80(iad-1+k)=k80df
+        end do
     else
         ASSERT(.false.)
     endif

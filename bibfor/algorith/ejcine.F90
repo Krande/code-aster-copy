@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
                   vff2, wref, dffr2, geom, wg,&
                   kpg, ipg, idf2, rot, b)
@@ -79,19 +79,19 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 !       CALCUL DE LA GEOMETRIE DANS LE REPERE LOCAL
         call r8inir(ndim*nno2, 0.d0, geoloc, 1)
 !
-        do 10 n = 1, nno2
-            do 11 i = 1, ndim
-                do 12 j = 1, ndim
+        do n = 1, nno2
+            do i = 1, ndim
+                do j = 1, ndim
                     geoloc(i,n) = geoloc(i,n) + rot(i,j)*geom(j,n)
- 12             continue
- 11         continue
- 10     continue
+                end do
+            end do
+        end do
 !
-        do 13 n = 1, nno2
-            do 14 i = 2, ndim
+        do n = 1, nno2
+            do i = 2, ndim
                 geotan(i-1,n)=geoloc(i,n)
- 14         continue
- 13     continue
+            end do
+        end do
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
         call dfdm2d(nno2, kpg, ipg, idf2, geotan,&
@@ -120,21 +120,21 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 !     CONSTRUCTION DE LA MATRICE B
     call r8inir((2*ndim-1)*(ndim+1)*(2*nno1+nno2), 0.d0, b, 1)
 !
-    do 20 i = 1, ndim
-        do 30 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
 !
-            do 40 n = 1, nno1
+            do n = 1, nno1
                 b(i,j,n) = - rot(i,j)*vff1(n)
                 b(i,j,n+nno1) = rot(i,j)*vff1(n)
- 40         continue
+            end do
 !
- 30     continue
- 20 end do
+        end do
+    end do
 !
-    do 21 i = 1, ndim-1
-        do 41 n = 1, nno2
+    do i = 1, ndim-1
+        do n = 1, nno2
             b(ndim+i,ndim+1,2*nno1+n) = dfdis(n,i)
- 41     continue
- 21 end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
                   matevg)
 !.======================================================================
@@ -80,17 +80,17 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !
 ! --- BOUCLE SUR LES NOEUDS DE L'ELEMENT :
 !     ----------------------------------
-    do 10 ino = 1, nb2
+    do ino = 1, nb2
 !
 ! ---   RECUPERATION DE LA MATRICE DE PASSAGE AU NOEUD COURANT :
 !       ------------------------------------------------------
         k = 0
-        do 20 j = 1, 3
-            do 30 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k = k + 1
                 pgl(i,j) = zrlzr(idec+(ino-1)*9+k)
-30          continue
-20      continue
+            end do
+        end do
 !
 ! ---   DETERMINATION DE LA PROJECTION DU VECTEUR X DU REPERE
 ! ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU NOEUD
@@ -104,7 +104,7 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
         matevn(1,2,ino) = -s
         matevn(2,2,ino) = c
 !
-10  end do
+    end do
 !
 ! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX POINTS D'INTEGRATION DE L'ELEMENT AU REPERE UTILISATEUR :
@@ -118,18 +118,18 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :
 !     --------------------------------------------------------------
-    do 40 igau = 1, npgsr
+    do igau = 1, npgsr
 !
 ! ---   RECUPERATION DE LA MATRICE DE PASSAGE AU POINT D'INTEGRATION
 ! ---   COURANT :
 !       -------
         k = 0
-        do 50 j = 1, 3
-            do 60 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k = k + 1
                 pgl(i,j) = zrlzr(idec+(igau-1)*9+k)
-60          continue
-50      continue
+            end do
+        end do
 !
 ! ---   DETERMINATION DE LA PROJECTION DU VECTEUR X DU REPERE
 ! ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU POINT
@@ -143,7 +143,7 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
         matevg(1,2,igau) = -s
         matevg(2,2,igau) = c
 !
-40  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

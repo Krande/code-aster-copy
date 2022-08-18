@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0421(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -60,8 +60,8 @@ subroutine te0421(option, nomte)
 !
     blan8='        '
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -73,9 +73,9 @@ subroutine te0421(option, nomte)
         nompar=' '
     endif
 !
-    do 10 i = 1, nbres
+    do i = 1, nbres
         nomres(i)=blan8
-10  end do
+    end do
     if (phenom .eq. 'ELAS') then
         nomres(1) = 'E'
         nomres(2) = 'NU'
@@ -97,7 +97,7 @@ subroutine te0421(option, nomte)
     endif
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy)
@@ -119,9 +119,9 @@ subroutine te0421(option, nomte)
         nompar = 'INST'
         valpar = zr(itemps)
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-102      continue
+        end do
 !
 !
         if (phenom .eq. 'ELAS') then
@@ -202,30 +202,30 @@ subroutine te0421(option, nomte)
         if (lteatt('AXIS','OUI')) then
             poids = poids*r
             if (r .ne. 0.d0) then
-                do 103 i = 1, nno
+                do i = 1, nno
                     zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids *( (a11*exx+a12*eyy+a13*ezz)* dfd&
                                        &x(i) + (a13*exx+a23* eyy+a33*ezz)*zr(ivf+k+i-1)/r + 2*g12&
                                        &*exy*dfdy(i))
                     zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids *( (a12*exx+a22*eyy+a23*ezz)*dfdy&
                                        &(i) + 2*g12*exy* dfdx(i))
-103              continue
+                end do
             else
-                do 203 i = 1, nno
+                do i = 1, nno
                     zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids * ( (a11*exx+a12*eyy+a13*ezz)*dfd&
                                        &x(i) + (a13*exx+a23* eyy+a33*ezz)*dfdx(i) + 2*g12*exy*dfd&
                                        &y(i))
                     zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids * ( (a12*exx+a22*eyy+a23*ezz)*dfd&
                                        &y(i) + 2*g12*exy* dfdx(i))
-203              continue
+                end do
             endif
 !
         else
-            do 104 i = 1, nno
+            do i = 1, nno
                 zr(ivectu+2*i-2)=zr(ivectu+2*i-2) + poids * ( (a11*&
                 exx+a12*eyy+a13*ezz)*dfdx(i) + 2*g12*exy*dfdy(i))
                 zr(ivectu+2*i-1)=zr(ivectu+2*i-1) + poids * ( (a12*&
                 exx+a22*eyy+a23*ezz)*dfdy(i) + 2*g12*exy*dfdx(i))
-104          continue
+            end do
         endif
-101  end do
+    end do
 end subroutine

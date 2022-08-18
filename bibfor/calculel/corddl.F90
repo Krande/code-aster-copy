@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
                   mode, nec, ncmp, n, k,&
                   nddloc, pos)
@@ -40,8 +40,8 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
 !          EN TANT QUE NOEUD GLOBAL
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!-----------------------------------------------------------------------
 #include "asterfort/entcod.h"
+!-----------------------------------------------------------------------
     integer :: i, idprn1, idprn2, iec, iecdg, iecdl, ili
     integer :: in, k, mode, n, nbecmx, ncmp
     integer :: nddloc, nec
@@ -60,28 +60,28 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
 !
 !     FONCTION D ACCES A PRNO
 !
-#define prno(ili,nunoel,l)   zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define prno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 ! - DEB ----------------------------------------------------------------
 !
 ! --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE DDLS
 ! --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
 !     ------------------------------------
-    do 10 iec = 1, nec-1
+    do iec = 1, nec-1
         ifin(iec) = 30
-10  end do
+    end do
     ifin(nec) = ncmp - 30*(nec-1)
 !
     in = 0
     nddloc = 0
 !
 !
-    do 20 iec = 1, nec
+    do iec = 1, nec
         ecodg = prno(ili,n,2+iec)
         if (ecodg .eq. 0) goto 20
 !
         ecodl = entcod(admodl,lcmodl,nec,mode,k,iec)
 !
-        do 110 i = 1, ifin(iec)
+        do i = 1, ifin(iec)
             ecodg = ecodg/2
             if (ecodg .eq. 0) goto 20
             ecodl = ecodl/2
@@ -94,7 +94,8 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
                     pos(nddloc) = in
                 endif
             endif
-110      continue
-20  end do
+        end do
+ 20     continue
+    end do
 !
 end subroutine

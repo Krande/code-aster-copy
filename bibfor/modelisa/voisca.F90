@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
                   nunobi)
     implicit none
@@ -44,6 +44,7 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
 ! ARGUMENTS
 ! ---------
+#include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -54,7 +55,6 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-#include "jeveux.h"
 !
     integer :: jcoor
     real(kind=8) :: xmin, xmax, ymin, ymax, zmin, zmax, x, y, z
@@ -83,7 +83,7 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !     SELECTION DES NOEUDS APPARTENANT AU PAVE FORME PAR LES
 !     COORDONNEES EXTREMES DES NOEUDS DU CABLE
     j=0
-    do 10 i = 1, nbnobe
+    do i = 1, nbnobe
         noebe = zi(inube-1+i)
         x = zr(jcoor+3*(noebe-1) )
         y = zr(jcoor+3*(noebe-1)+1)
@@ -97,7 +97,8 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
         zi(inubi+j) = noebe
         j = j+1
-10  end do
+ 10     continue
+    end do
     nbnobi=j
 !
     call jedema()

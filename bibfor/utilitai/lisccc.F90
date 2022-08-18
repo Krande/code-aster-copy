@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
 !
@@ -87,9 +87,9 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
     nbnaut = 0
     nbauth = 0
     nbtota = 0
-    do 1 ipose = 1, 60
+    do ipose = 1, 60
         tabaut(ipose) = 0
-  1 continue
+    end do
 !
 ! --- DECODAGE DU CHARGEMENT
 !
@@ -107,14 +107,14 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
 ! --- BOUCLE SUR LES MOTS-CLEFS ACTIFS DANS LA CHARGE
 !
-    do 20 ipose = 1, 60
+    do ipose = 1, 60
         if (tabcox(ipose) .eq. 1) then
             lfind = .false.
             nbtota = nbtota+1
 !
 ! --------- BOUCLE SUR LES MOTS-CLEFS AUTORISES
 !
-            do 21 iauth = 1, nbgcmd
+            do iauth = 1, nbgcmd
                 if (nomcmd .eq. 'DYNA_VIBRA') then
                     motclf = autdlh(iauth)
                     call lisdef('POSM', motclf, ibid, k8bid, iposit)
@@ -126,7 +126,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
                 endif
                 ASSERT(iposit(1).ne.0)
                 if (iposit(1) .eq. ipose) lfind = .true.
- 21         continue
+            end do
             if (lfind) then
                 nbauth = nbauth + 1
                 tabaut(ipose) = 1
@@ -134,7 +134,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
         else
             tabaut(ipose) = 0
         endif
- 20 continue
+    end do
 !
 ! --- CODAGE MOT-CLEFS AUTORISES
 !

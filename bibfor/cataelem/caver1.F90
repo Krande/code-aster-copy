@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caver1()
     implicit none
 !
@@ -74,7 +74,7 @@ subroutine caver1()
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
 !
 !
-    do 40 opt = 1, nbopt
+    do opt = 1, nbopt
         call jenuno(jexnum('&CATA.OP.NOMOPT', opt), nomopt)
         call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iadesc)
         call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iapara)
@@ -96,7 +96,7 @@ subroutine caver1()
         endif
 !
 !
-        do 30 te = 1, nbte
+        do te = 1, nbte
             call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
             ioptte = optte((te-1)*lgco+opt)
             if (ioptte .eq. 0) goto 30
@@ -110,9 +110,9 @@ subroutine caver1()
 !
 !           -- on ne traque pas les erreurs si nucalc = 0, -1 ou -2
             if ((nucalc.le.0) .and. (nucalc.ge.-2)) goto 30
-
+!
             call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
-            do 10 ipara = 1, nbinte
+            do ipara = 1, nbinte
                 para = zk8(iaopno-1+ipara)
                 imolo = zi(iaopmo-1+3+ipara)
                 if (imolo .eq. 0) then
@@ -170,13 +170,14 @@ subroutine caver1()
                 endif
 !
 !
- 10         continue
+ 10             continue
+            end do
 !
 !
 !         -- VERIFICATION DES MODES LOCAUX "OUT" DES TE/OPTIONS:
 !         ------------------------------------------------------
             nboute = zi(iaopmo-1+3)
-            do 20 ipara = 1, nboute
+            do ipara = 1, nboute
                 para = zk8(iaopno-1+nbinte+ipara)
                 imolo = zi(iaopmo-1+3+nbinte+ipara)
                 if (imolo .eq. 0) then
@@ -232,11 +233,13 @@ subroutine caver1()
                     call utmess('E', 'CATAELEM_7', nk=4, valk=valk)
 !             IER = IER + 1
                 endif
- 20         continue
+ 20             continue
+            end do
 !
- 30     continue
+ 30         continue
+        end do
 !
- 40 end do
+    end do
 !
 !    -- ON VERIFIE QUE CERTAINES GRANDEURS SONT "PARALLELES" :
 !       ELLES DOIVENT AVOIR EXACTEMENT LES MEMES CMPS :
@@ -247,7 +250,7 @@ subroutine caver1()
     tgd1(2) = 'DEPL_R'
     tgd2(2) = 'DEPL_F'
     error = .false.
-    do 90 k = 1, nbgd
+    do k = 1, nbgd
         gd1 = tgd1(k)
         gd2 = tgd2(k)
         call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', n1)
@@ -257,9 +260,9 @@ subroutine caver1()
         else
             call jeveuo(jexnom('&CATA.GD.NOMCMP', gd1), 'L', jnocm1)
             call jeveuo(jexnom('&CATA.GD.NOMCMP', gd2), 'L', jnocm2)
-            do 80 kk = 1, n1
+            do kk = 1, n1
                 if (zk8(jnocm1-1+kk) .ne. zk8(jnocm1-1+kk)) error = .true.
- 80         continue
+            end do
         endif
         if (error) then
             valk(1) = gd1
@@ -267,7 +270,7 @@ subroutine caver1()
             call utmess('E', 'CATAELEM_8', nk=2, valk=valk)
             ier = ier + 1
         endif
- 90 end do
+    end do
 !
 !
     if (ier .gt. 0) then

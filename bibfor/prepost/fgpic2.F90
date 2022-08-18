@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgpic2(method, rtrv, point, npoint, pic,&
                   npic)
 !       REARRANGEMENT ET EXTRACTION DES PICS
@@ -47,22 +47,22 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
 !
         pmax = abs(point(1))
         nmax = 1
-        do 10 i = 2, npoint
+        do i = 2, npoint
             if (abs(point(i)) .gt. pmax*(1.0d0+epsi)) then
                 pmax = abs(point(i))
                 nmax = i
             endif
-10      continue
+        end do
         pmax = point(nmax)
 !
 ! -     REARANGEMENT AVEC POINT LE PLUS GRAND AU DEBUT ET A LA FIN
 !
-        do 20 i = nmax, npoint
+        do i = nmax, npoint
             rtrv(i-nmax+1) = point(i)
-20      continue
-        do 30 i = 1, nmax-1
+        end do
+        do i = 1, nmax-1
             rtrv(npoint-nmax+1+i) = point(i)
-30      continue
+        end do
         ntrv = npoint
 !
 ! -     EXTRACTION DES PICS SUR LE VECTEUR REARANGE
@@ -73,7 +73,7 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
         pinter = rtrv(2)
 !
 ! -     ON RECHERCHE TOUS LES PICS
-        do 40 i = 3, ntrv
+        do i = 3, ntrv
             dp1 = pinter - pic(npic)
             dp2 = rtrv(i) - pinter
 !
@@ -85,7 +85,7 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
 !
 ! -         LE DERNIER POINT DEVIENT POINT INTERMEDIAIRE
             pinter = rtrv(i)
-40      continue
+        end do
 !
 ! -      LE DERNIER POINT EST UN PIC
         npic = npic+1

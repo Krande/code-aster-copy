@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine codlet(entier, cadre, chaine, kstop)
     implicit none
 #include "asterfort/assert.h"
@@ -57,7 +57,7 @@ subroutine codlet(entier, cadre, chaine, kstop)
      &                   'U','V','W','X','Y','Z'/
 !
 !
-     if (present(kstop)) then
+    if (present(kstop)) then
         ASSERT(kstop.eq.' '.or.kstop.eq.'F')
     else
         kstop = 'F'
@@ -71,7 +71,7 @@ subroutine codlet(entier, cadre, chaine, kstop)
 !
 !     ON CADRE A DROITE A PRIORI   CADRAGE A DROITE
     il = lg + 1
-10  continue
+ 10 continue
     il = il - 1
     if (il .le. 0) then
         ier = 1
@@ -88,27 +88,27 @@ subroutine codlet(entier, cadre, chaine, kstop)
 !        --- CADRAGE A DROITE ---
         if (len(cadre) .gt. 1) then
             if (cadre(2:2) .eq. '0') then
-                do 20 i = il-1, 1, -1
+                do i = il-1, 1, -1
                     chaine(i:i) = '0'
-20              continue
+                end do
             endif
         endif
 !
     else if (cadre(1:1) .eq. 'G') then
 !        --- CADRAGE A GAUCHE ---
         il1 = il-1
-        do 30 i = 1, lg-il1
+        do i = 1, lg-il1
             chaine(i:i) = chaine(i+il1:i+il1)
-30      continue
+        end do
         chaine(lg-il1+1:) = ' '
     else
         ier = 1
     endif
 !
 !     SORTIE -----------------------------------------------------------
-99000  continue
+99000 continue
     if (ier .ne. 0) then
-        if (kstop.eq.' ') then
+        if (kstop .eq. ' ') then
             do i = 1, lg
                 chaine(i:i) = '*'
             end do

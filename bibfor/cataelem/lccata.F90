@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lccata(iunit)
     implicit none
 #include "asterfort/caver1.h"
@@ -31,12 +31,12 @@ subroutine lccata(iunit)
 !     LECTURE DU FICHIER CONTENANT LES OBJETS JEVEUX AU FORMAT OJB :
 !     --------------------------------------------------------------
     rewind(iunit)
-    do 1,i=1,mxobj
-    call lecojb(nomobj, iunit, 'G', iret)
-    if (iret .gt. 0) goto 2
-    write(6,*) ' OBJET LU :',nomobj
-    1 end do
- 2  continue
+    do i = 1, mxobj
+        call lecojb(nomobj, iunit, 'G', iret)
+        if (iret .gt. 0) goto 2
+        write(6,*) ' OBJET LU :',nomobj
+    end do
+  2 continue
     write(6,*) ' NB_OBJETS LUS :',i
 !
 !

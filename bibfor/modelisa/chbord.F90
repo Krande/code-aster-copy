@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
                   nbmabo)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
+!
     integer :: nbmail, listma(*), mabord(*), nbmapr, nbmabo
     character(len=*) :: nomo
 !
@@ -61,14 +61,14 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
     if (nbgrel .le. 0) goto 999
 !
     traite = 0
-    do 10 igrel = 1, nbgrel
+    do igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
         call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
         itypel = zi(ialiel -1 +nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-        do 20 ima = 1, nbmail
+        do ima = 1, nbmail
             numail = listma(ima)
-            do 30 iel = 1, nel-1
+            do iel = 1, nel-1
                 if (numail .eq. zi(ialiel-1+iel)) then
                     traite = traite + 1
                     call teattr('S', 'DIM_TOPO_MODELI', dmo, ier, typel=nomte)
@@ -84,11 +84,12 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
                     endif
                     goto 20
                 endif
-30          continue
-20      continue
+            end do
+ 20         continue
+        end do
         if (traite .eq. nbmail) goto 999
-10  end do
+    end do
 !
-999  continue
+999 continue
 !
 end subroutine

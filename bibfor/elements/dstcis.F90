@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstcis(dci, carat3, hft2, bca, an)
-    implicit  none
+    implicit none
 #include "asterfort/mgauss.h"
     real(kind=8) :: dci(2, 2), carat3(*), hft2(2, 6), bca(2, 3), an(3, 9)
 !     MATRICES BCA(2,3) ET AN(3,9) DU CISAILLEMENT POUR LE DST
@@ -43,11 +43,11 @@ subroutine dstcis(dci, carat3, hft2, bca, an)
     y(2) = carat3(5)
     y(3) = carat3(6)
 !
-    do 100 k = 1, 6
-        do 101 j = 1, 3
+    do k = 1, 6
+        do j = 1, 3
             ta(k,j) = 0.d0
-101      continue
-100  end do
+        end do
+    end do
     ta(1,1) = - 8.d0 * c(1)
     ta(2,3) = - 8.d0 * c(3)
     ta(3,1) = - 4.d0 * c(1)
@@ -59,46 +59,47 @@ subroutine dstcis(dci, carat3, hft2, bca, an)
     ta(6,2) = 4.d0 * s(2)
     ta(6,3) = - 4.d0 * s(3)
 !     -------------- PRODUIT HFT2.TA -----------------------------------
-    do 110 i = 1, 2
-        do 111 j = 1, 3
+    do i = 1, 2
+        do j = 1, 3
             bca(i,j) = 0.d0
-111      end do
-110  end do
-    do 120 j = 1, 3
-        do 120 k = 1, 6
+        end do
+    end do
+    do j = 1, 3
+        do k = 1, 6
             bca(1,j) = bca(1,j) + hft2(1,k) * ta(k,j)
             bca(2,j) = bca(2,j) + hft2(2,k) * ta(k,j)
-120      continue
+        end do
+    end do
 !     -------------- PRODUIT DCI.BCA -----------------------------------
-    do 130 j = 1, 3
+    do j = 1, 3
         db(1,j) = dci(1,1) * bca(1,j) + dci(1,2) * bca(2,j)
         db(2,j) = dci(2,1) * bca(1,j) + dci(2,2) * bca(2,j)
-130  end do
+    end do
 !     -------------- CALCUL DE AA --------------------------------------
-    do 150 i = 1, 3
-        do 140 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             aa(i,j) = - (x(i) * db(1,j) + y(i) * db(2,j))
-140      continue
+        end do
         aa(i,i) = aa(i,i) + 2.d0/3.d0 * l(i)
-150  end do
+    end do
 !     -------------- INVERSION DE AA -----------------------------------
-    do 155 i = 1, 3
-        do 157 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             aai(i,j) = 0.d0
-157      end do
-155  end do
-    do 156 i = 1, 3
+        end do
+    end do
+    do i = 1, 3
         aai(i,i) = 1.d0
-156  end do
+    end do
     call mgauss('NFVP', aa, aai, 3, 3,&
                 3, det, iret)
 !
 !     -------------- CALCUL DE AW --------------------------------------
-    do 160 i = 1, 3
-        do 161 j = 1, 9
+    do i = 1, 3
+        do j = 1, 9
             aw(i,j) = 0.d0
-161      end do
-160  end do
+        end do
+    end do
     aw(1,1) = 1.d0
     aw(1,2) = - x(1)/2.d0
     aw(1,3) = - y(1)/2.d0
@@ -119,15 +120,17 @@ subroutine dstcis(dci, carat3, hft2, bca, an)
     aw(3,9) = - y(3)/2.d0
 !
 !     -------------- PRODUIT AAI.AW ------------------------------------
-    do 170 i = 1, 3
-        do 171 j = 1, 9
+    do i = 1, 3
+        do j = 1, 9
             an(i,j) = 0.d0
-171      end do
-170  end do
-    do 180 i = 1, 3
-        do 180 k = 1, 3
-            do 180 j = 1, 9
+        end do
+    end do
+    do i = 1, 3
+        do k = 1, 3
+            do j = 1, 9
                 an(i,j) = an(i,j) + aai(i,k) * aw(k,j)
-180          continue
+            end do
+        end do
+    end do
 !
 end subroutine

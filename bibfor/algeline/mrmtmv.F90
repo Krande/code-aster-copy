@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
                   neq, neql, vect, xsol, nbvect,&
                   vectmp, prepos)
@@ -23,7 +23,6 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -34,6 +33,7 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/utmess.h"
+!
     character(len=*) :: cumul
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, neql, lmat
@@ -75,11 +75,11 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
     zero=0.d0
     ASSERT(cumul.eq.'ZERO' .or. cumul.eq.'CUMU')
     if (cumul .eq. 'ZERO') then
-        do 20 jvec = 1, nbvect
-            do 10 ilig = 1, neq
+        do jvec = 1, nbvect
+            do ilig = 1, neq
                 xsol(ilig,jvec)=zero
-10          continue
-20      continue
+            end do
+        end do
     endif
 !
 !
@@ -96,31 +96,31 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
 !     -- CAS D'UNE MATRICE NON DISTRIBUEE :
 !     ----------------------------------------
     if (.not.lmatd) then
-        do 60 jvec = 1, nbvect
-            do 30,k=1,neq
-            vectmp(k)=vect(k,jvec)
-30          continue
+        do jvec = 1, nbvect
+            do k = 1, neq
+                vectmp(k)=vect(k,jvec)
+            end do
 !         -- LES LAGRANGE DOIVENT ETRE MIS A L'ECHELLE AVANT LA
 !            MULTIPLICATION :
             if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
                                     1)
             xsol(1,jvec)=xsol(1,jvec)+zr(jvalms-1+1)*vectmp(1)
-            do 50 ilig = 2, neq
+            do ilig = 2, neq
                 kdeb=smdi(ilig-1)+1
                 kfin=smdi(ilig)-1
-                do 40 ki = kdeb, kfin
+                do ki = kdeb, kfin
                     jcol=smhc(ki)
                     xsol(jcol,jvec)=xsol(jcol,jvec)+ zr(jvalmi-1+ki)*&
                     vectmp(ilig)
                     xsol(ilig,jvec)=xsol(ilig,jvec)+ zr(jvalms-1+ki)*&
                     vectmp(jcol)
-40              continue
+                end do
                 xsol(ilig,jvec)=xsol(ilig,jvec)+zr(jvalms+kfin)*&
                 vectmp(ilig)
-50          continue
+            end do
             if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
                                     1)
-60      continue
+        end do
 !
 !
 !     -- CAS D'UNE MATRICE DISTRIBUEE :
@@ -130,31 +130,33 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
         call jeveuo(refa, 'L', jrefa)
         numddl=zk24(jrefa+2-1)(1:14)
         call jeveuo(numddl//'.NUML.NULG', 'L', jnulg)
-        do 100 jvec = 1, nbvect
-            do 70,k=1,neq
-            vectmp(k)=vect(k,jvec)
-70          continue
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,1)
+        do jvec = 1, nbvect
+            do k = 1, neq
+                vectmp(k)=vect(k,jvec)
+            end do
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
+                                    1)
             numglo=zi(jnulg+1-1)
             xsol(numglo,jvec)=xsol(numglo,jvec)+ zr(jvalms-1+1)*&
             vectmp(numglo)
-            do 90 ilig = 2, neql
+            do ilig = 2, neql
                 iligg=zi(jnulg+ilig-1)
                 kdeb=smdi(ilig-1)+1
                 kfin=smdi(ilig)-1
-                do 80 ki = kdeb, kfin
+                do ki = kdeb, kfin
                     jcol=smhc(ki)
                     jcolg=zi(jnulg+jcol-1)
                     xsol(jcolg,jvec)=xsol(jcolg,jvec)+ zr(jvalmi-1+ki)&
                     *vectmp(iligg)
                     xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalms-1+ki)&
                     *vectmp(jcolg)
-80              continue
+                end do
                 xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalms+kfin)*&
                 vectmp(iligg)
-90          continue
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),1)
-100      continue
+            end do
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
+                                    1)
+        end do
     endif
 !
 !
@@ -165,7 +167,7 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
     if (iexi .ne. 0) then
         call jeveuo(nom19//'.CCID', 'L', jccid)
         do jvec = 1, nbvect
-            do ieq=1,neql
+            do ieq = 1, neql
                 if (lmatd) then
                     keta=zi(jccid-1+zi(jnulg+ieq-1))
                 else

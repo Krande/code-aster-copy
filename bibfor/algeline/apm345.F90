@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
                   k24rc, pivot2, ltest, typcha, lraide,&
                   lmasse, ldynam, solveu, lamor, lc,&
@@ -23,7 +23,6 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/apchar.h"
 #include "asterfort/assert.h"
@@ -32,6 +31,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbtetc, nk, pivot2, lraide, lmasse, ldynam, lamor, ifapm
     real(kind=8) :: rayonc
     complex(kind=8) :: centrc
@@ -86,22 +86,22 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
     if (typcon(1:6) .eq. 'CERCLE') then
         ASSERT(nbtetc.gt.1)
         raux1=2.d0*pi/(nbtetc-1)
-        do 210 i = 1, nbtetc
+        do i = 1, nbtetc
             raux2=(i-1)*raux1
             rauxx=rayonc*cos(raux2)
             rauxy=rayonc*sin(raux2)
             zc(jcont+i-1)=centrc+dcmplx(rauxx,rauxy)
-210     continue
+        end do
     endif
 !
 !   --- STEP 4: EVALUATING THE ARGUMENT VALUE OF P(CONTOUR) ---
     call wkvect('&&APM345.CONTOUR.THETA', 'V V R', nbtetc, jtheta)
-    do 251 i = 1, nbtetc
+    do i = 1, nbtetc
         call apchar(typcha, k24rc, nk, zc(jcont+i-1), theta,&
                     lraide, lmasse, ldynam, solveu, lamor,&
                     lc, impr, ifapm, i)
         zr(jtheta+i-1)=theta
-251 end do
+    end do
     call jedetr('&&APM345.CONTOUR.DIS')
 !
 !   --- STEP 5: COUNTING THE DIFFERENCE BETWEEN ANGLE         ---
@@ -112,7 +112,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
     pivot2=0
     thetao=zr(jtheta)
     if (ltest .or. (niv.ge.2)) write(ifm,*)'STEP 5: ',1,thetao*raddeg,pivot2
-    do 260 i = 2, nbtetc
+    do i = 2, nbtetc
         theta=zr(jtheta+i-1)
 !   --- CORRECTION IF THETA GOES NEAR 2*PI TO NOT MISS A LOOP ---
         if (theta .gt. piprec) theta=prec2
@@ -131,7 +131,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
         thetao=theta
 !
         if (ltest .or. (niv.ge.2)) write(ifm, *)'STEP 5: ', i, theta* raddeg, pivot2
-260 end do
+    end do
     call jedetr('&&APM345.CONTOUR.THETA')
 !
     call jedema()

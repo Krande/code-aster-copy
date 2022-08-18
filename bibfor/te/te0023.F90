@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0023(option, nomte)
-    implicit       none
-#include "jeveux.h"
 !
+subroutine te0023(option, nomte)
+    implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! IN OPTION    : K16 :  OPTION DE CALCUL
@@ -41,29 +41,29 @@ subroutine te0023(option, nomte)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PSTRX_R', 'E', istrx)
 !
-    if (nomte .eq. 'MECA_POU_D_TGM' .or. nomte.eq.'MECA_POU_D_EM' &
-        .or. nomte.eq.'MECA_POU_D_SQUE') then
-        if (nomte.eq.'MECA_POU_D_EM'.or. nomte.eq.'MECA_POU_D_SQUE') then
+    if (nomte .eq. 'MECA_POU_D_TGM' .or. nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq.&
+        'MECA_POU_D_SQUE') then
+        if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_SQUE') then
             npg = 2
         else
             npg = 3
         endif
-        if (nomte.eq.'MECA_POU_D_SQUE') then
-          ncomp = 21
+        if (nomte .eq. 'MECA_POU_D_SQUE') then
+            ncomp = 21
         else
-          ncomp = 18
+            ncomp = 18
         end if
-        do 3 kpg = 1, npg
-            do 2 i = 1, 15
+        do kpg = 1, npg
+            do i = 1, 15
                 zr(istrx-1+ncomp*(kpg-1) +i) = 0.d0
- 2          continue
-            do 1 i = 1, 3
+            end do
+            do i = 1, 3
                 zr(istrx-1+ncomp*(kpg-1)+15+i) = zr(iorien-1+i)
- 1          continue
- 3      continue
+            end do
+        end do
     else
-        do 30 i = 1, 3
+        do i = 1, 3
             zr(istrx-1+i) = zr(iorien-1+i)
-30      continue
+        end do
     endif
 end subroutine

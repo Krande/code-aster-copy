@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ordonn(nomfon, iret)
     implicit none
 #include "asterf_types.h"
@@ -134,7 +134,7 @@ subroutine ordonn(nomfon, iret)
         endif
 !        VERIFIER CHAQUE FONCTION COMME CI-DESSUS
         typfon='FONCTION'
-        do 100 i = 1, nbpara
+        do i = 1, nbpara
             call jelira(jexnum(chval, i), 'LONMAX', nbval)
             call jeveuo(jexnum(chval, i), 'E', ival)
             nbpts=nbval/2
@@ -158,7 +158,7 @@ subroutine ordonn(nomfon, iret)
                 goto 999
             endif
  99         continue
-100     continue
+        end do
 !     --------------------------------------------
     else
         call utmess('F', 'UTILITAI3_38')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
                   ksi1, ksi2, valeur)
 ! person_in_charge: mickael.abbas at edf.fr
@@ -63,11 +63,11 @@ subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
 !
 ! --- INITIALISATIONS
 !
-    do 10 idim = 1, 3
+    do idim = 1, 3
         vec1(idim) = zero
         tau1(idim) = zero
         tau2(idim) = zero
-10  end do
+    end do
     residu(1) = zero
     residu(2) = zero
 !
@@ -79,11 +79,11 @@ subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
 !
 ! --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
 !
-    do 40 idim = 1, ndim
-        do 30 ino = 1, nno
+    do idim = 1, ndim
+        do ino = 1, nno
             vec1(idim) = coorma(3*(ino-1)+idim)*ff(ino) + vec1(idim)
-30      continue
-40  end do
+        end do
+    end do
 !
 ! --- CALCUL DES TANGENTES
 !
@@ -92,9 +92,9 @@ subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
 !
 ! --- CALCUL DE LA QUANTITE A MINIMISER
 !
-    do 35 idim = 1, ndim
+    do idim = 1, ndim
         vec1(idim) = coorpt(idim) - vec1(idim)
-35  end do
+    end do
 !
 ! --- CALCUL DU RESIDU
 !

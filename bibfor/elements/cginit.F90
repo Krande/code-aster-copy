@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cginit(nomte, iu, iuc, im)
 !
 !
     implicit none
 #include "asterfort/assert.h"
-
+!
     character(len=16) :: nomte
     integer :: iu(3, 3), iuc(3), im(3)
 ! ----------------------------------------------------------------------
@@ -41,19 +41,19 @@ subroutine cginit(nomte, iu, iuc, im)
 ! ----------------------------------------------------------------------
 !
     if ((nomte.eq.'MECGSEG3')) then
-        do 10 n = 1, 3
+        do n = 1, 3
             iu(1,n) = 1 + (use3(n)-1)*5
             iu(2,n) = 2 + (use3(n)-1)*5
             iu(3,n) = 3 + (use3(n)-1)*5
-10      continue
+        end do
 !
-        do 20 n = 1, 3
+        do n = 1, 3
             iuc(n) = 4 + (ucse3(n)-1)*5
-20      continue
+        end do
 !
-        do 30 n = 1, 2
+        do n = 1, 2
             im(n) = umse3(n)*5
-30      continue
+        end do
 !
     else
         ASSERT(.false.)

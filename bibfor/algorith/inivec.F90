@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine inivec(vec, neq, id, nbcp)
 !    P. RICHARD     DATE 27/11/90
 !-----------------------------------------------------------------------
@@ -38,16 +38,16 @@ subroutine inivec(vec, neq, id, nbcp)
 !
 !-----------------------------------------------------------------------
 !
-    do 10 i = 1, neq
+    do i = 1, neq
         vec(i)=0.d0
-10  end do
+    end do
 !
-    do 20 j = 1, nbcp
+    do j = 1, nbcp
         if (id(j) .gt. neq) then
             call utmess('A', 'ALGORITH4_35')
         else
             vec(id(j))=1.d0
         endif
-20  end do
+    end do
 !
 end subroutine

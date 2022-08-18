@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvpara(nomtab, mcf, nbpost)
 ! IN  NOMTAB  : NOM DE LA TABLE PRINCIPALE PRODUITE PAR LA COMMANDE
 ! IN  MCF     : MOT-CLE FACTEUR
@@ -31,9 +31,9 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -126,7 +126,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 ! 2. ON PARCOURT TOUTES LES ACTIONS DEMANDEES
 !====
 !
-    do 2 iocc = 1, nbpost
+    do iocc = 1, nbpost
 !
 ! 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
 !
@@ -205,12 +205,12 @@ subroutine rvpara(nomtab, mcf, nbpost)
                 call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
                             c16b, r8b, k8b, zi(jnume), nbordr,&
                             ibid)
-                do 14 i = 1, nbordr
+                do i = 1, nbordr
                     nume = zi(jnume+i-1)
                     call rsexch(' ', resu, nomsy, nume, chextr,&
                                 iret)
                     if (iret .eq. 0) goto 16
- 14             continue
+                end do
                 call utmess('F', 'POSTRELE_9', sk=nomsy)
  16             continue
                 call jedetr(knume)
@@ -220,10 +220,10 @@ subroutine rvpara(nomtab, mcf, nbpost)
                 call utmess('F', 'POSTRELE_59')
             endif
             call jeveuo(nomobj, 'L', jcmp1)
-            do 10 i = 1, nbc
-                do 12 j = 1, ncmp
+            do i = 1, nbc
+                do j = 1, ncmp
                     if (zk8(jnocmp-1+j) .eq. zk8(jcmp1+i-1)) goto 10
- 12             continue
+                end do
                 ncmp = ncmp + 1
                 if (ncmp .gt. ncmpmx) then
                     ncmpmx = 2*ncmpmx
@@ -231,7 +231,8 @@ subroutine rvpara(nomtab, mcf, nbpost)
                     call jeveuo(nocmp, 'E', jnocmp)
                 endif
                 zk8(jnocmp-1+ncmp) = zk8(jcmp1+i-1)
- 10         continue
+ 10             continue
+            end do
             call jedetr(nomobj)
         endif
 !
@@ -259,12 +260,12 @@ subroutine rvpara(nomtab, mcf, nbpost)
                 n11=0
                 if (zk8(jcmp2)(1:4) .eq. 'VARI') then
                     ASSERT(nbc.eq.1)
-                    do 120 i = 1, numcmp
+                    do i = 1, numcmp
                         call codent(zi(jnucp+i-1), 'G', k8b)
                         nomcmp = 'VARI_'//k8b(1:3)
-                        do 122 j = 1, ncmp
+                        do j = 1, ncmp
                             if (zk8(jnocmp-1+j) .eq. nomcmp) goto 120
-122                     continue
+                        end do
                         ncmp = ncmp + 1
                         if (ncmp .gt. ncmpmx) then
                             ncmpmx = 2*ncmpmx
@@ -272,12 +273,13 @@ subroutine rvpara(nomtab, mcf, nbpost)
                             call jeveuo(nocmp, 'E', jnocmp)
                         endif
                         zk8(jnocmp-1+ncmp) = nomcmp
-120                 continue
+120                     continue
+                    end do
                 else
-                    do 124 i = 1, nbc
-                        do 126 j = 1, ncmp
+                    do i = 1, nbc
+                        do j = 1, ncmp
                             if (zk8(jnocmp-1+j) .eq. zk8(jcmp2+i-1)) goto 124
-126                     continue
+                        end do
                         ncmp = ncmp + 1
                         if (ncmp .gt. ncmpmx) then
                             ncmpmx = 2*ncmpmx
@@ -285,14 +287,15 @@ subroutine rvpara(nomtab, mcf, nbpost)
                             call jeveuo(nocmp, 'E', jnocmp)
                         endif
                         zk8(jnocmp-1+ncmp) = zk8(jcmp2+i-1)
-124                 continue
+124                     continue
+                    end do
                 endif
                 call jedetr('&&'//nompro//'.NU_CMP')
             else
-                do 20 i = 1, nbc
-                    do 22 j = 1, ncmp
+                do i = 1, nbc
+                    do j = 1, ncmp
                         if (zk8(jnocmp-1+j) .eq. zk8(jcmp2+i-1)) goto 20
- 22                 continue
+                    end do
                     ncmp = ncmp + 1
                     if (ncmp .gt. ncmpmx) then
                         ncmpmx = 2*ncmpmx
@@ -300,7 +303,8 @@ subroutine rvpara(nomtab, mcf, nbpost)
                         call jeveuo(nocmp, 'E', jnocmp)
                     endif
                     zk8(jnocmp-1+ncmp) = zk8(jcmp2+i-1)
- 20             continue
+ 20                 continue
+                end do
             endif
             call jedetr('&&'//nompro//'.NCMP')
         endif
@@ -318,10 +322,10 @@ subroutine rvpara(nomtab, mcf, nbpost)
             call wkvect('&&'//nompro//'.NCMP', 'V V K8', nbc, jcmp3)
             call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=nbc, vect=zk8(jcmp3),&
                         nbret=n1)
-            do 30 i = 1, nbc
-                do 32 j = 1, ncmp
+            do i = 1, nbc
+                do j = 1, ncmp
                     if (zk8(jnocmp-1+j) .eq. zk8(jcmp3+i-1)) goto 30
- 32             continue
+                end do
                 ncmp = ncmp + 1
                 if (ncmp .gt. ncmpmx) then
                     ncmpmx = 2*ncmpmx
@@ -329,7 +333,8 @@ subroutine rvpara(nomtab, mcf, nbpost)
                     call jeveuo(nocmp, 'E', jnocmp)
                 endif
                 zk8(jnocmp-1+ncmp) = zk8(jcmp3+i-1)
- 30         continue
+ 30             continue
+            end do
             call jedetr('&&'//nompro//'.NCMP')
         endif
 !
@@ -365,7 +370,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
             if (k8b(1:3) .eq. 'NON') jmail = jmail + 1
         endif
 !
-  2 end do
+    end do
 !
 !====
 ! 3. CONNAISSANT LES CARACTERISTIQUES DE LA TABLE, ON INITIALISE
@@ -450,11 +455,11 @@ subroutine rvpara(nomtab, mcf, nbpost)
         typara(nbp) = 'R'
     endif
     if ((lextr .or. lmoye) .and. jncmp .ne. 0) then
-        do 40 i = 1, ncmp
+        do i = 1, ncmp
             nbp = nbp + 1
             nopara(nbp) = zk8(jnocmp-1+i)
             typara(nbp) = 'R'
- 40     continue
+        end do
     endif
     if ((lextr .or. lmoye) .and. jinva .ne. 0) then
         nbp = nbp + 1

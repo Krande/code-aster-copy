@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0016()
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -81,7 +81,7 @@ subroutine op0016()
 !
 !
     call getvtx(' ', 'ENTITE', scal=noment, nbret=n)
-    if (n .eq. 0) goto 9999
+    if (n .eq. 0) goto 999
 !
     call getvtx(' ', 'COMMENTAIRE', scal=txt, nbret=n)
     if (n .eq. 0) txt=' '
@@ -118,7 +118,7 @@ subroutine op0016()
         if (iret .eq. 0) then
             write(iuni,*) ' DIRECTIVE IMPR_JEVEUX '
             write(iuni,*) ' L''OBJET "',nomobj,'" N''EXISTE PAS'
-            goto 9999
+            goto 999
         else
             write(iuni,*) ' '
             write(iuni,*)' ECRITURE DE L''OBJET : "',nomobj,'"'
@@ -166,7 +166,7 @@ subroutine op0016()
                 write(iuni,*) ' '
             else
                 call jelira(nomobj, 'NMAXOC', noc)
-                do 1 i = 1, noc
+                do i = 1, noc
                     call jeexin(jexnum(nomobj, i), iret)
                     if (iret .ne. 0) then
                         write(iuni,*) ' CONTENU DE L''OBJET : "',i,&
@@ -176,7 +176,7 @@ subroutine op0016()
                         call jeimpo(iuni, jexnum(nomobj, i), txt)
                         write(iuni,*) ' '
                     endif
- 1              continue
+                end do
             endif
         else
             write(iuni,*) ' '
@@ -206,7 +206,7 @@ subroutine op0016()
         if (iret .eq. 0) then
             write(iuni,*) ' DIRECTIVE IMPR_JEVEUX '
             write(iuni,*) ' L''OBJET "',nomobj,'" N''EXISTE PAS'
-            goto 9999
+            goto 999
         else
             write(iuni,*) ' '
             write(iuni,*)' ECRITURE DES ATTRIBUTS DE "',nomobj,'"'
@@ -226,5 +226,5 @@ subroutine op0016()
         write(iuni,*) ' '
 !
     endif
-9999  continue
+999 continue
 end subroutine

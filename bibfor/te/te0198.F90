@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0198(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -52,8 +52,8 @@ subroutine te0198(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
@@ -66,13 +66,13 @@ subroutine te0198(option, nomte)
 !      -----------------------------------------
     nbsig = nbsigm()
 !
-    do 10 i = 1, nbsig*npg1
+    do i = 1, nbsig*npg1
         sigth(i) = zero
-10  end do
+    end do
 !
-    do 20 i = 1, dimmod*nno
+    do i = 1, dimmod*nno
         bsigma(i) = zero
-20  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -89,11 +89,11 @@ subroutine te0198(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(ndim, bary, repere)
 !
 ! ---- RECUPERATION DE L'INSTANT
@@ -126,9 +126,9 @@ subroutine te0198(option, nomte)
 !      -------------------------------------
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 30 i = 1, dimmod*nno
+    do i = 1, dimmod*nno
         zr(ivectu+i-1) = bsigma(i)
-30  end do
+    end do
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

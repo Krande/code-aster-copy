@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
                   tau1, tau2, mprojt, inadh, rese,&
                   nrese, coeffp, lpenaf, dvitet)
@@ -70,40 +70,40 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
 ! --- INITIALISATIONS
 !
     nrese = 0.d0
-    do 10 i = 1, 3
+    do i = 1, 3
         rese(i) = 0.d0
         dvitet(i) = 0.d0
- 10 end do
+    end do
 !
 ! --- CALCUL DU SAUT DE "VITESSE" [[DELTA X]]
 !
-    do 12 i = 1, ndim
+    do i = 1, ndim
         dvite(i) = ddeple(i) - ddeplm(i)
- 12 end do
+    end do
 !
 ! --- PROJECTION DU SAUT SUR LE PLAN TANGENT
 !
-    do 21 i = 1, ndim
-        do 22 k = 1, ndim
+    do i = 1, ndim
+        do k = 1, ndim
             dvitet(i) = mprojt(i,k)*dvite(k)+dvitet(i)
- 22     continue
- 21 end do
+        end do
+    end do
 !
 ! --- SEMI-MULTIPLICATEUR DE FROTTEMENT RESE
 !
     if (lpenaf) then
-        do 32 i = 1, 3
+        do i = 1, 3
             rese(i) = coeffp*dvitet(i)
- 32     continue
+        end do
     else
         if (ndim .eq. 2) then
-            do 30 i = 1, 2
+            do i = 1, 2
                 rese(i) = dlagrf(1)*tau1(i)+coeffr*dvitet(i)
- 30         continue
+            end do
         else if (ndim.eq.3) then
-            do 31 i = 1, 3
+            do i = 1, 3
                 rese(i) = dlagrf(1)*tau1(i)+ dlagrf(2)*tau2(i)+ coeffr*dvitet(i)
- 31         continue
+            end do
         else
             ASSERT(.false.)
         endif
@@ -111,9 +111,9 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
 !
 ! -- CALCUL DU COEF D'ADHERENCE
 !
-    do 40 i = 1, 3
+    do i = 1, 3
         nrese = rese(i)*rese(i) + nrese
- 40 end do
+    end do
     nrese = sqrt(nrese)
 !
 ! --- ON TESTE SI    NRESE < 1 OU NON

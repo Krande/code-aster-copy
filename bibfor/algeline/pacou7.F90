@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacou7(a, n, d, b)
     implicit none
 !
@@ -32,15 +32,15 @@ subroutine pacou7(a, n, d, b)
 !-----------------------------------------------------------------------
     b(n) = b(n) / d(n)
 !
-    do 12 i = n-1, 1, -1
+    do i = n-1, 1, -1
 !
         sum = 0.0d0
-        do 11 j = i+1, n
+        do j = i+1, n
             sum = sum + a(i,j)*b(j)
-11      continue
+        end do
 !
         b(i) = (b(i)-sum) / d(i)
 !
-12  end do
+    end do
 !
 end subroutine

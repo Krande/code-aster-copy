@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine peenc2(champ, rcoef)
     implicit none
 #include "jeveux.h"
@@ -38,7 +38,7 @@ subroutine peenc2(champ, rcoef)
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: ibid, nbgr, i, j, k, indic
-    integer ::   lvale, mode, longt, nel, idecgr, icoef
+    integer :: lvale, mode, longt, nel, idecgr, icoef
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
     integer, pointer :: celd(:) => null()
@@ -68,21 +68,22 @@ subroutine peenc2(champ, rcoef)
     nbgr = nbgrel( ligrel )
 !
     call jeveuo(champ2//'.CELV', 'E', lvale)
-    do 30 j = 1, nbgr
+    do j = 1, nbgr
         mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 30
         icoef=max(1,celd(4))
         longt = digdel(mode) * icoef
         nel = nbelem( ligrel, j )
         idecgr=celd(celd(4+j)+8)
-        do 32 k = 1, nel
+        do k = 1, nel
 !
 !            --- TOTALE ---
             i = 1
             indic = lvale-1+idecgr+(k-1)*longt+i-1
             zr(indic) = zr(indic) * rcoef
-32      continue
-30  continue
+        end do
+ 30     continue
+    end do
 !
     call jedema()
 end subroutine

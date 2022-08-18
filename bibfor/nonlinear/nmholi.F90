@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmholi(ndim, axi, nno, npg, ipoids,&
                   ivf, idfde, imate, inst, geom,&
                   depl, chlim)
@@ -82,7 +82,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
     m = 1 + 10**(1-inst)
     am = sy * rac23**m
 !
-    do 10 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! -- DEFORMATION
 !
@@ -102,7 +102,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
         chlim(2) = chlim(2) + poids * am/m * epsno**m
         chlim(3) = max(chlim(3), (rac23*epsno)**(m-1))
 !
- 10 end do
+    end do
     call matfpe(1)
 !
 end subroutine

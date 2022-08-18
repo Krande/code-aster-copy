@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
                   prec, lima1, lima2, linoeu)
     implicit none
@@ -108,14 +108,14 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !       numero et type de la maille courante de GROUP_MA_INIT
         ima1 = zi(jgma1+ima-1)
         nutyp1 = zi(jtyma1-1+ima1)
-
+!
 !       boucle sur les mailles de GROUP_MA_FINAL
-        do 100 jma = 1, nbma2
-
+        do jma = 1, nbma2
+!
             ima2 = zi(jgma2+jma-1)
             nutyp2 = zi(jtyma2-1+ima2)
-
-            do 20 ino = 1, nbnoma(ima1)
+!
+            do ino = 1, nbnoma(ima1)
                 ino1 = numgl1(ima1,ino)
                 ino2 = numgl2(ima2,ino)
                 x1 = zr(jcoor1-1+3*(ino1-1)+1)
@@ -131,7 +131,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
                 if (v1 .gt. prec) erreur = .true.
                 if (v2 .gt. prec) erreur = .true.
                 if (v3 .gt. prec) erreur = .true.
-
+!
 !               en cas d'erreur, on passe a la maille suivante de
 !               GROUP_MA_FINAL (iteration suivante de la boucle 100)
                 if (erreur) then
@@ -140,7 +140,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !
                 linoeu(ino2) = ino1
 !
- 20         continue
+            end do
 !
 !           a ce niveau, on a trouve la maille ima2 en
 !           correspondance avec la maille ima1
@@ -156,13 +156,16 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
             zi(jnum1+ima-1) = ima1
             zi(jnum2+ima-1) = ima2
             goto 10
-
-100     continue
-
+!
+100         continue
+        end do
+!
 !       si on passe ici, c'est que l'on n'a trouve aucune maille de
 !       GROUP_MA_FINAL en correspondance avec la maille ima1 de GROUP_MA_INIT
-        call getvtx('PERM_CHAM','GROUP_MA_INIT' ,iocc=1,nbval=1,vect=nom_gr1,nbret=ibid)
-        call getvtx('PERM_CHAM','GROUP_MA_FINAL',iocc=1,nbval=1,vect=nom_gr2,nbret=ibid)
+        call getvtx('PERM_CHAM', 'GROUP_MA_INIT', iocc=1, nbval=1, vect=nom_gr1,&
+                    nbret=ibid)
+        call getvtx('PERM_CHAM', 'GROUP_MA_FINAL', iocc=1, nbval=1, vect=nom_gr2,&
+                    nbret=ibid)
         call jenuno(jexnum(ma1//'.NOMMAI', ima1 ), noma1)
         valk(1) = nom_gr1
         valk(2) = nom_gr2
@@ -172,8 +175,9 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
         valr(1) = tran(1)
         valr(2) = tran(2)
         valr(3) = tran(3)
-        call utmess('F', 'CALCULEL5_69', nk=5, valk=valk, nr=3, valr=valr)
- 10 continue
+        call utmess('F', 'CALCULEL5_69', nk=5, valk=valk, nr=3,&
+                    valr=valr)
+ 10     continue
     end do
 !
     call jedema()

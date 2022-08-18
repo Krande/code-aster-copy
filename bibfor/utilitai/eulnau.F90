@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eulnau(angeul, angnau)
     implicit none
 !     PASSAGE DES ANGLES D'EULER AUX ANGLES NAUTIQUES
@@ -52,11 +52,11 @@ subroutine eulnau(angeul, angnau)
     pe(2,3)= -sinthe *cospsi
     pe(3,3)= costhe
 !     EXPRESSION DES VECTEURS DE LA BASE LOCALE DANS LE REPERE LOCAL
-    do 1 i = 1, 3
+    do i = 1, 3
         xg(i)=pe(i,1)
         yg(i)=pe(i,2)
 !         ZG(I)=PE(I,3)
- 1  end do
+    end do
 !
     call angvxy(xg, yg, angnau)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rfnapp(nappe)
     implicit none
 #include "jeveux.h"
@@ -42,7 +42,7 @@ subroutine rfnapp(nappe)
 ! POUR LE PARAMETRE DONNE
 ! ----------------------------------------------------------------------
     integer :: ifm, niv
-    integer :: nv, np, nc, npar,  indic,  lpro, nbvr
+    integer :: nv, np, nc, npar, indic, lpro, nbvr
     integer :: jval, lval, ival
     real(kind=8) :: valp, prec, vpar, delta
     character(len=8) :: k8b, crit
@@ -66,7 +66,7 @@ subroutine rfnapp(nappe)
     call jelira(nappe//'.PARA', 'LONUTI', npar)
     call jeveuo(nappe//'.PARA', 'L', vr=para)
 !
-    do 10 indic = 1, npar
+    do indic = 1, npar
         vpar=para(indic)
         if (crit .eq. 'RELATIF') then
             delta=abs((vpar-valp)/valp)
@@ -75,9 +75,9 @@ subroutine rfnapp(nappe)
             delta=abs(vpar-valp)
             if (delta .le. prec) goto 20
         endif
-10  end do
+    end do
     call utmess('F', 'UTILITAI5_90')
-20  continue
+ 20 continue
 !
 !     --- REMPLISSAGE DU .PROL ---
 !
@@ -94,9 +94,9 @@ subroutine rfnapp(nappe)
     call jeveuo(jexnum(nappe//'.VALE', indic), 'L', jval)
     call jelira(jexnum(nappe//'.VALE', indic), 'LONMAX', nbvr)
     call wkvect(nomfon//'.VALE', 'G V R', nbvr, lval)
-    do 30 ival = 1, nbvr
+    do ival = 1, nbvr
         zr(lval+ival-1)=zr(jval+ival-1)
-30  end do
+    end do
 !
 !     --- CREATION D'UN TITRE ---
     call titre()

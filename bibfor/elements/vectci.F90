@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vectci(intsn, nb1, xi, xr, rnormc)
     implicit none
 !
@@ -36,14 +36,14 @@ subroutine vectci(intsn, nb1, xi, xr, rnormc)
 !
 !     CONSTRUCTION DES VECTEURS AA AUX X PTS D'INTEGRATION
 !
-    do 10 k = 1, 3
+    do k = 1, 3
         vecta(1,k)=0.d0
         vecta(2,k)=0.d0
-        do 20 j = 1, nb1
+        do j = 1, nb1
             vecta(1,k)=vecta(1,k)+xr(i1+j)*xi(k,j)
             vecta(2,k)=vecta(2,k)+xr(i2+j)*xi(k,j)
-20      end do
-10  end do
+        end do
+    end do
 !
 !     CONSTRUCTION DU VECTEUR C AUX X PTS D'INTEGRATION
 !

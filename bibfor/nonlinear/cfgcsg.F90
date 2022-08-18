@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/caladu.h"
 #include "asterfort/jedema.h"
@@ -88,7 +88,7 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
 !
 ! --- CALCUL DU SOUS-GRADIENT
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
         jdecal = zi(japptr+iliai-1)
         nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
         jeuold = zr(jjeuit+3*(iliai-1)+1-1)
@@ -97,23 +97,23 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
         jeunew = jeuold - jeuinc
         ssgrad = -jeunew
         zr(jsgrap-1+iliai) = ssgrad
-10  end do
+    end do
 !
 ! --- PROJECTION DU SOUS-GRADIENT
 !
-    do 15 iliai = 1, nbliai
+    do iliai = 1, nbliai
         ssgrad = zr(jsgrap-1+iliai)
         if (zr(jmu+iliai-1) .le. tole) then
             zr(jsgrap-1+iliai) = max(ssgrad,0.d0)
         endif
-15  end do
+    end do
 !
 ! --- NORME INFINIE DU RESIDU
 !
     ninf = 0.d0
-    do 20 iliai = 1, nbliai
+    do iliai = 1, nbliai
         ninf = max(abs(zr(jsgrap-1+iliai)),ninf)
-20  end do
+    end do
 !
     call jedema()
 !

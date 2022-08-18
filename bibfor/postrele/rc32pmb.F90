@@ -15,25 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine rc32pmb(lieu, iocc, ns, pm, pb, pmpb)
+!
+subroutine rc32pmb(lieu, iocc, ns, pm, pb,&
+                   pmpb)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/utmess.h"
 #include "asterfort/codent.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/rctres.h"
 #include "asterfort/rc32s0.h"
 #include "asterfort/rc32s0b.h"
-
+#include "asterfort/rctres.h"
+#include "asterfort/utmess.h"
+!
     integer :: iocc, ns
     real(kind=8) :: pm, pb, pmpb
     character(len=4) :: lieu
-
+!
 !     ------------------------------------------------------------------
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !              CALCUL DU PM, PB, ET DU PMPB
@@ -44,7 +45,7 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb, pmpb)
     real(kind=8) :: sigmoya(6), sigmoyb(6), ma(12), mb(12), pma, pmb
     real(kind=8) :: sigflea(6), sigfleb(6), pba, pbb, siglina(6)
     real(kind=8) :: siglinb(6), pmba, pmbb, seis(72)
-    character(len=8) ::  knumec
+    character(len=8) :: knumec
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -67,56 +68,56 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb, pmpb)
         call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
     endif
 !
-    do 20 j = 1, 6
+    do j = 1, 6
         sigmoya(j) = 0.d0
         sigmoyb(j) = 0.d0
         sigflea(j) = 0.d0
         sigfleb(j) = 0.d0
         siglina(j) = 0.d0
         siglinb(j) = 0.d0
-20  continue
+    end do
 !
     if (npres .eq. 1) then
-        do 30 j = 1, 6
+        do j = 1, 6
             sigmoya(j) = zr(jinfor+4*(iocc-1))*zr(jsigu-1+156+72+j)
             sigmoyb(j) = zr(jinfor+4*(iocc-1)+1)*zr(jsigu-1+156+72+j)
             sigflea(j) = zr(jinfor+4*(iocc-1))*zr(jsigu-1+234+72+j)
             sigfleb(j) = zr(jinfor+4*(iocc-1)+1)*zr(jsigu-1+234+72+j)
             siglina(j) = zr(jinfor+4*(iocc-1))*zr(jsigu-1+78+72+j)
             siglinb(j) = zr(jinfor+4*(iocc-1)+1)*zr(jsigu-1+78+72+j)
-30      continue
+        end do
     endif
     if (nmeca .eq. 1) then
 !------ Chargement état A
         numcha = zi(jinfoi+27*(iocc-1)+24)
         knumec = 'C       '
         call codent(numcha, 'D0', knumec(2:8))
-        call jeexin(jexnom('&&RC3200.VALE_CHAR', knumec),iret)
+        call jeexin(jexnom('&&RC3200.VALE_CHAR', knumec), iret)
         if (iret .eq. 0) call utmess('F', 'POSTRCCM_51')
         call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'L', jchara)
 !------ Chargement état B
         numcha = zi(jinfoi+27*(iocc-1)+25)
         knumec = 'C       '
         call codent(numcha, 'D0', knumec(2:8))
-        call jeexin(jexnom('&&RC3200.VALE_CHAR', knumec),iret)
+        call jeexin(jexnom('&&RC3200.VALE_CHAR', knumec), iret)
         if (iret .eq. 0) call utmess('F', 'POSTRCCM_51')
         call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'L', jcharb)
 !
-        do 31 k = 1, 12
+        do k = 1, 12
             ma(k) = zr(jchara-1+k)
             mb(k) = zr(jcharb-1+k)
-31      continue
+        end do
 !
-        do 40 j = 1, 6
-            do 50 k = 1, 12
-              sigmoya(j) = sigmoya(j) + ma(k)*zr(jsigu-1+156+6*(k-1)+j)
-              sigmoyb(j) = sigmoyb(j) + mb(k)*zr(jsigu-1+156+6*(k-1)+j)
-              sigflea(j) = sigflea(j) + ma(k)*zr(jsigu-1+234+6*(k-1)+j)
-              sigfleb(j) = sigfleb(j) + mb(k)*zr(jsigu-1+234+6*(k-1)+j)
-              siglina(j) = siglina(j) + ma(k)*zr(jsigu-1+78+6*(k-1)+j)
-              siglinb(j) = siglinb(j) + mb(k)*zr(jsigu-1+78+6*(k-1)+j)
-50          continue
-40      continue
+        do j = 1, 6
+            do k = 1, 12
+                sigmoya(j) = sigmoya(j) + ma(k)*zr(jsigu-1+156+6*(k-1)+j)
+                sigmoyb(j) = sigmoyb(j) + mb(k)*zr(jsigu-1+156+6*(k-1)+j)
+                sigflea(j) = sigflea(j) + ma(k)*zr(jsigu-1+234+6*(k-1)+j)
+                sigfleb(j) = sigfleb(j) + mb(k)*zr(jsigu-1+234+6*(k-1)+j)
+                siglina(j) = siglina(j) + ma(k)*zr(jsigu-1+78+6*(k-1)+j)
+                siglinb(j) = siglinb(j) + mb(k)*zr(jsigu-1+78+6*(k-1)+j)
+            end do
+        end do
     endif
 !
     if (ns .eq. 0) then
@@ -132,7 +133,7 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb, pmpb)
         call rc32s0b(seis, sigmoyb, pmb)
 !
         call rc32s0('PBPB', lieu, seis)
-        call rc32s0b(seis,sigflea, pba)
+        call rc32s0b(seis, sigflea, pba)
         call rc32s0b(seis, sigfleb, pbb)
 !
         call rc32s0('SNSN', lieu, seis)

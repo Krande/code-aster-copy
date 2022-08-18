@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
                   nbvari, epsilo, varia, matper, dsidep,&
                   smatr, sdeps, ssigp, svip, iret)
@@ -79,10 +79,10 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !
     iret=0
     if (abs(carcri(2)) .lt. 0.1d0) then
-        goto 9999
+        goto 999
     endif
     if (option(1:9) .eq. 'RIGI_MECA') then
-        goto 9999
+        goto 999
     endif
 !
 ! --  INITIALISATION (PREMIER APPEL)
@@ -91,19 +91,19 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !
 !       PERTURBATION OU VERIFICATION => FULL_MECA
         if (option .ne. 'FULL_MECA') then
-            goto 9999
+            goto 999
         endif
 !
 !       CALCUL de la valeur de la perturbation
         maxeps=0.d0
-        do 555 i = 1, 6
+        do i = 1, 6
             maxeps=max(maxeps,abs(deps2(i)))
-555      continue
+        end do
         pertu=carcri(7)
         epsilo=pertu*maxeps
         if (epsilo .lt. r8miem()) then
             call utmess('A', 'ALGORITH11_86')
-            goto 9999
+            goto 999
         endif
 !
 !      ARCHIVAGE DES VALEURS DE REFERENCE
@@ -142,19 +142,19 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !      INITIALISATION DES CHAMPS 'E'
         call r8inir(6, 0.d0, sigp, 1)
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !    CALCUL DE LA MATRICE TANGENTE
 !
-    do 559 i = 1, 6
-        do 560 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             fm = varia((2*j-2)*6+i)
             fp = varia((2*j-1)*6+i)
             v = (fp-fm)/(2*epsilo)
             matper((i-1)*6+j) = v
-560      continue
-559  end do
+        end do
+    end do
 !
 !    MENAGE POUR ARRET DE LA ROUTINE
 !
@@ -194,7 +194,7 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !         CALL JELIBE(MATRC)
     endif
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

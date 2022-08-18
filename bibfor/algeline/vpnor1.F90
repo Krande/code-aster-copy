@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
                   isign, numddl, coef)
     implicit none
@@ -45,28 +45,28 @@ subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
 !
 !     --- NORMALISATION SUR LES DDL NON EXCLUS
 !
-        do 2 im = 1, nbmode
+        do im = 1, nbmode
             xnorm = 0.0d0
             if (norm(1:4) .eq. 'EUCL') then
-                do 4 ie = 1, neq
+                do ie = 1, neq
                     xx1 = vecpro(ie,im) * ddlexc(ie)
                     xnorm = xnorm + xx1*xx1
- 4              continue
+                end do
                 xnorm = sqrt(xnorm)
             else
-                do 6 ie = 1, neq
+                do ie = 1, neq
                     xx1 = vecpro(ie,im)*ddlexc(ie)
                     if (abs(xnorm) .lt. abs(xx1)) then
                         xnorm = xx1
                     endif
- 6              continue
+                end do
             endif
             xx1 = 1.0d0 / xnorm
             coef(im) = xx1
-            do 8 ie = 1, neq
+            do ie = 1, neq
                 vecpro(ie,im) = vecpro(ie,im) * xx1
- 8          continue
- 2      continue
+            end do
+        end do
 !
     else
 !
@@ -77,25 +77,25 @@ subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
 !
     if (isign .eq. 0) then
     else if (isign .eq. 1) then
-        do 100 im = 1, nbmode
+        do im = 1, nbmode
             xx1 = vecpro(numddl,im)
             if (xx1 .lt. 0.0d0) then
                 coef(im) = -coef(im)
-                do 102 ie = 1, neq
+                do ie = 1, neq
                     vecpro(ie,im) = -vecpro(ie,im)
-102              continue
+                end do
             endif
-100      continue
+        end do
     else if (isign .eq. -1) then
-        do 110 im = 1, nbmode
+        do im = 1, nbmode
             xx1 = vecpro(numddl,im)
             if (xx1 .gt. 0.0d0) then
                 coef(im) = -coef(im)
-                do 112 ie = 1, neq
+                do ie = 1, neq
                     vecpro(ie,im) = -vecpro(ie,im)
-112              continue
+                end do
             endif
-110      continue
+        end do
     endif
 !
 end subroutine

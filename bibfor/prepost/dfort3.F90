@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
                   nbelt, tbnozo, nbnoe, xy, volume,&
                   energi, pe)
@@ -80,10 +80,10 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
 ! 1 - COORDONNEES DE NOEU1 ET NOEU2
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         coord1(i) = xy(i,noeu1)
         coord2(i) = xy(i,noeu2)
-10  end do
+    end do
     xo1o2 = coord2(1)-coord1(1)
     yo1o2 = coord2(2)-coord1(2)
     zo1o2 = coord2(3)-coord1(3)
@@ -94,7 +94,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
     rayon = -1.d+10
 !
-    do 20 inno = 1, nbnoe
+    do inno = 1, nbnoe
 !
         noeud = tbnozo(inno)
         xao1 = xy(1,noeud)-coord1(1)
@@ -107,7 +107,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
                ) / do1o2
         rayon=max(rayon,dist)
 !
-20  end do
+    end do
 !
 ! 3 - CALCUL DE L ENERGIE POUR DIFFERENTS RAYONS RAYZ
 !     ENER=SOMME(ENERGI(EF)*VOLI/VOLUME(EF))/VOLTOT
@@ -117,7 +117,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !     VOLI EST LE VOLUME DE L INTERSECTION ENTRE L EF CONSIDERE
 !     ET LE CYLINDRE D EXTREMITE NOEU1 ET NOEU2 ET DE RAYON RAYZ
 !
-    do 30 iint = 1, nbint
+    do iint = 1, nbint
 !
         r = (iint*rayon) / nbint
         rayz(iint) = r
@@ -126,7 +126,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
 ! 3.1 - BOUCLE SUR TOUS LES EFS
 !
-        do 40 inel = 1, nbelt
+        do inel = 1, nbelt
 !
             nuef = tbelzo(inel)
 !
@@ -141,7 +141,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
             nhop = 0
             npir = 0
             next = 0
-            do 50 inno = 1, icnc(1, nuef)
+            do inno = 1, icnc(1, nuef)
                 noeud = icnc(inno+2,nuef)
                 call drao12(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                             do1o2, xy( 1, noeud), ray)
@@ -172,7 +172,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
                         next = next + 1
                     endif
                 endif
-50          continue
+            end do
 !
 ! 3.1.2 - VOLUME DE L INTERSECTION VOLI SELON LES CAS
 !         SI NINT = 4, VOLI=VOLUME DE L EF
@@ -183,11 +183,11 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
                 voli=volume(nuef)
             else if (next.ne.4) then
                 voli = 0.0d0
-                do 60 inno = 1, 4
+                do inno = 1, 4
                     coorn(1,inno) = xy(1,icnc(inno+2,nuef))
                     coorn(2,inno) = xy(2,icnc(inno+2,nuef))
                     coorn(3,inno) = xy(3,icnc(inno+2,nuef))
-60              continue
+                end do
 !
 ! CALCUL DES INTERSECTIONS DES ARETES DU TETRA AVEC LE CYLINDRE
 !
@@ -223,7 +223,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
 ! 2 - FIN DE LA BOUCLE SUR TOUS LES EF
 !
-40      continue
+        end do
 !
         ASSERT(voltot.gt.0.d0.and.ener(iint).gt.0.d0)
         ener(iint) = ener(iint) / voltot
@@ -237,7 +237,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
 ! 3 - FIN DE LA BOUCLE SUR LE CALCUL DE L ENERGIE
 !
-30  end do
+    end do
 !
 !
 ! 4 - CALCUL DU DEGRE DE LA SINGULARITE

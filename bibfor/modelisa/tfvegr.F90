@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tfvegr(nommcf, ocgril)
     implicit none
 !-----------------------------------------------------------------------
@@ -61,11 +61,11 @@ subroutine tfvegr(nommcf, ocgril)
     call wkvect('&&TFVEGR.TEMP.VECI', 'V V I', nbgtot, iveci)
     call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zi(iveci),&
                 nbret=ibid)
-    do 100 igril = 1, nbgtot
+    do igril = 1, nbgtot
         if ((zi(iveci+igril-1).lt.1) .or. (zi(iveci+igril-1).gt.ntypg)) then
             call utmess('E', 'MODELISA7_17')
         endif
-100  continue
+    end do
     call getvr8(nommcf, 'LARG_TYPG', iocc=ocgril, nbval=0, nbret=ntypg2)
     call getvr8(nommcf, 'EPAI_TYPG', iocc=ocgril, nbval=0, nbret=ntypg3)
     call getvr8(nommcf, 'RUGO_TYPG', iocc=ocgril, nbval=0, nbret=ntypg4)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
                   tab)
 !    MULTI-APPUIS :
@@ -48,18 +48,19 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     call r8inir(neq, 0.d0, tab, 1)
     nompar = 'INST'
     cntr = 0
-    do 10 iex = 1, nbexci
+    do iex = 1, nbexci
         if (nomfon(iex) .eq. k8bid) goto 10
-
+!
         cntr = cntr + 1
         call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
                     coef, ier)
         do ieq = 1, neq
             tab(ieq) = tab(ieq) + psidel(ieq,iex)*coef
         end do
-10  continue
-
-    if (cntr.eq.0) then
+ 10     continue
+    end do
+!
+    if (cntr .eq. 0) then
         call utmess('A', 'ALGORITH13_44')
     end if
 end subroutine

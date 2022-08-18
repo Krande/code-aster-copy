@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
                   licmp, cesmz)
     implicit none
@@ -52,7 +52,7 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: i, ima, nbma
-    integer :: j1, j2,   jcmps
+    integer :: j1, j2, jcmps
     character(len=1) :: base
     character(len=4) :: cnum
     character(len=4) :: typces
@@ -79,23 +79,23 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
     nbma = cesd(1)
     call wkvect(wk1, 'V V I', nbma, j1)
     call wkvect(wk2, 'V V I', nbma, j2)
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         zi(j1-1+ima) = cesd(5+4*(ima-1)+1)
         zi(j2-1+ima) = cesd(5+4*(ima-1)+2)
-10  end do
+    end do
 !
 ! --- VECTEUR DES COMPOSANTES
     call wkvect(cmps, 'V V K8', ncmpg, jcmps)
     if (nomgd .eq. 'NEUT_R' .and. licmp(1)(1:1) .eq. ' ') then
-        do 20 i = 1, ncmpg
+        do i = 1, ncmpg
             call codent(i, 'G', cnum)
             zk8(jcmps-1+i) = 'X'//cnum
-20      continue
+        end do
     else
-        do 21 i = 1, ncmpg
+        do i = 1, ncmpg
             ASSERT(licmp(i).ne.' ')
             zk8(jcmps-1+i) = licmp(i)
-21      continue
+        end do
     endif
 !
 ! --- APPEL A CESCRE

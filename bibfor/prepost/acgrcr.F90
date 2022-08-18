@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
                   kwork, sompgw, jrwork, tspaq, ipg,&
                   nommet, jvecno, jnorma, forcri, nompar,&
@@ -23,18 +23,18 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8maem.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
+#include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
+#include "asterfort/acplcr.h"
+#include "asterfort/anacri.h"
+#include "asterfort/fointe.h"
+#include "asterfort/fonbpa.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/anacri.h"
-#include "asterfort/acplcr.h"
-#include "asterfort/fointe.h"
-#include "asterfort/fonbpa.h"
 !
     integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecno, jnorma
@@ -112,14 +112,14 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         rayon = .true.
     endif
 ! initialisation
-    do 20 i = 1, 35
+    do i = 1, 35
         valpar(i) = 0.0d0
- 20 continue
+    end do
 !
 ! Récuperer les paramètres qui ne dépendent pas de plan
-    do 21 i = 7, 23
+    do i = 7, 23
         valpar(i) = vanocr(i)
- 21 continue
+    end do
 !
 !
     call wkvect('&&ACGRCR.RESU_N', 'V V I', nbvec, jresun)
@@ -191,7 +191,7 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
                 nompf)
 !
 !
-    do 430 i = 1, nbvec
+    do i = 1, nbvec
         if (crsigm) then
             valpar(24) = zr(jdtaum + i-1)
             valpar(26) = zr(jdsgma + i-1)
@@ -213,14 +213,15 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
             valpar(35) = zr(jeppma + i-1)
         endif
 !
-        do 30 j = 1, np
-            do 25 ipar = 1, nparma
+        do j = 1, np
+            do ipar = 1, nparma
                 if (nompf(j) .eq. nompar(ipar)) then
                     valpu(j) = valpar(ipar)
                     goto 30
                 endif
- 25         continue
- 30     continue
+            end do
+ 30         continue
+        end do
         !
         call fointe('F', forcri, np, nompf, valpu,&
                     gcmax, ibid)
@@ -238,9 +239,9 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
                 mnmax(2) = i
             endif
         endif
-430 end do
+    end do
 !!!RECUPER DES VALUERS DE LA GRANDEUR CRITIQUE
-    do 440 k = 1, 2
+    do k = 1, 2
         i = mnmax(k)
 !
         if (crsigm) then
@@ -265,16 +266,16 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
             valpar(35) = zr(jeppma + i-1)
         endif
 !
-        do 450 j = 1, 12
+        do j = 1, 12
             respc(j+(k-1)*12) = valpar(23+j)
-450     continue
+        end do
 !
 !!!ORIENTATION DU PLAN CRITIQUE
         vnmax(3*(k-1)+1) = zr(jvectn + (i-1)*3)
         vnmax(3*(k-1)+2) = zr(jvectn + (i-1)*3 + 1)
         vnmax(3*(k-1)+3) = zr(jvectn + (i-1)*3 + 2)
 !
-440 continue
+    end do
 !
     if (crsigm) then
         call jedetr('&&ACGRCR.TAUMAX')

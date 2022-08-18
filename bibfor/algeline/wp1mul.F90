@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
                   nitf, nbfreq, mxresf, nprec, resufi,&
                   resufr, solveu)
@@ -59,7 +59,7 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
 !
     character(len=1) :: typcst(3), base
     character(len=8) :: nomddl
-    character(len=19) :: matdyn,matpre
+    character(len=19) :: matdyn, matpre
     character(len=24) :: nmat(3), ndynam
     complex(kind=8) :: res0, res1, res2, h0, h1, lambda, delta, zz, g0, gg, gg1
     complex(kind=8) :: gg2, z0, z1, z2
@@ -85,9 +85,9 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
     nmat(1) = zk24(zi(lmasse+1))
     nmat(2) = zk24(zi(lamor +1))
     nmat(3) = zk24(zi(lraide+1))
-    do 10 icomb = 1, 3
+    do icomb = 1, 3
         typcst(icomb) = 'C'
-10  end do
+    end do
     const(5) = 1.d0
     const(6) = 0.d0
 !
@@ -97,7 +97,7 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
 !     --- BOUCLE SUR LE NOMBRE DE MODES DEMANDE ----
     base='V'
     matpre=' '
-    do 100 imode = 1, nbfreq
+    do imode = 1, nbfreq
 !
         z2 = ptorig(3,imode)
         const(1) = dble(z2*z2)
@@ -125,7 +125,7 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
 !
 !         --- BOUCLE JUSQU'A LA CONVERGENCE ---
         z0 = ptorig(1,imode)
-        do 110 i = 1, nitf
+        do i = 1, nitf
 !
             const(1) = dble(z0*z0)
             const(2) = dimag(z0*z0)
@@ -183,11 +183,11 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
                 iter = i
                 goto 120
             endif
-110      continue
+        end do
 !
 !         --- FIN DES ITERATIONS ---
         iter = -nitf
-120      continue
+120     continue
 !
         zc(lzero+imode-1) = zz
         resufr(imode,2) = dimag(zz)
@@ -195,7 +195,7 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
         resufr(imode,14) = err
         resufi(imode,2) = iter
 !
-100  end do
+    end do
 !
 ! --- MENAGE
     call detrsd('MATR_ASSE', '&&WP1MUL.MAT.DYNA')

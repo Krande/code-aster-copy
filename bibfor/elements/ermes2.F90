@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ermes2(ino, typema, typmav, iref1, ivois,&
                   isig, nbcmp, dsg11, dsg22, dsg12)
     implicit none
@@ -182,10 +182,10 @@ subroutine ermes2(ino, typema, typmav, iref1, ivois,&
 !
 ! ----- CALCUL DES SAUTS DE CONTRAINTES --------------------------------
 !
-    do 10 i = 1, nbna
+    do i = 1, nbna
         dsg11(i)=sig11(i)-sigv11(i)
         dsg22(i)=sig22(i)-sigv22(i)
         dsg12(i)=sig12(i)-sigv12(i)
-10  end do
+    end do
 !
 end subroutine

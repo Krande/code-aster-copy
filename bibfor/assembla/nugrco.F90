@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nugrco(nu, base)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_comm_point.h"
 #include "asterfort/asmpi_info.h"
@@ -30,8 +32,6 @@ subroutine nugrco(nu, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=14) :: nu
     character(len=2) :: base
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -50,10 +50,10 @@ subroutine nugrco(nu, base)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer :: rang, nbproc,  jcomm1, iddl,  neql, jgraco
-    integer :: iproc, nbedge, iaux,  jtmp, nmatch, iproc1
-    integer :: iproc2, posit, jordjo, num,  neqg,  nulodd
-    integer ::  nbddlj, jjoint, curpos, numpro, jjoin2
+    integer :: rang, nbproc, jcomm1, iddl, neql, jgraco
+    integer :: iproc, nbedge, iaux, jtmp, nmatch, iproc1
+    integer :: iproc2, posit, jordjo, num, neqg, nulodd
+    integer :: nbddlj, jjoint, curpos, numpro, jjoin2
     integer :: iddlg, iddll
 !
     character(len=4) :: chnbjo
@@ -84,53 +84,54 @@ subroutine nugrco(nu, base)
     call wkvect('&&NUGRCO.COMM1', 'V V I', nbproc, jcomm1)
 !
 !---- DETERMINATION DE QUI COMMUNIQUE AVEC QUI
-    do 10 iddl = 0, neql-1
+    do iddl = 0, neql-1
         numpro=pddl(iddl+1)
         ASSERT(numpro.lt.nbproc)
         zi(jcomm1+numpro)=zi(jcomm1+numpro)+1
-10  end do
+    end do
     zi(jcomm1+rang)=0
 !
     call wkvect(nogrco, 'V V I', nbproc*nbproc, jgraco)
-    do 20 iproc = 0, nbproc-1
+    do iproc = 0, nbproc-1
         if (zi(jcomm1+iproc) .ne. 0) then
             zi(jgraco+iproc+rang*nbproc)=1
             zi(jgraco+rang+iproc*nbproc)=1
         endif
-20  end do
+    end do
     call asmpi_comm_jev('MPI_SUM', nogrco)
 !
 !---- RECHERCHE DES COUPLAGES DANS LE GRAPH
     nbedge=0
-    do 50, iaux = 1,nbproc*nbproc
-    if (zi(jgraco+iaux-1) .eq. 1) nbedge=nbedge+1
-    50 end do
+    do iaux = 1, nbproc*nbproc
+        if (zi(jgraco+iaux-1) .eq. 1) nbedge=nbedge+1
+    end do
     nbedge=nbedge/2
 !
 !---- RECHERCHE DES COUPLAGES MAXIMAUX
     AS_ALLOCATE(vi=masque, size=nbproc*nbproc)
     call wkvect('&&NUGRCO.TMP', 'V V I', nbproc, jtmp)
     nmatch=1
-60  continue
-    do 30, iproc1 = 0,nbproc-1
-    do 40, iproc2 = 0,nbproc-1
-    posit=iproc1*nbproc+iproc2
-    if (zi(jgraco+posit) .eq. 1 .and. zi(jtmp+iproc1) .eq. 0 .and. zi(jtmp+iproc2) .eq. 0) then
-        zi(jgraco+posit)=0
-        masque(posit+1)=nmatch
-        posit=iproc2*nbproc+iproc1
-        zi(jgraco+posit)=0
-        masque(posit+1)=nmatch
-        nbedge=nbedge-1
-        zi(jtmp+iproc1)=1
-        zi(jtmp+iproc2)=1
-    endif
-40  continue
-    30 end do
+ 60 continue
+    do iproc1 = 0, nbproc-1
+        do iproc2 = 0, nbproc-1
+            posit=iproc1*nbproc+iproc2
+            if (zi(jgraco+posit) .eq. 1 .and. zi(jtmp+iproc1) .eq. 0 .and. zi(jtmp+iproc2)&
+                .eq. 0) then
+                zi(jgraco+posit)=0
+                masque(posit+1)=nmatch
+                posit=iproc2*nbproc+iproc1
+                zi(jgraco+posit)=0
+                masque(posit+1)=nmatch
+                nbedge=nbedge-1
+                zi(jtmp+iproc1)=1
+                zi(jtmp+iproc2)=1
+            endif
+        end do
+    end do
     nmatch=nmatch+1
-    do 70, iaux = 0,nbproc-1
-    zi(jtmp+iaux)=0
-    70 end do
+    do iaux = 0, nbproc-1
+        zi(jtmp+iaux)=0
+    end do
     if (nbedge .gt. 0) goto 60
     call jedetr('&&NUGRCO.TMP')
 !
@@ -138,87 +139,88 @@ subroutine nugrco(nu, base)
     nmatch=nmatch-1
     call wkvect(nu//'.NUML.JOIN', base(1:1)//' V I', nmatch, jordjo)
     AS_ALLOCATE(vi=posproc, size=2*nbproc)
-    do 80, iaux = 0,nmatch-1
-    zi(jordjo+iaux)=-1
-    80 end do
-    do 90, iaux = 0,nbproc-1
-    num=masque(1+rang*nbproc+iaux)
-    ASSERT(num.le.nmatch)
-    if (num .ne. 0) then
-        zi(jordjo+num-1)=iaux
+    do iaux = 0, nmatch-1
+        zi(jordjo+iaux)=-1
+    end do
+    do iaux = 0, nbproc-1
+        num=masque(1+rang*nbproc+iaux)
+        ASSERT(num.le.nmatch)
+        if (num .ne. 0) then
+            zi(jordjo+num-1)=iaux
 !
-        call codent(num, 'G', chnbjo)
-        nojoin=nu//'.NUML.'//chnbjo
-        nbddlj=zi(jcomm1+iaux)
-        if (nbddlj .ne. 0) then
-            call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
-            posproc(1+2*iaux)=jjoint
-            posproc(1+2*iaux+1)=0
+            call codent(num, 'G', chnbjo)
+            nojoin=nu//'.NUML.'//chnbjo
+            nbddlj=zi(jcomm1+iaux)
+            if (nbddlj .ne. 0) then
+                call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
+                posproc(1+2*iaux)=jjoint
+                posproc(1+2*iaux+1)=0
+            else
+                posproc(1+2*iaux)=-1
+                posproc(1+2*iaux+1)=-1
+            endif
         else
             posproc(1+2*iaux)=-1
             posproc(1+2*iaux+1)=-1
         endif
-    else
-        posproc(1+2*iaux)=-1
-        posproc(1+2*iaux+1)=-1
-    endif
-    90 end do
+    end do
 !
-    do 100, iddl=0,neqg-1
-    nulodd=nugl(iddl+1)
-    if (nulodd .ne. 0) then
-        numpro=pddl(nulodd)
-        if (numpro .ne. rang) then
-            jjoint=posproc(1+2*numpro)
-            ASSERT(jjoint.ne.-1)
+    do iddl = 0, neqg-1
+        nulodd=nugl(iddl+1)
+        if (nulodd .ne. 0) then
+            numpro=pddl(nulodd)
+            if (numpro .ne. rang) then
+                jjoint=posproc(1+2*numpro)
+                ASSERT(jjoint.ne.-1)
 !
-            curpos=posproc(1+2*numpro+1)
-            zi(jjoint+curpos)=nulodd
-            posproc(1+2*numpro+1)=posproc(1+2*numpro+1)+1
+                curpos=posproc(1+2*numpro+1)
+                zi(jjoint+curpos)=nulodd
+                posproc(1+2*numpro+1)=posproc(1+2*numpro+1)+1
+            endif
         endif
-    endif
-    100 end do
+    end do
 !
-    do 110, iaux=0,nmatch-1
-    numpro=zi(jordjo+iaux)
-    if (numpro .eq. -1) goto 110
+    do iaux = 0, nmatch-1
+        numpro=zi(jordjo+iaux)
+        if (numpro .eq. -1) goto 110
 !
-    if (rang .gt. numpro) then
-        nbddlj=posproc(1+2*numpro+1)
-        call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, sci=nbddlj)
+        if (rang .gt. numpro) then
+            nbddlj=posproc(1+2*numpro+1)
+            call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, sci=nbddlj)
 !
-        jjoint=posproc(1+2*numpro)
-        call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
-        do 120, iddl=0,nbddlj-1
-        iddlg=nulg(1+zi(jjoint+iddl)-1)
-        ASSERT(iddlg.ne.0)
-        zi(jjoin2+iddl)=iddlg
-120      continue
+            jjoint=posproc(1+2*numpro)
+            call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
+            do iddl = 0, nbddlj-1
+                iddlg=nulg(1+zi(jjoint+iddl)-1)
+                ASSERT(iddlg.ne.0)
+                zi(jjoin2+iddl)=iddlg
+            end do
 !
-        call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
-                              vi=zi(jjoin2))
-        call jedetr('&&NUGRCO.TMP')
-    else if (rang.lt.numpro) then
-        call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, sci=nbddlj)
-        call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
+            call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
+                                  vi=zi(jjoin2))
+            call jedetr('&&NUGRCO.TMP')
+        else if (rang.lt.numpro) then
+            call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, sci=nbddlj)
+            call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
 !
-        num=iaux+1
-        call codent(num, 'G', chnbjo)
-        nojoin=nu//'.NUML.'//chnbjo
-        call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
+            num=iaux+1
+            call codent(num, 'G', chnbjo)
+            nojoin=nu//'.NUML.'//chnbjo
+            call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
 !
-        call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
-                              vi=zi(jjoin2))
-        do 130, iddl=0,nbddlj-1
-        iddll=nugl(1+zi(jjoin2+iddl)-1)
-        ASSERT(iddll.ne.0)
-        zi(jjoint+iddl)=iddll
-130      continue
-        call jedetr('&&NUGRCO.TMP')
-    else
-        ASSERT(.false.)
-    endif
-    110 end do
+            call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
+                                  vi=zi(jjoin2))
+            do iddl = 0, nbddlj-1
+                iddll=nugl(1+zi(jjoin2+iddl)-1)
+                ASSERT(iddll.ne.0)
+                zi(jjoint+iddl)=iddll
+            end do
+            call jedetr('&&NUGRCO.TMP')
+        else
+            ASSERT(.false.)
+        endif
+110     continue
+    end do
 !
     call jedetr('&&NUGRCO.COMM1')
     call jedetr(nogrco)

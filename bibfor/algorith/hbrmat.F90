@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
                   materf, matcst, ndt, ndi, nr,&
                   nvi)
@@ -65,12 +65,12 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
     parameter       ( deux   =  2.0d0  )
     parameter       ( eps    =  1.0d-6  )
 ! =================================================================
-    do 12 ii = 1, nbmat
+    do ii = 1, nbmat
         materd(ii,1) = 0.d0
         materd(ii,2) = 0.d0
         materf(ii,1) = 0.d0
         materf(ii,2) = 0.d0
-12  end do
+    end do
 ! =================================================================
 ! --- DEFINITION DES CHAMPS ---------------------------------------
 ! =================================================================
@@ -148,10 +148,10 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
     materf(12,2) = dp
     materf(13,2) = cp
     materf(14,2) = sigbd
-    do 10 ii = 1, nbmat
+    do ii = 1, nbmat
         materd(ii,1) = materf(ii,1)
         materd(ii,2) = materf(ii,2)
-10  end do
+    end do
     matcst = 'OUI'
 ! ======================================================================
 ! --- NOMBRE DE COMPOSANTES --------------------------------------------

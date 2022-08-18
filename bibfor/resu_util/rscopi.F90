@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rscopi(base, sd1, sd2)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/copich.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -38,6 +37,7 @@ subroutine rscopi(base, sd1, sd2)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsnopa.h"
+!
     character(len=*) :: base, sd1, sd2
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -95,10 +95,10 @@ subroutine rscopi(base, sd1, sd2)
 !
 !     --- ON DUPLIQUE LES CHAMPS ---
 !
-    do 20 i = 1, nbcham
+    do i = 1, nbcham
         call jenuno(jexnum(sdr1//'.DESC', i), nomsy)
         call jecroc(jexnum(sdr2//'.TACH', i))
-        do 10 j = 0, nbordr - 1
+        do j = 0, nbordr - 1
             call rsexch(' ', sd1, nomsy, ordr(1+j), ch1,&
                         iret)
             if (iret .eq. 0) then
@@ -107,8 +107,8 @@ subroutine rscopi(base, sd1, sd2)
                 call copich(bas2, ch1, ch2)
                 call rsnoch(sd2, nomsy, ordr(1+j))
             endif
- 10     continue
- 20 continue
+        end do
+    end do
 !
 !     --- LES VARIABLES ET PARAMETRES D'ACCES ---
 !
@@ -118,7 +118,7 @@ subroutine rscopi(base, sd1, sd2)
     call jeveuo(nompar, 'L', jpa)
 !
     dejfai = .false.
-    do 30 j = 1, nbpara
+    do j = 1, nbpara
         nopara = zk16(jpa+j-1)
         call jenonu(jexnom(sdr1//'.NOVA', nopara), ipara)
         call jeveuo(jexnum(sdr1//'.TAVA', ipara), 'L', iatava)
@@ -134,7 +134,8 @@ subroutine rscopi(base, sd1, sd2)
         endif
         call jedupo(sdr1//nomobj, bas2, sdr2//nomobj, .false._1)
 !
- 30 continue
+ 30     continue
+    end do
     call jedetr(nompar)
 !
     call jedema()

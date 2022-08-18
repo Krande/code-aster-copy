@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine pmfm01(kanl, xl, kk12, kk13, cars, m)
+!
+subroutine pmfm01(kanl, xl, kk12, kk13, cars,&
+                  m)
     implicit none
     integer :: kanl
     real(kind=8) :: cars(6), xl, kk12, kk13
@@ -62,7 +63,7 @@ subroutine pmfm01(kanl, xl, kk12, kk13, cars, m)
     real(kind=8) :: ms11, ms22, ms33, ms44, ms55, ms66, ms15, ms16, ms24, ms34
     real(kind=8) :: ms56
     real(kind=8) :: zaire, zinex, c
-    real(kind=8) :: z,kk,kk2,kk3,k3m3,k2m2,k2m3,k3m2
+    real(kind=8) :: z, kk, kk2, kk3, k3m3, k2m2, k2m3, k3m2
     integer :: ip(12), i
     data ip/0,1,3,6,10,15,21,28,36,45,55,66/
 !
@@ -72,9 +73,9 @@ subroutine pmfm01(kanl, xl, kk12, kk13, cars, m)
 !               MASSES CONCENTREES FORMULATION S.D.R.C. KANL =0
 !     ------------------------------------------------------------------
 !     INITIALISATION
-        do 10 i = 1, 78
+        do i = 1, 78
             m(i) = zero
-10      continue
+        end do
         zaire = cars(1)*xl/deux
         zinex = xl* (cars(4)+cars(5))/deux
         c = deux*zaire*xl
@@ -220,78 +221,78 @@ subroutine pmfm01(kanl, xl, kk12, kk13, cars, m)
 !
 !   prise en compte des modes incompatibles
 !
-    z=trois*ms11/dix/xl
-    kk=z*kk12*kk13
-    kk2=z*kk12*kk12
-    kk3=z*kk13*kk13
-    k3m3=-cars(2)*kk13
-    k2m2=cars(3)*kk12
-    k2m3=-cars(2)*kk12
-    k3m2=cars(3)*kk13
+        z=trois*ms11/dix/xl
+        kk=z*kk12*kk13
+        kk2=z*kk12*kk12
+        kk3=z*kk13*kk13
+        k3m3=-cars(2)*kk13
+        k2m2=cars(3)*kk12
+        k2m3=-cars(2)*kk12
+        k3m2=cars(3)*kk13
 !
-    m(ip(2)+1)=m(ip(2)+1)                +kk13/deux*ms11
-    m(ip(3)+1)=m(ip(3)+1)                -kk12/deux*ms11
-    m(ip(5)+1)=m(ip(5)+1)                +xl/quatre*kk12*ms11
-    m(ip(6)+1)=m(ip(6)+1)                +xl/quatre*kk13*ms11
-    m(ip(8)+1)=m(ip(8)+1)                -kk13/deux*ms11
-    m(ip(9)+1)=m(ip(9)+1)                +kk12/deux*ms11
-    m(ip(11)+1)=m(ip(11)+1)              +xl/quatre*kk12*ms11
-    m(ip(12)+1)=m(ip(12)+1)              +xl/quatre*kk13*ms11
+        m(ip(2)+1)=m(ip(2)+1)                +kk13/deux*ms11
+        m(ip(3)+1)=m(ip(3)+1)                -kk12/deux*ms11
+        m(ip(5)+1)=m(ip(5)+1)                +xl/quatre*kk12*ms11
+        m(ip(6)+1)=m(ip(6)+1)                +xl/quatre*kk13*ms11
+        m(ip(8)+1)=m(ip(8)+1)                -kk13/deux*ms11
+        m(ip(9)+1)=m(ip(9)+1)                +kk12/deux*ms11
+        m(ip(11)+1)=m(ip(11)+1)              +xl/quatre*kk12*ms11
+        m(ip(12)+1)=m(ip(12)+1)              +xl/quatre*kk13*ms11
 !
-    m(ip(2)+2)=m(ip(2)+2)   +quatre*kk3  -douze/cinq/xl*k3m3
-    m(ip(3)+2)=m(ip(3)+2)   -quatre*kk   +six/cinq/xl*(k2m3+k3m2)
-    m(ip(5)+2)=m(ip(5)+2)   +deux*xl*kk  -k3m2/dix-trois/cinq*k2m3
-    m(ip(6)+2)=m(ip(6)+2)   +deux*xl*kk3 -sept/dix*k3m3
-    m(ip(7)+2)=m(ip(7)+2)                +kk13/deux*ms11
-    m(ip(8)+2)=m(ip(8)+2)   -quatre*kk3  +douze/cinq/xl*k3m3
-    m(ip(9)+2)=m(ip(9)+2)   +quatre*kk   -six/cinq/xl*(k2m3+k3m2)
-    m(ip(11)+2)=m(ip(11)+2) +deux*xl*kk  -k3m2/dix-trois/cinq*k2m3
-    m(ip(12)+2)=m(ip(12)+2) +deux*xl*kk3 -sept/dix*k3m3
+        m(ip(2)+2)=m(ip(2)+2)   +quatre*kk3  -douze/cinq/xl*k3m3
+        m(ip(3)+2)=m(ip(3)+2)   -quatre*kk   +six/cinq/xl*(k2m3+k3m2)
+        m(ip(5)+2)=m(ip(5)+2)   +deux*xl*kk  -k3m2/dix-trois/cinq*k2m3
+        m(ip(6)+2)=m(ip(6)+2)   +deux*xl*kk3 -sept/dix*k3m3
+        m(ip(7)+2)=m(ip(7)+2)                +kk13/deux*ms11
+        m(ip(8)+2)=m(ip(8)+2)   -quatre*kk3  +douze/cinq/xl*k3m3
+        m(ip(9)+2)=m(ip(9)+2)   +quatre*kk   -six/cinq/xl*(k2m3+k3m2)
+        m(ip(11)+2)=m(ip(11)+2) +deux*xl*kk  -k3m2/dix-trois/cinq*k2m3
+        m(ip(12)+2)=m(ip(12)+2) +deux*xl*kk3 -sept/dix*k3m3
 !
-    m(ip(3)+3)=m(ip(3)+3)   +quatre*kk2  -douze/cinq/xl*k2m2
-    m(ip(5)+3)=m(ip(5)+3)   -deux*xl*kk2 +sept/dix*k2m2
-    m(ip(6)+3)=m(ip(6)+3)   -deux*xl*kk  +k2m3/dix+trois/cinq*k3m2
-    m(ip(7)+3)=m(ip(7)+3)                -kk12/deux*ms11
-    m(ip(8)+3)=m(ip(8)+3)   +quatre*kk   -six/cinq/xl*(k2m3+k3m2)
-    m(ip(9)+3)=m(ip(9)+3)   -quatre*kk2  +douze/cinq/xl*k2m2
-    m(ip(11)+3)=m(ip(11)+3) -deux*xl*kk2 +sept/dix*k2m2
-    m(ip(12)+3)=m(ip(12)+3) -deux*xl*kk  +k2m3/dix+trois/cinq*k3m2
+        m(ip(3)+3)=m(ip(3)+3)   +quatre*kk2  -douze/cinq/xl*k2m2
+        m(ip(5)+3)=m(ip(5)+3)   -deux*xl*kk2 +sept/dix*k2m2
+        m(ip(6)+3)=m(ip(6)+3)   -deux*xl*kk  +k2m3/dix+trois/cinq*k3m2
+        m(ip(7)+3)=m(ip(7)+3)                -kk12/deux*ms11
+        m(ip(8)+3)=m(ip(8)+3)   +quatre*kk   -six/cinq/xl*(k2m3+k3m2)
+        m(ip(9)+3)=m(ip(9)+3)   -quatre*kk2  +douze/cinq/xl*k2m2
+        m(ip(11)+3)=m(ip(11)+3) -deux*xl*kk2 +sept/dix*k2m2
+        m(ip(12)+3)=m(ip(12)+3) -deux*xl*kk  +k2m3/dix+trois/cinq*k3m2
 !
-    m(ip(5)+5)=m(ip(5)+5)   +xl*xl*kk2   -xl/dix*k2m2
-    m(ip(6)+5)=m(ip(6)+5)   +xl*xl*kk    -xl/vingt*(k2m3+k3m2)
-    m(ip(7)+5)=m(ip(7)+5)                +xl/quatre*kk12*ms11
-    m(ip(8)+5)=m(ip(8)+5)   -deux*xl*kk  +k3m2/dix+trois/cinq*k2m3
-    m(ip(9)+5)=m(ip(9)+5)   +deux*xl*kk2 -sept/dix*k2m2
-    m(ip(11)+5)=m(ip(11)+5) +xl*xl*kk2   -xl/dix*k2m2
-    m(ip(12)+5)=m(ip(12)+5) +xl*xl*kk    -xl/vingt*(k2m3+k3m2)
+        m(ip(5)+5)=m(ip(5)+5)   +xl*xl*kk2   -xl/dix*k2m2
+        m(ip(6)+5)=m(ip(6)+5)   +xl*xl*kk    -xl/vingt*(k2m3+k3m2)
+        m(ip(7)+5)=m(ip(7)+5)                +xl/quatre*kk12*ms11
+        m(ip(8)+5)=m(ip(8)+5)   -deux*xl*kk  +k3m2/dix+trois/cinq*k2m3
+        m(ip(9)+5)=m(ip(9)+5)   +deux*xl*kk2 -sept/dix*k2m2
+        m(ip(11)+5)=m(ip(11)+5) +xl*xl*kk2   -xl/dix*k2m2
+        m(ip(12)+5)=m(ip(12)+5) +xl*xl*kk    -xl/vingt*(k2m3+k3m2)
 !
-    m(ip(6)+6)=m(ip(6)+6)   +xl*xl*kk3   -xl/dix*k3m3
-    m(ip(7)+6)=m(ip(7)+6)                +xl/quatre*kk13*ms11
-    m(ip(8)+6)=m(ip(8)+6)   -deux*xl*kk3 +sept/dix*k3m3
-    m(ip(9)+6)=m(ip(9)+6)   +deux*xl*kk  -k2m3/dix-trois/cinq*k3m2
-    m(ip(11)+6)=m(ip(11)+6) +xl*xl*kk    -xl/vingt*(k2m3+k3m2)
-    m(ip(12)+6)=m(ip(12)+6) +xl*xl*kk3   -xl/dix*k3m3
+        m(ip(6)+6)=m(ip(6)+6)   +xl*xl*kk3   -xl/dix*k3m3
+        m(ip(7)+6)=m(ip(7)+6)                +xl/quatre*kk13*ms11
+        m(ip(8)+6)=m(ip(8)+6)   -deux*xl*kk3 +sept/dix*k3m3
+        m(ip(9)+6)=m(ip(9)+6)   +deux*xl*kk  -k2m3/dix-trois/cinq*k3m2
+        m(ip(11)+6)=m(ip(11)+6) +xl*xl*kk    -xl/vingt*(k2m3+k3m2)
+        m(ip(12)+6)=m(ip(12)+6) +xl*xl*kk3   -xl/dix*k3m3
 !
-    m(ip(8)+7)=m(ip(8)+7)                -kk13/deux*ms11
-    m(ip(9)+7)=m(ip(9)+7)                +kk12/deux*ms11
-    m(ip(11)+7)=m(ip(11)+7)              +xl/quatre*kk12*ms11
-    m(ip(12)+7)=m(ip(12)+7)              +xl/quatre*kk13*ms11
+        m(ip(8)+7)=m(ip(8)+7)                -kk13/deux*ms11
+        m(ip(9)+7)=m(ip(9)+7)                +kk12/deux*ms11
+        m(ip(11)+7)=m(ip(11)+7)              +xl/quatre*kk12*ms11
+        m(ip(12)+7)=m(ip(12)+7)              +xl/quatre*kk13*ms11
 !
-    m(ip(8)+8)=m(ip(8)+8)   +quatre*kk3  -douze/cinq/xl*k3m3
-    m(ip(9)+8)=m(ip(9)+8)   -quatre*kk   +six/cinq/xl*(k2m3+k3m2)
-    m(ip(11)+8)=m(ip(11)+8) -deux*xl*kk  +k3m2/dix+trois/cinq*k2m3
-    m(ip(12)+8)=m(ip(12)+8) -deux*xl*kk3 +sept/dix*k3m3
+        m(ip(8)+8)=m(ip(8)+8)   +quatre*kk3  -douze/cinq/xl*k3m3
+        m(ip(9)+8)=m(ip(9)+8)   -quatre*kk   +six/cinq/xl*(k2m3+k3m2)
+        m(ip(11)+8)=m(ip(11)+8) -deux*xl*kk  +k3m2/dix+trois/cinq*k2m3
+        m(ip(12)+8)=m(ip(12)+8) -deux*xl*kk3 +sept/dix*k3m3
 !
-    m(ip(9)+9)=m(ip(9)+9)   +quatre*kk2  -douze/cinq/xl*k2m2
-    m(ip(11)+9)=m(ip(11)+9) +deux*xl*kk2 -sept/dix*k2m2
-    m(ip(12)+9)=m(ip(12)+9) +deux*xl*kk  -k2m3/dix-trois/cinq*k3m2
+        m(ip(9)+9)=m(ip(9)+9)   +quatre*kk2  -douze/cinq/xl*k2m2
+        m(ip(11)+9)=m(ip(11)+9) +deux*xl*kk2 -sept/dix*k2m2
+        m(ip(12)+9)=m(ip(12)+9) +deux*xl*kk  -k2m3/dix-trois/cinq*k3m2
 !
-    m(ip(11)+11)=m(ip(11)+11) +xl*xl*kk2 -xl/dix*k2m2
-    m(ip(12)+11)=m(ip(12)+11) +xl*xl*kk  -xl/vingt*(k2m3+k3m2)
+        m(ip(11)+11)=m(ip(11)+11) +xl*xl*kk2 -xl/dix*k2m2
+        m(ip(12)+11)=m(ip(12)+11) +xl*xl*kk  -xl/vingt*(k2m3+k3m2)
 !
-    m(ip(12)+12)=m(ip(12)+12) +xl*xl*kk3 -xl/dix*k3m3
+        m(ip(12)+12)=m(ip(12)+12) +xl*xl*kk3 -xl/dix*k3m3
 !
-
+!
 ! C             CHANGEMENT DE REPERE POUR PRENDRE EN COMPTE LE CHANGEMENT DU CENTRE DE TORSION
 !
 !       EXY= 0
@@ -339,7 +340,7 @@ subroutine pmfm01(kanl, xl, kk12, kk13, cars, m)
 !               m(ip(4)+4)=m(ip(4)+4)-etz*m(ip(4)+2)+ety*m(ip(4)+3)
 !               m(ip(10)+10)=m(ip(10)+10)-etz*m(ip(10)+8)+ety*m(ip(9)+9)
 !               m(ip(10)+4)=m(ip(10)+4)-etz*m(ip(8)+4)+ety*m(ip(9)+4)
-
+!
     endif
 !
 end subroutine

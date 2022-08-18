@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sepavp(ck, cm, cmat, ndim, alpha,&
                   beta, nbmod, lambd1, lambd2, interv)
 !  BUT:  < SEPARATION DES VALEURS PROPRES >
@@ -58,10 +58,10 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    do 10 i = 1, nbmod
+    do i = 1, nbmod
         alpha(i)=-1
         beta(i) =-1
- 10 end do
+    end do
     alpha(1)=lambd1
     call nbval(ck, cm, cmat, ndim, lambd1,&
                n1)
@@ -72,7 +72,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
     valr(1)=lambd1
     valr(2)=lambd2
     call utmess('I', 'ALGELINE6_9', si=nbmod, nr=2, valr=valr)
-    do 20 i = 1, nbmod
+    do i = 1, nbmod
         if (alpha(i) .ge. 0.d0) then
             a=alpha(i)
         else
@@ -138,5 +138,5 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
         if (nb .ge. i) b=c
         goto 30
  40     continue
- 20 end do
+    end do
 end subroutine

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nm1dco(fami, kpg, ksp, option, imate,&
                   materi, e, sigm, epsm, deps,&
                   vim, sigp, vip, dsde, crildc,&
@@ -127,7 +127,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     if ((option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA')) then
 !
         iter = 0
-        do 30 i = 1, itemax
+        do i = 1, itemax
             if (.not. dconv) then
                 iter = iter+1
 !
@@ -146,7 +146,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                     pconv = .false.
 !
 !    ******PLASTICITE**********************
-                    do 40 j = 1, itemax
+                    do j = 1, itemax
                         if (.not. pconv) then
                             dfds = (1.d0/(1.d0-d))
                             dfpds = (1.d0/(1.d0-d))
@@ -162,12 +162,12 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                         else
                             goto 141
                         endif
- 40                 continue
+                    end do
 141                 continue
                     if (j .ge. itemax) then
                         call utmess('I', 'MODELISA5_40')
                         codret=1
-                        goto 9999
+                        goto 999
                     endif
                 endif
 !
@@ -194,13 +194,13 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                 sigp = 0.d0
                 goto 142
             endif
- 30     continue
+        end do
 142     continue
 !
         if (i .ge. itemax) then
             call utmess('I', 'MODELISA5_41')
             codret=1
-            goto 9999
+            goto 999
         endif
         vip(1) = p
         vip(2) = d
@@ -247,5 +247,5 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     endif
     if (melas) dsde=(1.d0-d)*dsde
 !
-9999 continue
+999 continue
 end subroutine

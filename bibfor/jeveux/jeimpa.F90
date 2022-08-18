@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeimpa(unit, nomlu, com)
     implicit none
 #include "asterf_types.h"
@@ -166,16 +166,16 @@ subroutine jeimpa(unit, nomlu, com)
     if (iret .eq. 2) then
         nnaci = nnac
         if (.not. lconti) nnaci = nnac - 1
-        do 10 k = 1, nnaci
+        do k = 1, nnaci
             call jelira(noml32, nac(k), ival, cval)
             if (tac(k) .eq. 'I') then
                 write(unit,'(A8,I12)') nac(k),ival
             else
                 write(unit,'(A8,A)') nac(k),cval(1:lac(k))
             endif
- 10     continue
+        end do
     endif
-    do 20 k = 1, nnao
+    do k = 1, nnao
         icol = k - 10
         if (nao(k)(1:3) .eq. 'LON') ilon = 1
         if (nao(k)(1:3) .eq. 'NOM') ilon = 2
@@ -191,7 +191,7 @@ subroutine jeimpa(unit, nomlu, com)
                 write(unit,'(A8,A)') nao(k),cval(1:lao(k))
             endif
         endif
- 20 end do
+    end do
     if (lcol) then
         call jjlide('JEIMPA', noml32(1:24), 2)
     endif

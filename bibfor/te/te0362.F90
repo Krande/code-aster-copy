@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0362(option, nomte)
 !
 ! person_in_charge: jerome.laverne at edf.fr
@@ -47,20 +47,20 @@ subroutine te0362(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf,jdfde=idf,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=iw, jvf=ivf, jdfde=idf, jgano=jgn)
     ndim = ndim + 1
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCOORPG', 'E', icopg)
 !
-    do 20 g = 1, npg
+    do g = 1, npg
         call r8inir(ndim, 0.d0, x, 1)
-        do 10 n = 1, nno
-            do 12 i = 1, ndim
+        do n = 1, nno
+            do i = 1, ndim
                 x(i) = x(i) + zr(igeom+ndim*(n-1)+i-1)*zr(ivf+(g-1)* nno+n-1)
-12          continue
-10      continue
+            end do
+        end do
 !
         wref = zr(iw+g-1)
         if (ndim .eq. 3) then
@@ -72,11 +72,11 @@ subroutine te0362(option, nomte)
                         cour, wg, cosa, sina)
         endif
 !
-        do 15 i = 1, ndim
+        do i = 1, ndim
             zr(icopg+(ndim+1)*(g-1)+i-1) = x(i)
-15      continue
+        end do
         zr(icopg+(ndim+1)*(g-1)+ndim) = wg
 !
-20  end do
+    end do
 !
 end subroutine

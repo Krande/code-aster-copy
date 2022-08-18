@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
                   imate, pintt, cnset, heavt, lonch,&
-                  basloc, lsn, lst, matuu, heavn, jpmilt,&
-                  jstno, nnops, ddlm)
+                  basloc, lsn, lst, matuu, heavn,&
+                  jpmilt, jstno, nnops, ddlm)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/iselli.h"
 #include "asterfort/xmase2.h"
 #include "asterfort/xmase3.h"
-#include "asterfort/iselli.h"
     integer :: nnop, imate, igeom, jpmilt, jstno, ddlm, nnops
-    integer :: nfh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27,5)
+    integer :: nfh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27, 5)
     real(kind=8) :: pintt(3*11), lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), basloc(*)
 !
@@ -87,22 +87,21 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
     endif
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elrefe_info(fami='RIGI',ndim=ndim)
+    call elrefe_info(fami='RIGI', ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),&
-  npg=npg, nno=nno)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), npg=npg, nno=nno)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=cnset((ndim+1)*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino .gt. 1000 .and. ino .lt. 2000) then
@@ -112,8 +111,8 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
                 else if (ino .gt. 3000) then
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
 !       FONCTION HEAVYSIDE CSTE SUR LE SS-ELT
         he = heavt(ise)
@@ -124,19 +123,19 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
 !
             call xmase3(elrefp, ndim, coorse, igeom, he,&
                         nfh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu, heavn,&
-                        jstno, nnops, ddlm)
+                        npg, imate, lsn, lst, matuu,&
+                        heavn, jstno, nnops, ddlm)
 !
         else if (ndim.eq.2) then
 !
             call xmase2(elrefp, ndim, coorse, igeom, he,&
                         nfh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu, heavn,&
-                        jstno, nnops, ddlm)
+                        npg, imate, lsn, lst, matuu,&
+                        heavn, jstno, nnops, ddlm)
 !
         endif
 !
 !
-110  end do
+    end do
 !
 end subroutine

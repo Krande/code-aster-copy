@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeimpd(unit, clas, cmess)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -87,7 +87,7 @@ subroutine jeimpd(unit, clas, cmess)
     ipgc = -2
     lente = .true.
     kclas = clas ( 1: min(1,len(clas)))
-    if (unit .le. 0) goto 9999
+    if (unit .le. 0) goto 999
     if (kclas .eq. ' ') then
         ncla1 = 1
         ncla2 = index ( classe , '$' ) - 1
@@ -96,7 +96,7 @@ subroutine jeimpd(unit, clas, cmess)
         ncla1 = index ( classe , kclas )
         ncla2 = ncla1
     endif
-    do 10 i = ncla1, ncla2
+    do i = ncla1, ncla2
         clasi = classe(i:i)
         if (clasi .ne. ' ') then
             write (unit,'(''1'',4A)' ) ('--------------------',k=1,4)
@@ -112,7 +112,7 @@ subroutine jeimpd(unit, clas, cmess)
             write(unit,*)'                                  '
             write (unit,'(    1X,4A)' ) ('--------------------',k=1,4)
             kj = 1
-            do 5 j = 1, nremax(i)
+            do j = 1, nremax(i)
                 crnom = rnom(jrnom(i)+j)
                 if (crnom(1:1) .eq. '?') goto 5
                 if (mod(kj,25) .eq. 1 .and. lente) then
@@ -148,7 +148,7 @@ subroutine jeimpd(unit, clas, cmess)
                     cgen2 = genr(jgenr(i)+ixdeso)
                     ctype = type(jtype(i)+ixdeso)
                     iltyp = ltyp(jltyp(i)+ixdeso)
-                    do 50 koc = 1, nmax
+                    do koc = 1, nmax
                         ibiadd = iadm ( jiadm(i) + 2*ixiadd-1 )
                         kiadd = iszon ( jiszon + ibiadd - 1 + 2*koc-1 )
                         if (kiadd .eq. 0) goto 50
@@ -172,17 +172,19 @@ subroutine jeimpd(unit, clas, cmess)
                         write( crnom(25:32) , '(I8)' ) koc
                         write(unit,1001) j,crnom,cgen2,ctype,iltyp,&
                         ilono,iiadd,liadd,iacc
- 50                 continue
+ 50                     continue
+                    end do
  51                 continue
                     if (lcol) then
                         call jjlide('JEIMPO', crnom(1:24), 2)
                     endif
                 endif
-  5         continue
+  5             continue
+            end do
             write ( unit , '(/)' )
         endif
- 10 end do
-9999 continue
+    end do
+999 continue
     ipgc = ipgcex
     1001 format(i8,1x,a,'  -',2(a,'-'),i3,i7,i7,i9,i6)
 ! FIN -----------------------------------------------------------------

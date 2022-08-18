@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltafp(n, ncol, adper, matper, matfi,&
                   local)
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -31,16 +31,16 @@ subroutine mltafp(n, ncol, adper, matper, matfi,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     decf1 = 1
-    do 120 i = 1, ncol, 1
+    do i = 1, ncol, 1
         decp1 = adper(local(i))
         matper(decp1) = matper(decp1) + matfi(decf1)
         decp1 = decp1 - local(i)
         ni = n - i
         decf1 = decf1 + 1
-        do 110 j = 1, ni
+        do j = 1, ni
             matper(decp1+local(j+i)) = matper(decp1+local(j+i)) + matfi(decf1)
             decf1 = decf1 + 1
-110      continue
-120  end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine posthm(option, modint, jgano, ncmp, nvim,&
                   vpg, vno)
-    implicit     none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/ppgan2.h"
@@ -69,13 +69,13 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! =====================================================================
 ! --- MATRICE DE PASSAGE POINTS DE GAUSS -> SOMMETS JGANPG ------------
 ! =====================================================================
-        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jgano=jganpg)
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                         jgano=jganpg)
 ! =====================================================================
 ! --- MATRICE DE PASSAGE SOMMETS -> SOMMETS : JGANSO ------------------
 ! =====================================================================
-        call elrefe_info(fami='NOEU_S',ndim=ndim2,nno=nno2,nnos=nnos2,&
-  npg=npg2,jgano=jganso)
+        call elrefe_info(fami='NOEU_S', ndim=ndim2, nno=nno2, nnos=nnos2, npg=npg2,&
+                         jgano=jganso)
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
@@ -87,44 +87,44 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
             ASSERT(ncmp .le. dimmax)
-            do 100 i = 1, ncmp*npg
+            do i = 1, ncmp*npg
                 spg1(i) = vpg(i)
-100          continue
-            do 200 i = 1, ncmp*npg2
+            end do
+            do i = 1, ncmp*npg2
                 spg2(i) = vpg(ncmp*npg+i)
-200          continue
+            end do
             call ppgan2(jganpg, 1, ncmp, spg1, siefpg)
             call ppgan2(jganso, 1, ncmp, spg2, siefso)
-            do 10 i = 1, nno
-                do 20 j = 1, nvim
+            do i = 1, nno
+                do j = 1, nvim
                     vno((i-1)*ncmp+j) = siefpg((i-1)*ncmp+j)
-20              continue
-                do 30 j = nvim+1, ncmp
+                end do
+                do j = nvim+1, ncmp
                     vno((i-1)*ncmp+j) = siefso((i-1)*ncmp+j)
-30              continue
-10          continue
+                end do
+            end do
         endif
         if (option .eq. 'VARI_ELNO  ') then
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
             ASSERT(ncmp .le. nvmax)
-            do 300 i = 1, ncmp*npg
+            do i = 1, ncmp*npg
                 vpg1(i) = vpg(i)
-300          continue
-            do 400 i = 1, ncmp*npg2
+            end do
+            do i = 1, ncmp*npg2
                 vpg2(i) = vpg(ncmp*npg+i)
-400          continue
+            end do
             call ppgan2(jganpg, 1, ncmp, vpg1, varipg)
             call ppgan2(jganso, 1, ncmp, vpg2, variso)
-            do 40 i = 1, nno
-                do 50 j = 1, nvim
+            do i = 1, nno
+                do j = 1, nvim
                     vno((i-1)*ncmp+j) = varipg((i-1)*ncmp+j)
-50              continue
-                do 60 j = nvim+1, ncmp
+                end do
+                do j = nvim+1, ncmp
                     vno((i-1)*ncmp+j) = variso((i-1)*ncmp+j)
-60              continue
-40          continue
+                end do
+            end do
         endif
     endif
 ! =====================================================================

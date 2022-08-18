@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0025(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -51,8 +51,8 @@ subroutine te0025(option, nomte)
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
@@ -64,9 +64,9 @@ subroutine te0025(option, nomte)
     instan = r8vide()
     nharm = zero
 !
-    do 20 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         epsm(i) = zero
-20  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 !      ----------------------------------------------
@@ -101,11 +101,11 @@ subroutine te0025(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(ndim, bary, repere)
 !
     call epsvmc('RIGI', nno, ndim, nbsig, npg,&
@@ -116,10 +116,10 @@ subroutine te0025(option, nomte)
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 ! ---- POINTS D'INTEGRATION :
 !      --------------------
-    do 80 igau = 1, npg
-        do 70 isig = 1, nbsig
+    do igau = 1, npg
+        do isig = 1, nbsig
             zr(idefo+nbsig* (igau-1)+isig-1) = epsm(nbsig* (igau-1)+ isig)
-70      continue
-80  end do
+        end do
+    end do
 !
 end subroutine

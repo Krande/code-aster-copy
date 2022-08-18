@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ndmapp(sddyna, valinc)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -96,11 +96,11 @@ subroutine ndmapp(sddyna, valinc)
         call jeveuo(vitabs(1:19)//'.VALE', 'E', vr=vitab)
         call jeveuo(accabs(1:19)//'.VALE', 'E', vr=accab)
         call jelira(depent(1:19)//'.VALE', 'LONMAX', neq)
-        do 20 ie = 1, neq
+        do ie = 1, neq
             depab(ie) = depen(ie) + depp(ie)
             vitab(ie) = viten(ie) + vitp(ie)
             accab(ie) = accen(ie) + accp(ie)
- 20     continue
+        end do
     endif
 !
     call jedema()

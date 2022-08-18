@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfgcac(resoco, tole, neq, nbliai, nbliac)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calatm.h"
 #include "asterfort/infdbg.h"
@@ -80,22 +80,22 @@ subroutine cfgcac(resoco, tole, neq, nbliai, nbliac)
 ! --- CALCUL DE ATMU SUR TOUTES LES LIAISONS
 !
     call r8inir(neq, 0.d0, zr(jatmu), 1)
-    do 120 iliai = 1, nbliai
+    do iliai = 1, nbliai
         jdecal = zi(japptr+iliai-1)
         nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
         call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
                     zr(jatmu))
-120  end do
+    end do
 !
 ! --- COMPTE DES LIAISONS ACTIVES ET ACTIVATION
 !
     nbliac = 0
-    do 130 iliai = 1, nbliai
+    do iliai = 1, nbliai
         if (zr(jmu+iliai-1) .gt. tole) then
             nbliac = nbliac + 1
             zi(jliac+nbliac-1) = iliai
         endif
-130  end do
+    end do
 !
     call jedema()
 !

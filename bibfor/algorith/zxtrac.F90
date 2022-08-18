@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zxtrac(interp, prec, crit, nbinst, ti,&
                   temps, y, neq, xtract, ier)
     implicit none
@@ -53,37 +53,37 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti,&
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(1)
     if (abs( temps - ti(1) ) .le. prec2) then
         call zcopy(neq, y(1), 1, xtract, 1)
-        goto 9999
+        goto 999
     endif
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(nbinst)
     if (abs( temps - ti(nbinst) ) .le. prec2) then
         call zcopy(neq, y((nbinst-1)*neq+1), 1, xtract, 1)
-        goto 9999
+        goto 999
     endif
 !
     if (temps .lt. ti(1)) then
         ier = ier + 1
-        goto 9999
+        goto 999
     endif
     if (temps .gt. ti(nbinst)) then
         ier = ier + 1
-        goto 9999
+        goto 999
     endif
     if (interp(1:3) .eq. 'NON') then
 !
 !        --- PAS D'INTERPOLATION ---
-        do 20 i = 2, nbinst-1
+        do i = 2, nbinst-1
             if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(i)
             if (abs( temps - ti(i) ) .le. prec2) then
                 call zcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
-                goto 9999
+                goto 999
             endif
-20      continue
+        end do
         ier = ier + 1
     else
 !        ON INTERDIT L'INTERPOLATION POUR LES COMPLEXES
         call utmess('E', 'ALGORITH11_79')
     endif
 !
-9999  continue
+999 continue
 end subroutine

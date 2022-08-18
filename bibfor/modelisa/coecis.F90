@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coecis(napcis, foncis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/foston.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: napcis, foncis
 !       NAPPE DES COEFFICIENTS DE CISAILLEMENT POUR SECTION='RECTANGLE'
 !       FONCTION DES COEFFICIENTS DE CISAILLEMENT POUR SECTION='CERCLE'
@@ -59,10 +59,10 @@ subroutine coecis(napcis, foncis)
     zk24(lpro+4) = 'EE'
     zk24(lpro+5) = napcis
     zk24(lpro+6) = 'BETA'
-    do 10 i = 0, nbfonc-1
+    do i = 0, nbfonc-1
         zk24(lpro+7+i*2) = 'LIN LIN '
         zk24(lpro+7+i*2+1) = 'EE'
-10  end do
+    end do
 !
     call wkvect(napcis//'.PARA', 'V V R', nbfonc, lpar)
 !     VALEURS DE ALPHA
@@ -85,7 +85,7 @@ subroutine coecis(napcis, foncis)
 !
     call wkvect('&&COECIS.NOM.FONCTIONS', 'V V K24', nbfonc, lnomf)
     call wkvect('&&COECIS.POINTEURS.F', 'V V I', nbfonc, ladrf)
-    do 30 ifonc = 1, nbfonc
+    do ifonc = 1, nbfonc
         zk24(lnomf+ifonc-1) = '&&COECIS.F'
         call codent(ifonc, 'G', zk24(lnomf+ifonc-1)(11:19))
         zk24(lnomf+ifonc-1)(20:24) = '.VALE'
@@ -393,13 +393,13 @@ subroutine coecis(napcis, foncis)
         endif
         call wkvect(zk24(lnomf+ifonc-1), 'V V R', nbvalf*2, lval)
         zi(ladrf+ifonc-1) = lval
-        do 32 ival = 1, nbvalf
+        do ival = 1, nbvalf
             zr(lval-1+ival) = zr(jval-1+2*ival-1)
             zr(lval-1+nbvalf+ival) = zr(jval-1+2*ival)
-32      continue
+        end do
         zk24(lpro+6+2*ifonc)(1:1) = zk24(lpro+4)(1:1)
         zk24(lpro+6+2*ifonc)(2:2) = zk24(lpro+6+2*ifonc)(1:1)
-30  end do
+    end do
 !
     call jecrec(napcis//'.VALE', 'V V R', 'NU', 'CONTIG', 'VARIABLE',&
                 nbfonc)
@@ -455,10 +455,10 @@ subroutine coecis(napcis, foncis)
     zr(jval2+27) = 2.d0
     call wkvect(foncis//'.VALE', 'V V R', nbvfon*2, lval2)
     lfon = lval2 + nbvfon
-    do 20 ival2 = 0, nbvfon-1
+    do ival2 = 0, nbvfon-1
         zr(lval2+ival2) = zr(jval2+2*ival2)
         zr(lfon+ival2) = zr(jval2+2*ival2+1)
-20  end do
+    end do
 !
     call jedema()
 end subroutine

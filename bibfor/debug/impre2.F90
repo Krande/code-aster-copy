@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine impre2(licoef, liddl, linoeu, libeta, indsur,&
                   ipntrl, nbterm, typcoe, typval, irela)
     implicit none
@@ -61,10 +61,10 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur,&
 !       ----------
         if (typcoe .eq. 'REEL') then
             write(ifm,10)
-            do 100 i = 1, nbterm-1
+            do i = 1, nbterm-1
                 write(ifm,20) zr(idcoef+i-1),zk8(iddl+i-1),zk8(idnoeu+&
                 i-1)
-100          continue
+            end do
             write(ifm,90) zr(idcoef+nbterm-1),zk8(iddl+nbterm-1),&
             zk8(idnoeu+nbterm-1)
 !
@@ -73,10 +73,10 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur,&
 !       --------------
         else if (typcoe.eq.'COMP') then
             write(ifm,30)
-            do 200 i = 1, nbterm-1
+            do i = 1, nbterm-1
                 write(ifm,40) dble(zc(idcoef+i-1)), dimag(zc(idcoef+i-&
                 1)), zk8(iddl+i-1),zk8(idnoeu+i-1)
-200          continue
+            end do
             write(ifm,95) dble(zc(idcoef+nbterm-1)), dimag(zc(idcoef+&
             nbterm-1)), zk8(iddl+nbterm-1),zk8(idnoeu+nbterm-1)
         endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sspmvb(n, m, mat, ad, t1,&
                   y)
 !
@@ -33,30 +33,30 @@ subroutine sspmvb(n, m, mat, ad, t1,&
 !
             if (rest .eq. 1) then
                 k1 = ad(1)
-                do 1 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1)
                     k1 = k1 +1
- 1              continue
+                end do
             endif
         else
             if (rest .eq. 2) then
                 k1 = ad(1)
                 k2 = ad(2)
-                do 2 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1) - t1(2)*mat(k2)
                     k1 = k1 +1
                     k2 = k2 +1
- 2              continue
+                end do
             else
                 k1 = ad(1)
                 k2 = ad(2)
                 k3 = ad(3)
-                do 3 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1) - t1(2)*mat(k2) - t1(3)*mat(k3)
                     k1 = k1 +1
                     k2 = k2 +1
                     k3 = k3 +1
- 3              continue
+                end do
             endif
         endif
     else
@@ -67,20 +67,20 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                 k2 = ad(2)
                 k3 = ad(3)
                 k4 = ad(4)
-                do 4 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1) - t1(2)*mat(k2) - t1(3)*mat(k3) - t1(4)*mat(k4)
                     k1 = k1 +1
                     k2 = k2 +1
                     k3 = k3 +1
                     k4 = k4 +1
- 4              continue
+                end do
             else
                 k1 = ad(1)
                 k2 = ad(2)
                 k3 = ad(3)
                 k4 = ad(4)
                 k5 = ad(5)
-                do 5 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1) - t1(2)*mat(k2) - t1(3)*mat(k3) - t1(4)*mat(k4) -&
                            & t1(5)*mat(k5)
                     k1 = k1 +1
@@ -88,7 +88,7 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                     k3 = k3 +1
                     k4 = k4 +1
                     k5 = k5 +1
- 5              continue
+                end do
             endif
         else
             if (rest .eq. 6) then
@@ -98,7 +98,7 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                 k4 = ad(4)
                 k5 = ad(5)
                 k6 = ad(6)
-                do 6 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1) - t1(2)*mat(k2) - t1(3)*mat(k3) - t1(4)*mat(k4) -&
                            & t1(5)*mat(k5) - t1(6)*mat(k6)
                     k1 = k1 +1
@@ -107,7 +107,7 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                     k4 = k4 +1
                     k5 = k5 +1
                     k6 = k6 +1
- 6              continue
+                end do
 !
             else
                 k1 = ad(1)
@@ -117,7 +117,7 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                 k5 = ad(5)
                 k6 = ad(6)
                 k7 = ad(7)
-                do 7 i = 1, n
+                do i = 1, n
                     y(i) = y(i) - t1(1)*mat(k1) - t1(2)*mat(k2) - t1(3)*mat(k3) - t1(4)*mat(k4) -&
                            & t1(5)*mat(k5) - t1(6)*mat(k6) - t1(7)*mat(k7)
                     k1 = k1 +1
@@ -127,14 +127,14 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                     k5 = k5 +1
                     k6 = k6 +1
                     k7 = k7 +1
- 7              continue
+                end do
             endif
         endif
     endif
     jmin= rest+8
     jmax = m
     if (jmax .ge. jmin) then
-        do 100 j = jmin, jmax, 8
+        do j = jmin, jmax, 8
             k0 = ad(j)
             k1 = ad(j-1)
             k2 = ad(j-2)
@@ -143,7 +143,7 @@ subroutine sspmvb(n, m, mat, ad, t1,&
             k5 = ad(j-5)
             k6 = ad(j-6)
             k7 = ad(j-7)
-            do 8 i = 1, n
+            do i = 1, n
                 y(i) = y(i) - t1(j)* mat(k0) - t1(j-1)*mat(k1) - t1(j-2)*mat(k2) - t1(j-3)*mat(k3&
                        &) - t1(j-4)*mat(k4) - t1(j-5)*mat(k5) - t1(j-6)*mat(k6) - t1(j-7)*mat(k7)
                 k0 = k0 +1
@@ -154,9 +154,9 @@ subroutine sspmvb(n, m, mat, ad, t1,&
                 k5 = k5 +1
                 k6 = k6 +1
                 k7 = k7 +1
- 8          continue
+            end do
 !
-100      end do
+        end do
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

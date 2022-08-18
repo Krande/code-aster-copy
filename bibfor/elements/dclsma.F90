@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dclsma(n, tab, iran)
     implicit none
 !
@@ -29,21 +29,21 @@ subroutine dclsma(n, tab, iran)
     integer :: i, ii, j, jj, n, iswap, iran(*)
     real(kind=8) :: tab(*)
 !
-    do 10, i=1,n
-    iran(i) = i
-    10 end do
+    do i = 1, n
+        iran(i) = i
+    end do
 !
-    do 30, i=1,n-1
-    ii=iran(i)
-    do 20, j=i+1,n
-    jj=iran(j)
-    if (tab(ii) .gt. tab(jj)) then
-        iswap=iran(i)
-        iran(i)=iran(j)
-        iran(j)=iswap
+    do i = 1, n-1
         ii=iran(i)
-    endif
-20  continue
-    30 end do
+        do j = i+1, n
+            jj=iran(j)
+            if (tab(ii) .gt. tab(jj)) then
+                iswap=iran(i)
+                iran(i)=iran(j)
+                iran(j)=iswap
+                ii=iran(i)
+            endif
+        end do
+    end do
 !
 end subroutine

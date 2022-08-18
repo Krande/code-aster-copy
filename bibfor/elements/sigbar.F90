@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sigbar(sigma, barsig)
 !
     implicit none
@@ -49,14 +49,14 @@ subroutine sigbar(sigma, barsig)
 !
     call r8inir(9 * 9, 0.d0, barsig, 1)
 !
-    do 200 i = 1, 3
-        do 210 jj = 1, 3
-            do 220 ii = 1, 3
+    do i = 1, 3
+        do jj = 1, 3
+            do ii = 1, 3
                 barsig ( ( i - 1 ) * 3 + ii , ( i - 1 ) * 3 + jj ) =&
                 sigma ( ii , jj )
-220          continue
-210      continue
-200  continue
+            end do
+        end do
+    end do
 !
 ! FIN
 !

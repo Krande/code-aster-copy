@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36si(noma, nbma, listma)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -36,8 +38,6 @@ subroutine rc36si(noma, nbma, listma)
 #include "asterfort/rc36th.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: nbma, listma(*)
     character(len=8) :: noma
@@ -95,7 +95,7 @@ subroutine rc36si(noma, nbma, listma)
     nbgr = 0
     yapass = .false.
 !
-    do 10 iocc = 1, nbsitu, 1
+    do iocc = 1, nbsitu, 1
 !
         call codent(iocc, 'D0', k8b)
 !
@@ -121,18 +121,18 @@ subroutine rc36si(noma, nbma, listma)
             call wkvect('&&RC36SI.VALE_GR', 'V V I', nbvg, jnbvg)
             call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=nbvg, vect=zi( jnbvg),&
                         nbret=n1)
-            do 26 ing = 1, nbvg
+            do ing = 1, nbvg
                 numgr = zi(jnbvg+ing-1)
                 if (numgr .le. 0) then
                     call utmess('F', 'POSTRCCM_12')
                 endif
-                do 20 ig = 1, nbgr
+                do ig = 1, nbgr
                     if (nume_group(ig) .eq. numgr) goto 21
- 20             continue
+                end do
                 nbgr = nbgr + 1
                 nume_group(nbgr) = numgr
  21             continue
- 26         continue
+            end do
             if (nbvg .eq. 1) then
                 zi(jsigr+2*iocc-2) = zi(jnbvg)
                 zi(jsigr+2*iocc-1) = zi(jnbvg)
@@ -165,16 +165,16 @@ subroutine rc36si(noma, nbma, listma)
             zi(jsigr+2*iocc-2) = min ( numpas(1), numpas(2) )
             zi(jsigr+2*iocc-1) = max ( numpas(1), numpas(2) )
             numgr = numpas(1)
-            do 22 ig = 1, nbgr
+            do ig = 1, nbgr
                 if (nume_group(ig) .eq. numgr) goto 23
- 22         continue
+            end do
             nbgr = nbgr + 1
             nume_group(nbgr) = numgr
  23         continue
             numgr = numpas(2)
-            do 24 ig = 1, nbgr
+            do ig = 1, nbgr
                 if (nume_group(ig) .eq. numgr) goto 25
- 24         continue
+            end do
             nbgr = nbgr + 1
             nume_group(nbgr) = numgr
  25         continue
@@ -239,9 +239,9 @@ subroutine rc36si(noma, nbma, listma)
                         nbth, zi( jreth))
         endif
 !
- 10 end do
+    end do
 !
-    do 110 iocc = 1, nbseis, 1
+    do iocc = 1, nbseis, 1
 !
         call codent(nbsitu+iocc, 'D0', k8b)
 !
@@ -285,7 +285,7 @@ subroutine rc36si(noma, nbma, listma)
 !
         call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', nbsitu+iocc), 'LONUTI', 0)
 !
-110 end do
+    end do
 !
     call ordis(nume_group, nbgr)
 !
@@ -309,7 +309,7 @@ subroutine rc36si(noma, nbma, listma)
     else
         nbgrt = nbgr
     endif
-    do 30 ig = 1, nbgrt, 1
+    do ig = 1, nbgrt, 1
 !
         numgr = nume_group(ig)
 !
@@ -317,16 +317,16 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ ON COMPTE LES SITUATIONS DU GROUPE
         nbsigr = 0
-        do 32 iocc = 1, nbsitu, 1
+        do iocc = 1, nbsitu, 1
             call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
                 nbvg = -n1
                 call wkvect('&&RC36SI.VALE_GR', 'V V I', nbvg, jnbvg)
                 call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=nbvg, vect=zi(jnbvg),&
                             nbret=n1)
-                do 321 ing = 1, nbvg
+                do ing = 1, nbvg
                     if (zi(jnbvg+ing-1) .eq. numgr) nbsigr = nbsigr + 1
-321             continue
+                end do
                 call jedetr('&&RC36SI.VALE_GR')
             endif
             call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=0, nbret=n1)
@@ -336,32 +336,32 @@ subroutine rc36si(noma, nbma, listma)
                 if (numpas(1) .eq. numgr) nbsigr = nbsigr + 1
                 if (numpas(2) .eq. numgr) nbsigr = nbsigr + 1
             endif
- 32     continue
+        end do
 !
 ! ------ ON COMPTE LES SITUATIONS DE SEISME
-        do 36 iocc = 1, nbseis, 1
+        do iocc = 1, nbseis, 1
             call getvis(motcl2, 'NUME_GROUPE', iocc=iocc, scal=numgs, nbret=n1)
             if (numgs .eq. numgr) nbsigr = nbsigr + 1
- 36     continue
+        end do
 !
 ! ------ ON STOCKE LE NUMERO DE L'OCCURRENCE
         call jecroc(jexnum('&&RC3600.LES_GROUPES', numgr))
         call jeecra(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr)
         call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'E', jnsg)
         ii = 0
-        do 34 iocc = 1, nbsitu, 1
+        do iocc = 1, nbsitu, 1
             call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
                 nbvg = -n1
                 call wkvect('&&RC36SI.VALE_GR', 'V V I', nbvg, jnbvg)
                 call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=nbvg, vect=zi(jnbvg),&
                             nbret=n1)
-                do 341 ing = 1, nbvg
+                do ing = 1, nbvg
                     if (zi(jnbvg+ing-1) .eq. numgr) then
                         ii = ii + 1
                         zi(jnsg+ii-1) = iocc
                     endif
-341             continue
+                end do
                 call jedetr('&&RC36SI.VALE_GR')
             endif
             call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=0, nbret=n1)
@@ -377,8 +377,8 @@ subroutine rc36si(noma, nbma, listma)
                     zi(jnsg+ii-1) = iocc
                 endif
             endif
- 34     continue
-        do 38 iocc = 1, nbseis, 1
+        end do
+        do iocc = 1, nbseis, 1
             call getvis(motcl2, 'NUME_GROUPE', iocc=iocc, scal=numgs, nbret=n1)
             if (numgs .eq. numgr) then
                 ii = ii + 1
@@ -391,9 +391,9 @@ subroutine rc36si(noma, nbma, listma)
                 endif
                 zi(jseigr+ig-1) = iocc
             endif
- 38     continue
+        end do
 !
- 30 end do
+    end do
 !     ------------------------------------------------------------------
 ! --- TRAITEMENT DES SITUATIONS DE PASSAGE
     if (yapass) then
@@ -406,7 +406,7 @@ subroutine rc36si(noma, nbma, listma)
         nbp12 = 0
         nbp23 = 0
         nbp13 = 0
-        do 40 iocc = 1, ndim, 1
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 1) then
@@ -428,7 +428,7 @@ subroutine rc36si(noma, nbma, listma)
                 nbp13 = nbp13 + 1
                 zi(jsp13+nbp13-1) = iocc
             endif
- 40     continue
+        end do
         call jeecra('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
         call jeecra('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
         call jeecra('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
@@ -442,54 +442,54 @@ subroutine rc36si(noma, nbma, listma)
         call jeveuo(jexnum('&&RC3600.LES_GROUPES', nbgr), 'E', jnsg)
 !
         ii = 0
-        do 42 iocc = 1, ndim, 1
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 1) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 42     continue
-        do 44 iocc = 1, ndim, 1
+        end do
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 2) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 44     continue
-        do 46 iocc = 1, ndim, 1
+        end do
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 2 .and. numg2 .eq. 2) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 46     continue
-        do 48 iocc = 1, ndim, 1
+        end do
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 2 .and. numg2 .eq. 3) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 48     continue
-        do 50 iocc = 1, ndim, 1
+        end do
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 3 .and. numg2 .eq. 3) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 50     continue
-        do 52 iocc = 1, ndim, 1
+        end do
+        do iocc = 1, ndim, 1
             numg1 = zi(jsigr+2*iocc-2)
             numg2 = zi(jsigr+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 3) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 52     continue
+        end do
         call jeecra(jexnum('&&RC3600.LES_GROUPES', nbgr), 'LONUTI', ii)
     endif
 !

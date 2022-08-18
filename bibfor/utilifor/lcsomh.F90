@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcsomh(a, h, m)
     implicit none
 !       SOMME D'UN TENSEUR (3X3) SOUS FORME VECTEUR  (6X1)
@@ -28,10 +28,10 @@ subroutine lcsomh(a, h, m)
     real(kind=8) :: a(6), m(6), h
     common /tdim/   n , nd
 !      ----------------------------------------------------------------
-    do 2 i = 1, nd
+    do i = 1, nd
         m(i) = a(i) + h
- 2  continue
-    do 3 i = nd + 1, n
+    end do
+    do i = nd + 1, n
         m(i) = a(i)
- 3  continue
+    end do
 end subroutine

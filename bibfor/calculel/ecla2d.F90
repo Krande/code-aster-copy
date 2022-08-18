@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
                   nterm1, nsomm1, csomm1, tyma, nbno2,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
@@ -113,10 +113,10 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg.eq.'FPG3') then
 !               -----------------
             npoini=7
-            do 10,k=1,npg
-            tyma(k)=iquad4
-            nbno2(k)=4
-10          continue
+            do k = 1, npg
+                tyma(k)=iquad4
+                nbno2(k)=4
+            end do
 !
 !
 !        -- DEFINITION DES POINT_I :
@@ -435,10 +435,10 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg.eq.'FPG4') then
 !               -----------------
             npoini=9
-            do 20,k=1,npg
-            tyma(k)=iquad4
-            nbno2(k)=4
-20          continue
+            do k = 1, npg
+                tyma(k)=iquad4
+                nbno2(k)=4
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -531,10 +531,10 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
         else if (fapg.eq.'FPG9') then
 !               -----------------
             npoini=16
-            do 30,k=1,npg
-            tyma(k)=iquad4
-            nbno2(k)=4
-30          continue
+            do k = 1, npg
+                tyma(k)=iquad4
+                nbno2(k)=4
+            end do
 !
 !        -- DEFINITION DES POINT_I :
             nterm1(1)=1
@@ -712,9 +712,9 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
 !
 !     -- POUR TOUS LES SCHEMAS 2D, IL Y A IDENTITE : KSE -> KPG :
     nbsel=npg
-    do 40,k=1,npg
-    corsel(k)=k
-    40 end do
+    do k = 1, npg
+        corsel(k)=k
+    end do
 !
     call jedema()
 !

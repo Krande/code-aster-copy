@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
                   fpd, seuil, crit, critp)
 !
@@ -74,29 +74,29 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
 !
     treps = epm(1)+epm(2)+epm(3)
     if (treps .gt. 0.d0) then
-        do 70 k = 1, 3
+        do k = 1, 3
             sigel(k) = lambda*treps
-70      continue
+        end do
     else
-        do 71 k = 1, 3
+        do k = 1, 3
             sigel(k) = 0.d0
-71      continue
+        end do
     endif
-    do 25 k = 1, 3
+    do k = 1, 3
         if (epm(k) .gt. 0.d0) then
             sigel(k) = sigel(k) + deuxmu*epm(k)
         endif
-25  end do
+    end do
     crit= fpd * 0.5d0 * ddot(3,epm,1,sigel,1) - seuil
 !
-    do 48 i = 1, 3
+    do i = 1, 3
         if (epm(i) .lt. 0.d0) then
             tr(i)=0.d0
         else
             tr(i)=epm(i)
         endif
         tr(i+3)=0.d0
-48  end do
+    end do
 !
 ! -- CALCUL DE LA DERIVEE DU CRITERE
 !
@@ -105,18 +105,18 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
     tre=epm(1)+epm(2)+epm(3)
 !
     if (tre .gt. 0.d0) then
-        do 50 i = 1, 3
+        do i = 1, 3
             dfde(i)=fpd*lambda*tre
-50      continue
+        end do
     endif
-    do 51 i = 1, 3
+    do i = 1, 3
         dfde(i)=dfde(i)+deuxmu*fpd*ppeps(i)
-51  end do
-    do 52 i = 4, 6
+    end do
+    do i = 4, 6
         dfde(i)=deuxmu*fpd*ppeps(i)*rac2
-52  end do
+    end do
 !
     critp=ddot(6,dfde,1,epsd,1)
 !
-
+!
 end subroutine

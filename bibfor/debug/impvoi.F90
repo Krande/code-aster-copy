@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine impvoi(texte, nbma, iaddvo, iadvoi)
     implicit none
 #include "jeveux.h"
@@ -90,15 +90,15 @@ subroutine impvoi(texte, nbma, iaddvo, iadvoi)
     write (6,*)texte
     write (6,*)
 !
-    do 30 ima = 1, nbma
+    do ima = 1, nbma
         write (6,9000)ima,zznbvo(ima)
-        do 20 iv = 1, zznbvo(ima)
+        do iv = 1, zznbvo(ima)
             write (6,9010)iv,zztyvo(ima,iv),zzmavo(ima,iv), zznbno(ima,iv),zznbsc(ima,iv)
-            do 10 is = 1, zznbsc(ima, iv)
+            do is = 1, zznbsc(ima, iv)
                 write (6,9020)is,zzloc1(ima,iv,is),zzloc2(ima,iv,is)
-10          continue
-20      continue
-30  end do
+            end do
+        end do
+    end do
     write (6,*)' FIN IMPRESSION OBJET VOISINAGE VGE '
     write (6,*)
 !

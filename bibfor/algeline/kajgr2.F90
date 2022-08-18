@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
     implicit none
 ! CALCUL DES COEFFICIENTS ADIMENSIONNELS DE FORCE DE RAIDEUR
@@ -75,27 +75,27 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
         endif
 !
 ! ---    BLOC D'INITIALISATION
-        do 10 i = 1, nbomax
-            do 20 j = 1, nkamax
+        do i = 1, nbomax
+            do j = 1, nkamax
                 coeca1(i,j) = zero
                 coeca2(i,j) = zero
                 coef1(i,j) = zero
                 coef2(i,j) = zero
-20          continue
-10      continue
+            end do
+        end do
 !
         read (unit,*) nbloc
-        do 30 i = 1, nbloc
+        do i = 1, nbloc
             read (unit,*) (coef1(i,j),j = 1,nkamax)
             read (unit,*) (coef2(i,j),j = 1,nkamax)
             read (unit,*)
-30      continue
-        do 40 i = 1, nbomax
-            do 50 j = 1, nkamax
+        end do
+        do i = 1, nbomax
+            do j = 1, nkamax
                 coeca1(i,j) = coef1(i,j)
                 coeca2(i,j) = coef2(i,j)
-50          continue
-40      continue
+            end do
+        end do
         call wkvect(nom1, 'V V I', 1, iflag)
         zi(iflag+1-1) = 1
 !        FERMETURE DU FICHIER
@@ -103,7 +103,7 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
         goto 60
     endif
 !
-60  continue
+ 60 continue
 !
 !
 !-----1.CONFIG. ECOULEMENT ASCENDANT TIGE DE COMMANDE CENTREE

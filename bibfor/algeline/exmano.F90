@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine exmano(noma, numnoe, numano, nbmano)
     implicit none
 ! EXTRACTION DES NUMEROS DES MAILLES DE TYPE SEG2 DONT L'UNE DES
@@ -31,7 +31,6 @@ subroutine exmano(noma, numnoe, numano, nbmano)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -39,6 +38,7 @@ subroutine exmano(noma, numnoe, numano, nbmano)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: noma
     integer :: numnoe, numano(*), nbmano
 !
@@ -60,7 +60,7 @@ subroutine exmano(noma, numnoe, numano, nbmano)
     mlgcnx = noma//'.CONNEX'
 !
     nbmano = 0
-    do 10 numail = 1, nbmail
+    do numail = 1, nbmail
         nutyma = zi(jdtm+numail-1)
         if (nutyma .eq. ntseg) then
             call jeveuo(jexnum(mlgcnx, numail), 'L', jdno)
@@ -71,7 +71,7 @@ subroutine exmano(noma, numnoe, numano, nbmano)
                 numano(nbmano) = numail
             endif
         endif
-10  end do
+    end do
 !
     call jedema()
 !

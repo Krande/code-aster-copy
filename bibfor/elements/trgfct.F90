@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trgfct(fcttab)
 !_____________________________________________________________________
 !
@@ -57,12 +57,12 @@ subroutine trgfct(fcttab)
 !     3 = 2 SIN COS
 !     4 = SIN
 !     5 = COS
-    do 20 i = 2, 36
+    do i = 2, 36
         angle = angle + pas
         fcttab(i,1) = cos(angle)*cos(angle)
         fcttab(i,2) = sin(angle)*sin(angle)
         fcttab(i,3) = -2.d0*sin(angle)*cos(angle)
         fcttab(i,4) = cos(angle)
         fcttab(i,5) = sin(angle)
-20  continue
+    end do
 end subroutine

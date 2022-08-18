@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcumfb(sigi, nstrs, vari, nvari, cmat,&
                   nmat, tdt, hini, hfin, afd,&
                   bfd, cfd)
@@ -54,13 +54,13 @@ subroutine lcumfb(sigi, nstrs, vari, nvari, cmat,&
 !        CALL ZERO(AFD,NSTRS,1)
 !        CALL ZERO(BFD,NSTRS,NSTRS)
 !        CALL ZERO(CFD,NSTRS,NSTRS)
-        do 1 i = 1, nstrs
+        do i = 1, nstrs
             afd(i) = 0.0d0
-            do 2 j = 1, nstrs
+            do j = 1, nstrs
                 bfd(i,j) = 0.0d0
                 cfd(i,j) = 0.0d0
- 2          continue
- 1      continue
+            end do
+        end do
         goto 30
     endif
 !
@@ -100,25 +100,25 @@ subroutine lcumfb(sigi, nstrs, vari, nvari, cmat,&
 !
 ! CONSTRUCTION DE LA MATRICE DE FLUAGE DE DESSICCATION
 !
-    do 10 i = 1, nstrs
+    do i = 1, nstrs
         afd(i) = a * efde(i)
         bfd(i,i) = b
         cfd(i,i) = c
-10  end do
+    end do
 !
 ! VERIFICATION DE LA CROISSANCE DE LA DEFORMATION
 !
     if (ides .eq. 2) then
-        do 20 i = 1, nstrs
+        do i = 1, nstrs
             defdef = afd(i) + bfd(i,i) * sigi(i)
             if (defdef .gt. 0.d0) then
                 afd(i) = 0.d0
                 bfd(i,i) = 0.d0
                 cfd(i,i) = 0.d0
             endif
-20      continue
+        end do
     endif
 !
-30  continue
+ 30 continue
 !
 end subroutine

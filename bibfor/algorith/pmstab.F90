@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
                   vim, vip, iforta, instam, instap,&
                   iter, nbpar, nompar, table, vr,&
@@ -91,7 +91,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
 !
         vr(1)=instap
         vk8(1)='EPSI'
-        do 551 i = 1, ncmp
+        do i = 1, ncmp
             vr(2)=epst(i)
             if (igrad .eq. 0) then
                 vk8(2)=nomeps(i)
@@ -101,15 +101,15 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-551     continue
+        end do
         vk8(1)='SIGM'
-        do 552 i = 1, 6
+        do i = 1, 6
             vr(2)=sigt(i)
             vk8(2)=nomsig(i)
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-552      continue
+        end do
         vk8(1)='SIEQ'
         vr(2)=equi(1)
         vk8(2)='VMIS'
@@ -122,14 +122,14 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
                     [cbid], vk8, 0)
 !
         vk8(1)='VARI'
-        do 553 i = 1, nbvita
+        do i = 1, nbvita
             vr(2)=vip(i)
             vk8(2)=nomvi(i)
 !            VK8(2)(1:1)='V'
 !            call codent(I,'G',VK8(2)(2:8))
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
-553      continue
+        end do
 !
     endif
 !

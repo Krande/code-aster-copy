@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ibcata(ier)
     implicit none
 #include "asterc/getfac.h"
@@ -85,7 +85,7 @@ subroutine ibcata(ier)
     endif
 !
     iun = 1
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvtx(motfac, 'FICHIER', iocc=iocc, nbval=iun, vect=nom(iocc),&
                     nbret=nbnom)
         call lxcadr(nom(iocc))
@@ -95,13 +95,13 @@ subroutine ibcata(ier)
             call utremt(nom(iocc), dfnom, mxdfca, iplace)
             if (iplace .gt. 0) unite(iocc) = dfunit(iplace)
         endif
-10  end do
+    end do
 !
 !     --- CATALOGUE DES ELEMENTS ---
     nbcata = 0
     call uttcpu('CPU.IBCATA', 'INIT', ' ')
     call uttcpu('CPU.IBCATA', 'DEBUT', ' ')
-    do 300 icata = 1, nbocc
+    do icata = 1, nbocc
         if (nom(icata) .eq. dfnom(3) .or. nom(icata) .eq. dfnom(4)) then
             if (unite(icata) .gt. 0) then
                 call ibcatc(nom(icata), unite(icata), ier1)
@@ -110,7 +110,7 @@ subroutine ibcata(ier)
             nom(icata) = '  '
             nbcata = nbcata + 1
         endif
-300  end do
+    end do
     if (nbcata .eq. 0 .and. nomcmd .eq. 'DEBUT') then
         call ibcatc(dfnom(ieltdf), dfunit(ieltdf), ier1)
         ier = ier + ier1
@@ -122,12 +122,12 @@ subroutine ibcata(ier)
     call utmess('I', 'SUPERVIS_52', sk=valk, sr=valr)
 !
 !     --- VERIFICATION DE LA COMPLETUDE DE L'EXECUTION ---
-    do 900 icata = 1, nbocc
+    do icata = 1, nbocc
         if (nom(icata) .ne. ' ') then
             call utmess('F', 'SUPERVIS_20', sk=nom(icata))
             ier = ier + 1
         endif
-900  end do
+    end do
 !
     if (ier .gt. 0) then
         call utmess('F', 'SUPERVIS_21')

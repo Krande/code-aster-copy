@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
                   dbakw, qsize, llist, marker, maxint,&
                   tag, parent)
@@ -77,7 +77,7 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
     elmnt = 0
     rloc = istrt
     rlmt = istop
-    do 110 i = istrt, istop
+    do i = istrt, istop
         nabor = adjncy(i)
         if (nabor .eq. 0) goto 120
         if (marker(nabor) .lt. tag) then
@@ -91,20 +91,20 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
                 parent(nabor) = mdnode
             endif
         endif
-110  end do
-120  continue
+    end do
+120 continue
 !            -----------------------------------------------------
 !            MERGE WITH REACHABLE NODES FROM GENERALIZED ELEMENTS.
 !            -----------------------------------------------------
 !      DO WHILE (ELMNT.GT.0)
-130  continue
+130 continue
     if (elmnt .gt. 0) then
         adjncy(rlmt) = -elmnt
         link = elmnt
-140      continue
+140     continue
         jstrt = xadj(link)
         jstop = xadj(link+1) - 1
-        do 160 j = jstrt, jstop
+        do j = jstrt, jstop
             node = adjncy(j)
             link = -node
             if (node .lt. 0) goto 140
@@ -116,7 +116,7 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
 !                            IF NECESSARY.
 !                            ---------------------------------
 !            DO WHILE (RLOC.GE.RLMT)
-150              continue
+150             continue
                 if (rloc .ge. rlmt) then
                     link = -adjncy(rlmt)
                     rloc = xadj(link)
@@ -127,8 +127,8 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
                 adjncy(rloc) = node
                 rloc = rloc + 1
             endif
-160      continue
-170      continue
+        end do
+170     continue
         elmnt = llist(elmnt)
         goto 130
 ! FIN DO WHILE
@@ -138,10 +138,10 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
 !        FOR EACH NODE IN THE REACHABLE SET, DO THE FOLLOWING ...
 !        --------------------------------------------------------
     link = mdnode
-180  continue
+180 continue
     istrt = xadj(link)
     istop = xadj(link+1) - 1
-    do 210 i = istrt, istop
+    do i = istrt, istop
         rnode = adjncy(i)
         link = -rnode
         if (rnode .eq. 0) goto 220
@@ -166,15 +166,15 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
         jstrt = xadj(rnode)
         jstop = xadj(rnode+1) - 1
         xqnbr = jstrt
-        do 190 j = jstrt, jstop
+        do j = jstrt, jstop
             nabor = adjncy(j)
             if (nabor .eq. 0) goto 200
             if (marker(nabor) .lt. tag) then
                 adjncy(xqnbr) = nabor
                 xqnbr = xqnbr + 1
             endif
-190      continue
-200      continue
+        end do
+200     continue
 !                ----------------------------------------
 !                IF NO ACTIVE NABOR AFTER THE PURGING ...
 !                ----------------------------------------
@@ -200,6 +200,6 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
             if (xqnbr .le. jstop) adjncy(xqnbr) = 0
         endif
 !
-210  end do
-220  continue
+    end do
+220 continue
 end subroutine

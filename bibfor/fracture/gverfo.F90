@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gverfo(cartei, ier)
     implicit none
 #include "jeveux.h"
@@ -37,7 +37,7 @@ subroutine gverfo(cartei, ier)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer ::  nbvale, in
+    integer :: nbvale, in
     character(len=19) :: nch19
     character(len=24), pointer :: prol(:) => null()
     character(len=8), pointer :: vale(:) => null()
@@ -48,18 +48,18 @@ subroutine gverfo(cartei, ier)
     call jelira(cartei//'.VALE', 'LONMAX', nbvale)
 !
     ier=0
-    do 10 in = 1, nbvale
-        if (vale(in)(1:7) .ne. '&FOZERO' .and. vale(in)(1:7) .ne. '       '&
-            .and. vale(in)(1:6) .ne. 'GLOBAL') then
+    do in = 1, nbvale
+        if (vale(in)(1:7) .ne. '&FOZERO' .and. vale(in)(1:7) .ne. '       ' .and.&
+            vale(in)(1:6) .ne. 'GLOBAL') then
             nch19=vale(in)
-
+!
             call jeveuo(nch19//'.PROL', 'L', vk24=prol)
             if (prol(1)(1:8) .eq. 'INTERPRE') then
                 ier=1
                 goto 999
             endif
         endif
-10  continue
+    end do
 !
 999 continue
 !

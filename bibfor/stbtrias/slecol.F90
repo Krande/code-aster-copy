@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine slecol(imod, nbmail)
     implicit none
 !     =================
@@ -65,16 +65,16 @@ subroutine slecol(imod, nbmail)
 !
     prfmai = 'M'
     icmax = 256
-    do 10 i = 1, icmax
+    do i = 1, icmax
         logiq(i) = .false.
         jpo(i) = 0
         jnomb(i) = 0
         jmax(i) = 1000
- 10 end do
+    end do
 !
     nbmax = 1000
     call jeveuo('&&PRESUP.INFO.MAILLE', 'L', vi=maille)
-    do 100 i = 1, nbmail
+    do i = 1, nbmail
         inum = maille((i-1)*4+1)
         call codnop(chmail, prfmai, 1, 1)
         call codent(inum, 'G', chmail(2:8))
@@ -100,11 +100,12 @@ subroutine slecol(imod, nbmail)
         endif
         jnomb(ipos) = nbma + 1
         zk8(jpo(ipos)-1+nbma+1) = chmail
-100 end do
+100     continue
+    end do
 !
 ! --> ECRITURE DES GROUPES DE MAILLES PAR COULEUR
 !
-    do 110 ic = 1, icmax
+    do ic = 1, icmax
         if (logiq(ic)) then
             call codent((ic-1), 'G', kbid)
             chgrou = 'COUL_'//kbid
@@ -115,7 +116,7 @@ subroutine slecol(imod, nbmail)
             write (imod,'(A)') '%'
             call jedetr('&&PRESUP.COUL'//kbid)
         endif
-110 end do
+    end do
 !
     call jedema()
 end subroutine

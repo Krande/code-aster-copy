@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mecumu(scal, ncmp, iad1, iad2, nec,&
                   dg1, dg2)
     implicit none
@@ -65,68 +65,68 @@ subroutine mecumu(scal, ncmp, iad1, iad2, nec,&
 !
 !        -- CAS D'1 SEGMENT ENTIER:
 !        --------------------------
-        do 1,i = 1,ncmp
-        if (exisdg(dg1,i)) then
-            ico = ico + 1
-            zi(iad2-1+i) = zi(iad1-1+ico)
-        endif
- 1      continue
+        do i = 1, ncmp
+            if (exisdg(dg1,i)) then
+                ico = ico + 1
+                zi(iad2-1+i) = zi(iad1-1+ico)
+            endif
+        end do
     else if (scal(1:1).eq.'R') then
 !
 !        -- CAS D'1 SEGMENT REEL  :
 !        --------------------------
-        do 2,i = 1,ncmp
-        if (exisdg(dg1,i)) then
-            ico = ico + 1
-            zr(iad2-1+i) = zr(iad1-1+ico)
-        endif
- 2      continue
+        do i = 1, ncmp
+            if (exisdg(dg1,i)) then
+                ico = ico + 1
+                zr(iad2-1+i) = zr(iad1-1+ico)
+            endif
+        end do
 !
 !        -- CAS D'1 SEGMENT COMPLEX:
 !        --------------------------
     else if (scal(1:1).eq.'C') then
-        do 3,i = 1,ncmp
-        if (exisdg(dg1,i)) then
-            ico = ico + 1
-            zc(iad2-1+i) = zc(iad1-1+ico)
-        endif
- 3      continue
+        do i = 1, ncmp
+            if (exisdg(dg1,i)) then
+                ico = ico + 1
+                zc(iad2-1+i) = zc(iad1-1+ico)
+            endif
+        end do
 !
 !        -- CAS D'1 SEGMENT DE CARACTERES (K8):
 !        ---------------------------------
     else if (scal(1:3).eq.'K8 ') then
-        do 4,i = 1,ncmp
-        if (exisdg(dg1,i)) then
-            ico = ico + 1
-            zk8(iad2-1+i) = zk8(iad1-1+ico)
-        endif
- 4      continue
+        do i = 1, ncmp
+            if (exisdg(dg1,i)) then
+                ico = ico + 1
+                zk8(iad2-1+i) = zk8(iad1-1+ico)
+            endif
+        end do
 !
 !        -- CAS D'1 SEGMENT DE CARACTERES (K16):
 !        ---------------------------------
     else if (scal(1:3).eq.'K16') then
-        do 5,i = 1,ncmp
-        if (exisdg(dg1,i)) then
-            ico = ico + 1
-            zk16(iad2-1+i) = zk16(iad1-1+ico)
-        endif
- 5      continue
+        do i = 1, ncmp
+            if (exisdg(dg1,i)) then
+                ico = ico + 1
+                zk16(iad2-1+i) = zk16(iad1-1+ico)
+            endif
+        end do
 !
 !        -- CAS D'1 SEGMENT DE CARACTERES (K24):
 !        ---------------------------------
     else if (scal(1:3).eq.'K24') then
-        do 6,i = 1,ncmp
-        if (exisdg(dg1,i)) then
-            ico = ico + 1
-            zk24(iad2-1+i) = zk24(iad1-1+ico)
-        endif
- 6      continue
+        do i = 1, ncmp
+            if (exisdg(dg1,i)) then
+                ico = ico + 1
+                zk24(iad2-1+i) = zk24(iad1-1+ico)
+            endif
+        end do
     else
         call utmess('F', 'CALCULEL3_38', sk=scal(1:4))
     endif
 !
-    do 10,i = 1,nec
-    dg2(i) = ior(dg2(i),dg1(i))
-    10 end do
+    do i = 1, nec
+        dg2(i) = ior(dg2(i),dg1(i))
+    end do
 !
 end subroutine

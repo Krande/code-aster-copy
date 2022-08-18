@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0503(option, nomte)
 !
 !
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -30,6 +29,7 @@ subroutine te0503(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -71,49 +71,49 @@ subroutine te0503(option, nomte)
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
-    do 90 ise = 1, nse
+    do ise = 1, nse
 !
-        do 40 i = 1, nno
-            do 30 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
- 30         continue
- 40     continue
+            end do
+        end do
 !
-        do 80 kp = 1, npg
+        do kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         coorse, nx, ny, poids)
             if (laxi) then
                 r = 0.d0
-                do 50 i = 1, nno
+                do i = 1, nno
                     l = (kp-1)*nno + i
                     r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
- 50             continue
+                end do
                 poids = poids*r
             endif
             ij = imattt - 1
-            do 70 i = 1, nno
+            do i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
 !
-                do 60 j = 1, i
+                do j = 1, i
                     lj = ivf + (kp-1)*nno + j - 1
                     ij = ij + 1
                     mrigt(c(ise,i),c(ise,j)) = mrigt(&
                                                c(ise, i),&
                                                c(ise, j) ) + poids*zr(li)*zr(lj)*zr(icoefh&
                                                )
- 60             continue
- 70         continue
- 80     continue
- 90 end do
+                end do
+            end do
+        end do
+    end do
 !
 ! MISE SOUS FORME DE VECTEUR
 !
     ij = imattt - 1
-    do 110 i = 1, nnop2
-        do 100 j = 1, i
+    do i = 1, nnop2
+        do j = 1, i
             ij = ij + 1
             zr(ij) = mrigt(i,j)
-100     continue
-110 end do
+        end do
+    end do
 !
 end subroutine

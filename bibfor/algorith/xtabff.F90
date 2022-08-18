@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -25,8 +25,8 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ltcrsd.h"
 #include "asterfort/ltnotb.h"
@@ -78,19 +78,19 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
     call jemarq()
     c16b=(0.d0,0.d0)
     r8bid=0.d0
-
+!
     call infdbg('XFEM', ifm, niv)
 !
 !     S'IL N'Y A PAS DE FOND DE FISSURE ON SORT
-    if (nbfond .eq. 0.and.operation.ne.'PROPA_COHESIF') goto 999
+    if (nbfond .eq. 0 .and. operation .ne. 'PROPA_COHESIF') goto 999
 !
     call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
     call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
 !
-    if(operation.eq.'PROPA_COHESIF') then
-        call jelira(fiss//'.FONDMULT','LONUTI',nbfond,k8bid)
+    if (operation .eq. 'PROPA_COHESIF') then
+        call jelira(fiss//'.FONDMULT', 'LONUTI', nbfond, k8bid)
         nbfond = nbfond/2
-        call jelira(fiss//'.FONDFISS','LONUTI',nfon,k8bid)
+        call jelira(fiss//'.FONDFISS', 'LONUTI', nfon, k8bid)
         nfon = nfon/6
     endif
     call ltcrsd(fiss, 'G')
@@ -105,19 +105,19 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
     if (ndim .eq. 2) then
         npara = 3
         call tbajpa(tabcoo, npara, nopar2, typar2)
-        do 100 i = 1, nbfond
+        do i = 1, nbfond
             vali(1)=i
             vale(1)=fondfiss(4*(i-1)+1)
             vale(2)=fondfiss(4*(i-1)+2)
             call tbajli(tabcoo, npara, nopar2, vali, vale,&
                         [c16b], k8bid, 0)
-100      continue
+        end do
     else if (ndim.eq.3) then
         npara = 6
         call tbajpa(tabcoo, npara, nopar3, typar3)
         nfonl = 1
         nfondl = 0
-        do 200 i = 1, nfon
+        do i = 1, nfon
             if (fondmult(2*nfondl+1) .eq. i) then
                 nfondl = nfondl + 1
                 nfonl = 1
@@ -132,7 +132,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
             vale(4)=fondfiss(4*(i-1)+3)
             call tbajli(tabcoo, npara, nopar3, vali, vale,&
                         [c16b], k8bid, 0)
-200      continue
+        end do
     else
         ASSERT(.false.)
     endif
@@ -147,6 +147,6 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
     call tbajli(tabnb, 1, 'NOMBRE', [nbfond], [r8bid],&
                 [c16b], k8bid, 0)
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

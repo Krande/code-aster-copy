@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine symema(geomi, perp, pt)
     implicit none
 !
@@ -70,7 +70,7 @@ subroutine symema(geomi, perp, pt)
     xd = -ddot(3,perp,1,pt,1)
 !
 !     BOUCLE SUR TOUS LES POINTS
-    do 10 i = 1, n1
+    do i = 1, n1
         pti(1) = zr(iadcoo+3*(i-1)+1)
         pti(2) = zr(iadcoo+3*(i-1)+2)
         pti(3) = zr(iadcoo+3*(i-1)+3)
@@ -78,7 +78,7 @@ subroutine symema(geomi, perp, pt)
         zr(iadcoo+3*(i-1)+1) = -2.0d0*dist*perp(1) + pti(1)
         zr(iadcoo+3*(i-1)+2) = -2.0d0*dist*perp(2) + pti(2)
         zr(iadcoo+3*(i-1)+3) = -2.0d0*dist*perp(3) + pti(3)
-10  end do
+    end do
 !
     call jedema()
     call matfpe(1)

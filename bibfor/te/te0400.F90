@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0400(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -27,6 +26,7 @@ subroutine te0400(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/xcninv.h"
 #include "asterfort/xvoise.h"
+!
     character(len=16) :: option, nomte
 !
 !     BUT:
@@ -68,7 +68,7 @@ subroutine te0400(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO
     if (.not.iselli(elrefp)) then
@@ -77,7 +77,7 @@ subroutine te0400(option, nomte)
         irese=0
     endif
 !
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno)
 !
 ! --- RECUPERATION DES CHAMPS IN ET OUT
 !
@@ -93,9 +93,9 @@ subroutine te0400(option, nomte)
 ! --- CALCUL DE LA CONNECTIVITE INVERSE
 !
     ASSERT((nse+1)*nnotot.le.nnonsx)
-    do 10 i = 1, nnonsx
+    do i = 1, nnonsx
         vcninx(i)=0
-10  end do
+    end do
     call xcninv(nnotot, nse, nnop, nno, jcnset,&
                 vcninx)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hsaco(vectt, dudxnc, hsc)
 !
     implicit none
@@ -54,18 +54,18 @@ subroutine hsaco(vectt, dudxnc, hsc)
 !
 !                 HSC ( 5 , 9 ) = H ( 5 , 6 ) * S ( 6, 9 )
 !
-    do 100 j = 1, 9
+    do j = 1, 9
 !
-        do 110 i = 1, 3
+        do i = 1, 3
             hsc ( i , j ) = hsm2 ( i , j )
 !
-110     continue
-        do  i = 1, 2
+        end do
+        do i = 1, 2
             hsc ( i + 3 , j ) = hss2 ( i , j )
 !
         end do
 !
-100  end do
+    end do
 !
 !
 !

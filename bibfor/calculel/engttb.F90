@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine engttb(ific, nomsd, typtes, preci, formr)
 ! aslint: disable=W0007
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -30,6 +29,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/tbexip.h"
+!
     integer :: ific
     character(len=8) :: typtes
     character(len=10) :: preci, formr
@@ -69,7 +69,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
     nbpara = tbnp(1)
     nblign = tbnp(2)
 !
-    do 400 ipar = 1, nbpara
+    do ipar = 1, nbpara
 !
         nomsym = tblp(1+4*(ipar-1))
         call tbexip(nomsd, nomsym, exist, type)
@@ -88,24 +88,24 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
             if (typtes .eq. 'SOMM_ABS') then
                 vali = 0
-                do 410 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = vali+abs(zi(jvale+ i-1))
-410             continue
+                end do
             else if (typtes .eq. 'SOMM') then
                 vali = 0
-                do 412 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = vali + zi(jvale+i- 1)
-412             continue
+                end do
             else if (typtes .eq. 'MAX') then
                 vali = -ismaem()
-                do 414 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = max(vali,zi(jvale+ i-1))
-414             continue
+                end do
             else if (typtes .eq. 'MIN') then
                 vali = ismaem()
-                do 416 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) vali = min(vali,zi(jvale+ i-1))
-416             continue
+                end do
             endif
             if (vali .eq. 0) write(ific,4010)
             write(ific,form2) vali
@@ -117,29 +117,30 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
             if (typtes .eq. 'SOMM_ABS') then
                 valr = 0.d0
-                do 420 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = valr+abs(zr(jvale+ i-1))
-420             continue
+                end do
             else if (typtes .eq. 'SOMM') then
                 valr = 0.d0
-                do 422 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = valr + zr(jvale+i- 1)
-422             continue
+                end do
             else if (typtes .eq. 'MAX') then
                 valr = -r8maem()
-                do 424 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = max(valr,zr(jvale+ i-1))
-424             continue
+                end do
             else if (typtes .eq. 'MIN') then
                 valr = r8maem()
-                do 426 i = 1, nblign
+                do i = 1, nblign
                     if (zi(jvall+i-1) .eq. 1) valr = min(valr,zr(jvale+ i-1))
-426             continue
+                end do
             endif
             if (abs(valr) .le. r8prem()) write(ific,4010)
             write(ific,form1) valr
         endif
-400 end do
+400     continue
+    end do
 !
     call jedema()
 !

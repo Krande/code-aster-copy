@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcpopl(loi, angmas, nmat, materd, materf,&
                   mod, deps, sigd, sigf, vind,&
                   vinf)
@@ -89,12 +89,12 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
         hill = zero
         nsig = zero
         neps = zero
-        do 10 i = 1, ndt
+        do i = 1, ndt
             dsig(i) = sigf(i) - sigd(i)
             hill = hill + dsig(i)*deps(i)
             nsig = nsig + dsig(i)**2.d0
             neps = neps + deps(i)**2.d0
- 10     continue
+        end do
 !
 ! --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
         if ((neps.gt.r8prem()) .and. (nsig.gt.r8prem())) then
@@ -104,7 +104,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
         endif
 !
         vinf(34) = zero
-        do 20 i = 1, 8
+        do i = 1, 8
             if (abs(vinf(23+i)-un) .lt. r8prem()) then
                 if (i .eq. 1) vinf(34)=vinf(34)+dix**zero
                 if (i .eq. 2) vinf(34)=vinf(34)+dix**un
@@ -115,7 +115,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
                 if (i .eq. 7) vinf(34)=vinf(34)+dix**6.d0
                 if (i .eq. 8) vinf(34)=vinf(34)+dix**7.d0
             endif
- 20     continue
+        end do
 !
     endif
 !

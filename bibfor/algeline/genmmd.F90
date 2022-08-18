@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
                   maxint, delta, invp, perm, nbsn,&
                   supnd, adress, parent, gssubs, fctnzs,&
@@ -89,7 +89,7 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     integer :: ncol, nlig
 !-----------------------------------------------------------------------
 !
-    if (neqns .le. 0) goto 9999
+    if (neqns .le. 0) goto 999
 !
 !        ------------------------------------------------
 !        INITIALIZATION FOR THE MINIMUM DEGREE ALGORITHM.
@@ -104,9 +104,9 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     num = 1
 !.ROSE AJ
     nbsn = 0
-    do 110 i = 1, neqns
+    do i = 1, neqns
         parent(i) = 0
-110  end do
+    end do
     adress(1) = 1
 !.ROSE FIN AJ
 !
@@ -115,7 +115,7 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
 !        -----------------------------
     nextmd = dhead(1)
 !      DO WHILE (NEXTMD.GT.0)
-120  continue
+120 continue
     if (nextmd .gt. 0) then
         mdnode = nextmd
         nextmd = invp(mdnode)
@@ -139,9 +139,9 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     tag = 1
     dhead(1) = 0
     mdeg = 2
-130  continue
+130 continue
 !      DO WHILE (DHEAD(MDEG).LE.0)
-140  continue
+140 continue
     if (dhead(mdeg) .le. 0) then
         mdeg = mdeg + 1
         goto 140
@@ -154,10 +154,10 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     mdlmt = mdeg + delta
     ehead = 0
 !
-150  continue
+150 continue
     mdnode = dhead(mdeg)
 !      DO WHILE (MDNODE.LE.0)
-160  continue
+160 continue
     if (mdnode .le. 0) then
         mdeg = mdeg + 1
         if (mdeg .gt. mdlmt) goto 180
@@ -186,9 +186,9 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     tag = tag + 1
     if (tag .ge. maxint) then
         tag = 1
-        do 170 i = 1, neqns
+        do i = 1, neqns
             if (marker(i) .lt. maxint) marker(i) = 0
-170      continue
+        end do
     endif
     call mmdelm(mdnode, xadj, adjncy, dhead, invp,&
                 perm, qsize, llist, marker, maxint,&
@@ -198,7 +198,7 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
     llist(mdnode) = ehead
     ehead = mdnode
     if (delta .ge. 0) goto 150
-180  continue
+180 continue
 !            -------------------------------------------
 !            UPDATE DEGREES OF THE NODES INVOLVED IN THE
 !            MINIMUM DEGREE NODES ELIMINATION.
@@ -209,24 +209,24 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
                 llist, marker, maxint, tag)
     goto 130
 !
-190  continue
+190 continue
     if (mdnode .gt. 0) then
 !        ON TERMINE PARENT NODAL
-        do 200 i = xadj(mdnode), xadj(mdnode+1) - 1
+        do i = xadj(mdnode), xadj(mdnode+1) - 1
             nabor = adjncy(i)
             if (nabor .eq. 0) goto 210
             if (invp(nabor) .lt. 0) then
                 parent(nabor) = mdnode
             endif
-200      continue
+        end do
     endif
-210  continue
+210 continue
     nbsn1 = nbsn + 1
     supnd(nbsn1) = neqns + 1
     gssubs = 0
     fctnzs = 0
     fctops = 0.0d0
-    do 230 is = 1, nbsn
+    do is = 1, nbsn
         jdeb = supnd(is)
         jfin = supnd(is+1) - 1
         ncol = jfin - jdeb + 1
@@ -234,19 +234,19 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
         gssubs = gssubs + nlig
         fctnzs = fctnzs + nlig*ncol - (ncol* (ncol+1))/2
         il = nlig
-        do 220 j = jdeb, jfin
+        do j = jdeb, jfin
             il = il - 1
             fctops = fctops + dble(il* (il+3))
-220      continue
+        end do
         adress(is+1) = adress(is) + nlig
-230  end do
+    end do
     call mmdnum(neqns, perm, invp, qsize)
 !        CALCUL DE PARENT EN SUPERNOEUDS MMDPAR SUR CRAY UTILISE QSIZE
 !                          EN DERNIER ARGUMENT ??? TABLEAU DE TRAVAIL ?
 !          CALL MMDPAR(NEQNS,NBSN,NBSN1,SUPND,INVP,PARENT,DHEAD,QSIZE)
     call mmdpar(neqns, nbsn, nbsn1, supnd, invp,&
                 parent, dhead, llist)
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

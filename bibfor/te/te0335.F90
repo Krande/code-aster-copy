@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0335(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -74,16 +74,16 @@ subroutine te0335(option, nomte)
 !
 !
     if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
-        call elrefe_info(fami='MASS',ndim=ndim1,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='MASS', ndim=ndim1, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     else
-        call elrefe_info(fami='RIGI',ndim=ndim1,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim1, nno=nno, nnos=nnos, npg=npg,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     endif
 !
-    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or.&
-        (option.eq.'EPMQ_ELGA') .or. (option.eq.'EPMQ_ELNO') .or.&
-        (option.eq.'EPGQ_ELGA') .or. (option.eq.'EPGQ_ELNO')) then
+    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELGA')&
+        .or. (option.eq.'EPMQ_ELNO') .or. (option.eq.'EPGQ_ELGA') .or.&
+        (option.eq.'EPGQ_ELNO')) then
 !
         call tecach('OOO', 'PDEFORR', 'L', iret, nval=7,&
                     itab=itabin)
@@ -137,25 +137,26 @@ subroutine te0335(option, nomte)
 !
 ! ------ DEFORMATIONS :
 ! -------------------
-        if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPMQ_ELGA') .or. (option.eq.'EPGQ_ELGA')) then
-            do 10 ipg = 1, npg
-                do 11 isp = 1, nbsp
+        if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPMQ_ELGA') .or.&
+            (option.eq.'EPGQ_ELGA')) then
+            do ipg = 1, npg
+                do isp = 1, nbsp
                     idec = idefo+(ipg-1)*nbcmp *nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ipg-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'EPSI_DIR', ndim, zr(ideceq))
-11              continue
-10          continue
+                end do
+            end do
 !
 ! ----- CONTRAINTES :
 ! -----------------
         else if (option.eq.'SIEQ_ELGA') then
-            do 20 ipg = 1, npg
-                do 21 isp = 1, nbsp
+            do ipg = 1, npg
+                do isp = 1, nbsp
                     idec = icont+(ipg-1)*nbcmp *nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ipg-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'SIGM_DIR', ndim, zr(ideceq))
-21              continue
-20          continue
+                end do
+            end do
         endif
 !
 ! -------------------------------------------------------
@@ -166,25 +167,26 @@ subroutine te0335(option, nomte)
 !
 ! ------ DEFORMATIONS :
 ! -------------------
-        if ((option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELNO').or. (option.eq.'EPGQ_ELNO')) then
-            do 30 ino = 1, nno
-                do 31 isp = 1, nbsp
+        if ((option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELNO') .or.&
+            (option.eq.'EPGQ_ELNO')) then
+            do ino = 1, nno
+                do isp = 1, nbsp
                     idec = idefo+(ino-1)*nbcmp *nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ino-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'EPSI_DIR', ndim, zr(ideceq))
-31              continue
-30          continue
+                end do
+            end do
 !
 ! ----- CONTRAINTES :
 ! -----------------
         else if (option.eq.'SIEQ_ELNO') then
-            do 40 ino = 1, nno
-                do 41 isp = 1, nbsp
+            do ino = 1, nno
+                do isp = 1, nbsp
                     idec = icont+(ino-1)*nbcmp *nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ino-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'SIGM_DIR', ndim, zr(ideceq))
-41              continue
-40          continue
+                end do
+            end do
         endif
 !
     endif

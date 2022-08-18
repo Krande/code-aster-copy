@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsci1(crit, mater, deps, sigd, i1f,&
                   tract, iret)
     implicit none
@@ -66,18 +66,18 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !--->   DETERMINATION DE TERME COEF = 3 KOE TR(DEPS)
 !
     trdeps = zero
-    do 5 i = 1, ndi
+    do i = 1, ndi
         trdeps = trdeps + deps(i)
-  5 continue
+    end do
 !
     coef = mater(1,1)/( un - deux*mater(2,1) )*trdeps
     pa = mater(12,2)
     n = mater(3,2)
 !
     i1d = zero
-    do 10 i = 1, ndi
+    do i = 1, ndi
         i1d = i1d + sigd(i)
- 10 continue
+    end do
     if ((i1d +qinit) .ge. 0.d0) then
         i1d = -qinit+1.d-12 * pa
     endif
@@ -93,7 +93,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
         if (i1f .ge. (-qinit)) then
             tract = .true.
         endif
-        goto 9999
+        goto 999
     endif
 !
 !--->  TRAITEMENT DE L'EQUATION EN FONCTION DE TRACE DE DEPS
@@ -115,13 +115,13 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
         y0 = x0-i1d-coef*((x0+qinit)/trois/pa)**n
         multi=2.d0
         x1 = x0 + qinit
-        do 20 i = 1, imax
+        do i = 1, imax
             x1 = multi*x1
             y1 = x1-i1d-coef*((x1+qinit)/trois/pa)**n
             if (y1 .lt. zero) goto 25
- 20     continue
+        end do
         iret = 1
-        goto 9999
+        goto 999
  25     continue
 !
 !
@@ -130,7 +130,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
         oldx2=zero
 !
-        do 30 i = 1, int(abs(crit(1)))
+        do i = 1, int(abs(crit(1)))
             x2 = (x0*y1-x1*y0)/(y1-y0)
             y2 = x2-i1d-coef*((x2+qinit)/trois/pa)**n
 !
@@ -145,9 +145,9 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
                 y1 = y2
             endif
 !
- 30     continue
+        end do
         iret = 1
-        goto 9999
+        goto 999
  40     continue
 !
         i1f=x2
@@ -171,7 +171,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
         oldx2=zero
 !
-        do 60 i = 1, int(abs(crit(1)))
+        do i = 1, int(abs(crit(1)))
             x2 = (x0*y1-x1*y0)/(y1-y0)
             y2 = x2-i1d-coef*((x2+qinit)/trois/pa)**n
 !
@@ -186,15 +186,15 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
                 y0 = y2
             endif
 !
- 60     continue
+        end do
         iret = 1
-        goto 9999
+        goto 999
  70     continue
 !
         i1f=x2
 !
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

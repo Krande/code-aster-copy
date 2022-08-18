@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ccliop(type, option, nobase, noliop, nopout)
     implicit none
 !     --- ARGUMENTS ---
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -30,6 +29,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nopout
     character(len=*) :: type
     character(len=8) :: nobase
@@ -93,9 +93,9 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 !
     if (option(6:9) .ne. 'NOEU') then
         call jenonu(jexnom('&CATA.OP.NOMOPT', option), opt)
-        if (opt .eq. 0) goto 9999
+        if (opt .eq. 0) goto 999
         call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iaopds)
-        if (zi(iaopds-1+2) .eq. 0) goto 9999
+        if (zi(iaopds-1+2) .eq. 0) goto 999
         call jeveuo(jexnum('&CATA.OP.LOCALIS', opt), 'L', iaoplo)
     endif
 !
@@ -113,7 +113,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 !
 !     BOUCLE SUR LE TABLEAU DES OPTIONS QUI SERA ENRICHI A CHAQUE
 !     PASSE
-    do 10 iop = iopdeb, nopous
+    do iop = iopdeb, nopous
         isodep(iop) = ' '
         curopt = loptio(iop)
         opajou = .false.
@@ -150,7 +150,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
             endif
 !
 !         BOUCLE SUR LES PARAMETRES DE CETTE OPTION
-            do 20 ipara = 1, nparin
+            do ipara = 1, nparin
 !           ON VERIFIE QUE L'OPTION CORRESPONDAND AU CHAMP EXISTE
                 optio2 = zk24(iaoplo+3*ipara-2)
                 call jenonu(jexnom('&CATA.OP.NOMOPT', optio2), opt2)
@@ -216,7 +216,8 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
                     opajou = .true.
                     isodep(nopout) = ' '
                 endif
- 20         continue
+ 20             continue
+            end do
         endif
 !
         if (.not.opajou) then
@@ -225,7 +226,8 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
         else
             lopor2(iop) = nopout
         endif
- 10 end do
+ 10     continue
+    end do
 !
 !     SI ON A AJOUTE UNE OPTION LORS DE LA DERNIERE PASSE, ON
 !     DOIT CHERCHER SES DEPENDANCES
@@ -247,7 +249,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     call wkvect(nolisd, 'V V K8', nopout, jlisde)
 !
 !     CONSTRUCTION DE LA LISTE DES PAS DE TEMPS
-    do 30 iop = 1, nopout
+    do iop = 1, nopout
 !       ON PARCOURT LA LISTE A L'ENVERS PUISQUE PAR CONSTRUCTION
 !       LES OPTIONS 'D'EN HAUT' DEPENDENT DES OPTIONS 'D'EN BAS'
         itmp = nopout-iop+1
@@ -264,9 +266,9 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
         endif
         zk8(jlidep+iop-1) = lopdep(itmp)
         zk8(jlisde+iop-1) = isodep(itmp)
- 30 end do
+    end do
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

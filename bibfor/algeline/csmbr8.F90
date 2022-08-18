@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
                   vsmb)
     implicit none
@@ -48,7 +48,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer ::   nelim, ielim, ieq, j,   ieqg
+    integer :: nelim, ielim, ieq, j, ieqg
     integer :: deciel, kterm, nterm, imatd
     real(kind=8) :: coef
     character(len=14) :: nu
@@ -78,7 +78,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
         imatd = 0
     endif
 !
-    do 20 ielim = 1, nelim
+    do ielim = 1, nelim
         ieq = ccll(3*(ielim-1)+1)
         nterm = ccll(3*(ielim-1)+2)
         deciel = ccll(3*(ielim-1)+3)
@@ -91,28 +91,28 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
         coef = vcine(ieqg)
 !
         if (coef .ne. 0.d0) then
-            do 10 kterm = 1, nterm
+            do kterm = 1, nterm
                 if (imatd .eq. 0) then
                     j=ccii(deciel+kterm)
                 else
                     j=nulg(ccii(deciel+kterm))
                 endif
                 vsmb(j) = vsmb(j) - coef*ccva(deciel+kterm)
-10          continue
+            end do
         endif
 !
-20  end do
+    end do
     call jelibe(mat//'.CCVA')
 !
     if (imatd .ne. 0) then
-        do 40 ieq = 1, neq
+        do ieq = 1, neq
             if (nugl(ieq) .eq. 0) vcine(ieq) = 0.d0
-40      continue
+        end do
     endif
 !
 !
     call jeveuo(mat//'.CCID', 'L', vi=ccid)
-    do 30 ieq = 1, neq
+    do ieq = 1, neq
         if (ccid(ieq) .eq. 1) then
             vsmb(ieq) = vcine(ieq)
         else
@@ -121,7 +121,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
             endif
         endif
 !
-30  end do
+    end do
 !
     call jedema()
 end subroutine

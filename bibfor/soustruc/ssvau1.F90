@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssvau1(nomacr, iavein, iaveou)
     implicit none
 !
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
@@ -33,6 +32,7 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 #include "asterfort/mtdsc2.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rldlr8.h"
+!
     character(len=8) :: nomacr
     integer :: iavein, iaveou
 ! ----------------------------------------------------------------------
@@ -62,8 +62,8 @@ subroutine ssvau1(nomacr, iavein, iaveou)
     character(len=19) :: matas, stock, nu
 !
 !-----------------------------------------------------------------------
-    integer ::  iascbl, iascdi,   iblold, j
-    integer ::  jualf, k, kk, lmat, nbbloc, nddle
+    integer :: iascbl, iascdi, iblold, j
+    integer :: jualf, k, kk, lmat, nbbloc, nddle
     integer :: nddli, nddlt
     integer, pointer :: desm(:) => null()
     integer, pointer :: vschc(:) => null()
@@ -87,9 +87,9 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 !
 !     -- ON RECOPIE VECIN DANS VECOUT POUR EVITER LES EFFETS DE BIAIS:
 !     ---------------------------------------------------------------
-    do 10,kk=1,nddlt
-    zr(iaveou-1+kk)=zr(iavein-1+kk)
-    10 end do
+    do kk = 1, nddlt
+        zr(iaveou-1+kk)=zr(iavein-1+kk)
+    end do
 !
 !
 !     -- ON COMMENCE PAR CONDITIONNER LE SECOND MEMBRE INITIAL (.CONL)
@@ -115,22 +115,22 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 !     -- CALCUL DE FP_E = F_E-K_EI*QI0 DANS : VECOUT(NDDLI+1,NDDLT):
 !     -----------------------------------------------------------------
     iblold=0
-    do 30,j=1,nddle
-    iblo=scib(nddli+j)
-    scdi=zi(iascdi-1+nddli+j)
-    schc=vschc(nddli+j)
-    if (iblo .ne. iblold) then
-        if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
-        call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-    endif
-    iblold=iblo
-    kk=0
-    do 20,k=nddli+j+1-schc,nddli
-    kk=kk+1
-    zr(iaveou-1+nddli+j)=zr(iaveou-1+nddli+j)- zr(iaveou-1+k)*&
+    do j = 1, nddle
+        iblo=scib(nddli+j)
+        scdi=zi(iascdi-1+nddli+j)
+        schc=vschc(nddli+j)
+        if (iblo .ne. iblold) then
+            if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
+            call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
+        endif
+        iblold=iblo
+        kk=0
+        do k = nddli+j+1-schc, nddli
+            kk=kk+1
+            zr(iaveou-1+nddli+j)=zr(iaveou-1+nddli+j)- zr(iaveou-1+k)*&
             zr(jualf-1+scdi-schc+kk)
-20  continue
-    30 end do
+        end do
+    end do
     if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 !

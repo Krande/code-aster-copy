@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
                  hsf, kwgt, hsj1fx, wgt)
     implicit none
@@ -43,18 +43,18 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
 !               0   0  J-1
 !
 !           IB=1,1
-    do 10 jb = 1, 3
-        do 20 i = 1, 3
-            do 30 j = 1, 3
+    do jb = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 j1=j+3*(jb-1)
                 hsj1fx(i,j1)=0.d0
-                do 40 k = 1, 3
+                do k = 1, 3
                     k1=k+3*(jb-1)
                     hsj1fx(i,j1)=hsj1fx(i,j1)+hsf(i,k1)*jm1(k,j)
-40              end do
-30          end do
-20      end do
-10  end do
+                end do
+            end do
+        end do
+    end do
 !
 !     DEFINTION DE WGT = PRODUIT DES POIDS ASSOCIES AUX PTS
 !      DE GAUSS (NORMAL)  ET DE DETJ

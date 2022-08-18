@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine glrcmm(zimat, matr, ep, surfgp, p,&
                   epst, deps, dsig, ecr, delas,&
                   dsidep, crit, codret)
@@ -82,8 +82,8 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 !     TRANSFORMATION DES DONNEES
 !
     if (ecr(12) .lt. 5.d0) then
-        do i = 1,3
-           vglob(i) = ecr(10 + i)
+        do i = 1, 3
+            vglob(i) = ecr(10 + i)
         end do
         vloc = matmul(p, vglob)
 !
@@ -135,23 +135,24 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
         nomres(7) = 'MAXMP2'
         nomres(8) = 'MINMP2'
 !
-        do 50, i=1,2
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', [0.d0],&
-                    2, nomres(2*(i-1)+1), valres, codres, 1)
-        mp1n0 = valres(1)
-        mp2n0 = valres(2)
+        do i = 1, 2
+            call rcvalb(fami, kpg, spt, poum, zimat,&
+                        ' ', phenom, 1, 'X ', [0.d0],&
+                        2, nomres(2*(i-1)+1), valres, codres, 1)
+            mp1n0 = valres(1)
+            mp2n0 = valres(2)
 !
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 0, ' ', [r8bid],&
-                    2, nomres(2*(i-1)+5), valres, codres, 1)
-        maxmp(i) = valres(1)
-        minmp(i) = valres(2)
+            call rcvalb(fami, kpg, spt, poum, zimat,&
+                        ' ', phenom, 0, ' ', [r8bid],&
+                        2, nomres(2*(i-1)+5), valres, codres, 1)
+            maxmp(i) = valres(1)
+            minmp(i) = valres(2)
 !
-        if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or. (maxmp(i)- minmp(i) .le. 0.d0)) then
-            call utmess('F', 'ELEMENTS_87')
-        endif
-50      continue
+            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or.&
+                (maxmp(i)- minmp(i) .le. 0.d0)) then
+                call utmess('F', 'ELEMENTS_87')
+            endif
+        end do
     endif
 !
     nomres(1) = 'NORMM'

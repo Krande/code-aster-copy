@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
                   nfs, nsg, hsr, nbsys, is,&
                   nuecou, hs, soms1, soms2, soms3)
@@ -64,17 +64,17 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
         termea=0.d0
         denom=0.d0
         numer=0.d0
-        do 50 iu = 1, 12
+        do iu = 1, 12
 !            PARTIE POSITIVE DE ALPHA
             if (alphap(iu) .gt. 0.d0) then
                 denom=denom+sqrt(hsr(is,iu)*alphap(iu))
             endif
-50      continue
+        end do
 !        SOMME SUR FOREST(S)
         if (denom .gt. rmin) then
 !           TERME AU NUMERATEUR SUR FOREST(S)
             termea=0.d0
-            do 51 iv = 1, 12
+            do iv = 1, 12
                 is3=(is-1)/3
                 iv3=(iv-1)/3
                 if (is3 .ne. iv3) then
@@ -83,14 +83,14 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
                         numer=numer+sqrt(hsr(is,iv))*alphap(iv)
                     endif
                 endif
-51          continue
+            end do
             termea=a*numer/denom
         endif
 !
 !        SOMME SUR COPLA(S)
         termeb=0.d0
         if (nbsys .eq. 12) then
-            do 52 iv = 1, 12
+            do iv = 1, 12
                 is3=(is-1)/3
                 iv3=(iv-1)/3
 !           PARTIE POSITIVE DE ALPHA
@@ -99,7 +99,7 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
                         termeb=termeb+sqrt(hsr(is,iv)*alphap(iv))
                     endif
                 endif
-52          continue
+            end do
         else if (nbsys.eq.1) then
             alphas=alphap(is)
 !           PARTIE POSITIVE DE ALPHA
@@ -138,11 +138,11 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
 !       EVOLUTION DE LA DENSITE DE DISLO
 !
         denom = 0.d0
-        do 60 iu = 1, 12
+        do iu = 1, 12
             if ((iu.ne.is) .and. (alphap(iu).gt.0.d0)) then
                 denom = denom + alphap(iu)
             endif
-60      continue
+        end do
         denom = sqrt(denom)
 !
         hs = beta*unsurd + denom/k

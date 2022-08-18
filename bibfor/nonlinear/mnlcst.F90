@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
                   h, hf, xcst)
     implicit none
@@ -39,20 +39,20 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/dscal.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     integer :: ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, adime, xcst
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: alpha, eta, jeu
-    integer :: iadim, icst,     neqs, i
+    integer :: iadim, icst, neqs, i
     real(kind=8), pointer :: jeumax(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     character(len=8), pointer :: type(:) => null()
@@ -83,7 +83,7 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
     call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
     call jeveuo(parcho//'.JEUMAX', 'L', vr=jeumax)
     neqs=0
-    do 110 i = 1, nchoc
+    do i = 1, nchoc
         alpha=raid(i)/zr(iadim)
         eta=reg(i)
         jeu=vjeu(i)/jeumax(1)
@@ -98,7 +98,7 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
             zr(icst+nd*(2*h+1)+neqs*(2*hf+1))=-eta
         endif
         neqs=neqs+vneqs(i)
-110  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS
 ! ----------------------------------------------------------------------

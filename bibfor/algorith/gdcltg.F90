@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdcltg(df, e)
 !
 !
@@ -68,21 +68,21 @@ subroutine gdcltg(df, e)
 !  CALCUL DE LA DERIVEE DE DETR / DF : DETRDF(AB,P,Q)
 ! ----------------------------------------------------
 !
-    do 900 ij = 1, 6
+    do ij = 1, 6
         betr(ij) = kr(ij)-2*etr(ij)
-900  end do
+    end do
     call r8inir(54, 0.d0, detrdf, 1)
 !
-    do 1100 ij = 1, 6
+    do ij = 1, 6
         i = ind1(ij)
         j = ind2(ij)
-        do 1110 l = 1, 3
+        do l = 1, 3
             il = ind12(i,l)
             jl = ind12(j,l)
             detrdf(ij,i,l) = detrdf(ij,i,l) - 0.5d0*rc(ij)*betr(jl)/ rc(jl)
             detrdf(ij,j,l) = detrdf(ij,j,l) - 0.5d0*rc(ij)*betr(il)/ rc(il)
-1110      continue
-1100  end do
+        end do
+    end do
 !
 !
 !  DERIVEE PARTIELLE DE TAU PAR RAPPORT A E
@@ -107,19 +107,19 @@ subroutine gdcltg(df, e)
     dtaude(6,4) = e(5)/rac2
     dtaude(6,5) = e(4)/rac2
 !
-    do 200 ij = 1, 6
-        do 210 kl = ij+1, 6
+    do ij = 1, 6
+        do kl = ij+1, 6
             dtaude(ij,kl) = dtaude(kl,ij)
-210      continue
-200  end do
+        end do
+    end do
     call dscal(36, 2*deuxmu, dtaude, 1)
 !
 !    TERME EN (2E-1) X 1  DE DTAU / DE
-    do 300 ij = 1, 6
-        do 310 kl = 1, 3
+    do ij = 1, 6
+        do kl = 1, 3
             dtaude(ij,kl) = dtaude(ij,kl) + lambda*(2*e(ij)-kr(ij))
-310      continue
-300  end do
+        end do
+    end do
 !
 !    TERME EN ID  DE DTAU/DE
     tre = e(1)+e(2)+e(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chauxi(ndim, mu, ka, r, t,&
                   invp, lcour, courb, du1dm, du2dm,&
                   du3dm, u1l, u2l, u3l)
@@ -83,25 +83,25 @@ subroutine chauxi(ndim, mu, ka, r, t,&
     du1dpo(3,2)=0.d0
 !
 !     MATRICE DES DÉRIVÉES DE U1 DANS LA BASE LOCALE (3X3)
-    do 140 i = 1, 3
+    do i = 1, 3
         du1dl(i,1)=cos(t)*du1dpo(i,1)-sin(t)/r*du1dpo(i,2)
         du1dl(i,2)=sin(t)*du1dpo(i,1)+cos(t)/r*du1dpo(i,2)
         du1dl(i,3)=0.d0
-140 end do
+    end do
 !
 !     MATRICE DES DÉRIVÉES DE U1 DANS LA BASE GLOBALE (3X3)
-    do 141 i = 1, ndim
-        do 142 j = 1, ndim
-            do 143 k = 1, ndim
-                do 144 l = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
+            do k = 1, ndim
+                do l = 1, ndim
                     du1dm(i,j)=du1dm(i,j)+du1dl(k,l)*invp(l,j)*invp(k,&
                     i)
-144             continue
+                end do
 !           PRISE EN COMPTE DE LA BASE MOBILE
                 if (lcour) du1dm(i,j)=du1dm(i,j)+u1l(k)*courb(k,i,j)
-143         continue
-142     continue
-141 end do
+            end do
+        end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U2 ET DE SA DÉRIVÉE
@@ -122,25 +122,25 @@ subroutine chauxi(ndim, mu, ka, r, t,&
     du2dpo(3,2)=0.d0
 !
 !     MATRICE DES DÉRIVÉES DE U2 DANS LA BASE LOCALE (3X3)
-    do 150 i = 1, 3
+    do i = 1, 3
         du2dl(i,1)=cos(t)*du2dpo(i,1)-sin(t)/r*du2dpo(i,2)
         du2dl(i,2)=sin(t)*du2dpo(i,1)+cos(t)/r*du2dpo(i,2)
         du2dl(i,3)=0.d0
-150 end do
+    end do
 !
 !     MATRICE DES DÉRIVÉES DE U2 DANS LA BASE GLOBALE (3X3)
-    do 151 i = 1, ndim
-        do 152 j = 1, ndim
-            do 153 k = 1, ndim
-                do 154 l = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
+            do k = 1, ndim
+                do l = 1, ndim
                     du2dm(i,j)=du2dm(i,j)+du2dl(k,l)*invp(l,j)*invp(k,&
                     i)
-154             continue
+                end do
 !           PRISE EN COMPTE DE LA BASE MOBILE
                 if (lcour) du2dm(i,j)=du2dm(i,j)+u2l(k)*courb(k,i,j)
-153         continue
-152     continue
-151 end do
+            end do
+        end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     DÉFINITION DU CHAMP SINGULIER AUXILIAIRE U3 ET DE SA DÉRIVÉE
@@ -159,24 +159,24 @@ subroutine chauxi(ndim, mu, ka, r, t,&
     du3dpo(3,2)=2.d0*cr2*cos(t*0.5d0)
 !
 !     MATRICE DES DÉRIVÉES DE U3 DANS LA BASE LOCALE (3X3)
-    do 160 i = 1, 3
+    do i = 1, 3
         du3dl(i,1)=cos(t)*du3dpo(i,1)-sin(t)/r*du3dpo(i,2)
         du3dl(i,2)=sin(t)*du3dpo(i,1)+cos(t)/r*du3dpo(i,2)
         du3dl(i,3)=0.d0
-160 end do
+    end do
 !
 !     MATRICE DES DÉRIVÉES DE U3 DANS LA BASE GLOBALE (3X3)
-    do 161 i = 1, ndim
-        do 162 j = 1, ndim
-            do 163 k = 1, ndim
-                do 164 l = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
+            do k = 1, ndim
+                do l = 1, ndim
                     du3dm(i,j)=du3dm(i,j)+du3dl(k,l)*invp(l,j)*invp(k,&
                     i)
-164             continue
+                end do
 !           PRISE EN COMPTE DE LA BASE MOBILE
                 if (lcour) du3dm(i,j)=du3dm(i,j)+u3l(k)*courb(k,i,j)
-163         continue
-162     continue
-161 end do
+            end do
+        end do
+    end do
 !
 end subroutine

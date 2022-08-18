@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine genere(r, dim, v, x)
     implicit none
 !       POUR CHAQUE POINT DE LA DISCRETISATION FREQUENTIELLE CALCULE
@@ -29,17 +29,17 @@ subroutine genere(r, dim, v, x)
     complex(kind=8) :: r(dim, dim), v(dim), phi, x(dim)
 !     -----------------------------------------------------------------
     pi =r8pi()
-    do 10 i = 1, dim
+    do i = 1, dim
 !
         call getran(u)
         u = u * 2.d0 * pi
         phi = dcmplx(0.d0,u)
         x(i) = exp(phi)
         v(i) = dcmplx(0.d0,0.d0)
-10  end do
-    do 20 i = 1, dim
-        do 30 j = 1, dim
+    end do
+    do i = 1, dim
+        do j = 1, dim
             v(i) = v(i) + r(i,j)*x(j)
-30      continue
-20  end do
+        end do
+    end do
 end subroutine

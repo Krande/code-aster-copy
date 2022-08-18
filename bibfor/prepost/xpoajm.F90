@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   n, nnose, prefno, jdirno, nnm,&
                   inm, inmtot, nbmac, he, jnivgr,&
@@ -23,12 +23,13 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   ndim, ndime, jconx1, jconx2, jconq1,&
                   jconq2, ima, iad1, nnn, inn,&
                   inntot, nbnoc, nbnofi, inofi, iacoo1,&
-                  iacoo2, iad9, ninter, iainc, ncompa, elrefp,&
-                  jlsn, jlst, typma, igeom, jheavn, ncompn,&
-                  contac, cmp, nbcmp, nfh, nfe,&
-                  ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                  pre1, heavno, fisco, nlachm,&
-                  lacthm, jbaslo, jstno, ka, mu)
+                  iacoo2, iad9, ninter, iainc, ncompa,&
+                  elrefp, jlsn, jlst, typma, igeom,&
+                  jheavn, ncompn, contac, cmp, nbcmp,&
+                  nfh, nfe, ddlc, jcnsv1, jcnsv2,&
+                  jcnsl2, lmeca, pre1, heavno, fisco,&
+                  nlachm, lacthm, jbaslo, jstno, ka,&
+                  mu)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1306,W1504
@@ -155,7 +156,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 !
 !       ON INCREMENTE LES GROUP_MA
 !       BOUCLE SUR LES GROUP_MA CONTENANT LA MAILLE IMA
-        do 110 i = 1, ngrm
+        do i = 1, ngrm
 !         NUMEROS DU GROUP_MA DANS MA1 ET MA2
             ig1 = zi(iagma-1+i)
             ig2 = zi(jdirgr-1+ig1)
@@ -165,24 +166,25 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 !         NIVEAU DE REMPLISSAGE DU GROUP_MA
             zi(jnivgr-1+ig2) = zi(jnivgr-1+ig2) + 1
             zi(iagma2-1+ zi(jnivgr-1+ig2)) = nbmac + inmtot
-110     continue
+110         continue
+        end do
     endif
-    do 410 j = 1, nnose
+    do j = 1, nnose
         ino = zi(jcnse-1+nnose*(im-1)+j)
 ! --- ON REGARDE SI LE NOEUD APPARTIENT À LA LISTE
-        do 420 i = 1, inn
+        do i = 1, inn
             if (zi(jdirno-1+(2+nfiss)*(i-1)+1) .eq. ino) then
                 lnoeud = .true.
-                do 430 ifiss = 1, nfiss
+                do ifiss = 1, nfiss
                     lnoeud = lnoeud.and. zi(jdirno-1+(2+nfiss)*(i-1)+ 2+ifiss).eq.he(ifiss)
-430             continue
+                end do
 ! --- IL APPARTIENT A LA LISTE, ON L'ATTACHE À LA MAILLE
                 if (lnoeud) then
                     if (opmail) zi(iacon2-1+j)=zi(jdirno-1+(2+nfiss)*( i-1)+2)
                     goto 410
                 endif
             endif
-420     continue
+        end do
         if (ino .lt. 1000) then
             iad = iacoo1
         else if (ino.gt.1000.and.ino.lt.2000) then
@@ -209,17 +211,18 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                         ndim, jconq1, jconq2, fisco, co,&
                         lsn, lst)
             call xpoajd(elrefp, ino, n, lsn, lst,&
-                        ninter, iainc, ncompa, typma, co, igeom,&
-                        jdirno, nfiss, jheavn, ncompn, he, ndime,&
-                        ndim, cmp, nbcmp, nfh, nfe,&
-                        ddlc, ima, jconq1, jconq2, jcnsv1,&
-                        jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                        nnn, contac, lmeca, pre1, heavno,&
-                        nlachm, lacthm, jbaslo,&
+                        ninter, iainc, ncompa, typma, co,&
+                        igeom, jdirno, nfiss, jheavn, ncompn,&
+                        he, ndime, ndim, cmp, nbcmp,&
+                        nfh, nfe, ddlc, ima, jconq1,&
+                        jconq2, jcnsv1, jcnsv2, jcnsl2, nbnoc,&
+                        inntot, inn, nnn, contac, lmeca,&
+                        pre1, heavno, nlachm, lacthm, jbaslo,&
                         jlsn, jlst, jstno, ka, mu)
         endif
 !
-410 continue
+410     continue
+    end do
 !
     call jedema()
 end subroutine

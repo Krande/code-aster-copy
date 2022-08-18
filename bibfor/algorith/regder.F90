@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine regder(dimdef, dimcon, ndim, regula, dsde2g,&
                   drde)
 ! ======================================================================
@@ -41,23 +41,23 @@ subroutine regder(dimdef, dimcon, ndim, regula, dsde2g,&
     dimde2 = adder3-adder2
     dimde3 = dimdef-adder3+1
 ! ======================================================================
-    do 10 i = 1, dimdef
-        do 20 j = 1, dimcon
+    do i = 1, dimdef
+        do j = 1, dimcon
             drde(j,i)=0.0d0
-20      continue
-10  end do
+        end do
+    end do
 ! ======================================================================
-    do 30 i = 1, dimde1
+    do i = 1, dimde1
         drde(adcor1-1+i,adder3-1+i)=drde(adcor1-1+i,adder3-1+i)+1.0d0
-30  end do
-    do 40 i = 1, dimde2
-        do 50 j = 1, dimde2
+    end do
+    do i = 1, dimde2
+        do j = 1, dimde2
             drde(adcor2-1+j,adder2-1+i)=drde(adcor2-1+j,adder2-1+i)+&
             dsde2g(j,i)
-50      continue
-40  end do
-    do 60 i = 1, dimde3
+        end do
+    end do
+    do i = 1, dimde3
         drde(adcor3-1+i,adder1-1+i)=drde(adcor3-1+i,adder1-1+i)-1.0d0
-60  end do
+    end do
 ! ======================================================================
 end subroutine

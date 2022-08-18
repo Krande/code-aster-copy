@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
                   sigm0, epsi0, coefm, dp, iret)
     implicit none
@@ -54,7 +54,7 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
     call calcfp(mutrbe, rprim, seuil, dt, dp,&
                 sigm0, epsi0, coefm, fplas, fprim,&
                 dfprim)
-    if (abs(fprim) / (1.d0+seuil) .lt. crit(3)) goto 9999
+    if (abs(fprim) / (1.d0+seuil) .lt. crit(3)) goto 999
 !
     dpmax = dpplas
     x(1) = dp
@@ -81,7 +81,7 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
             call calcfp(mutrbe, rprim, seuil, dt, dp,&
                         sigm0, epsi0, coefm, fplas, fprim,&
                         dfprim)
-            if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 9999
+            if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 999
             if (fprim .lt. 0) then
                 x(1) = dp
                 y(1) = fprim
@@ -97,14 +97,14 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
     y(3) = y(1)
     x(4) = x(2)
     y(4) = y(2)
-    do 100 iter = 1, int(crit(1))
+    do iter = 1, int(crit(1))
 !
         call zeroco(x, y)
         dp = x(4)
         call calcfp(mutrbe, rprim, seuil, dt, dp,&
                     sigm0, epsi0, coefm, fplas, fprim,&
                     dfprim)
-        if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 9999
+        if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 999
 !
         dpnew=dp-fprim/dfprim
         if ((dpnew .ge. dpmin) .and. (dpnew .le. dpmax)) then
@@ -114,7 +114,7 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
 !
             if (abs(fpnew)/(1.d0+seuil) .lt. crit(3)) then
                 dp=dpnew
-                goto 9999
+                goto 999
             endif
             if (abs(fpnew)/(1.d0+seuil) .lt. abs(fprim)/(1.d0+seuil)) then
                 dp=dpnew
@@ -124,10 +124,10 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
         endif
         y(4)=fprim
         x(4)=dp
-100  continue
+    end do
 !
     iret = 1
 !
-9999  continue
+999 continue
 !
 end subroutine

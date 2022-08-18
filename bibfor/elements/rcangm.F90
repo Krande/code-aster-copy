@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcangm(ndim, coor, angmas)
     implicit none
 #include "jeveux.h"
@@ -80,10 +80,10 @@ subroutine rcangm(ndim, coor, angmas)
                 orig(2)=zr(icamas+5)
                 orig(3)=zr(icamas+6)
                 call utrcyl(coor, dire, orig, p)
-                do 1 i = 1, 3
+                do i = 1, 3
                     xg(i)=p(1,i)
                     yg(i)=p(2,i)
- 1              continue
+                end do
                 call angvxy(xg, yg, angmas)
             else
                 call utmess('F', 'ELEMENTS2_38')

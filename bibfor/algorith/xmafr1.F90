@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmafr1(ndim, nd, p)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -39,14 +39,14 @@ subroutine xmafr1(ndim, nd, p)
     integer :: i, j
 !
 !     P : OPÉRATEUR DE PROJECTION
-    do 10 i = 1, ndim
-        do 20 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
             p(i,j) = -1.d0 * nd(i)*nd(j)
-20      continue
-10  end do
+        end do
+    end do
 !
-    do 30 i = 1, ndim
+    do i = 1, ndim
         p(i,i) = 1.d0 + p(i,i)
-30  end do
+    end do
 !
 end subroutine

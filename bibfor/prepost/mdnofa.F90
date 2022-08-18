@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
                   nomfam)
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -83,7 +83,7 @@ subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
     if (iaux .lt. nbgf) then
         lgnofa = lgnofa + 1
     endif
-21  continue
+ 21 continue
 !
 !====
 ! 2. ON A LA PLACE : FABRICATION DU NOM
@@ -101,7 +101,7 @@ subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
             ifin = ifin + 1
             nomfam(ifin:ifin) = '_'
         endif
-31      continue
+ 31     continue
 !
 !====
 ! 4. SINON, C'EST UN NOM ARBITRAIRE, CONSTRUIT AVEC LE NUMERO DE

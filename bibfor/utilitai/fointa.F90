@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fointa(ipif, nbpu, nompu, valpu, resu)
     implicit none
 #include "jeveux.h"
@@ -116,14 +116,14 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
         call utmess('F', 'CALCULEL6_61', sk=zk24(jpro))
     endif
 !
-    do 20 i = 1, nbpara
-        do 21 nupar = 1, nbpu
+    do i = 1, nbpara
+        do nupar = 1, nbpu
             if (nompu(nupar) .eq. nompf(i)) then
 !           -- SI UN PARAMETRE EST FOURNI PLUSIEURS FOIS
 !              ON PREND LE DERNIER (VOIR RCVALB)
                 npar(i)=nupar
             endif
-21      continue
+        end do
         if (npar(i) .eq. 0) then
             valk(1)=nomf
             valk(2)=nompf(i)
@@ -131,7 +131,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
             valk(3) = zk24(iazk24-1+3)
             call utmess('F', 'CALCULEL6_62', nk=3, valk=valk)
         endif
-20  end do
+    end do
 !
 ! =====================================================================
 !                          F O N C T I O N
@@ -208,7 +208,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
         call utmess('F', 'UTILITAI2_14', sk=zk24(jpro))
     endif
 !
-999  continue
+999 continue
     if (ier .ne. 0) then
         call utmess('F', 'CALCULEL6_63', sk=nomf, si=ier)
     endif

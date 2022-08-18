@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine impvem(ifi)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -196,9 +196,9 @@ subroutine impvem(ifi)
     write ( ifi , '(/,A,/,A,/)' )&
      &   ' ----- POIDS DES BITS 1 A LBIS' ,&
      &   ' ISPBEM  BITS NUMEROTES DE DROITE A GAUCHE'
-    do 10 i = 1, lbisem()-1
+    do i = 1, lbisem()-1
         write ( ifi , '(1X,I3,2X,I20)' ) i , ispbem(i)
-10  end do
+    end do
 ! ----------------------------------------------------------------------
     write ( ifi , '(/,A,/)' )&
      &   ' ----- VALEURS PARTICULIERES  PI, DEPI, ...    '

@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkttxy(codi, lcot, hft2, depf, vt)
-    implicit  none
+    implicit none
     real(kind=8) :: codi(*), lcot(*), hft2(2, 6), depf(9), vt(2)
 !     EFFORT TRANCHANT L'ELEMENT DE PLAQUE DKT
 !     ------------------------------------------------------------------
@@ -28,13 +28,13 @@ subroutine dkttxy(codi, lcot, hft2, depf, vt)
     nno = 3
     nc = 3
 !
-    do 100 i = 1, nc
+    do i = 1, nc
         cl(i) = 6.d0 * codi( i) / lcot(i)
         sl(i) = 6.d0 * codi(nc+i) / lcot(i)
         cs(i) = 3.d0 * codi( i) * codi(nc+i)
         cu(i) = 3.d0 * codi( i) * codi( i)
         su(i) = 3.d0 * codi(nc+i) * codi(nc+i)
-100  end do
+    end do
 !
     tkt(1,1) = - cl(1) - cl(1)
     tkt(1,2) = cu(1) + cu(1)
@@ -95,19 +95,19 @@ subroutine dkttxy(codi, lcot, hft2, depf, vt)
 !
     bc(:,:) = 0.d0
 !
-    do 140 i = 1, 2
-        do 130 j = 1, 3*nno
-            do 120 k = 1, 6
+    do i = 1, 2
+        do j = 1, 3*nno
+            do k = 1, 6
                 bc(i,j) = bc(i,j) + hft2(i,k) * tkt(k,j)
-120          continue
-130      continue
-140  end do
+            end do
+        end do
+    end do
     vt(1) = 0.d0
     vt(2) = 0.d0
-    do 160 i = 1, 2
-        do 150 j = 1, 3*nno
+    do i = 1, 2
+        do j = 1, 3*nno
             vt(i) = vt(i) + bc(i,j) * depf(j)
-150      continue
-160  end do
+        end do
+    end do
 !
 end subroutine

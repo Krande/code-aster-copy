@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0153()
     implicit none
 !
@@ -61,7 +61,7 @@ subroutine op0153()
     integer :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
     integer :: ipus, ire1, ire2, iret, itube, ivuso
     integer :: ivusob, ivust, ivustu, jfn, jins2, jinst
-    integer ::  jprut, jsect, jusuo, jusut, jvg, k
+    integer :: jprut, jsect, jusuo, jusut, jvg, k
     integer :: n0, n1, n5, na, nbinst, nbpair, nbpar
     integer :: nbpar2, nbpmr, nbpt, nbsec2, nbsect, nbtota, nbv
     integer :: nbvpu, ni1, nis, npu, ntn
@@ -265,14 +265,14 @@ subroutine op0153()
     if (iret .ne. 0) goto 999
 !
     if (indic .eq. 0) then
-
+!
         call getvr8(' ', 'ANGL_ISTHME', scal=haut, nbret=n1)
-        if (n1.ne.0) call utmess('A', 'PREPOST4_3', sk='ANGL_ISTHME')
+        if (n1 .ne. 0) call utmess('A', 'PREPOST4_3', sk='ANGL_ISTHME')
         call getvr8(' ', 'ANGL_INCLI', scal=haut, nbret=n1)
-        if (n1.ne.0) call utmess('A', 'PREPOST4_3', sk='ANGL_INCLI')
+        if (n1 .ne. 0) call utmess('A', 'PREPOST4_3', sk='ANGL_INCLI')
         call getvr8(' ', 'ANGL_IMPACT', scal=haut, nbret=n1)
-        if (n1.ne.0) call utmess('A', 'PREPOST4_3', sk='ANGL_IMPACT')
-
+        if (n1 .ne. 0) call utmess('A', 'PREPOST4_3', sk='ANGL_IMPACT')
+!
         call getvr8(' ', 'LARGEUR_OBST', scal=haut, nbret=n1)
         if (n1 .le. 0) then
             haut=0.011d0
@@ -284,11 +284,12 @@ subroutine op0153()
         endif
         do i = 1, nbsect
             do k = 1, nbinst
-                if (rayot* rayot-2.d0*zr(ivustu+(k-1)*nbsect+i-1)/&
-                   (haut*(zr( idangt+i)-zr(idangt+i-1))).lt. 0.d0) then
+                if (rayot* rayot-2.d0*zr(&
+                    ivustu+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(idangt+i-1)))&
+                    .lt. 0.d0) then
                     call utmess('F', 'PREPOST4_4')
                 endif
-
+!
                 zr(iprfut+(k-1)*nbsect+i-1) = rayot - sqrt(&
                                               rayot* rayot-2.d0*zr(&
                                               ivustu+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(i&
@@ -344,10 +345,10 @@ subroutine op0153()
                              zr(iprfut+(k-1)*nbsect+i-1), zr(iprfuo+(k-1)*nbsect+i-1)
         end do
     end do
-666  continue
+666 continue
 !     --- CALCUL DE PROFONDEUR D'USURE ---
     if (indic .eq. 1) call usupru(zr(jusut), zr(jusuo), nbinst, zr(jprut))
-777  continue
+777 continue
 !
     if (indic .eq. 1) then
 !        --- CREATION DE LA TABLE ---
@@ -355,14 +356,14 @@ subroutine op0153()
         call tbajpa(resu, nbpmr, nompmr, typpmr)
         call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
                     [c16b], k8b, 0)
-        do 30 k = 1, nbinst
+        do k = 1, nbinst
             valer(1) = zr(jins2+k-1) / coinst
             valer(2) = zr(jusut+k-1)
             valer(3) = zr(jusuo+k-1)
             valer(4) = zr(jprut+k-1)
             call tbajli(resu, 4, nompmr(2), [ibid], valer,&
                         [c16b], k8b, 0)
-30      continue
+        end do
         goto 888
     endif
 !
@@ -438,7 +439,7 @@ subroutine op0153()
 !
         valek(1) = 'INST'
         valek(2) = 'SECTEUR'
-        do 1 i = 1, nbsect
+        do i = 1, nbsect
             call tbliva(nomta, 2, valek, [i], [dinst],&
                         [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_TUBE_CUMU',&
                         k8b, ibid, zr(ivust+i-1), c16b, k8b,&
@@ -450,7 +451,7 @@ subroutine op0153()
             if ((ire1+ire2) .gt. 0) then
                 call utmess('F', 'PREPOST4_15', sk=nomta)
             endif
- 1      continue
+        end do
     endif
 !
     call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
@@ -498,7 +499,7 @@ subroutine op0153()
         write(ifires,120) pmoye,'W'
     endif
 !
-888  continue
+888 continue
 !
     call titre()
 !
@@ -513,6 +514,6 @@ subroutine op0153()
     200 format(&
      &'LES PROFONDEURS USEES PAR SECTEUR SONT DES APPROXIMATIONS')
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

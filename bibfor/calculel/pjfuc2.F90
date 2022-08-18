@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pjfuc2(c1, c2, base, c3)
 ! person_in_charge: nicolas.greffet at edf.fr
     implicit none
@@ -68,7 +68,7 @@ subroutine pjfuc2(c1, c2, base, c3)
 !      CALL JEVEUO(C2//'.PJEF_NO','L',JNO2)
     call jeveuo(c1//'.PJXX_K1', 'L', jno1)
     call jeveuo(c2//'.PJXX_K1', 'L', jno2)
-    do 10 ii = 1, 2
+    do ii = 1, 2
         ma1 = zk24(jno1-1+ii)(1:8)
         ma2 = zk24(jno2-1+ii)(1:8)
         if (ma1 .ne. ma2) then
@@ -76,7 +76,7 @@ subroutine pjfuc2(c1, c2, base, c3)
             valk(2) = ma2
             call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
         endif
-10  end do
+    end do
     call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false._1)
 !
 !     2- RECUPERATION DES POINTEURS
@@ -98,16 +98,16 @@ subroutine pjfuc2(c1, c2, base, c3)
     call wkvect(c3//'.PJEF_M1', base//' V I', nbno1+nbno2, jm13)
 !
     ilengt = 0
-    do 20 ino = 1, nbno1
+    do ino = 1, nbno1
         zi(jnb3-1+ino) = nb1(ino)
         zi(jm13-1+ino) = m11(ino)
         ilengt = ilengt + nb1(ino)
-20  end do
-    do 30 ino = 1, nbno2
+    end do
+    do ino = 1, nbno2
         zi(jnb3-1+nbno1+ino) = nb2(ino)
         zi(jm13-1+nbno1+ino) = m12(ino)
         ilengt = ilengt + nb2(ino)
-30  end do
+    end do
 !
 !     4 - AFFECTATION DE PJEF_CF ET PJEF_NU
 !     -------------------------------------
@@ -115,22 +115,22 @@ subroutine pjfuc2(c1, c2, base, c3)
     call wkvect(c3//'.PJEF_NU', base//' V I', ilengt, jnu3)
 !
     ideca1 = 0
-    do 40 ino = 1, nbno1
-        do 50 ii = 1, nb1(ino)
+    do ino = 1, nbno1
+        do ii = 1, nb1(ino)
             zr(jcf3-1+ideca1+ii) = cf1(ideca1+ii)
             zi(jnu3-1+ideca1+ii) = nu1(ideca1+ii)
-50      continue
+        end do
         ideca1 = ideca1 + nb1(ino)
-40  end do
+    end do
     ideca2 = 0
-    do 60 ino = 1, nbno2
-        do 70 ii = 1, nb2(ino)
+    do ino = 1, nbno2
+        do ii = 1, nb2(ino)
             zr(jcf3-1+ideca1+ii) = cf2(ideca2+ii)
             zi(jnu3-1+ideca1+ii) = nu2(ideca2+ii)
-70      continue
+        end do
         ideca1 = ideca1 + nb2(ino)
         ideca2 = ideca2 + nb2(ino)
-60  end do
+    end do
 !
 !     5 - LIBERATION DE LA MEMOIRE
 !     ----------------------------

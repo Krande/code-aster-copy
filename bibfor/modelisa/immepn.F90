@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
                   immer)
     implicit none
@@ -192,14 +192,14 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
     if (ii .lt. 8) then
 !
         immer=-1
-        goto 9999
+        goto 999
 !
     else
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ktest=0
-        do 10 j = 1, 8
+        do j = 1, 8
             ktest=ktest+id(j)
- 10     continue
+        end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD IMMERGE DANS LE VOLUME DE LA MAILLE
@@ -210,16 +210,16 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
         if (ktest .gt. 5) then
 !
             if (nbcnx .eq. 15) then
-                do 20 j = 7, 15, 1
+                do j = 7, 15, 1
                     dx = xyzma(1,j) - x3dca(1)
                     dy = xyzma(2,j) - x3dca(2)
                     dz = xyzma(3,j) - x3dca(3)
                     d = dx*dx + dy*dy + dz*dz
                     if (d .lt. r8prem()) then
                         immer=2
-                        goto 9999
+                        goto 999
                     endif
- 20             continue
+                end do
             endif
 !
 !   TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE, PAR DETERMINATION
@@ -230,21 +230,21 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
             itetra = 1
             call tstbar(4, xyzma(1, 2), xyzma(1, 3), xyzma(1, 4), xyzma(1, 5),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !.... TETRAEDRE 3-4-5-6
 !
             itetra = 2
             call tstbar(4, xyzma(1, 3), xyzma(1, 4), xyzma(1, 5), xyzma(1, 6),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !.... TETRAEDRE 1-2-3-4
 !
             itetra = 3
             call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
 !  DANS LE CAS DE FACES REORIENTEE (FACNP VRAI) ON TESTE LA PRESENCE
 !  DANS LES PETITS TETRAEDRES DEFINIS PAR CHAQUE FACE.
@@ -255,7 +255,7 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 4
                 call tstbar(4, xyzma(1, 4), xyzma(1, 1), xyzma(1, 2), xyzma(1, 5),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 5-2-3-6
@@ -264,7 +264,7 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 5
                 call tstbar(4, xyzma(1, 5), xyzma(1, 2), xyzma(1, 3), xyzma(1, 6),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
 !.... TETRAEDRE 3-1-4-6
@@ -273,7 +273,7 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
                 itetra = 6
                 call tstbar(4, xyzma(1, 3), xyzma(1, 1), xyzma(1, 4), xyzma(1, 6),&
                             x3dca(1), xbar(1), immer)
-                if (immer .ge. 0) goto 9999
+                if (immer .ge. 0) goto 999
             endif
 !
             if (immer .lt. 0) then
@@ -288,13 +288,13 @@ subroutine immepn(nbcnx, xyzma, x3dca, itetra, xbar,&
         else
 !
             immer=2
-            goto 9999
+            goto 999
 !
         endif
     endif
 !
 !
-9999 continue
+999 continue
 !
 ! --- FIN DE IMMEPN.
 end subroutine

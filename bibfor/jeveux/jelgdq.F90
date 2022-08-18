@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jelgdq(nomlu, rlong, nbsv)
 ! BUT:
 !   DETERMINER LA LONGUEUR DES SEGMENTS DE VALEURS STOCKES SUR LA BASE
@@ -91,13 +91,13 @@ subroutine jelgdq(nomlu, rlong, nbsv)
 !
 ! --------OBJETS ATTRIBUTS DE COLLECTION
 !
-        do 20 k = 1, idnum
+        do k = 1, idnum
             ix = iszon( jiszon + ibacol + k )
             if (ix .gt. 0) then
                 rlong = rlong + lono(jlono(ic)+ix)*ltyp(jltyp(ic)+ix)
                 nbsv = nbsv + 1
             endif
-20      continue
+        end do
 !
 ! ------- CAS D'UNE COLLECTION DISPERSEE
 !
@@ -107,10 +107,10 @@ subroutine jelgdq(nomlu, rlong, nbsv)
             if (ixlono .ne. 0) then
                 nmax = iszon(jiszon + ibacol+ivnmax)
                 iblono = iadm (jiadm(ic) + 2*ixlono-1)
-                do 10 k = 1, nmax
+                do k = 1, nmax
                     rlong = rlong + iszon(jiszon+iblono-1+k)*ltypi
                     nbsv = nbsv + 1
-10              continue
+                end do
             else
                 rlong = rlong + nmax*lono(jlono(ic)+id)*ltypi
                 nbsv = nbsv + 1

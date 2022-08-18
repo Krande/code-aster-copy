@@ -15,14 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, nbnoxfem)
+!
+subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem,&
+                         is_xfem, nbnoxfem)
 !
 !-----------------------------------------------------------------------
 ! BUT :
 ! * MARQUAGE DES NOEUDS XFEM : IS_XFEM(NBNOMAX)
 ! * BASCULEMENT VERS UN STOCKAGE LOCAL DES NOEUDS XFEM : INO_XFEM(NBNOMAX)
-
+!
 !-----------------------------------------------------------------------
 !
 ! ARGUMENTS :
@@ -60,18 +61,19 @@ subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, nbnoxfem)
     call jemarq()
 !
     nbnoxfem=0
-    do 10 ieq = 1, neq
-       nuno=deeq(2*(ieq-1)+1)
-       nucmp=deeq(2*(ieq-1)+2)
-       nocmp=k8cmp(nucmp)
-       if(nuno .lt. 1) goto 10
-       if(is_xfem(nuno)) goto 10
-       if (xfem_cmps(nocmp)) then
-          nbnoxfem=nbnoxfem+1
-          ino_xfem(nuno)=nbnoxfem
-          is_xfem(nuno)=.true.
-       endif
-10  enddo
+    do ieq = 1, neq
+        nuno=deeq(2*(ieq-1)+1)
+        nucmp=deeq(2*(ieq-1)+2)
+        nocmp=k8cmp(nucmp)
+        if (nuno .lt. 1) goto 10
+        if (is_xfem(nuno)) goto 10
+        if (xfem_cmps(nocmp)) then
+            nbnoxfem=nbnoxfem+1
+            ino_xfem(nuno)=nbnoxfem
+            is_xfem(nuno)=.true.
+        endif
+ 10     continue
+    end do
     ASSERT(nbnoxfem .gt. 0)
 !
     call jedema()

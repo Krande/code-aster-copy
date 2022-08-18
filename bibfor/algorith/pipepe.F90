@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,15 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine pipepe(BEHinteg,&
-                  pilo, ndim, nno, npg, ipoids,&
-                  ivf, idfde, geom, typmod, mate,&
-                  compor, lgpg, deplm, sigm, vim,&
-                  ddepl, depl0, depl1, copilo,&
+subroutine pipepe(BEHinteg, pilo, ndim, nno, npg,&
+                  ipoids, ivf, idfde, geom, typmod,&
+                  mate, compor, lgpg, deplm, sigm,&
+                  vim, ddepl, depl0, depl1, copilo,&
                   iborne, ictau)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/matfpe.h"
@@ -39,16 +38,16 @@ implicit none
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-integer :: ndim, nno, npg
-integer :: mate, ipoids, ivf, idfde
-integer :: lgpg, iborne, ictau
-character(len=8) :: typmod(*)
-character(len=16) :: pilo, compor(*)
-real(kind=8) :: geom(ndim, *), deplm(*), ddepl(*)
-real(kind=8) :: sigm(2*ndim, npg), vim(lgpg, npg)
-real(kind=8) :: depl0(*), depl1(*)
-real(kind=8) :: copilo(5, npg)
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    integer :: ndim, nno, npg
+    integer :: mate, ipoids, ivf, idfde
+    integer :: lgpg, iborne, ictau
+    character(len=8) :: typmod(*)
+    character(len=16) :: pilo, compor(*)
+    real(kind=8) :: geom(ndim, *), deplm(*), ddepl(*)
+    real(kind=8) :: sigm(2*ndim, npg), vim(lgpg, npg)
+    real(kind=8) :: depl0(*), depl1(*)
+    real(kind=8) :: copilo(5, npg)
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,7 +89,7 @@ real(kind=8) :: copilo(5, npg)
     real(kind=8) :: fm(3, 3), epsm(6), epsp(6), epsd(6)
     real(kind=8) :: rac2
     real(kind=8) :: etamin, etamax, tau, sigma(6)
-    real(kind=8) :: dfdi(27,3)
+    real(kind=8) :: dfdi(27, 3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -106,7 +105,7 @@ real(kind=8) :: copilo(5, npg)
 !
 ! --- TRAITEMENT DE CHAQUE POINT DE GAUSS
 !
-    do 10 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! --- CALCUL DES DEFORMATIONS
 !
@@ -131,20 +130,19 @@ real(kind=8) :: copilo(5, npg)
             etamax = zr(iborne)
 !
             call dcopy(ndimsi, sigm(1, kpg), 1, sigma, 1)
-            do 70 k = 4, ndimsi
+            do k = 4, ndimsi
                 sigma(k) = sigma(k)*rac2
-70          continue
+            end do
 !
-            call pielas(BEHinteg,&
-                        ndim, npg, kpg, compor, typmod,&
-                        mate, lgpg, vim, epsm,&
+            call pielas(BEHinteg, ndim, npg, kpg, compor,&
+                        typmod, mate, lgpg, vim, epsm,&
                         epsp, epsd, sigma, etamin, etamax,&
                         tau, copilo)
         else
             ASSERT(.false.)
         endif
 !
-10  end do
+    end do
 !
     call matfpe(1)
 !

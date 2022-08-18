@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ef0587(nomte)
     implicit none
 #include "jeveux.h"
@@ -56,9 +56,9 @@ subroutine ef0587(nomte)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'R1','EP1'/
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
 !
     pi=r8pi()
@@ -116,10 +116,10 @@ subroutine ef0587(nomte)
 !  CONTRUCTION DE LA MATRICE H(I,J) = MATRICE DES VALEURS DES
 !  FONCTIONS DE FORMES AUX POINT DE GAUSS
 !
-    do k=1,nno
-    do 40,igau=1,npg
-    hk(k,igau)=zr(ivf-1+nno*(igau-1)+k)
-40  continue
+    do k = 1, nno
+        do igau = 1, npg
+            hk(k,igau)=zr(ivf-1+nno*(igau-1)+k)
+        end do
     end do
 !
 !
@@ -131,8 +131,8 @@ subroutine ef0587(nomte)
 !       -- A= RMOY, H = EPAISSEUR
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     r1 = vale_cara1(1)
-    h  = vale_cara1(2)
-    a  = r1-h/2.d0
+    h = vale_cara1(2)
+    a = r1-h/2.d0
 !
 !       -- ORIENTATION :
     call carcou(zr(lorien), l, pgl, rayon, theta,&
@@ -162,12 +162,12 @@ subroutine ef0587(nomte)
 !       -- CALCUL DES EFFORTS SUR LES POINTS DE GAUSS (VFNO)
     do igau = 1, npg
 !
-        do 60,i=1,6
-        efg(i)=0.d0
-60      continue
+        do i = 1, 6
+            efg(i)=0.d0
+        end do
 !
 !         -- BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-        do 80 icou = 1, 2*nbcou+1
+        do icou = 1, 2*nbcou+1
             if (mmt .eq. 0) then
                 r=a
             else
@@ -175,7 +175,7 @@ subroutine ef0587(nomte)
             endif
 !
 !           -- BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-            do 70 isect = 1, 2*nbsec+1
+            do isect = 1, 2*nbsec+1
 !
                 kpgs=kpgs+1
                 fi=(isect-1)*deuxpi/(2.d0*nbsec)
@@ -199,20 +199,20 @@ subroutine ef0587(nomte)
                 efg(4)=efg(4)-poids*sig(3)*r
                 efg(5)=efg(5)-poids*sig(1)*r*cosfi
                 efg(6)=efg(6)+poids*sig(1)*r*sinfi
-70          continue
-80      continue
+            end do
+        end do
 !
-        do 90,i=1,6
-        fno(igau,i)=efg(i)
-90      continue
+        do i = 1, 6
+            fno(igau,i)=efg(i)
+        end do
     end do
 !
 !
     if ((nno.eq.3) .and. (npg.eq.3)) then
 !         -- LA BELLE PROGRAMMATION DE PATRICK
 !            EST-ELLE MIEUX QUE PPGAN2 ?
-        do 120 igau = 1, npg
-            do 110 ino = 1, nno
+        do igau = 1, npg
+            do ino = 1, nno
                 if (icoude .eq. 0) then
                     co(igau,ino)=1.d0
                     si(igau,ino)=0.d0
@@ -222,99 +222,99 @@ subroutine ef0587(nomte)
                     si(igau,ino)=sin((1.d0+xpg(igau))*theta/2.d0-tk(&
                     ino))
                 endif
-110          continue
-120      continue
-        do 160,ino=1,nno
-        if (ino .eq. 1) then
-            ih=2
-            ip=1
-            i1=1
-            i2=3
-        else if (ino.eq.2) then
-            ih=1
-            ip=2
-            i1=3
-            i2=1
-        else
-            do 130,i=1,6
-            efg(i)=fno(2,i)
-130          continue
-            goto 140
+            end do
+        end do
+        do ino = 1, nno
+            if (ino .eq. 1) then
+                ih=2
+                ip=1
+                i1=1
+                i2=3
+            else if (ino.eq.2) then
+                ih=1
+                ip=2
+                i1=3
+                i2=1
+            else
+                do i = 1, 6
+                    efg(i)=fno(2,i)
+                end do
+                goto 140
 !
-        endif
+            endif
 !
-        cp(1,1)=co(1,ih)*co(1,3)+si(1,ih)*si(1,3)
-        cp(1,2)=-co(1,ih)*si(1,3)+si(1,ih)*co(1,3)
-        cp(2,1)=-cp(1,2)
-        cp(2,2)=cp(1,1)
-        cv(1,1)=co(3,ih)*co(3,3)+si(3,ih)*si(3,3)
-        cv(1,2)=-co(3,ih)*si(3,3)+si(3,ih)*co(3,3)
-        cv(2,1)=-cp(1,2)
-        cv(2,2)=cp(1,1)
+            cp(1,1)=co(1,ih)*co(1,3)+si(1,ih)*si(1,3)
+            cp(1,2)=-co(1,ih)*si(1,3)+si(1,ih)*co(1,3)
+            cp(2,1)=-cp(1,2)
+            cp(2,2)=cp(1,1)
+            cv(1,1)=co(3,ih)*co(3,3)+si(3,ih)*si(3,3)
+            cv(1,2)=-co(3,ih)*si(3,3)+si(3,ih)*co(3,3)
+            cv(2,1)=-cp(1,2)
+            cv(2,2)=cp(1,1)
 !
-        alphaf=hk(ih,3)*(co(1,ih)*fno(1,1)+si(1,ih)*fno(1,2))-&
+            alphaf=hk(ih,3)*(co(1,ih)*fno(1,1)+si(1,ih)*fno(1,2))-&
             hk(ih,3)*hk(3,1)*(cp(1,1)*fno(2,1)+cp(1,2)*fno(2,2))-&
             hk(ih,1)*(co(3,ih)*fno(3,1)+si(3,ih)*fno(3,2))+ hk(ih,1)*&
             hk(3,3)*(cv(1,1)*fno(2,1)+cv(1,2)*fno(2,2))
 !
-        betaf=hk(ih,3)*(-si(1,ih)*fno(1,1)+co(1,ih)*fno(1,2))-&
+            betaf=hk(ih,3)*(-si(1,ih)*fno(1,1)+co(1,ih)*fno(1,2))-&
             hk(ih,3)*hk(3,1)*(cp(2,1)*fno(2,1)+cp(2,2)*fno(2,2))-&
             hk(ih,1)*(-si(3,ih)*fno(3,1)+co(3,ih)*fno(3,2))+ hk(ih,1)*&
             hk(3,3)*(cv(2,1)*fno(2,1)+cv(2,2)*fno(2,2))
 !
-        alpham=hk(ih,3)*(co(1,ih)*fno(1,4)+si(1,ih)*fno(1,5))-&
+            alpham=hk(ih,3)*(co(1,ih)*fno(1,4)+si(1,ih)*fno(1,5))-&
             hk(ih,3)*hk(3,1)*(cp(1,1)*fno(2,4)+cp(1,2)*fno(2,5))-&
             hk(ih,1)*(co(3,ih)*fno(3,4)+si(3,ih)*fno(3,5))+ hk(ih,1)*&
             hk(3,3)*(cv(1,1)*fno(2,4)+cv(1,2)*fno(2,5))
 !
-        betam=hk(ih,3)*(-si(1,ih)*fno(1,4)+co(1,ih)*fno(1,5))-&
+            betam=hk(ih,3)*(-si(1,ih)*fno(1,4)+co(1,ih)*fno(1,5))-&
             hk(ih,3)*hk(3,1)*(cp(2,1)*fno(2,4)+cp(2,2)*fno(2,5))-&
             hk(ih,1)*(-si(3,ih)*fno(3,4)+co(3,ih)*fno(3,5))+ hk(ih,1)*&
             hk(3,3)*(cv(2,1)*fno(2,4)+cv(2,2)*fno(2,5))
 !
-        cp(1,1)=co(1,ih)*co(1,ip)+si(1,ih)*si(1,ip)
-        cp(1,2)=-co(1,ih)*si(1,ip)+si(1,ih)*co(1,ip)
-        cp(2,1)=-cp(1,2)
-        cp(2,2)=cp(1,1)
-        cv(1,1)=co(3,ih)*co(3,ip)+si(3,ih)*si(3,ip)
-        cv(1,2)=-co(3,ih)*si(3,ip)+si(3,ih)*co(3,ip)
-        cv(2,1)=-cp(1,2)
-        cv(2,2)=cp(1,1)
+            cp(1,1)=co(1,ih)*co(1,ip)+si(1,ih)*si(1,ip)
+            cp(1,2)=-co(1,ih)*si(1,ip)+si(1,ih)*co(1,ip)
+            cp(2,1)=-cp(1,2)
+            cp(2,2)=cp(1,1)
+            cv(1,1)=co(3,ih)*co(3,ip)+si(3,ih)*si(3,ip)
+            cv(1,2)=-co(3,ih)*si(3,ip)+si(3,ih)*co(3,ip)
+            cv(2,1)=-cp(1,2)
+            cv(2,2)=cp(1,1)
 !
-        xa=hk(ip,1)*hk(ih,3)*cp(1,1)-hk(ip,3)*hk(ih,1)*cv(1,1)
-        xb=hk(ip,1)*hk(ih,3)*cp(1,2)-hk(ip,3)*hk(ih,1)*cv(1,2)
-        xc=hk(ip,1)*hk(ih,3)*cp(2,1)-hk(ip,3)*hk(ih,1)*cv(2,1)
-        xd=hk(ip,1)*hk(ih,3)*cp(2,2)-hk(ip,3)*hk(ih,1)*cv(2,2)
+            xa=hk(ip,1)*hk(ih,3)*cp(1,1)-hk(ip,3)*hk(ih,1)*cv(1,1)
+            xb=hk(ip,1)*hk(ih,3)*cp(1,2)-hk(ip,3)*hk(ih,1)*cv(1,2)
+            xc=hk(ip,1)*hk(ih,3)*cp(2,1)-hk(ip,3)*hk(ih,1)*cv(2,1)
+            xd=hk(ip,1)*hk(ih,3)*cp(2,2)-hk(ip,3)*hk(ih,1)*cv(2,2)
 !
-        efg(1)=(xd*alphaf-xb*betaf)/(xa*xd-xb*xc)
-        efg(2)=(-xc*alphaf+xa*betaf)/(xa*xd-xb*xc)
-        efg(3)=(hk(ih,i2)*fno(i1,3)-hk(ih,i1)*fno(i2,3)- fno(2,3)*&
+            efg(1)=(xd*alphaf-xb*betaf)/(xa*xd-xb*xc)
+            efg(2)=(-xc*alphaf+xa*betaf)/(xa*xd-xb*xc)
+            efg(3)=(hk(ih,i2)*fno(i1,3)-hk(ih,i1)*fno(i2,3)- fno(2,3)*&
             (hk(3,i1)*hk(ih,i2)-hk(3,i2)*hk(ih,i1)))/ (hk(1,1)*hk(2,3)&
             -hk(1,3)*hk(2,1))
-        efg(4)=(xd*alpham-xb*betam)/(xa*xd-xb*xc)
-        efg(5)=(-xc*alpham+xa*betam)/(xa*xd-xb*xc)
-        efg(6)=(hk(ih,i2)*fno(i1,6)-hk(ih,i1)*fno(i2,6)- fno(2,6)*&
+            efg(4)=(xd*alpham-xb*betam)/(xa*xd-xb*xc)
+            efg(5)=(-xc*alpham+xa*betam)/(xa*xd-xb*xc)
+            efg(6)=(hk(ih,i2)*fno(i1,6)-hk(ih,i1)*fno(i2,6)- fno(2,6)*&
             (hk(3,i1)*hk(ih,i2)-hk(3,i2)*hk(ih,i1)))/ (hk(1,1)*hk(2,3)&
             -hk(1,3)*hk(2,1))
 !
-140      continue
+140         continue
 !
-        do 150,i=1,6
-        zr(jout-1+6*(ino-1)+i)=efg(i)
-150      continue
-160      continue
+            do i = 1, 6
+                zr(jout-1+6*(ino-1)+i)=efg(i)
+            end do
+        end do
 !
     else
 !         -- UNE PROGRAMMATION STANDARD POUR MET3SEG4 :
-        do 190 ic = 1, 6
-            do 170 kp = 1, npg
+        do ic = 1, 6
+            do kp = 1, npg
                 vpg(kp)=fno(kp,ic)
-170          continue
+            end do
             call ppgan2(jgano, 1, 1, vpg, vno)
-            do 180 ino = 1, nno
+            do ino = 1, nno
                 zr(jout+6*(ino-1)+ic-1)=vno(ino)
-180          continue
-190      continue
+            end do
+        end do
     endif
 !
 !

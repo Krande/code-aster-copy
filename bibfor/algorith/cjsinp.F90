@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
                   niter, nvi, nivcjs, ndec, epscon)
 !
@@ -107,9 +107,9 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
 ! ======================================================================
 ! --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES ---------------------
 ! ======================================================================
-    do 5 i = 1, ndt
+    do i = 1, ndt
         xf(i) = vinf(i+2)
- 5  continue
+    end do
 ! ======================================================================
     i1f = trace(ndi,sigf)
     if ((i1f+qinit) .eq. 0.d0) then
@@ -127,9 +127,9 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
     xii = norm2(xf(1:ndt))
 !
     epsv = zero
-    do 30 i = 1, ndi
+    do i = 1, ndi
         epsv = epsv + epsd(i)+ deps(i)
-30  continue
+    end do
 ! ======================================================================
 ! --- CAS CJS3 ---------------------------------------------------------
 ! ======================================================================

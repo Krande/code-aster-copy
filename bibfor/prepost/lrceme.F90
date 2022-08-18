@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
                   nommod, nomgd, typent, nbcmpv, ncmpva,&
                   ncmpvm, prolz, iinst, numpt, numord,&
@@ -168,17 +168,17 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
             jnocmp=jcmpva
             ncmprf=nbcmpa
         else if (nbcmpa.le.ncmprf) then
-            do 20 i = 1, nbcmpa
+            do i = 1, nbcmpa
                 ttt=.false.
-                do 30 j = 1, ncmprf
+                do j = 1, ncmprf
                     if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) then
                         ttt=.true.
                     endif
- 30             continue
+                end do
                 if (.not.ttt) then
                     call utmess('F', 'MED_66')
                 endif
- 20         continue
+            end do
         else
             call utmess('F', 'MED_70')
         endif
@@ -195,7 +195,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
         endif
         call as_med_open(idfimd, nofimd, edlect, iret)
         call as_mfdnfd(idfimd, nbcham, iret)
-        do 777 i = 1, nbcham
+        do i = 1, nbcham
             call as_mfdnfc(idfimd, i, nbcmp, iret)
             call wkvect('&&LRCEME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCEME.UNITCMP', 'V V K16', nbcmp, junit)
@@ -204,9 +204,9 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
             if (nomcha .eq. nochmd) then
                 ncmprf=nbcmp
                 call wkvect('&&LRCEME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
-                do 778 j = 1, nbcmp
+                do j = 1, nbcmp
                     zk8(jnocmp+j-1)=zk16(jcmp+j-1)(1:8)
-778             continue
+                end do
                 call jedetr('&&LRCEME.NOMCMP_K16')
                 call jedetr('&&LRCEME.UNITCMP')
                 call as_mficlo(idfimd, iret)
@@ -214,7 +214,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
             endif
             call jedetr('&&LRCEME.NOMCMP_K16')
             call jedetr('&&LRCEME.UNITCMP')
-777     continue
+        end do
         call as_mficlo(idfimd, iret)
     endif
 !
@@ -248,13 +248,14 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     if (nncp .gt. 0) then
         iaux=0
         call jelira(chames//'.CESL', 'LONMAX', naux)
-        do 40 i = 1, naux
+        do i = 1, naux
             if (zl(jcesl+i-1)) iaux=iaux+1
- 40     continue
+        end do
         vali (1) = iaux
         vali (2) = nncp
         valk (1) = nochmd
-        call utmess('A', 'MED_83', nk=1, valk=valk, ni=2, vali=vali)
+        call utmess('A', 'MED_83', nk=1, valk=valk, ni=2,&
+                    vali=vali)
     endif
 !
     call detrsd('CHAM_ELEM_S', chames)

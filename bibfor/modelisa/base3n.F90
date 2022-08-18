@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine base3n(x1, mat33)
     implicit none
 #include "asterfort/assert.h"
@@ -34,17 +34,17 @@ subroutine base3n(x1, mat33)
 !
 !
 !     -- CALCUL DE V1 :
-    do 10,k=1,3
-    v1(k)=x1(k)
-    10 end do
+    do k = 1, 3
+        v1(k)=x1(k)
+    end do
     call normev(v1, norme)
 !
 !
 !     -- CALCUL DE V2 :
 !     -- ON CHERCHE UNE COMPOSANTE (K1) PAS TROP PETITE DANS V1 :
-    do 20,k=1,3
-    if (abs(v1(k)) .ge. 0.5d0) k1=k
-    20 end do
+    do k = 1, 3
+        if (abs(v1(k)) .ge. 0.5d0) k1=k
+    end do
 !
     if (k1 .eq. 1) then
         v2(2)=1.d0
@@ -70,11 +70,11 @@ subroutine base3n(x1, mat33)
 !
 !
 !     -- RECOPIE DE V1, V2, V3 DANS MAT33 :
-    do 30,k=1,3
-    mat33(k,1)=v1(k)
-    mat33(k,2)=v2(k)
-    mat33(k,3)=v3(k)
-    30 end do
+    do k = 1, 3
+        mat33(k,1)=v1(k)
+        mat33(k,2)=v2(k)
+        mat33(k,3)=v3(k)
+    end do
 !
 !
 end subroutine

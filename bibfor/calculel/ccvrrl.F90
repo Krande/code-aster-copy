@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                   cmperr, codret)
     implicit none
@@ -119,14 +119,15 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     carori = carael//'.CARORIEN  .VALE'
     call jeexin(carori, iexori)
     if (iexori .ne. 0) then
-        call carces(carael//'.CARORIEN', 'ELEM', ' ', 'V', carsd, ' ', ier)
+        call carces(carael//'.CARORIEN', 'ELEM', ' ', 'V', carsd,&
+                    ' ', ier)
         call jeveuo(carsd//'.CESD', 'L', jcesd)
         call jeveuo(carsd//'.CESL', 'L', jcesl)
         call jeveuo(carsd//'.CESV', 'L', jcesv)
         call jeveuo(carsd//'.CESC', 'L', jcesc)
         call jelira(carsd//'.CESC', 'LONMAX', ncmax)
         jalpha = indik8(zk8(jcesc),'ALPHA   ',1,ncmax)
-        jbeta  = indik8(zk8(jcesc),'BETA    ',1,ncmax)
+        jbeta = indik8(zk8(jcesc),'BETA    ',1,ncmax)
         jgamma = indik8(zk8(jcesc),'GAMMA   ',1,ncmax)
     else
         jcesd=0
@@ -139,7 +140,8 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     carcoq = carael//'.CARCOQUE  .VALE'
     call jeexin(carcoq, iexori)
     if (iexori .ne. 0) then
-        call carces(carael//'.CARCOQUE', 'ELEM', ' ', 'V', carcc, ' ', ier)
+        call carces(carael//'.CARCOQUE', 'ELEM', ' ', 'V', carcc,&
+                    ' ', ier)
         call jeveuo(carcc//'.CESD', 'L', jcesdc)
         call jeveuo(carcc//'.CESL', 'L', jceslc)
         call jeveuo(carcc//'.CESV', 'L', jcesvc)
@@ -147,7 +149,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
         call jelira(carcc//'.CESC', 'LONMAX', ncmax)
         iepais = indik8(zk8(jcescc),'EP      ',1,ncmax)
         ialpha = indik8(zk8(jcescc),'ALPHA   ',1,ncmax)
-        ibeta  = indik8(zk8(jcescc),'BETA    ',1,ncmax)
+        ibeta = indik8(zk8(jcescc),'BETA    ',1,ncmax)
     else
         jcesdc=0
         jceslc=0
@@ -185,11 +187,11 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !   BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
     maxdif = 0.d0
     do ino = 1, nbno
-        nbma  = zi(jconi2+ino)-zi(jconi2+ino-1)
+        nbma = zi(jconi2+ino)-zi(jconi2+ino-1)
         posit = zi(jconi2+ino-1)
 !
 !       GRACE A LA CONNECTIVITE INVERSE, ON TROUVE LES MAILLES LIEES
-        do 20 ima = 1, nbma
+        do ima = 1, nbma
             posma = zi(jconi1+posit+ima-2)
 !           LE COMPORTEMENT DE CNCINV N'EST PAS LE MEME SUIVANT QU'ON DONNE OU NON MESMAI
             if (posma .eq. 0) goto 20
@@ -200,12 +202,10 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
             endif
             if (numma .eq. 0) goto 20
 !
-            if ((zr(jvect+6*(numma-1))  .eq.0.d0).and. &
-                (zr(jvect+6*(numma-1)+1).eq.0.d0).and. &
-                (zr(jvect+6*(numma-1)+2).eq.0.d0).and. &
-                (zr(jvect+6*(numma-1)+3).eq.0.d0).and. &
-                (zr(jvect+6*(numma-1)+4).eq.0.d0).and. &
-                (zr(jvect+6*(numma-1)+5).eq.0.d0) ) then
+            if ((zr(jvect+6*(numma-1)) .eq.0.d0) .and. (zr(jvect+6*(numma-1)+1).eq.0.d0)&
+                .and. (zr(jvect+6*(numma-1)+2).eq.0.d0) .and.&
+                (zr(jvect+6*(numma-1)+3).eq.0.d0) .and. (zr(jvect+6*(numma-1)+4).eq.0.d0)&
+                .and. (zr(jvect+6*(numma-1)+5).eq.0.d0)) then
 !
                 call cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
                             jcoord, adcar1, adcar2, ialpha, ibeta,&
@@ -232,19 +232,19 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !               sauvegarde de la valeur trouvee sauf pour les coques 3d
                 if (modeli .ne. 'CQ3') then
                     do idir = 1, 3
-                        zr(jvect  +6*(numma-1)+idir-1) = vg1(idir)
+                        zr(jvect +6*(numma-1)+idir-1) = vg1(idir)
                         zr(jvect+3+6*(numma-1)+idir-1) = vg2(idir)
                     enddo
                 endif
             else
                 do idir = 1, 3
-                    vg1(idir) = zr(jvect+  6*(numma-1)+idir-1)
+                    vg1(idir) = zr(jvect+ 6*(numma-1)+idir-1)
                     vg2(idir) = zr(jvect+3+6*(numma-1)+idir-1)
                 enddo
             endif
 !
 !           Compare les repères des autres mailles liées au noeud ino
-            do 30 ima2 = ima+1, nbma
+            do ima2 = ima+1, nbma
                 posma = zi(jconi1+posit+ima2-2)
                 if (posma .eq. 0) goto 30
                 if (llimai) then
@@ -254,11 +254,11 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                 endif
                 if (numma2 .eq. 0) goto 30
 !
-                if ((zr(jvect+6*(numma2-1))  .eq.0.d0).and. &
-                    (zr(jvect+6*(numma2-1)+1).eq.0.d0).and. &
-                    (zr(jvect+6*(numma2-1)+2).eq.0.d0).and. &
-                    (zr(jvect+6*(numma2-1)+3).eq.0.d0).and. &
-                    (zr(jvect+6*(numma2-1)+4).eq.0.d0).and. &
+                if ((zr(jvect+6*(numma2-1)) .eq.0.d0) .and.&
+                    (zr(jvect+6*(numma2-1)+1).eq.0.d0) .and.&
+                    (zr(jvect+6*(numma2-1)+2).eq.0.d0) .and.&
+                    (zr(jvect+6*(numma2-1)+3).eq.0.d0) .and.&
+                    (zr(jvect+6*(numma2-1)+4).eq.0.d0) .and.&
                     (zr(jvect+6*(numma2-1)+5).eq.0.d0)) then
 !
                     call cccmcr(jcesdd, numma2, jrepe, jconx2, jconx1,&
@@ -286,14 +286,14 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !                   sauvegarde de la valeur trouvee sauf pour les coques3d
                     if (modeli .ne. 'COQUE_3D') then
                         do idir = 1, 3
-                            zr(jvect+  6*(numma2-1)+idir-1) = vg3(idir)
+                            zr(jvect+ 6*(numma2-1)+idir-1) = vg3(idir)
                             zr(jvect+3+6*(numma2-1)+idir-1) = vg4( idir)
                         enddo
                     endif
 !
                 else
                     do idir = 1, 3
-                        vg3(idir) = zr(jvect+  6*(numma2-1)+idir-1)
+                        vg3(idir) = zr(jvect+ 6*(numma2-1)+idir-1)
                         vg4(idir) = zr(jvect+3+6*(numma2-1)+idir-1)
                     enddo
                 endif
@@ -306,8 +306,10 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                     lprobm = .true.
                 endif
 !
- 30         continue
- 20     continue
+ 30             continue
+            end do
+ 20         continue
+        end do
     enddo
 !
     if (lprobm) then

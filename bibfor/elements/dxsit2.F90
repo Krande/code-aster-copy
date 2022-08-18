@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxsit2(nomte, pgl, sigma)
     implicit none
 #include "asterf_types.h"
@@ -115,11 +115,11 @@ subroutine dxsit2(nomte, pgl, sigma)
     call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
                 1, tref, iret1)
 !     S'IL N'Y A PAS DE TEMPERATURE DE REFERENCE, ON NE FAIT RIEN
-    if (iret1 .eq. 1) goto 9999
+    if (iret1 .eq. 1) goto 999
 !
 ! --- RECUPERATION DE LA TEMPERATURE SUR LES FEUILLETS
 !     ------------------------------------------------
-    do 5 ipg = 1, npg
+    do ipg = 1, npg
         call rcvarc(' ', 'TEMP', '+', 'RIGI', ipg,&
                     1, tinf(ipg), iret2)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', ipg,&
@@ -127,7 +127,7 @@ subroutine dxsit2(nomte, pgl, sigma)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', ipg,&
                     3*nbcou, tsup(ipg), iret4)
         iret5 = iret5+iret2+iret3+iret4
-  5 end do
+    end do
 !
     call jevech('PMATERC', 'L', jmate)
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
@@ -136,7 +136,7 @@ subroutine dxsit2(nomte, pgl, sigma)
     if ((phenom.eq.'ELAS') .or. (phenom.eq.'ELAS_ISTR') .or. (phenom.eq.'ELAS_ORTH') .or.&
         (phenom.eq.'ELAS_COQUE')) then
         call utmess('A', 'ELEMENTS_52', sk=phenom(1:10))
-        goto 9999
+        goto 999
     endif
 !
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
@@ -145,9 +145,9 @@ subroutine dxsit2(nomte, pgl, sigma)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !     ------------------------------
-    do 100 ipg = 1, npg
-        do 110 icou = 1, nbcou
-            do 120 igauh = 1, npgh
+    do ipg = 1, npg
+        do icou = 1, nbcou
+            do igauh = 1, npgh
                 icpg=nbcmp*npgh*nbcou*(ipg-1)+ nbcmp*npgh*(icou-1)+&
                 nbcmp*(igauh-1)
 !
@@ -155,7 +155,7 @@ subroutine dxsit2(nomte, pgl, sigma)
                 call dxmat2(pgl, icou2, npg, ordi, epi,&
                             epais, dm, indith)
                 indith=0
-                if (indith .eq. -1) goto 9999
+                if (indith .eq. -1) goto 999
 !
                 if (iret5 .eq. 0) then
                     if (iret1 .eq. 1) then
@@ -177,10 +177,10 @@ subroutine dxsit2(nomte, pgl, sigma)
                     endif
                 endif
 !
-120         continue
-110     continue
-100 end do
+            end do
+        end do
+    end do
 !
-9999 continue
+999 continue
 !
 end subroutine

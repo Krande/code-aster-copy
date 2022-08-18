@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
                   drpde, dsgde, dsgdb, dsgdp, np,&
                   nb, nr, dsidep)
@@ -70,10 +70,11 @@ subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
     call lcicma(drpde, np, nb, np, nb,&
                 1, 1, r, nmod, nmod,&
                 nb+1, 1)
-    do 121 i = 1, nmod
-        do 121 j = 1, nmod
+    do i = 1, nmod
+        do j = 1, nmod
             r(i,j) = mun * r(i,j)
-121      continue
+        end do
+    end do
 !
 !-- 2. CALCUL DE DBDE ET DPDE
     call mgauss('NFVP', drdy, r, nmod, nr,&
@@ -90,22 +91,26 @@ subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
     call r8inir(nb*nb, 0.d0, a, 1)
     call r8inir(nb*nb, 0.d0, b, 1)
 !-- 3.2. CALCUL
-    do 300 i = 1, nb
-        do 300 j = 1, nb
-            do 300 k = 1, nb
+    do i = 1, nb
+        do j = 1, nb
+            do k = 1, nb
                 a(i,j) = a(i,j) + dsgdb(i,k) * dbde(k,j)
-300          continue
+            end do
+        end do
+    end do
 !
-    do 305 i = 1, nb
-        do 305 j = 1, nb
-            do 305 k = 1, np
+    do i = 1, nb
+        do j = 1, nb
+            do k = 1, np
                 b(i,j) = b(i,j) + dsgdp(i,k) * dpde(k,j)
-305          continue
+            end do
+        end do
+    end do
 !
-    do 310 i = 1, nb
-        do 320 j = 1, nb
+    do i = 1, nb
+        do j = 1, nb
             dsidep(i,j) = a(i,j) + b(i,j) + dsgde(i,j)
-320      continue
-310  end do
+        end do
+    end do
 !
 end subroutine

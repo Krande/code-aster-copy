@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
                   idfde, idfde2, geom, dimdef, dimuel,&
                   ndim, nddls, nddlm, nno, nnos,&
@@ -100,9 +100,9 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- SUR LES NOEUDS SOMMETS -------------------------------------------
 ! ======================================================================
-    do 10 n = 1, nnos
-        do 20 j = 1, ndim
-            do 30 i = 1, ndim
+    do n = 1, nnos
+        do j = 1, ndim
+            do i = 1, ndim
                 b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+j) = b(&
                                                          adder1-1+(j-1)*ndim+i,&
                                                          (n-1)*nddls+j ) - dfdi(n, i&
@@ -110,36 +110,36 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
                 b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+ndim+(j-1)*ndim+i)&
                 = b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+ndim+(j-1)*ndim+&
                 i) + zr(ivf2+n+(kpi-1)*nnos-1)
- 30         continue
- 20     continue
- 10 end do
-    do 40 n = 1, nnom
-        do 50 j = 1, ndim
-            do 60 i = 1, ndim
+            end do
+        end do
+    end do
+    do n = 1, nnom
+        do j = 1, ndim
+            do i = 1, ndim
                 b(adder1-1+(j-1)*ndim+i,nnos*nddls+(n-1)*nddlm+j) =&
                 b(adder1-1+(j-1)*ndim+i,nnos*nddls+(n-1)*nddlm+j) -&
                 dfdi(n+nnos,i)
- 60         continue
- 50     continue
- 40 end do
+            end do
+        end do
+    end do
 ! ======================================================================
 ! --- POUR LES GRADIENTS DE VARIATIONS VOLUMIQUE -----------------------
 ! --- ON UTILISE LES FONCTIONS DE FORME D'ORDRE 1 ----------------------
 ! ======================================================================
 ! --- SUR LES NOEUDS SOMMETS -------------------------------------------
 ! ======================================================================
-    do 120 n = 1, nnos
-        do 130 k = 1, ndim
-            do 140 j = 1, ndim
-                do 150 i = 1, ndim
+    do n = 1, nnos
+        do k = 1, ndim
+            do j = 1, ndim
+                do i = 1, ndim
                     b(adder2-1+(k-1)*ndim*ndim+(j-1)*ndim+i, (n-1)*&
                     nddls+ndim+(k-1)*ndim+j)= b(adder2-1+(k-1)*ndim*&
                     ndim+(j-1)*ndim+i, (n-1)*nddls+ndim+(k-1)*ndim+j)+&
                     dfdi2(n,i)
-150             continue
-140         continue
-130     continue
-120 end do
+                end do
+            end do
+        end do
+    end do
 ! ======================================================================
 ! --- POUR LE MULTIPLICATEUR DE LAGRANGE -------------------------------
 ! --- (PRES) -----------------------------------------------------------
@@ -147,11 +147,11 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- SUR LES NOEUDS CENTRAUX ------------------------------------------
 ! ======================================================================
-    do 190 i = 1, ndim
-        do 210 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
             b(adder3-1+(i-1)*ndim+j,nnos*nddls+nnom*nddlm+(i-1)*ndim+&
             j)= 1.0d0
-210     continue
-190 end do
+        end do
+    end do
 ! ======================================================================
 end subroutine

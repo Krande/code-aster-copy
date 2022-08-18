@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
                   iopt, icod)
 !    P. RICHARD     DATE 18/02/91
@@ -83,18 +83,18 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 !--------------TRAITEMENT DES EXCEPTIONS: PAS DE MOT CLE----------------
 !
     if (nbval .eq. 0 .and. iopt .eq. 1) then
-        do 30 i = 1, nbcmp
+        do i = 1, nbcmp
             zi(ltidec+i-1) = 1
- 30     continue
+        end do
         call iscode(zi(ltidec), icod, nbcmp)
-        goto 9999
+        goto 999
     endif
 !
     if (nbval .eq. 0 .and. iopt .eq. 0) then
-        do 40 iec = 1, nbec
+        do iec = 1, nbec
             icod(iec) = 0
- 40     continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
 !---------RECUPERATION DU VECTEUR DES NOMS DE COMPOSANTES---------------
@@ -111,15 +111,15 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
                     nbret=ibid)
     endif
 !
-    do 10 i = 1, nbval
+    do i = 1, nbval
         nomcou = zk80(ltddl+i-1)
         ok = .true.
-        do 20 j = 1, nbcmp
+        do j = 1, nbcmp
             if (nomcou .eq. zk8(llncmp+j-1)) then
                 zi(ltidec+j-1) = 1
                 ok = .false.
             endif
- 20     continue
+        end do
 !
         if (ok) then
             okg = .true.
@@ -128,7 +128,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
             call utmess('E', 'VIDE_1')
         endif
 !
- 10 end do
+    end do
 !
     if (okg) then
         call utmess('F', 'ALGORITH15_10')
@@ -138,7 +138,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 !
     call jedetr(temddl)
 !
-9999 continue
+999 continue
     call jedetr(temidc)
 !
     call jedema()

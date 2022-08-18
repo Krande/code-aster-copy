@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine codree(reel, mode, chaine)
     implicit none
 #include "asterf_types.h"
@@ -89,22 +89,22 @@ subroutine codree(reel, mode, chaine)
     if (mode .eq. 'E') then
         im = 0
         marktr = .false.
-        do 50 il = 1, long
+        do il = 1, long
             ii = long-il+1
             if (((chaine(ii:ii).eq.'+').or.(chaine(ii:ii).eq.'-')) .and. (.not.marktr)) then
                 im = ii
                 marktr = .true.
             endif
             if (chaine(ii:ii) .eq. 'E') goto 999
- 50     continue
+        end do
         if (im .gt. 1) chaine(im-1:im-1) = 'E'
     endif
     goto 999
 !     ------------------------------------------------------------------
 900 continue
-    do 910 il = 1, long
+    do il = 1, long
         chaine(il:il) = '*'
-910 end do
+    end do
 !     ------------------------------------------------------------------
 999 continue
 end subroutine

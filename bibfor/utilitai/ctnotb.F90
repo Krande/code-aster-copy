@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                   nkcmp, toucmp, nbcmp, typac, ndim,&
                   nrval, resu, nomtb, nsymb, nival,&
@@ -23,8 +23,9 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
@@ -33,8 +34,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     integer :: nbcmp, nbno, ndim, nbval
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
@@ -106,7 +106,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     AS_ALLOCATE(vi=table_vali, size=50)
     AS_ALLOCATE(vk16=table_valk, size=50)
 !
-    do 100 i = 1, nbval
+    do i = 1, nbval
 !
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
 !
@@ -137,7 +137,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
             AS_ALLOCATE(vk8=nom_cmp, size=n)
 !
 !             -- ON PARCOURT LES NOEUDS MAX,
-            do 110 ino = 1, nbnox
+            do ino = 1, nbnox
 !
 !               - SI LE NOEUD FAIT PARTIE DES NOEUDS DESIRES,
 !               ON POURSUIT, SINON ON VA AU NOEUD SUIVANT:
@@ -146,7 +146,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                 kcp=0
 !
 !              - ON PARCOURT LES COMPOSANTES:
-                do 120 icmp = 1, nbcmpx
+                do icmp = 1, nbcmpx
                     if (.not.toucmp) then
 !                    -SI LA COMPOSANTE FAIT PARTIE DES COMPOSANTES
 !                     DESIREES, ON POURSUIT, SINON ON VA A LA
@@ -161,7 +161,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     kcp=kcp+1
                     val_cmp(kcp)=cnsv(1+nbcmpx*(ino-1)+icmp-1)
                     nom_cmp(kcp)=cnsc(icmp)
-120             continue
+120                 continue
+                end do
 !
 !               SOIT NI LE NOMBRE DE VALEURS ENTIERES DE LA TABLE
 !               SOIT NR LE NOMBRE DE VALEURS REELES DE LA TABLE
@@ -188,14 +189,14 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     table_valr(kk+1)=zr(jrval+i-1)
                     kk=kk+1
                 endif
-                do 121 j = 1, ndim
+                do j = 1, ndim
                     table_valr(kk+1)=vale(1+3*(ino-1)+j-1)
                     kk=kk+1
-121             continue
-                do 122 j = 1, kcp
+                end do
+                do j = 1, kcp
                     table_valr(kk+1)=val_cmp(j)
                     kk=kk+1
-122             continue
+                end do
 !
                 kk=0
                 if (resu .eq. ' ') then
@@ -246,10 +247,10 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     table_parak(kk+1)='COOR_Z'
                     kk=kk+1
                 endif
-                do 123 j = 1, kcp
+                do j = 1, kcp
                     table_parak(kk+1)=nom_cmp(j)
                     kk=kk+1
-123             continue
+                end do
 !
 !
 !               ON AJOUTE LA LIGNE A LA TABLE
@@ -262,13 +263,14 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                 endif
                 AS_DEALLOCATE(vk16=table_parak)
 !
-110         continue
+110             continue
+            end do
             AS_DEALLOCATE(vr=val_cmp)
             AS_DEALLOCATE(vk8=nom_cmp)
 !
         endif
 !
-100 end do
+    end do
 !
     AS_DEALLOCATE(vr=table_valr)
     AS_DEALLOCATE(vi=table_vali)

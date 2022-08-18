@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                   specmi, nnoe, nomcmp, nbmode, nbn,&
                   nbpf)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -31,6 +30,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     aster_logical :: intphy, intmod
     integer :: nbmode, nbn, nbpf
     real(kind=8) :: cham(nbn, *), specmr(nbpf, *), specmi(nbpf, *)
@@ -91,7 +91,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                 mxval)
 !
     ij = 0
-    do 60 inj = 1, nbn
+    do inj = 1, nbn
 !
         kval(3) = nnoe(inj)
         kval(4) = nomcmp(inj)
@@ -99,7 +99,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
         idebn = inj
         if (intphy) idebn = 1
 !
-        do 70 ini = idebn, inj
+        do ini = idebn, inj
 !
             ij = ij+1
             kval(1) = nnoe(ini)
@@ -121,17 +121,17 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
             call jeecra(jexnum(chvals, ij), 'LONUTI', nbabs)
             call jeveuo(jexnum(chvals, ij), 'E', ispec)
 !
-            do 90 il = 1, nbpf
+            do il = 1, nbpf
 !
                 specr = 0.d0
                 speci = 0.d0
 !
-                do 100 im2 = 1, nbmode
+                do im2 = 1, nbmode
 !
                     idebm = im2
                     if (intmod) idebm = 1
 !
-                    do 110 im1 = idebm, im2
+                    do im1 = idebm, im2
                         ism = (im2* (im2-1))/2 + im1
 !
                         if (im1 .eq. im2) then
@@ -151,8 +151,8 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                         endif
 !                 -----
 !
-110                 continue
-100             continue
+                    end do
+                end do
 !
                 if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4) )) then
                     zr(ispec-1+il) = specr
@@ -160,11 +160,11 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                     zr(ispec+2*(il-1) ) = specr
                     zr(ispec+2*(il-1)+1) = speci
                 endif
- 90         continue
+            end do
 !
- 70     continue
+        end do
 !
- 60 continue
+    end do
 !
     call jedema()
 end subroutine

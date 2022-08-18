@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vecgcy(nomres, numeg)
 !
     implicit none
@@ -41,7 +41,7 @@ subroutine vecgcy(nomres, numeg)
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres, numeg, modgen
     character(len=19) :: nomnum, nomsto
-    integer ::  iavale, iarefe, iadesc, j, neq
+    integer :: iavale, iarefe, iadesc, j, neq
 !
 !-----------------------------------------------------------------------
 !
@@ -69,9 +69,9 @@ subroutine vecgcy(nomres, numeg)
     zi(iadesc) = 1
     zi(iadesc+1) = neq
 !
-    do 60 j = 1, neq
+    do j = 1, neq
         zr(iavale+j-1) = 0.d0
-60  continue
+    end do
 !
 !
 !

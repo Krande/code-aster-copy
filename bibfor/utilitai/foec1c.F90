@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foec1c(iuni, nomf, vec, nbcoup, verif)
     implicit none
 #include "asterfort/fopro1.h"
@@ -46,14 +46,14 @@ subroutine foec1c(iuni, nomf, vec, nbcoup, verif)
     write(iuni,*) '    DONNEE EN ',nbcoup,' POINTS'
     call fopro1(vec, 0, prolgd, interp)
     write(iuni,*) '    INTERPOLATION ',interp
-    do 1 i = 1, 3
+    do i = 1, 3
         if (prolgd(1:1) .eq. tprol(i)(1:1)) then
             write(iuni,*) '    PROLONGEMENT A GAUCHE : ',tprol(i)
         endif
         if (prolgd(2:2) .eq. tprol(i)(1:1)) then
             write(iuni,*) '    PROLONGEMENT A DROITE : ',tprol(i)
         endif
- 1  end do
+    end do
     if (verif .eq. '        ') then
         write(iuni,*) '    LES PARAMETRES DE LA FONCTION SONT REORDONNES'
     else if (verif.eq.'CROISSANT') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine impact(nmtab, nbpt, fn, vn, wk3,&
                   offset, t, elapse, nbchoc, fnmaxa,&
                   fnmmoy, fnmety, npari, lpari, valek)
-    implicit   none
+    implicit none
 #include "asterfort/tbajli.h"
     integer :: nbpt, nbchoc, npari
     real(kind=8) :: fn(*), t(*), vn(*), offset, elapse, wk3(*), fnmaxa, fnmety
@@ -63,7 +63,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
     nbpas = nint ( elapse / dt )
 !
     k = 0
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
 !
         if (abs(fn(i)) .le. offset) then
 !
@@ -78,12 +78,12 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
 !
             idech = 0
 !
-            do 15 j = 1, nbpas
+            do j = 1, nbpas
 !
 !              EST CE QUE C'EST LA FIN D'UN CHOC GLOBAL
 !
                 if (abs(fn(i+j)) .gt. offset) idech = 1
-15          continue
+            end do
 !
             if (idech .eq. 0 .and. ichoc .eq. 1) then
 !
@@ -140,7 +140,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
 !
         endif
 !
-10  end do
+    end do
 !
     if (nbchoc .ne. 0) then
 !      ON PASSE PAR UNE VARIABLE INTERMEDIAIRE FNMMO2

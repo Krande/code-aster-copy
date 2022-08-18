@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
                   nsg, hsr)
     implicit none
@@ -43,14 +43,14 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
     if (nbcoef .eq. 1) then
         h=coefh(1)
 !  MATRICE D INTERACTION (NBSYS*NBSYS): 1 SUR LA DIAGONALE, H AILLEURS
-        do 507 is = 1, nbsys
-            do 508 ir = 1, nbsys
+        do is = 1, nbsys
+            do ir = 1, nbsys
                 hsr(is,ir) = h
-508          continue
-507      continue
-        do 509 is = 1, nbsys
+            end do
+        end do
+        do is = 1, nbsys
             hsr(is,is) = 1.d0
-509      continue
+        end do
 !
     else if (necris(1:9).eq.'MONO_DD_C') then
 !
@@ -203,9 +203,9 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
             call utmess('F', 'COMPOR1_24')
         endif
 !
-        do 10 i = 1, 12
+        do i = 1, 12
             hsr(i,i)=coefh(1)
-10      continue
+        end do
         hsr(2,1)=coefh(2)
         hsr(3,1)=coefh(2)
         hsr(3,2)=coefh(2)
@@ -277,9 +277,10 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
         call utmess('F', 'COMPOR1_25')
     endif
 !
-    do 1 i = 1, nbsys
-        do 1 j = 1, i
+    do i = 1, nbsys
+        do j = 1, i
             hsr(j,i)=hsr(i,j)
- 1      continue
+        end do
+    end do
 !
 end subroutine

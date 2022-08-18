@@ -15,12 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
-                  toucmp, nbcmp, nbval, nkcmp, nkvari, ndim)
+                  toucmp, nbcmp, nbval, nkcmp, nkvari,&
+                  ndim)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -31,8 +34,6 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbcrsv.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: nbcmp, ndim, nbval
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu
@@ -58,7 +59,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbpara, n, jkcha, jcesd, jcesc
-    integer :: kk, i, j, jcmp, iret, jvari,iexi
+    integer :: kk, i, j, jcmp, iret, jvari, iexi
     character(len=19) :: chamns, chames
     character(len=16), pointer :: table_parak(:) => null()
     character(len=16) :: nomcmp
@@ -76,7 +77,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     chames='&&CTCRTB.CHAM_EL_S'
     call jeveuo(nkcmp, 'L', jcmp)
     call jeexin(nkvari, iexi)
-    if (iexi.gt.0) then
+    if (iexi .gt. 0) then
         call jeveuo(nkvari, 'L', jvari)
     else
         jvari=0
@@ -138,7 +139,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     n=nbcmp
     call jeveuo(nkcha, 'L', jkcha)
 !     -- JE NE COMPRENDS PAS LA BOUCLE I=1,NBVAL (J. PELLET)
-    do 60 i = 1, nbval
+    do i = 1, nbval
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
             if (toucmp) then
                 if (tych .eq. 'NOEU') then
@@ -163,7 +164,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                 endif
             endif
         endif
- 60 end do
+    end do
     kk=kk+n
 !
     nbpara=kk
@@ -238,34 +239,34 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     endif
     if (toucmp) then
         if (tych .eq. 'NOEU') then
-            do 90 j = 1, n
+            do j = 1, n
                 table_parak(kk+1)=cnsc(j)
                 table_typek(kk+1)='R'
                 kk=kk+1
- 90         continue
+            end do
         else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
-            do 91 j = 1, n
+            do j = 1, n
                 table_parak(kk+1)=zk8(jcesc+j-1)
                 table_typek(kk+1)='R'
 !
                 kk=kk+1
- 91         continue
+            end do
         endif
     else
-        do 95 j = 1, n
-            if (jvari.eq.0) then
+        do j = 1, n
+            if (jvari .eq. 0) then
                 nomcmp = zk8(jcmp+j-1)
             else
                 nomcmp = zk16(jvari+j-1)
             endif
-            if ( indk16(table_parak, nomcmp, 1, kk) .eq. 0 ) then
+            if (indk16(table_parak, nomcmp, 1, kk) .eq. 0) then
                 table_parak(kk+1) = nomcmp
                 table_typek(kk+1) = 'R'
                 kk=kk+1
             else
                 nbpara = nbpara - 1
             endif
- 95     continue
+        end do
     endif
 !
 !    ------------------------------------------------------------------

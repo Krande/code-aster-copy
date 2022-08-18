@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
                   coeft, angmas, nfs, nsg, toutms)
     implicit none
@@ -50,7 +50,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
 !     ----------------------------------------------------------------
     ir=0
 !         CALCUl DES TENSEURS MS POUR GAGNER DU TEMPS
-    do 1 iphas = 1, nbphas
+    do iphas = 1, nbphas
 !        INDPHA indice debut phase IPHAS dans NBCOMM
         indpha=nbcomm(1+iphas,1)
 !         recuperer l'orientation de la phase et la proportion
@@ -68,7 +68,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
             call utmess('F', 'ALGORITH_69')
         endif
 !        Nombre de variables internes de la phase (=monocristal)
-        do 2 ifa = 1, nbfsys
+        do ifa = 1, nbfsys
             nomfam=cpmono(indcp+5*(ifa-1)+1)
             call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                         ng, lg, ir, q)
@@ -78,18 +78,18 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
 !           indice de la famille IFA
 !            INDFA=INDPHA+IFA
 !
-            do 3 is = 1, nbsys
+            do is = 1, nbsys
 !              CALCUL DE LA SCISSION REDUITE =
 !              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !              TAU      : SCISSION REDUITE TAU=SIG:MS
                 call lcmmsg(nomfam, nbsys, is, pgl, ms,&
                             ng, lg, ir, q)
-                do 4 i = 1, 6
+                do i = 1, 6
                     toutms(iphas,ifa,is,i)=ms(i)
- 4              continue
- 3          continue
+                end do
+            end do
             toutms(iphas,ifa,1,7)=nbsys
- 2      continue
+        end do
 !
- 1  end do
+    end do
 end subroutine

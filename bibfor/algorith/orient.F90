@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine orient(mdgene, sst, jcoor, ino, coordo,&
                   itran)
     implicit none
@@ -36,7 +36,6 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/intet0.h"
 #include "asterfort/jedema.h"
@@ -47,6 +46,7 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
 #include "asterfort/jexnum.h"
 #include "asterfort/pmppr.h"
 #include "asterfort/r8inir.h"
+!
 !
 !
 !-----------------------------------------------------------------------
@@ -81,15 +81,15 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
                nbcmpm, nbcmpm, 1, matrot, nbcmpm,&
                nbcmpm)
 !
-    do 10 k = 1, 3
+    do k = 1, 3
         xanc(k)=zr(jcoor+(ino-1)*3+k-1)
-10  end do
+    end do
 !
-    do 20 k = 1, 3
+    do k = 1, 3
         xnew=0.d0
-        do 30 l = 1, 3
+        do l = 1, 3
             xnew=xnew+matrot(k,l)*xanc(l)
-30      continue
+        end do
         if (itran .eq. 1) then
             coordo(k)=xnew+zr(lltra+k-1)
         else if (itran.eq.0) then
@@ -97,7 +97,7 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
         else
             ASSERT(.false.)
         endif
-20  end do
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zsortc(which, apply, n, x, y)
 !
 !     SUBROUTINE ARPACK TRIANT DES VECTEURS COMPLEXES.
@@ -129,7 +129,7 @@ subroutine zsortc(which, apply, n, x, y)
  10     continue
         if (igap .eq. 0) goto 9000
 !
-        do 30 i = igap, n-1
+        do i = igap, n-1
             j = i-igap
  20         continue
 !
@@ -153,7 +153,8 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 20
- 30     continue
+ 30         continue
+        end do
         igap = igap / 2
         goto 10
 !
@@ -166,7 +167,7 @@ subroutine zsortc(which, apply, n, x, y)
  40     continue
         if (igap .eq. 0) goto 9000
 !
-        do 60 i = igap, n-1
+        do i = igap, n-1
             j = i-igap
  50         continue
 !
@@ -190,7 +191,8 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 50
- 60     continue
+ 60         continue
+        end do
         igap = igap / 2
         goto 40
 !
@@ -203,7 +205,7 @@ subroutine zsortc(which, apply, n, x, y)
  70     continue
         if (igap .eq. 0) goto 9000
 !
-        do 90 i = igap, n-1
+        do i = igap, n-1
             j = i-igap
  80         continue
 !
@@ -224,7 +226,8 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 80
- 90     continue
+ 90         continue
+        end do
         igap = igap / 2
         goto 70
 !
@@ -236,7 +239,7 @@ subroutine zsortc(which, apply, n, x, y)
 !
 100     continue
         if (igap .eq. 0) goto 9000
-        do 120 i = igap, n-1
+        do i = igap, n-1
             j = i-igap
 110         continue
 !
@@ -257,7 +260,8 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 110
-120     continue
+120         continue
+        end do
         igap = igap / 2
         goto 100
 !
@@ -269,7 +273,7 @@ subroutine zsortc(which, apply, n, x, y)
 !
 130     continue
         if (igap .eq. 0) goto 9000
-        do 150 i = igap, n-1
+        do i = igap, n-1
             j = i-igap
 140         continue
 !
@@ -290,7 +294,8 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 140
-150     continue
+150         continue
+        end do
         igap = igap / 2
         goto 130
 !
@@ -302,7 +307,7 @@ subroutine zsortc(which, apply, n, x, y)
 !
 160     continue
         if (igap .eq. 0) goto 9000
-        do 180 i = igap, n-1
+        do i = igap, n-1
             j = i-igap
 170         continue
 !
@@ -323,7 +328,8 @@ subroutine zsortc(which, apply, n, x, y)
             endif
             j = j-igap
             goto 170
-180     continue
+180         continue
+        end do
         igap = igap / 2
         goto 160
     endif

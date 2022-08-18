@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmcpl2(compor, typmod, option, optio2, cp,   &
-                  nvv,    crit,   deps,   dsidep, ndim, &
-                  sigp,   vip,    iret)
+!
+subroutine nmcpl2(compor, typmod, option, optio2, cp,&
+                  nvv, crit, deps, dsidep, ndim,&
+                  sigp, vip, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,   &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
@@ -67,21 +67,21 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    rac2   = sqrt(2.d0)
+    rac2 = sqrt(2.d0)
     ndimsi = 2*ndim
-    iret   = 0
+    iret = 0
     signul = crit(RESI_INTE_RELA)
     vecteu = (option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')
 !
 !   calcul de la precision
-    prec  = crit(RESI_DEBORST_MAX)
+    prec = crit(RESI_DEBORST_MAX)
     precr = abs(prec)
     if (vecteu) then
         if (prec .gt. 0.d0) then
-            ! PRECISION RELATIVE
+! PRECISION RELATIVE
             sigpeq=0.d0
             do k = 1, ndimsi
-               sigpeq = sigpeq + sigp(k)**2
+                sigpeq = sigpeq + sigp(k)**2
             enddo
             sigpeq = sqrt(sigpeq)
             if (sigpeq .lt. signul) then
@@ -90,21 +90,21 @@ implicit none
                 precr=prec*sigpeq
             endif
         else
-            ! PRECISION ABSOLUE
+! PRECISION ABSOLUE
             precr=abs(prec)
         endif
-     endif
+    endif
 !
     if (cp .eq. 2) then
-        ! ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
+! ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
         nbvari = nvv+4
         write(compor(NVAR),'(I16)') nbvari
         typmod(1) = 'C_PLAN'
-        option    = optio2
+        option = optio2
         !
-        if ((vecteu).and.(abs(dsidep(3,3)).gt.precr)) then
-            depzz  = deps(3)
-            d22    = dsidep(3,3)
+        if ((vecteu) .and. (abs(dsidep(3,3)).gt.precr)) then
+            depzz = deps(3)
+            d22 = dsidep(3,3)
             d21eps = dsidep(3,1)*deps(1)+dsidep(3,2)*deps(2) +dsidep(3,4)*deps(4)/rac2
             vip(nvv+1) = depzz+d21eps/d22-sigp(3)/d22
             vip(nvv+2) = dsidep(3,1)/d22
@@ -125,23 +125,25 @@ implicit none
         endif
         !
         if (option .eq. 'FULL_MECA') then
-            do 136 k = 1, ndimsi
+            do k = 1, ndimsi
                 if (k .eq. 3) goto 136
-                do 137 l = 1, ndimsi
+                do l = 1, ndimsi
                     if (l .eq. 3) goto 137
-                    if (abs(dsidep(3,3)).gt.precr) then
+                    if (abs(dsidep(3,3)) .gt. precr) then
                         dsidep(k,l) = dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
                     endif
-137             continue
-136         continue
+137                 continue
+                end do
+136             continue
+            end do
         endif
     else if (cp.eq.1) then
-        ! ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
+! ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
         nbvari = nvv+4
         write(compor(NVAR),'(I16)') nbvari
         typmod(1) = 'COMP1D'
-        option    = optio2
-        iret      = 0
+        option = optio2
+        iret = 0
         !
         depx = deps(1)
         depy = deps(2)
@@ -157,7 +159,7 @@ implicit none
         d33=dsidep(3,3)
         !
         delta = 0.0; dy=0.0; dz=0.0
-        if ((vecteu).and.(abs(d22*d33-d32*d23).gt.precr)) then
+        if ((vecteu) .and. (abs(d22*d33-d32*d23).gt.precr)) then
             delta = d22*d33-d32*d23
             dy = d23*d31-d21*d33
             dz = d32*d21-d31*d22
@@ -186,7 +188,7 @@ implicit none
             if (abs(sigp(3)) .gt. precr) iret=3
         endif
         !
-        if ((option .eq. 'FULL_MECA').and.(abs(delta).gt.precr)) then
+        if ((option .eq. 'FULL_MECA') .and. (abs(delta).gt.precr)) then
             dsidep(1,1) = d11+(d12*dy+d13*dz)/delta
         endif
     endif

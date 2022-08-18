@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
                   geom, typmod, sigm, dfdi, vectu)
 !
@@ -82,11 +82,11 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
     grand = .false.
     axi = typmod(1) .eq. 'AXIS'
 !
-    do 20 i = 1, 3
-        do 10 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             f(i,j) = kron(i,j)
- 10     continue
- 20 end do
+        end do
+    end do
 !
 !
 ! - INITIALISATION QUAS4
@@ -134,14 +134,14 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 !
 !
 !    OPERATEUR DE GRADIENT AU CENTRE
-    do 90 n = 1, nno
-        do 80 i = 1, 2
+    do n = 1, nno
+        do i = 1, 2
             defc(1,n,i) = f(i,1)*dfdi(n,1)
             defc(2,n,i) = f(i,2)*dfdi(n,2)
             defc(3,n,i) = 0.d0
             defc(4,n,i) = (f(i,1)*dfdi(n,2)+f(i,2)*dfdi(n,1))/rac2
- 80     continue
- 90 end do
+        end do
+    end do
 !
 !
 !
@@ -151,14 +151,14 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
     npgs = 4
 !
 !    CONTRAINTES GENERALISEES
-    do 180 i = 1, 6
+    do i = 1, 6
         qplus(i) = sigm(i+4,kpg)
-180 end do
+    end do
 !
 !
 !
 !    OPERATEUR DE STABILISATION DU GRADIENT AU 4 POINTS DE GAUSS
-    do 290 kpgs = 1, npgs
+    do kpgs = 1, npgs
 !
 !
         call dfda2d(kpgs, nno, poi2sg(kpgs), sdfde, sdfdk,&
@@ -169,8 +169,8 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
         dh(2*kpgs) = coopg(2*kpgs-1)*sdkdy(kpgs) + coopg(2*kpgs)* sdedy(kpgs)
 !
 !
-        do 220 n = 1, nno
-            do 210 i = 1, 2
+        do n = 1, nno
+            do i = 1, 2
 !
 !         QUAS4 SANS PROJECTION
 !         ---------------------
@@ -199,8 +199,8 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
                     defn(4,n,i) = 0.d0
                 endif
 !
-210         continue
-220     continue
+            end do
+        end do
 !
 !
 !    CONTRAINTES DE HOURGLASS
@@ -234,28 +234,28 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 !
 !   CALCUL DES FORCES INTERNES
 !
-        do 250 n = 1, nno
-            do 240 i = 1, 2
-                do 230 kl = 1, 3
+        do n = 1, nno
+            do i = 1, 2
+                do kl = 1, 3
                     vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigas(kl, kpgs)* jac + defn(kl,n,i)*si&
                                  &gas(kl,kpgs)*jac
-230             continue
+                end do
                 vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigas(4,kpgs)* jac* rac2 + defn(4,n,i)*siga&
                              &s(4,kpgs)*jac
-240         continue
-250     continue
+            end do
+        end do
 !
-        do 280 n = 1, nno
-            do 270 i = 1, 2
-                do 260 kl = 1, 3
+        do n = 1, nno
+            do i = 1, 2
+                do kl = 1, 3
                     vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigm(kl, kpg)*jac + defn(kl,n,i)*sigm(&
                                  &kl,kpg)*jac
-260             continue
+                end do
                 vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigm(4,kpg)* rac2*jac + defn(4,n,i)*sigm(4,&
                              &kpg)*jac
-270         continue
-280     continue
-290 end do
+            end do
+        end do
+    end do
 !
 !
 end subroutine

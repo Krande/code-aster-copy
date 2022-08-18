@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
                   ncmp, n, nddloc, pos)
 ! aslint: disable=
@@ -52,7 +52,7 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
     integer :: nddloc, n, i, iecdg, iecdl
 !
 !     FONCTION D ACCES A PRNO
-#define prno(ili,nunoel,l)   zi(jprn1-1+zi(jprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define prno(ili,nunoel,l) zi(jprn1-1+zi(jprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
 ! - DEB ----------------------------------------------------------------
 !
@@ -61,9 +61,9 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 !     ------------------------------------
     ASSERT(nec.gt.0.and.nec.le.nbecmx)
     ASSERT(ncmp.gt.0.and.ncmp.le.30*nbecmx)
-    do 10 iec = 1, nec-1
+    do iec = 1, nec-1
         ifin(iec) = 30
-10  end do
+    end do
     ifin(nec) = ncmp - 30*(nec-1)
 !
     in = 0
@@ -74,12 +74,12 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 ! --- NE CHANGENT PAS, EXCEPTEE LA DEFINITION DE ECODL ET ECODG
 ! --- OU INTERVIENT L'INDICE D'ENTIER CODE :
 !     ------------------------------------
-    do 20 iec = 1, nec
+    do iec = 1, nec
 !
 !      ECODG = PRNO(ILI,N,3)
         ecodg = prno(ili,n,2+iec)
 !
-        do 30 i = 1, ifin(iec)
+        do i = 1, ifin(iec)
             ecodg = ecodg/2
             ecodl(iec) = ecodl(iec)/2
             iecdg = iand(1,ecodg)
@@ -91,8 +91,8 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
                     pos(nddloc) = in
                 endif
             endif
-30      continue
+        end do
 !
-20  end do
+    end do
 !
 end subroutine

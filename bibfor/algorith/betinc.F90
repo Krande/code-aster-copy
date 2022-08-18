@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine betinc(materf, nmat, sige, nseuil, dpc,&
                   dpt, sigf, verifc, verift)
     implicit none
@@ -110,9 +110,9 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 !
 ! --- MISE A JOUR DES CONTRAINTES
 !
-    do 10 i = 1, ndi
+    do i = 1, ndi
         sigf(i) = sigf(i) + sighf
-10  end do
+    end do
 !
 ! --  VERIFICATION
 !

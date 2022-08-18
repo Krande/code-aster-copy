@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utvtsv(raz, n, s, v, vtsv)
     implicit none
     character(len=*) :: raz
@@ -32,7 +32,7 @@ subroutine utvtsv(raz, n, s, v, vtsv)
 !OUT  R   VTSV PRODUIT VT . S . V
 !     ------------------------------------------------------------------
     character(len=4) :: raz2
-    integer ::  ik, k, l
+    integer :: ik, k, l
 !-----------------------------------------------------------------------
 #define k1(i,j) (j)*(j-1)/2+i
 #define k2(i,j) (i)*(i-1)/2+j
@@ -40,11 +40,11 @@ subroutine utvtsv(raz, n, s, v, vtsv)
     raz2=raz
     if (raz2 .eq. 'ZERO') vtsv = 0.d0
 !
-    do 25 k = 1, n
-        do 20 l = 1, n
+    do k = 1, n
+        do l = 1, n
             ik = k1(k,l)
             if (k .gt. l) ik = k2(k,l)
             vtsv = vtsv + s(ik) * v(k) * v(l)
-20      continue
-25  end do
+        end do
+    end do
 end subroutine

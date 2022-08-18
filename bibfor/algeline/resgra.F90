@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine resgra(mat, matf, vcine, niter, epsi,&
                   criter, nsecm, rsolu, solveu, istop,&
                   iret)
-use ldlt_xp_data_module
+    use ldlt_xp_data_module
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/gcpc.h"
@@ -37,8 +39,6 @@ use ldlt_xp_data_module
 #include "asterfort/pcmump.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: mat, matf, vcine
     integer :: niter, nsecm
@@ -72,9 +72,9 @@ use ldlt_xp_data_module
     character(len=19) :: vcin19, matas, matfac
     character(len=4) :: type
     character(len=24) :: precon
-    integer :: ifm, niv, ier,   idip,  neq, nblc
+    integer :: ifm, niv, ier, idip, neq, nblc
     integer :: idac, idinpc, idippc, idacpc
-    integer ::   k, lmat, kdeb, ieq, istop_solv
+    integer :: k, lmat, kdeb, ieq, istop_solv
     integer, dimension(:), pointer :: slvi => null()
     real(kind=8), pointer :: w1(:) => null()
     real(kind=8), pointer :: w2(:) => null()
@@ -119,11 +119,12 @@ use ldlt_xp_data_module
             call utmess('F', 'ALGELINE3_34', sk=vcin19)
         endif
         call jeveuo(vcin19//'.VALE', 'L', vr=vale)
-        do 10,k=1,nsecm
+        do k = 1, nsecm
             kdeb=(k-1)*neq+1
             cbid = dcmplx(0.d0, 0.d0)
-            call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid], 'R')
-10      continue
+            call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid],&
+                        'R')
+        end do
     endif
 !
 !
@@ -171,7 +172,7 @@ use ldlt_xp_data_module
         call jeveuo(kstocf//'.SMDI', 'L', idinpc)
         call jeveuo(kstocf//'.SMHC', 'L', idippc)
         call jeveuo(jexnum(matfac//'.VALM', 1), 'L', idacpc)
-        call jeveuo(matfac//'.PERM','L',vi=perm)
+        call jeveuo(matfac//'.PERM', 'L', vi=perm)
     else
         idinpc=1
         idippc=1
@@ -189,67 +190,67 @@ use ldlt_xp_data_module
 !
 !     9- RESOLUTION EFFECTIVE ---
 !     ---------------------------------
-    do k=1,nsecm
-    AS_ALLOCATE(vr=w4, size=neq)
+    do k = 1, nsecm
+        AS_ALLOCATE(vr=w4, size=neq)
 !
-    kdeb=(k-1)*neq+1
-    istop_solv = istop
+        kdeb=(k-1)*neq+1
+        istop_solv = istop
 !
-    if ( precon(1:7) == 'LDLT_SP' .or. precon(1:7) == 'LDLT_DP' ) then
+        if (precon(1:7) == 'LDLT_SP' .or. precon(1:7) == 'LDLT_DP') then
 !   ACTIVATION DE LA SECONDE CHANCE : stop_singulier = non
-        istop_solv = 2
-    endif
- !
-    call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), perm,&
-              zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
-              w2, w3, 0, niter, epsi,&
-              criter, solveu, matas, istop_solv,&
-              iret)
+            istop_solv = 2
+        endif
+        !
+        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
+                  perm, zi4(idippc), zr(idacpc), rsolu(kdeb), w4,&
+                  w1, w2, w3, 0, niter,&
+                  epsi, criter, solveu, matas, istop_solv,&
+                  iret)
 !
 !     9-1 SECONDE CHANCE AVEC LE PRECONDITIONNEUR LDLT_SP
 !     (cf ap2foi)
-    if (( iret == 1 ).and.((precon(1:7) == 'LDLT_SP').or.(precon(1:7) == 'LDLT_DP'))) then
+        if (( iret == 1 ) .and. ((precon(1:7) == 'LDLT_SP').or.(precon(1:7) == 'LDLT_DP'))) then
 !       ON ACTUALISE LE PRECONDITIONNEUR
-        call utmess('I', 'ALGELINE4_63')
+            call utmess('I', 'ALGELINE4_63')
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
-        call uttcpu('CPU.RESO.5', 'FIN', ' ')
-        call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
+            call uttcpu('CPU.RESO.5', 'FIN', ' ')
+            call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
 !       slvi(5) = nombre d'itérations pour atteindre la convergence du solveur linéaire.
 !       si :
 !       - slvi(5) = 0 (on résout pour la première fois),
 !       - slvi(5) > reac_precond (la résolution linéaire précédente a demandé
 !                                 "trop" d'itérations),
 !       alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
-        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-        slvi(5) = 0
+            call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+            slvi(5) = 0
 !       reset matrix state
-        refa(8) = ' '
-        call pcmump(matas, solveu, iret)
-        if (iret .ne. 0) then
-             call utmess('F', 'ALGELINE5_76', sk=precon)
-        endif
+            refa(8) = ' '
+            call pcmump(matas, solveu, iret)
+            if (iret .ne. 0) then
+                call utmess('F', 'ALGELINE5_76', sk=precon)
+            endif
 !
 !
 !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
-        call uttcpu('CPU.RESO.4', 'FIN', ' ')
-        call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
+            call uttcpu('CPU.RESO.4', 'FIN', ' ')
+            call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
 !       PUIS ON RESOUT A NOUVEAU
-        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), perm,&
-              zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
-              w2, w3, 0, niter, epsi,&
-              criter, solveu, matas, istop, &
-              iret)
-
-!   -- booleen stocké dans ldlt_xp_data_module pour impression
-        ap2foi_called = ASTER_TRUE
-
-    endif
+            call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
+                      perm, zi4(idippc), zr(idacpc), rsolu(kdeb), w4,&
+                      w1, w2, w3, 0, niter,&
+                      epsi, criter, solveu, matas, istop,&
+                      iret)
 !
-    do ieq=1,neq
-        rsolu(kdeb-1+ieq)=w4(ieq)
-    enddo
-    AS_DEALLOCATE(vr=w4)
+!   -- booleen stocké dans ldlt_xp_data_module pour impression
+            ap2foi_called = ASTER_TRUE
+!
+        endif
+!
+        do ieq = 1, neq
+            rsolu(kdeb-1+ieq)=w4(ieq)
+        enddo
+        AS_DEALLOCATE(vr=w4)
     end do
 !
 !

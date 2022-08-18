@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
                   is, nbsys, vind, nsfv, dy,&
                   nfs, nsg, hsr, iexp, expbp,&
@@ -68,19 +68,19 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
         b =coeft(iei+3)
 !
         if (iexp .eq. 1) then
-            do 10 ir = 1, nbsys
+            do ir = 1, nbsys
                 pr=vind(nsfv+3*(ir-1)+3)+abs(dy(ir))
                 expbp(ir) = (1.d0-exp(-b*pr))
-10          continue
+            end do
         endif
 !
 !       VIND commence en fait au début de systemes de glissement
 !      de LA famille courante;
         sq=0.d0
-        do 11 ir = 1, nbsys
+        do ir = 1, nbsys
             pr=vind(nsfv+3*(ir-1)+3)+abs(dy(ir))
             sq = sq + hsr(is,ir)*expbp(ir)
-11      continue
+        end do
         rp=r0+q*sq
 !
 !      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
@@ -96,10 +96,10 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
 !        DE LA FAMILLE COURANTE;
 !
         sq=0.d0
-        do 12 ir = 1, nbsys
+        do ir = 1, nbsys
             pr=vind(nsfv+3*(ir-1)+3)+abs(dy(ir))
             sq = sq + hsr(is,ir)*(1.d0-exp(-b1*pr))
-12      continue
+        end do
         p=vind(nsfv+3*(is-1)+3)+abs(dy(is))
         rp=r0+q1*sq+q2*(1.d0-exp(-b2*p))
 !
@@ -120,17 +120,17 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
 !        DE LA FAMILLE COURANTE;
 !        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
 !
-        do 55 ir = 1, nbsys
+        do ir = 1, nbsys
             alpham(ir)=vind(nsfv+3*(ir-1)+1)
             alphas(ir)= alpham(ir)+dy(ir)
-55      continue
+        end do
 !
         rp=0.d0
-        do 23 ir = 1, nbsys
+        do ir = 1, nbsys
             if (alphas(ir) .gt. 0.d0) then
                 rp=rp+alphas(ir)*hsr(is,ir)
             endif
-23      continue
+        end do
 !
         if (nueiso .eq. 3) then
             call lcmmdc(coeft, ifa, nmat, nbcomm, alphas,&
@@ -155,17 +155,17 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
 !        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
 !        DE LA FAMILLE COURANTE;
 !        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
-        do 56 ir = 1, nbsys
+        do ir = 1, nbsys
             alpham(ir)=vind(nsfv+3*(ir-1)+1)
             alphas(ir)= alpham(ir)+dy(ir)
-56      continue
+        end do
 !
         rp=0.d0
-        do 24 ir = 1, nbsys
+        do ir = 1, nbsys
             if (alphas(ir) .gt. 0.d0) then
                 rp=rp+alphas(ir)*hsr(is,ir)
             endif
-24      continue
+        end do
         call lcmmdc(coeft, ifa, nmat, nbcomm, alphas,&
                     is, ceff, r8b)
 !

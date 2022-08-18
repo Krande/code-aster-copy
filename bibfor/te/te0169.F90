@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0169(option, nomte)
 ! SUPPRESSION D'INSTRUCTIONS INUTILES
     implicit none
@@ -45,11 +45,11 @@ subroutine te0169(option, nomte)
         nc = 3
         call terefe('EFFORT_REFE', 'MECA_POULIE', forref)
         call jevech('PVECTUR', 'E', ivectu)
-        do 101 ino = 1, nno
-            do 102 i = 1, nc
+        do ino = 1, nno
+            do i = 1, nc
                 zr(ivectu+(ino-1)*nc+i-1)=forref
-102          continue
-101      continue
+            end do
+        end do
 !
     else if (option.eq.'FORC_NODA') then
 !
@@ -63,21 +63,21 @@ subroutine te0169(option, nomte)
         call jevech('PVECTUR', 'E', jefint)
 !
         if (ideplp .eq. 0) then
-            do 10 i = 1, 9
+            do i = 1, 9
                 w(i)=zr(idepla-1+i)
-10          continue
+            end do
         else
-            do 11 i = 1, 9
+            do i = 1, 9
                 w(i)=zr(idepla-1+i)+zr(ideplp-1+i)
-11          continue
+            end do
         endif
 !
-        do 21 kc = 1, 3
+        do kc = 1, 3
             l1(kc) = w(kc )+zr(igeom-1+kc)-w(6+kc)-zr(igeom+5+kc)
-21      continue
-        do 22 kc = 1, 3
+        end do
+        do kc = 1, 3
             l2(kc) = w(3+kc)+zr(igeom+2+kc)-w(6+kc)-zr(igeom+5+kc)
-22      continue
+        end do
         norml1=ddot(3,l1,1,l1,1)
         norml2=ddot(3,l2,1,l2,1)
         norml1 = sqrt (norml1)
@@ -86,10 +86,10 @@ subroutine te0169(option, nomte)
         coef1 = zr(lsigma) / norml1
         coef2 = zr(lsigma) / norml2
 !
-        do 15 i = 1, 3
+        do i = 1, 3
             zr(jefint+i-1) = coef1 * l1(i)
             zr(jefint+i+2) = coef2 * l2(i)
             zr(jefint+i+5) = -zr(jefint+i-1) - zr(jefint+i+2)
-15      continue
+        end do
     endif
 end subroutine

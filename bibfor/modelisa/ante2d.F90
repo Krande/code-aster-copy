@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ante2d(itria, xbar, ksi1, ksi2)
     implicit none
 !  DESCRIPTION : DETERMINATION DE L'ANTECEDENT DANS L'ELEMENT DE
@@ -78,11 +78,11 @@ subroutine ante2d(itria, xbar, ksi1, ksi2)
 !
     ksi1 = 0.0d0
     ksi2 = 0.0d0
-    do 10 i = 1, 3
+    do i = 1, 3
         j = isom(i)
         ksi1 = ksi1 + xbar(i) * ksi1el(j)
         ksi2 = ksi2 + xbar(i) * ksi2el(j)
-10  end do
+    end do
 !
 ! --- FIN DE ANTE2D.
 end subroutine

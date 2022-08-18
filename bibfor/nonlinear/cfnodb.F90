@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfnodb(sdcont)
 !
 !
@@ -34,7 +34,7 @@ subroutine cfnodb(sdcont)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    character(len=8), intent(in)  :: sdcont
+    character(len=8), intent(in) :: sdcont
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine cfnodb(sdcont)
 !
 !
     character(len=24) :: defico
-    aster_logical :: lcalc,lliss
+    aster_logical :: lcalc, lliss
     integer :: nzoco, nnoco, iform
     character(len=24) :: nodbl, nodbl2
     integer :: jnodbl, jnodb2
@@ -86,7 +86,7 @@ subroutine cfnodb(sdcont)
 !
 ! --- ACCES AU TABLEAU DES NOEUDS DE CONTACT
 !
-
+!
     contno = defico(1:16)//'.NOEUCO'
     call jeveuo(contno, 'L', jnoco)
     if (iform .ne. 5) then
@@ -101,7 +101,7 @@ subroutine cfnodb(sdcont)
 ! --- PREMIER CAS : NOEUDS COMMUNS DANS UNE MEME ZONE DE CONTACT
 !
     if (iform .ne. 5) then
-        do 100 izone = 1, nzoco
+        do izone = 1, nzoco
             nbnoe = mminfi(defico,'NBNOE' ,izone )
             nbnom = mminfi(defico,'NBNOM' ,izone )
             jdecne = mminfi(defico,'JDECNE',izone )
@@ -114,12 +114,12 @@ subroutine cfnodb(sdcont)
                         zi(jnodbl), nnoco, ndoubl)
             if (ndoubl .ne. 0) then
                 if (ndoubl .gt. 0) then
-    ! --------- LES NOEUDS COMMUNS SONT-ILS EXCLUS PAR SANS_NOEUD ?
+! --------- LES NOEUDS COMMUNS SONT-ILS EXCLUS PAR SANS_NOEUD ?
                     nsans = zi(jpsans+izone) - zi(jpsans+izone-1)
                     jdecs = zi(jpsans+izone-1)
                     call utlisi('DIFFE', zi(jnodbl), ndoubl, zi(jsans+ jdecs), nsans,&
                                 ibid, 1, nvdbl)
-    ! --------- NON !
+! --------- NON !
                     if (nvdbl .ne. 0) then
                         vali(1) = izone
                         vali(2) = abs(nvdbl)
@@ -129,19 +129,20 @@ subroutine cfnodb(sdcont)
                     ASSERT(.false.)
                 endif
             endif
-        100 end do
+100         continue
+        end do
     endif
 !
 ! ----------------------------------------------------------------------
 !
 ! --- SECOND CAS : NOEUDS COMMUNS A DEUX SURFACES ESCLAVES
 !
-    do 200 izonea = 1, nzoco
+    do izonea = 1, nzoco
         lcalc = mminfl(defico,'CALCUL',izonea)
         if (.not.lcalc) then
             goto 200
         endif
-        do 201 izoneb = izonea+1, nzoco
+        do izoneb = izonea+1, nzoco
             lcalc = mminfl(defico,'CALCUL',izoneb)
             if (.not.lcalc) then
                 goto 201
@@ -182,7 +183,7 @@ subroutine cfnodb(sdcont)
                         vali(1) = izonea
                         vali(2) = izoneb
                         vali(3) = abs(ndoubl)
-                        if ( (iform .eq. 5 .and. lliss)  .or. (iform .eq. 2) )  then
+                        if ((iform .eq. 5 .and. lliss) .or. (iform .eq. 2)) then
                             call utmess('F', 'CONTACT2_16', ni=3, vali=vali)
                         endif
                     else
@@ -192,8 +193,10 @@ subroutine cfnodb(sdcont)
                     ASSERT(.false.)
                 endif
             endif
-201     continue
-200 end do
+201         continue
+        end do
+200     continue
+    end do
 !
 ! --- MENAGE
 !

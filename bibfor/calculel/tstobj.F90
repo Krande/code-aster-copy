@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tstobj(ob, perm, resume, sommi, sommr,&
                   lonuti, lonmax, type, iret, ni)
     implicit none
@@ -47,7 +47,6 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -59,6 +58,7 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 #include "asterfort/jexnum.h"
 #include "asterfort/tstvec.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ob, perm
     character(len=24) :: ob1
     character(len=1) :: xous, typ1
@@ -89,7 +89,7 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     resume=0
 !
     call jeexin(ob1, iret0)
-    if (iret0 .eq. 0) goto 9999
+    if (iret0 .eq. 0) goto 999
 !
     call jelira(ob1, 'TYPE', cval=typ1)
     if (typ1 .eq. 'K') then
@@ -120,7 +120,7 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 !         -- POUR SE PROTEGER DES OBJETS EN COURS DE CREATION :
         call jelira(ob1, 'IADM', iadm)
         call jelira(ob1, 'IADD', iadd)
-        if (abs(iadm)+abs(iadd) .eq. 0) goto 9999
+        if (abs(iadm)+abs(iadd) .eq. 0) goto 999
 !
         if (genr .ne. 'N') then
             call jelira(ob1, 'LONMAX', long)
@@ -135,17 +135,17 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
             lonmax=lon2
             call wkvect('&&TSTOBJ.PTEUR_NOM', 'V V '//type, long, iad)
             if (type .eq. 'K8') then
-                do 51 kk = 1, long
+                do kk = 1, long
                     call jenuno(jexnum(ob1, kk), zk8(iad-1+kk))
- 51             continue
+                end do
             else if (type.eq.'K16') then
-                do 52 kk = 1, long
+                do kk = 1, long
                     call jenuno(jexnum(ob1, kk), zk16(iad-1+kk))
- 52             continue
+                end do
             else if (type.eq.'K24') then
-                do 53 kk = 1, long
+                do kk = 1, long
                     call jenuno(jexnum(ob1, kk), zk24(iad-1+kk))
- 53             continue
+                end do
             endif
         endif
 !
@@ -167,7 +167,7 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
         lonmax=0
         sommi3=0
         sommr=0.d0
-        do 2 iobj = 1, nbob2
+        do iobj = 1, nbob2
             call jeexin(jexnum(ob1, iobj), iret0)
             if (iret0 .le. 0) goto 2
 !
@@ -191,8 +191,9 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
             sommr=sommr+sommr2
             if (.not.contig) call jelibe(jexnum(ob1, iobj))
 !
-  2     continue
-        if (itrou .eq. 0) goto 9999
+  2         continue
+        end do
+        if (itrou .eq. 0) goto 999
         write(k24,'(I24)') sommi3
         read(k24(16:24),'(I9)') sommi
     endif
@@ -204,6 +205,6 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 !     -- POUR L'INSTANT : RESUME= SOMMI
     resume=sommi
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

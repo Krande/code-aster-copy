@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmdint(neqns, xadj, dhead, dforw, dbakw,&
                   qsize, llist, marker)
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -51,24 +51,24 @@ subroutine mmdint(neqns, xadj, dhead, dforw, dbakw,&
 !
 !***************************************************************
 !
-    do 100 node = 1, neqns
+    do node = 1, neqns
         dhead(node) = 0
         qsize(node) = 1
         marker(node) = 0
         llist(node) = 0
-100  continue
+    end do
 !        ------------------------------------------
 !        INITIALIZE THE DEGREE DOUBLY LINKED LISTS.
 !        ------------------------------------------
-    do 200 node = 1, neqns
+    do node = 1, neqns
         ndeg = xadj(node+1) - xadj(node) + 1
         fnode = dhead(ndeg)
         dforw(node) = fnode
         dhead(ndeg) = node
         if (fnode .gt. 0) dbakw(fnode) = node
         dbakw(node) = - ndeg
-200  continue
-    goto 9999
+    end do
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coefam(ipas, ires, x, xsi0, cd)
 !   CALCUL DU COEFFICIENT D AMORTISSEMENT AJOUTE CD EN FONCTION
 !   DE LA VITESSE REDUITE (FAISCEAU DE TUBES SOUS ECOULEMENT TRANSVERSE)
@@ -86,13 +86,13 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
         nborcd = zi(jborne-1+3)
         if (ipas1 .eq. ipas .and. ires1 .eq. ires) then
             k = 1
-            do 100 i = 1, nborcd
+            do i = 1, nborcd
                 borncd(i) = zr(jcoeff + i - 1)
-                do 110 j = 1, ncdmax
+                do j = 1, ncdmax
                     coefcd(i,j) = zr(jcoeff + nborcd + k - 1 )
                     k = k + 1
-110              continue
-100          continue
+                end do
+            end do
         else
             call jedetr(nom1)
             call jedetr(nom2)
@@ -119,7 +119,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
                 cd = 0.d0
             else
                 if (x .lt. borncd(nborcd)) then
-                    do 130 i = 2, nborcd
+                    do i = 2, nborcd
                         if (x .ge. borncd(i-1) .and. x .lt. borncd(i)) then
                             cd = coefcd(i-1,1)/(x*x*x*x*x*x*x) + coefcd(i-1,2)/(x*x*x*x*x*x) + co&
                                  &efcd(i-1, 3)/(x*x*x*x*x) + coefcd(i-1,4)/(x*x*x*x) + coefcd(i-1&
@@ -128,8 +128,8 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
                                  &,11)*(x*x*x)
                             goto 140
                         endif
-130                  continue
-140                  continue
+                    end do
+140                 continue
                 else
                     cd = coefcd(nborcd,1)/(x*x*x*x*x*x*x) + coefcd( nborcd,2)/(x*x*x*x*x*x) + coe&
                          &fcd(nborcd,3)/(x*x*x* x*x) + coefcd(nborcd,4)/(x*x*x*x) + coefcd(nborcd&
@@ -463,7 +463,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
                 cd = 0.d0
             else
                 if (x .lt. borncd(nborcd)) then
-                    do 150 i = 2, nborcd
+                    do i = 2, nborcd
                         if (x .ge. borncd(i-1) .and. x .lt. borncd(i)) then
                             cd = coefcd(i-1,1)/(x*x*x*x*x*x*x) + coefcd(i-1,2)/(x*x*x*x*x*x) + co&
                                  &efcd(i-1, 3)/(x*x*x*x*x) + coefcd(i-1,4)/(x*x*x*x) + coefcd(i-1&
@@ -472,8 +472,8 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
                                  &,11)*(x*x*x)
                             goto 160
                         endif
-150                  continue
-160                  continue
+                    end do
+160                 continue
                 else
                     cd = coefcd(nborcd,1)/(x*x*x*x*x*x*x) + coefcd( nborcd,2)/(x*x*x*x*x*x) + coe&
                          &fcd(nborcd,3)/(x*x*x* x*x) + coefcd(nborcd,4)/(x*x*x*x) + coefcd(nborcd&
@@ -563,6 +563,6 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
 !
     cd = -cd
 !
-1000  continue
+1000 continue
     call jedema()
 end subroutine

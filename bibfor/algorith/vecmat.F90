@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vecmat(fami, kpg, ksp, mod, loi,&
                   jmat, nmat, materd, materf, matcst,&
                   typma, ndt, ndi, nr, nvi)
@@ -138,8 +138,8 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 !
 ! --- DONC:
 !
-
-
+!
+!
 !
     matcst = 'OUI'
 !
@@ -147,8 +147,8 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 !     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
     ASSERT(nbmat.eq.1)
 !
-    do  j = 1, 2
-        do  i = 1, nmat
+    do j = 1, 2
+        do i = 1, nmat
             materd(i,j) = 0.d0
             materf(i,j) = 0.d0
         enddo
@@ -158,10 +158,10 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 !
         imat = jmat+zi(jmat+nbmat+1)
 !
-        do 10 ik = 1, zi(imat+1)
+        do ik = 1, zi(imat+1)
             if (zk32(zi(imat)+ik-1) .eq. 'VENDOCHAB') then
                 ipi=zi(imat+ik+2-1)
-                do 15 il = 1, zi(ipi+2)
+                do il = 1, zi(ipi+2)
                     ivalk = zi(ipi+3)
                     if (zk16(ivalk+il-1)(1:3) .eq. 'K_D') then
                         ipif=ipi+lmat-1+lfct*(il-1)
@@ -170,9 +170,9 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
                             matcst = 'NAP'
                         endif
                     endif
-15              continue
+                end do
             endif
-10      continue
+        end do
 !
 ! -     RECUPERATION MATERIAU -----------------------------------------
 !
@@ -298,19 +298,19 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 ! - MATERIAU CONSTANT ? REMARQUE : NON UTILISE POUR L'INSTANT
 !
     if (matcst .eq. 'OUI') then
-        do 30 i = 1, 2
+        do i = 1, 2
             if (abs ( materd(i,1) - materf(i,1) ) .gt. epsi) then
                 matcst = 'NON'
-                goto 9999
+                goto 999
             endif
-30      continue
+        end do
         do i = 1, 9
             if (abs ( materd(i,2) - materf(i,2) ) .gt. epsi) then
                 matcst = 'NON'
-                goto 9999
+                goto 999
             endif
         enddo
     endif
 !
-9999  continue
+999 continue
 end subroutine

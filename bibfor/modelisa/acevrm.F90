@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acevrm(nbocc, noma, noemax, noemaf)
     implicit none
 #include "jeveux.h"
@@ -47,27 +47,27 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
     noemax = 0
     noemaf = 0
 ! --- BOUCLE SUR LES OCCURENCES DE DISCRET
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
         call getvtx('RIGI_MISS_3D', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
         call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', iocc=ioc, scal=nogl, nbret=ngl)
 !
         if (ngp .ne. 0) then
             call jelira(jexnom(magrma, nogp), 'LONUTI', nma)
             call jeveuo(jexnom(magrma, nogp), 'L', ldgm)
-            do 11 in = 0, nma-1
+            do in = 0, nma-1
                 noemaf = max(noemaf,zi(ldgm+in))
-11          continue
+            end do
             noemax = noemax + nma
         endif
         if (ngl .ne. 0) then
             call jelira(jexnom(magrma, nogl), 'LONUTI', nma)
             call jeveuo(jexnom(magrma, nogl), 'L', ldgm)
-            do 12 in = 0, nma-1
+            do in = 0, nma-1
                 noemaf = max(noemaf,zi(ldgm+in))
-12          continue
+            end do
             noemax = noemax + nma
         endif
-10  end do
+    end do
 !
     call jedema()
 end subroutine

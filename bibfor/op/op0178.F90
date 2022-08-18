@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0178()
     implicit none
 !     COMMANDE:  ENGENDRE_TEST
@@ -115,9 +115,13 @@ subroutine op0178()
 !
     else
 !
-        form1 = "('_F(NOM=''', a24, ''', VALE_CALC=', " //formr//&
-            ", ',TOLE_MACHINE="//preci(1:lxlgut(preci)) //"),')"
-902     format('_F(NOM=''',a24,''',VALE_CALC_I=',i15,',TOLE_MACHINE=0.,),')
+        form1 = "(&
+                '_F(&
+                NOM=''', a24, ''', VALE_CALC=', " //formr// ", ',&
+                TOLE_MACHINE="//preci(1:lxlgut(preci)) //"&
+                ),'&
+                )"
+        902     format('_F(NOM=''',a24,''',VALE_CALC_I=',i15,',TOLE_MACHINE=0.,),')
 !
 !     -- CAS : TOUT:'OUI'
 !    -----------------------------------------
@@ -130,7 +134,7 @@ subroutine op0178()
             call jelstc('G', ' ', 0, nbobj, zk24(ialiob),&
                         nbval)
 !
-            do 10 i = 1, nbobj
+            do i = 1, nbobj
                 obj = zk24(ialiob-1+i)
                 if (obj(1:1) .eq. '&') goto 10
                 call tstobj(obj, 'NON', resume, sommi, sommr,&
@@ -143,7 +147,8 @@ subroutine op0178()
                         write (ific,902) obj,sommi
                     endif
                 endif
-10          continue
+ 10             continue
+            end do
         endif
 !
 !     -- CAS : CO: L_CO
@@ -154,7 +159,7 @@ subroutine op0178()
             call wkvect('&&OP0178.LCO', 'V V K8', nco, ialico)
             call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico))
 !
-            do 30 ico = 1, nco
+            do ico = 1, nco
                 call jelstc('G', zk8(ialico-1+ico), 1, 0, kbid,&
                             nbval)
                 if (nbval .eq. 0) goto 30
@@ -163,7 +168,7 @@ subroutine op0178()
                 call jelstc('G', zk8(ialico-1+ico), 1, nbobj, zk24(ialiob),&
                             nbval)
 !
-                do 20 i = 1, nbobj
+                do i = 1, nbobj
                     obj = zk24(ialiob-1+i)
                     call tstobj(obj, 'NON', resume, sommi, sommr,&
                                 lonuti, lonmax, type, iret, ni)
@@ -175,9 +180,10 @@ subroutine op0178()
                             write (ific,902) obj,sommi
                         endif
                     endif
-20              continue
+                end do
                 call jedetr('&&OP0178.LISTE')
-30          continue
+ 30             continue
+            end do
         endif
     endif
 !

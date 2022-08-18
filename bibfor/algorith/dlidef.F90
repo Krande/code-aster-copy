@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dlidef()
     implicit none
 !
@@ -51,7 +51,7 @@ subroutine dlidef()
     else
         call wkvect('&&DLIDEF.BORNE', 'V V I', nbocc+1, jbor)
         zi(jbor) = idebut
-        do 10 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+ iocc), nbret=n1)
             iii = zi(jbor+iocc) - zi(jbor-1+iocc)
             if (iii .le. 0) then
@@ -82,7 +82,7 @@ subroutine dlidef()
                     endif
                 endif
             endif
-10      continue
+        end do
     endif
 !
 !
@@ -95,7 +95,7 @@ subroutine dlidef()
         call wkvect(resu//'           .VALE', 'G V I', nbvale, jval)
         call wkvect('&&DLIDEF.VALE', 'V V I', nbvale, kval)
         call getvis(' ', 'VALE', nbval=nbvale, vect=zi(kval), nbret=nv)
-        do 20 i = 1, nbvale - 1
+        do i = 1, nbvale - 1
             if (zi(kval+i-1) .ge. zi(kval+i)) then
                 vali(1) = zi(kval+i-1)
                 vali(2) = zi(kval+i)
@@ -105,7 +105,7 @@ subroutine dlidef()
             zi(jnbp+i-1) = 1
             zi(jbor+i-1) = zi(kval+i-1)
             zi(jval+i-1) = zi(kval+i-1)
-20      continue
+        end do
         zi(jbor+nbvale-1) = zi(kval+nbvale-1)
         zi(jval+nbvale-1) = zi(kval+nbvale-1)
 !
@@ -116,7 +116,7 @@ subroutine dlidef()
         call wkvect(resu//'           .BINT', 'G V I', nbocc+1, jbor)
 !
         zi(jbor) = idebut
-        do 30 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+ iocc), nbret=n1)
             iii = zi(jbor+iocc) - zi(jbor-1+iocc)
             call getvis('INTERVALLE', 'PAS', iocc=iocc, nbval=0, nbret=np)
@@ -129,21 +129,21 @@ subroutine dlidef()
                 zi(jpas+iocc-1) = iii/zi(jnbp+iocc-1)
             endif
             nbval = nbval + zi(jnbp+iocc-1)
-30      continue
+        end do
 !
 !        --- ALLOCATION DE .VALE ET REMPLISSAGE DE CE DERNIER ---
         call wkvect(resu//'           .VALE', 'G V I', nbval, jval)
         zi(jval) = zi(jbor)
         ico = 0
-        do 50 i = 1, nbocc
+        do i = 1, nbocc
             ipdt = zi(jpas-1+i)
-            do 40 j = 1, zi(jnbp-1+i) - 1
+            do j = 1, zi(jnbp-1+i) - 1
                 ico = ico + 1
                 zi(jval+ico) = zi(jval+ico-1) + ipdt
-40          continue
+            end do
             ico = ico + 1
             zi(jval+ico) = zi(jbor+i)
-50      continue
+        end do
     endif
 !
     call jedema()

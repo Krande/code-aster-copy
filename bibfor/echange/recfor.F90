@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recfor(numpas, nbpal, force, typal, finpal,&
                   cnpal, prdeff, conv)
 ! person_in_charge: nicolas.greffet at edf.fr
@@ -272,7 +272,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
     call jeveuo(ayacs, 'L', iadr)
     icompo=zi(iadr)
 !      BOUCLE SUR LES PALIERS (NOEUDS ASTER)
-    do 10 ipal = 1, nbpal
+    do ipal = 1, nbpal
         force(ipal,1) = 0.d0
         force(ipal,2) = 0.d0
         force(ipal,3) = 0.d0
@@ -286,9 +286,9 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
         else
             idim=4
         endif
-        do 20 ipat = 1, 6
+        do ipat = 1, 6
             paramr(ipat)=0.d0
- 20     continue
+        end do
         npas=numpas
         call cpldb(icompo, cpiter, tr8, tr8, npas,&
                    nomvar, idim, nlu, paramr, info)
@@ -370,7 +370,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
             endif
         endif
 !         FIN DE CONSTITUTION DU FICHIER EN CAS DE REPRISE
- 10 end do
+    end do
 !      FIN DE LA BOUCLE SUR LES PALIERS
     call jedema()
 !

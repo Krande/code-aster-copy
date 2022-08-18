@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diaghr(n, a, lda, eval, evec,&
                   ldevec, acopy, rwk, cwk)
     implicit none
@@ -74,9 +74,9 @@ subroutine diaghr(n, a, lda, eval, evec,&
         ASSERT(.false.)
     endif
 !    --- A EST COPIEE DANS ACOPY
-    do 10 i = 1, n
+    do i = 1, n
         call zcopy(i, a(1, i), 1, acopy(1, i), 1)
- 10 end do
+    end do
 !
     call mexthr(n, acopy, n)
 !
@@ -100,10 +100,10 @@ subroutine diaghr(n, a, lda, eval, evec,&
                 evec, ldevec, cwk(n+1))
 !
 !   --- NORMALISATION DES VECTEURS PROPRES ---
-    do 20 j = 1, n
+    do j = 1, n
         scale = evec(izamax(n,evec(1,j),1),j)
         if (dble(scale) .ne. 0.0d0 .or. dimag(scale) .ne. 0.0d0) call zmult(n, 1.0d0/scale,&
                                                                             evec(1, j), 1)
- 20 end do
+    end do
 !
 end subroutine

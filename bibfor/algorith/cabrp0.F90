@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
                   idfde, idfde2, geom, dimdef, dimuel,&
                   ndim, nddls, nddlm, nno, nnos,&
@@ -99,33 +99,33 @@ subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- SUR LES NOEUDS SOMMETS -------------------------------------------
 ! ======================================================================
-    do 10 n = 1, nnos
-        do 20 i = 1, ndim
+    do n = 1, nnos
+        do i = 1, ndim
             b(adder1,(n-1)*nddls+i) = b(adder1,(n-1)*nddls+i)-dfdi(n, i)
- 20     continue
+        end do
         b(adder1,(n-1)*nddls+ndim+1) = b(adder1, (n-1)*nddls+ndim+1) + zr(ivf2+n+(kpi-1)*nnos-1)
- 10 end do
+    end do
 ! ======================================================================
 ! --- SUR LES NOEUDS MILIEUX -------------------------------------------
 ! ======================================================================
-    do 30 n = 1, nnom
-        do 40 i = 1, ndim
+    do n = 1, nnom
+        do i = 1, ndim
             b(adder1,nnos*nddls+(n-1)*nddlm+i)= b(adder1,nnos*nddls+(&
             n-1)*nddlm+i)-dfdi(n+nnos,i)
- 40     continue
- 30 end do
+        end do
+    end do
 ! ======================================================================
 ! --- POUR LES GRADIENTS DE VARIATIONS VOLUMIQUE ET LES VAR VOL --------
 ! --- ON UTILISE LES FONCTIONS DE FORME D'ORDRE 1 ----------------------
 ! ======================================================================
 ! --- SUR LES NOEUDS SOMMETS -------------------------------------------
 ! ======================================================================
-    do 50 n = 1, nnos
-        do 60 i = 1, ndim
+    do n = 1, nnos
+        do i = 1, ndim
             b(adder2-1+i,(n-1)*nddls+ndim+1)= b(adder2-1+i,(n-1)*&
             nddls+ndim+1)+dfdi2(n,i)
- 60     continue
- 50 end do
+        end do
+    end do
 ! ======================================================================
 ! --- POUR LE MULTIPLICATEUR DE LAGRANGE -------------------------------
 ! --- (PRES) -----------------------------------------------------------

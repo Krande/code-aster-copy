@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine disell(pz, az, bz, h)
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
@@ -96,7 +96,7 @@ subroutine disell(pz, az, bz, h)
 !     TRAITEMENT DU CAS PARTICULIER : POINT = CENTRE O
     if (sqrt(r**2+z**2) .lt. eps*a) then
         h = -b
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -120,14 +120,14 @@ subroutine disell(pz, az, bz, h)
 !     SI LA PREDICTION EST LA SOLUTION (CAS DU CERCLE PAR EX), ON SORT
     if (abs(k) .lt. eps*sqrt(r**2+z**2)) then
         h = k
-        goto 9999
+        goto 999
     endif
 !
 !
 !     BOUCLE PRINCIPALE
 !     -----------------
 !
-    do 10 iter = 1, nitmx
+    do iter = 1, nitmx
 !
 !       POLYNOME NORMALISE D'ORDRE 4 DECRIVANT LES INTERSECTIONS
 !       ENTRE LE CERCLE ET L'ELLIPSE
@@ -181,7 +181,7 @@ subroutine disell(pz, az, bz, h)
 !       INFERIEURE A LA PRECISION, ON A CONVERGE ET ON SORT
         if (dphi .lt. epsc) then
             h = r*cos(phi)+z*sin(phi)-a*rac
-            goto 9999
+            goto 999
         endif
 !
         dr = r-a*cos(phi)/rac
@@ -191,13 +191,13 @@ subroutine disell(pz, az, bz, h)
         if (linsid) k = -k
         t = dz/(dr+k)
 !
- 10 end do
+    end do
 !
 !     NOMBRE D'ITERATIONS MAXI ATTEINT
     call utmess('F', 'XFEM_2')
 !
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

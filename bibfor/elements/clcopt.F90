@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine clcopt(fcttab, atab, ax, ay)
 !_____________________________________________________________________
 !
@@ -86,11 +86,11 @@ subroutine clcopt(fcttab, atab, ax, ay)
     integer :: i, ii, j
 !
 !       INITIALISATION DES SUIVANTS
-    do 30 icur1 = 1, plgnnb
+    do icur1 = 1, plgnnb
         inext(icur1) = icur1 + 1
         xp(icur1) = 1d+6
         yp(icur1) = 1d+6
-30  continue
+    end do
 !
 !       CREATION DE 2 PREMIERS SEGMENTS A INTERSECTER
     i = 36/2
@@ -119,12 +119,12 @@ subroutine clcopt(fcttab, atab, ax, ay)
 !       PREMIER INDICE LIBRE
     ifree = 4
 !
-    do 40 i = 2, 36
+    do i = 2, 36
         if (i .ne. (36/2)+1) then
             phicur = 1d0
             icur1 = 1
             inew2 = 0
-            do 400 j = 1, plgnnb
+            do j = 1, plgnnb
                 icur2 = inext(icur1)
                 phinew = fcttab(i,1) * xp(icur2) + fcttab(i,2) * yp( icur2) - atab(i)
                 if (phinew .lt. -precis) then
@@ -161,15 +161,15 @@ subroutine clcopt(fcttab, atab, ax, ay)
                 endif
                 icur1 = icur2
                 phicur = phinew
-400          continue
-401          continue
+            end do
+401         continue
         endif
-40  continue
+    end do
 !
 !       RECHERCHE DU MINIMUM DE XP(*)+YP(*)
     icur1 = 1
     tmp0 = 1d99
-50  continue
+ 50 continue
     tmp1 = xp(icur1) + yp(icur1)
 !         -- LORSQUE 2 FACETTES DONNENT QUASIMENT LE MEME XP+YP,
 !            ON VEUT QUE L'ALGORITHME TROUVE TOUJOURS LA MEME FACETTE

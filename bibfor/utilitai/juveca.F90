@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine juveca(nom, long)
     implicit none
 #include "jeveux.h"
@@ -75,42 +75,42 @@ subroutine juveca(nom, long)
 !
 !     --- RECOPIE L'OBJET DANS LE TAMPON ---
     if (type .eq. 'I') then
-        do 10 i = 1, lonma2
+        do i = 1, lonma2
             zi(ltamp+i-1) = zi(ldec+i-1)
-10      continue
+        end do
     else if (type .eq. 'R') then
-        do 20 i = 1, lonma2
+        do i = 1, lonma2
             zr(ltamp+i-1) = zr(ldec+i-1)
-20      continue
+        end do
     else if (type .eq. 'C') then
-        do 30 i = 1, lonma2
+        do i = 1, lonma2
             zc(ltamp+i-1) = zc(ldec+i-1)
-30      continue
+        end do
     else if (type .eq. 'L') then
-        do 40 i = 1, lonma2
+        do i = 1, lonma2
             zl(ltamp+i-1) = zl(ldec+i-1)
-40      continue
+        end do
     else if (type(1:1) .eq. 'K') then
         if (ltyp .eq. 8) then
-            do 50 i = 1, lonma2
+            do i = 1, lonma2
                 zk8(ltamp+i-1) = zk8(ldec+i-1)
-50          continue
+            end do
         else if (ltyp .eq. 16) then
-            do 51 i = 1, lonma2
+            do i = 1, lonma2
                 zk16(ltamp+i-1) = zk16(ldec+i-1)
-51          continue
+            end do
         else if (ltyp .eq. 24) then
-            do 52 i = 1, lonma2
+            do i = 1, lonma2
                 zk24(ltamp+i-1) = zk24(ldec+i-1)
-52          continue
+            end do
         else if (ltyp .eq. 32) then
-            do 53 i = 1, lonma2
+            do i = 1, lonma2
                 zk32(ltamp+i-1) = zk32(ldec+i-1)
-53          continue
+            end do
         else if (ltyp .eq. 80) then
-            do 54 i = 1, lonma2
+            do i = 1, lonma2
                 zk80(ltamp+i-1) = zk80(ldec+i-1)
-54          continue
+            end do
         else
             valk(1)=nom
             valk(2)=type
@@ -128,45 +128,45 @@ subroutine juveca(nom, long)
 !
 !     --- RECOPIE DU TAMPON DANS L'OBJET DEFINITIF ---
     if (type .eq. 'I') then
-        do 110 i = 1, lonma2
+        do i = 1, lonma2
             zi(ldec+i-1) = zi(ltamp+i-1)
-110      continue
+        end do
     else if (type .eq. 'R') then
-        do 120 i = 1, lonma2
+        do i = 1, lonma2
             zr(ldec+i-1) = zr(ltamp+i-1)
-120      continue
+        end do
     else if (type .eq. 'C') then
-        do 130 i = 1, lonma2
+        do i = 1, lonma2
             zc(ldec+i-1) = zc(ltamp+i-1)
-130      continue
+        end do
     else if (type .eq. 'L') then
-        do 140 i = 1, lonma2
+        do i = 1, lonma2
             zl(ldec+i-1) = zl(ltamp+i-1)
-140      continue
-        do 142 i = lonma2+1, long
+        end do
+        do i = lonma2+1, long
             zl(ldec+i-1) = .false.
-142      continue
+        end do
     else if (type(1:1) .eq. 'K') then
         if (ltyp .eq. 8) then
-            do 150 i = 1, lonma2
+            do i = 1, lonma2
                 zk8(ldec+i-1) = zk8(ltamp+i-1)
-150          continue
+            end do
         else if (ltyp .eq. 16) then
-            do 151 i = 1, lonma2
+            do i = 1, lonma2
                 zk16(ldec+i-1) = zk16(ltamp+i-1)
-151          continue
+            end do
         else if (ltyp .eq. 24) then
-            do 152 i = 1, lonma2
+            do i = 1, lonma2
                 zk24(ldec+i-1) = zk24(ltamp+i-1)
-152          continue
+            end do
         else if (ltyp .eq. 32) then
-            do 153 i = 1, lonma2
+            do i = 1, lonma2
                 zk32(ldec+i-1) = zk32(ltamp+i-1)
-153          continue
+            end do
         else if (ltyp .eq. 80) then
-            do 154 i = 1, lonma2
+            do i = 1, lonma2
                 zk80(ldec+i-1) = zk80(ltamp+i-1)
-154          continue
+            end do
         endif
     endif
     ll = min(lonuti,long)

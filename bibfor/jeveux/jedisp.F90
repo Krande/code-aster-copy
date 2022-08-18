@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jedisp(n, tab)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -48,9 +48,9 @@ subroutine jedisp(n, tab)
     integer :: k
 !
 ! DEB ------------------------------------------------------------------
-    do 1 k = 1, n
+    do k = 1, n
         tab(k) = 0
- 1  end do
+    end do
 !
 ! --- ON DONNE LA VALEUR ASSOCIEE A LA MEMOIRE DYNAMIQUE DISPONIBLE
 !

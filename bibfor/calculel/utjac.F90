@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utjac(l2d, geom, ipg, idfde, niv,&
                  ifm, nno, jacob)
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -67,7 +67,7 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
         dxdk=0.d0
         dyde=0.d0
         dydk=0.d0
-        do 100 i = 1, nno
+        do i = 1, nno
             i1 = 2*(i-1)+1
             xp = geom(i1)
             yp = geom(i1+1)
@@ -77,7 +77,7 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
             dxdk = dxdk+xp*dfrdk
             dyde = dyde+yp*dfrde
             dydk = dydk+yp*dfrdk
-100     continue
+        end do
         jacob=dxde*dydk-dxdk*dyde
 !
     else
@@ -85,18 +85,18 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 !
         kp = 3*(ipg-1)*nno
         g(:,:) = 0.d0
-        do 140 i = 1, nno
+        do i = 1, nno
             i1 = 3*(i-1)
             dfrde = zr(idfde+kp+i1)
             dfrdk = zr(idfdk+kp+i1)
             dfrdn = zr(idfdn+kp+i1)
-            do 130 j = 1, 3
+            do j = 1, 3
                 xp = geom(i1+j)
                 g(1,j) = g(1,j) + xp * dfrde
                 g(2,j) = g(2,j) + xp * dfrdn
                 g(3,j) = g(3,j) + xp * dfrdk
-130         continue
-140     continue
+            end do
+        end do
         j11 = g(2,2) * g(3,3) - g(2,3) * g(3,2)
         j21 = g(3,1) * g(2,3) - g(2,1) * g(3,3)
         j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)

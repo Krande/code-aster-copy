@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rercmk(nu, mo, ma, nlili, nm,&
                   nl, nbntt)
     implicit none
@@ -23,6 +23,8 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
@@ -39,8 +41,6 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 #include "asterfort/renuu1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mo, ma
     character(len=14) :: nu
@@ -71,9 +71,9 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     character(len=19) :: nomlig
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoin, iaconx,  iagrel,  ialiel
-    integer :: iamail,   ianema
-    integer ::    ico, icol, icumul
+    integer :: i, iacoin, iaconx, iagrel, ialiel
+    integer :: iamail, ianema
+    integer :: ico, icol, icumul
     integer :: iel, ifm, igrel, iinew, iino, iio1
     integer :: iio2, ilconx, ili, illiel, ilnema, ima, ino
     integer :: irempl, iret, j, jjno, jno, jrang, k
@@ -314,7 +314,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 100 continue
     longi= vnbco(i)
     call renuu1(zi(iacoin-1+lcoi(i)), longi, ordo, longo, vnbco,&
-new1)
+                new1)
     do j = 1, longo
         iinew=iinew+1
         new1(ordo(j))=iinew

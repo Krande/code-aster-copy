@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trldc(a, nordre, ierr)
     implicit none
 !
@@ -51,48 +51,48 @@ subroutine trldc(a, nordre, ierr)
     epsi=1.d0/r8gaem()
     xmax=zero
     ierr = 0
-    do 100 in = 1, nordre
+    do in = 1, nordre
         indiag = in*(in-1)/2+1
         if (in .eq. 1) goto 50
 !
 !        UTILISATION  DES  LIGNES  (1) A (IN-1)
-        do 40 jn = 1, in-1
+        do jn = 1, in-1
             jndiag = jn*(jn-1)/2+1
 !
             if (jn .eq. 1) goto 36
             ibm = jn - 1
 !
             r8val = a (indiag+in-jn)
-            do 30 i = 1, ibm
+            do i = 1, ibm
                 idiag = i*(i-1)/2+1
                 r8val = r8val - dconjg(a(jndiag+jn-i))*a(indiag+in-i)* a(idiag)
-30          continue
+            end do
             a ( indiag+in-jn ) = r8val
 !
-36          continue
+ 36         continue
             a (indiag+in-jn ) = a (indiag+in-jn ) / a(jndiag)
-40      continue
+        end do
 !
-50      continue
+ 50     continue
 !
 !        UTILISATION  DE LA LIGNE IN ( CALCUL DU TERME PIVOT)
         ibm = in - 1
 !
         r8val = a (indiag)
-        do 85 i = 1, ibm
+        do i = 1, ibm
             idiag = i*(i-1)/2+1
             r8val = r8val - dconjg(a(indiag+in-i))*a(indiag+in-i)*a( idiag)
-85      continue
+        end do
         a (indiag) = r8val
         xmod=dble(r8val)**2+dimag(r8val)**2
         if (xmod .gt. xmax) xmax=xmod
         if ((xmod/xmax) .lt. epsi) then
             call utmess('I', 'ALGORITH10_98')
             ierr = in
-            goto 9999
+            goto 999
         endif
 !
-100  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

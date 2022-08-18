@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmchdp(crit, seuil, dp, iret, iter)
 !.======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -153,7 +153,7 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
         else if (fmax.gt.zero) then
 !          FMAX > 0.
 !          VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
-            do 31 i = 1, niter
+            do i = 1, niter
                 dpmax = dpmax/dix
                 fmax=nmchcr(dpmax)
                 if (abs(fmax) .le. prec) then
@@ -166,12 +166,12 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
                     fmax=nmchcr(dpmax)
                     goto 20
                 endif
-31          continue
+            end do
             goto 20
 !
         else
 !          FMAX <0. On augmente DPMAX jusqu'à ce que F(DPMAX) > 0
-            do 30 i = 1, niter
+            do i = 1, niter
                 fmax=nmchcr(dpmax)
                 if (abs(fmax) .le. prec) then
                     dp = dpmax
@@ -182,14 +182,14 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
                 else
                     dpmax = dpmax*dix
                 endif
-30          continue
+            end do
             call utmess('A', 'ALGORITH6_79')
             goto 20
         endif
 !
     endif
 !
-20  continue
+ 20 continue
 !
 ! --- CALCUL DE LA SOLUTION DE L'EQUATION F = 0 :
 !     ===========================================
@@ -204,7 +204,7 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
                 prec, niter, dp, iret, iter)
     if (iret .eq. 0) goto 50
 !
-41  continue
+ 41 continue
 !
 !     CAS DE NON CONVERGENCE : IMPRESSIONS SI INFO=2
     call infniv(ifm, niv)
@@ -216,21 +216,21 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
         write (ifm,*) 'VALEURS DE DP ',dp
         write (ifm,*) 'AUGMENTER ITER_INTE_MAXI'
         write (ifm,*) 'PARAMETRES :'
-        do 61 i = 1, 16
+        do i = 1, 16
             write (ifm,*) nomvar(i),mat(i)
-61      continue
+        end do
         nbp = 20
         ddp = dpmax/nbp
         write (ifm,*) 'DP     -     F(DP)'
         z=zero
-        do 60 i = 1, nbp
+        do i = 1, nbp
             zz=nmchcr(z)
             write (ifm,*) z,zz
             z = z + ddp
-60      continue
+        end do
     endif
     iret = 1
 !
-50  continue
+ 50 continue
 !
 end subroutine

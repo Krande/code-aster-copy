@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdfint(kp, nno, ajacob, pjacob, en,&
                   enprim, x0pg, pn, pm, fint)
 !
@@ -44,19 +44,19 @@ subroutine gdfint(kp, nno, ajacob, pjacob, en,&
     real(kind=8) :: ajacob, pjacob
 !-----------------------------------------------------------------------
 !
-    do 11 ne = 1, nno
+    do ne = 1, nno
         call gdmb(ne, kp, ajacob, en, enprim,&
                   x0pg, b)
         call transp(b, 6, 6, 6, bt,&
                     6)
-        do 1 i = 1, 3
+        do i = 1, 3
             vect(i) = pn(i)
             vect(3+i) = pm(i)
- 1      continue
+        end do
         call promat(bt, 6, 6, 6, vect,&
                     6, 6, 1, fors)
-        do 5 k = 1, 6
+        do k = 1, 6
             fint(k,ne) = fint(k,ne) + pjacob*fors(k)
- 5      continue
-11  end do
+        end do
+    end do
 end subroutine

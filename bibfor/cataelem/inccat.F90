@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine inccat()
     implicit none
 !
@@ -337,20 +337,20 @@ subroutine inccat()
     nbno(2) = 0
 !
     nphemx = 10
-    do 5 i = 1, 10
+    do i = 1, 10
         phmote(1,i) = 0
         phmote(2,i) = 0
- 5  end do
+    end do
 !
     cledbg = 'DEBUG   '
     iccdbg = 0
     ndmp = 0
-    do 10 idmp = 1, 30
+    do idmp = 1, 30
         pasdmp(idmp) = 0
         tyobdm(idmp) = 0
-10  end do
+    end do
 !
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

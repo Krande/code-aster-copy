@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine usubis(type, para, crit, epsi, x1,&
                   x2, x, iret)
     implicit none
@@ -36,24 +36,24 @@ subroutine usubis(type, para, crit, epsi, x1,&
     call usufon(type, para, x1, f1, df1)
     call usufon(type, para, x2, f2, df2)
     if (crit(1:4) .eq. 'RELA') then
-        if (abs(f1-resu) .le. epsi * abs(resu)) goto 9999
+        if (abs(f1-resu) .le. epsi * abs(resu)) goto 999
     else
-        if (abs(f1 - resu) .le. epsi) goto 9999
+        if (abs(f1 - resu) .le. epsi) goto 999
     endif
     if (crit(1:4) .eq. 'RELA') then
-        if (abs(f2-resu) .le. epsi * abs(resu)) goto 9999
+        if (abs(f2-resu) .le. epsi * abs(resu)) goto 999
     else
-        if (abs(f2 - resu) .le. epsi) goto 9999
+        if (abs(f2 - resu) .le. epsi) goto 999
     endif
     xg = x1
     xd = x2
-    do 10 i = 1, maxit
+    do i = 1, maxit
         x = ( xg + xd ) * 0.5d0
         call usufon(type, para, x, f, df)
         if (crit(1:4) .eq. 'RELA') then
-            if (abs(f-resu) .le. epsi * abs(resu)) goto 9999
+            if (abs(f-resu) .le. epsi * abs(resu)) goto 999
         else
-            if (abs(f-resu) .le. epsi) goto 9999
+            if (abs(f-resu) .le. epsi) goto 999
         endif
         if (f .lt. resu) then
             xg = x
@@ -62,9 +62,9 @@ subroutine usubis(type, para, crit, epsi, x1,&
             xg = xg
             xd = x
         endif
-10  end do
+    end do
     iret = 10
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine preml2(n1, diag, col, delg, xadj1,&
                   adjnc1, estim, adress, parend, fils,&
                   frere, anc, nouv, supnd, dhead,&
@@ -108,10 +108,10 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
     endif
 !     EVALUATION DE MXFACT
     mxfact = 0
-    do 110 i = 1, nbsnd
+    do i = 1, nbsnd
         long = debfsn(1+i) - debfsn(i)
         mxfact = max(long,mxfact)
-110  end do
+    end do
 !-------------------------------ESTIMATION DE LA PILE
 !*************************************************************
 !*************************************************************
@@ -136,10 +136,10 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
 !--------------------------------CALCUL DES ADRESSES DES
     if (niv .eq. 2) then
         write(ifm,*)'RESULTATS DE MLTBLC '// 'NBRE DE BLOCS ',nbloc
-        do 120 i = 1, nbloc
+        do i = 1, nbloc
             write(ifm,*)'LONGUEUR DU BLOC ',i, ': ',lgbloc(i),&
             'NOMBRE DE SUPERNOEUDS DU BLOC ',i, ': ',ncbloc(i)
-120      continue
+        end do
     endif
 !     COEFFICIENTS INITIAUX
 !*************************************************************
@@ -157,5 +157,5 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
 !     *   'TEMPS CPU',TEMPS(3),
 !     *   ' + TEMPS CPU SYSTEME ',TEMPS(6)
 !     ENDIF
-999  continue
+999 continue
 end subroutine

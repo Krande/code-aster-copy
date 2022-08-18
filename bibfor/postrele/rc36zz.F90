@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
                   listma, chelem)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cescre.h"
 #include "asterfort/jedema.h"
@@ -33,7 +33,7 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
 !
 !     ------------------------------------------------------------------
 !
-    integer ::   jcesl, im, ima, nbpt, decal, iad, ipt, icmp, iret
+    integer :: jcesl, im, ima, nbpt, decal, iad, ipt, icmp, iret
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
@@ -50,18 +50,18 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
     call jeveuo(chelem(1:19)//'.CESV', 'E', vr=cesv)
     call jeveuo(chelem(1:19)//'.CESL', 'E', jcesl)
 !
-    do 20 im = 1, nbma
+    do im = 1, nbma
         ima = listma(im)
         nbpt = cesd(5+4*(ima-1)+1)
         decal = cesd(5+4*(ima-1)+4)
-        do 22 ipt = 1, nbpt
-            do 24 icmp = 1, nbcmp
+        do ipt = 1, nbpt
+            do icmp = 1, nbcmp
                 iad = decal + (ipt-1)*nbcmp + icmp
                 zl(jcesl-1+iad) = .true.
                 cesv(iad) = 0.d0
-24          continue
-22      continue
-20  end do
+            end do
+        end do
+    end do
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine discax(noma, nbn, iaxe, nuno, diax)
     implicit none
 !     CREATION D'UNE LISTE ORDONNEE DE NOEUDS SUR UNE STRUCTURE POUTRE
@@ -36,7 +36,6 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -46,6 +45,7 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
     integer :: nbn, iaxe, nuno(nbn)
     real(kind=8) :: diax(nbn)
@@ -71,32 +71,32 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 ! ---   ON RECOPIE SIMULTANEMENT LA LISTE DES NOMS DES NOEUDS
 !
     call wkvect('&&DISCAX.TEMP.NNOE', 'V V K8', nbn, innoe)
-    do 10 ino = 1, nbn
+    do ino = 1, nbn
         diax(ino) = zr(icoma+3*(ino-1)+iaxe-1)
         call jenuno(jexnum(nnoema, ino), zk8(innoe+ino-1))
-10  end do
+    end do
 !
 ! --- 3.ON REORDONNE LA DISCRETISATION PAR VALEURS CROISSANTES
 ! ---   ON REORDONNE SIMULTANEMENT LA LISTE DES NOMS DES NOEUDS
 ! ---   ON EN DEDUIT LA LISTE ORDONNEE DES NUMEROS DES NOEUDS
 !
-    do 20 ino = 1, nbn-1
+    do ino = 1, nbn-1
         xmin = diax(ino)
         nomnoe = zk8(innoe+ino-1)
         imin = ino
-        do 21 jno = ino+1, nbn
+        do jno = ino+1, nbn
             if (diax(jno) .lt. xmin) then
                 xmin = diax(jno)
                 nomnoe = zk8(innoe+jno-1)
                 imin = jno
             endif
-21      continue
+        end do
         diax(imin) = diax(ino)
         zk8(innoe+imin-1) = zk8(innoe+ino-1)
         diax(ino) = xmin
         zk8(innoe+ino-1) = nomnoe
         call jenonu(jexnom(nnoema, zk8(innoe+ino-1)), nuno(ino))
-20  end do
+    end do
     call jenonu(jexnom(nnoema, zk8(innoe+nbn-1)), nuno(nbn))
 !
     call jedetr('&&DISCAX.TEMP.NNOE')

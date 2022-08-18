@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                   mexpic, mcompt, mdomag, nbord, nbpt,&
                   ntcmp, nbcmp, numcmp, impr, vdomag)
@@ -120,12 +120,12 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 !
 ! ---   BOUCLE SUR LES COMPOSANTES DE LA EQUI_GD
 !
-    do 50 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         if (impr .ge. 2) call codent(icmp, 'G', kcmp)
 !
 ! ---     BOUCLE SUR LES POINTS
 !
-        do 10 ipt = 1, nbpt
+        do ipt = 1, nbpt
             if (impr .ge. 2) then
                 valk (1) = kcmp
                 vali = ipt
@@ -135,7 +135,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 ! ---       CALCUL DU VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
 !           BOUCLE SUR LES NBORD NUMEROS D ORDRE
 !
-            do 30 iord = 1, nbord
+            do iord = 1, nbord
                 chequi = zk24(ivch+iord-1)(1:19)
 !
                 if (chequi .eq. ' ') then
@@ -161,7 +161,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                 zr(ivpt+iord-1) = zr(ivord+(ipt-1)*ntcmp+numcmp(icmp)- 1)
 !
 !
-30          continue
+            end do
 !
 ! ---     POSSEDANT ENFIN LE VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
 !         ON VA POUVOIR CALCULER LE DOMMAGE RESULTANT EN UTILISANT :
@@ -194,12 +194,12 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                 endif
                 vali = ncyc
                 call utmess('I', 'PREPOST6_9', si=vali)
-                do 223 j = 1, ncyc
+                do j = 1, ncyc
                     vali = j
                     valr (1) = zr(ivmax+j-1)
                     valr (2) = zr(ivmin+j-1)
                     call utmess('I', 'PREPOST6_10', si=vali, nr=2, valr=valr)
-223              continue
+                end do
             endif
 !
 ! ---     CALCUL DU DOMMAGE AU POINT IPT ET STOCK DANS VECTEUR VDOMAG
@@ -213,9 +213,9 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                 call utmess('I', 'PREPOST6_11', sr=valr(1))
             endif
 !
-10      continue
+        end do
 !
-50  end do
+    end do
 !
     call jedema()
 end subroutine

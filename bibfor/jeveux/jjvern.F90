@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjvern(noml32, icre, iret)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
@@ -72,11 +72,11 @@ subroutine jjvern(noml32, icre, iret)
             if (index ( noml24 , '$' ) .ne. 0) then
                 call utmess('F', 'JEVEUX1_57', sk=noml24)
             endif
-            do 10 k = 1, 32
+            do k = 1, 32
                 if (jclass(ichar( nom32(k:k) )) .eq. illici) then
                     call utmess('F', 'JEVEUX1_58', sk=nom32(k:k))
                 endif
-10          continue
+            end do
         endif
         if (noml8 .ne. '        ') then
             if (iret .eq. 1) then

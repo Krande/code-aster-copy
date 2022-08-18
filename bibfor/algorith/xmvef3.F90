@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
                   pb, jac, seuil, tau1, tau2,&
                   lact, cstafr, mu, vtmp)
@@ -79,11 +79,11 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
 ! ----------------------------------------------------------------------
 !
 ! --- CALCUL DE REAC12-PBOUL
-    do 180 i = 1, ndim
+    do i = 1, ndim
         rpb(i)=reac12(i)-pb(i)
-180  end do
+    end do
 !
-    do 194 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
@@ -91,9 +91,10 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
 !
         metr(1)=ddot(ndim,tau1(1),1,rpb,1)
         if (ndim .eq. 3) metr(2)=ddot(ndim,tau2(1),1,rpb,1)
-        do 195 k = 1, ndim-1
+        do k = 1, ndim-1
             vtmp(pli+k) = vtmp(pli+k) + mu*seuil/cstafr * metr(k)*ffi* jac
-195      continue
-194  continue
+        end do
+194     continue
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
                   tspaq, i, jvphyd)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp)
 !   vphydr(nbordr)
-    integer ::jvphyd
+    integer :: jvphyd
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA PRESSION HYDROSTATIQUE MAXIMALE.
 ! ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
     call jemarq()
     decal = 18
 !
-    do 10 iordr = 1, nbordr
+    do iordr = 1, nbordr
         adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
         sixx = vwork(adrs + 1)
         siyy = vwork(adrs + 2)
@@ -70,7 +70,7 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
 ! LES INSTANTS
 !
         zr(jvphyd+iordr) = (sixx + siyy + sizz)/3.0d0
-10  end do
+    end do
 !
     call jedema()
 !

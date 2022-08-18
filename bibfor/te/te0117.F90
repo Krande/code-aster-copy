@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0117(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -40,8 +40,8 @@ subroutine te0117(option, nomte)
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
@@ -78,9 +78,9 @@ subroutine te0117(option, nomte)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE :
 !      ----------------------------------
-    do 10 i = 1, ndim*nno
+    do i = 1, ndim*nno
         zr(ivectu+i-1) = bsigm(i)
-10  continue
+    end do
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

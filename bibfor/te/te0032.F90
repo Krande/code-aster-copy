@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0032(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -78,17 +78,17 @@ subroutine te0032(option, nomte)
 !         ------------------------------
         global = .false.
         call jevech('PPRESSR', 'L', jpres)
-        do 110 j = 1, nno
-            do 100 i = 1, 6
+        do j = 1, nno
+            do i = 1, 6
                 for(i,j) = 0.d0
                 for2(i,j) = 0.d0
-100         continue
+            end do
 !----------------------------------------------------------------------
 !           LE SIGNE MOINS CORRESPOND A LA CONVENTION :
 !              UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !----------------------------------------------------------------------
             for(3,j) = - zr(jpres+j-1)
-110     continue
+        end do
 !
     else if (option .eq. 'CHAR_MECA_FRCO3D') then
 !              ------------------------------
@@ -108,12 +108,12 @@ subroutine te0032(option, nomte)
 !              UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !              ET IL N'Y A PAS LIEU DE LE CHANGER ICI
 !----------------------------------------------------------------------
-            do 210 j = 1, nno
-                do 200 i = 1, 5
+            do j = 1, nno
+                do i = 1, 5
                     for(i,j) = zr(jpres-1+8*(j-1)+i)
-200             continue
+                end do
                 for(6,j) = 0.d0
-210         continue
+            end do
         endif
         iplan = nint(zr(jpres+7))
 !
@@ -122,14 +122,14 @@ subroutine te0032(option, nomte)
     else if (option .eq. 'CHAR_MECA_PRES_F') then
 !              ------------------------------
         call jevech('PPRESSF', 'L', jpres)
-        if (zk8(jpres) .eq. '&FOZERO') goto 9999
+        if (zk8(jpres) .eq. '&FOZERO') goto 999
         call jevech('PTEMPSR', 'L', itemps)
         valpar(4) = zr(itemps)
         nompar(4) = 'INST'
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        do 222 j = 0, nno-1
+        do j = 0, nno-1
             valpar(1) = zr(jgeom+3*j )
             valpar(2) = zr(jgeom+3*j+1)
             valpar(3) = zr(jgeom+3*j+2)
@@ -141,8 +141,8 @@ subroutine te0032(option, nomte)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
             endif
-222     continue
-        goto 9999
+        end do
+        goto 999
 !
     else if (option .eq. 'CHAR_MECA_FFCO3D') then
 !              ------------------------------
@@ -168,7 +168,7 @@ subroutine te0032(option, nomte)
 !          REPERE GLOBAL
 ! --       LECTURE DES INTERPOLATIONS DE FX, FY, FZ, MX, MY, MZ
 !
-            do 220 j = 0, nno-1
+            do j = 0, nno-1
                 valpar(1) = zr(jgeom+3*j )
                 valpar(2) = zr(jgeom+3*j+1)
                 valpar(3) = zr(jgeom+3*j+2)
@@ -187,7 +187,7 @@ subroutine te0032(option, nomte)
                             for2(5, j+1), ier)
                 call fointe('FM', zk8(jpres+5), 4, nompar, valpar,&
                             for2(6, j+1), ier)
-220         continue
+            end do
 !
             call utpvgl(1, 6, pgl, for2(1, 1), for(1, 1))
             call utpvgl(1, 6, pgl, for2(1, 2), for(1, 2))
@@ -200,7 +200,7 @@ subroutine te0032(option, nomte)
 ! --        REPERE LOCAL - CAS D UNE PRESSION
 ! --        LECTURE DES INTERPOLATIONS DE LA PRESSION PRES
 !
-            do 230 j = 0, nno-1
+            do j = 0, nno-1
                 valpar(1) = zr(jgeom+3*j )
                 valpar(2) = zr(jgeom+3*j+1)
                 valpar(3) = zr(jgeom+3*j+2)
@@ -216,13 +216,13 @@ subroutine te0032(option, nomte)
                 for(4,j+1) = 0.d0
                 for(5,j+1) = 0.d0
                 for(6,j+1) = 0.d0
-230         continue
+            end do
 !
         else
 ! --        REPERE LOCAL - CAS DE F1, F2, F3, MF1, MF2
 ! --        LECTURE DES INTERPOLATIONS DE F1, F2, F3, MF1, MF2
 !
-            do 235 j = 0, nno-1
+            do j = 0, nno-1
                 valpar(1) = zr(jgeom+3*j )
                 valpar(2) = zr(jgeom+3*j+1)
                 valpar(3) = zr(jgeom+3*j+2)
@@ -240,7 +240,7 @@ subroutine te0032(option, nomte)
                 call fointe('FM', zk8(jpres+4), 4, nompar, valpar,&
                             for(5, j+ 1), ier)
                 for(6,j+1) = 0.d0
-235         continue
+            end do
         endif
 !
     else if (option.eq.'CHAR_MECA_PESA_R') then
@@ -249,16 +249,16 @@ subroutine te0032(option, nomte)
 !
         call dxroep(rho, epais)
         call jevech('PPESANR', 'L', lpesa)
-        do 240 i = 1, 3
+        do i = 1, 3
             pglo(i) = zr(lpesa) * zr(lpesa+i) * rho * epais
-240     continue
+        end do
         call utpvgl(1, 3, pgl, pglo, ploc)
-        do 260 i = 1, nno
-            do 250 j = 1, 3
+        do i = 1, nno
+            do j = 1, 3
                 for(j ,i) = ploc(j)
                 for(j+3,i) = 0.d0
-250         continue
-260     continue
+            end do
+        end do
     endif
 !
     if (iplan .ne. 0) then
@@ -272,10 +272,10 @@ subroutine te0032(option, nomte)
             dist = excent
         endif
 !
-        do 270 i = 1, nno
+        do i = 1, nno
             for(4,i) = for(4,i) - dist*for(2,i)
             for(5,i) = for(5,i) + dist*for(1,i)
-270     continue
+        end do
     endif
 !
     if (nno .eq. 3) then
@@ -286,5 +286,5 @@ subroutine te0032(option, nomte)
 !
     call utpvlg(nno, 6, pgl, vecl, zr(jvecg))
 !
-9999 continue
+999 continue
 end subroutine

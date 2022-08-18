@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
                   bdim, fb, nofbm, fbm)
 ! person_in_charge: ludovic.idoux at edf.fr
@@ -65,60 +65,60 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
 !
     deux=2.d0
 !
-    do 100 i = 1, 6
+    do i = 1, 6
         b(i)=bm(i)
         eps(i)=epsm(i)
-100  end do
+    end do
 !
 ! CALCUL DE FB
 !
     call r8inir(6, 0.d0, cc, 1)
 !
-    do 9 i = 1, 3
-        do 10 j = i, 3
-            do 11 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 cc(t(i,j))=cc(t(i,j))+b(t(i,k))*eps(t(k,j))+ b(t(j,k))&
                 *eps(t(k,i))
-11          continue
-10      continue
- 9  end do
+            end do
+        end do
+    end do
     call diago3(cc, vecc, valcc)
     call r8inir(6, 0.d0, ccp, 1)
     call r8inir(6, 0.d0, cpe, 1)
-    do 12 i = 1, 3
+    do i = 1, 3
         if (valcc(i) .lt. 0.d0) then
             valcc(i)=0.d0
         endif
-12  end do
-    do 13 i = 1, 3
-        do 14 j = i, 3
-            do 15 k = 1, 3
+    end do
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 ccp(t(i,j))=ccp(t(i,j))+vecc(i,k)*valcc(k)*vecc(j,k)
-15          continue
-14      continue
-13  end do
-    do 16 i = 1, 3
-        do 17 j = i, 3
-            do 18 k = 1, 3
+            end do
+        end do
+    end do
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 cpe(t(i,j))=cpe(t(i,j))+ ccp(t(i,k))*eps(t(k,j))+&
                 ccp(t(j,k))*eps(t(k,i))
-18          continue
-17      continue
-16  end do
+            end do
+        end do
+    end do
 !
     call r8inir(6, 0.d0, fb, 1)
     treb=0.d0
-    do 301 i = 1, 3
+    do i = 1, 3
         treb=treb+cc(i)/deux
-301  end do
+    end do
     if (treb .gt. 0.d0) then
-        do 19 i = 1, 6
+        do i = 1, 6
             fb(i)=-lambda*treb*eps(i)
-19      continue
+        end do
     endif
-    do 20 i = 1, 6
+    do i = 1, 6
         fb(i)=fb(i)-mu/deux*cpe(i)+ecrob*(kron(i)-b(i))
-20  end do
+    end do
 !
 ! CALCUL DE LA PARTIE POSITIVE DE FBM ET DE SA NORME NOFB
 !
@@ -127,21 +127,21 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
         call diago3(fb, vecfb, valfb)
         nofbm=0.d0
 !
-        do 129 i = 1, 3
+        do i = 1, 3
             if (valfb(i) .gt. 0.d0) then
                 valfb(i)=0.d0
             endif
             nofbm=nofbm+valfb(i)*valfb(i)
-129      continue
+        end do
 !
-        do 126 i = 1, 3
-            do 127 j = i, 3
-                do 128 k = 1, 3
+        do i = 1, 3
+            do j = i, 3
+                do k = 1, 3
                     fbm(t(i,j))=fbm(t(i,j))+vecfb(i,k)*valfb(k)*vecfb(&
                     j,k)
-128              continue
-127          continue
-126      continue
+                end do
+            end do
+        end do
 !
     else if (bdim.eq.2) then
         r(1,1)=1
@@ -155,21 +155,21 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
         call diago2(fbs, vecfbs, valfbs)
 !
         nofbm=0.d0
-        do 29 i = 1, 2
+        do i = 1, 2
             if (valfbs(i) .gt. 0.d0) then
                 valfbs(i)=0.d0
             endif
             nofbm=nofbm+valfbs(i)*valfbs(i)
-29      continue
+        end do
 !
-        do 26 i = 1, 2
-            do 27 j = i, 2
-                do 28 k = 1, 2
+        do i = 1, 2
+            do j = i, 2
+                do k = 1, 2
                     fbm(r(i,j))=fbm(r(i,j))+vecfbs(i,k)*valfbs(k)*&
                     vecfbs(j,k)
-28              continue
-27          continue
-26      continue
+                end do
+            end do
+        end do
 !
     else if (bdim.eq.1) then
         if (fb(1) .lt. 0.d0) then

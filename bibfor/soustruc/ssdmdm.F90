@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssdmdm(mag)
     implicit none
 !     ARGUMENTS:
@@ -23,6 +23,8 @@ subroutine ssdmdm(mag)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -39,8 +41,6 @@ subroutine ssdmdm(mag)
 #include "asterfort/ssdmge.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -58,8 +58,8 @@ subroutine ssdmdm(mag)
     real(kind=8) :: lisr8(9), dist, a1, a2, a3, dmin, dmax, r1
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1noe, i1nol,  iacoo2, iacoor
-    integer :: iadim2, iadime,   ianmcr, iaparr, iasupm
+    integer :: i, i1noe, i1nol, iacoo2, iacoor
+    integer :: iadim2, iadime, ianmcr, iaparr, iasupm
     integer :: idim, idimto, ino, inold, iocc
     integer :: iret, isma, itrou, j, jno, k, n1
     integer :: n2, n3, n4, n5, nbnoe, nbnoet, nbnol
@@ -109,8 +109,8 @@ subroutine ssdmdm(mag)
 !
         call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=nbsma, vect=lk81,&
                     nbret=n1)
-        call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma,&
-                    vect=lk82, nbret=n2)
+        call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma, vect=lk82,&
+                    nbret=n2)
         if (n2 .lt. 0) then
             call utmess('F', 'SOUSTRUC_50')
         endif

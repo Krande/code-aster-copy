@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
                   npg, ipg, wref, vff1, vff2,&
                   idf2, dffr2, geom, iu, ip,&
@@ -54,7 +54,7 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
     call r8inir(nddl, 0.d0, vect, 1)
 !
-    do 999 kpg = 1, npg
+    do kpg = 1, npg
 !
         call ejcine(ndim, axi, nno1, nno2, vff1(1, kpg),&
                     vff2(1, kpg), wref(kpg), dffr2(1, 1, kpg), geom, wg,&
@@ -62,8 +62,8 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
 !
 !       VECTEUR FINT : U
-        do 300 n = 1, 2*nno1
-            do 301 i = 1, ndim
+        do n = 1, 2*nno1
+            do i = 1, ndim
 !
                 kk = iu(i,n)
                 temp = 0.d0
@@ -73,11 +73,11 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
                 vect(kk) = vect(kk) + wg*temp
 !
-301         continue
-300     continue
+            end do
+        end do
 !
 !       VECTEUR FINT : P
-        do 302 n = 1, nno2
+        do n = 1, nno2
 !
             kk = ip(n)
             temp = 0.d0
@@ -87,7 +87,7 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
             vect(kk) = vect(kk) + wg*temp
 !
-302     continue
+        end do
 !
-999 continue
+    end do
 end subroutine

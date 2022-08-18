@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                   lpmpb, lsn, csno, csne, flexio,&
                   csneo, csnee, cfao, cfae, cspo,&
@@ -125,50 +125,50 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             do i = 1, nparrt
                 nopara(npara+i) = nopart(i)
                 typara(npara+i) = typart(i)
-                enddo
+            enddo
             npara = npara + nparrt
         endif
         if (lpmpb) then
-            do 12 i = 1, nparpm
+            do i = 1, nparpm
                 nopara(npara+i) = nopapm(i)
                 typara(npara+i) = typapm(i)
- 12         continue
+            end do
             npara = npara + nparpm
         endif
         if (lfatig) then
             if (kemixt) then
-                do 14 i = 1, nparf3
+                do i = 1, nparf3
                     nopara(npara+i) = nopaf3(i)
                     typara(npara+i) = typaf3(i)
- 14             continue
+                end do
                 npara = npara + nparf3
             else
                 if (flexio) then
-                    do 15 i = 1, nparf1
+                    do i = 1, nparf1
                         nopara(npara+i) = nopaf1(i)
                         typara(npara+i) = typaf1(i)
- 15                 continue
+                    end do
                     npara = npara + nparf1
                 else
-                    do 16 i = 1, nparf2
+                    do i = 1, nparf2
                         nopara(npara+i) = nopaf2(i)
                         typara(npara+i) = typaf2(i)
- 16                 continue
+                    end do
                     npara = npara + nparf2
                 endif
             endif
         else
             if (lsn) then
-                do 18 i = 1, nparsn
+                do i = 1, nparsn
                     nopara(npara+i) = nopasn(i)
                     typara(npara+i) = typasn(i)
- 18             continue
+                end do
                 npara = npara + nparsn
                 if (flexio) then
-                    do 20 i = 1, nparse
+                    do i = 1, nparse
                         nopara(npara+i) = nopase(i)
                         typara(npara+i) = typase(i)
- 20                 continue
+                    end do
                     npara = npara + nparse
                 endif
             endif
@@ -182,9 +182,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 !
     ik = 0
     npara = nparen
-    do 30 i = 1, nparen
+    do i = 1, nparen
         nopara(i) = nopaen(i)
- 30 end do
+    end do
     ik = ik + 1
     vako(ik) = kinti
     vake(ik) = kinti
@@ -203,20 +203,20 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     if (lrocht) then
         call jeveuo(csigm, 'L', jsigm)
         call jeveuo(cpres, 'L', jresp)
-        do 404 i = 1, nparrt
+        do i = 1, nparrt
             nopara(npara+i) = nopart(i)
-404     continue
+        end do
         npar1 = npara + nparrt
         vako(ik+1) = zk8(jresp-1+jt)
         vake(ik+1) = zk8(jresp-1+jt)
         ir = 2 + 1
         valo(ir) = symax
         vale(ir) = symax
-        do 400 i = 1, nbinst
+        do i = 1, nbinst
             ir = 3 + 1
             valo(ir) = zr(jinst+i-1)
             vale(ir) = zr(jinst+i-1)
-            do 402 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 if (lsymm) then
                     l3 = 6*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l3)
@@ -224,7 +224,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l3)
                 endif
-402         continue
+            end do
             call rctres(tpm, tresca)
             call rcmcrt(symax, tresca, stlin, stpar)
 !
@@ -241,7 +241,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                         [c16b], vako, 0)
             call tbajli(nomres, npar1, nopara, vaie, vale,&
                         [c16b], vake, 0)
-400     continue
+        end do
 !
     endif
 !
@@ -254,38 +254,38 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 !     D'INSTABILITE ELASTIQUE ET ELASTOPLASTIQUE.
 !     ON NE PREND QUE LA PARTIE MECANIQUE
 !
-        do 102 i = 1, nparpm
+        do i = 1, nparpm
             nopara(npara+i) = nopapm(i)
-102     continue
+        end do
         npar1 = npara + nparpm
 !
         call jeveuo(csigm, 'L', jsigm)
-        do 110 i = 1, nbinst
+        do i = 1, nbinst
             vako(ik+1) = zk8(jresu+i-1)
             ir = 2 + 1
             valo(ir) = zr(jinst+i-1)
             if (lsymm) then
-                do 101 icmp = 1, ncmp
+                do icmp = 1, ncmp
                     l1 = ncmp*(i-1) + icmp
                     l2 = ncmp*nbinst + ncmp*(i-1) + icmp
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     l5 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) +&
-                    (zr(jsigm-1+l2) - zr(jsigm-1+l5))
-    101         continue
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) + (zr(jsigm-1+l2) - zr(jsigm-1&
+                                   &+l5))
+                end do
             else
-                do 112 icmp = 1, ncmp
+                do icmp = 1, ncmp
                     l1 = ncmp*(i-1) + icmp
                     l2 = ncmp*nbinst + ncmp*(i-1) + icmp
                     l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) -&
-                    (zr(jsigm-1+l3) - zr(jsigm-1+l4))
-    112         continue
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - (zr(jsigm-1+l3) - zr(jsigm-1&
+                                   &+l4))
+                end do
             endif
             call rctres(tpm, tresca)
             ir = ir + 1
@@ -298,33 +298,33 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             valo(ir) = tresca
             call tbajli(nomres, npar1, nopara, vaio, valo,&
                         [c16b], vako, 0)
-110     continue
-        do 120 i = 1, nbinst
+        end do
+        do i = 1, nbinst
             vake(ik+1) = zk8(jresu+i-1)
             ir = 2 + 1
             vale(ir) = zr(jinst+i-1)
             if (lsymm) then
-                do 111 icmp = 1, ncmp
+                do icmp = 1, ncmp
                     l1 = ncmp*(i-1) + icmp
                     l2 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     l5 = 5*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) +&
-                     (zr(jsigm-1+l2) - zr(jsigm-1+l5))
-    111         continue
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) + (zr(jsigm-1+l2) - zr(jsigm-1&
+                                   &+l5))
+                end do
             else
-                do 122 icmp = 1, ncmp
+                do icmp = 1, ncmp
                     l1 = ncmp*(i-1) + icmp
                     l2 = ncmp*nbinst + ncmp*(i-1) + icmp
                     l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) -&
-                     (zr(jsigm-1+l3) + zr(jsigm-1+l4))
-    122         continue
+                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - (zr(jsigm-1+l3) + zr(jsigm-1&
+                                   &+l4))
+                end do
             endif
             call rctres(tpm, tresca)
             ir = ir + 1
@@ -337,15 +337,15 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             vale(ir) = tresca
             call tbajli(nomres, npar1, nopara, vaie, vale,&
                         [c16b], vake, 0)
-120     continue
+        end do
     endif
 !
 ! --- POUR L'OPTION "SN"
 !
     if (lsn .and. .not.lfatig) then
-        do 202 i = 1, nparsn
+        do i = 1, nparsn
             nopara(npara+i) = nopasn(i)
-202     continue
+        end do
         npar1 = npara + nparsn
         if (flexio) then
             npar1 = npar1 + 1
@@ -356,9 +356,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
         if (flexio) call jeveuo(csneo, 'L', jsneo)
 !
         ind = 0
-        do 210 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
-            do 212 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 vako(ik+1) = zk8(jresu+i1-1)
                 vako(ik+2) = zk8(jresu+i2-1)
@@ -374,15 +374,15 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                 endif
                 call tbajli(nomres, npar1, nopara, vaio, valo,&
                             [c16b], vako, 0)
-212         continue
-210     continue
+            end do
+        end do
 !
         call jeveuo(csne, 'L', jsne)
         if (flexio) call jeveuo(csnee, 'L', jsnee)
         ind = 0
-        do 220 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
-            do 222 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 vake(ik+1) = zk8(jresu+i1-1)
                 vake(ik+2) = zk8(jresu+i2-1)
@@ -398,27 +398,27 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                 endif
                 call tbajli(nomres, npar1, nopara, vaie, vale,&
                             [c16b], vake, 0)
-222         continue
-220     continue
+            end do
+        end do
     endif
 !
 ! --- POUR L'OPTION "FATIGUE"
 !
     if (lfatig) then
         if (kemixt) then
-            do 301 i = 1, nparf3
+            do i = 1, nparf3
                 nopara(npara+i) = nopaf3(i)
-301         continue
+            end do
             npar1 = npara + nparf3 - 1
         else if (flexio) then
-            do 302 i = 1, nparf1
+            do i = 1, nparf1
                 nopara(npara+i) = nopaf1(i)
-302         continue
+            end do
             npar1 = npara + nparf1 - 1
         else
-            do 304 i = 1, nparf2
+            do i = 1, nparf2
                 nopara(npara+i) = nopaf2(i)
-304         continue
+            end do
             npar1 = npara + nparf2 - 1
         endif
 !
@@ -432,9 +432,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             call jeveuo(cspto, 'L', jspto)
         endif
         ind = 0
-        do 310 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
-            do 312 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 vako(ik+1) = zk8(jresu+i1-1)
                 vako(ik+2) = zk8(jresu+i2-1)
@@ -472,8 +472,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                 valo(ir) = zr(jfao-1+5*(ind-1)+4)
                 call tbajli(nomres, npar1, nopara, vaio, valo,&
                             [c16b], vako, 0)
-312         continue
-310     continue
+            end do
+        end do
 !
         call jeveuo(csne, 'L', jsne)
         if (flexio) call jeveuo(csnee, 'L', jsnee)
@@ -484,9 +484,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             call jeveuo(cspte, 'L', jspte)
         endif
         ind = 0
-        do 320 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
-            do 322 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 vake(ik+1) = zk8(jresu+i1-1)
                 vake(ik+2) = zk8(jresu+i2-1)
@@ -524,8 +524,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                 vale(ir) = zr(jfae-1+5*(ind-1)+4)
                 call tbajli(nomres, npar1, nopara, vaie, vale,&
                             [c16b], vake, 0)
-322         continue
-320     continue
+            end do
+        end do
 !
         nopara(npara+1) = 'DOMMAGE_CUMU'
         npar1 = npara + 1

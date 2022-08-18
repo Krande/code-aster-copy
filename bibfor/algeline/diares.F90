@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diares(n, nevec, a, lda, tau,&
                   evec, ldevec, work)
     implicit none
@@ -45,12 +45,12 @@ subroutine diares(n, nevec, a, lda, tau,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    do 10 j = 2, n
+    do j = 2, n
         call zmult(nevec, dconjg(tau(j)), evec(j, 1), ldevec)
-10  end do
+    end do
 !
 !  --- STOCKAGE DE LA MATRICE DE HOUSEHOLDER DANS L'ORDRE INVERSE ---
-    do 20 nr = n - 1, 2, -1
+    do nr = n - 1, 2, -1
         delta = dimag(a(nr,nr))*abs(a(nr,nr-1))
         if (delta .ne. 0.0d0) then
             call zmulmv('CONJUGATE', n-nr+1, nevec, (1.0d0, 0.0d0), evec(nr, 1),&
@@ -59,5 +59,5 @@ subroutine diares(n, nevec, a, lda, tau,&
             call zaddrc(n-nr+1, nevec, dcmplx(-1.0d0/delta, 0.0d0), a(nr, nr-1), 1,&
                         work, 1, evec(nr, 1), ldevec)
         endif
-20  end do
+    end do
 end subroutine

@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
-                  ddlexc, vecpro, resufr, xmastr,isign,&
+                  ddlexc, vecpro, resufr, xmastr, isign,&
                   numddl, coef)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr, ddlexc(*)
@@ -77,30 +77,30 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !
 !     --- NORMALISATION SUR LES DDL NON EXCLUS
 !
-        do 2 im = 1, nbmode
+        do im = 1, nbmode
             xnorm = 0.0d0
             if (norm(1:4) .eq. 'EUCL') then
-                do 4 ie = 1, neq
+                do ie = 1, neq
                     xx1 = vecpro(ie,im) * ddlexc(ie)
                     xnorm = xnorm + xx1*xx1
-  4             continue
+                end do
                 xnorm = sqrt(xnorm)
             else
-                do 6 ie = 1, neq
+                do ie = 1, neq
                     xx1 = vecpro(ie,im)*ddlexc(ie)
                     if (abs(xnorm) .lt. abs(xx1)) then
                         xnorm = xx1
                     endif
-  6             continue
+                end do
             endif
-            if (abs(xnorm).lt.epsi)then
-                call utmess('F','MODAL_23', si=im, sr=xnorm)
+            if (abs(xnorm) .lt. epsi) then
+                call utmess('F', 'MODAL_23', si=im, sr=xnorm)
             endif
             xx1 = 1.0d0 / xnorm
             coef(im) = xx1
-            do 8 ie = 1, neq
+            do ie = 1, neq
                 vecpro(ie,im) = vecpro(ie,im) * xx1
-  8         continue
+            end do
             if (para .eq. 'OUI') then
                 xx2 = xx1 * xx1
                 resufr(im,4) = resufr(im,4) * xx2
@@ -115,7 +115,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 resufr(im,5) = resufr(im,5) * xx2
 !-PROV        RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
             endif
-  2     continue
+        end do
 !
     else if (norm.eq.'MASS_GENE' .or. norm.eq.'RIGI_GENE') then
 !
@@ -124,7 +124,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
         indg = 4
         if (norm .eq. 'RIGI_GENE') indg=5
         if (para .eq. 'OUI') then
-            do 10 im = 1, nbmode
+            do im = 1, nbmode
                 xmn = resufr(im,indg)
                 xx1 = 1.0d0 / xmn
                 xx2 = sqrt(xmn)
@@ -135,29 +135,29 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                 resufr(im,11) = resufr(im,11) * xx2
                 resufr(im,12) = resufr(im,12) * xx2
                 coef(im) = xx3
-                do 12 ie = 1, neq
+                do ie = 1, neq
                     vecpro(ie,im) = vecpro(ie,im) * xx3
- 12             continue
- 10         continue
+                end do
+            end do
         else
             AS_ALLOCATE(vr=poi1, size=neq)
             AS_ALLOCATE(vr=poi2, size=neq)
-            do 20 im = 1, nbmode
-                do 22 ie = 1, neq
+            do im = 1, nbmode
+                do ie = 1, neq
                     poi1(ie) = vecpro(ie,im)
- 22             continue
+                end do
                 call mrmult('ZERO', lmatr, poi1, poi2, 1,&
                             .true._1)
                 xmn = 0.0d0
-                do 24 ie = 1, neq
+                do ie = 1, neq
                     xmn = xmn + ( poi1(ie) * poi2(ie) )
- 24             continue
+                end do
                 xx1 = 1.0d0 / sqrt(xmn)
                 coef(im) = xx1
-                do 26 ie = 1, neq
+                do ie = 1, neq
                     vecpro(ie,im) = vecpro(ie,im) * xx1
- 26             continue
- 20         continue
+                end do
+            end do
             AS_DEALLOCATE(vr=poi2)
             AS_DEALLOCATE(vr=poi1)
         endif
@@ -174,43 +174,43 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
             resufr(im,13) = 0.d0
             resufr(im,14) = 0.d0
             resufr(im,15) = 0.d0
-            if (xmastr(1).gt.epsi) resufr(im,13) = resufr(im,7) / xmastr(1)
-            if (xmastr(2).gt.epsi) resufr(im,14) = resufr(im,8) / xmastr(2)
-            if (xmastr(3).gt.epsi) resufr(im,15) = resufr(im,9) / xmastr(3)
+            if (xmastr(1) .gt. epsi) resufr(im,13) = resufr(im,7) / xmastr(1)
+            if (xmastr(2) .gt. epsi) resufr(im,14) = resufr(im,8) / xmastr(2)
+            if (xmastr(3) .gt. epsi) resufr(im,15) = resufr(im,9) / xmastr(3)
         end do
     endif
 !
     if (isign .eq. 0) then
     else if (isign .eq. 1) then
-        do 100 im = 1, nbmode
+        do im = 1, nbmode
             xx1 = vecpro(numddl,im)
             if (xx1 .lt. 0.0d0) then
                 coef(im) = -coef(im)
-                do 102 ie = 1, neq
+                do ie = 1, neq
                     vecpro(ie,im) = -vecpro(ie,im)
-102             continue
+                end do
                 if (para .eq. 'OUI') then
                     resufr(im,10) = -resufr(im,10)
                     resufr(im,11) = -resufr(im,11)
                     resufr(im,12) = -resufr(im,12)
                 endif
             endif
-100     continue
+        end do
     else if (isign .eq. -1) then
-        do 110 im = 1, nbmode
+        do im = 1, nbmode
             xx1 = vecpro(numddl,im)
             if (xx1 .gt. 0.0d0) then
                 coef(im) = -coef(im)
-                do 112 ie = 1, neq
+                do ie = 1, neq
                     vecpro(ie,im) = -vecpro(ie,im)
-112             continue
+                end do
                 if (para .eq. 'OUI') then
                     resufr(im,10) = -resufr(im,10)
                     resufr(im,11) = -resufr(im,11)
                     resufr(im,12) = -resufr(im,12)
                 endif
             endif
-110     continue
+        end do
     endif
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcrohy(x, dp, em, ep)
 !
     implicit none
@@ -36,7 +36,7 @@ subroutine lcrohy(x, dp, em, ep)
 !
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
      &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
      &               itemax, jprolp, jvalep, nbvalp
@@ -63,9 +63,9 @@ subroutine lcrohy(x, dp, em, ep)
 ! ----------------------------------------------------------------------
 !
 !    CALCUL DE BE EN T-
-    do 10 ij = 1, 6
+    do ij = 1, 6
         bem(ij) = kr(ij) - 2*em(ij)
-10  end do
+    end do
 !
     call lcdete(bem, detbem)
     jelasm = sqrt(detbem)

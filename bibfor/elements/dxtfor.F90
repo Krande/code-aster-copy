@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxtfor(global, xyzl, pgl, for, vecl)
     implicit none
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/gtria3.h"
@@ -33,7 +34,6 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
 !     IN  FOR    : FORCE APPLIQUEE SUR LA FACE
 !     OUT VECL   : CHARGEMENT NODAL RESULTANT
 !     ------------------------------------------------------------------
-#include "jeveux.h"
 !
     integer :: i, nno, jcara
     real(kind=8) :: aire, alpha, beta
@@ -50,7 +50,7 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
                 c, s)
 !
     if (.not.global) then
-        do 10 i = 1, nno
+        do i = 1, nno
             fx = for(1,i)
             fy = for(2,i)
             for(1,i) = t2iu(1)*fx + t2iu(3)*fy
@@ -59,19 +59,19 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
             fy = for(5,i)
             for(4,i) = t2iu(1)*fx + t2iu(3)*fy
             for(5,i) = t2iu(2)*fx + t2iu(4)*fy
- 10     continue
+        end do
     endif
 !
     aire = carat3(8)
 !
-    do 20 i = 1, 6*nno
+    do i = 1, 6*nno
         vecl(i) = 0.d0
- 20 end do
+    end do
 !
-    do 30 i = 1, 6
+    do i = 1, 6
         vecl(i ) = for(i,1)*aire/3.d0
         vecl(i+6 ) = for(i,2)*aire/3.d0
         vecl(i+12) = for(i,3)*aire/3.d0
- 30 end do
+    end do
 !
 end subroutine

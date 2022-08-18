@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
                   fnrmst, fnrmsc, fnmax, fnmin, fmaxmo,&
                   fminmo, nbmaxr, nbminr)
@@ -72,7 +72,7 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
     smaxr = 0.0d0
     sminr = 0.0d0
 !
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
 !
         if ((abs(fn(i))) .gt. offset) then
             ncount = ncount + 1
@@ -82,11 +82,11 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
 !
             if (fn(i) .gt. fnmax) fnmax = fn(i)
             if (fn(i) .lt. fnmin) fnmin = fn(i)
-
+!
         endif
 !
-10  end do
-
+    end do
+!
     do i = 2, nbpt-1
 !
         if ((abs(fn(i))) .gt. offset) then
@@ -106,7 +106,7 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
         endif
 !
     end do
-
+!
 !
     if (ncount .ne. 0) then
         fnmoyc = sfn/dble(ncount)
@@ -131,12 +131,12 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
         fmaxmo = 0.d0
     endif
 !
-    do 20 i = 1, nbpt
+    do i = 1, nbpt
         if (abs(fn(i)) .gt. offset) then
             sfn2 = sfn2 + fn(i)**2
         endif
 !
-20  end do
+    end do
 !
     if (ncount .ne. 0) then
         fnrmsc = sqrt(sfn2/dble(ncount))
@@ -152,5 +152,5 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
 !
     goto 30
 !
-30  continue
+ 30 continue
 end subroutine

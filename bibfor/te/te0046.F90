@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0046(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -25,10 +25,10 @@ subroutine te0046(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/reeref.h"
 #include "asterfort/teattr.h"
 #include "asterfort/xteini.h"
-#include "asterfort/ltequa.h"
     character(len=16) :: option, nomte
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -105,8 +105,7 @@ subroutine te0046(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. ltequa(elrefp,enr)) &
-    call jevech('PPMILTO', 'L', jpmilt)
+    if ((ibid.eq.0) .and. ltequa(elrefp,enr)) call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PXFGEOM', 'E', jout)
 !
@@ -114,12 +113,12 @@ subroutine te0046(option, nomte)
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -132,23 +131,23 @@ subroutine te0046(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112         continue
-111     continue
+            end do
+        end do
 !
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
 !
-        do 200 kpg = 1, npg
+        do kpg = 1, npg
 !
 !         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
             xg(:) = 0.d0
-            do 210 i = 1, ndim
-                do 211 in = 1, nno
+            do i = 1, ndim
+                do in = 1, nno
                     xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+in) * coorse( ndim*(in-1)+i)
-211             continue
-210         continue
+                end do
+            end do
 !
 !         COORDONNEES DU PG DANS L'ELEMENT DE REF PARENT : XE
             call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
@@ -157,19 +156,19 @@ subroutine te0046(option, nomte)
 !         NUMERO DE CE POINT DE GAUSS DANS LA FAMILLE 'XFEM'
             ipg= (ise-1) * npg + kpg
 !
-            do 220 j = 1, ndim
+            do j = 1, ndim
                 zr(jout-1+ndim*(ipg-1)+j) = xe(j)
-220         continue
+            end do
 !
 !
-200     continue
+        end do
 !
 !-----------------------------------------------------------------------
 !         FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
 !
 !
-110 continue
+    end do
 !
 !
 end subroutine

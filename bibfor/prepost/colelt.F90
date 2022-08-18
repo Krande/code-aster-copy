@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
                   nuconn)
 ! person_in_charge: nicolas.greffet at edf.fr
@@ -39,7 +39,6 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 ! -----  ARGUMENTS
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -48,6 +47,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: maxnod, nbtyma, nbmail, nbnoma(nbtyma), nuconn(15, 32), nbnode
 ! -----  VARIABLES LOCALES
     character(len=8) :: k8bid
@@ -116,7 +116,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     icurgr = 0
     nbgrou = 0
     indgro = 0
-    do 10 ima = 1, nbmail
+    do ima = 1, nbmail
 !
 ! NUMERO DE LA MAILLE
         zi(jnuma - 1 + ima) = ima
@@ -129,22 +129,22 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !
 !      INDICATION DES NOEUDS QUI NE SONT PAS ORPHELINS
         ityp = zi(jtypma+ima-1)
-        do 12 ino = 1, nbnoma(ityp)
+        do ino = 1, nbnoma(ityp)
             node = zi(jnoma+ij+nuconn(ityp,ino)-1)
             noeuds(node+1) = 1
- 12     continue
+        end do
 !
         if (icurgr .ne. mailles(ima)) then
             icurgr = mailles(ima)
             exisgr = .false.
-            do 20 i = 1, nbgrou
+            do i = 1, nbgrou
 ! CAS_VIV ICURGR=0 et ZI(JINDMA+I-1)=1
                 if (icurgr .eq. zi(jindma+i-1)) then
                     exisgr = .true.
                     indgro = i
                     goto 30
                 endif
- 20         continue
+            end do
  30         continue
             if (.not.exisgr) then
                 nbgrou = nbgrou + 1
@@ -159,7 +159,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !
         ij = ij + zi(jnbnma+ima-1)
         zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+ 1
- 10 end do
+    end do
 !
     indmax = nbgrou
 !MH
@@ -173,10 +173,10 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
                 indmax)
     call jeecra('&&PRECOU.LISTE.GROUP_MA', 'LONT', nbmail)
 !
-    do 40 i = 1, indmax
+    do i = 1, indmax
         call jeecra(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'LONMAX', zi( jnbmag+i-1))
         zi(jnbmag+i-1) = 0
- 40 end do
+    end do
 !
 ! --- AFFECTATION DES OBJETS RELATIFS AUX GROUPES DE MAILLES :
 !     ------------------------------------------------------
@@ -186,17 +186,17 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     icurgr = 0
     nbgrou = 0
     indgro = 0
-    do 50 ima = 1, nbmail
+    do ima = 1, nbmail
         if (icurgr .ne. mailles(ima)) then
             icurgr = mailles(ima)
             exisgr = .false.
-            do 60 i = 1, nbgrou
+            do i = 1, nbgrou
                 if (icurgr .eq. zi(jindma+i-1)) then
                     exisgr = .true.
                     indgro = i
                     goto 70
                 endif
- 60         continue
+            end do
  70         continue
             if (.not.exisgr) then
                 nbgrou = nbgrou + 1
@@ -211,7 +211,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
         zi(jindma+indgro-1) = mailles(ima)
         call jeveuo(jexnum('&&PRECOU.LISTE.GROUP_MA', indgro), 'E', jgr)
         zi(jgr+zi(jnbmag+indgro-1)-1) = zi(jnuma+ima-1)
- 50 end do
+    end do
 !
     call jedema()
 !

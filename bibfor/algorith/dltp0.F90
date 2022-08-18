@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dltp0(t0, nume)
     implicit none
 #include "jeveux.h"
@@ -27,11 +27,11 @@ subroutine dltp0(t0, nume)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/rs_getlast.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/rs_getlast.h"
     real(kind=8) :: t0
     integer :: nume
 ! OUT : T0   : INSTANT INITIAL
@@ -45,7 +45,7 @@ subroutine dltp0(t0, nume)
     complex(kind=8) :: c16b
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, jadr,  jordr, n1, nbordr(1), tnume(1)
+    integer :: i, ibid, jadr, jordr, n1, nbordr(1), tnume(1)
     integer :: nbtrou, nc, ndy, nni, np, nt
     real(kind=8) :: prec, r8b, temps
     real(kind=8), pointer :: bint(:) => null()
@@ -91,11 +91,11 @@ subroutine dltp0(t0, nume)
             call rsorac(dyna, 'TOUT_ORDRE', 0, r8b, k8b,&
                         c16b, r8b, k8b, zi(jordr), nbordr(1),&
                         ibid)
-            do 10 i = 1, nbordr(1)
+            do i = 1, nbordr(1)
                 if (zi(jordr+i-1) .eq. nume) goto 12
-10          continue
+            end do
             call utmess('F', 'ALGORITH3_36', sk=dyna)
-12          continue
+ 12         continue
         endif
 !
 !        --- RECUPERATION DE L'INSTANT ---

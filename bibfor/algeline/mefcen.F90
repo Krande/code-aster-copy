@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
                   numnog, nbnog, nummag, numgrp, coor,&
                   cent, req, xint, yint, zint,&
@@ -82,7 +82,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iad, icesc, icesd, icesl,  icmp
+    integer :: iad, icesc, icesd, icesl, icmp
     integer :: npmax, numma, numno1, numno2
     real(kind=8) :: epsit
     real(kind=8), pointer :: cesv(:) => null()
@@ -96,12 +96,12 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! --- CAS OU IL N Y A PAS DE GROUPES D EQUIVALENCE
 !
     if (iequiv .eq. 0) then
-        do 20 i = 1, nbcyl
+        do i = 1, nbcyl
             numno1 = zi(numnog(i))
             xint(i) = coor((numno1-1)*3 + irot(1))
             yint(i) = coor((numno1-1)*3 + irot(2))
             zint(1,numgrp(i)) = coor((numno1-1)*3 + irot(3))
-            do 10 j = 2, nbnog(i)
+            do j = 2, nbnog(i)
                 numno2 = zi(numnog(i)+j-1)
                 if (abs( coor( (numno1-1)*3 + irot(1)) - coor((numno2-1) *3 + irot(1) ) )&
                     .gt. epsit .or.&
@@ -111,22 +111,22 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
                     call utmess('F', 'ALGELINE_73', sk=note)
                 endif
                 zint(j,numgrp(i)) = coor((numno2-1)*3 + irot(3))
-10          continue
-20      continue
+            end do
+        end do
 !
 !
 ! --- COORDONNEES DES CENTRES DES CYLINDRES
 ! --- CAS OU IL Y A DES GROUPES D EQUIVALENCE
 !
     else if (iequiv.eq.1) then
-        do 40 i = 1, nbcyl
+        do i = 1, nbcyl
             xint(i) = cent(2*(i-1)+1)
             yint(i) = cent(2*(i-1)+2)
-            do 30 j = 1, nbnog(numgrp(i))
+            do j = 1, nbnog(numgrp(i))
                 numno2 = zi(numnog(numgrp(i))+j-1)
                 zint(j,numgrp(i)) = coor((numno2-1)*3 + irot(3))
-30          continue
-40      continue
+            end do
+        end do
     endif
 !
 !
@@ -134,9 +134,9 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! --- CAS OU IL Y A DES GROUPES D EQUIVALENCE
 !
     if (iequiv .eq. 1) then
-        do 50 i = 1, nbcyl
+        do i = 1, nbcyl
             rint(i) = req(numgrp(i))
-50      continue
+        end do
 !
 ! --- RAYONS DES CYLINDRES
 ! --- CAS OU IL N Y A PAS DES GROUPES D EQUIVALENCE
@@ -167,7 +167,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! ---    DEBUT DE LA BOUCLE SUR LES CYLINDRES
 ! ---    ON RECHERCHE LA MAILLE ASSOCIEE AU PREMIER NOEUDS DE CHAQUE
 ! ---    CYLINDRE, ET ON LIT LA CARTE ELEMENT QUI LUI CORRESPOND
-        do 160 i = 1, nbcyl
+        do i = 1, nbcyl
             numma = zi(nummag(i))
 !
             call cesexi('C', icesd, icesl, numma, 1,&
@@ -181,7 +181,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
             else
                 call utmess('F', 'ALGELINE_75')
             endif
-160      continue
+        end do
     endif
 !
 ! --- MENAGE

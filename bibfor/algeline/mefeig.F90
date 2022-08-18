@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                   fre, ksi, mavr, alfr, alfi,&
                   mat1, mavi, w, z, ind)
@@ -93,13 +93,13 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- INVERSION DE LA MATRICE DE MASSE MAT1 = MATM
 !     MAVI EST L IDENTITE
 !
-    do 20 i = 1, nbmod
-        do 10 j = 1, nbmod
+    do i = 1, nbmod
+        do j = 1, nbmod
             mat1(i,j) = matm(i,j)
             mavi(i,j) = 0.d0
-10      continue
+        end do
         mavi(i,i) = 1.d0
-20  end do
+    end do
 !
     ier = 1
     call mtcrog(mat1, mavi, 2*nbmod, nbmod, nbmod,&
@@ -113,19 +113,19 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- MATRICES DE RAIDEUR ET D AMORTISSEMENT
 ! --- D AMORTISSEMENT
 ! --- CONSTRUCTION DE LA MATRICE DU PROBLEME MODALE GENERALISE MAR1 = A
-    do 50 i = 1, nbmod
-        do 40 j = 1, nbmod
+    do i = 1, nbmod
+        do j = 1, nbmod
             mat1(i,nbmod+j) = 0.d0
             mat1(nbmod+i,nbmod+j) = 0.d0
             mat1(i,j) = 0.d0
             mat1(nbmod+i,j) = 0.d0
-            do 30 k = 1, nbmod
+            do k = 1, nbmod
                 mat1(nbmod+i,j) = mat1(nbmod+i,j) - mavr(i,k) * matr( k,j)
                 mat1(nbmod+i,nbmod+j) = mat1(nbmod+i,nbmod+j) - mavr( i,k) * mata(k,j)
-30          continue
-40      continue
+            end do
+        end do
         mat1(i,nbmod+i) = 1.d0
-50  end do
+    end do
 !
 !
 ! --- RESOLUTION DU SYSTEME A.X = L.X
@@ -144,15 +144,16 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- ALFI: PARTIES IMAGINAIRES DES VALEURS PROPRES
 ! --- MAVR: PARTIES REELLES DES VECTEURS PROPRES
 ! --- MAVI: PARTIES IMAGINAIRES DES VECTEURS PROPRES
-    do 60 ihh = 1, 2*nbmod
+    do ihh = 1, 2*nbmod
         alfr(ihh) = w(2*(ihh-1)+1)
         alfi(ihh) = w(2*(ihh-1)+2)
-        do 60 jhh = 1, 2*nbmod
+        do jhh = 1, 2*nbmod
             mavr(jhh,ihh) = z(2*(jhh-1)+1,ihh)
             mavi(jhh,ihh) = z(2*(jhh-1)+2,ihh)
 !         MAVR(JHH,IHH) = Z(2*(JHH+(IHH-1)*NBMOD-1)+1)
 !         MAVI(JHH,IHH) = Z(2*(JHH+(IHH-1)*NBMOD-1)+2)
-60      continue
+        end do
+    end do
 !
 !
 ! --- MINIMISATION DE LA PARTIE IMAGINAIRE DES VECTEURS PROPRES
@@ -161,7 +162,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- LES CALCULS DES NORMES SONT FAITS SUR LES NBMOD PREMIERS TERMES
 !
 ! --  BOUCLE SUR LES VECTEURS PROPRES
-    do 150 i = 1, 2*nbmod
+    do i = 1, 2*nbmod
 !
 ! --  ON EFFECTUE LA MINIMISATION QUE SUR LES VECTEURS PROPRES POUR
 ! --  LESQUELS LES PARTIES IMAGINAIRES DES VALEURS PROPRES
@@ -173,11 +174,11 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
             a = 0.d0
             b = 0.d0
             c = 0.d0
-            do 80 j = 1, nbmod
+            do j = 1, nbmod
                 a = a + mavr(j,i)*mavr(j,i)
                 b = b + mavi(j,i)*mavi(j,i)
                 c = c + mavr(j,i)*mavi(j,i)*2
-80          continue
+            end do
 !
             if (a .ne. 0.d0 .and. b .ne. 0.d0 .and. c .ne. 0.d0) then
 !
@@ -197,33 +198,33 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                 betai = beta / bdiv
 !
 ! --        CALCUL DES PRODUITS DES VECTEURS PROPRES PAR ALPHA ET BETA
-                do 90 j = 1, 2*nbmod
+                do j = 1, 2*nbmod
                     z(j,1) = (mavr(j,i) * alphar - mavi(j,i) * alphai)
                     z(j+2*nbmod,1) = (mavr(j,i) * alphai + mavi(j,i) * alphar)
                     z(j,2) = (mavr(j,i) * betar - mavi(j,i) * betai )
                     z(j+2*nbmod,2) = (mavr(j,i) * betai + mavi(j,i) * betar )
-90              continue
+                end do
 !
 ! --        CALCUL DE LA SOMME DES CARRES DES PARTIES IMAGINAIRES
                 vnorma = 0.d0
                 vnormb = 0.d0
-                do 100 j = 1, nbmod
+                do j = 1, nbmod
                     vnorma = vnorma + z(j+2*nbmod,1) * z(j+2*nbmod,1)
                     vnormb = vnormb + z(j+2*nbmod,2) * z(j+2*nbmod,2)
-100              continue
+                end do
 !
 ! --        MISE A JOUR DU VECTEUR PROPRE OBTENUS AVEC LE COEFFICIENT
 !           ALPHA OU BETA MINIMISANT LA NORME DE LA PARTIE IMAGINAIRE
                 if (vnorma .lt. vnormb) then
-                    do 110 j = 1, 2*nbmod
+                    do j = 1, 2*nbmod
                         mavr(j,i) = z(j,1)
                         mavi(j,i) = z(j+2*nbmod,1)
-110                  continue
+                    end do
                 else
-                    do 120 j = 1, 2*nbmod
+                    do j = 1, 2*nbmod
                         mavr(j,i) = z(j,2)
                         mavi(j,i) = z(j+2*nbmod,2)
-120                  continue
+                    end do
                 endif
 !
 ! --        TRAITEMENT DU CAS OU A OU B OU C = 0
@@ -232,38 +233,38 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --                 CE DERNIER PAR -I
 ! --        SI C=0 ET B>A, ON MULTIPLIE LE VECTEUR PROPRE PAR -I
             else if (a.eq.0.d0) then
-                do 130 j = 1, 2*nbmod
+                do j = 1, 2*nbmod
                     mavr(j,i) = mavi(j,i)
                     mavi(j,i) = 0.d0
-130              continue
+                end do
             else if (b.gt.a.and.c.eq.0.d0) then
-                do 140 j = 1, 2*nbmod
+                do j = 1, 2*nbmod
                     u = mavi(j,i)
                     mavi(j,i) = - mavr(j,i)
                     mavr(j,i) = u
-140              continue
+                end do
             endif
         endif
 !
 ! --  FIN DE BOUCLE SUR LES VECTEURS PROPRES
-150  end do
+    end do
 !
 ! --- NORMALISATION DES VECTEURS PROPRES COMPLEXES (SUR LES NBMOD
 ! --- PREMIERES COMPOSANTES )
 !
-    do 180 i = 1, 2*nbmod
+    do i = 1, 2*nbmod
         snor = 0.d0
-        do 160 j = 1, nbmod
+        do j = 1, nbmod
             snor = snor + mavr(j,i)**2+ mavi(j,i)**2
-160      continue
+        end do
         snor = snor ** 0.5d0
         if (snor .ne. 0.d0) then
-            do 170 j = 1, 2*nbmod
+            do j = 1, 2*nbmod
                 mavr(j,i) = mavr(j,i) / snor
                 mavi(j,i) = mavi(j,i) / snor
-170          continue
+            end do
         endif
-180  continue
+    end do
 !
 ! --- VALEUR PROPRE (J) = (ALFR(J)+I*ALFI(J))
 ! --- FREQUENCE COMPLEXE : S = ALFR(J) + I*ALFI(J)
@@ -277,12 +278,12 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- FREQUENCE POSITIVE
 !
     n = 0
-    do 200 i = 1, 2*nbmod
+    do i = 1, 2*nbmod
         if (alfi(i) .ge. 0.d0) then
             n = n + 1
             ind(n) = i
         endif
-200  end do
+    end do
 !
     if (n .ne. nbmod) then
         write(note(1:3),'(I3.3)') n
@@ -291,15 +292,15 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 !
 ! --- FREQUENCE ET AMORTISSEMENT REELS
 !
-    do 230 i = 1, nbmod
+    do i = 1, nbmod
         fre(i) = sqrt(alfr(ind(i))*alfr(ind(i)) + alfi(ind(i))*alfi( ind(i)) )/2.d0/pi
         ksi(i) = -alfr(ind(i))/2.d0/pi/fre(i)
-230  end do
+    end do
 !
 ! ---- CLASSEMENT PAR ORDRE CROISSANT DE FREQUENCES
 !
-    do 220 i = 1, nbmod-1
-        do 210 j = i+1, nbmod
+    do i = 1, nbmod-1
+        do j = i+1, nbmod
             if (fre(j) .lt. fre(i)) then
                 temp = fre(i)
                 fre(i) = fre(j)
@@ -311,8 +312,8 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                 ind(i) = ind(j)
                 ind(j) = k
             endif
-210      continue
-220  end do
+        end do
+    end do
 !
 ! --- CALCUL DES NORMES DES PARTIES REELLES ET IMAGINAIRES DES
 ! --- VECTEURS PROPRES ET IMPRESSION SUR LE FICHIER RESULTAT
@@ -341,13 +342,13 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
     noimmi = 1.0d0
     noimma = 0.0d0
 !
-    do 250 i = 1, nbmod
+    do i = 1, nbmod
         normr = 0.d0
         normi = 0.d0
-        do 240 j = 1, nbmod
+        do j = 1, nbmod
             normr = normr + mavr(j,ind(i)) * mavr(j,ind(i))
             normi = normi + mavi(j,ind(i)) * mavi(j,ind(i))
-240      continue
+        end do
         norm = normi + normr
         norm = sqrt(norm)
         normr = sqrt(normr) / norm
@@ -356,7 +357,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
         if (norema .lt. normr) norema = normr
         if (noimmi .gt. normi) noimmi = normi
         if (noimma .lt. normi) noimma = normi
-250  end do
+    end do
     write (ifm,6005) norema , noimmi
     write (ifm,6001)
     write (ifm,6006) noremi , noimma
