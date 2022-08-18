@@ -46,7 +46,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
-                            "RIGI_ROTA",
+                            "RIGI_ROTA", "RIGI_GEOM",
                             "RIGI_FLUI_STRU", "MASS_FLUI_STRU",
                             "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
@@ -75,7 +75,6 @@ class ComputeElementaryMatrix(ExecuteCommand):
         myOption = keywords["OPTION"]
         if myOption in (
             "AMOR_MECA",
-            "AMOR_MECA_ABSO",
             "IMPE_MECA",
             "MASS_FLUI_STRU",
             "MASS_MECA",
@@ -145,6 +144,14 @@ class ComputeElementaryMatrix(ExecuteCommand):
                     self._result.build()
                 else:
                     self._result = disc_comp.dualStiffnessMatrix()
+
+            elif myOption == "RIGI_GEOM":
+                sief_elga = keywords.get("SIEF_ELGA")
+                strx_elga = keywords.get("STRX_ELGA")
+                displ = keywords.get("DEPL")
+
+                self._result = disc_comp.geometricStiffnessMatrix(
+                    sief_elga, strx_elga, displ, fourier, group_ma)
 
             elif myOption == "RIGI_ROTA":
                 self._result = disc_comp.rotationalStiffnessMatrix(group_ma)

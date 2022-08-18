@@ -108,6 +108,80 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     return elemMatr;
 };
 
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::geometricStiffnessMatrix(
+    const FieldOnCellsRealPtr sief_elga, const FieldOnCellsRealPtr strx_elga,
+    const FieldOnNodesRealPtr displ, const ASTERINTEGER &modeFourier,
+    const VectorString &groupOfCells ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    const std::string option( "RIGI_GEOM" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Check super-element
+    if ( currModel->existsSuperElement() ) {
+        std::string modelName = ljust( currModel->getName(), 8 );
+        CALLO_CHECKSUPERELEMENT( option, modelName );
+    }
+
+    // Prepare computing
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    }
+
+    calcul->addInputField( "PCONTRR", sief_elga );
+    calcul->addInputField( "PEFFORR", sief_elga );
+
+    if ( displ ) {
+        calcul->addInputField( "PDEPLPR", displ );
+    }
+
+    if ( strx_elga ) {
+        calcul->addInputField( "PSTRXRR", strx_elga );
+    }
+
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    calcul->addFourierModeField( modeFourier );
+
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        calcul->addXFEMField( currXfemModel );
+    }
+
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+
+    // Compute elementary matrices for rigidity
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+    };
+
+    elemMatr->build();
+    return elemMatr;
+};
+
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::fluidStrucutreStiffnessMatrix(
     const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
     const FieldOnCellsRealPtr _externVarField ) const {

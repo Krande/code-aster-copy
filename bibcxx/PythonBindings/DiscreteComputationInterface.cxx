@@ -350,6 +350,23 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "stiffnessMatrix" ), py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
 
+        .def( "geometricStiffnessMatrix", &DiscreteComputation::geometricStiffnessMatrix, R"(
+            Return the elementary matrices for geometric Stiffness matrix.
+            Option RIGI_MECA_HYST.
+
+            Arguments:
+                sief_elga (FieldOnCellsReal) : stress at Gauss points
+                strx_elga (FieldOnCellsReal) : stress at Gauss points for structural element
+                displ (FieldOnNodesReal) : displacement field
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+            Returns:
+                ElementaryMatrixComplex: elementary geometric rigidity matrix
+            )",
+              py::arg( "sief_elga" ), py::arg( "strx_elga" ) = nullptr,
+              py::arg( "displ" ) = nullptr, py::arg( "modeFourier" ) = -1,
+              py::arg( "groupOfCells" ) = VectorString() )
+
         .def( "rotationalStiffnessMatrix", &DiscreteComputation::rotationalStiffnessMatrix, R"(
             Return the elementary matrices for rotational Stiffness matrix.
             Option RIGI_ROTA.

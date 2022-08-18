@@ -162,7 +162,15 @@ class DiscreteComputation {
                                    const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
-     * @brief Compute elementary matrices for rotational mechanical stiffness (RIGI_GYRO)
+     * @brief Compute elementary matrices for rotational mechanical stiffness (RIGI_ROTA)
+     */
+    ElementaryMatrixDisplacementRealPtr geometricStiffnessMatrix(
+        const FieldOnCellsRealPtr sief_elga, const FieldOnCellsRealPtr strx_elga = nullptr,
+        const FieldOnNodesRealPtr displ = nullptr, const ASTERINTEGER &modeFourier = 0,
+        const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
+     * @brief Compute elementary matrices for rotational mechanical stiffness (RIGI_ROTA)
      */
     ElementaryMatrixDisplacementRealPtr
     rotationalStiffnessMatrix( const VectorString &groupOfCells = VectorString() ) const;
