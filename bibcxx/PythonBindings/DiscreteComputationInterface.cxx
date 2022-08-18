@@ -182,6 +182,23 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "time_value" ) = 0.0, py::arg( "fourierMode" ) = -1,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+
+        .def( "fluidStrucutreStiffnessMatrix", &DiscreteComputation::fluidStrucutreStiffnessMatrix,
+              R"(
+            Return the elementary matrices for fluid-structure stiffness matrix.
+            Option RIGI_FLUI_STRUC.
+
+            Arguments:
+                  fourierMode (int): Fourier mode (default: -1)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                      If it empty, the full model is used
+                  externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                  ElementaryMatrix: elementary fluid-structure Stiffness matrix
+            )",
+              py::arg( "fourierMode" ) = -1, py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "externVarField" ) = nullptr )
+
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem, R"(
             Get physical probelm
 
