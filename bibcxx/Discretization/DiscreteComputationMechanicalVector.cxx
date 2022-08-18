@@ -98,7 +98,7 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) )
-            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
         elemVect->build();
         internalForces = elemVect->assemble( _phys_problem->getDOFNumbering() );
     };
@@ -228,10 +228,10 @@ FieldOnNodesRealPtr DiscreteComputation::contactForces(
     // Computation
     calcul->compute();
     if ( calcul->hasOutputElementaryTerm( "PVECTCR" ) ) {
-        elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTCR" ) );
+        elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTCR" ) );
     }
     if ( calcul->hasOutputElementaryTerm( "PVECTFR" ) ) {
-        elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTFR" ) );
+        elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTFR" ) );
     }
     elemVect->build();
 

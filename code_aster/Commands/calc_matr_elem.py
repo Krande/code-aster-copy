@@ -45,7 +45,8 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
-                            "RIGI_THER", "MASS_THER"):
+                            "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
+                            "MASS_ACOU",):
             return False
 
         strucElem = keywords.get("CARA_ELEM")
@@ -101,9 +102,6 @@ class ComputeElementaryMatrix(ExecuteCommand):
             mater = keywords.get("CHAM_MATER")
             cara = keywords.get("CARA_ELEM")
             phys_pb = PhysicalProblem(model, mater, cara)
-            hasExternalStateVariable = False
-            if mater is not None:
-                hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
 
             loads = keywords.get("CHARGE")
             if loads is not None:
@@ -126,13 +124,13 @@ class ComputeElementaryMatrix(ExecuteCommand):
             else:
                 group_ma = force_list(group_ma)
 
+            externVar = None
+            if phys_pb.getMaterialField() is not None:
+                if phys_pb.getMaterialField().hasExternalStateVariable():
+                    externVar = disc_comp.createExternalStateVariablesField(time)
+
             if myOption == "RIGI_MECA":
                 if keywords["CALC_ELEM_MODELE"] == "OUI":
-                    if hasExternalStateVariable:
-                        externVar = disc_comp.createExternalStateVariablesField(
-                            time)
-                    else:
-                        externVar = None
                     self._result = disc_comp.elasticStiffnessMatrix(
                         time, fourier, group_ma, externVarField=externVar
                     )
@@ -144,46 +142,32 @@ class ComputeElementaryMatrix(ExecuteCommand):
                     self._result = disc_comp.dualStiffnessMatrix()
 
             elif myOption == "MASS_MECA":
-                if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(
-                        time)
-                else:
-                    externVar = None
                 self._result = disc_comp.massMatrix(
-                    time, group_ma, externVarField=externVar)
+                    group_ma, externVarField=externVar)
 
             elif myOption == "AMOR_MECA":
-                if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(
-                        time)
-                else:
-                    externVar = None
                 massMatrix = keywords.get("MASS_MECA")
                 stiffnessMatrix = keywords.get("RIGI_MECA")
                 self._result = disc_comp.dampingMatrix(
-                    massMatrix, stiffnessMatrix, time, group_ma, externVarField=externVar)
+                    massMatrix, stiffnessMatrix, group_ma, externVarField=externVar)
+
+            elif myOption == "RIGI_MECA_HYST":
+                stiffnessMatrix = keywords["RIGI_MECA"]
+                self._result = disc_comp.complexStiffnessMatrix(
+                    stiffnessMatrix, group_ma, externVarField=externVar)
 
             elif myOption == "MASS_THER":
-                if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(time)
-                else:
-                    externVar = None
                 self._result = disc_comp.linearCapacityMatrix(time, delta_time, 1.0,
                                                               group_ma,
                                                               externVarField=externVar)
 
             elif myOption == "RIGI_THER":
-                if delta_time is None:
-                    delta_time = 0.0
-                if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(time)
-                else:
-                    externVar = None
                 self._result = disc_comp.linearConductivityMatrix(time, delta_time, 1.0,
                                                                   fourier,
                                                                   group_ma,
                                                                   externVarField=externVar)
-
+            elif myOption == "MASS_ACOU":
+                self._result = disc_comp.compressibilityMatrix(group_ma)
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))
         else:

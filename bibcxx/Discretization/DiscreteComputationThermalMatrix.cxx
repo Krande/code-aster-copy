@@ -94,7 +94,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
     };
 
     // Compute elementary matrices for dual BC
@@ -163,7 +163,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
     };
 
     elemMatr->build();
@@ -192,7 +192,7 @@ void DiscreteComputation::baseDualThermalMatrix(
                                                  std::make_shared< ElementaryTermReal >() );
                 calcul->compute();
                 if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
                 }
             }
         }
@@ -254,7 +254,7 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
             }
         }
 
@@ -271,7 +271,7 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
             }
         }
 
@@ -294,7 +294,7 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
             }
         }
     }
@@ -317,7 +317,7 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
             }
         }
 
@@ -340,7 +340,7 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
             calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
             }
         }
     }

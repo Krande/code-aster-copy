@@ -1,0 +1,64 @@
+/**
+ * @file DiscreteComputation.cxx
+ * @brief Implementation of class DiscreteComputation
+ * @section LICENCE
+ *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
+ *
+ *   This file is part of Code_Aster.
+ *
+ *   Code_Aster is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Code_Aster is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "astercxx.h"
+
+#include "Discretization/Calcul.h"
+#include "Discretization/DiscreteComputation.h"
+
+ElementaryMatrixPressureComplexPtr
+DiscreteComputation::compressibilityMatrix( const VectorString &groupOfCells ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
+
+    const std::string option( "MASS_ACOU" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+
+    // Prepare computing
+    auto calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PMATTTC", std::make_shared< ElementaryTermComplex >() );
+
+    // Compute elementary matrices for mass
+    calcul->compute();
+    if ( calcul->hasOutputElementaryTerm( "PMATTTC" ) )
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATTTC" ) );
+
+    elemMatr->build();
+    return elemMatr;
+};

@@ -215,18 +215,27 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "externVarField" ) = nullptr )
 
         .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
-            Return the elementary matrices for elastic Stiffness matrix
+            Return the elementary matrices for mechanical mass matrix
 
             Arguments:
-                time_value (float): current time (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "time_value" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+
+        .def( "compressibilityMatrix", &DiscreteComputation::compressibilityMatrix, R"(
+            Return the elementary matrices for compressibility acoustic matrix
+
+            Arguments:
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+            Returns:
+                ElementaryMatrix: elementary mass matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "linearCapacityMatrix", &DiscreteComputation::linearCapacityMatrix, R"(
             Return the elementary matrices for linear Capacity matrix in thermal computation
@@ -245,20 +254,32 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(
-            Return the elementary matrices for elastic Stiffness matrix
+            Return the elementary matrices for damping matrix
 
             Arguments:
                 massMatrix : elementary mass matrix
                 stiffnessMatrix : elementary stiffness matrix
-                time_value (float): current time (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
-                ElementaryMatrix: elementary damping matrix
+                ElementaryMatrixReal: elementary damping matrix
             )",
               py::arg( "massMatrix" ) = nullptr, py::arg( "stiffnessMatrix" ) = nullptr,
-              py::arg( "time_value" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+
+        .def( "complexStiffnessMatrix", &DiscreteComputation::complexStiffnessMatrix, R"(
+            Return the elementary matrices for viscoelastic Stiffness matrix
+
+            Arguments:
+                stiffnessMatrix : elementary stiffness matrix
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
+            )",
+              py::arg( "stiffnessMatrix" ), py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
 
         .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,

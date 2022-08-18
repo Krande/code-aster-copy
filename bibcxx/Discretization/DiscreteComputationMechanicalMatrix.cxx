@@ -99,16 +99,17 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
     };
 
     elemMatr->build();
     return elemMatr;
 };
+
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
+DiscreteComputation::massMatrix( const VectorString &groupOfCells,
                                  const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
@@ -171,18 +172,19 @@ DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorStri
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
     };
 
     elemMatr->build();
     return elemMatr;
 };
+
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix,
                                     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
-                                    const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
+                                    const VectorString &groupOfCells,
                                     const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
@@ -268,9 +270,89 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
+    };
+
+    elemMatr->build();
+
+    return elemMatr;
+};
+
+ElementaryMatrixDisplacementComplexPtr DiscreteComputation::complexStiffnessMatrix(
+    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
+    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    const std::string option( "RIGI_MECA_HYST" );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementComplex >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Check external state variables
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !_externVarField ) {
+            AS_ABORT( "External state variables vector is missing" )
+        }
+    }
+
+    // Check super-element
+    if ( currModel->existsSuperElement() ) {
+        std::string modelName = ljust( currModel->getName(), 8 );
+        CALLO_CHECKSUPERELEMENT( option, modelName );
+    }
+
+    // Prepare computing
+    auto calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    }
+    if ( _externVarField ) {
+        calcul->addInputField( "PVARCPR", _externVarField );
+    }
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    ElementaryTermRealPtr resuElemRigi;
+    auto total_R_Rigi = stiffnessMatrix->getElementaryTerms();
+    for ( auto &R_Rigi : total_R_Rigi ) {
+        if ( R_Rigi->getFiniteElementDescriptor() == currModel->getFiniteElementDescriptor() ) {
+            resuElemRigi = R_Rigi;
+            break;
+        }
+    }
+
+    if ( resuElemRigi->getPhysicalQuantity() == "MDNS_R" ) {
+        calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi );
+    } else {
+        calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi );
+    }
+
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PMATUUC", std::make_shared< ElementaryTermComplex >() );
+
+    // Compute elementary matrices for complex rigidity
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUC" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATUUC" ) );
     };
 
     elemMatr->build();
@@ -300,7 +382,7 @@ void DiscreteComputation::baseDualStiffnessMatrix(
                                                  std::make_shared< ElementaryTermReal >() );
                 calcul->compute();
                 if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
                 }
             }
         }
@@ -401,11 +483,11 @@ DiscreteComputation::computeTangentStiffnessMatrix( const FieldOnNodesRealPtr di
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
         if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) )
-            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
         elemVect->build();
         elemMatr->build();
     };
@@ -489,11 +571,11 @@ DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr d
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
         if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) )
-            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
         elemVect->build();
         elemMatr->build();
     };
@@ -549,10 +631,10 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
     // Computation
     calcul->compute();
     if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-        elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
     }
     if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) ) {
-        elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
     }
     elemMatr->build();
 

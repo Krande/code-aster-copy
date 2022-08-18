@@ -66,13 +66,13 @@ void Calcul::setGroupsOfCells( const ModelPtr &model, const VectorString &groupO
 
 /** @brief Add input field */
 void Calcul::addInputField( const std::string &parameterName, const DataFieldPtr field ) {
-    AS_ASSERT(field);
+    AS_ASSERT( field );
     _inputFields.insert( listFields::value_type( parameterName, field ) );
 }
 
 /** @brief Add output field */
 void Calcul::addOutputField( const std::string &parameterName, const DataFieldPtr field ) {
-    AS_ASSERT(field);
+    AS_ASSERT( field );
     _outputFields.insert( listFields::value_type( parameterName, field ) );
     _outputFieldsExist.insert( listExists::value_type( parameterName, false ) );
 }
@@ -122,10 +122,8 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE t
 }
 
 /** @brief Create and add input field for current time */
-void Calcul::addTimeField( const std::string &parameterName,
-                           const ASTERDOUBLE &time_value,
-                           const ASTERDOUBLE &time_delta,
-                           const ASTERDOUBLE &time_theta ) {
+void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE &time_value,
+                           const ASTERDOUBLE &time_delta, const ASTERDOUBLE &time_theta ) {
     auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "INST_R" );
@@ -278,7 +276,16 @@ bool Calcul::hasOutputElementaryTerm( const std::string &parameterName ) const {
 };
 
 /** @brief Get output if is elementary term */
-ElementaryTermRealPtr Calcul::getOutputElementaryTerm( const std::string &parameterName ) const {
+ElementaryTermRealPtr
+Calcul::getOutputElementaryTermReal( const std::string &parameterName ) const {
     AS_ASSERT( hasOutputElementaryTerm( parameterName ) );
     return std::static_pointer_cast< ElementaryTermReal >( _outputElemTerms.at( parameterName ) );
+};
+
+/** @brief Get output if is elementary term */
+ElementaryTermComplexPtr
+Calcul::getOutputElementaryTermComplex( const std::string &parameterName ) const {
+    AS_ASSERT( hasOutputElementaryTerm( parameterName ) );
+    return std::static_pointer_cast< ElementaryTermComplex >(
+        _outputElemTerms.at( parameterName ) );
 };

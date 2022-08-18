@@ -286,7 +286,7 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
             calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTUR" ) );
             }
         }
     }

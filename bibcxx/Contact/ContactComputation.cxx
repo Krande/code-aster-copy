@@ -54,10 +54,10 @@ ContactComputation::geometricGap( const ContactPairingPtr pairing ) const {
     calcul->compute();
 
     // get elementary Term
-    gap_elem->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECGAP" ) );
+    gap_elem->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECGAP" ) );
     gap_elem->build();
 
-    igap_elem->addElementaryTerm( calcul->getOutputElementaryTerm( "PVEIGAP" ) );
+    igap_elem->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVEIGAP" ) );
     igap_elem->build();
 
     // Assemble

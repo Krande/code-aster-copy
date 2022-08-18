@@ -256,6 +256,7 @@ character(len=*), intent(in), optional :: variz_, comporz_
             endif
         endif
     endif
+    print*, "MATR: ", resuElemRigi, matrMass
 
 ! - Output fields
     if (option .eq. 'AMOR_MECA') then

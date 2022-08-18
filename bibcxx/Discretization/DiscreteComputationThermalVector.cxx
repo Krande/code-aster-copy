@@ -81,7 +81,7 @@ bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
                                                  std::make_shared< ElementaryTermReal >() );
                 calcul->compute();
                 if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                    elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                                  iload );
                     has_load = true;
                 }
@@ -152,7 +152,7 @@ FieldOnNodesRealPtr DiscreteComputation::transientThermalLoad(
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) )
-            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ) );
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ) );
     };
     elemVect->build();
     // Assemble
@@ -252,7 +252,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                                                  std::make_shared< ElementaryTermReal >() );
                 calcul->compute();
                 if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                    elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                                  iload );
                     has_load = true;
                 }
@@ -267,7 +267,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                                                  std::make_shared< ElementaryTermReal >() );
                 calcul->compute();
                 if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                    elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
                                                  iload );
                     has_load = true;
                 }
@@ -293,7 +293,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -310,7 +311,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -328,7 +330,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -349,7 +352,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -369,7 +373,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -396,7 +401,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -419,7 +425,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -449,7 +456,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -467,7 +475,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -485,7 +494,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -504,7 +514,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -531,7 +542,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }
@@ -555,7 +567,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTermReal( "PVECTTR" ),
+                                             iload );
                 has_load = true;
             }
         }

@@ -156,7 +156,9 @@ class Calcul {
     bool hasOutputElementaryTerm( const std::string &parameterName ) const;
 
     /** @brief Get output if is elementary term */
-    ElementaryTermRealPtr getOutputElementaryTerm( const std::string &parameterName ) const;
+    ElementaryTermRealPtr getOutputElementaryTermReal( const std::string &parameterName ) const;
+    ElementaryTermComplexPtr
+    getOutputElementaryTermComplex( const std::string &parameterName ) const;
 
     /** @brief Compute option */
     void compute();
@@ -171,10 +173,8 @@ class Calcul {
     void addTimeField( const std::string &parameterName, const ASTERDOUBLE time_value );
 
     /** @brief Create and add input field for current time (for thermics) */
-    void addTimeField( const std::string &parameterName,
-                       const ASTERDOUBLE &time_value,
-                       const ASTERDOUBLE &time_delta,
-                       const ASTERDOUBLE &time_theta );
+    void addTimeField( const std::string &parameterName, const ASTERDOUBLE &time_value,
+                       const ASTERDOUBLE &time_delta, const ASTERDOUBLE &time_theta );
 
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );

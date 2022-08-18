@@ -171,8 +171,7 @@ class DiscreteComputation {
      * @return Elementary matrices for mass matrix (MASS_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
-    massMatrix( const ASTERDOUBLE &time_value = 0.0,
-                const VectorString &groupOfCells = VectorString(),
+    massMatrix( const VectorString &groupOfCells = VectorString(),
                 const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
@@ -188,6 +187,15 @@ class DiscreteComputation {
                           const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
+     * @brief Compute elementary matrices for mass matrix (MASS_ACOU)
+     * @param time Time
+     * @param groupofCells GROUP_MA
+     * @return Elementary matrices for mass matrix (MASS_ACOU)
+     */
+    ElementaryMatrixPressureComplexPtr
+    compressibilityMatrix( const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
      * @brief Compute elementary matrices for damping matrix (AMOR_MECA)
      * @param massMatrix Elementary matrices for mass matrix
      * @param stiffnessMatrix  Elementary matrices for mechanical stiffness
@@ -196,9 +204,18 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr
     dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix = nullptr,
                    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix = nullptr,
-                   const ASTERDOUBLE &time_value = 0.0,
                    const VectorString &groupOfCells = VectorString(),
                    const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+
+    /**
+     * @brief Compute elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
+     * @param stiffnessMatrix  Elementary matrices for mechanical stiffness
+     * @return Elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
+     */
+    ElementaryMatrixDisplacementComplexPtr
+    complexStiffnessMatrix( const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
+                            const VectorString &groupOfCells = VectorString(),
+                            const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute nodal field for kinematic boundary condition

@@ -134,4 +134,5 @@ Returns:
     addParallelThermalLoadToInterface( c1 );
 #endif /* ASTER_HAVE_MPI */
     addThermalLoadToInterface( c1 );
+    addAcousticLoadToInterface( c1 );
 };
