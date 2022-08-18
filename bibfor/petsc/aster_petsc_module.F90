@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,13 +78,6 @@ interface
     end subroutine VecGetArray
 end interface
 interface
-    subroutine VecDestroy( v, ierr)
-          use petscvecdef
-          Vec, intent(in)  :: v
-          PetscErrorCode, intent(out) :: ierr
-    end subroutine VecDestroy
-end interface
-interface
     subroutine VecRestoreArray(x,x_array,i_x,ierr)
          use petscvecdef
          Vec :: x
@@ -144,13 +137,6 @@ interface
         Mat :: matnew
         PetscErrorCode, intent(out) :: ierr
     end subroutine MatConvert
-end interface
-interface
-    subroutine MatDestroy( a,  ierr )
-        use petscmatdef
-        Mat, intent(in) :: a
-        PetscErrorCode, intent(out) :: ierr
-    end subroutine MatDestroy
 end interface
 interface
     subroutine MatCreateShell(comm, m, n, mg, ng, ctxt, a_mat, ierr)
@@ -232,13 +218,6 @@ end interface
 !     end subroutine PCBJacobiGetSubKSP
 ! end interface
 interface
-     subroutine PCDestroy( pc, ierr)
-         use petsckspdef
-         PC :: pc
-         PetscErrorCode, intent(out) :: ierr
-     end subroutine PCDestroy
-end interface
-interface
      subroutine PCFactorSetMatOrderingType( pc, ordering, ierr)
          use petsckspdef
          PC :: pc
@@ -319,23 +298,6 @@ interface
         external :: mykspmonitor, mydestroy
         PetscErrorCode, intent(out) :: ierr
     end subroutine KSPMonitorSet
-end interface
-interface
-    subroutine KSPDestroy(ksp, ierr)
-        use petsckspdef
-        KSP :: ksp
-        PetscErrorCode, intent(out) :: ierr
-    end subroutine KSPDestroy
-end interface
-!
-! IS routines
-!
-interface
-    subroutine ISDestroy(is, ierr)
-        use petsckspdef
-        IS :: is
-        PetscErrorCode, intent(out) :: ierr
-    end subroutine ISDestroy
 end interface
 #endif
 end module aster_petsc_module
