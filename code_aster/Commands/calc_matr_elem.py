@@ -46,7 +46,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
-                            "RIGI_FLUI_STRU",
+                            "RIGI_FLUI_STRU", "MASS_FLUI_STRU",
                             "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
             return False
@@ -204,6 +204,10 @@ class ComputeElementaryMatrix(ExecuteCommand):
                 self._result.addElementaryTerm(
                     matr_rigi_dual.getElementaryTerms())
                 self._result.build()
+
+            elif myOption == "MASS_FLUI_STRU":
+                self._result = disc_comp.fluidStrucutreMassMatrix(groupOfCells=group_ma,
+                                                                  externVarField=externVar)
 
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))

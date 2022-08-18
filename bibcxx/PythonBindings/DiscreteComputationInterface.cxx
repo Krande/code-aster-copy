@@ -194,10 +194,24 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                       If it empty, the full model is used
                   externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
-                  ElementaryMatrix: elementary fluid-structure Stiffness matrix
+                  ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
             )",
               py::arg( "fourierMode" ) = -1, py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
+
+        .def( "fluidStrucutreMassMatrix", &DiscreteComputation::fluidStrucutreMassMatrix,
+              R"(
+            Return the elementary matrices for fluid-structure mass matrix.
+            Option MASS_FLUI_STRUC.
+
+            Arguments:
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                      If it empty, the full model is used
+                  externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                  ElementaryMatrixReal: elementary fluid-structure mass matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem, R"(
             Get physical probelm

@@ -152,6 +152,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return _coordinates;
     };
 
+    ConstantFieldOnCellsRealPtr getCurvilinearAbscissa() const { return _curvAbsc; }
+
     /**
      * @brief Get all the names of group of cells
      * @return NamesMapChar24 _nameOfGrpCells

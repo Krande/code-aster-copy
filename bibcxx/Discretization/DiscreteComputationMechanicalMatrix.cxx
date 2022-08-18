@@ -252,6 +252,72 @@ DiscreteComputation::massMatrix( const bool diagonal, const VectorString &groupO
 };
 
 ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::fluidStrucutreMassMatrix( const VectorString &groupOfCells,
+                                               const FieldOnCellsRealPtr _externVarField ) const {
+
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+
+    std::string option( "MASS_FLUI_STRU" );
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Check external state variables
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !_externVarField ) {
+            AS_ABORT( "External state variables vector is missing" )
+        }
+    }
+
+    // Check super-element
+    if ( currModel->existsSuperElement() ) {
+        std::string modelName = ljust( currModel->getName(), 8 );
+        CALLO_CHECKSUPERELEMENT( option, modelName );
+    }
+
+    // Prepare computing
+    auto calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( currModel );
+    } else {
+        calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PABSCUR", currModel->getMesh()->getCurvilinearAbscissa() );
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    }
+    if ( _externVarField ) {
+        calcul->addInputField( "PVARCPR", _externVarField );
+    }
+    if ( currElemChara ) {
+        calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    // Add output elementary terms
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+
+    // Compute elementary matrices for mass
+    if ( currModel->existsFiniteElement() ) {
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+    };
+
+    elemMatr->build();
+    return elemMatr;
+};
+
+ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix,
                                     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
                                     const VectorString &groupOfCells,

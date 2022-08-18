@@ -158,9 +158,6 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_FLUI_STRU)
-     * @param time_value Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mechanical stiffness (RIGI_FLUI_STRU)
      */
     ElementaryMatrixDisplacementRealPtr
     fluidStrucutreStiffnessMatrix( const ASTERINTEGER &modeFourier = 0,
@@ -217,6 +214,13 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr
     massMatrix( const bool diagonal, const VectorString &groupOfCells = VectorString(),
                 const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+
+    /**
+     * @brief Compute elementary matrices for mechanical stiffness (MASS_FLUI_STRU)
+     */
+    ElementaryMatrixDisplacementRealPtr
+    fluidStrucutreMassMatrix( const VectorString &groupOfCells = VectorString(),
+                              const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_THER)
