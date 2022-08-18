@@ -330,6 +330,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
+        .def( "gyroscopicDampingMatrix", &DiscreteComputation::gyroscopicDampingMatrix, R"(
+            Return the elementary matrices for gyroscopic damping matrix.
+            Option MECA_GYRO.
+
+            Arguments:
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                ElementaryMatrixReal: elementary gyroscopic damping matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+
         .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
               R"(
             Compute internal forces (integration of behaviour)

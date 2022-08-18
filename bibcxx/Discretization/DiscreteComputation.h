@@ -167,6 +167,16 @@ class DiscreteComputation {
                                const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
+     * @brief Compute elementary matrices for rotational mechanical damping (MECA_GYRO)
+     * @param time_value Time
+     * @param groupofCells GROUP_MA
+     * @return Elementary matrices for mechanical damping (MECA_GYRO)
+     */
+    ElementaryMatrixDisplacementRealPtr
+    gyroscopicDampingMatrix( const VectorString &groupOfCells = VectorString(),
+                               const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+
+    /**
      * @brief Compute elementary matrices for thermal model (RIGI_THER)
      * @param time_value Time
      * @param groupofCells GROUP_MA
