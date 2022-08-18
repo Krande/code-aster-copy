@@ -109,12 +109,14 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::massMatrix( const VectorString &groupOfCells,
+DiscreteComputation::massMatrix( const bool diagonal, const VectorString &groupOfCells,
                                  const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
-    const std::string option( "MASS_MECA" );
+    std::string option( "MASS_MECA" );
+    if ( diagonal )
+        option = "MASS_MECA_DIAG";
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
     elemMatr->prepareCompute( option );
@@ -166,14 +168,16 @@ DiscreteComputation::massMatrix( const VectorString &groupOfCells,
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    if ( !diagonal ) {
+        calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    }
 
     // Compute elementary matrices for mass
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
-        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+        if ( !diagonal && calcul->hasOutputElementaryTerm( "PMATUNS" ) )
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
     };
 
@@ -712,7 +716,7 @@ DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells
 
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells,
-                                                const FieldOnCellsRealPtr _externVarField ) const {
+                                              const FieldOnCellsRealPtr _externVarField ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "MECA_GYRO";
 

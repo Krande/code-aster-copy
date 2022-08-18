@@ -241,13 +241,15 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option MASS_MECA.
 
             Arguments:
+                diagonal (bool) : True for diagonal mass matrix else False.
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "diagonal" ), py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "externVarField" ) = nullptr )
 
         .def( "compressibilityMatrix", &DiscreteComputation::compressibilityMatrix, R"(
             Return the elementary matrices for compressibility acoustic matrix.

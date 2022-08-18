@@ -45,7 +45,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
-                            "RIGI_GYRO", "MECA_GIRO",
+                            "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
                             "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
             return False
@@ -153,8 +153,12 @@ class ComputeElementaryMatrix(ExecuteCommand):
                     group_ma, externVarField=externVar)
 
             elif myOption == "MASS_MECA":
-                self._result = disc_comp.massMatrix(
-                    group_ma, externVarField=externVar)
+                self._result = disc_comp.massMatrix(False,
+                                                    group_ma, externVarField=externVar)
+
+            elif myOption == "MASS_MECA_DIAG":
+                self._result = disc_comp.massMatrix(True,
+                                                    group_ma, externVarField=externVar)
 
             elif myOption == "AMOR_MECA":
                 massMatrix = keywords.get("MASS_MECA")

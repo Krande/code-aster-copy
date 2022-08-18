@@ -174,7 +174,7 @@ class DiscreteComputation {
      */
     ElementaryMatrixDisplacementRealPtr
     gyroscopicDampingMatrix( const VectorString &groupOfCells = VectorString(),
-                               const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+                             const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for thermal model (RIGI_THER)
@@ -204,7 +204,7 @@ class DiscreteComputation {
      * @return Elementary matrices for mass matrix (MASS_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
-    massMatrix( const VectorString &groupOfCells = VectorString(),
+    massMatrix( const bool diagonal, const VectorString &groupOfCells = VectorString(),
                 const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
