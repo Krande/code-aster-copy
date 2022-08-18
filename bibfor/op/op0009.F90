@@ -31,15 +31,12 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/meamac.h"
 #include "asterfort/meamgy.h"
 #include "asterfort/meamme.h"
 #include "asterfort/medith.h"
 #include "asterfort/meimme.h"
-#include "asterfort/memaac.h"
 #include "asterfort/memame.h"
 #include "asterfort/meonme.h"
-#include "asterfort/meriac.h"
 #include "asterfort/merifs.h"
 #include "asterfort/merige.h"
 #include "asterfort/merigy.h"
@@ -152,16 +149,6 @@ implicit none
                     timeCurr    , base        ,&
                     rigiMatrElem, massMatrElem,&
                     matrElem    , listElemCalc)
-
-    else if (option.eq.'RIGI_ACOU') then
-        call meriac(model, nbLoad, listLoadK8, mate, mateco, matrElem, base)
-
-    else if (option.eq.'MASS_ACOU') then
-        call memaac(model, mate, mateco, matrElem)
-
-    else if (option.eq.'AMOR_ACOU') then
-        call meamac(model, nbLoad, listLoadK8, mate, mateco, matrElem, base)
-
     else
         ASSERT(ASTER_FALSE)
 
