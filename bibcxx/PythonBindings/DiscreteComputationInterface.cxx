@@ -350,6 +350,18 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "stiffnessMatrix" ), py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
 
+        .def( "rotationalStiffnessMatrix", &DiscreteComputation::rotationalStiffnessMatrix, R"(
+            Return the elementary matrices for rotational Stiffness matrix.
+            Option RIGI_ROTA.
+
+            Arguments:
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+            Returns:
+                ElementaryMatrixReal: elementary rotational rigidity matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString() )
+
         .def( "gyroscopicStiffnessMatrix", &DiscreteComputation::gyroscopicStiffnessMatrix, R"(
             Return the elementary matrices for gyroscopic Stiffness matrix.
             Option RIGI_GYRO.
@@ -357,11 +369,10 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrixReal: elementary gyroscopic rigidity matrix
             )",
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "gyroscopicDampingMatrix", &DiscreteComputation::gyroscopicDampingMatrix, R"(
             Return the elementary matrices for gyroscopic damping matrix.
@@ -370,11 +381,10 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrixReal: elementary gyroscopic damping matrix
             )",
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
               R"(

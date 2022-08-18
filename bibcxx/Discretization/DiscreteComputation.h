@@ -146,9 +146,6 @@ class DiscreteComputation {
                                  const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
-     * @param time_value Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
     elasticStiffnessMatrix( const ASTERDOUBLE &time_value = 0.0,
@@ -166,29 +163,24 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elementary matrices for rotational mechanical stiffness (RIGI_GYRO)
-     * @param time_value Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mechanical stiffness (RIGI_GYRO)
      */
     ElementaryMatrixDisplacementRealPtr
-    gyroscopicStiffnessMatrix( const VectorString &groupOfCells = VectorString(),
-                               const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+    rotationalStiffnessMatrix( const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
+     * @brief Compute elementary matrices for rotational mechanical stiffness (RIGI_GYRO)
+     */
+    ElementaryMatrixDisplacementRealPtr
+    gyroscopicStiffnessMatrix( const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute elementary matrices for rotational mechanical damping (MECA_GYRO)
-     * @param time_value Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mechanical damping (MECA_GYRO)
      */
     ElementaryMatrixDisplacementRealPtr
-    gyroscopicDampingMatrix( const VectorString &groupOfCells = VectorString(),
-                             const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+    gyroscopicDampingMatrix( const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute elementary matrices for thermal model (RIGI_THER)
-     * @param time_value Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for thermal model (RIGI_THER)
      */
     ElementaryMatrixTemperatureRealPtr
     linearConductivityMatrix( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
@@ -198,18 +190,12 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elementary matrices for acoustic model (RIGI_ACOU)
-     * @param time_value Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for acoustic model (RIGI_ACOU)
      */
     ElementaryMatrixPressureComplexPtr
     linearMobilityMatrix( const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)
-     * @param time Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mass matrix (MASS_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
     massMatrix( const bool diagonal, const VectorString &groupOfCells = VectorString(),
@@ -224,9 +210,6 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_THER)
-     * @param time Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mass matrix (MASS_THER)
      */
     ElementaryMatrixTemperatureRealPtr
     linearCapacityMatrix( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
@@ -236,18 +219,12 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_ACOU)
-     * @param time Time
-     * @param groupofCells GROUP_MA
-     * @return Elementary matrices for mass matrix (MASS_ACOU)
      */
     ElementaryMatrixPressureComplexPtr
     compressibilityMatrix( const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute elementary matrices for damping matrix (AMOR_MECA)
-     * @param massMatrix Elementary matrices for mass matrix
-     * @param stiffnessMatrix  Elementary matrices for mechanical stiffness
-     * @return Elementary matrices for damping matrix (AMOR_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
     dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix = nullptr,
@@ -259,8 +236,6 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
-     * @param stiffnessMatrix  Elementary matrices for mechanical stiffness
-     * @return Elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
      */
     ElementaryMatrixDisplacementComplexPtr
     complexStiffnessMatrix( const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
