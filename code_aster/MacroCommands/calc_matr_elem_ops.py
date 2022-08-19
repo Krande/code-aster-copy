@@ -35,8 +35,6 @@ def calc_matr_elem_ops(self, **args):
         ElementaryMatrix: elementary matrix
     """
 
-    print("ARGS: ", args, flush=True)
-
     # Define problem
     model = args["MODELE"]
     mater = args.get("CHAM_MATER")
