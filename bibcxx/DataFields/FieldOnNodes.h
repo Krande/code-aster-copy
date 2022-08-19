@@ -225,12 +225,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes duplicate() { return *this; }
 
     /**
-     * @brief
-     * @exists
-     */
-    bool exists() { return _descriptor->exists(); };
-
-    /**
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
      */
     FieldOnNodes( MeshCoordinatesFieldPtr &toCopy )

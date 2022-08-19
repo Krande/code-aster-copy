@@ -157,12 +157,6 @@ class FieldOnCells : public DataField {
 
     /**
      * @brief
-     * @exists
-     */
-    bool exists() { return _descriptor->exists(); };
-
-    /**
-     * @brief
      * @return
      */
     SimpleFieldOnCellsValueTypePtr exportToSimpleFieldOnCells() {

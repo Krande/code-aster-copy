@@ -3,7 +3,7 @@
  * @brief Implementation de DataField vide car DataField est un template
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,4 +23,28 @@
 
 #include "DataFields/DataField.h"
 
-/* person_in_charge: nicolas.pignet at edf.fr */
+#include "aster_fort_ds.h"
+#include "aster_fort_utils.h"
+
+std::string DataField::getFieldType() const {
+    const std::string questi1( "TYPE_CHAMP" );
+    const std::string typeco( "CHAMP" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "F" );
+
+    CALLO_DISMOI( questi1, getName(), typeco, &repi, repk, arret, &ier );
+
+    return trim( repk.toString() );
+};
+
+bool DataField::exists() const {
+    ASTERINTEGER iret;
+    std::string champ = "CHAMP";
+    CALLO_EXISD( champ, getName(), &iret );
+
+    if ( iret == 1 )
+        return true;
+
+    return false;
+};

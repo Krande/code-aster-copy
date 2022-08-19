@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ subroutine te0041(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
@@ -85,8 +84,6 @@ subroutine te0041(option, nomte)
     real(kind=8)        :: valres(3)
     character(len=16)   :: nomres(3)
 ! --------------------------------------------------------------------------------------------------
-    character(len=8)    :: nomu
-    character(len=16)   :: concep,cmd
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
 !   Ce sont bien des éléments discrets
@@ -102,19 +99,14 @@ subroutine te0041(option, nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !
-!   La commande qui utilise cette option
-    call getres(nomu,concep,cmd)
-!   Commande ASSEMBLAGE, pas de comportement juste le matéraiu
-!       concep  : MATR_ELEM_DEPL_R
-!       cmd     : CALC_MATR_ELEM
-!
     assemble_amor = (option.eq.'AMOR_MECA')
     if ( assemble_amor ) then
-        assemble_amor = (concep.eq.'MATR_ELEM_DEPL_R').and.(cmd.eq.'CALC_MATR_ELEM')
-        if ( .not. assemble_amor ) then
+        call tecach('ONO','PCOMPOR', 'L', iret, iad=ibid)
+        if( iret > 0 ) assemble_amor = ASTER_TRUE
+        if( .not. assemble_amor) then
             call jevech('PCOMPOR', 'L', icompo)
             assemble_amor = zk16(icompo).eq.'DIS_CHOC'
-        endif
+        end if
     endif
 !
     if      (option .eq. 'RIGI_MECA') then

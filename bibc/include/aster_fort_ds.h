@@ -74,6 +74,10 @@ void DEF0( DELETECACHEDOBJECTS, deletecachedobjects );
 #define CALL_DELETE_TEMPORARY_OBJECTS() CALL0( DELETETEMPORARYOBJECTS, deletetemporaryobjects )
 void DEF0( DELETETEMPORARYOBJECTS, deletetemporaryobjects );
 
+#define CALLO_EXISD( a, b, c ) CALLOOP( EXISD, exisd, a, b, c )
+void DEFSSP( EXISD, exisd, const char *, STRING_SIZE, const char *, STRING_SIZE,
+             const ASTERINTEGER * );
+
 #define CALLO_MATR_ASSE_SET_VALUES( a, b, c, d, e )                                                \
     CALLOPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, a, b, c, d, e )
 extern void DEFSPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, const char *, STRING_SIZE,
