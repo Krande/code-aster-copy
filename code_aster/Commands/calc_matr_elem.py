@@ -47,7 +47,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
                             "RIGI_ROTA", "RIGI_GEOM",
-                            "IMPE_MECA",
+                            "IMPE_MECA", "RIGI_MECA_HYST",
                             "RIGI_FLUI_STRU", "MASS_FLUI_STRU",
                             "RIGI_THER", "MASS_THER",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
@@ -61,6 +61,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
         loads = keywords.get("CHARGE")
         if loads is not None:
+            if myOption == "RIGI_MECA_HYST":
+                return False
+
             for load in force_list(loads):
                 if isinstance(load, MechanicalLoadComplex):
                     return False
