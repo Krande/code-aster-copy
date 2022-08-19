@@ -48,7 +48,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
                             "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
                             "RIGI_ROTA", "RIGI_GEOM",
                             "RIGI_FLUI_STRU", "MASS_FLUI_STRU",
-                            "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
+                            "RIGI_THER", "MASS_THER",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
             return False
 
@@ -116,6 +116,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
             time = keywords["INST"]
             delta_time = keywords.get("INCR_INST")
+            if delta_time is None:
+                delta_time = 0.0
+
             myOption = keywords["OPTION"]
 
             fourier = keywords.get("MODE_FOURIER")
@@ -178,8 +181,12 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
             elif myOption == "RIGI_MECA_HYST":
                 stiffnessMatrix = keywords["RIGI_MECA"]
-                self._result = disc_comp.complexStiffnessMatrix(
+                self._result = disc_comp.hystereticStiffnessMatrix(
                     stiffnessMatrix, group_ma, externVarField=externVar)
+                matr_rigi_dual = disc_comp.dualStiffnessMatrix()
+                self._result.addElementaryTerm(
+                    matr_rigi_dual.getElementaryTerms())
+                self._result.build()
 
             elif myOption == "MASS_THER":
                 self._result = disc_comp.linearCapacityMatrix(time, delta_time, 1.0,

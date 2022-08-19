@@ -717,19 +717,6 @@ class DiscreteComputation:
     def __init__(self, arg0):
         pass
     
-    def complexStiffnessMatrix(self, stiffnessMatrix, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for viscoelastic Stiffness matrix.
-        Option RIGI_MECA_HYST.
-        
-        Arguments:
-            stiffnessMatrix : elementary stiffness matrix
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-            ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
-        """
-    
     def compressibilityMatrix(self, groupOfCells= []):
         """Return the elementary matrices for compressibility acoustic matrix.
         Option MASS_ACOU.
@@ -931,6 +918,45 @@ class DiscreteComputation:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
     
+    def fluidStrucutreMassMatrix(self, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for fluid-structure mass matrix.
+        Option MASS_FLUI_STRUC.
+        
+        Arguments:
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+              externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+              ElementaryMatrixReal: elementary fluid-structure mass matrix
+        """
+    
+    def fluidStrucutreStiffnessMatrix(self, fourierMode= -1, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for fluid-structure stiffness matrix.
+        Option RIGI_FLUI_STRUC.
+        
+        Arguments:
+              fourierMode (int): Fourier mode (default: -1)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+              externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+              ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
+        """
+    
+    def geometricStiffnessMatrix(self, sief_elga, strx_elga= None, displ= None, modeFourier= -1, groupOfCells= []):
+        """Return the elementary matrices for geometric Stiffness matrix.
+        Option RIGI_MECA_HYST.
+        
+        Arguments:
+            sief_elga (FieldOnCellsReal) : stress at Gauss points
+            strx_elga (FieldOnCellsReal) : stress at Gauss points for structural element
+            displ (FieldOnNodesReal) : displacement field
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixComplex: elementary geometric rigidity matrix
+        """
+    
     def getPhysicalProblem(self):
         """Get physical probelm
         
@@ -938,16 +964,39 @@ class DiscreteComputation:
               PhysicalProblem: physical problem
         """
     
-    def gyroscopicStiffnessMatrix(self, groupOfCells= [], externVarField= None):
+    def gyroscopicDampingMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for gyroscopic damping matrix.
+        Option MECA_GYRO.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixReal: elementary gyroscopic damping matrix
+        """
+    
+    def gyroscopicStiffnessMatrix(self, groupOfCells= []):
         """Return the elementary matrices for gyroscopic Stiffness matrix.
         Option RIGI_GYRO.
         
         Arguments:
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
             ElementaryMatrixReal: elementary gyroscopic rigidity matrix
+        """
+    
+    def hystereticStiffnessMatrix(self, stiffnessMatrix, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for viscoelastic Stiffness matrix.
+        Option RIGI_MECA_HYST.
+        
+        Arguments:
+            stiffnessMatrix : elementary stiffness matrix
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+            ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
         """
     
     def impedanceMatrix(self):
@@ -1042,11 +1091,12 @@ class DiscreteComputation:
             ElementaryMatrix: elementary linear acoustic matrices
         """
     
-    def massMatrix(self, groupOfCells= [], externVarField= None):
+    def massMatrix(self, diagonal, groupOfCells= [], externVarField= None):
         """Return the elementary matrices for mechanical mass matrix
         Option MASS_MECA.
         
         Arguments:
+            diagonal (bool) : True for diagonal mass matrix else False.
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             externVarField (fieldOnCellsReal): external state variable at current time
@@ -1066,6 +1116,17 @@ class DiscreteComputation:
         
         Returns:
               FieldOnNodes: Neumann load vector
+        """
+    
+    def rotationalStiffnessMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for rotational Stiffness matrix.
+        Option RIGI_ROTA.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixReal: elementary rotational rigidity matrix
         """
     
     def transientThermalLoad(self, time_value, time_delta, time_theta, externVarField, previousPrimalField= None):

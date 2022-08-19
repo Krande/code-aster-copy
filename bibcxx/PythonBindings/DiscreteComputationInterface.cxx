@@ -335,7 +335,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrixReal: elementary damping matrix
             )" )
 
-        .def( "complexStiffnessMatrix", &DiscreteComputation::complexStiffnessMatrix, R"(
+        .def( "hystereticStiffnessMatrix", &DiscreteComputation::hystereticStiffnessMatrix, R"(
             Return the elementary matrices for viscoelastic Stiffness matrix.
             Option RIGI_MECA_HYST.
 

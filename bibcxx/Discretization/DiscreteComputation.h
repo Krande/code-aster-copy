@@ -246,7 +246,7 @@ class DiscreteComputation {
      * @brief Compute elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
      */
     ElementaryMatrixDisplacementComplexPtr
-    complexStiffnessMatrix( const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
+    hystereticStiffnessMatrix( const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
                             const VectorString &groupOfCells = VectorString(),
                             const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 

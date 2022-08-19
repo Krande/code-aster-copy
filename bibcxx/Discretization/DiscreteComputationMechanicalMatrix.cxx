@@ -30,6 +30,7 @@
 #include "Loads/MechanicalLoad.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Messages/Messages.h"
 #include "Modeling/Model.h"
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
@@ -490,7 +491,7 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     return elemMatr;
 };
 
-ElementaryMatrixDisplacementComplexPtr DiscreteComputation::complexStiffnessMatrix(
+ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessMatrix(
     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix, const VectorString &groupOfCells,
     const FieldOnCellsRealPtr _externVarField ) const {
 
@@ -883,6 +884,10 @@ DiscreteComputation::rotationalStiffnessMatrix( const VectorString &groupOfCells
         rotat.push_back( nullptr );
     }
 
+    if ( rotat.size() != 1 ) {
+        UTMESS( "F", "CALCULEL3_71" );
+    }
+
     for ( const auto &gyro : rotat ) {
         // Prepare computing
         auto calcul = std::make_unique< Calcul >( option );
@@ -905,6 +910,7 @@ DiscreteComputation::rotationalStiffnessMatrix( const VectorString &groupOfCells
         if ( gyro ) {
             calcul->addInputField( "PROTATR", gyro );
         }
+
         calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
@@ -948,6 +954,10 @@ DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells
         rotat.push_back( nullptr );
     }
 
+    if ( rotat.size() != 1 ) {
+        UTMESS( "F", "CALCULEL3_71" );
+    }
+
     for ( const auto &gyro : rotat ) {
         // Prepare computing
         auto calcul = std::make_unique< Calcul >( option );
@@ -970,6 +980,7 @@ DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells
         if ( gyro ) {
             calcul->addInputField( "PROTATR", gyro );
         }
+
         calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) ) {
@@ -1013,6 +1024,10 @@ DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells )
         rotat.push_back( nullptr );
     }
 
+    if ( rotat.size() != 1 ) {
+        UTMESS( "F", "CALCULEL3_71" );
+    }
+
     for ( const auto &gyro : rotat ) {
         // Prepare computing
         auto calcul = std::make_unique< Calcul >( option );
@@ -1036,6 +1051,7 @@ DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells )
         if ( gyro ) {
             calcul->addInputField( "PROTATR", gyro );
         }
+
         calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) ) {
