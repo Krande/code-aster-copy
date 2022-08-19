@@ -17,14 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
-
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def calc_matr_elem_prod(OPTION,**args):
+def calc_matr_elem_prod(self, OPTION, **args):
   if args.get('__all__'):
       return (matr_elem_depl_r, matr_elem_depl_c, matr_elem_temp_r,
               matr_elem_pres_c)
@@ -49,8 +47,10 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "AMOR_ACOU"        : return matr_elem_pres_c
   raise AsException("type de concept resultat non prevu")
 
-CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
-                    op=9, sd_prod=calc_matr_elem_prod,
+CALC_MATR_ELEM=MACRO(nom="CALC_MATR_ELEM",
+                    op=OPS(
+                         "code_aster.MacroCommands.calc_matr_elem_ops.calc_matr_elem_ops"),
+                    sd_prod=calc_matr_elem_prod,
                     fr=tr("Calcul des matrices élémentaires"),reentrant='n',
 
     OPTION          = SIMP(statut='o',typ='TXM',

@@ -64,7 +64,6 @@ from .calc_g_xfem import CALC_G_XFEM
 from .calc_g import CALC_G
 from .calc_inte_spec import CALC_INTE_SPEC
 from .calc_matr_ajou import CALC_MATR_AJOU
-from .calc_matr_elem import CALC_MATR_ELEM
 from .calc_meta import CALC_META
 from .calc_vect_elem import CALC_VECT_ELEM
 from .calcul import CALCUL
