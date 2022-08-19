@@ -335,6 +335,15 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrixReal: elementary damping matrix
             )" )
 
+        .def( "impedanceBoundaryMatrix", &DiscreteComputation::impedanceBoundaryMatrix, R"(
+            Return the elementary matrices for impedance (mechanical) matrix.
+            Option IMPE_MECA.
+
+            Returns:
+                ElementaryMatrixReal: impedance damping matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString() )
+
         .def( "hystereticStiffnessMatrix", &DiscreteComputation::hystereticStiffnessMatrix, R"(
             Return the elementary matrices for viscoelastic Stiffness matrix.
             Option RIGI_MECA_HYST.

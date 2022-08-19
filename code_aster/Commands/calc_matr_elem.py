@@ -47,6 +47,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
                             "RIGI_ROTA", "RIGI_GEOM",
+                            "IMPE_MECA",
                             "RIGI_FLUI_STRU", "MASS_FLUI_STRU",
                             "RIGI_THER", "MASS_THER",
                             "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
@@ -224,6 +225,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
             elif myOption == "MASS_FLUI_STRU":
                 self._result = disc_comp.fluidStrucutreMassMatrix(groupOfCells=group_ma,
                                                                   externVarField=externVar)
+
+            elif myOption == "IMPE_MECA":
+                self._result = disc_comp.impedanceBoundaryMatrix(group_ma)
 
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))

@@ -878,7 +878,6 @@ DiscreteComputation::rotationalStiffnessMatrix( const VectorString &groupOfCells
     };
 
     impl( listOfLoads->getMechanicalLoadsReal() );
-    impl( listOfLoads->getMechanicalLoadsFunction() );
 
     if ( rotat.empty() ) {
         rotat.push_back( nullptr );
@@ -948,7 +947,6 @@ DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells
     };
 
     impl( listOfLoads->getMechanicalLoadsReal() );
-    impl( listOfLoads->getMechanicalLoadsFunction() );
 
     if ( rotat.empty() ) {
         rotat.push_back( nullptr );
@@ -1018,7 +1016,6 @@ DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells )
     };
 
     impl( listOfLoads->getMechanicalLoadsReal() );
-    impl( listOfLoads->getMechanicalLoadsFunction() );
 
     if ( rotat.empty() ) {
         rotat.push_back( nullptr );
@@ -1056,6 +1053,65 @@ DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells )
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) ) {
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+};
+
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::impedanceBoundaryMatrix( const VectorString &groupOfCells ) const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+    const std::string option = "IMPE_MECA";
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Prepare loads
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto model = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+
+    // Get impedance fields
+    std::vector< std::pair< std::string, DataFieldPtr > > impe;
+    auto impl = [&impe]( auto loads, std::string param ) {
+        for ( const auto &load : loads ) {
+            if ( load->hasLoadField( "IMPED" ) ) {
+                impe.push_back( std::make_pair( param, load->getConstantLoadField( "IMPED" ) ) );
+            }
+        }
+    };
+
+    impl( listOfLoads->getMechanicalLoadsReal(), "PIMPEDR" );
+    impl( listOfLoads->getMechanicalLoadsFunction(), "PIMPEDF" );
+
+    if ( impe.empty() ) {
+        UTMESS( "F", "CALCULEL2_83" );
+    }
+
+    for ( const auto &[param, field] : impe ) {
+        // Prepare computing
+        auto calcul = std::make_unique< Calcul >( option );
+        if ( groupOfCells.empty() ) {
+            calcul->setModel( model );
+        } else {
+            calcul->setGroupsOfCells( model, groupOfCells );
+        }
+
+        // Add input fields
+        calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
+        if ( currMater ) {
+            calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        }
+
+        calcul->addInputField( param, field );
+
+        calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
         }
     }
 

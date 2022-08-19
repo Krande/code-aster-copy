@@ -999,6 +999,14 @@ class DiscreteComputation:
             ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
         """
     
+    def impedanceBoundaryMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for impedance (mechanical) matrix.
+        Option IMPE_MECA.
+        
+        Returns:
+            ElementaryMatrixReal: impedance damping matrix
+        """
+    
     def impedanceMatrix(self):
         """Return the elementary matrices for impedance (acoustic) damping matrix.
         Option AMOR_ACOU.

@@ -242,13 +242,16 @@ class DiscreteComputation {
 
     ElementaryMatrixPressureComplexPtr impedanceMatrix() const;
 
+    ElementaryMatrixDisplacementRealPtr
+    impedanceBoundaryMatrix( const VectorString &groupOfCells = VectorString() ) const;
+
     /**
      * @brief Compute elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
      */
     ElementaryMatrixDisplacementComplexPtr
     hystereticStiffnessMatrix( const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
-                            const VectorString &groupOfCells = VectorString(),
-                            const FieldOnCellsRealPtr _externVarField = nullptr ) const;
+                               const VectorString &groupOfCells = VectorString(),
+                               const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute nodal field for kinematic boundary condition
