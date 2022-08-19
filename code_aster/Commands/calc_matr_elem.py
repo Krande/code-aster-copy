@@ -46,7 +46,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_GYRO", "MECA_GIRO", "MASS_MECA_DIAG",
-                            "RIGI_ROTA", "RIGI_GEOM",
+                            "RIGI_ROTA", "RIGI_GEOM", "ONDE_FLUI",
                             "IMPE_MECA", "RIGI_MECA_HYST",
                             "RIGI_FLUI_STRU", "MASS_FLUI_STRU",
                             "RIGI_THER", "MASS_THER",
@@ -187,10 +187,10 @@ class ComputeElementaryMatrix(ExecuteCommand):
                 stiffnessMatrix = keywords["RIGI_MECA"]
                 self._result = disc_comp.hystereticStiffnessMatrix(
                     stiffnessMatrix, group_ma, externVarField=externVar)
-                matr_rigi_dual = disc_comp.dualStiffnessMatrix()
-                self._result.addElementaryTerm(
-                    matr_rigi_dual.getElementaryTerms())
-                self._result.build()
+                # matr_rigi_dual = disc_comp.dualStiffnessMatrix()
+                # self._result.addElementaryTerm(
+                #     matr_rigi_dual.getElementaryTerms())
+                # self._result.build()
 
             elif myOption == "MASS_THER":
                 self._result = disc_comp.linearCapacityMatrix(time, delta_time, 1.0,
@@ -231,6 +231,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
             elif myOption == "IMPE_MECA":
                 self._result = disc_comp.impedanceBoundaryMatrix(group_ma)
+
+            elif myOption == "ONDE_FLUI":
+                self._result = disc_comp.impedanceWaveMatrix(group_ma)
 
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))

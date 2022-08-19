@@ -245,6 +245,9 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr
     impedanceBoundaryMatrix( const VectorString &groupOfCells = VectorString() ) const;
 
+    ElementaryMatrixDisplacementRealPtr
+    impedanceWaveMatrix( const VectorString &groupOfCells = VectorString() ) const;
+
     /**
      * @brief Compute elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
      */

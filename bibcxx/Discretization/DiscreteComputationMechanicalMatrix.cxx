@@ -1118,3 +1118,61 @@ DiscreteComputation::impedanceBoundaryMatrix( const VectorString &groupOfCells )
     elemMatr->build();
     return elemMatr;
 };
+
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::impedanceWaveMatrix( const VectorString &groupOfCells ) const {
+    AS_ASSERT( _phys_problem->getModel()->isMechanical() );
+    const std::string option = "ONDE_FLUI";
+
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem );
+    elemMatr->prepareCompute( option );
+
+    // Prepare loads
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    const auto model = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+
+    // Get wave fields
+    std::vector< std::pair< std::string, DataFieldPtr > > wave;
+    auto impl = [&wave]( auto loads, std::string param ) {
+        for ( const auto &load : loads ) {
+            if ( load->hasLoadField( "ONDE" ) ) {
+                wave.push_back( std::make_pair( param, load->getConstantLoadField( "ONDE" ) ) );
+            }
+        }
+    };
+
+    impl( listOfLoads->getMechanicalLoadsReal(), "PONDECR" );
+
+    if ( wave.empty() ) {
+        UTMESS( "F", "CHARGES6_84" );
+    }
+
+    for ( const auto &[param, field] : wave ) {
+        // Prepare computing
+        auto calcul = std::make_unique< Calcul >( option );
+        if ( groupOfCells.empty() ) {
+            calcul->setModel( model );
+        } else {
+            calcul->setGroupsOfCells( model, groupOfCells );
+        }
+
+        // Add input fields
+        calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
+        if ( currMater ) {
+            calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        }
+
+        calcul->addInputField( param, field );
+
+        calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
+        }
+    }
+
+    elemMatr->build();
+    return elemMatr;
+};

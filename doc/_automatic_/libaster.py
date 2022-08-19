@@ -1004,7 +1004,7 @@ class DiscreteComputation:
         Option IMPE_MECA.
         
         Returns:
-            ElementaryMatrixReal: impedance damping matrix
+            ElementaryMatrixReal: impedance mechanical matrix
         """
     
     def impedanceMatrix(self):
@@ -1013,6 +1013,15 @@ class DiscreteComputation:
         
         Returns:
             ElementaryMatrixReal: elementary damping matrix
+        """
+    
+    def impedanceWaveMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for impedance (mechanical) matrix
+        from an harmonic wave.
+        Option ONDE_FLUI.
+        
+        Returns:
+            ElementaryMatrixReal: impedance wave matrix
         """
     
     def imposedDualBC(self, *args, **kwargs):

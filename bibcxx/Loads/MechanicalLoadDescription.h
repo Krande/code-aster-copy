@@ -109,6 +109,8 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _ondpl;
     /** @brief Carte '.ONDPR' */
     ConstantFieldOnCellsTypePtr _ondpr;
+    /** @brief Carte '.ONDE' */
+    ConstantFieldOnCellsTypePtr _onde;
 
   public:
     MechanicalLoadDescription( void ) = delete;
@@ -149,6 +151,7 @@ class MechanicalLoadDescription : public DataStructure {
           _sigin( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIGIN", _FEDesc ) ),
           _siint( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIINT", _FEDesc ) ),
           _vnor( std::make_shared< ConstantFieldOnCellsType >( getName() + ".VNOR", _FEDesc ) ),
+          _onde( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDE", _FEDesc ) ),
           _ondpl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPL", _FEDesc ) ),
           _ondpr( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPR", _FEDesc ) ){};
 
@@ -169,6 +172,8 @@ class MechanicalLoadDescription : public DataStructure {
             return ( _imped && _imped->exists() );
         } else if ( load_name == "ROTAT" ) {
             return ( _rotat && _rotat->exists() );
+        } else if ( load_name == "ONDE" ) {
+            return ( _onde && _onde->exists() );
         } else {
             AS_ASSERT( false );
         }
@@ -181,6 +186,8 @@ class MechanicalLoadDescription : public DataStructure {
             return _imped;
         } else if ( name == "ROTAT" ) {
             return _rotat;
+        } else if ( name == "ONDE" ) {
+            return _onde;
         } else {
             AS_ASSERT( false );
         }

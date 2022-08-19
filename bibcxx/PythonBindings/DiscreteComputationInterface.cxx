@@ -340,7 +340,17 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option IMPE_MECA.
 
             Returns:
-                ElementaryMatrixReal: impedance damping matrix
+                ElementaryMatrixReal: impedance mechanical matrix
+            )",
+              py::arg( "groupOfCells" ) = VectorString() )
+
+        .def( "impedanceWaveMatrix", &DiscreteComputation::impedanceWaveMatrix, R"(
+            Return the elementary matrices for impedance (mechanical) matrix
+            from an harmonic wave.
+            Option ONDE_FLUI.
+
+            Returns:
+                ElementaryMatrixReal: impedance wave matrix
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
