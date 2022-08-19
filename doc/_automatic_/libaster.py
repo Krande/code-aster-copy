@@ -1067,14 +1067,12 @@ class DiscreteComputation:
               FieldOnNodes: incremental imposed displacement vector
         """
     
-    def linearCapacityMatrix(self, time_value, time_delta, time_theta, groupOfCells= [], externVarField= None):
+    def linearCapacityMatrix(self, time_delta, groupOfCells= [], externVarField= None):
         """Return the elementary matrices for linear Capacity matrix in thermal computation.
         Option MASS_THER.
         
         Arguments:
-            time_value (float): Current time
             time_delta (float): Time increment
-            time_theta (float): Theta parameter for integration
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             externVarField (fieldOnCellsReal): external state variable at current time
