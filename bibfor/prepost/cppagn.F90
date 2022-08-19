@@ -396,6 +396,7 @@ implicit none
     call jecrec(limane,'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nma)
     call jeecra(limane,'LONT', lenlimane)
+    call jeecra(limane,'NUTIOC', nma)
     do inc = 1, nma
         laux(1)=inc
         if (ntrou(inc) .eq. 1) then
@@ -599,6 +600,8 @@ implicit none
     call jedetr(maout//'.NOMMAI')
     call jecrec(maout//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmat)
+    call jeecra(maout//'.CONNEX','NUTIOC',nbmat)
+
     call jedetr(maout//'.COMAPA')
     call wkvect(maout//'.COMAPA', 'G V I', nbmat, jcnmpa)
     if (izone .ne. 1 .or. same_zone) then
