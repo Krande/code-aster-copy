@@ -5360,6 +5360,9 @@ class BaseElementaryMatrix(DataStructure):
     
     def setModel(self, arg0):
         pass
+    
+    def setPhysicalProblem(self, arg0):
+        pass
 
 # class ElementaryMatrixDisplacementReal in libaster
 
@@ -5524,6 +5527,8 @@ class BaseElementaryVector(DataStructure):
         1. __init__(self: libaster.BaseElementaryVector) -> None
         
         2. __init__(self: libaster.BaseElementaryVector, arg0: str) -> None
+        
+        3. __init__(self: libaster.BaseElementaryVector, arg0: PhysicalProblem) -> None
         """
     
     def addLoad(self, arg0):
@@ -5550,6 +5555,13 @@ class BaseElementaryVector(DataStructure):
     def setModel(self, arg0):
         pass
     
+    def setPhysicalProblem(self, phys_pb):
+        """Set the physical problem
+        
+        Arguments:
+            phys_pb (PhysicalProblem): the physical problem.
+        """
+    
     def setType(self, arg0):
         pass
 
@@ -5573,6 +5585,8 @@ class ElementaryVectorReal(BaseElementaryVector):
         1. __init__(self: libaster.ElementaryVectorReal) -> None
         
         2. __init__(self: libaster.ElementaryVectorReal, arg0: str) -> None
+        
+        3. __init__(self: libaster.ElementaryVectorReal, arg0: PhysicalProblem) -> None
         """
     
     def assemble(self, arg0):
@@ -5601,6 +5615,8 @@ class ElementaryVectorComplex(BaseElementaryVector):
         1. __init__(self: libaster.ElementaryVectorComplex) -> None
         
         2. __init__(self: libaster.ElementaryVectorComplex, arg0: str) -> None
+        
+        3. __init__(self: libaster.ElementaryVectorComplex, arg0: PhysicalProblem) -> None
         """
     
     def assemble(self, arg0):
@@ -5630,6 +5646,8 @@ class ElementaryVectorDisplacementReal(ElementaryVectorReal):
         1. __init__(self: libaster.ElementaryVectorDisplacementReal) -> None
         
         2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str) -> None
+        
+        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: PhysicalProblem) -> None
         """
 
 # class ElementaryVectorTemperatureReal in libaster
@@ -5653,6 +5671,8 @@ class ElementaryVectorTemperatureReal(ElementaryVectorReal):
         1. __init__(self: libaster.ElementaryVectorTemperatureReal) -> None
         
         2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str) -> None
+        
+        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: PhysicalProblem) -> None
         """
 
 # class ElementaryVectorPressureComplex in libaster
@@ -5676,6 +5696,8 @@ class ElementaryVectorPressureComplex(ElementaryVectorComplex):
         1. __init__(self: libaster.ElementaryVectorPressureComplex) -> None
         
         2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str) -> None
+        
+        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: PhysicalProblem) -> None
         """
 
 # class GeneralizedAssemblyMatrix in libaster

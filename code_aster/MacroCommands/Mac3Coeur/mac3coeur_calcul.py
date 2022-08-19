@@ -29,10 +29,18 @@ from functools import wraps
 from libaster import ConvergenceError
 
 from ...Cata.Syntax import _F
-from ...Commands import (AFFE_CHAR_CINE, AFFE_CHAR_MECA, CALC_CHAMP,
-                         CREA_CHAMP, CREA_RESU, DEFI_FONCTION, MODI_MAILLAGE,
-                         POST_RELEVE_T, STAT_NON_LINE)
-from ...Helpers.UniteAster import UniteAster
+from ...Commands import (
+    AFFE_CHAR_CINE,
+    AFFE_CHAR_MECA,
+    CALC_CHAMP,
+    CREA_CHAMP,
+    CREA_RESU,
+    DEFI_FONCTION,
+    MODI_MAILLAGE,
+    POST_RELEVE_T,
+    STAT_NON_LINE,
+)
+from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
@@ -42,16 +50,17 @@ from .thyc_load import lire_resu_thyc
 def calc_mac3coeur_ops(self, **args):
     """Fonction d'appel de la macro CALC_MAC3COEUR"""
 
-    MasquerAlarme('MECANONLINE5_57') # DEPL_CALCULE
-    MasquerAlarme('POUTRE0_59') # Coeff de poisson non constant
+    MasquerAlarme("MECANONLINE5_57")  # DEPL_CALCULE
+    MasquerAlarme("POUTRE0_59")  # Coeff de poisson non constant
 
     analysis = Mac3CoeurCalcul.factory(self, args)
     result = analysis.run()
 
-    RetablirAlarme('MECANONLINE5_57')
-    RetablirAlarme('POUTRE0_59')
+    RetablirAlarme("MECANONLINE5_57")
+    RetablirAlarme("POUTRE0_59")
 
     return result
+
 
 # decorator to cache values of properties
 NULL = object()
@@ -63,16 +72,18 @@ def cached_property(method):
     it has already been computed (== not NULL).
     The value is cached in the attribute "_ + `method name`" of the instance.
     """
+
     @wraps(method)
     def wrapper(inst):
         """Real wrapper function"""
-        attr = '_' + method.__name__
+        attr = "_" + method.__name__
         cached = getattr(inst, attr)
         if cached is not NULL:
             return cached
         computed = method(inst)
         setattr(inst, attr, computed)
         return computed
+
     return wrapper
 
 
@@ -94,20 +105,21 @@ class Mac3CoeurCalcul(object):
           operations only if necessary.
         - Prefer use standard properties for scalar values.
     """
+
     mcfact = None
 
     @staticmethod
     def factory(macro, args):
         """Factory that returns the calculation object"""
         class_ = None
-        if 'DEFORMATION' in args and args['DEFORMATION']:
+        if "DEFORMATION" in args and args["DEFORMATION"]:
             class_ = Mac3CoeurDeformation
-        if 'LAME' in args and args['LAME']:
+        if "LAME" in args and args["LAME"]:
             class_ = Mac3CoeurLame
-        if 'ETAT_INITIAL' in args and args['ETAT_INITIAL']:
+        if "ETAT_INITIAL" in args and args["ETAT_INITIAL"]:
             class_ = Mac3CoeurEtatInitial
         if not class_:
-            UTMESS('F', 'DVP_1')
+            UTMESS("F", "DVP_1")
         return class_(macro, args)
 
     def __init__(self, macro, args):
@@ -116,13 +128,13 @@ class Mac3CoeurCalcul(object):
         self.keyw = args
         self.mcf = args[self.mcfact]
         # parameters
-        self._niv_fluence = 0.
+        self._niv_fluence = 0.0
         self._subdivis = 1
         self._use_archimede = None
         self.char_init = None
         self.etat_init = None
         self._maintien_grille = None
-        self._lame=False
+        self._lame = False
         self.calc_res_def = False
         self.res_def = None
         self.res_def_keyw = None
@@ -157,28 +169,28 @@ class Mac3CoeurCalcul(object):
         self._kinematic_cond = NULL
         self._char_ini_comp = NULL
 
-    def _prepare_data(self,noresu):
+    def _prepare_data(self, noresu):
         """Prepare the data for the calculation"""
         coeur = self.coeur
         coeur.recuperation_donnees_geom(self.mesh)
         if not coeur.check_groups(self.mesh):
-            UTMESS('F', 'COEUR0_5', valk=('CU_*',))
+            UTMESS("F", "COEUR0_5", valk=("CU_*",))
         # force the computation of the times to ensure it is done first
         # Note that times depends on niv_fluence and subdivis.
         self.times
         self.times_arch
-        self.fluence_cycle = self.keyw.get('FLUENCE_CYCLE')
-        self._type_deformation = self.keyw.get('TYPE_DEFORMATION')
-        self._option_rigi_geom = 'DEFAUT'
-        if 'RIGI_GEOM' in self._type_deformation:
-            self._type_deformation = 'PETIT'
-            self._option_rigi_geom = 'OUI'
+        self.fluence_cycle = self.keyw.get("FLUENCE_CYCLE")
+        self._type_deformation = self.keyw.get("TYPE_DEFORMATION")
+        self._option_rigi_geom = "DEFAUT"
+        if "RIGI_GEOM" in self._type_deformation:
+            self._type_deformation = "PETIT"
+            self._option_rigi_geom = "OUI"
 
     def _run(self):
         """Run the calculation itself"""
-        raise NotImplementedError('must be defined in a subclass')
+        raise NotImplementedError("must be defined in a subclass")
 
-    def run(self,noresu=False):
+    def run(self, noresu=False):
         """Run all the calculation steps"""
         self._prepare_data(noresu)
         return self._run()
@@ -218,17 +230,20 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def coeur(self):
         """Return the `Coeur` object"""
-        if self.keyw['TYPE_COEUR'][:5] == 'LIGNE' :
-            return _build_coeur(self.keyw['TYPE_COEUR'], self.macro,
-                            self.keyw['TABLE_N'],self.keyw['NB_ASSEMBLAGE'])
-        else :
-            return _build_coeur(self.keyw['TYPE_COEUR'], self.macro,
-                            self.keyw['TABLE_N'])
+        if self.keyw["TYPE_COEUR"][:5] == "LIGNE":
+            return _build_coeur(
+                self.keyw["TYPE_COEUR"],
+                self.macro,
+                self.keyw["TABLE_N"],
+                self.keyw["NB_ASSEMBLAGE"],
+            )
+        else:
+            return _build_coeur(self.keyw["TYPE_COEUR"], self.macro, self.keyw["TABLE_N"])
 
     @coeur.setter
     def coeur(self, value):
         """Setter method that ensure that the attribute is NULL"""
-        assert self._coeur is NULL, 'attribute must be set only once or resetted'
+        assert self._coeur is NULL, "attribute must be set only once or resetted"
         self._coeur = value
 
     @coeur.deleter
@@ -240,12 +255,12 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def mesh(self):
         """Return the `maillage_sdaster` object"""
-        return self.coeur.affectation_maillage(self.keyw.get('MAILLAGE_N'))
+        return self.coeur.affectation_maillage(self.keyw.get("MAILLAGE_N"))
 
     @mesh.setter
     def mesh(self, value):
         """Setter method that ensure that the attribute is NULL"""
-        assert self._mesh is NULL, 'attribute must be set only once or resetted'
+        assert self._mesh is NULL, "attribute must be set only once or resetted"
         self._mesh = value
 
     @mesh.deleter
@@ -262,7 +277,7 @@ class Mac3CoeurCalcul(object):
     @model.setter
     def model(self, value):
         """Setter method that ensure that the attribute is NULL"""
-        assert self._model is NULL, 'attribute must be set only once or resetted'
+        assert self._model is NULL, "attribute must be set only once or resetted"
         self._model = value
 
     @model.deleter
@@ -298,7 +313,7 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def times_woSubd(self):
         """Return the list of the time steps"""
-        return self.coeur.definition_time(self.niv_fluence, self.subdivis,1)
+        return self.coeur.definition_time(self.niv_fluence, self.subdivis, 1)
 
     @property
     @cached_property
@@ -310,31 +325,33 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def evol_fluence(self):
         """Return the evolution of the fluence fields"""
-        if self.etat_init :
-            assert (self.fluence_cycle == 0.)
-        return self.coeur.definition_fluence(self.niv_fluence, self.mesh,self.fluence_cycle,self._lame)
+        if self.etat_init:
+            assert self.fluence_cycle == 0.0
+        return self.coeur.definition_fluence(
+            self.niv_fluence, self.mesh, self.fluence_cycle, self._lame
+        )
 
     @property
     @cached_property
     def cham_mater_free(self):
         """Return the field of material (without contact)"""
         return self.coeur.definition_materiau(
-            self.mesh, self.geofib, self.evol_fluence,
-            self.evol_temp, CONTACT='NON')
+            self.mesh, self.geofib, self.evol_fluence, self.evol_temp, CONTACT="NON"
+        )
 
     @property
     @cached_property
     def cham_mater_contact(self):
         """Return the field of material (with contact enabled)"""
         return self.coeur.definition_materiau(
-            self.mesh, self.geofib, self.evol_fluence,
-            self.evol_temp, CONTACT='OUI')
+            self.mesh, self.geofib, self.evol_fluence, self.evol_temp, CONTACT="OUI"
+        )
 
-    def cham_mater_contact_progressif(self,ratio):
+    def cham_mater_contact_progressif(self, ratio):
         """Return the field of material (with contact enabled)"""
         return self.coeur.definition_materiau(
-            self.mesh, self.geofib, self.evol_fluence,
-            self.evol_temp, CONTACT='OUI',RATIO=ratio)
+            self.mesh, self.geofib, self.evol_fluence, self.evol_temp, CONTACT="OUI", RATIO=ratio
+        )
 
     # loadings
     @property
@@ -342,9 +359,8 @@ class Mac3CoeurCalcul(object):
     def rigid_load(self):
         """Compute the rigid body loading"""
         coeur = self.coeur
-        _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
-                                      LIAISON_SOLIDE=coeur.cl_rigidite_grille())
-        return [_F(CHARGE=_excit_rigid), ]
+        _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model, LIAISON_SOLIDE=coeur.cl_rigidite_grille())
+        return [_F(CHARGE=_excit_rigid)]
 
     @property
     @cached_property
@@ -352,17 +368,16 @@ class Mac3CoeurCalcul(object):
         """Compute the Archimede loadings"""
         fmult_arch = self.coeur.definition_temp_archimede(self.use_archimede)
         load = [
-            _F(CHARGE=self.coeur.definition_archimede_nodal(self.model),
-               FONC_MULT=fmult_arch,),
-            _F(CHARGE=self.coeur.definition_archimede_poutre(self.model),
-               FONC_MULT=fmult_arch,), ]
+            _F(CHARGE=self.coeur.definition_archimede_nodal(self.model), FONC_MULT=fmult_arch),
+            _F(CHARGE=self.coeur.definition_archimede_poutre(self.model), FONC_MULT=fmult_arch),
+        ]
         return load
 
     @property
     @cached_property
     def gravity_load(self):
         """Return the gravity loading"""
-        return [_F(CHARGE=self.coeur.definition_pesanteur(self.model)), ]
+        return [_F(CHARGE=self.coeur.definition_pesanteur(self.model))]
 
     @property
     @cached_property
@@ -371,63 +386,65 @@ class Mac3CoeurCalcul(object):
         the vessel head"""
         coeur = self.coeur
         dicv = self.mcf[0].cree_dict_valeurs(self.mcf[0].mc_liste)
-        typ = dicv.get('TYPE_MAINTIEN') or 'DEPL_PSC'
+        typ = dicv.get("TYPE_MAINTIEN") or "DEPL_PSC"
         force = None
-        compression_init = (self.fluence_cycle != 0)
-        if typ == 'FORCE':
-            force = self.mcf['FORCE_MAINTIEN']
-        char = coeur.definition_maintien_type(self.model, typ, force,compression_init)
-        return [_F(CHARGE=char), ]
+        compression_init = self.fluence_cycle != 0
+        if typ == "FORCE":
+            force = self.mcf["FORCE_MAINTIEN"]
+        char = coeur.definition_maintien_type(self.model, typ, force, compression_init)
+        return [_F(CHARGE=char)]
 
     @property
     @cached_property
     def vessel_dilatation_load(self):
         """Return the loading due to the vessel dilatation"""
-        char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh,
-                               (self.char_init is not None),self._maintien_grille, T_CONST_CUVE=self._dilat_only)
-        return [_F(CHARGE=char_dilat,), ]
+        char_dilat = self.coeur.dilatation_cuve(
+            self.model,
+            self.mesh,
+            (self.char_init is not None),
+            self._maintien_grille,
+            T_CONST_CUVE=self._dilat_only,
+        )
+        return [_F(CHARGE=char_dilat)]
 
     @property
     @cached_property
     def vessel_dilatation_load_full(self):
         """Return the loading due to the vessel dilatation"""
         char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh)
-        return [_F(CHARGE=char_dilat,), ]
+        return [_F(CHARGE=char_dilat)]
 
     @property
     @cached_property
     def thyc_load(self):
         """Return the loading due to the fluid flow"""
         coeur = self.coeur
-        thyc = read_thyc(coeur, self.model, self.mcf['UNITE_THYC'])
+        thyc = read_thyc(coeur, self.model, self.mcf["UNITE_THYC"])
 
-        coef_mult_thv = self.mcf['COEF_MULT_THV'] or 1.
-        coef_mult_tht = self.mcf['COEF_MULT_THT'] or 1.
+        coef_mult_thv = self.mcf["COEF_MULT_THV"] or 1.0
+        coef_mult_tht = self.mcf["COEF_MULT_THT"] or 1.0
 
         fmult_ax = coeur.definition_temp_hydro_axiale(coef_mult_thv)
         fmult_tr = coeur.definition_effort_transverse(coef_mult_tht)
 
         load_ax = [
-            _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax,),
-            _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax,),
+            _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax),
+            _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax),
         ]
         load_tr = [
-            _F(CHARGE=thyc.chtr_nodal, FONC_MULT=fmult_tr,),
-            _F(CHARGE=thyc.chtr_poutre, FONC_MULT=fmult_tr,),
+            _F(CHARGE=thyc.chtr_nodal, FONC_MULT=fmult_tr),
+            _F(CHARGE=thyc.chtr_poutre, FONC_MULT=fmult_tr),
         ]
-        self._thyc_ax=(thyc.chax_nodal,thyc.chax_poutre)
-        self._thyc_tr=(thyc.chtr_nodal,thyc.chtr_poutre)
-        return (load_ax,load_tr)
+        self._thyc_ax = (thyc.chax_nodal, thyc.chax_poutre)
+        self._thyc_tr = (thyc.chtr_nodal, thyc.chtr_poutre)
+        return (load_ax, load_tr)
 
     @property
     @cached_property
     def kinematic_cond(self):
         """Define the kinematic conditions from displacement"""
-        _excit = AFFE_CHAR_CINE(MODELE=self.model,
-                                EVOL_IMPO=self.char_init,
-                                NOM_CMP=('DY','DZ',),
-                                )
-        return [_F(CHARGE=_excit), ]
+        _excit = AFFE_CHAR_CINE(MODELE=self.model, EVOL_IMPO=self.char_init, NOM_CMP=("DY", "DZ"))
+        return [_F(CHARGE=_excit)]
 
     @property
     @cached_property
@@ -436,17 +453,17 @@ class Mac3CoeurCalcul(object):
 
         def block(grma=None, grno=None, ddl=None):
             """Block 'ddl' of 'grma/grno' to zero"""
-            kddl = {}.fromkeys(ddl, 0.)
-            kddl['GROUP_MA' if grma else 'GROUP_NO'] = grma or grno
+            kddl = {}.fromkeys(ddl, 0.0)
+            kddl["GROUP_MA" if grma else "GROUP_NO"] = grma or grno
             return kddl
+
         ddl_impo = [
-            block(grma='CRAYON', ddl=['DRX']),
-            block(grno='LISPG', ddl=['DRX', 'DRY', 'DRZ']),
-            block(grma=('EBOSUP', 'EBOINF'), ddl=['DRX', 'DRY', 'DRZ']),
+            block(grma="CRAYON", ddl=["DRX"]),
+            block(grno="LISPG", ddl=["DRX", "DRY", "DRZ"]),
+            block(grma=("EBOSUP", "EBOINF"), ddl=["DRX", "DRY", "DRZ"]),
         ]
-        _excit = AFFE_CHAR_MECA(MODELE=self.model,
-                                DDL_IMPO=ddl_impo)
-        return [_F(CHARGE=_excit), ]
+        _excit = AFFE_CHAR_MECA(MODELE=self.model, DDL_IMPO=ddl_impo)
+        return [_F(CHARGE=_excit)]
 
     @property
     @cached_property
@@ -455,76 +472,74 @@ class Mac3CoeurCalcul(object):
 
         def equal(ddl, grno1, grno2):
             """Return keyword to set ddl(grno1) = ddl(grno2)"""
-            return _F(GROUP_NO_1=grno1,
-                      GROUP_NO_2=grno2,
-                      DDL_1=ddl,
-                      DDL_2=ddl,
-                      COEF_MULT_1=1.,
-                      COEF_MULT_2=-1.,
-                      COEF_IMPO=0.)
-        liaison_group = [equal('DY', 'PMNT_S', 'PEBO_S'),
-                         equal('DZ', 'PMNT_S', 'PEBO_S'),
-                         equal('DY', 'PSUP', 'PEBO_S'),
-                         equal('DZ', 'PSUP', 'PEBO_S'),
-                         equal('DY', 'PINF', 'FIX'),
-                         equal('DZ', 'PINF', 'FIX'), ]
-        _excit = AFFE_CHAR_MECA(MODELE=self.model,
-                                LIAISON_GROUP=liaison_group)
-        return [_F(CHARGE=_excit), ]
+            return _F(
+                GROUP_NO_1=grno1,
+                GROUP_NO_2=grno2,
+                DDL_1=ddl,
+                DDL_2=ddl,
+                COEF_MULT_1=1.0,
+                COEF_MULT_2=-1.0,
+                COEF_IMPO=0.0,
+            )
+
+        liaison_group = [
+            equal("DY", "PMNT_S", "PEBO_S"),
+            equal("DZ", "PMNT_S", "PEBO_S"),
+            equal("DY", "PSUP", "PEBO_S"),
+            equal("DZ", "PSUP", "PEBO_S"),
+            equal("DY", "PINF", "FIX"),
+            equal("DZ", "PINF", "FIX"),
+        ]
+        _excit = AFFE_CHAR_MECA(MODELE=self.model, LIAISON_GROUP=liaison_group)
+        return [_F(CHARGE=_excit)]
 
     @property
     @cached_property
     def char_ini_comp(self):
-        comp = [_F(RELATION='MULTIFIBRE',
-                   GROUP_MA=('CRAYON', 'T_GUIDE'),
-                   PARM_THETA=0.5,
-                   DEFORMATION = self._type_deformation,
-                   RIGI_GEOM = self._option_rigi_geom, ),
-                _F(RELATION='DIS_GRICRA',
-                   GROUP_MA='ELA',),
-                _F(RELATION='DIS_CHOC',
-                   GROUP_MA=('RES_EXT','RES_CONT'),),
-                _F(RELATION='ELAS',
-                   GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
-                _F(RELATION='VMIS_ISOT_TRAC',
-                   GROUP_MA='MAINTIEN',
-                   DEFORMATION='PETIT'),]
+        comp = [
+            _F(
+                RELATION="MULTIFIBRE",
+                GROUP_MA=("CRAYON", "T_GUIDE"),
+                PARM_THETA=0.5,
+                DEFORMATION=self._type_deformation,
+                RIGI_GEOM=self._option_rigi_geom,
+            ),
+            _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
+            _F(RELATION="DIS_CHOC", GROUP_MA=("RES_EXT", "RES_CONT")),
+            _F(RELATION="ELAS", GROUP_MA=("EBOINF", "EBOSUP", "RIG", "DIL")),
+            _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
+        ]
         return comp
-
 
     def snl(self, **kwds):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
         keywords = {
-            'MODELE': self.model,
-            'CARA_ELEM': self.carael,
-            'CHAM_MATER': self.cham_mater_free,
-            'COMPORTEMENT': (_F(RELATION='MULTIFIBRE',
-                                GROUP_MA=('CRAYON', 'T_GUIDE'),
-                                PARM_THETA=0.5,
-                                DEFORMATION=self._type_deformation,
-                                RIGI_GEOM = self._option_rigi_geom, ),
-                             _F(RELATION='DIS_GRICRA',
-                                GROUP_MA='ELA',),
-                             _F(RELATION='DIS_CHOC',
-                                GROUP_MA=('CREIC', 'RES_TOT')),
-                             _F(RELATION='ELAS',
-                                GROUP_MA=('CREI', 'EBOINF', 'EBOSUP', 'RIG', 'DIL')),
-                             _F(RELATION='VMIS_ISOT_TRAC',
-                                GROUP_MA='MAINTIEN',
-                                DEFORMATION='PETIT'),),
-            'SUIVI_DDL':_F(NOM_CHAM='DEPL',EVAL_CHAM='MAXI_ABS',GROUP_NO='CR_BAS',NOM_CMP=('DX',)),
-            'NEWTON': _F(MATRICE='TANGENTE',
-                         REAC_ITER=1,),
-            'CONVERGENCE' : _F(ITER_GLOB_MAXI = 10,
-                               RESI_GLOB_MAXI = 1.E-6,
-                               RESI_GLOB_RELA = 1.E-6),
-            'SOLVEUR': _F(METHODE='MUMPS',
-                          PRETRAITEMENTS='AUTO'),
-            'ARCHIVAGE': _F(LIST_INST=self.times_arch,
-                            PRECISION=1.E-08),
-            'AFFICHAGE': _F(INFO_RESIDU='OUI'),
-            'INFO' : 1,
+            "MODELE": self.model,
+            "CARA_ELEM": self.carael,
+            "CHAM_MATER": self.cham_mater_free,
+            "COMPORTEMENT": (
+                _F(
+                    RELATION="MULTIFIBRE",
+                    GROUP_MA=("CRAYON", "T_GUIDE"),
+                    PARM_THETA=0.5,
+                    DEFORMATION=self._type_deformation,
+                    RIGI_GEOM=self._option_rigi_geom,
+                ),
+                _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
+                _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
+                _F(RELATION="ELAS", GROUP_MA=("CREI", "EBOINF", "EBOSUP", "RIG", "DIL")),
+                _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
+            ),
+            "SUIVI_DDL": _F(
+                NOM_CHAM="DEPL", EVAL_CHAM="MAXI_ABS", GROUP_NO="CR_BAS", NOM_CMP=("DX",)
+            ),
+            "NEWTON": _F(MATRICE="TANGENTE", REAC_ITER=1),
+            "CONVERGENCE": _F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0e-6, RESI_GLOB_RELA=1.0e-6),
+            "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO"),
+            "ARCHIVAGE": _F(LIST_INST=self.times_arch, PRECISION=1.0e-08),
+            "AFFICHAGE": _F(INFO_RESIDU="OUI"),
+            "INFO": 1,
         }
         keywords.update(kwds)
         return keywords
@@ -533,43 +548,38 @@ class Mac3CoeurCalcul(object):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
         keywords = {
-            'MODELE': self.model,
-            'CARA_ELEM': self.carael,
-            'CHAM_MATER': self.cham_mater_free,
-            'COMPORTEMENT': (_F(RELATION='MULTIFIBRE',
-                                GROUP_MA=('CRAYON', 'T_GUIDE'),
-                                PARM_THETA=0.5,
-                                DEFORMATION=self._type_deformation,
-                                RIGI_GEOM = self._option_rigi_geom, ),
-                             _F(RELATION='DIS_GRICRA',
-                                GROUP_MA='ELA',),
-                             _F(RELATION='DIS_CHOC',
-                                GROUP_MA=('CREIC', 'RES_TOT')),
-                             _F(RELATION='ELAS',
-                                GROUP_MA=('CREI','EBOINF', 'EBOSUP', 'RIG', 'DIL')),
-                             _F(RELATION='VMIS_ISOT_TRAC',
-                                GROUP_MA='MAINTIEN',
-                                DEFORMATION='PETIT'),),
-            'SUIVI_DDL':_F(NOM_CHAM='DEPL',EVAL_CHAM='MAXI_ABS',GROUP_NO='CR_BAS',NOM_CMP=('DX',)),
-            'NEWTON': _F(MATRICE='TANGENTE',
-                         REAC_ITER=1,),
-            'CONVERGENCE' : _F(ITER_GLOB_MAXI = 10,
-                               RESI_GLOB_MAXI = 1.E-6,
-                               RESI_GLOB_RELA = 1.E-6),
-            'SOLVEUR': _F(METHODE='MUMPS',
-                          PRETRAITEMENTS='AUTO'),
-            'ARCHIVAGE': _F(INST=self.coeur.temps_simu['T1'],
-                            PRECISION=1.E-08),
-            'AFFICHAGE': _F(INFO_RESIDU='OUI'),
-            'INFO' : 1,
-
+            "MODELE": self.model,
+            "CARA_ELEM": self.carael,
+            "CHAM_MATER": self.cham_mater_free,
+            "COMPORTEMENT": (
+                _F(
+                    RELATION="MULTIFIBRE",
+                    GROUP_MA=("CRAYON", "T_GUIDE"),
+                    PARM_THETA=0.5,
+                    DEFORMATION=self._type_deformation,
+                    RIGI_GEOM=self._option_rigi_geom,
+                ),
+                _F(RELATION="DIS_GRICRA", GROUP_MA="ELA"),
+                _F(RELATION="DIS_CHOC", GROUP_MA=("CREIC", "RES_TOT")),
+                _F(RELATION="ELAS", GROUP_MA=("CREI", "EBOINF", "EBOSUP", "RIG", "DIL")),
+                _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA="MAINTIEN", DEFORMATION="PETIT"),
+            ),
+            "SUIVI_DDL": _F(
+                NOM_CHAM="DEPL", EVAL_CHAM="MAXI_ABS", GROUP_NO="CR_BAS", NOM_CMP=("DX",)
+            ),
+            "NEWTON": _F(MATRICE="TANGENTE", REAC_ITER=1),
+            "CONVERGENCE": _F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0e-6, RESI_GLOB_RELA=1.0e-6),
+            "SOLVEUR": _F(METHODE="MUMPS", PRETRAITEMENTS="AUTO"),
+            "ARCHIVAGE": _F(INST=self.coeur.temps_simu["T1"], PRECISION=1.0e-08),
+            "AFFICHAGE": _F(INFO_RESIDU="OUI"),
+            "INFO": 1,
         }
         keywords.update(kwds)
         return keywords
 
     def set_from_resu(self, what, resu):
         """Extract a parameter from a result"""
-        assert what in ('mesh', 'model')
+        assert what in ("mesh", "model")
         if what == "mesh":
             return resu.getModel().getMesh()
         else:
@@ -579,45 +589,46 @@ class Mac3CoeurCalcul(object):
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     """Compute the strain of the assemblies"""
-    mcfact = 'DEFORMATION'
+
+    mcfact = "DEFORMATION"
 
     def __init__(self, macro, args, char_init=None):
         """Initialization"""
         super().__init__(macro, args)
         self.char_init = char_init
 
-    def _prepare_data(self,noresu):
+    def _prepare_data(self, noresu):
         """Prepare the data for the calculation"""
-        self.niv_fluence = self.mcf['NIVE_FLUENCE']
-        if self.keyw['TYPE_COEUR'][:4] == "MONO":
+        self.niv_fluence = self.mcf["NIVE_FLUENCE"]
+        if self.keyw["TYPE_COEUR"][:4] == "MONO":
             self.subdivis = 5
-        if self.mcf['TEMP_IMPO'] :
-            self._dilat_only = self.mcf['TEMP_IMPO']
-        self.use_archimede = self.mcf['ARCHIMEDE']
-        self._maintien_grille = (self.mcf['MAINTIEN_GRILLE'] == 'OUI')
+        if self.mcf["TEMP_IMPO"]:
+            self._dilat_only = self.mcf["TEMP_IMPO"]
+        self.use_archimede = self.mcf["ARCHIMEDE"]
+        self._maintien_grille = self.mcf["MAINTIEN_GRILLE"] == "OUI"
         super()._prepare_data(noresu)
 
     @property
     @cached_property
     def mesh(self):
         """Return the `maillage_sdaster` object"""
-        mesh = self.keyw.get('MAILLAGE_N')
+        mesh = self.keyw.get("MAILLAGE_N")
         char_init = self.char_init
-        if char_init :
-            resu_init=None
-        else :
-            resu_init = self.mcf['RESU_INIT']
+        if char_init:
+            resu_init = None
+        else:
+            resu_init = self.mcf["RESU_INIT"]
         if not (mesh or resu_init or char_init):
-            UTMESS('F', 'COEUR0_4')
+            UTMESS("F", "COEUR0_4")
         elif resu_init:
             if mesh:
-                UTMESS('I', 'COEUR0_1')
+                UTMESS("I", "COEUR0_1")
             self.etat_init = _F(EVOL_NOLI=resu_init)
-            mesh = self.set_from_resu('mesh', resu_init)
-        elif char_init :
-            if mesh :
-                UTMESS('I', 'COEUR0_1')
-            mesh = self.set_from_resu('mesh', char_init)
+            mesh = self.set_from_resu("mesh", resu_init)
+        elif char_init:
+            if mesh:
+                UTMESS("I", "COEUR0_1")
+            mesh = self.set_from_resu("mesh", char_init)
         else:
             mesh = super().mesh
         return mesh
@@ -627,326 +638,373 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def model(self):
         """Return the `modele_sdaster` object"""
         char_init = self.char_init
-        if char_init :
-            resu_init=None
-        else :
-            resu_init = self.mcf['RESU_INIT']
+        if char_init:
+            resu_init = None
+        else:
+            resu_init = self.mcf["RESU_INIT"]
         if resu_init:
-            model = self.set_from_resu('model', resu_init)
-        elif char_init :
-            model = self.set_from_resu('model', char_init)
+            model = self.set_from_resu("model", resu_init)
+        elif char_init:
+            model = self.set_from_resu("model", char_init)
         else:
             model = super().model
         return model
 
-    def dechargePSC(self,RESU) :
+    def dechargePSC(self, RESU):
         coeur = self.coeur
 
-        CALC_CHAMP(reuse =RESU,
-                   RESULTAT=RESU,
-                   PRECISION=1.E-08,
-                   CRITERE='RELATIF',
-                   INST=coeur.temps_simu['T8'],
-                   FORCE=('FORC_NODA',),)
+        CALC_CHAMP(
+            reuse=RESU,
+            RESULTAT=RESU,
+            PRECISION=1.0e-08,
+            CRITERE="RELATIF",
+            INST=coeur.temps_simu["T8"],
+            FORCE=("FORC_NODA",),
+        )
 
-        __SPRING=POST_RELEVE_T(ACTION=_F(INTITULE='FORCES',
-                                         GROUP_NO=('PMNT_S'),
-                                         RESULTAT=RESU,
-                                         NOM_CHAM='FORC_NODA',
-                                         NOM_CMP=('DX',),
-                                         REPERE='GLOBAL',
-                                         PRECISION=1.E-08,
-                                         INST=coeur.temps_simu['T8'],
-                                         CRITERE='RELATIF',
-                                         OPERATION='EXTRACTION',),)
+        __SPRING = POST_RELEVE_T(
+            ACTION=_F(
+                INTITULE="FORCES",
+                GROUP_NO=("PMNT_S"),
+                RESULTAT=RESU,
+                NOM_CHAM="FORC_NODA",
+                NOM_CMP=("DX",),
+                REPERE="GLOBAL",
+                PRECISION=1.0e-08,
+                INST=coeur.temps_simu["T8"],
+                CRITERE="RELATIF",
+                OPERATION="EXTRACTION",
+            )
+        )
 
-        tab2=__SPRING.EXTR_TABLE()
-        valeurs=tab2.values()
+        tab2 = __SPRING.EXTR_TABLE()
+        valeurs = tab2.values()
 
-        inst=valeurs['INST'][-1]
-        fx=valeurs['DX']
-        noeuds=valeurs['NOEUD']
+        inst = valeurs["INST"][-1]
+        fx = valeurs["DX"]
+        noeuds = valeurs["NOEUD"]
         listarg = []
-        for el in zip(fx,noeuds) :
-          listarg.append(_F(NOEUD=el[1],FX=el[0]))
+        for el in zip(fx, noeuds):
+            listarg.append(_F(NOEUD=el[1], FX=el[0]))
 
-        assert(inst==coeur.temps_simu['T8'])
+        assert inst == coeur.temps_simu["T8"]
 
-        _LI2=DEFI_FONCTION(NOM_PARA='INST',PROL_DROITE='CONSTANT',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T8b'],0.),)
+        _LI2 = DEFI_FONCTION(
+            NOM_PARA="INST",
+            PROL_DROITE="CONSTANT",
+            VALE=(coeur.temps_simu["T8"], 1.0, coeur.temps_simu["T8b"], 0.0),
+        )
 
-        _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
-                                FORCE_NODALE=listarg,)
+        _F_EMB2 = AFFE_CHAR_MECA(MODELE=self.model, FORCE_NODALE=listarg)
 
-        return (_LI2,_F_EMB2)
+        return (_LI2, _F_EMB2)
 
     def _run(self):
         """Run the main part of the calculation"""
 
-        #Preparation d'un etat de contraintes nul
-        _CL_NUL = AFFE_CHAR_CINE(MODELE=self.model,
-                                 MECA_IMPO=(_F(TOUT='OUI',
-                                               DX=0.0, DY=0.0, DZ=0.0,
-                                               DRX=0.0, DRY=0.0, DRZ=0.0)))
+        # Preparation d'un etat de contraintes nul
+        _CL_NUL = AFFE_CHAR_CINE(
+            MODELE=self.model,
+            MECA_IMPO=(_F(TOUT="OUI", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)),
+        )
 
-        MasquerAlarme('COMPOR4_17')
-        __NUL = STAT_NON_LINE(**self.snl(
-            EXCIT=_F(CHARGE=_CL_NUL),
-            INCREMENT=_F(LIST_INST=self.times,
-                         NUME_INST_FIN=1,),
-        ))
-        RetablirAlarme('COMPOR4_17')
+        MasquerAlarme("COMPOR4_17")
+        __NUL = STAT_NON_LINE(
+            **self.snl(
+                EXCIT=_F(CHARGE=_CL_NUL), INCREMENT=_F(LIST_INST=self.times, NUME_INST_FIN=1)
+            )
+        )
+        RetablirAlarme("COMPOR4_17")
 
-        _tini = __NUL.LIST_PARA()['INST'][-1]
+        _tini = __NUL.LIST_PARA()["INST"][-1]
 
-        __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                             OPERATION='EXTR',
-                             PRECISION=1.0E-08,
-                             RESULTAT=__NUL,
-                             NOM_CHAM='SIEF_ELGA',
-                             INST=_tini,)
+        __CHSIE = CREA_CHAMP(
+            TYPE_CHAM="ELGA_SIEF_R",
+            OPERATION="EXTR",
+            PRECISION=1.0e-08,
+            RESULTAT=__NUL,
+            NOM_CHAM="SIEF_ELGA",
+            INST=_tini,
+        )
 
-        SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                             MODELE=self.model,
-                             OPERATION='ASSE',
-                             ASSE=(_F(TOUT='OUI',
-                                      CHAM_GD=__CHSIE,
-                                      CUMUL='NON',
-                                      COEF_R=0.0),),)
+        SIG_NUL = CREA_CHAMP(
+            TYPE_CHAM="ELGA_SIEF_R",
+            MODELE=self.model,
+            OPERATION="ASSE",
+            ASSE=(_F(TOUT="OUI", CHAM_GD=__CHSIE, CUMUL="NON", COEF_R=0.0),),
+        )
 
         coeur = self.coeur
-        if self.keyw['TYPE_COEUR'][:4] == "MONO":
+        if self.keyw["TYPE_COEUR"][:4] == "MONO":
             chmat_contact = self.cham_mater_free
         else:
             chmat_contact = self.cham_mater_contact
-        constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load + self.symetric_cond
+        constant_load = (
+            self.archimede_load
+            + self.gravity_load
+            + self.vessel_dilatation_load
+            + self.symetric_cond
+        )
         nbRatio = 9
 
         # T0 - T8
-        if (self.char_init) :
-            __RESULT = STAT_NON_LINE(**self.snl(
-                               CHAM_MATER=self.cham_mater_free,
-                               INCREMENT=_F(LIST_INST=self.times,
-                                            INST_INIT=0.,
-                                            PRECISION=1.E-08,
-                                            INST_FIN=coeur.temps_simu['T5']),
-                               COMPORTEMENT=self.char_ini_comp,
-                               EXCIT=constant_load + self.vessel_head_load + self.thyc_load[0]+self.kinematic_cond,
-                               ETAT_INIT=_F(SIGM=SIG_NUL),
-            ))
+        if self.char_init:
+            __RESULT = STAT_NON_LINE(
+                **self.snl(
+                    CHAM_MATER=self.cham_mater_free,
+                    INCREMENT=_F(
+                        LIST_INST=self.times,
+                        INST_INIT=0.0,
+                        PRECISION=1.0e-08,
+                        INST_FIN=coeur.temps_simu["T5"],
+                    ),
+                    COMPORTEMENT=self.char_ini_comp,
+                    EXCIT=constant_load
+                    + self.vessel_head_load
+                    + self.thyc_load[0]
+                    + self.kinematic_cond,
+                    ETAT_INIT=_F(SIGM=SIG_NUL),
+                )
+            )
 
-            constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load_full + self.symetric_cond + self.periodic_cond + self.rigid_load
-            __RESULT = STAT_NON_LINE(**self.snl(
-                               reuse=__RESULT,
-                               RESULTAT=__RESULT,
-                               CHAM_MATER=self.cham_mater_free,
-                               INCREMENT=_F(LIST_INST=self.times,
-                                            PRECISION=1.E-08,
-                                            INST_FIN=coeur.temps_simu['T8']),
-                               COMPORTEMENT=self.char_ini_comp,
-                               EXCIT=constant_load + self.vessel_head_load +
-                                      self.thyc_load[0],
-                               ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                            PRECISION=1.E-08,
-                                            CRITERE='RELATIF',),
-                               ))
+            constant_load = (
+                self.archimede_load
+                + self.gravity_load
+                + self.vessel_dilatation_load_full
+                + self.symetric_cond
+                + self.periodic_cond
+                + self.rigid_load
+            )
+            __RESULT = STAT_NON_LINE(
+                **self.snl(
+                    reuse=__RESULT,
+                    RESULTAT=__RESULT,
+                    CHAM_MATER=self.cham_mater_free,
+                    INCREMENT=_F(
+                        LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T8"]
+                    ),
+                    COMPORTEMENT=self.char_ini_comp,
+                    EXCIT=constant_load + self.vessel_head_load + self.thyc_load[0],
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                )
+            )
 
-            (LI2,F_EMB2)=self.dechargePSC(__RESULT)
+            (LI2, F_EMB2) = self.dechargePSC(__RESULT)
 
             # T8 - Tf
-            __RESULT = STAT_NON_LINE(**self.snl(
-                                  reuse=__RESULT,
-                                  RESULTAT=__RESULT,
-                                  CHAM_MATER=self.cham_mater_free,
-                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                               PRECISION=1.E-08,
-                                               CRITERE='RELATIF',),
-                                  EXCIT=constant_load+[_F(CHARGE=F_EMB2,FONC_MULT=LI2),],
-                                  INCREMENT=_F(LIST_INST=self.times,
-                                               PRECISION=1.E-08),
-                                  COMPORTEMENT=self.char_ini_comp,
-                                  ))
-        elif (self._dilat_only) :
+            __RESULT = STAT_NON_LINE(
+                **self.snl(
+                    reuse=__RESULT,
+                    RESULTAT=__RESULT,
+                    CHAM_MATER=self.cham_mater_free,
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    EXCIT=constant_load + [_F(CHARGE=F_EMB2, FONC_MULT=LI2)],
+                    INCREMENT=_F(LIST_INST=self.times, PRECISION=1.0e-08),
+                    COMPORTEMENT=self.char_ini_comp,
+                )
+            )
+        elif self._dilat_only:
             # sans contact, sans effort hydro, jusqu'a T4 uniquement
             constant_load += self.periodic_cond + self.rigid_load
             loads = constant_load + self.vessel_head_load
 
-            __RESULT = STAT_NON_LINE(**self.snl(
-                CHAM_MATER=self.cham_mater_free,
-                INCREMENT=_F(LIST_INST=self.times,
-                             INST_INIT=0.,
-                             INST_FIN=coeur.temps_simu['T4']),
-                EXCIT=loads,
-                ETAT_INIT=_F(SIGM=SIG_NUL)))
+            __RESULT = STAT_NON_LINE(
+                **self.snl(
+                    CHAM_MATER=self.cham_mater_free,
+                    INCREMENT=_F(
+                        LIST_INST=self.times, INST_INIT=0.0, INST_FIN=coeur.temps_simu["T4"]
+                    ),
+                    EXCIT=loads,
+                    ETAT_INIT=_F(SIGM=SIG_NUL),
+                )
+            )
 
-        else :
+        else:
 
             constant_load += self.periodic_cond + self.rigid_load
             loads = constant_load + self.vessel_head_load + self.thyc_load[0] + self.thyc_load[1]
-            keywords=[]
-            mater=[]
-            ratio = 1.
+            keywords = []
+            mater = []
+            ratio = 1.0
             mater.append(self.cham_mater_contact_progressif(ratio))
 
             __RESULT = None
-            if (not self.etat_init) :
-                __RESULT = STAT_NON_LINE(**self.snl(CHAM_MATER=self.cham_mater_free,
-                                INCREMENT=_F(LIST_INST=self.times,
-                                             PRECISION=1.E-08,
-                                             INST_FIN=0.),
-                                EXCIT=loads,
-                                ETAT_INIT=_F(SIGM=SIG_NUL)
-                ))
-                self.etat_init = _F(EVOL_NOLI=__RESULT,
-                                    PRECISION=1.E-08,
-                                    CRITERE='RELATIF')
+            if not self.etat_init:
+                __RESULT = STAT_NON_LINE(
+                    **self.snl(
+                        CHAM_MATER=self.cham_mater_free,
+                        INCREMENT=_F(LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=0.0),
+                        EXCIT=loads,
+                        ETAT_INIT=_F(SIGM=SIG_NUL),
+                    )
+                )
+                self.etat_init = _F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF")
 
-            keywords.append(self.snl(CHAM_MATER=mater[-1],
-                                INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                             PRECISION=1.E-08,
-                                             INST_FIN=coeur.temps_simu['T0b']),
-                                EXCIT=loads,
-                                ETAT_INIT=self.etat_init
-            ))
+            keywords.append(
+                self.snl(
+                    CHAM_MATER=mater[-1],
+                    INCREMENT=_F(
+                        LIST_INST=self.times_woSubd,
+                        PRECISION=1.0e-08,
+                        INST_FIN=coeur.temps_simu["T0b"],
+                    ),
+                    EXCIT=loads,
+                    ETAT_INIT=self.etat_init,
+                )
+            )
 
             nb_test = 0
-            while nb_test < nbRatio :
-                try :
+            while nb_test < nbRatio:
+                try:
                     nb = len(keywords)
-                    __res_int = [None]*nb
-                    for i in range(nb) :
+                    __res_int = [None] * nb
+                    for i in range(nb):
                         k = keywords[::-1][i]
-                        if i>0 :
+                        if i > 0:
                             kwds = {
-                                'NEWTON': _F(MATRICE='TANGENTE',
-                                 PREDICTION='DEPL_CALCULE',
-                                 EVOL_NOLI = __res_int[i-1],
-                                 REAC_ITER=1,),
-                                }
+                                "NEWTON": _F(
+                                    MATRICE="TANGENTE",
+                                    PREDICTION="DEPL_CALCULE",
+                                    EVOL_NOLI=__res_int[i - 1],
+                                    REAC_ITER=1,
+                                )
+                            }
                             k.update(kwds)
-                        __res_int[i]=STAT_NON_LINE(**k)
+                        __res_int[i] = STAT_NON_LINE(**k)
                     break
                 except ConvergenceError:
-                    ratio = ratio/10.
+                    ratio = ratio / 10.0
                     mater.append(self.cham_mater_contact_progressif(ratio))
-                    keywords.append(self.snl(CHAM_MATER=mater[-1],
-                                    INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                                 PRECISION=1.E-08,
-                                                 INST_FIN=coeur.temps_simu['T0b']),
-                                    EXCIT=loads,
-                                    ETAT_INIT=self.etat_init
-                    ))
-                nb_test+=1
-            else :
-                raise ConvergenceError('no convergence')
+                    keywords.append(
+                        self.snl(
+                            CHAM_MATER=mater[-1],
+                            INCREMENT=_F(
+                                LIST_INST=self.times_woSubd,
+                                PRECISION=1.0e-08,
+                                INST_FIN=coeur.temps_simu["T0b"],
+                            ),
+                            EXCIT=loads,
+                            ETAT_INIT=self.etat_init,
+                        )
+                    )
+                nb_test += 1
+            else:
+                raise ConvergenceError("no convergence")
             keywords = self.snl(
-                                reuse=__RESULT,
-                                RESULTAT=__RESULT,
-                                NEWTON= _F(MATRICE='TANGENTE',
-                                    PREDICTION='DEPL_CALCULE',
-                                    EVOL_NOLI = __res_int[-1],
-                                    REAC_ITER=1,),
-                                CHAM_MATER=self.cham_mater_contact,
-                                INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                             PRECISION=1.E-08,
-                                             INST_FIN=coeur.temps_simu['T0b']),
-                                EXCIT=loads,
-                                ETAT_INIT=self.etat_init
-                                )
+                reuse=__RESULT,
+                RESULTAT=__RESULT,
+                NEWTON=_F(
+                    MATRICE="TANGENTE",
+                    PREDICTION="DEPL_CALCULE",
+                    EVOL_NOLI=__res_int[-1],
+                    REAC_ITER=1,
+                ),
+                CHAM_MATER=self.cham_mater_contact,
+                INCREMENT=_F(
+                    LIST_INST=self.times_woSubd, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T0b"]
+                ),
+                EXCIT=loads,
+                ETAT_INIT=self.etat_init,
+            )
 
             __RESULT = STAT_NON_LINE(**keywords)
 
-            __RESULT = STAT_NON_LINE(**self.snl(
-                                  reuse=__RESULT,
-                                  RESULTAT=__RESULT,
-                                  CHAM_MATER=chmat_contact,
-                                  INCREMENT=_F(LIST_INST=self.times,
-                                               PRECISION=1.E-08,
-                                               INST_FIN=coeur.temps_simu['T8']),
-                                  EXCIT=loads,
-                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                               PRECISION=1.E-08,
-                                               CRITERE='RELATIF'),
-                                  ))
+            __RESULT = STAT_NON_LINE(
+                **self.snl(
+                    reuse=__RESULT,
+                    RESULTAT=__RESULT,
+                    CHAM_MATER=chmat_contact,
+                    INCREMENT=_F(
+                        LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T8"]
+                    ),
+                    EXCIT=loads,
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                )
+            )
 
-            (LI2,F_EMB2)=self.dechargePSC(__RESULT)
+            (LI2, F_EMB2) = self.dechargePSC(__RESULT)
             # T8 - Tf
-            __RESULT = STAT_NON_LINE(**self.snl(
-                                  reuse=__RESULT,
-                                  RESULTAT=__RESULT,
-                                  CHAM_MATER=chmat_contact,
-                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                               PRECISION=1.E-08,
-                                               CRITERE='RELATIF'),
-                                  EXCIT=constant_load+[_F(CHARGE=F_EMB2,FONC_MULT=LI2),],
-                                  INCREMENT=_F(LIST_INST=self.times,
-                                               PRECISION=1.E-08,
-                                               INST_FIN=coeur.temps_simu['T8b']),
-                                  ))
+            __RESULT = STAT_NON_LINE(
+                **self.snl(
+                    reuse=__RESULT,
+                    RESULTAT=__RESULT,
+                    CHAM_MATER=chmat_contact,
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    EXCIT=constant_load + [_F(CHARGE=F_EMB2, FONC_MULT=LI2)],
+                    INCREMENT=_F(
+                        LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T8b"]
+                    ),
+                )
+            )
 
-            keywords=[]
-            mater=[]
-            ratio = 1.e-8
+            keywords = []
+            mater = []
+            ratio = 1.0e-8
             mater.append(self.cham_mater_contact_progressif(ratio))
-            keywords.append(self.snl(CHAM_MATER=mater[-1],
-                                INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                             PRECISION=1.E-08),
-                                EXCIT=constant_load,
-                                ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                             PRECISION=1.E-08,
-                                             CRITERE='RELATIF'),
-                               ))
+            keywords.append(
+                self.snl(
+                    CHAM_MATER=mater[-1],
+                    INCREMENT=_F(LIST_INST=self.times_woSubd, PRECISION=1.0e-08),
+                    EXCIT=constant_load,
+                    ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                )
+            )
             nb_test = 0
-            while nb_test < nbRatio :
-                try :
+            while nb_test < nbRatio:
+                try:
                     nb = len(keywords)
-                    __res_int = [None]*nb
-                    for i in range(nb) :
+                    __res_int = [None] * nb
+                    for i in range(nb):
                         k = keywords[::-1][i]
-                        if i>0 :
+                        if i > 0:
                             kwds = {
-                                'NEWTON': _F(MATRICE='TANGENTE',
-                                 PREDICTION='DEPL_CALCULE',
-                                 EVOL_NOLI = __res_int[i-1],
-                                 REAC_ITER=1,),
-                                }
+                                "NEWTON": _F(
+                                    MATRICE="TANGENTE",
+                                    PREDICTION="DEPL_CALCULE",
+                                    EVOL_NOLI=__res_int[i - 1],
+                                    REAC_ITER=1,
+                                )
+                            }
                             k.update(kwds)
-                        __res_int[i]=STAT_NON_LINE(**k)
+                        __res_int[i] = STAT_NON_LINE(**k)
                     break
                 except ConvergenceError:
-                    ratio = ratio*10.
+                    ratio = ratio * 10.0
                     mater.append(self.cham_mater_contact_progressif(ratio))
-                    keywords.append(self.snl(CHAM_MATER=mater[-1],
-                                    INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                                 PRECISION=1.E-08,),
-                                    EXCIT=constant_load,
-                                    ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                                 PRECISION=1.E-08,
-                                                 CRITERE='RELATIF'),
-                                   ))
-                nb_test+=1
-            else :
-                raise ConvergenceError('no convergence')
-            keywords = self.snl(reuse = __RESULT,
-                                RESULTAT=__RESULT,
-                                NEWTON= _F(MATRICE='TANGENTE',
-                                    PREDICTION='DEPL_CALCULE',
-                                    EVOL_NOLI = __res_int[-1],
-                                    REAC_ITER=1,),
-                                CHAM_MATER=self.cham_mater_free,
-                                INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                             PRECISION=1.E-08,),
-                                EXCIT=constant_load,
-                                ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                             PRECISION=1.E-08,
-                                             CRITERE='RELATIF'),
-                                )
+                    keywords.append(
+                        self.snl(
+                            CHAM_MATER=mater[-1],
+                            INCREMENT=_F(LIST_INST=self.times_woSubd, PRECISION=1.0e-08),
+                            EXCIT=constant_load,
+                            ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                        )
+                    )
+                nb_test += 1
+            else:
+                raise ConvergenceError("no convergence")
+            keywords = self.snl(
+                reuse=__RESULT,
+                RESULTAT=__RESULT,
+                NEWTON=_F(
+                    MATRICE="TANGENTE",
+                    PREDICTION="DEPL_CALCULE",
+                    EVOL_NOLI=__res_int[-1],
+                    REAC_ITER=1,
+                ),
+                CHAM_MATER=self.cham_mater_free,
+                INCREMENT=_F(LIST_INST=self.times_woSubd, PRECISION=1.0e-08),
+                EXCIT=constant_load,
+                ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+            )
             __RESULT = STAT_NON_LINE(**keywords)
         return __RESULT
+
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
 
     """Compute the thinkness of water from deformed assemblies"""
-    mcfact = 'LAME'
+
+    mcfact = "LAME"
 
     def _init_properties(self):
         """Initialize all the cached properties to NULL"""
@@ -959,322 +1017,382 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     @cached_property
     def lock_load(self):
         """Return the lock condition applied together with the displacements of the water layer"""
-        return [_F(CHARGE=AFFE_CHAR_MECA(MODELE=self.model,
-                                         DDL_IMPO=(_F(GROUP_NO=('FIX', 'P_CUV'),
-                                                      DY=0, DZ=0, DX=0),
-                                                   _F(GROUP_NO=('PMNT_S',),
-                                                      DY=0, DZ=0))))]
+        return [
+            _F(
+                CHARGE=AFFE_CHAR_MECA(
+                    MODELE=self.model,
+                    DDL_IMPO=(
+                        _F(GROUP_NO=("FIX", "P_CUV"), DY=0, DZ=0, DX=0),
+                        _F(GROUP_NO=("PMNT_S",), DY=0, DZ=0),
+                    ),
+                )
+            )
+        ]
 
     @property
     @cached_property
     def layer_load(self):
         """Return the loading due to the displacements of the water layer"""
-        return [_F(CHARGE=self.coeur.affe_char_lame(self.model)), ]
+        return [_F(CHARGE=self.coeur.affe_char_lame(self.model))]
 
     def update_coeur(self, resu, table):
         """Update the `Coeur` object from the given `Table` and result"""
         self._init_properties()
-        self.mesh = self.set_from_resu('mesh', resu)
-        self.model = self.set_from_resu('model', resu)
-        if self.keyw['TYPE_COEUR'][:5] == 'LIGNE' :
-            self.coeur = _build_coeur(self.keyw['TYPE_COEUR'], self.macro, table,self.keyw['NB_ASSEMBLAGE'])
-        else :
-            self.coeur = _build_coeur(self.keyw['TYPE_COEUR'], self.macro, table)
+        self.mesh = self.set_from_resu("mesh", resu)
+        self.model = self.set_from_resu("model", resu)
+        if self.keyw["TYPE_COEUR"][:5] == "LIGNE":
+            self.coeur = _build_coeur(
+                self.keyw["TYPE_COEUR"], self.macro, table, self.keyw["NB_ASSEMBLAGE"]
+            )
+        else:
+            self.coeur = _build_coeur(self.keyw["TYPE_COEUR"], self.macro, table)
         # initializations
         self.coeur.recuperation_donnees_geom(self.mesh)
         self.times
 
     def deform_mesh_inverse(self, depl):
         """Use the displacement of the result to deform the mesh"""
-        _depl_inv = CREA_CHAMP(OPERATION='COMB',
-                          TYPE_CHAM='NOEU_DEPL_R',
-                          COMB=_F(CHAM_GD=depl,COEF_R=-1.))
+        _depl_inv = CREA_CHAMP(
+            OPERATION="COMB", TYPE_CHAM="NOEU_DEPL_R", COMB=_F(CHAM_GD=depl, COEF_R=-1.0)
+        )
 
-        _mesh = MODI_MAILLAGE(reuse=self.mesh,
-                              MAILLAGE=self.mesh,
-                              DEFORME=_F(OPTION='TRAN',
-                                         DEPL=_depl_inv))
+        _mesh = MODI_MAILLAGE(
+            reuse=self.mesh, MAILLAGE=self.mesh, DEFORME=_F(OPTION="TRAN", DEPL=_depl_inv)
+        )
         del self.mesh
         self.mesh = _mesh
 
     def deform_mesh(self, resu):
         """Use the displacement of the result to deform the mesh"""
-        _depl = CREA_CHAMP(OPERATION='EXTR',
-                           INST = self.coeur.temps_simu['T1'],
-                           PRECISION=1.E-08,
-                           TYPE_CHAM='NOEU_DEPL_R',
-                           NOM_CHAM='DEPL',
-                           RESULTAT=resu)
-        _mesh = MODI_MAILLAGE(reuse=self.mesh,
-                              MAILLAGE=self.mesh,
-                              DEFORME=_F(OPTION='TRAN',
-                                         DEPL=_depl))
+        _depl = CREA_CHAMP(
+            OPERATION="EXTR",
+            INST=self.coeur.temps_simu["T1"],
+            PRECISION=1.0e-08,
+            TYPE_CHAM="NOEU_DEPL_R",
+            NOM_CHAM="DEPL",
+            RESULTAT=resu,
+        )
+        _mesh = MODI_MAILLAGE(
+            reuse=self.mesh, MAILLAGE=self.mesh, DEFORME=_F(OPTION="TRAN", DEPL=_depl)
+        )
         del self.mesh
         self.mesh = _mesh
         return _depl
 
-    def extrChamp(self,resu,inst) :
+    def extrChamp(self, resu, inst):
 
-        _depl = CREA_CHAMP(OPERATION='EXTR',
-                           TYPE_CHAM='NOEU_DEPL_R',
-                           NOM_CHAM='DEPL',
-                           INST=inst,
-                           PRECISION=1.E-08,
-                           RESULTAT=resu)
+        _depl = CREA_CHAMP(
+            OPERATION="EXTR",
+            TYPE_CHAM="NOEU_DEPL_R",
+            NOM_CHAM="DEPL",
+            INST=inst,
+            PRECISION=1.0e-08,
+            RESULTAT=resu,
+        )
         return _depl
 
-    def asseChamp(self,depl1,depl2) :
+    def asseChamp(self, depl1, depl2):
 
-        _depl = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-                   OPERATION = 'ASSE',
-                   MODELE    = self.model,
-                   ASSE = (_F(TOUT='OUI',CHAM_GD = depl1,NOM_CMP=('DY','DZ'),CUMUL = 'NON',),
-                           _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DY','DZ'),CUMUL = 'OUI',),
-                           _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DX',),CUMUL = 'NON',COEF_R=0.0),
-                           ),)
+        _depl = CREA_CHAMP(
+            TYPE_CHAM="NOEU_DEPL_R",
+            OPERATION="ASSE",
+            MODELE=self.model,
+            ASSE=(
+                _F(TOUT="OUI", CHAM_GD=depl1, NOM_CMP=("DY", "DZ"), CUMUL="NON"),
+                _F(TOUT="OUI", CHAM_GD=depl2, NOM_CMP=("DY", "DZ"), CUMUL="OUI"),
+                _F(TOUT="OUI", CHAM_GD=depl2, NOM_CMP=("DX",), CUMUL="NON", COEF_R=0.0),
+            ),
+        )
 
         return _depl
 
-    def cr(self,inst,cham_gd,reuse=None) :
-        """Return the common keywords for CREA_RESU """
+    def cr(self, inst, cham_gd, reuse=None):
+        """Return the common keywords for CREA_RESU"""
         keywords = {
-            'OPERATION' : 'AFFE',
-            'TYPE_RESU' : 'EVOL_NOLI',
-            'NOM_CHAM'  : 'DEPL',
-            'AFFE': (_F(CHAM_GD = cham_gd,
-                        INST    = inst,
-                        PRECISION=1.E-08,
-                        MODELE  = self.model))
-                   }
-        if reuse :
-            keywords['reuse'] = reuse
-            keywords['RESULTAT'] = reuse
+            "OPERATION": "AFFE",
+            "TYPE_RESU": "EVOL_NOLI",
+            "NOM_CHAM": "DEPL",
+            "AFFE": (_F(CHAM_GD=cham_gd, INST=inst, PRECISION=1.0e-08, MODELE=self.model)),
+        }
+        if reuse:
+            keywords["reuse"] = reuse
+            keywords["RESULTAT"] = reuse
         return keywords
 
-
-    def output_resdef(self,resu,depl_deformed,tinit,tfin) :
+    def output_resdef(self, resu, depl_deformed, tinit, tfin):
         """save the result to be used by a next calculation"""
-        _pdt_ini = self.coeur.temps_simu['T1']
-        _pdt_fin = self.coeur.temps_simu['T4']
+        _pdt_ini = self.coeur.temps_simu["T1"]
+        _pdt_fin = self.coeur.temps_simu["T4"]
 
-        if ((not tinit) and (not tfin)) :
+        if (not tinit) and (not tfin):
             _pdt_ini_out = _pdt_ini
             _pdt_fin_out = _pdt_fin
-        else :
+        else:
             _pdt_ini_out = tinit
             _pdt_fin_out = tfin
 
+        depl_ini = self.extrChamp(resu, _pdt_ini)
+        depl_fin = self.extrChamp(resu, _pdt_fin)
 
-        depl_ini = self.extrChamp(resu,_pdt_ini)
-        depl_fin = self.extrChamp(resu,_pdt_fin)
-
-        depl_tot_ini = self.asseChamp(depl_deformed,depl_ini)
-        depl_tot_fin = self.asseChamp(depl_deformed,depl_fin)
+        depl_tot_ini = self.asseChamp(depl_deformed, depl_ini)
+        depl_tot_fin = self.asseChamp(depl_deformed, depl_fin)
 
         self.deform_mesh_inverse(depl_deformed)
 
-        self.res_def = CREA_RESU(**self.cr(_pdt_ini_out,depl_tot_ini))
-        self.res_def = CREA_RESU(reuse=self.res_def,
-                                 **self.cr(_pdt_fin_out,depl_tot_fin))
+        self.res_def = CREA_RESU(**self.cr(_pdt_ini_out, depl_tot_ini))
+        self.res_def = CREA_RESU(reuse=self.res_def, **self.cr(_pdt_fin_out, depl_tot_fin))
         if self.res_def_keyw:
             self.macro.register_result(self.res_def, self.res_def_keyw)
 
     def _prepare_data(self, noresu=None):
         """Prepare the data for the calculation"""
-        self.use_archimede = 'OUI'
+        self.use_archimede = "OUI"
         self._maintien_grille = False
         if not noresu:
-            self.res_def_keyw = self.keyw.get('RESU_DEF')
+            self.res_def_keyw = self.keyw.get("RESU_DEF")
             if self.res_def_keyw:
                 self.calc_res_def = True
         super()._prepare_data(noresu)
 
-    def _run(self,tinit=None,tfin=None):
+    def _run(self, tinit=None, tfin=None):
         """Run the main part of the calculation"""
 
-        #Preparation d'un etat de contraintes nul
-        MasquerAlarme('COMPOR4_17')
-        _CL_NUL = AFFE_CHAR_CINE(MODELE=self.model,
-                                 MECA_IMPO=(_F(TOUT='OUI',
-                                               DX=0.0, DY=0.0, DZ=0.0,
-                                               DRX=0.0, DRY=0.0, DRZ=0.0)))
+        # Preparation d'un etat de contraintes nul
+        MasquerAlarme("COMPOR4_17")
+        _CL_NUL = AFFE_CHAR_CINE(
+            MODELE=self.model,
+            MECA_IMPO=(_F(TOUT="OUI", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)),
+        )
 
-        __NUL = STAT_NON_LINE(**self.snl(INCREMENT=_F(LIST_INST=self.times,
-                                                      PRECISION=1.E-08,
-                                                      NUME_INST_FIN=1),
-                                         EXCIT=_F(CHARGE=_CL_NUL)))
+        __NUL = STAT_NON_LINE(
+            **self.snl(
+                INCREMENT=_F(LIST_INST=self.times, PRECISION=1.0e-08, NUME_INST_FIN=1),
+                EXCIT=_F(CHARGE=_CL_NUL),
+            )
+        )
 
-        _tini = __NUL.LIST_PARA()['INST'][-1]
+        _tini = __NUL.LIST_PARA()["INST"][-1]
 
-        __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                             OPERATION='EXTR',
-                             PRECISION=1.0E-08,
-                             RESULTAT=__NUL,
-                             NOM_CHAM='SIEF_ELGA',
-                             INST=_tini)
+        __CHSIE = CREA_CHAMP(
+            TYPE_CHAM="ELGA_SIEF_R",
+            OPERATION="EXTR",
+            PRECISION=1.0e-08,
+            RESULTAT=__NUL,
+            NOM_CHAM="SIEF_ELGA",
+            INST=_tini,
+        )
 
-        SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                             MODELE=self.model,
-                             OPERATION='ASSE',
-                             ASSE=(_F(TOUT='OUI',
-                                      CHAM_GD=__CHSIE,
-                                      CUMUL='NON',
-                                      COEF_R=0.0)))
+        SIG_NUL = CREA_CHAMP(
+            TYPE_CHAM="ELGA_SIEF_R",
+            MODELE=self.model,
+            OPERATION="ASSE",
+            ASSE=(_F(TOUT="OUI", CHAM_GD=__CHSIE, CUMUL="NON", COEF_R=0.0)),
+        )
 
-        RetablirAlarme('COMPOR4_17')
-
+        RetablirAlarme("COMPOR4_17")
 
         coeur = self.coeur
         # calcul de deformation d'apres DAMAC / T0 - T1
-        _snl_lame = STAT_NON_LINE(**self.snl_lame(INCREMENT=_F(LIST_INST=self.times,
-                                                               PRECISION=1.E-08,
-                                                               INST_INIT=0.,
-                                                               INST_FIN=coeur.temps_simu['T1']),
-                                                  EXCIT=(self.symetric_cond + self.periodic_cond +
-                                                         self.layer_load +
-                                                         self.vessel_head_load + self.vessel_dilatation_load +
-                                                         self.archimede_load + self.gravity_load),
-                                                  ETAT_INIT=_F(SIGM=SIG_NUL)))
+        _snl_lame = STAT_NON_LINE(
+            **self.snl_lame(
+                INCREMENT=_F(
+                    LIST_INST=self.times,
+                    PRECISION=1.0e-08,
+                    INST_INIT=0.0,
+                    INST_FIN=coeur.temps_simu["T1"],
+                ),
+                EXCIT=(
+                    self.symetric_cond
+                    + self.periodic_cond
+                    + self.layer_load
+                    + self.vessel_head_load
+                    + self.vessel_dilatation_load
+                    + self.archimede_load
+                    + self.gravity_load
+                ),
+                ETAT_INIT=_F(SIGM=SIG_NUL),
+            )
+        )
 
-        self.update_coeur(_snl_lame, self.keyw['TABLE_N'])
+        self.update_coeur(_snl_lame, self.keyw["TABLE_N"])
         # On fait l'irradiation historique sur assemblages droits
         # WARNING: element characteristics and the most of the loadings must be
         # computed on the initial (not deformed) mesh
         # please keep the call to deform_mesh after the computation of keywords
-        keywords=[]
-        keywords.append(self.snl_lame(INCREMENT=_F(LIST_INST=self.times,
-                                                   PRECISION=1.E-08,
-                                                   INST_FIN=0.),
-                                      EXCIT=(self.symetric_cond + self.periodic_cond +
-                                             self.rigid_load +
-                                             self.vessel_head_load + self.vessel_dilatation_load +
-                                             self.archimede_load + self.gravity_load),
-                                      ETAT_INIT=_F(SIGM=SIG_NUL)))
+        keywords = []
+        keywords.append(
+            self.snl_lame(
+                INCREMENT=_F(LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=0.0),
+                EXCIT=(
+                    self.symetric_cond
+                    + self.periodic_cond
+                    + self.rigid_load
+                    + self.vessel_head_load
+                    + self.vessel_dilatation_load
+                    + self.archimede_load
+                    + self.gravity_load
+                ),
+                ETAT_INIT=_F(SIGM=SIG_NUL),
+            )
+        )
 
         __RESULT = STAT_NON_LINE(**keywords[-1])
         # On deforme le maillage
         depl_deformed = self.deform_mesh(_snl_lame)
 
         # On active progressivement les contacts
-        mater=[]
-        ratio = 1.
+        mater = []
+        ratio = 1.0
         mater.append(self.cham_mater_contact_progressif(ratio))
-        kwds = {'CHAM_MATER' : mater[-1],
-                'ETAT_INIT' : _F(EVOL_NOLI=__RESULT,
-                                 PRECISION=1.E-08,
-                                 CRITERE='RELATIF'),
-                'INCREMENT' : _F(LIST_INST=self.times_woSubd,
-                                 PRECISION=1.E-08,
-                                 INST_FIN=coeur.temps_simu['T0b'])}
+        kwds = {
+            "CHAM_MATER": mater[-1],
+            "ETAT_INIT": _F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+            "INCREMENT": _F(
+                LIST_INST=self.times_woSubd, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T0b"]
+            ),
+        }
 
         keywords[-1].update(kwds)
         nb_test = 0
-        while nb_test < 5 :
-            try :
+        while nb_test < 5:
+            try:
                 nb = len(keywords)
-                __res_int = [None]*nb
-                for i in range(nb) :
+                __res_int = [None] * nb
+                for i in range(nb):
                     k = keywords[::-1][i]
-                    if i>0 :
+                    if i > 0:
                         kwds = {
-                            'NEWTON': _F(MATRICE='TANGENTE',
-                                         PREDICTION='DEPL_CALCULE',
-                                         EVOL_NOLI = __res_int[i-1],
-                                         REAC_ITER=1)}
+                            "NEWTON": _F(
+                                MATRICE="TANGENTE",
+                                PREDICTION="DEPL_CALCULE",
+                                EVOL_NOLI=__res_int[i - 1],
+                                REAC_ITER=1,
+                            )
+                        }
                         k.update(kwds)
 
-                    __res_int[i]=STAT_NON_LINE(**k)
+                    __res_int[i] = STAT_NON_LINE(**k)
                 break
             except ConvergenceError:
-                ratio = ratio/10.
+                ratio = ratio / 10.0
                 mater.append(self.cham_mater_contact_progressif(ratio))
-                keywords.append(self.snl_lame(CHAM_MATER=mater[-1],
-                                              INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                                           PRECISION=1.E-08,
-                                                           INST_FIN=coeur.temps_simu['T0b']),
-                                              EXCIT=(self.symetric_cond + self.periodic_cond +
-                                                     self.rigid_load +
-                                                     self.vessel_head_load + self.vessel_dilatation_load +
-                                                     self.archimede_load + self.gravity_load +
-                                                     self.thyc_load[0] + self.thyc_load[1]),
-                                              ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                                           PRECISION=1.E-08,
-                                                           CRITERE='RELATIF')))
-            nb_test+=1
-        else :
-            raise  ConvergenceError('MAC3 Water Gaps : No convergence during the application of contacts.')
+                keywords.append(
+                    self.snl_lame(
+                        CHAM_MATER=mater[-1],
+                        INCREMENT=_F(
+                            LIST_INST=self.times_woSubd,
+                            PRECISION=1.0e-08,
+                            INST_FIN=coeur.temps_simu["T0b"],
+                        ),
+                        EXCIT=(
+                            self.symetric_cond
+                            + self.periodic_cond
+                            + self.rigid_load
+                            + self.vessel_head_load
+                            + self.vessel_dilatation_load
+                            + self.archimede_load
+                            + self.gravity_load
+                            + self.thyc_load[0]
+                            + self.thyc_load[1]
+                        ),
+                        ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+                    )
+                )
+            nb_test += 1
+        else:
+            raise ConvergenceError(
+                "MAC3 Water Gaps : No convergence during the application of contacts."
+            )
 
+        __RESULT = STAT_NON_LINE(
+            **self.snl_lame(
+                reuse=__RESULT,
+                RESULTAT=__RESULT,
+                NEWTON=_F(
+                    MATRICE="TANGENTE",
+                    PREDICTION="DEPL_CALCULE",
+                    EVOL_NOLI=__res_int[-1],
+                    REAC_ITER=1,
+                ),
+                CHAM_MATER=self.cham_mater_contact,
+                INCREMENT=_F(
+                    LIST_INST=self.times_woSubd, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T0b"]
+                ),
+                EXCIT=(
+                    self.symetric_cond
+                    + self.periodic_cond
+                    + self.rigid_load
+                    + self.vessel_head_load
+                    + self.vessel_dilatation_load
+                    + self.archimede_load
+                    + self.gravity_load
+                    + self.thyc_load[0]
+                    + self.thyc_load[1]
+                ),
+                ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+            )
+        )
 
-        __RESULT = STAT_NON_LINE(**self.snl_lame(reuse = __RESULT,
-                                                 RESULTAT=__RESULT,
-                                                 NEWTON= _F(MATRICE='TANGENTE',
-                                                            PREDICTION='DEPL_CALCULE',
-                                                            EVOL_NOLI = __res_int[-1],
-                                                            REAC_ITER=1),
-                                                 CHAM_MATER=self.cham_mater_contact,
-                                                 INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                                              PRECISION=1.E-08,
-                                                              INST_FIN=coeur.temps_simu['T0b']),
-                                                 EXCIT=(self.symetric_cond + self.periodic_cond +
-                                                        self.rigid_load +
-                                                        self.vessel_head_load + self.vessel_dilatation_load +
-                                                        self.archimede_load + self.gravity_load +
-                                                        self.thyc_load[0] + self.thyc_load[1]),
-                                                 ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                                              PRECISION=1.E-08,
-                                                              CRITERE='RELATIF')))
-
-        __RESULT = STAT_NON_LINE(**self.snl_lame(reuse = __RESULT,
-                                                 RESULTAT=__RESULT,
-                                                 CHAM_MATER=self.cham_mater_contact,
-                                                 INCREMENT=_F(LIST_INST=self.times,
-                                                              PRECISION=1.E-08,
-                                                              INST_FIN=coeur.temps_simu['T4']),
-                                                 EXCIT=(self.symetric_cond + self.periodic_cond +
-                                                        self.rigid_load +
-                                                        self.vessel_head_load + self.vessel_dilatation_load +
-                                                        self.archimede_load + self.gravity_load +
-                                                        self.thyc_load[0] + self.thyc_load[1]),
-                                                 ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                                              PRECISION=1.E-08,
-                                                              CRITERE='RELATIF')))
+        __RESULT = STAT_NON_LINE(
+            **self.snl_lame(
+                reuse=__RESULT,
+                RESULTAT=__RESULT,
+                CHAM_MATER=self.cham_mater_contact,
+                INCREMENT=_F(
+                    LIST_INST=self.times, PRECISION=1.0e-08, INST_FIN=coeur.temps_simu["T4"]
+                ),
+                EXCIT=(
+                    self.symetric_cond
+                    + self.periodic_cond
+                    + self.rigid_load
+                    + self.vessel_head_load
+                    + self.vessel_dilatation_load
+                    + self.archimede_load
+                    + self.gravity_load
+                    + self.thyc_load[0]
+                    + self.thyc_load[1]
+                ),
+                ETAT_INIT=_F(EVOL_NOLI=__RESULT, PRECISION=1.0e-08, CRITERE="RELATIF"),
+            )
+        )
 
         if self.calc_res_def:
-            self.output_resdef(__RESULT,depl_deformed,tinit,tfin)
+            self.output_resdef(__RESULT, depl_deformed, tinit, tfin)
         return __RESULT
+
 
 class Mac3CoeurEtatInitial(Mac3CoeurLame):
 
     """Compute Initial State"""
-    mcfact = 'LAME'
 
-    def __init__(self,macro,args) :
+    mcfact = "LAME"
+
+    def __init__(self, macro, args):
         """Initialization"""
-        self.args_lame={}
-        self.args_defo={}
-        for el in args :
-            if el == 'ETAT_INITIAL' :
-                self.args_lame['LAME']=args[el]
-                self.args_defo['DEFORMATION']=args[el]
-            else :
-                if (el not in ['LAME','DEFORMATION']) :
+        self.args_lame = {}
+        self.args_defo = {}
+        for el in args:
+            if el == "ETAT_INITIAL":
+                self.args_lame["LAME"] = args[el]
+                self.args_defo["DEFORMATION"] = args[el]
+            else:
+                if el not in ["LAME", "DEFORMATION"]:
                     self.args_lame[el] = args[el]
                     self.args_defo[el] = args[el]
         super().__init__(macro, self.args_lame)
         self.calc_res_def = True
 
-    def _prepare_data(self,noresu):
+    def _prepare_data(self, noresu):
         """Prepare the data for the calculation"""
-        self.niv_fluence = self.mcf['NIVE_FLUENCE']
-        assert self.keyw['TYPE_COEUR'][:4] != "MONO"
+        self.niv_fluence = self.mcf["NIVE_FLUENCE"]
+        assert self.keyw["TYPE_COEUR"][:4] != "MONO"
         super()._prepare_data(noresu)
 
-    def _run(self,tinit=None,tfin=None):
-        tinit = self.coeur.temps_simu['T0']
-        tfin  = self.coeur.temps_simu['T5']
-        print('T0 = %f , T5 = %f'%(tinit,tfin))
-        return super()._run(tinit,tfin)
-
+    def _run(self, tinit=None, tfin=None):
+        tinit = self.coeur.temps_simu["T0"]
+        tfin = self.coeur.temps_simu["T5"]
+        print("T0 = %f , T5 = %f" % (tinit, tfin))
+        return super()._run(tinit, tfin)
 
     def run(self):
         super().run(noresu=True)
@@ -1283,7 +1401,7 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
 
 
 # helper functions
-def _build_coeur(typ_coeur, macro, sdtab,longueur=None):
+def _build_coeur(typ_coeur, macro, sdtab, longueur=None):
     """Return a `Coeur` object of the given type"""
     rcdir = ExecutionParameter().get_option("rcdir")
     datg = osp.join(rcdir, "datg")
@@ -1291,7 +1409,7 @@ def _build_coeur(typ_coeur, macro, sdtab,longueur=None):
     # prepare the Table object
     tab = sdtab.EXTR_TABLE()
     name = tab.para[0]
-    tab.Renomme(name, 'idAC')
+    tab.Renomme(name, "idAC")
     coeur = factory.get(typ_coeur)(name, typ_coeur, macro, datg, longueur)
     coeur.init_from_table(tab)
     return coeur
@@ -1301,8 +1419,7 @@ def read_thyc(coeur, model, unit):
     """Read a file containing THYC results"""
     res = None
     try:
-        UL = UniteAster()
-        fname = UL.Nom(unit)
+        fname = LogicalUnitFile.filename_from_unit(unit)
         res = lire_resu_thyc(coeur, model, fname)
     finally:
         pass

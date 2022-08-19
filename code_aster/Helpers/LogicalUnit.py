@@ -50,7 +50,6 @@ a Python command.
 
 import os
 import os.path as osp
-import tempfile
 
 from ..Cata.Syntax import _F
 from ..Supervis import ExecuteCommandOps

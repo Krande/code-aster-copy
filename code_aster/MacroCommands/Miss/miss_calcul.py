@@ -204,7 +204,7 @@ class CalculMiss(object):
     def cree_resultat_aster(self):
         """Produit le(s) fichier(s) issu(s) d'Aster."""
         self._dbg_trace("Start")
-        ulaster = self.param.UL.Libre(action="ASSOCIER", new=True)
+        ulaster = LogicalUnitFile.new_free()
         mael = self.param["MACR_ELEM_DYNA"]
         if mael is None:
             opts = {}
@@ -234,11 +234,11 @@ class CalculMiss(object):
             GROUP_MA_CONTROL=self.param.get("GROUP_MA_CONTROL"),
             FORMAT_R="1PE16.9",
             SOUS_TITRE="PRODUIT PAR CALC_MISS",
-            UNITE=ulaster,
+            UNITE=ulaster.unit,
             **other_groups
         )
-        self.param.UL.Etat(ulaster, etat="F")
-        copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
+        ulaster.release()
+        copie_fichier(ulaster.filename, self._fichier_tmp("aster"))
         self.data = self.resu_aster_reader.read(self._fichier_tmp("aster"))
         self._dbg_trace("Stop")
 

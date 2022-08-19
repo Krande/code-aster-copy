@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,11 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 
-import os
 import os.path as osp
 import shutil
 from subprocess import call
 
-from ..Helpers.UniteAster import UniteAster
+from ..Helpers.LogicalUnit import LogicalUnitFile
 from ..Messages import UTMESS
 from ..Utilities import ExecutionParameter
 
@@ -32,14 +31,11 @@ from ..Utilities import ExecutionParameter
 def crea_lib_mfront_ops(self, UNITE_MFRONT, UNITE_LIBRAIRIE, DEBUG, **args):
     """Compiler une loi de comportement MFront"""
 
-    UL = UniteAster()
-    infile = UL.Nom(UNITE_MFRONT)
-    outlib = UL.Nom(UNITE_LIBRAIRIE)
+    infile = LogicalUnitFile.filename_from_unit(UNITE_MFRONT)
+    outlib = LogicalUnitFile.filename_from_unit(UNITE_LIBRAIRIE)
 
-    cmd = [ExecutionParameter().get_option('prog:mfront'),
-           "--build",
-           "--interface=aster"]
-    if DEBUG == 'OUI':
+    cmd = [ExecutionParameter().get_option("prog:mfront"), "--build", "--interface=aster"]
+    if DEBUG == "OUI":
         cmd.append("--debug")
         # cmd.append("--@AsterGenerateMTestFileOnFailure=true")
     cmd.append(infile)
@@ -47,10 +43,10 @@ def crea_lib_mfront_ops(self, UNITE_MFRONT, UNITE_LIBRAIRIE, DEBUG, **args):
     try:
         call(cmd)
         if not osp.exists("src/libAsterBehaviour.so"):
-            UTMESS('F', 'MFRONT_4', valk="libAsterBehaviour.so")
+            UTMESS("F", "MFRONT_4", valk="libAsterBehaviour.so")
         shutil.copyfile("src/libAsterBehaviour.so", outlib)
     finally:
-        for dname in ('src', 'include'):
+        for dname in ("src", "include"):
             if osp.isdir(dname):
                 shutil.rmtree(dname)
 

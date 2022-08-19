@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,26 +28,38 @@ from math import radians
 
 import numpy as NP
 
-import aster
-from ..Helpers.UniteAster import UniteAster
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ..Cata.Syntax import _F
-from ..Commands import (CREA_CHAMP, CREA_RESU, CREA_TABLE, LIRE_MAILLAGE,
-                        MODI_REPERE, PROJ_CHAMP, RECU_TABLE)
+from ..Commands import (
+    CREA_CHAMP,
+    CREA_RESU,
+    CREA_TABLE,
+    LIRE_MAILLAGE,
+    MODI_REPERE,
+    PROJ_CHAMP,
+    RECU_TABLE,
+)
 from ..Helpers.LogicalUnit import FileAccess, LogicalUnitFile
-from .Fracture.post_endo_fiss_utils import (NoMaximaError,
-                                            ThresholdTooHighError,
-                                            conv_smoothing1D,
-                                            conv_smoothing_arc,
-                                            crackOpeningStrong, crea_mail_lin,
-                                            crea_sd_mail, euler_angles,
-                                            findExtr, unitVector, versDirMoy)
+from .Fracture.post_endo_fiss_utils import (
+    NoMaximaError,
+    ThresholdTooHighError,
+    conv_smoothing1D,
+    conv_smoothing_arc,
+    crackOpeningStrong,
+    crea_mail_lin,
+    crea_sd_mail,
+    euler_angles,
+    findExtr,
+    unitVector,
+    versDirMoy,
+)
 from .macr_lign_coupe_ops import crea_mail_lig_coup
 
 
-def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeChampTrajet, infoPlan, inst):
-
+def cherche_trajet(
+    self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeChampTrajet, infoPlan, inst
+):
 
     # --------------------------------------------------
     # IMPORT OF ASTER COMMANDS
@@ -67,15 +79,15 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     # ---------------------------------
     # SEARCH PARAMETERS
     #
-    lort = dRECHERCHE['LONG_ORTH']
-    nbPoints = dRECHERCHE['NB_POINT']
-    lreg = dRECHERCHE['LONG_REG']
-    seuil = dRECHERCHE['BORNE_MIN']
-    alpha = dRECHERCHE['ANGL_MAX']
-    pas = dRECHERCHE['PAS']
+    lort = dRECHERCHE["LONG_ORTH"]
+    nbPoints = dRECHERCHE["NB_POINT"]
+    lreg = dRECHERCHE["LONG_REG"]
+    seuil = dRECHERCHE["BORNE_MIN"]
+    alpha = dRECHERCHE["ANGL_MAX"]
+    pas = dRECHERCHE["PAS"]
     pas0 = lreg
-    if pas0 < dRECHERCHE['PAS']:
-        pas0 = dRECHERCHE['PAS']
+    if pas0 < dRECHERCHE["PAS"]:
+        pas0 = dRECHERCHE["PAS"]
 
     # --------------------------------------------------------------
     # RESTRICTION OF THE FIELD ON THE SELECTED ELEMENT GROUP
@@ -83,33 +95,33 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     #   AND CONSTRUCTION OF THE WORKING "RESULT" CONCEPT
     #
     motclefs1 = {}
-    motclefs1['MAILLAGE'] = __mail
+    motclefs1["MAILLAGE"] = __mail
 
-    if 'GROUP_MA' in list(dRECHERCHE.keys()):
-        groupma = dRECHERCHE['GROUP_MA']
-        __ENDOGM = CREA_CHAMP(OPERATION='ASSE',
-                              TYPE_CHAM=typeChampTrajet,
-                              ASSE=_F(CHAM_GD=__ENDO,
-                                      GROUP_MA=groupma,
-                                      NOM_CMP=NOM_CMP,
-                                      ),
-                              **motclefs1)
+    if "GROUP_MA" in list(dRECHERCHE.keys()):
+        groupma = dRECHERCHE["GROUP_MA"]
+        __ENDOGM = CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM=typeChampTrajet,
+            ASSE=_F(CHAM_GD=__ENDO, GROUP_MA=groupma, NOM_CMP=NOM_CMP),
+            **motclefs1
+        )
     else:
         __ENDOGM = __ENDO
 
-    __resu = CREA_RESU(OPERATION='AFFE',
-                       TYPE_RESU='EVOL_NOLI',
-                       NOM_CHAM=NOM_CHAM,
-                       AFFE=(_F(CHAM_GD=__ENDO,
-                                INST=inst),),)
+    __resu = CREA_RESU(
+        OPERATION="AFFE",
+        TYPE_RESU="EVOL_NOLI",
+        NOM_CHAM=NOM_CHAM,
+        AFFE=(_F(CHAM_GD=__ENDO, INST=inst),),
+    )
 
     # --------------------------------------------------
     # BOOT OF THE CRACK SEARCH PROCEDURE
     #
-    methodeProj = 'COLLOCATION'
+    methodeProj = "COLLOCATION"
     Coortot = __mail.sdj.COORDO.VALE.get()
-    Xtot = Coortot[coorIni1:len(Coortot):3]
-    Ytot = Coortot[coorIni2:len(Coortot):3]
+    Xtot = Coortot[coorIni1 : len(Coortot) : 3]
+    Ytot = Coortot[coorIni2 : len(Coortot) : 3]
     Endono = __ENDOGM.EXTR_COMP(NOM_CMP, [], 1)
     Endo = Endono.valeurs
     Noeybar = Endono.noeud
@@ -117,10 +129,9 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     Coorx = NP.take(Xtot, idxNoeud)
     Coory = NP.take(Ytot, idxNoeud)
     coorIni3 = int(NP.nonzero(dnor)[0])
-    NormTot = Coortot[coorIni3:len(Coortot):3]
+    NormTot = Coortot[coorIni3 : len(Coortot) : 3]
     CoorNor = NP.take(NormTot, idxNoeud)
-    zCoupe = CoorNor[
-        0]  # On dit que dans la coupe tous les valeurs sont constants
+    zCoupe = CoorNor[0]  # On dit que dans la coupe tous les valeurs sont constants
     idxmax = NP.argmax(Endo)
     xmax = Coorx[idxmax]
     ymax = Coory[idxmax]
@@ -141,32 +152,35 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     arcs = []
     pt2 = (xmax + pas) * dplan1 + ymax * dplan2 + zCoupe * dnor
     pt3 = (xmax - pas) * dplan1 + ymax * dplan2 + zCoupe * dnor
-    arcs.append((pt2, PtMax, nbPoints, 180., dnor))
-    arcs.append((pt3, PtMax, nbPoints, 180., dnor))
+    arcs.append((pt2, PtMax, nbPoints, 180.0, dnor))
+    arcs.append((pt3, PtMax, nbPoints, 180.0, dnor))
 
-    resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(
-        dime, lignes, groups, arcs)
+    resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignes, groups, arcs)
     __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
 
     motclefs2 = {}
-    motclefs2['MAILLAGE_1'] = __mail
-    motclefs2['MAILLAGE_2'] = __MAI
+    motclefs2["MAILLAGE_1"] = __mail
+    motclefs2["MAILLAGE_2"] = __MAI
     nbPrec = NP.finfo(NP.float).precision
-    distMax = 10. ** (-nbPrec + 2)
+    distMax = 10.0 ** (-nbPrec + 2)
 
-    __YBARPR = PROJ_CHAMP(METHODE=methodeProj,
-                          RESULTAT=__resu,
-                          DISTANCE_MAX=distMax,
-                          TYPE_CHAM='NOEU',
-                          NOM_CHAM=NOM_CHAM,
-                          NUME_ORDRE=1,
-                          **motclefs2)
+    __YBARPR = PROJ_CHAMP(
+        METHODE=methodeProj,
+        RESULTAT=__resu,
+        DISTANCE_MAX=distMax,
+        TYPE_CHAM="NOEU",
+        NOM_CHAM=NOM_CHAM,
+        NUME_ORDRE=1,
+        **motclefs2
+    )
 
-    __YBARCH = CREA_CHAMP(TYPE_CHAM=typeChampTrajet,
-                          OPERATION='EXTR',
-                          NOM_CHAM=NOM_CHAM,
-                          RESULTAT=__YBARPR,
-                          NUME_ORDRE=1, )
+    __YBARCH = CREA_CHAMP(
+        TYPE_CHAM=typeChampTrajet,
+        OPERATION="EXTR",
+        NOM_CHAM=NOM_CHAM,
+        RESULTAT=__YBARPR,
+        NUME_ORDRE=1,
+    )
 
     dx0 = __YBARCH.EXTR_COMP(NOM_CMP, [], 1)
 
@@ -179,8 +193,8 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
 
     EndoOrth = dx0.valeurs
     Coor0 = __MAI.sdj.COORDO.VALE.get()
-    CoorxOrth = NP.array(Coor0[coorIni1:len(Coor0):3], float)
-    CooryOrth = NP.array(Coor0[coorIni2:len(Coor0):3], float)
+    CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
+    CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
 
     # We eliminate nodes without field values
     CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
@@ -212,15 +226,14 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     CoyLast = NP.array([CoyAmo[1], CoyAmo[0]])
     CozLast = NP.array([CozAmo[1], CozAmo[0]])
 
-    VersAvan = NP.array(
-        [CoxLast[1] - CoxLast[0], CoyLast[1] - CoyLast[0], CozLast[1] - CozLast[0]])
+    VersAvan = NP.array([CoxLast[1] - CoxLast[0], CoyLast[1] - CoyLast[0], CozLast[1] - CozLast[0]])
     VersAvan = unitVector(VersAvan)
 
     PStart = NP.array([CoxLast[0], CoyLast[0], CozLast[0]])
     Ppred = PStart + pas * VersAvan
     VersNorm = unitVector(NP.cross(VersAvan, dnor))
-    PPlus = Ppred + (lort / 2.) * VersNorm
-    PMoin = Ppred - (lort / 2.) * VersNorm
+    PPlus = Ppred + (lort / 2.0) * VersNorm
+    PMoin = Ppred - (lort / 2.0) * VersNorm
 
     # Creation of an orthogonal profile and projection on it
     lignes = []
@@ -230,27 +243,30 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     lignes.append((PMoin.tolist(), Ppred.tolist(), nbPoints))
     lignes.append((Ppred.tolist(), PPlus.tolist(), nbPoints))
 
-    resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(
-        dime, lignes, groups, arcs)
+    resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignes, groups, arcs)
     __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
 
     motclefs2 = {}
-    motclefs2['MAILLAGE_1'] = __mail
-    motclefs2['MAILLAGE_2'] = __MAI
+    motclefs2["MAILLAGE_1"] = __mail
+    motclefs2["MAILLAGE_2"] = __MAI
 
-    __YBARPR = PROJ_CHAMP(METHODE='COLLOCATION',
-                          RESULTAT=__resu,
-                          DISTANCE_MAX=distMax,
-                          TYPE_CHAM='NOEU',
-                          NOM_CHAM=NOM_CHAM,
-                          NUME_ORDRE=1,
-                          **motclefs2)
+    __YBARPR = PROJ_CHAMP(
+        METHODE="COLLOCATION",
+        RESULTAT=__resu,
+        DISTANCE_MAX=distMax,
+        TYPE_CHAM="NOEU",
+        NOM_CHAM=NOM_CHAM,
+        NUME_ORDRE=1,
+        **motclefs2
+    )
 
-    __YBARCH = CREA_CHAMP(TYPE_CHAM=typeChampTrajet,
-                          OPERATION='EXTR',
-                          NOM_CHAM=NOM_CHAM,
-                          RESULTAT=__YBARPR,
-                          NUME_ORDRE=1,)
+    __YBARCH = CREA_CHAMP(
+        TYPE_CHAM=typeChampTrajet,
+        OPERATION="EXTR",
+        NOM_CHAM=NOM_CHAM,
+        RESULTAT=__YBARPR,
+        NUME_ORDRE=1,
+    )
 
     dx0 = __YBARCH.EXTR_COMP(NOM_CMP, [], 1)
 
@@ -261,8 +277,8 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     EndoOrth = dx0.valeurs
 
     Coor0 = __MAI.sdj.COORDO.VALE.get()
-    CoorxOrth = NP.array(Coor0[coorIni1:len(Coor0):3], float)
-    CooryOrth = NP.array(Coor0[coorIni2:len(Coor0):3], float)
+    CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
+    CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
     CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
     CooryOrth = NP.take(CooryOrth, NonVide - 1)
     CoorxOrth = NP.delete(CoorxOrth, idxpred)
@@ -285,8 +301,7 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     #  BEGIN OF THE CRACK PATH SEARCH
     #
     # Definition of two search directions
-    VersAvn1 = NP.array(
-        [CoxAmo[1] - CoxAmo[0], CoyAmo[1] - CoyAmo[0], CozAmo[1] - CozAmo[0]])
+    VersAvn1 = NP.array([CoxAmo[1] - CoxAmo[0], CoyAmo[1] - CoyAmo[0], CozAmo[1] - CozAmo[0]])
     VersAvn1 = unitVector(VersAvn1)
     VersAvn2 = -VersAvn1
 
@@ -310,7 +325,7 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     dirRech = 1
     i = 0
     condSort = seuil * 1.1
-    while (condSort > seuil or dirRech == 1):
+    while condSort > seuil or dirRech == 1:
         i = i + 1
         # Definition of ths search vector
         if i == 1:
@@ -328,7 +343,8 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
                 CoyLast = NP.array([CoyCrete[-2], CoyCrete[-1]])
                 CozLast = NP.array([CozCrete[-2], CozCrete[-1]])
             VersAvan = NP.array(
-                [CoxLast[1] - CoxLast[0], CoyLast[1] - CoyLast[0], CozLast[1] - CozLast[0]])
+                [CoxLast[1] - CoxLast[0], CoyLast[1] - CoyLast[0], CozLast[1] - CozLast[0]]
+            )
             VersAvan = unitVector(VersAvan)
 
         if dirRech == 1:
@@ -339,8 +355,8 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
         # Definition of the prediction point
         Ppred = PStart + pas * VersAvan
         VersNorm = unitVector(NP.cross(VersAvan, dnor))
-        PPlus = Ppred + (lort / 2.) * VersNorm
-        PMoin = Ppred - (lort / 2.) * VersNorm
+        PPlus = Ppred + (lort / 2.0) * VersNorm
+        PMoin = Ppred - (lort / 2.0) * VersNorm
 
         # Creation of the orthogonal profile
         lignes = []
@@ -349,26 +365,27 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
         lignes.append((PMoin.tolist(), Ppred.tolist(), nbPoints))
         lignes.append((Ppred.tolist(), PPlus.tolist(), nbPoints))
 
-        resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(
-            dime, lignes, groups, arcs)
+        resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignes, groups, arcs)
         __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
 
         motclefs2 = {}
-        motclefs2['MAILLAGE_1'] = __mail
-        motclefs2['MAILLAGE_2'] = __MAI
+        motclefs2["MAILLAGE_1"] = __mail
+        motclefs2["MAILLAGE_2"] = __MAI
         try:
             # we try to project, except the case of no points "in the material"
-            __YBARPR = PROJ_CHAMP(METHODE='COLLOCATION',
-                                  RESULTAT=__resu,
-                                  DISTANCE_MAX=distMax,
-                                  TYPE_CHAM='NOEU',
-                                  NOM_CHAM=NOM_CHAM,
-                                  NUME_ORDRE=1,
-                                  **motclefs2)
+            __YBARPR = PROJ_CHAMP(
+                METHODE="COLLOCATION",
+                RESULTAT=__resu,
+                DISTANCE_MAX=distMax,
+                TYPE_CHAM="NOEU",
+                NOM_CHAM=NOM_CHAM,
+                NUME_ORDRE=1,
+                **motclefs2
+            )
 
         except E_Exception.error as e:
             # All points outside the material
-            if (e.id_message != 'CALCULEL3_97'):
+            if e.id_message != "CALCULEL3_97":
                 if dirRech == 1:
                     dirRech = 2
                     i = 0
@@ -376,11 +393,13 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
                     condSort = seuil * 0.1
 
         else:
-            __YBARCH = CREA_CHAMP(TYPE_CHAM=typeChampTrajet,
-                                  OPERATION='EXTR',
-                                  NOM_CHAM=NOM_CHAM,
-                                  RESULTAT=__YBARPR,
-                                  NUME_ORDRE=1,)
+            __YBARCH = CREA_CHAMP(
+                TYPE_CHAM=typeChampTrajet,
+                OPERATION="EXTR",
+                NOM_CHAM=NOM_CHAM,
+                RESULTAT=__YBARPR,
+                NUME_ORDRE=1,
+            )
 
             dx0 = __YBARCH.EXTR_COMP(NOM_CMP, [], 1)
             NonVide = NP.array(list(dx0.noeud))
@@ -400,8 +419,8 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
 
             EndoOrth = dx0.valeurs
             Coor0 = __MAI.sdj.COORDO.VALE.get()
-            CoorxOrth = NP.array(Coor0[coorIni1:len(Coor0):3], float)
-            CooryOrth = NP.array(Coor0[coorIni2:len(Coor0):3], float)
+            CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
+            CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
             CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
             CooryOrth = NP.take(CooryOrth, NonVide - 1)
             CoorxOrth = NP.delete(CoorxOrth, idxpred)
@@ -423,11 +442,14 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
             # We controle that the point is inside the maximum accepted angle "ANGL_MAX"
             #    otherwise we stop the search in "dirRech" direction
 
-            if round(alpha) != 180.:
+            if round(alpha) != 180.0:
                 alphar = radians(alpha)
-                blim = pas * NP.tan(alphar / 2.)
-                btest = ((PtMax[0] - Ppred[0]) ** 2. + (
-                    PtMax[1] - Ppred[1]) ** 2. + (PtMax[2] - Ppred[2]) ** 2.) ** 0.5
+                blim = pas * NP.tan(alphar / 2.0)
+                btest = (
+                    (PtMax[0] - Ppred[0]) ** 2.0
+                    + (PtMax[1] - Ppred[1]) ** 2.0
+                    + (PtMax[2] - Ppred[2]) ** 2.0
+                ) ** 0.5
                 if btest > blim:
                     if dirRech == 1:
                         dirRech = 2
@@ -486,8 +508,21 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
     return CoxCrete, CoyCrete, CozCrete, EndoCrete, Connex
 
 
-def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, infoPlan, inst, CoxCrete, CoyCrete, CozCrete, dime, strong_flag):
-
+def calcul_ouverture(
+    self,
+    NOM_CHAM,
+    NOM_CMP,
+    dRECHERCHE,
+    __RESUIN,
+    __mail,
+    infoPlan,
+    inst,
+    CoxCrete,
+    CoyCrete,
+    CozCrete,
+    dime,
+    strong_flag,
+):
 
     # --------------------------------------------------
     # IMPORT DES COMMANDES ASTER
@@ -500,29 +535,29 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
         # for the "strong" method, give here necessary parameters :
         #   caracteristic- and orthogonal line lengths
         #   default values : those used for crack path search
-        lortOuv = dRECHERCHE['LONG_ORTH']
+        lortOuv = dRECHERCHE["LONG_ORTH"]
 
     # ---------------------------
     # PARAMETRES DE LA RECHERCHE
     #
-    nbPoints = dRECHERCHE['NB_POINT']
-    lortOuv = dRECHERCHE['LONG_ORTH']
-    endoMin = dRECHERCHE['BORNE_MAX']
+    nbPoints = dRECHERCHE["NB_POINT"]
+    lortOuv = dRECHERCHE["LONG_ORTH"]
+    endoMin = dRECHERCHE["BORNE_MAX"]
     champEndo = NOM_CHAM
     cmpEndo = NOM_CMP
 
-    if (champEndo == 'DEPL'):
-        typechampEndo = 'NOEU_DEPL_R'
+    if champEndo == "DEPL":
+        typechampEndo = "NOEU_DEPL_R"
     else:
-        typechampEndo = 'NOEU' + '_' + NOM_CHAM[0:4] + '_R'
-        if (champEndo == 'VARI_NOEU'):
-            typechampEndo = 'NOEU_VAR2_R'
+        typechampEndo = "NOEU" + "_" + NOM_CHAM[0:4] + "_R"
+        if champEndo == "VARI_NOEU":
+            typechampEndo = "NOEU_VAR2_R"
 
     # ---------------------------
     #  2D AND MESH PARAMETERS
     #
-    #__mail   = modelisa['MAILLAGE']
-    #__modtot = modelisa['MODELE']
+    # __mail   = modelisa['MAILLAGE']
+    # __modtot = modelisa['MODELE']
     coorIni1 = infoPlan[0]
     coorIni2 = infoPlan[1]
     dnor = infoPlan[2]
@@ -532,27 +567,23 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
     motclefs = {}
     ChampsResu = __RESUIN.LIST_CHAMPS()
 
-    methodeProj = 'COLLOCATION'
-    methodeProjVI = 'COLLOCATION'
-    composante = 'DY'
-    champ = 'DEPL'
-    typeChamp = 'NOEU_DEPL_R'
-    motclefs['MODI_CHAM'] = [_F(NOM_CHAM='DEPL',
-                                NOM_CMP=('DX', 'DY',),
-                                TYPE_CHAM = 'VECT_2D',),
-                             ]
+    methodeProj = "COLLOCATION"
+    methodeProjVI = "COLLOCATION"
+    composante = "DY"
+    champ = "DEPL"
+    typeChamp = "NOEU_DEPL_R"
+    motclefs["MODI_CHAM"] = [_F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY"), TYPE_CHAM="VECT_2D")]
 
     nbPrec = NP.finfo(NP.float).precision
-    distMax = 10. ** (-nbPrec + 2)
+    distMax = 10.0 ** (-nbPrec + 2)
 
     if strong_flag == True:
-        composante = 'EPYY'
-        champ = 'EPSI_NOEU'
-        typeChamp = 'NOEU_EPSI_R'
-        motclefs['MODI_CHAM'] = [_F(NOM_CHAM=champ,
-                                    NOM_CMP=(
-                                    'EPXX', 'EPYY', 'EPZZ', 'EPXY',),
-                                    TYPE_CHAM = 'TENS_2D',), ]
+        composante = "EPYY"
+        champ = "EPSI_NOEU"
+        typeChamp = "NOEU_EPSI_R"
+        motclefs["MODI_CHAM"] = [
+            _F(NOM_CHAM=champ, NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY"), TYPE_CHAM="TENS_2D")
+        ]
 
     # ---------------------
     # LOOP CRACK PATH POINTS
@@ -563,23 +594,21 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
     lstErr = []
     for idxPoi in range(len(CoxCrete)):
         # Creation of the mesh and model on the considered orthogonal profile
-        PtCrete = NP.array(
-            [CoxCrete[idxPoi], CoyCrete[idxPoi], CozCrete[idxPoi]])
-        PGort = PtCrete + (lortOuv / 2.) * lst_normPoi[idxPoi]
-        PDort = PtCrete - (lortOuv / 2.) * lst_normPoi[idxPoi]
+        PtCrete = NP.array([CoxCrete[idxPoi], CoyCrete[idxPoi], CozCrete[idxPoi]])
+        PGort = PtCrete + (lortOuv / 2.0) * lst_normPoi[idxPoi]
+        PDort = PtCrete - (lortOuv / 2.0) * lst_normPoi[idxPoi]
         lignort = []
         groups0 = []
         arcs0 = []
         lignort.append((PGort, PtCrete, nbPoints))
         lignort.append((PtCrete, PDort, nbPoints))
 
-        resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(
-            dime, lignort, groups0, arcs0)
+        resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignort, groups0, arcs0)
         __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
 
         CoorTotOrtho = __MAI.sdj.COORDO.VALE.get()
-        XtotOrtho = NP.array(CoorTotOrtho[coorIni1:len(CoorTotOrtho):3])
-        YtotOrtho = NP.array(CoorTotOrtho[coorIni2:len(CoorTotOrtho):3])
+        XtotOrtho = NP.array(CoorTotOrtho[coorIni1 : len(CoorTotOrtho) : 3])
+        YtotOrtho = NP.array(CoorTotOrtho[coorIni2 : len(CoorTotOrtho) : 3])
 
         # Rotation of the diplacement or strain field on the crack reference
         # system
@@ -589,40 +618,39 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
         M = NP.transpose(M)
 
         (alpha, beta, gamma) = euler_angles(M)
-        __RESROT = MODI_REPERE(RESULTAT=__RESUIN,
-                               INST=inst,
-                               REPERE='UTILISATEUR',
-                               AFFE=_F(
-                               ANGL_NAUT=(alpha, beta, gamma),
-                               TOUT='OUI',
-                               ),
-                               **motclefs)
+        __RESROT = MODI_REPERE(
+            RESULTAT=__RESUIN,
+            INST=inst,
+            REPERE="UTILISATEUR",
+            AFFE=_F(ANGL_NAUT=(alpha, beta, gamma), TOUT="OUI"),
+            **motclefs
+        )
 
         # Projection of displ. or strain field on the orthogonal profile
         #    and extraction of this field from the result concept
         motclefs2 = {}
-        motclefs2['MAILLAGE_1'] = __mail
-        motclefs2['MAILLAGE_2'] = __MAI
-        except1 = 'False'
-        except2 = 'False'
+        motclefs2["MAILLAGE_1"] = __mail
+        motclefs2["MAILLAGE_2"] = __MAI
+        except1 = "False"
+        except2 = "False"
         try:
-            __OUVEPR = PROJ_CHAMP(METHODE=methodeProj,
-                                  RESULTAT=__RESROT,
-                                  DISTANCE_MAX=distMax,
-                                  NOM_CHAM=champ,
-                                  INST=inst,
-                                  **motclefs2)
+            __OUVEPR = PROJ_CHAMP(
+                METHODE=methodeProj,
+                RESULTAT=__RESROT,
+                DISTANCE_MAX=distMax,
+                NOM_CHAM=champ,
+                INST=inst,
+                **motclefs2
+            )
         except:
-            lstOuvFiss.append('-')
-            except1 = 'True'
+            lstOuvFiss.append("-")
+            except1 = "True"
 
         else:
 
-            __OUVECH = CREA_CHAMP(TYPE_CHAM=typeChamp,
-                                  OPERATION='EXTR',
-                                  NOM_CHAM=champ,
-                                  RESULTAT=__OUVEPR,
-                                  INST=inst,)
+            __OUVECH = CREA_CHAMP(
+                TYPE_CHAM=typeChamp, OPERATION="EXTR", NOM_CHAM=champ, RESULTAT=__OUVEPR, INST=inst
+            )
 
             # Retrieving to Python objects the strain or displacement field values
             #    on the orthogonal profile, and the orthogonal mesh.
@@ -638,27 +666,31 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
 
         if strong_flag == False:
             try:
-        # Projection of the damage field on the orthogonal profile
-        #    and extraction of this field from the result concept
-                __ENDOPR = PROJ_CHAMP(METHODE=methodeProjVI,
-                                      RESULTAT=__RESUIN,
-                                      DISTANCE_MAX=distMax,
-                                      NOM_CHAM=champEndo,
-                                      INST=inst,
-                                      **motclefs2)
+                # Projection of the damage field on the orthogonal profile
+                #    and extraction of this field from the result concept
+                __ENDOPR = PROJ_CHAMP(
+                    METHODE=methodeProjVI,
+                    RESULTAT=__RESUIN,
+                    DISTANCE_MAX=distMax,
+                    NOM_CHAM=champEndo,
+                    INST=inst,
+                    **motclefs2
+                )
             except:
                 if except1:
                     pass
                 else:
-                    lstOuvFiss.append('-')
-                    except2 = 'True'
+                    lstOuvFiss.append("-")
+                    except2 = "True"
             else:
 
-                __ENDOCH = CREA_CHAMP(TYPE_CHAM=typechampEndo,
-                                      OPERATION='EXTR',
-                                      NOM_CHAM=champEndo,
-                                      RESULTAT=__ENDOPR,
-                                      INST=inst,)
+                __ENDOCH = CREA_CHAMP(
+                    TYPE_CHAM=typechampEndo,
+                    OPERATION="EXTR",
+                    NOM_CHAM=champEndo,
+                    RESULTAT=__ENDOPR,
+                    INST=inst,
+                )
 
                 EndoOrthoCH = __ENDOCH.EXTR_COMP(cmpEndo, [], 1)
                 EndoOrtho = EndoOrthoCH.valeurs
@@ -670,21 +702,20 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
                 YtotOrtho2 = NP.delete(YtotOrtho2, idxCentre)
                 EndoOrtho = NP.delete(EndoOrtho, idxCentre)
 
-            # -----Extraction de l'ouverture de fissure / erreur ---------
-            #
+                # -----Extraction de l'ouverture de fissure / erreur ---------
+                #
                 try:
                     idxG, idxD = findExtr(EndoOrtho, endoMin, idxCentre)
                 except (ThresholdTooHighError, NoMaximaError):
                     if except1 or except2:
                         pass
                     else:
-                        lstOuvFiss.append('-')
+                        lstOuvFiss.append("-")
                 else:
                     ouvFiss = float(abs(ChampOrtho[idxD] - ChampOrtho[idxG]))
                     lstOuvFiss.append(ouvFiss)
         else:  # methode strong
-            ouvFiss, errOuv = crackOpeningStrong(
-                lortOuv, XtotOrtho, XtotOrtho, ChampOrtho)
+            ouvFiss, errOuv = crackOpeningStrong(lortOuv, XtotOrtho, XtotOrtho, ChampOrtho)
             lstOuvFiss.append(ouvFiss)
             lstErr.append(errOuv)
 
@@ -694,15 +725,9 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
         return lstOuvFiss, lstErr
 
 
-def post_endo_fiss_ops(self,
-                       TABLE,
-                       NOM_CMP,
-                       NOM_CHAM,
-                       RECHERCHE,
-                       OUVERTURE=None,
-                       CHAM_GD=None,
-                       **args):
-
+def post_endo_fiss_ops(
+    self, TABLE, NOM_CMP, NOM_CHAM, RECHERCHE, OUVERTURE=None, CHAM_GD=None, **args
+):
 
     # --------------------------------------------------
     # DEVELOPER OPTIONS
@@ -710,10 +735,10 @@ def post_endo_fiss_ops(self,
     # "strong_flag" must be set to True if computing crack opening with the "strong" method
     strong_flag = False
 
-    MasquerAlarme('CALCULEL5_48')
-    MasquerAlarme('ALGORITH12_43')
-    MasquerAlarme('CALCULEL2_12')
-    MasquerAlarme('CALCULEL5_7')
+    MasquerAlarme("CALCULEL5_48")
+    MasquerAlarme("ALGORITH12_43")
+    MasquerAlarme("CALCULEL2_12")
+    MasquerAlarme("CALCULEL5_7")
 
     # --------------------------------------------------
     # IMPORT OF ASTER COMMANDS
@@ -736,38 +761,38 @@ def post_endo_fiss_ops(self,
     motscles = {}
 
     for dRECHERCHE in l_dRECHERCHE:
-        if (OUVERTURE == 'OUI') and ('BORNE_MAX' not in list(dRECHERCHE.keys())):
-            UTMESS('F', 'POST0_44')
+        if (OUVERTURE == "OUI") and ("BORNE_MAX" not in list(dRECHERCHE.keys())):
+            UTMESS("F", "POST0_44")
 
     if CHAM_GD is not None:
-        build = 'champ'
+        build = "champ"
         __ENDO = CHAM_GD
-        inst = 1.
-        motscles['INST'] = inst
+        inst = 1.0
+        motscles["INST"] = inst
 
         __mail = __ENDO.getMesh()
 
     else:
-        build = 'resu'
-        __RESUIN = args['RESULTAT']
+        build = "resu"
+        __RESUIN = args["RESULTAT"]
         dicVarAcc = __RESUIN.LIST_VARI_ACCES()
-        if args.get('NUME_ORDRE') is not None:
-            nume_ordre = args.get('NUME_ORDRE')
-            if nume_ordre not in dicVarAcc['NUME_ORDRE']:
-                UTMESS('F', 'POST0_41')
+        if args.get("NUME_ORDRE") is not None:
+            nume_ordre = args.get("NUME_ORDRE")
+            if nume_ordre not in dicVarAcc["NUME_ORDRE"]:
+                UTMESS("F", "POST0_41")
             else:
-                inst = (dicVarAcc['INST'])[nume_ordre]
-            motscles['NUME_ORDRE'] = nume_ordre
+                inst = (dicVarAcc["INST"])[nume_ordre]
+            motscles["NUME_ORDRE"] = nume_ordre
         else:
-            inst = args.get('INST')
-            motscles['INST'] = inst
+            inst = args.get("INST")
+            motscles["INST"] = inst
             nume_ordre = None
-            for champ_inst_index, champ_inst in enumerate(dicVarAcc['INST']):
+            for champ_inst_index, champ_inst in enumerate(dicVarAcc["INST"]):
                 if round(champ_inst, 12) == round(inst, 12):
-                    nume_ordre = dicVarAcc['NUME_ORDRE'][champ_inst_index]
+                    nume_ordre = dicVarAcc["NUME_ORDRE"][champ_inst_index]
                     break
             if nume_ordre is None:
-                UTMESS('F', 'POST0_41')
+                UTMESS("F", "POST0_41")
 
         # Maillage pour projections
         model = __RESUIN.getModel()
@@ -781,38 +806,37 @@ def post_endo_fiss_ops(self,
     # --------------------------------------------------
     # CONTROLS ON THE INPUT FIELDS
     #
-    if build == 'resu':
+    if build == "resu":
         ChampsResu = __RESUIN.LIST_CHAMPS()
         lstChampsResu = list(ChampsResu.keys())
-        if (NOM_CHAM not in lstChampsResu):
-            UTMESS('F', 'POST0_42')
-        elif (nume_ordre not in ChampsResu[NOM_CHAM]):
-            UTMESS('F', 'POST0_41')
+        if NOM_CHAM not in lstChampsResu:
+            UTMESS("F", "POST0_42")
+        elif nume_ordre not in ChampsResu[NOM_CHAM]:
+            UTMESS("F", "POST0_41")
         else:
             pass
 
-    if build == 'champ' and OUVERTURE == 'OUI':
-        UTMESS('F', 'POST0_43')
+    if build == "champ" and OUVERTURE == "OUI":
+        UTMESS("F", "POST0_43")
 
-    if ('NOEU' in NOM_CHAM) or (NOM_CHAM == 'DEPL'):
-        typeChampTrajet = 'NOEU' + '_' + NOM_CHAM[0:4] + '_R'
-        if NOM_CHAM == 'VARI_NOEU':
-            typeChampTrajet = 'NOEU_VAR2_R'
+    if ("NOEU" in NOM_CHAM) or (NOM_CHAM == "DEPL"):
+        typeChampTrajet = "NOEU" + "_" + NOM_CHAM[0:4] + "_R"
+        if NOM_CHAM == "VARI_NOEU":
+            typeChampTrajet = "NOEU_VAR2_R"
     else:
-        UTMESS('F', 'POST0_35')
+        UTMESS("F", "POST0_35")
 
     # --------------------------------------------------
     # QUANTITIES FOR THE 2D PROCEDURE
     #
-    __TABG = RECU_TABLE(CO=__mail,
-                        NOM_TABLE='CARA_GEOM',)
+    __TABG = RECU_TABLE(CO=__mail, NOM_TABLE="CARA_GEOM")
 
-    xmin = __TABG['X_MIN', 1]
-    xmax = __TABG['X_MAX', 1]
-    ymin = __TABG['Y_MIN', 1]
-    ymax = __TABG['Y_MAX', 1]
-    zmin = __TABG['Z_MIN', 1]
-    zmax = __TABG['Z_MAX', 1]
+    xmin = __TABG["X_MIN", 1]
+    xmax = __TABG["X_MAX", 1]
+    ymin = __TABG["Y_MIN", 1]
+    ymax = __TABG["Y_MAX", 1]
+    zmin = __TABG["Z_MIN", 1]
+    zmax = __TABG["Z_MAX", 1]
 
     nbPrec = NP.finfo(NP.float).precision
     delta_x = NP.round(xmax - xmin, nbPrec)
@@ -821,8 +845,8 @@ def post_endo_fiss_ops(self,
 
     Ddim = [delta_x, delta_y, delta_z]
     delta_min = min(Ddim)
-    if NP.round(delta_min, nbPrec - 2) != 0.:
-        UTMESS('F', 'POST0_34')
+    if NP.round(delta_min, nbPrec - 2) != 0.0:
+        UTMESS("F", "POST0_34")
     else:
         idx_plan = Ddim.index(delta_min)
 
@@ -830,35 +854,37 @@ def post_endo_fiss_ops(self,
     if idx_plan == 2:
         coorIni1 = 0
         coorIni2 = 1
-        dnor = NP.array([0., 0., 1.], float)
-        dplan1 = NP.array([1., 0., 0.], float)
-        dplan2 = NP.array([0., 1., 0.], float)
+        dnor = NP.array([0.0, 0.0, 1.0], float)
+        dplan1 = NP.array([1.0, 0.0, 0.0], float)
+        dplan2 = NP.array([0.0, 1.0, 0.0], float)
     # PLAN == 'XZ':
     elif idx_plan == 1:
         coorIni1 = 0
         coorIni2 = 2
-        dnor = NP.array([0., 1., 0.], float)
-        dplan1 = NP.array([1., 0., 0.], float)
-        dplan2 = NP.array([0., 0., 1.], float)
+        dnor = NP.array([0.0, 1.0, 0.0], float)
+        dplan1 = NP.array([1.0, 0.0, 0.0], float)
+        dplan2 = NP.array([0.0, 0.0, 1.0], float)
     # PLAN == 'YZ':
     else:
         coorIni1 = 1
         coorIni2 = 2
-        dnor = NP.array([1., 0., 0.], float)
-        dplan1 = NP.array([0., 1., 0.], float)
-        dplan2 = NP.array([0., 0., 1.], float)
+        dnor = NP.array([1.0, 0.0, 0.0], float)
+        dplan1 = NP.array([0.0, 1.0, 0.0], float)
+        dplan2 = NP.array([0.0, 0.0, 1.0], float)
 
     infoPlan = (coorIni1, coorIni2, dnor, dplan1, dplan2)
 
     # --------------------------------------------------
     # FIELD FOR CRACK PATH SEARCH
     #
-    if build == 'resu':
-        __ENDO = CREA_CHAMP(TYPE_CHAM=typeChampTrajet,
-                            OPERATION='EXTR',
-                            RESULTAT=__RESUIN,
-                            NOM_CHAM=NOM_CHAM,
-                            **motscles)
+    if build == "resu":
+        __ENDO = CREA_CHAMP(
+            TYPE_CHAM=typeChampTrajet,
+            OPERATION="EXTR",
+            RESULTAT=__RESUIN,
+            NOM_CHAM=NOM_CHAM,
+            **motscles
+        )
 
     # --------------------------------------------------
     # LOOP ON THE FPZs (INSTANCES OF KEYWORD "RECHERCHE")
@@ -878,29 +904,57 @@ def post_endo_fiss_ops(self,
         dRECHERCHE = l_dRECHERCHE[idxRech]
 
         (CoxCrete, CoyCrete, CozCrete, EndoCrete, Connex) = cherche_trajet(
-            self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeChampTrajet, infoPlan, inst)
-        if OUVERTURE == 'OUI':
+            self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeChampTrajet, infoPlan, inst
+        )
+        if OUVERTURE == "OUI":
             if strong_flag == False:
                 lstOuvFiss = calcul_ouverture(
-                    self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, infoPlan, inst, CoxCrete, CoyCrete, CozCrete, dime, strong_flag)
+                    self,
+                    NOM_CHAM,
+                    NOM_CMP,
+                    dRECHERCHE,
+                    __RESUIN,
+                    __mail,
+                    infoPlan,
+                    inst,
+                    CoxCrete,
+                    CoyCrete,
+                    CozCrete,
+                    dime,
+                    strong_flag,
+                )
             else:
                 lstOuvFiss, lstErr = calcul_ouverture(
-                    self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, infoPlan, inst, nume_ordre, CoxCrete, CoyCrete, CozCrete, dime, strong_flag)
+                    self,
+                    NOM_CHAM,
+                    NOM_CMP,
+                    dRECHERCHE,
+                    __RESUIN,
+                    __mail,
+                    infoPlan,
+                    inst,
+                    nume_ordre,
+                    CoxCrete,
+                    CoyCrete,
+                    CozCrete,
+                    dime,
+                    strong_flag,
+                )
         XcreteTot.append(CoxCrete)
         YcreteTot.append(CoyCrete)
         ZcreteTot.append(CozCrete)
         EndocreteTot.append(EndoCrete)
         ConnTot.append(Connex)
-        if 'GROUP_MA' in list(dRECHERCHE.keys()):
-            nomFissure = dRECHERCHE['GROUP_MA']
+        if "GROUP_MA" in list(dRECHERCHE.keys()):
+            nomFissure = dRECHERCHE["GROUP_MA"]
         else:
-            nomFissure = 'FISS' + str(idxRech + 1)
+            nomFissure = "FISS" + str(idxRech + 1)
         lstFissure = lstFissure + ([nomFissure] * len(CoxCrete))
         lstNomFiss.append(nomFissure)
 
-        if OUVERTURE == 'OUI':
-            if '-' in lstOuvFiss:
-                UTMESS('A', 'POST0_33', nomFissure)
+        if OUVERTURE == "OUI":
+            if "-" in lstOuvFiss:
+                UTMESS("A", "POST0_33", nomFissure)
             lstOuverture.append(lstOuvFiss)
             if strong_flag == True:
                 lstErreur.append(lstErr)
@@ -909,7 +963,7 @@ def post_endo_fiss_ops(self,
     lstY = []
     lstZ = []
     lstEndo = []
-    if OUVERTURE == 'OUI':
+    if OUVERTURE == "OUI":
         lstO = []
         if strong_flag == True:
             lstE = []
@@ -919,64 +973,69 @@ def post_endo_fiss_ops(self,
         lstY = lstY + YcreteTot[i]
         lstZ = lstZ + ZcreteTot[i]
         lstEndo = lstEndo + EndocreteTot[i]
-        if OUVERTURE == 'OUI':
+        if OUVERTURE == "OUI":
             lstO = lstO + lstOuverture[i]
             if strong_flag == True:
                 lstE = lstE + lstErreur[i]
 
-  # -----------------------------------------------------
-  # CREATION OF A TABLE TO STOCK CRACK PATH COORDINATES
-  #   AND CRACK OPENING
-  #
-    if OUVERTURE == 'NON':
-        tabRes = CREA_TABLE(LISTE=(
-            _F(PARA='FISSURE', LISTE_K=lstFissure),
-            _F(PARA='COORX', LISTE_R=lstX),
-            _F(PARA='COORY', LISTE_R=lstY),
-            _F(PARA='COORZ', LISTE_R=lstZ),
-            _F(PARA='CHAMP', LISTE_R=lstEndo),
-        ),)
+    # -----------------------------------------------------
+    # CREATION OF A TABLE TO STOCK CRACK PATH COORDINATES
+    #   AND CRACK OPENING
+    #
+    if OUVERTURE == "NON":
+        tabRes = CREA_TABLE(
+            LISTE=(
+                _F(PARA="FISSURE", LISTE_K=lstFissure),
+                _F(PARA="COORX", LISTE_R=lstX),
+                _F(PARA="COORY", LISTE_R=lstY),
+                _F(PARA="COORZ", LISTE_R=lstZ),
+                _F(PARA="CHAMP", LISTE_R=lstEndo),
+            )
+        )
 
     else:
         if strong_flag == False:
-            tabRes = CREA_TABLE(LISTE=(
-                _F(PARA='FISSURE', LISTE_K=lstFissure),
-                _F(PARA='COORX', LISTE_R=lstX),
-                _F(PARA='COORY', LISTE_R=lstY),
-                _F(PARA='COORZ', LISTE_R=lstZ),
-                _F(PARA='CHAMP', LISTE_R=lstEndo),
-                _F(PARA='OUVERTURE', LISTE_R=lstO),
-            ),)
+            tabRes = CREA_TABLE(
+                LISTE=(
+                    _F(PARA="FISSURE", LISTE_K=lstFissure),
+                    _F(PARA="COORX", LISTE_R=lstX),
+                    _F(PARA="COORY", LISTE_R=lstY),
+                    _F(PARA="COORZ", LISTE_R=lstZ),
+                    _F(PARA="CHAMP", LISTE_R=lstEndo),
+                    _F(PARA="OUVERTURE", LISTE_R=lstO),
+                )
+            )
 
         else:  # STRONG Method
-            tabRes = CREA_TABLE(LISTE=(
-                _F(PARA='FISSURE', LISTE_K=lstFissure),
-                _F(PARA='COORX', LISTE_R=lstX),
-                _F(PARA='COORY', LISTE_R=lstY),
-                _F(PARA='COORZ', LISTE_R=lstZ),
-                _F(PARA='CHAMP', LISTE_R=lstEndo),
-                _F(PARA='OUVERTURE', LISTE_R=lstO),
-                _F(PARA='ERREUR', LISTE_R=lstE),
-            ),)
+            tabRes = CREA_TABLE(
+                LISTE=(
+                    _F(PARA="FISSURE", LISTE_K=lstFissure),
+                    _F(PARA="COORX", LISTE_R=lstX),
+                    _F(PARA="COORY", LISTE_R=lstY),
+                    _F(PARA="COORZ", LISTE_R=lstZ),
+                    _F(PARA="CHAMP", LISTE_R=lstEndo),
+                    _F(PARA="OUVERTURE", LISTE_R=lstO),
+                    _F(PARA="ERREUR", LISTE_R=lstE),
+                )
+            )
     self.register_result(tabRes, TABLE)
 
     # --------------------------------------------------
     # CREATION OF DATA STRUCTURE "MESH"
     #
-    resu_mail0 = crea_mail_lin(
-        XcreteTot, YcreteTot, ZcreteTot, ConnTot, lstNomFiss, dime)
-    nomFichierSortie = os.path.join(os.getcwd(), 'maillage.mail')
-    fproc = open(nomFichierSortie, 'w')
+    resu_mail0 = crea_mail_lin(XcreteTot, YcreteTot, ZcreteTot, ConnTot, lstNomFiss, dime)
+    nomFichierSortie = os.path.join(os.getcwd(), "maillage.mail")
+    fproc = open(nomFichierSortie, "w")
     fproc.write(resu_mail0)
     fproc.close()
     unitFile = LogicalUnitFile.open(nomFichierSortie, access=FileAccess.Old)
     uniteMail = unitFile.unit
-    MAFISS = LIRE_MAILLAGE(FORMAT='ASTER', UNITE=uniteMail)
+    MAFISS = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=uniteMail)
     unitFile.release()
 
-    RetablirAlarme('CALCULEL5_48')
-    RetablirAlarme('ALGORITH12_43')
-    RetablirAlarme('CALCULEL2_12')
-    RetablirAlarme('CALCULEL5_7')
+    RetablirAlarme("CALCULEL5_48")
+    RetablirAlarme("ALGORITH12_43")
+    RetablirAlarme("CALCULEL2_12")
+    RetablirAlarme("CALCULEL5_7")
 
     return MAFISS
