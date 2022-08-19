@@ -35,6 +35,8 @@ def calc_matr_elem_ops(self, **args):
         ElementaryMatrix: elementary matrix
     """
 
+    print("ARGS: ", args, flush=True)
+
     # Define problem
     model = args["MODELE"]
     mater = args.get("CHAM_MATER")
@@ -120,6 +122,8 @@ def calc_matr_elem_ops(self, **args):
         stiffnessMatrix = args["RIGI_MECA"]
         matr_elem = disc_comp.hystereticStiffnessMatrix(
             stiffnessMatrix, group_ma, externVarField=externVar)
+        # This part is a remove because complex elem matr does not support real term
+        # remove code in hystereticStiffnessMatrix and add this part later
         # matr_rigi_dual = disc_comp.dualStiffnessMatrix()
         # matr_elem.addElementaryTerm(
         #     matr_rigi_dual.getElementaryTerms())

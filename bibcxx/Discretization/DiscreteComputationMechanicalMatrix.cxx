@@ -566,6 +566,43 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATUUC" ) );
     };
 
+    // This part is a hack because complex elem matr does not support real term
+    // To remove later
+    // Prepare loads
+    const auto &listOfLoads = _phys_problem->getListOfLoads();
+
+    // Select option
+    calcul->setOption( "MECA_DDLM_R" );
+
+    auto impl = [&calcul, elemMatr]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto FEDesc = load->getFiniteElementDescriptor();
+            auto field = load->getMultiplicativeField();
+            if ( field && field->exists() && FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( FEDesc );
+                calcul->addInputField( "PDDLMUR", field );
+                calcul->addOutputElementaryTerm( "PMATUUR",
+                                                 std::make_shared< ElementaryTermComplex >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                    elemMatr->addElementaryTerm(
+                        calcul->getOutputElementaryTermComplex( "PMATUUR" ) );
+                }
+            }
+        }
+    };
+
+    impl( listOfLoads->getMechanicalLoadsReal() );
+    impl( listOfLoads->getMechanicalLoadsFunction() );
+    impl( listOfLoads->getMechanicalLoadsComplex() );
+
+#ifdef ASTER_HAVE_MPI
+    impl( listOfLoads->getParallelMechanicalLoadsReal() );
+    impl( listOfLoads->getParallelMechanicalLoadsFunction() );
+#endif
+
     elemMatr->build();
 
     return elemMatr;
@@ -599,6 +636,7 @@ void DiscreteComputation::baseDualStiffnessMatrix(
         }
     };
 
+    // Real load
     impl( listOfLoads->getMechanicalLoadsReal() );
     impl( listOfLoads->getMechanicalLoadsFunction() );
 
@@ -606,6 +644,9 @@ void DiscreteComputation::baseDualStiffnessMatrix(
     impl( listOfLoads->getParallelMechanicalLoadsReal() );
     impl( listOfLoads->getParallelMechanicalLoadsFunction() );
 #endif
+
+    // Real part of complex load
+    impl( listOfLoads->getMechanicalLoadsComplex() );
 };
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() const {

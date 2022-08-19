@@ -26,7 +26,6 @@
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/FieldOnCells.h"
-#include "DataStructures/TemporaryDataStructureNaming.h"
 
 /** @brief Constructor */
 Calcul::Calcul( const std::string &option )
@@ -99,8 +98,7 @@ void Calcul::addElementaryCharacteristicsField( const ElementaryCharacteristicsP
 
 /** @brief Create and add input field for Fourier */
 void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
-    auto _FourierField = std::make_shared< ConstantFieldOnCellsLong >(
-        TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
+    auto _FourierField = std::make_shared< ConstantFieldOnCellsLong >( _mesh );
     const std::string physicalName( "HARMON" );
     _FourierField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
@@ -111,8 +109,7 @@ void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
 
 /** @brief Create and add input field for current time */
 void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE time_value ) {
-    auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
-        TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
+    auto _timeField = std::make_shared< ConstantFieldOnCellsReal >( _mesh );
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
@@ -124,8 +121,7 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE t
 /** @brief Create and add input field for current time */
 void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE &time_value,
                            const ASTERDOUBLE &time_delta, const ASTERDOUBLE &time_theta ) {
-    auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
-        TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
+    auto _timeField = std::make_shared< ConstantFieldOnCellsReal >( _mesh );
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
@@ -174,10 +170,18 @@ void Calcul::compute() {
     inputFields.reserve( inputNb );
     inputParams.reserve( inputNb );
     for ( const auto &[parameterName, field] : _inputFields ) {
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "Input Field :" << parameterName << ", " << field->getName() << ", "
+        //                   << field->exists() << std::endl;
+        // #endif
         inputParams.push_back( parameterName );
         inputFields.push_back( field->getName() );
     }
     for ( const auto &[parameterName, elemTerm] : _inputElemTerms ) {
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "Input Term :" << parameterName << ", " << elemTerm->getName() <<
+        //         std::endl;
+        // #endif
         inputParams.push_back( parameterName );
         inputFields.push_back( elemTerm->getName() );
     }
@@ -187,10 +191,18 @@ void Calcul::compute() {
     outputFields.reserve( outputNb );
     outputParams.reserve( outputNb );
     for ( const auto &[parameterName, field] : _outputFields ) {
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "Output Field :" << parameterName << ", " << field->getName() <<
+        //         std::endl;
+        // #endif
         outputParams.push_back( parameterName );
         outputFields.push_back( field->getName() );
     }
     for ( const auto &[parameterName, elemTerm] : _outputElemTerms ) {
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "Output Term :" << parameterName << ", " << elemTerm->getName() <<
+        //         std::endl;
+        // #endif
         outputParams.push_back( parameterName );
         outputFields.push_back( elemTerm->getName() );
     }
