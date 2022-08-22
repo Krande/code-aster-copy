@@ -557,7 +557,7 @@ TEST_RESU(RESU=(
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    RESULTAT=MODEBH,
-                   VALE_CALC=6.6292528,
+                   VALE_CALC=6.994961505876844,
                    ),
                 ),
           )
@@ -576,7 +576,7 @@ TEST_RESU(RESU=(
                 _F(NUME_ORDRE=5,
                    PARA='AMOR_REDUIT',
                    RESULTAT=MODEBH,
-                   VALE_CALC=0.02029805,
+                   VALE_CALC=0.04744290070442231,
                    ),
                 ),
           )

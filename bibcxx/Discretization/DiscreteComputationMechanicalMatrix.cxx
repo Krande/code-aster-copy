@@ -457,19 +457,27 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     }
 
     if ( stiffnessMatrix ) {
-        ElementaryTermRealPtr resuElemRigi;
+        std::vector< ElementaryTermRealPtr > resuElemRigi;
         auto total_R_Rigi = stiffnessMatrix->getElementaryTerms();
         for ( auto &R_Rigi : total_R_Rigi ) {
             if ( R_Rigi->getFiniteElementDescriptor() == currModel->getFiniteElementDescriptor() ) {
-                resuElemRigi = R_Rigi;
-                break;
+                resuElemRigi.push_back( R_Rigi );
             }
         }
 
-        if ( resuElemRigi->getPhysicalQuantity() == "MDNS_R" ) {
-            calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi );
+        AS_ASSERT( resuElemRigi.size() <= 2 );
+        if ( resuElemRigi[0]->getPhysicalQuantity() == "MDNS_R" ) {
+            calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi[0] );
+            AS_ASSERT( resuElemRigi.size() == 1 );
         } else {
-            calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi );
+            calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi[0] );
+            if ( resuElemRigi.size() > 1 ) {
+                if ( resuElemRigi[1]->getPhysicalQuantity() == "MDNS_R" ) {
+                    calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi[1] );
+                } else {
+                    AS_ABORT( "Should be unsymetric" );
+                }
+            }
         }
     }
 
@@ -541,19 +549,27 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    ElementaryTermRealPtr resuElemRigi;
+    std::vector< ElementaryTermRealPtr > resuElemRigi;
     auto total_R_Rigi = stiffnessMatrix->getElementaryTerms();
     for ( auto &R_Rigi : total_R_Rigi ) {
         if ( R_Rigi->getFiniteElementDescriptor() == currModel->getFiniteElementDescriptor() ) {
-            resuElemRigi = R_Rigi;
-            break;
+            resuElemRigi.push_back( R_Rigi );
         }
     }
 
-    if ( resuElemRigi->getPhysicalQuantity() == "MDNS_R" ) {
-        calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi );
+    AS_ASSERT( resuElemRigi.size() <= 2 );
+    if ( resuElemRigi[0]->getPhysicalQuantity() == "MDNS_R" ) {
+        calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi[0] );
+        AS_ASSERT( resuElemRigi.size() == 1 );
     } else {
-        calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi );
+        calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi[0] );
+        if ( resuElemRigi.size() > 1 ) {
+            if ( resuElemRigi[1]->getPhysicalQuantity() == "MDNS_R" ) {
+                calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi[1] );
+            } else {
+                AS_ABORT( "Should be unsymetric" );
+            }
+        }
     }
 
     // Add output elementary terms
@@ -578,7 +594,7 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
         for ( const auto &load : loads ) {
             auto FEDesc = load->getFiniteElementDescriptor();
             auto field = load->getMultiplicativeField();
-            if ( field && field->exists() && FEDesc ) {
+            if ( field && field->exists() && FEDesc && FEDesc->exists() ) {
                 calcul->clearInputs();
                 calcul->clearOutputs();
                 calcul->setFiniteElementDescriptor( FEDesc );
@@ -621,7 +637,7 @@ void DiscreteComputation::baseDualStiffnessMatrix(
         for ( const auto &load : loads ) {
             auto FEDesc = load->getFiniteElementDescriptor();
             auto field = load->getMultiplicativeField();
-            if ( field && field->exists() && FEDesc ) {
+            if ( field && field->exists() && FEDesc && FEDesc->exists() ) {
                 calcul->clearInputs();
                 calcul->clearOutputs();
                 calcul->setFiniteElementDescriptor( FEDesc );
