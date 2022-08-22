@@ -288,7 +288,7 @@ def _computeMatrix(disr_comp, matrix,
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
 
     if not is_stat:
-        matr_elem2 = disr_comp.linearCapacityMatrix(time_value, time_delta, time_theta,
+        matr_elem2 = disr_comp.linearCapacityMatrix(time_delta,
                                                     externVarField=externVarField)
         matrix.addElementaryMatrix(matr_elem2)
         logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")

@@ -220,8 +220,7 @@ class DiscreteComputation {
      * @brief Compute elementary matrices for mass matrix (MASS_THER)
      */
     ElementaryMatrixTemperatureRealPtr
-    linearCapacityMatrix( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
-                          const ASTERDOUBLE time_theta,
+    linearCapacityMatrix( const ASTERDOUBLE time_delta,
                           const VectorString &groupOfCells = VectorString(),
                           const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 

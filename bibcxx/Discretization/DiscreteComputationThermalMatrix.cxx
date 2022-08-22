@@ -106,9 +106,10 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     return elemMatr;
 };
 
-ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
-    const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
-    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
+ElementaryMatrixTemperatureRealPtr
+DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE time_delta,
+                                           const VectorString &groupOfCells,
+                                           const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER" );
@@ -139,7 +140,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+    // Set to -1 because not used.
+    calcul->addTimeField( "PTEMPSR", -1.0, time_delta, -1.0 );
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );

@@ -299,17 +299,15 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option MASS_THER.
 
             Arguments:
-                time_value (float): Current time
                 time_delta (float): Time increment
-                time_theta (float): Theta parameter for integration
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "time_delta" ), py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "externVarField" ) = nullptr )
 
         .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(
             Return the elementary matrices for damping matrix.

@@ -128,7 +128,7 @@ def calc_matr_elem_ops(self, **args):
         # matr_elem.build()
 
     elif myOption == "MASS_THER":
-        matr_elem = disc_comp.linearCapacityMatrix(time, delta_time, 1.0,
+        matr_elem = disc_comp.linearCapacityMatrix(delta_time,
                                                    group_ma,
                                                    externVarField=externVar)
 
