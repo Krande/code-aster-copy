@@ -8097,6 +8097,9 @@ class DynamicMacroElement(DataStructure):
     def getMassMatrix(self):
         pass
     
+    def getMechanicalMode(self):
+        pass
+    
     def getNumberOfNodes(self):
         pass
     
@@ -8104,9 +8107,6 @@ class DynamicMacroElement(DataStructure):
         pass
     
     def getStiffnessMatrixReal(self):
-        pass
-    
-    def setDOFNumbering(self, arg0):
         pass
     
     def setDampingMatrix(self, arg0):
