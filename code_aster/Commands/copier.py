@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -57,6 +57,10 @@ class Copier(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         other = keywords['CONCEPT']
+        
+        if isinstance(other, Result):
+            self._result.setModel(other.getModel())
+        
         if isinstance(other, Mesh):
             self._result.build()
 
