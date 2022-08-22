@@ -130,6 +130,18 @@ class ElementaryTerm : public DataField {
     }
 
     bool isEmpty() { return !( _noli->exists() && _desc->exists() ); }
+
+    bool build() { return _resl->build( true ); };
+
+    /**
+     * @brief TimesEqual overloading
+     */
+    ElementaryTerm< ValueType > &operator*=( const ValueType &scal ) {
+
+        ( *_resl ) *= scal;
+
+        return *this;
+    };
 };
 
 /** @typedef ElementaryTermRealPtr */

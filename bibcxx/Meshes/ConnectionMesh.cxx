@@ -622,14 +622,14 @@ bool ConnectionMesh::hasGroupOfCells( const std::string &name, const bool ) cons
     if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
         return false;
     }
-    return _groupsOfCells->existsObject( name );
+    return _groupsOfCells->contains( name );
 }
 
 bool ConnectionMesh::hasGroupOfNodes( const std::string &name, const bool ) const {
     if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
         return false;
     }
-    return _groupsOfNodes->existsObject( name );
+    return _groupsOfNodes->contains( name );
 }
 
 VectorLong ConnectionMesh::getCells( const std::string name ) const {

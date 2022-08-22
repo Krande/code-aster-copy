@@ -36,6 +36,7 @@ from ..Objects import (
 from ..Utilities import logger, print_stats, profile
 from .NonLinearSolver import PhysicalState, StorageManager, TimeStepper
 
+
 def get_index(inst, linst, prec=1.E-6, crit="RELATIF"):
 
     assert crit in ("RELATIF", "ABSOLU")
@@ -48,15 +49,18 @@ def get_index(inst, linst, prec=1.E-6, crit="RELATIF"):
         max_v = inst+prec
 
     min_v, max_v = sorted((min_v, max_v))
-    test = tuple((i>=min_v and i<=max_v) for i in linst)
+    test = tuple((i >= min_v and i <= max_v) for i in linst)
     return tuple(i for i, v in enumerate(test) if v is True)
 
+
 def exists_unique(*args, **kwargs):
-    return len(get_index(*args, **kwargs))==1
+    return len(get_index(*args, **kwargs)) == 1
+
 
 def get_unique_index(*args, **kwargs):
     assert(exists_unique(*args, **kwargs))
     return get_index(*args, **kwargs)[0]
+
 
 def _checkArgs(args):
 
@@ -67,14 +71,16 @@ def _checkArgs(args):
         assert(args.get("ETAT_INIT") is not None)
         assert(args.get("ETAT_INIT").get("STATIONNAIRE") is None)
 
+
 def _checkIfStat(args):
 
     if args.get("ETAT_INIT") is None:
         return True
-    else :
+    else:
         if "STATIONNAIRE" in args.get("ETAT_INIT"):
             return True
     return False
+
 
 def _hasExchangeFields(args):
     has_fields = False
@@ -82,8 +88,10 @@ def _hasExchangeFields(args):
         for loadkws in args["EXCIT"]:
             load = loadkws["CHARGE"]
             if isinstance(load, (ThermalLoadFunction, ThermalLoadReal)):
-                has_fields = has_fields or load.hasLoadResult() or load.hasLoadField("COEFH") or load.hasLoadField("HECHP")
+                has_fields = has_fields or load.hasLoadResult() or load.hasLoadField(
+                    "COEFH") or load.hasLoadField("HECHP")
     return has_fields
+
 
 @profile
 def _addLoads(phys_pb, args):
@@ -117,6 +125,7 @@ def _addLoads(phys_pb, args):
 
     return phys_pb
 
+
 @profile
 def _setupInitialField(is_stat, phys_pb, args):
 
@@ -124,7 +133,8 @@ def _setupInitialField(is_stat, phys_pb, args):
     initial_field = None
 
     if is_stat:
-        logger.debug("<THER_LINEAIRE><ETAT_INIT>: Stationnary Computation initialized with a null field")
+        logger.debug(
+            "<THER_LINEAIRE><ETAT_INIT>: Stationnary Computation initialized with a null field")
         initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
         initial_field.setValues(0.0)
     else:
@@ -134,7 +144,8 @@ def _setupInitialField(is_stat, phys_pb, args):
         kws = ls_kws[0]
 
         if kws.get("CHAM_NO") is not None:
-            logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with given field '%s'"%kws.get("CHAM_NO").getName())
+            logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with given field '%s'" % kws.get(
+                "CHAM_NO").getName())
             initial_field = kws.get("CHAM_NO")
 
         elif kws.get("EVOL_THER") is not None:
@@ -148,19 +159,21 @@ def _setupInitialField(is_stat, phys_pb, args):
                                          kws.get("PRECISION"), kws.get("CRITERE"))
 
             initial_field = resu_ther.getFieldOnNodesReal("TEMP", irank)
-            logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with field from '%s' at rank '%s'"%(resu_ther.getName(),
-                                                                                                      irank))
+            logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with field from '%s' at rank '%s'" % (resu_ther.getName(),
+                                                                                                        irank))
 
         elif kws.get("VALE") is not None:
             initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
             initial_field.setValues(kws.get("VALE"))
-            logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with constant field with value %s"%kws.get("VALE"))
+            logger.debug(
+                "<THER_LINEAIRE><ETAT_INIT>: Initialized with constant field with value %s" % kws.get("VALE"))
         else:
             assert(False)
 
     assert(initial_field is not None)
     logger.debug("<THER_LINEAIRE><ETAT_INIT>: Finish")
     return initial_field
+
 
 @profile
 def _setupArchivage(timestepper_values, args):
@@ -175,11 +188,13 @@ def _setupArchivage(timestepper_values, args):
         arch_times = timestepper_values
 
     for t in arch_times:
-        assert(exists_unique(t, timestepper_values, prec=arch_prec, crit=arch_crit))
+        assert(exists_unique(t, timestepper_values,
+               prec=arch_prec, crit=arch_crit))
 
-    logger.debug("<THER_LINEAIRE><ARCHIVAGE>: arch_times %s "%arch_times)
+    logger.debug("<THER_LINEAIRE><ARCHIVAGE>: arch_times %s " % arch_times)
     logger.debug("<THER_LINEAIRE><ARCHIVAGE>: Finish")
     return arch_times
+
 
 @profile
 def _createTimeStepper(is_stat, args):
@@ -216,7 +231,8 @@ def _createTimeStepper(is_stat, args):
 
         if listInst is not None:
             list_values = listInst.getValues()
-            logger.debug("<THER_LINEAIRE><TIMESTEPPER>: list_values = %s"%list_values)
+            logger.debug(
+                "<THER_LINEAIRE><TIMESTEPPER>: list_values = %s" % list_values)
 
             nume_inst_init = increment.get("NUME_INST_INIT") or 0
             nume_inst_fin = increment.get("NUME_INST_FIN") or len(list_values)
@@ -228,10 +244,14 @@ def _createTimeStepper(is_stat, args):
 
             inst_fin = increment.get("INST_FIN") or list_values[-1]
 
-            logger.debug("<THER_LINEAIRE><TIMESTEPPER>: nume_inst_init = %s"%nume_inst_init)
-            logger.debug("<THER_LINEAIRE><TIMESTEPPER>: nume_inst_fin = %s"%nume_inst_fin)
-            logger.debug("<THER_LINEAIRE><TIMESTEPPER>: inst_init = %s"%inst_init)
-            logger.debug("<THER_LINEAIRE><TIMESTEPPER>: inst_fin = %s"%inst_fin)
+            logger.debug(
+                "<THER_LINEAIRE><TIMESTEPPER>: nume_inst_init = %s" % nume_inst_init)
+            logger.debug(
+                "<THER_LINEAIRE><TIMESTEPPER>: nume_inst_fin = %s" % nume_inst_fin)
+            logger.debug(
+                "<THER_LINEAIRE><TIMESTEPPER>: inst_init = %s" % inst_init)
+            logger.debug(
+                "<THER_LINEAIRE><TIMESTEPPER>: inst_fin = %s" % inst_fin)
 
             assert nume_inst_init >= 0
             assert nume_inst_fin <= len(list_values)
@@ -245,7 +265,7 @@ def _createTimeStepper(is_stat, args):
             assert exists_unique(inst_fin, list_values, prec)
 
             time_values = [time for time in list_values[nume_inst_init:nume_inst_fin+1]
-                          if ((inst_init - prec) <= time <= (inst_fin + prec))]
+                           if ((inst_init - prec) <= time <= (inst_fin + prec))]
 
     assert len(time_values) > 0
     is_evol = len(time_values) > 1
@@ -258,8 +278,9 @@ def _createTimeStepper(is_stat, args):
         idx = get_unique_index(last_prev_inst, inst_prev, prec)
         first_rank = rank_prev[idx] + 1
 
-    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: first_rank = %s"%first_rank)
-    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: time_values = %s"%time_values)
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: first_rank = %s" % first_rank)
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: time_values = %s" %
+                 time_values)
     return is_evol, first_rank, TimeStepper(time_values)
 
 
@@ -274,7 +295,7 @@ def _computeMatrix(disr_comp, matrix,
         matrix (AssemblyMatrixTemperatureReal): matrix to compute and assemble inplace
         time_value (float): Current time
         time_delta (float): Time increment
-        time_theta (float): Theta parameter for integration
+        time_theta (float): Theta parameter for time scheme
         externVarField (fieldOnCellsReal): external state variable at current time
 
     Returns:
@@ -282,19 +303,30 @@ def _computeMatrix(disr_comp, matrix,
     """
     logger.debug("<THER_LINEAIRE><MATRIX>: Start")
 
-    matr_elem1 = disr_comp.linearConductivityMatrix(time_value, time_delta, time_theta,
-                                                    externVarField=externVarField)
-    matrix.addElementaryMatrix(matr_elem1)
+    phys_pb = disr_comp.getPhysicalProblem()
+
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
+    matr_elem_rigi = disr_comp.linearConductivityMatrix(time_value,
+                                                        externVarField=externVarField)
+    matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
+
+    matr_elem_exch = disr_comp.exchangeThermalMatrix(time_value)
+    matrix.addElementaryMatrix(matr_elem_exch, time_theta)
+
+    if phys_pb.getDOFNumbering().useLagrangeMultipliers():
+        logger.debug("<THER_LINEAIRE><MATRIX>: Dual Conductivity")
+        matr_elem_dual = disr_comp.dualConductivityMatrix()
+        matrix.addElementaryMatrix(matr_elem_dual)
 
     if not is_stat:
-        matr_elem2 = disr_comp.linearCapacityMatrix(time_delta,
-                                                    externVarField=externVarField)
-        matrix.addElementaryMatrix(matr_elem2)
         logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")
 
+        matr_elem_capa = disr_comp.linearCapacityMatrix(time_value,
+                                                        externVarField=externVarField)
+        matrix.addElementaryMatrix(matr_elem_capa, 1.0/time_delta)
+
     matrix.assemble(True)
-    logger.debug("<THER_LINEAIRE><MATRIX>: Assemble")
+
     logger.debug("<THER_LINEAIRE><MATRIX>: Finish")
 
     return matrix
@@ -337,6 +369,7 @@ def _computeRhs(disr_comp,
     logger.debug("<THER_LINEAIRE><RHS>: Finish")
     return rhs
 
+
 def ther_lineaire_ops(self, **args):
     """Execute the command THER_LINEAIRE.
 
@@ -348,7 +381,7 @@ def ther_lineaire_ops(self, **args):
     """
 
     logger.debug("<THER_LINEAIRE>: Initialization")
-    logger.debug("<THER_LINEAIRE>: Args : %s"%args)
+    logger.debug("<THER_LINEAIRE>: Args : %s" % args)
 
     _checkArgs(args)
 
@@ -428,32 +461,34 @@ def ther_lineaire_ops(self, **args):
     while not timeStepper.hasFinished():
         phys_state.time = timeStepper.getNext()
 
-        if is_stat :
+        if is_stat:
             time_theta = 1.0
             time_delta = timeStepper.null_increment
-        else :
+        else:
             time_theta = args.get("PARM_THETA")
             time_delta = timeStepper.getIncrement()
 
-        logger.debug("<THER_LINEAIRE>:     IS_EVOL %s"%is_evol)
-        logger.debug("<THER_LINEAIRE>:     IS_STAT %s"%is_stat)
-        logger.debug("<THER_LINEAIRE>:     IS_CONST = %s"%is_const)
-        logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s"%hasExternalStateVariable)
-        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s"%phys_state.time)
-        logger.debug("<THER_LINEAIRE>:     TIME_VALUE %s"%phys_state.time)
-        logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s"%time_delta)
-        logger.debug("<THER_LINEAIRE>:     TIME_THETA %s"%time_theta)
+        logger.debug("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol)
+        logger.debug("<THER_LINEAIRE>:     IS_STAT %s" % is_stat)
+        logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
+        logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s" %
+                     hasExternalStateVariable)
+        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     TIME_VALUE %s" % phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s" % time_delta)
+        logger.debug("<THER_LINEAIRE>:     TIME_THETA %s" % time_theta)
 
         # Update external state variable if required
         if hasExternalStateVariable:
-            phys_state.externVar = disc_comp.createExternalStateVariablesField(phys_state.time)
+            phys_state.externVar = disc_comp.createExternalStateVariablesField(
+                phys_state.time)
 
         if not (is_first and not is_stat):
             if (not is_const
                 or (is_const and time_delta is timeStepper.null_increment)
                 or (is_const and has_exchange_fields)
                 or (is_const and abs(time_delta - time_delta_prev) > 1.e-12)
-                or (is_const and hasExternalStateVariable)):
+                    or (is_const and hasExternalStateVariable)):
                 matrix = _computeMatrix(disc_comp, matrix,
                                         is_stat, phys_state.time, time_delta, time_theta,
                                         phys_state.externVar)
@@ -466,7 +501,6 @@ def ther_lineaire_ops(self, **args):
             # solve linear system
             diriBCs = profile(disc_comp.dirichletBC)(phys_state.time)
             phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
-
 
         if (rank == 0) or not is_first:
             if exists_unique(phys_state.time, arch_times, arch_prec, arch_crit):
@@ -487,7 +521,8 @@ def ther_lineaire_ops(self, **args):
     result = storage_manager.getResult()
 
     if model.isXfem():
-        result = CALC_CHAMP(RESULTAT=result, reuse=result, THERMIQUE="TEMP_ELGA")
+        result = CALC_CHAMP(RESULTAT=result, reuse=result,
+                            THERMIQUE="TEMP_ELGA")
 
     if verbosity > 1:
         print_stats()

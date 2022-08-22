@@ -42,7 +42,14 @@ void exportAssemblyMatrixToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal,
                                          const AssemblyMatrixDisplacementReal & > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementReal::addElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementReal::addElementaryMatrix, R"(
+Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+
+Arguments:
+    matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
+    coeff [float]: assembling factor (default = 1.0)
+        )",
+              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -75,9 +82,10 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def( "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
-            return M * v;
-        } );
+        .def(
+            "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
+                return M * v;
+            } );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
                 BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementComplex" )
@@ -86,7 +94,14 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementComplex::addElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementComplex::addElementaryMatrix, R"(
+Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+
+Arguments:
+    matr_elem [ElementaryMatrixDisplacementComplex]: elementary matrix to add
+    coeff [float]: assembling factor (default = 1.0)
+        )",
+              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -117,8 +132,9 @@ Arguments:
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( -py::self )
-        .def( "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
-                              const FieldOnNodesComplex &v ) { return M * v; } );
+        .def(
+            "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
+                            const FieldOnNodesComplex &v ) { return M * v; } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
@@ -130,7 +146,14 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureReal, PhysicalProblemPtr > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix, R"(
+Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+
+Arguments:
+    matr_elem [ElementaryMatrixTemperatureReal]: elementary matrix to add
+    coeff [float]: assembling factor (default = 1.0)
+        )",
+              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -163,9 +186,10 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def( "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
-            return M * v;
-        } );
+        .def(
+            "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
+                return M * v;
+            } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureComplex, AssemblyMatrixTemperatureComplexPtr,
@@ -175,7 +199,14 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureComplex::addElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureComplex::addElementaryMatrix, R"(
+Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+
+Arguments:
+    matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
+    coeff [float]: assembling factor (default = 1.0)
+        )",
+              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -193,7 +224,14 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixPressureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixPressureReal::addElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixPressureReal::addElementaryMatrix, R"(
+Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+
+Arguments:
+    matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
+    coeff [float]: assembling factor (default = 1.0)
+        )",
+              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -223,9 +261,10 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def( "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
-            return M * v;
-        } );
+        .def(
+            "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
+                return M * v;
+            } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixPressureComplex, AssemblyMatrixPressureComplexPtr,
@@ -235,7 +274,14 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixPressureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixPressureComplex::addElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixPressureComplex::addElementaryMatrix, R"(
+Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+
+Arguments:
+    matr_elem [ElementaryMatrixPressureComplex]: elementary matrix to add
+    coeff [float]: assembling factor (default = 1.0)
+        )",
+              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -257,6 +303,8 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def( "__mul__", +[]( const AssemblyMatrixPressureComplex &M,
-                              const FieldOnNodesComplex &v ) { return M * v; } );
+        .def(
+            "__mul__", +[]( const AssemblyMatrixPressureComplex &M, const FieldOnNodesComplex &v ) {
+                return M * v;
+            } );
 };

@@ -94,10 +94,10 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     /** @brief La collection est-elle nommée ? */
     bool _isNamed;
     /** @brief Listes de objets de collection */
-    std::vector< JeveuxCollObjValType > _listObjects;
+    std::map< ASTERINTEGER, JeveuxCollObjValType > _listObjects;
     /** @brief Correspondance nom/numéro */
     mapStrInt _mapNumObject;
-    ASTERINTEGER _size, _capacity;
+    ASTERINTEGER _capacity;
     /**
      * @brief Pointeur vers un NamesMap
      * @todo ASTERINTEGER par defaut : pas terrible
@@ -113,7 +113,6 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
                             const std::string &name = "", ASTERINTEGER totalSize = 0 ) {
         ASTERINTEGER taille = size;
         _capacity = size;
-        _size = 0;
         const std::string strJeveuxBase = "G";
         const ASTERINTEGER intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
         std::string carac( strJeveuxBase + " V " + JeveuxTypesNames[intType] );
@@ -144,9 +143,23 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
             CALLO_JEECRA_WRAP( _name, strParam, &taille );
         }
 
-        _listObjects.reserve( _capacity );
-
         return true;
+    };
+
+    ASTERINTEGER getMaxIndex() const {
+        if ( _listObjects.empty() )
+            return 0;
+
+        return std::prev( _listObjects.end() )->first;
+    };
+
+    ASTERINTEGER getNewIndex() const {
+        auto newIndex = getMaxIndex() + 1;
+        if ( newIndex > _capacity ) {
+            AS_ABORT( "Can not add new object" );
+        }
+
+        return newIndex;
     };
 
   public:
@@ -160,7 +173,6 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
           _isNamed( false ),
           _isEmpty( true ),
           _namesMap( 0 ),
-          _size( 0 ),
           _capacity( 0 ) {}
 
     /**
@@ -173,45 +185,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
           _isNamed( false ),
           _isEmpty( true ),
           _namesMap( ptr ),
-          _size( 0 ),
           _capacity( 0 ){};
 
     ~JeveuxCollectionClass(){};
-
-    struct const_iterator {
-        ASTERINTEGER position;
-        const std::vector< JeveuxCollObjValType > &values;
-
-        inline const_iterator( ASTERINTEGER memoryPosition,
-                               const std::vector< JeveuxCollObjValType > &vec )
-            : position( memoryPosition ), values( vec ){};
-
-        inline const_iterator( const const_iterator &iter )
-            : position( iter.position ), values( iter.values ){};
-
-        inline const_iterator &operator=( const const_iterator &testIter ) {
-            position = testIter.position;
-            values = testIter.values;
-            return *this;
-        };
-
-        inline const_iterator &operator++() {
-            ++position;
-            return *this;
-        };
-
-        inline bool operator==( const const_iterator &testIter ) const {
-            return testIter.position == position;
-        };
-
-        inline bool operator!=( const const_iterator &testIter ) const {
-            return !( testIter.position == position );
-        };
-
-        inline const JeveuxCollObjValType &operator->() const { return values[position]; };
-
-        inline const JeveuxCollObjValType &operator*() const { return values[position]; };
-    };
 
     /**
      * @brief
@@ -332,12 +308,12 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
             AS_ABORT( "Collection is not named" );
         }
 
-        _mapNumObject[std::string( trim( name.c_str() ) )] = size();
+        auto newIndex = getNewIndex();
+        JeveuxCollObjValType obj( _name, newIndex, name, nbValues );
 
-        _size++;
-        JeveuxCollObjValType obj( _name, size(), name, nbValues );
+        _mapNumObject[std::string( trim( name.c_str() ) )] = newIndex;
 
-        _listObjects.push_back( obj );
+        _listObjects[newIndex] = obj;
         return obj;
     };
 
@@ -365,10 +341,11 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
             AS_ABORT( "Collection is not numeroted" );
         }
 
-        _size++;
-        JeveuxCollObjValType obj( _name, size(), nbValues );
+        auto newIndex = getNewIndex();
+        JeveuxCollObjValType obj( _name, newIndex, nbValues );
 
-        _listObjects.push_back( obj );
+        _listObjects[newIndex] = obj;
+
         return obj;
     };
 
@@ -404,7 +381,6 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         if ( _name != "" && get_sh_jeveux_status() == 1 )
             CALLO_JEDETR( _name );
 
-        _size = 0;
         _capacity = 0;
         _listObjects.clear();
     };
@@ -421,14 +397,14 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @param name Chaine contenant le nom de l'objet
      * @return Renvoit true si l'objet existe dans la collection
      */
-    bool existsObject( const std::string &name ) const;
+    bool contains( const std::string &name ) const;
 
     /**
      * @brief Methode verifiant l'existence d'un objet de collection dans la collection
      * @param number entier
      * @return Renvoit true si l'objet existe dans la collection
      */
-    bool existsObject( const ASTERINTEGER &number ) const;
+    bool contains( const ASTERINTEGER &number ) const;
 
     /**
      * @brief Methode permettant d'obtenir la liste des objets nommés dans la collection
@@ -436,7 +412,27 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     std::vector< JeveuxChar32 > getObjectsNames() const;
 
-    const std::vector< JeveuxCollObjValType > &getObjects() const { return _listObjects; };
+    VectorLong getObjectsIndicies() const {
+        VectorLong ret;
+        ret.reserve( size() );
+
+        for ( auto &[key, obj] : _listObjects ) {
+            ret.push_back( key );
+        }
+
+        return ret;
+    };
+
+    std::vector< JeveuxCollObjValType > getObjects() const {
+        std::vector< JeveuxCollObjValType > ret;
+        ret.reserve( size() );
+
+        for ( auto &[key, obj] : _listObjects ) {
+            ret.push_back( obj );
+        }
+
+        return ret;
+    };
 
     inline const JeveuxCollObjValType &operator[]( const ASTERINTEGER &position ) const {
 #ifdef ASTER_DEBUG_CXX
@@ -444,12 +440,11 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
             AS_ABORT( "Collection not built: " + _name );
         }
 
-        if ( position > size() || position <= 0 ) {
-            AS_ABORT( "Out of collection bounds: " + std::to_string( position ) + " vs " +
-                      std::to_string( size() ) );
+        if ( _listObjects.count( position ) == 0 ) {
+            AS_ABORT( "Position not in collection: " + std::to_string( position ) );
         }
 #endif
-        return _listObjects[position - 1];
+        return _listObjects[position];
     };
 
     inline JeveuxCollObjValType &operator[]( const ASTERINTEGER &position ) {
@@ -458,12 +453,11 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
             AS_ABORT( "Collection not built: " + _name );
         }
 
-        if ( position > size() || position <= 0 ) {
-            AS_ABORT( "Out of collection bounds: " + std::to_string( position ) + " vs " +
-                      std::to_string( size() ) );
+        if ( position < 1 || position > capacity() ) {
+            AS_ABORT( "Position not in collection: " + std::to_string( position ) );
         }
 #endif
-        return _listObjects[position - 1];
+        return _listObjects[position];
     };
 
     inline const JeveuxCollObjValType &operator[]( const std::string &name ) const {
@@ -502,7 +496,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         return _listObjects[curIter->second];
     };
 
-    inline ASTERINTEGER size() const { return _size; };
+    inline ASTERINTEGER size() const { return _listObjects.size(); };
 
     inline ASTERINTEGER capacity() const { return _capacity; };
 
@@ -530,10 +524,12 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
         auto size = this->size();
 
-        for ( ASTERINTEGER i = 0; i < size; i++ ) {
-            if ( _listObjects[i] == toCompar._listObjects[i] ) {
-                // nothing
-            } else {
+        for ( auto &[key, obj] : _listObjects ) {
+            if ( !toCompar.contains( key ) ) {
+                return false;
+            }
+
+            if ( obj != toCompar[key] ) {
                 return false;
             }
         }
@@ -542,10 +538,11 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     };
 
     JeveuxCollectionClass< ValueType, AccessType > &operator*=( const ValueType &scal ) {
+        this->build( false );
         auto size = this->size();
 
-        for ( ASTERINTEGER i = 0; i < size; i++ ) {
-            _listObjects[i] *= scal;
+        for ( auto &[key, obj] : _listObjects ) {
+            obj *= scal;
         }
 
         return *this;
@@ -576,8 +573,8 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     CALLO_JELIRA( _name, param2, &_capacity, charval );
 
     if ( !force && !_isEmpty && size() == nbColObj ) {
-        for ( ASTERINTEGER i = 0; i < nbColObj; ++i )
-            if ( _listObjects[i].hasMoved() ) {
+        for ( auto &[key, obj] : _listObjects )
+            if ( obj.hasMoved() ) {
                 force = true;
                 break;
             }
@@ -585,12 +582,9 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
             return true;
     }
 
-    _size = nbColObj;
-
     AS_ASSERT( size() <= capacity() );
 
     _listObjects.clear();
-    _listObjects.reserve( _capacity );
 
     param = "ACCES ";
     charval = std::string( 32, ' ' );
@@ -601,23 +595,22 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
         _isNamed = true;
     }
 
-    for ( ASTERINTEGER i = 1; i <= _size; ++i ) {
-        if ( !existsObject( i ) ) {
-            _listObjects.push_back( JeveuxCollObjValType( _name, i, _isNamed, false ) );
-        } else {
-            _listObjects.push_back( JeveuxCollObjValType( _name, i, _isNamed, true ) );
-        }
+    for ( ASTERINTEGER i = 1; i <= _capacity; ++i ) {
+        if ( contains( i ) ) {
+            _listObjects[i] = JeveuxCollObjValType( _name, i, _isNamed );
 
-        if ( _isNamed ) {
-            _mapNumObject[_listObjects[i - 1].getStringName()] = i - 1;
+            if ( _isNamed ) {
+                _mapNumObject[_listObjects[i].getStringName()] = i;
+            }
         }
     }
+
     _isEmpty = false;
     return true;
 };
 
 template < class ValueType, class AccessType >
-bool JeveuxCollectionClass< ValueType, AccessType >::existsObject( const std::string &name ) const {
+bool JeveuxCollectionClass< ValueType, AccessType >::contains( const std::string &name ) const {
     std::string charJeveuxName( 32, ' ' );
     ASTERINTEGER returnBool;
     CALLO_JEXNOM( charJeveuxName, _name, name );
@@ -628,8 +621,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::existsObject( const std::st
 };
 
 template < class ValueType, class AccessType >
-bool JeveuxCollectionClass< ValueType, AccessType >::existsObject(
-    const ASTERINTEGER &number ) const {
+bool JeveuxCollectionClass< ValueType, AccessType >::contains( const ASTERINTEGER &number ) const {
     std::string charJeveuxName( 32, ' ' );
     ASTERINTEGER returnBool = number;
     CALLO_JEXNUM( charJeveuxName, _name, &returnBool );
@@ -645,8 +637,8 @@ std::vector< JeveuxChar32 >
 JeveuxCollectionClass< ValueType, AccessType >::getObjectsNames() const {
     std::vector< JeveuxChar32 > toReturn;
     toReturn.reserve( size() );
-    for ( auto curObject : _listObjects )
-        toReturn.push_back( curObject.getName() );
+    for ( auto &[key, obj] : _listObjects )
+        toReturn.push_back( obj.getName() );
     return toReturn;
 };
 

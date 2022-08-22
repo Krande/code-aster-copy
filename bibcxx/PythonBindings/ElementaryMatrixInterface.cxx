@@ -45,6 +45,7 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixDisplacementReal" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal, std::string > ) )
+        .def( py::self *= float() )
         .def( "build", &ElementaryMatrixDisplacementReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementReal::getFiniteElementDescriptors )
@@ -77,6 +78,7 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixTemperatureReal" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal, std::string > ) )
+        .def( py::self *= float() )
         .def( "build", &ElementaryMatrixTemperatureReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixTemperatureReal::getFiniteElementDescriptors )

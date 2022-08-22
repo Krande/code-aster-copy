@@ -142,8 +142,7 @@ void Result::setModel( const ModelPtr &model, ASTERINTEGER rank ) {
     setMesh( model->getMesh() );
 };
 
-void Result::setParameterValue( std::string name,
-                                ASTERDOUBLE value, ASTERINTEGER rank ) {
+void Result::setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER rank ) {
     CALLO_RSADPA_ZR_WRAP( getName(), &rank, &value, name );
 };
 
@@ -153,18 +152,13 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
 
     AS_ASSERT( rank <= nb_ranks );
 
-    _serialNumber->updateValuePointer();
     _rspr->updateValuePointer();
 
-    auto &calcParam = _calculationParameter->getObjects();
-    auto nbParam = calcParam.size();
-
-    for ( ASTERINTEGER i = 0; i < nbParam; ++i ) {
-        const auto item = calcParam[i];
+    for ( auto &[i, item] : *_calculationParameter ) {
         auto typevar = trim( item[3].toString() );
 
         if ( typevar == "ACCES" ) {
-            auto var_name = trim( _accessVariables->getStringFromIndex( i + 1 ) );
+            auto var_name = trim( _accessVariables->getStringFromIndex( i ) );
             if ( var_name == "INST" ) {
                 auto nosuff = trim( item[0].toString() );
                 auto ivar = std::stoi( trim( item[1].toString() ) );

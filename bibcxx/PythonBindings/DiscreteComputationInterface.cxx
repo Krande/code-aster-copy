@@ -37,14 +37,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the imposed nodal BC assembled vector
 
       Arguments:
-            time_value (float): Current time
-            time_delta (float): Time increment
-            time_theta (float): Theta parameter for integration
+            time (float): Current time
+            time_step (float): Time increment
+            theta (float): Theta parameter for integration
 
       Returns:
             FieldOnNodes: imposed dual field
         )",
-              py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ) )
+              py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ) )
         .def( "imposedDualBC",
               py::overload_cast< const ASTERDOUBLE >( &DiscreteComputation::imposedDualBC,
                                                       py::const_ ),
@@ -52,12 +52,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the imposed nodal BC assembled vector
 
       Arguments:
-            time_value (float): Current time
+            time (float): Current time
 
       Returns:
             FieldOnNodes: imposed dual field
         )",
-              py::arg( "time_value" ) )
+              py::arg( "time" ) )
         .def( "dualReaction", &DiscreteComputation::dualReaction,
               R"(
       Return the imposed displacement assembled vector
@@ -85,54 +85,54 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the Neumann load vector
 
       Arguments:
-            time_value (float): Current time
-            time_delta (float): Time increment
-            time_theta (float): Theta parameter for integration
+            time (float): Current time
+            time_step (float): Time increment
+            theta (float): Theta parameter for integration
             externVarField (fieldOnCellsReal): external state variable at current time
             previousPrimalField (fieldOnNodesReal): solution field at previous time
 
       Returns:
             FieldOnNodes: Neumann load vector
         )",
-              py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
+              py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ),
               py::arg( "externVarField" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
         .def( "createExternalStateVariablesField",
               &DiscreteComputation::createExternalStateVariablesField, R"(
             Create external state variable field
 
             Arguments:
-                  time_value (float): Current time
+                  time (float): Current time
 
             Returns:
                   FieldOnCells: field of external state variables at current time
             )",
-              py::arg( "time_value" ) )
+              py::arg( "time" ) )
         .def( "computeExternalStateVariablesLoad",
               &DiscreteComputation::computeExternalStateVariablesLoad, R"(
             Compute load from external state variables
 
             Arguments:
-                  time_value (float): Current time
+                  time (float): Current time
                   externVarField (fieldOnCellsReal): external state variable at current time
 
             Returns:
                   FieldOnNodes: load from external state variables
             )",
-              py::arg( "time_value" ), py::arg( "externVarField" ) )
+              py::arg( "time" ), py::arg( "externVarField" ) )
         .def( "transientThermalLoad", &DiscreteComputation::transientThermalLoad, R"(
             Compute Transient Thermal Load
 
             Arguments:
-                  time_value (float): Current time
-                  time_delta (float): Time increment
-                  time_theta (float): Theta parameter for integration
+                  time (float): Current time
+                  time_step (float): Time increment
+                  theta (float): Theta parameter for integration
                   externVarField (fieldOnCellsReal): external state variable at current time
                   previousPrimalField (fieldOnNodesReal): solution field at previous time
 
             Returns:
                   FieldOnNodes: load from external state variables
             )",
-              py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
+              py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ),
               py::arg( "externVarField" ), py::arg( "previousPrimalField" ) = nullptr )
         .def( "computeExternalStateVariablesReference",
               &DiscreteComputation::computeExternalStateVariablesReference, R"(
@@ -146,7 +146,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Return the imposed displacement vector used to remove imposed DDL
 
             Arguments:
-                  time_value (float): Current time
+                  time (float): Current time
 
             Returns:
                   FieldOnNodes: imposed displacement vector
@@ -160,19 +160,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
 
             Arguments:
-                  time_value (float): Current time
+                  time (float): Current time
                   disp (FieldOnNodes): displacement field at current time
 
             Returns:
                   FieldOnNodes: incremental imposed displacement vector
         )",
-              py::arg( "time_value" ), py::arg( "disp" ) )
+              py::arg( "time" ), py::arg( "disp" ) )
         .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix, R"(
             Return the elementary matrices for elastic Stiffness matrix.
             Option RIGI_MECA.
 
             Arguments:
-                  time_value (float): Current time (default: 0.0)
+                  time (float): Current time (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
@@ -180,7 +180,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                   ElementaryMatrix: elementary elastic Stiffness matrix
             )",
-              py::arg( "time_value" ) = 0.0, py::arg( "fourierMode" ) = -1,
+              py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = -1,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "fluidStrucutreStiffnessMatrix", &DiscreteComputation::fluidStrucutreStiffnessMatrix,
@@ -234,16 +234,20 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary matrices
         )" )
+        .def( "dualConductivityMatrix", &DiscreteComputation::dualConductivityMatrix,
+              R"(
+            Return elementary matrices for dual thermal BC
 
+            Returns:
+                ElementaryMatrix: elementary matrices
+        )" )
         .def( "linearConductivityMatrix", &DiscreteComputation::linearConductivityMatrix,
               R"(
             Return the elementary matices for linear thermal matrix.
             Option RIGI_THER.
 
             Arguments:
-                time_value (float): Current time
-                time_delta (float): Time increment
-                time_theta (float): Theta parameter for integration
+                time (float): Current time
                 fourierMode (int): Fourier mode (default: -1)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
@@ -251,9 +255,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary linear thermal matrices
         )",
-              py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
-              py::arg( "fourierMode" ) = 0, py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "time" ), py::arg( "fourierMode" ) = 0,
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+
+        .def( "exchangeThermalMatrix", &DiscreteComputation::exchangeThermalMatrix,
+              R"(
+            Return the elementary matices for exhange thermal matrix.
+
+            Arguments:
+                time (float): Current time
+            Returns:
+                ElementaryMatrix: elementary exchange thermal matrices
+        )",
+              py::arg( "time" ) )
 
         .def( "linearMobilityMatrix", &DiscreteComputation::linearMobilityMatrix,
               R"(
@@ -299,14 +313,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option MASS_THER.
 
             Arguments:
-                time_delta (float): Time increment
+                time (float): current time to evaluate rho_cp
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
                 externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "time_delta" ), py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "time_" ), py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
 
         .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(

@@ -299,11 +299,11 @@ class ConstantFieldOnCells : public DataField {
      * @return true si l'allocation s'est bien deroulee, false sinon
      */
     void allocate( const std::string componant ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
 
         std::string strJeveuxBase( "G" );
-        ;
         fortranAllocate( strJeveuxBase, componant );
         _isAllocated = true;
     };
@@ -459,8 +459,9 @@ class ConstantFieldOnCells : public DataField {
      */
     bool setValueOnMesh( const JeveuxVectorChar8 &component,
                          const JeveuxVector< ValueType > &values ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
 
         const ASTERINTEGER code = 1;
         const std::string grp( " " );
@@ -482,8 +483,9 @@ class ConstantFieldOnCells : public DataField {
     bool setValueOnListOfDelayedCells( const JeveuxVectorChar8 &component,
                                        const JeveuxVector< ValueType > &values,
                                        const VectorLong &grp ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
 
         const ASTERINTEGER code = -3;
         const std::string grp2( " " );
@@ -507,8 +509,9 @@ class ConstantFieldOnCells : public DataField {
     bool setValueOnGroupOfCells( const JeveuxVectorChar8 &component,
                                  const JeveuxVector< ValueType > &values,
                                  const GroupOfCells &grp ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
         if ( !_mesh->hasGroupOfCells( grp.getName() ) )
             throw std::runtime_error( "Group " + grp.getName() + " not in mesh" );
 
@@ -529,8 +532,9 @@ class ConstantFieldOnCells : public DataField {
      */
     bool setValueOnZone( const ConstantFieldOnZone &zone,
                          const ConstantFieldValues< ValueType > &values ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
 
         ASTERINTEGER code = 0;
         std::string grp( " " );

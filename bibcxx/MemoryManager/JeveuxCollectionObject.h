@@ -86,6 +86,14 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
     };
 
   public:
+    JeveuxCollectionObject()
+        : _collectionName( "" ),
+          _numberInCollection( -1 ),
+          _nameOfObject( "" ),
+          _valuePtr( nullptr ),
+          _size( 0 ),
+          _jeveuxAdress( 0 ){};
+
     /**
      * @brief Constructeur
      * @param collectionName Nom de collection
@@ -93,16 +101,13 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @param objectName Nom de l'objet de collection
      */
     JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            bool isNamed, bool exists_ )
+                            bool isNamed )
         : _collectionName( collectionName ),
           _numberInCollection( number ),
           _nameOfObject( "" ),
           _valuePtr( nullptr ),
           _size( 0 ),
           _jeveuxAdress( 0 ) {
-
-        if ( !exists_ )
-            return;
 
         if ( !exists() ) {
             AS_ABORT( "Error in collection object " + _collectionName );
@@ -232,6 +237,11 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @return true si la mise a jour s'est bien passee
      */
     void updateValuePointer() {
+#ifdef ASTER_DEBUG_CXX
+        if ( !exists() ) {
+            AS_ABORT( getJeveuxName() + " does not exists" );
+        }
+#endif
         if ( !_valuePtr || hasMoved() ) {
             _valuePtr = NULL;
             const std::string read( "L" );
@@ -353,6 +363,7 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @return Updated JeveuxVector
      */
     JeveuxCollectionObject< ValueType > &operator*=( const ValueType &scal ) {
+        this->updateValuePointer();
         const auto size = this->size();
 
         AsterBLAS::scal( size, scal, getDataPtr(), ASTERINTEGER( 1 ) );

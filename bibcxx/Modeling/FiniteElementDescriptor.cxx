@@ -194,6 +194,7 @@ bool FiniteElementDescriptor::existsFiniteElement() {
     return false;
 };
 
+
 bool FiniteElementDescriptor::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }
 
 bool FiniteElementDescriptor::exists() const {

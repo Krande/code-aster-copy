@@ -79,7 +79,7 @@ class MeshesMapping : public DataStructure {
 
     bool setFirstMesh( MeshPtr &currentMesh ) {
         if ( currentMesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+            {AS_ABORT( "Mesh is empty" );}
         _firstBaseMesh = currentMesh;
         return true;
     };

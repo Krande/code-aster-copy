@@ -87,7 +87,8 @@ class ElementaryMatrix : public BaseElementaryMatrix {
             elemTermNew.reserve( _elemTerm.size() );
             for ( auto &elemTerm : _elemTerm ) {
                 auto name = trim( elemTerm->getName() );
-                if ( elemKeep.count( name ) > 0 ) {
+                if ( elemKeep.count( name ) > 0 && elemTerm->exists() ) {
+                    elemTerm->build();
                     elemTermNew.push_back( elemTerm );
                 }
             }
@@ -156,6 +157,18 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     };
 
     bool hasElementaryTerms() { return ( _elemTerm.size() != 0 ); };
+
+    /**
+     * @brief TimesEqual overloading
+     */
+    ElementaryMatrix< ValueType, PhysicalQuantity > &operator*=( const ValueType &scal ) {
+
+        for ( auto &et : _elemTerm ) {
+            ( *et ) *= scal;
+        }
+
+        return *this;
+    };
 };
 
 /** @typedef Elementary matrix for displacement-double */

@@ -94,7 +94,7 @@ class CyclicSymmetryMode : public DataStructure {
 
     bool setMesh( MeshPtr &currentMesh ) {
         if ( currentMesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
+            {AS_ABORT( "Mesh is empty" );}
         _mesh = currentMesh;
         return true;
     };

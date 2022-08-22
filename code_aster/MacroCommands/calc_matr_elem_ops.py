@@ -51,9 +51,6 @@ def calc_matr_elem_ops(self, **args):
     disc_comp = DiscreteComputation(phys_pb)
 
     time = args["INST"]
-    delta_time = args.get("INCR_INST")
-    if delta_time is None:
-        delta_time = 0.0
 
     myOption = args["OPTION"]
 
@@ -128,15 +125,22 @@ def calc_matr_elem_ops(self, **args):
         # matr_elem.build()
 
     elif myOption == "MASS_THER":
-        matr_elem = disc_comp.linearCapacityMatrix(delta_time,
-                                                   group_ma,
+        matr_elem = disc_comp.linearCapacityMatrix(time, group_ma,
                                                    externVarField=externVar)
+        matr_elem *= 1.0/args.get("INCR_INST")
 
     elif myOption == "RIGI_THER":
-        matr_elem = disc_comp.linearConductivityMatrix(time, delta_time, 1.0,
-                                                       fourier,
+        matr_elem = disc_comp.linearConductivityMatrix(time, fourier,
                                                        group_ma,
                                                        externVarField=externVar)
+
+        matr_rigi_dual = disc_comp.dualConductivityMatrix()
+        matr_elem.addElementaryTerm(matr_rigi_dual.getElementaryTerms())
+
+        matr_rigi_exch = disc_comp.exchangeThermalMatrix(time)
+        matr_elem.addElementaryTerm(matr_rigi_exch.getElementaryTerms())
+
+        matr_elem.build()
     elif myOption == "MASS_ACOU":
         matr_elem = disc_comp.compressibilityMatrix(group_ma)
 

@@ -48,14 +48,14 @@ bool Mesh::hasGroupOfCells( const std::string &name, const bool ) const {
     if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
         return false;
     }
-    return _groupsOfCells->existsObject( name );
+    return _groupsOfCells->contains( name );
 }
 
 bool Mesh::hasGroupOfNodes( const std::string &name, const bool ) const {
     if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
         return false;
     }
-    return _groupsOfNodes->existsObject( name );
+    return _groupsOfNodes->contains( name );
 }
 
 VectorString Mesh::getGroupsOfCells( const bool ) const {

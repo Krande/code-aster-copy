@@ -73,6 +73,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
 
     /** @brief ElementaryMatrix sur lesquelles sera construit la matrice */
     std::vector< ElementaryMatrixPtr > _elemMatrix;
+    std::map< std::string, ASTERDOUBLE > _coeffReal;
 
     /** @brief Objet Jeveux '.SOLVEUR' */
     LinearSolverPtr _solver;
@@ -136,11 +137,13 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentElemMatrix objet ElementaryMatrix
      */
-    void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix ) {
+    void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix,
+                              ASTERDOUBLE coeff = 1.0 ) {
         if ( currentElemMatrix && !currentElemMatrix->isEmpty() ) {
             if ( currentElemMatrix->hasElementaryTerms() ||
                  currentElemMatrix->existsSuperElement() ) {
                 _elemMatrix.push_back( currentElemMatrix );
+                _coeffReal[currentElemMatrix->getName()] = coeff;
             }
         }
     };
@@ -153,7 +156,10 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     /**
      * @brief Clear all ElementaryMatrixPtr
      */
-    void clearElementaryMatrix() { _elemMatrix.clear(); };
+    void clearElementaryMatrix() {
+        _elemMatrix.clear();
+        _coeffReal.clear();
+    };
 
     /**
      * @brief Set new values
@@ -387,6 +393,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
     ( *_ccva ) = ( *toCopy._ccva );
 
     _elemMatrix = toCopy._elemMatrix;
+    _coeffReal = toCopy._coeffReal;
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -401,6 +408,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( AssemblyMatrix &&
     _ccva = other._ccva;
 
     _elemMatrix = std::move( other._elemMatrix );
+    _coeffReal = std::move( other._coeffReal );
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -415,22 +423,27 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
     if ( typeid( ValueType ) == typeid( ASTERDOUBLE ) )
         typscal = 1;
 
+    JeveuxVectorReal list_coef( "&&AM.COEF_R" );
+
     ASTERINTEGER nbMatrElem = _elemMatrix.size();
     VectorString names;
     names.reserve( nbMatrElem );
-    for ( const auto elemIt : _elemMatrix )
-        names.push_back( elemIt->getName() );
+    list_coef->reserve( nbMatrElem );
+    for ( const auto elemIt : _elemMatrix ) {
+        auto matr = elemIt->getName();
+        names.push_back( matr );
+        list_coef->push_back( _coeffReal[matr] );
+    }
 
     char *tabNames = vectorStringAsFStrArray( names, 19 );
 
     std::string base( "G" );
-    std::string blanc( " " );
     std::string cumul( "ZERO" );
 
     if ( _listOfLoads->isEmpty() && _listOfLoads->getNumberOfLoads() != 0 )
         _listOfLoads->build();
 
-    CALL_ASMATR( &nbMatrElem, tabNames, blanc.c_str(), _dofNum->getName().c_str(),
+    CALL_ASMATR( &nbMatrElem, tabNames, list_coef->getName().c_str(), _dofNum->getName().c_str(),
                  _listOfLoads->getName().c_str(), cumul.c_str(), base.c_str(), &typscal,
                  getName().c_str() );
     _isEmpty = false;

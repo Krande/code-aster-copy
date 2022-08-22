@@ -102,7 +102,7 @@ bool ParallelMesh::hasGroupOfCells( const std::string &name, const bool local ) 
             return false;
         }
 
-        return _groupsOfCells->existsObject( name );
+        return _groupsOfCells->contains( name );
     }
 
     SetOfStringCIter curIter = _setOfAllGOE.find( name );
@@ -116,7 +116,7 @@ bool ParallelMesh::hasGroupOfNodes( const std::string &name, const bool local ) 
         if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
             return false;
         }
-        return _groupsOfNodes->existsObject( name );
+        return _groupsOfNodes->contains( name );
     }
 
     SetOfStringCIter curIter = _setOfAllGON.find( name );
