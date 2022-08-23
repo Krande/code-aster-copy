@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ import code_aster
 from code_aster.Utilities import ExecutionParameter
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # Pour le cas-test
 test = code_aster.TestCase()
@@ -45,11 +45,11 @@ test = code_aster.TestCase()
 interactif = 0
 
 # Si la variable d'environnement DISPLAY n'est pas definie on desactive l'interactif
-if 'DISPLAY' not in os.environ:
+if "DISPLAY" not in os.environ:
     interactif = 0
 
 # Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)
-cmd_gmsh = ExecutionParameter().get_option('prog:gmsh')
+cmd_gmsh = ExecutionParameter().get_option("prog:gmsh")
 
 # Definition des parametres
 # - Geometriques
@@ -60,13 +60,14 @@ RMOY = REXT - (EPTUB / 2)
 
 # - Chargement
 FYTOT = 500000.0
-FYREP = FYTOT / 2. / pi / RMOY
+FYREP = FYTOT / 2.0 / pi / RMOY
 
 # Definition du materiau
 
-ACIER = DEFI_MATERIAU(ELAS=_F(E=1.8E11, NU=0.3))
+ACIER = DEFI_MATERIAU(ELAS=_F(E=1.8e11, NU=0.3))
 
 import os
+
 fres = open("fort.44", "w")
 
 # Le rayon de courbure initial
@@ -84,117 +85,108 @@ RC = 0.3
 for k in range(1, 10):
 
     # Appel à GMSH pour générer le maillage
-    f = open("coque.geo", "w")
-    f.write("RC= %3f ;" % RC)
-    f.close()
-    os.system('cat fort.38 >> coque.geo')
-    os.system(cmd_gmsh + ' -2 coque.geo')
+    with open("coque.geo", "w") as fgeo:
+        fgeo.write("RC= %3f ;" % RC)
+    os.system("cat fort.38 >> coque.geo")
+    os.system(cmd_gmsh + " -2 coque.geo -o coque.med")
     if interactif == 1:
         # visualisation du maillage initial sous GMSH
-        os.system(cmd_gmsh + ' coque.msh')
+        os.system(cmd_gmsh + " coque.med")
     # Si gmsh n'est pas disponible, le fichier n'est pas créé, on sort en OK
-    if not os.path.exists("coque.msh") and cmd_gmsh == "gmsh":
+    if not os.path.exists("coque.med") and cmd_gmsh == "gmsh":
         # pour forcer à valider le test
         k = -1
         break
 
-    os.system('cp coque.msh fort.19')
+    os.system("cp coque.med fort.19")
 
     # Calcul Aster avec ce maillage
-    MAIL = LIRE_MAILLAGE(FORMAT='GMSH', UNITE=19)
+    MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
 
-    MAIL = DEFI_GROUP(reuse=MAIL,
-                      MAILLAGE=MAIL,
-                      CREA_GROUP_NO=_F(GROUP_MA='GM30'))
+    MAIL = DEFI_GROUP(
+        reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(GROUP_MA="G_2D_30"), _F(GROUP_MA="G_0D_31"))
+    )
 
-    MAIL = MODI_MAILLAGE(reuse=MAIL,
-                         MAILLAGE=MAIL,
-                         ORIE_NORM_COQUE=_F(GROUP_MA='GM30',
-                                            VECT_NORM=(1.0, 0.0, 0.0),
-                                            GROUP_NO='GM31'))
+    MAIL = MODI_MAILLAGE(
+        reuse=MAIL,
+        MAILLAGE=MAIL,
+        ORIE_NORM_COQUE=_F(GROUP_MA="G_2D_30", VECT_NORM=(1.0, 0.0, 0.0), GROUP_NO="G_0D_31"),
+    )
 
-    MODE = AFFE_MODELE(MAILLAGE=MAIL,
-                       AFFE=_F(GROUP_MA=('GM30', 'GM28'),
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='DKT'))
+    MODE = AFFE_MODELE(
+        MAILLAGE=MAIL,
+        AFFE=_F(GROUP_MA=("G_2D_30", "G_1D_28"), PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+    )
 
-    MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=ACIER))
+    MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-    CARA = AFFE_CARA_ELEM(MODELE=MODE,
-                          COQUE=_F(GROUP_MA=('GM30', 'GM28'), EPAIS=0.02))
+    CARA = AFFE_CARA_ELEM(MODELE=MODE, COQUE=_F(GROUP_MA=("G_2D_30", "G_1D_28"), EPAIS=0.02))
 
-    CHAR = AFFE_CHAR_MECA(MODELE=MODE,
-                          DDL_IMPO=(
-                              _F(GROUP_MA='GM27',
-                                 DX=0.0,
-                                 DY=0.0,
-                                 DZ=0.0,
-                                 DRX=0.0,
-                                 DRY=0.0,
-                                 DRZ=0.0),
-                              _F(GROUP_MA='GM29', DZ=0.0, DRX=0.0, DRY=0.0),
-                          ),
-                          FORCE_ARETE=_F(GROUP_MA='GM28', FY=FYREP))
+    CHAR = AFFE_CHAR_MECA(
+        MODELE=MODE,
+        DDL_IMPO=(
+            _F(GROUP_MA="G_1D_27", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+            _F(GROUP_MA="G_1D_29", DZ=0.0, DRX=0.0, DRY=0.0),
+        ),
+        FORCE_ARETE=_F(GROUP_MA="G_1D_28", FY=FYREP),
+    )
 
-    RESU = MECA_STATIQUE(MODELE=MODE,
-                         CHAM_MATER=MATE,
-                         CARA_ELEM=CARA,
-                         EXCIT=_F(CHARGE=CHAR))
+    RESU = MECA_STATIQUE(MODELE=MODE, CHAM_MATER=MATE, CARA_ELEM=CARA, EXCIT=_F(CHARGE=CHAR))
 
-    RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=('SIGM_ELNO'))
+    RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIGM_ELNO"))
 
-    RESU2 = POST_CHAMP(RESULTAT=RESU,
-                       EXTR_COQUE=_F(NOM_CHAM=('SIEF_ELGA', 'SIGM_ELNO'),
-                                     NUME_COUCHE=1,
-                                     NIVE_COUCHE='SUP'))
+    RESU2 = POST_CHAMP(
+        RESULTAT=RESU,
+        EXTR_COQUE=_F(NOM_CHAM=("SIEF_ELGA", "SIGM_ELNO"), NUME_COUCHE=1, NIVE_COUCHE="SUP"),
+    )
 
-    RESU2 = CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2, CRITERES=('SIEQ_ELNO'))
+    RESU2 = CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2, CRITERES=("SIEQ_ELNO"))
 
-    RESU2 = CALC_CHAMP(reuse=RESU2,
-                       RESULTAT=RESU2,
-                       CONTRAINTE='SIGM_NOEU',
-                       CRITERES='SIEQ_NOEU')
+    RESU2 = CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2, CONTRAINTE="SIGM_NOEU", CRITERES="SIEQ_NOEU")
 
     # Impression des resultats au format GMSH
     unit = 50 + k
-    IMPR_RESU(MODELE=MODE,
-              UNITE=unit,
-              FORMAT='GMSH',
-              RESU=(_F(MAILLAGE=MAIL,
-                       RESULTAT=RESU2,
-                       NOM_CHAM='SIEQ_NOEU',
-                       NOM_CMP='VMIS'),
-                    _F(MAILLAGE=MAIL, RESULTAT=RESU, NOM_CHAM='DEPL')))
+    IMPR_RESU(
+        MODELE=MODE,
+        UNITE=unit,
+        FORMAT="GMSH",
+        RESU=(
+            _F(MAILLAGE=MAIL, RESULTAT=RESU2, NOM_CHAM="SIEQ_NOEU", NOM_CMP="VMIS"),
+            _F(MAILLAGE=MAIL, RESULTAT=RESU, NOM_CHAM="DEPL"),
+        ),
+    )
 
     # Post-traitement avec GMSH
     if interactif == 1:
         # visualisation de la deformee, de la contrainte de mises sous GMSH
-        DEFI_FICHIER(ACTION='LIBERER', UNITE=unit)
-        os.system('cp fort.' + str(unit) + ' resu.pos')
-        os.system(cmd_gmsh + ' resu.pos')
+        DEFI_FICHIER(ACTION="LIBERER", UNITE=unit)
+        os.system("cp fort." + str(unit) + " resu.pos")
+        os.system(cmd_gmsh + " resu.pos")
 
-    RELV = POST_RELEVE_T(ACTION=_F(RESULTAT=RESU2,
-                                   INTITULE='CONTRAINTES',
-                                   NOM_CHAM='SIEQ_NOEU',
-                                   NUME_ORDRE=1,
-                                   OPERATION='MOYENNE',
-                                   GROUP_NO='GM30',
-                                   NOM_CMP='VMIS'))
+    RELV = POST_RELEVE_T(
+        ACTION=_F(
+            RESULTAT=RESU2,
+            INTITULE="CONTRAINTES",
+            NOM_CHAM="SIEQ_NOEU",
+            NUME_ORDRE=1,
+            OPERATION="MOYENNE",
+            GROUP_NO="G_2D_30",
+            NOM_CMP="VMIS",
+        )
+    )
 
     IMPR_TABLE(TABLE=RELV)
 
-    RELV = CALC_TABLE(reuse=RELV,
-                      TABLE=RELV,
-                      ACTION=_F(OPERATION="FILTRE",
-                                NOM_PARA="QUANTITE",
-                                VALE_K="MAXIMUM"))
+    RELV = CALC_TABLE(
+        reuse=RELV, TABLE=RELV, ACTION=_F(OPERATION="FILTRE", NOM_PARA="QUANTITE", VALE_K="MAXIMUM")
+    )
 
     # Récupération de VMIS max
     #   Affectation du réel contenu dans la table RELV
     #   (colonne 'VMIS', ligne 4) dans la variable python SYY
 
     print(RELV.EXTR_TABLE())
-    SYY = RELV['VMIS', 1]
+    SYY = RELV["VMIS", 1]
 
     print(" Itération numéro ", k, " RC = ", RC)
     print(" VMIS(", k, ")=", SYY)
@@ -202,7 +194,7 @@ for k in range(1, 10):
     fres.write("RC= %3f " % RC)
     fres.write("Vmis= %3f \n" % SYY)
 
-    crit = 2000.e+6
+    crit = 2000.0e6
     # Test d'arrêt des itérations :  abs(SIYY) est-il inférieur à crit.
     # Le critère d'arrêt des itérations porte sur la valeur
     #      de la contrainte "VMIS" max à l'itération k
@@ -229,10 +221,12 @@ else:
     test.assertEqual(k, 5, "number of itérations")
 
     # Vérification de la valeur de VMIS obtenue (test de non-régression)
-    TEST_TABLE(VALE_CALC=1959874357.0,
-            NOM_PARA='VMIS',
-            TABLE=RELV,
-            FILTRE=_F(NOM_PARA='QUANTITE', VALE_K='MAXIMUM'))
+    TEST_TABLE(
+        VALE_CALC=1959874357.0,
+        NOM_PARA="VMIS",
+        TABLE=RELV,
+        FILTRE=_F(NOM_PARA="QUANTITE", VALE_K="MAXIMUM"),
+    )
 
 test.printSummary()
 
