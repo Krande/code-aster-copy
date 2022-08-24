@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ DYNL1=DYNA_NON_LINE(
     SCHEMA_TEMPS=_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', MODI_EQUI='NON',),
     #SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', FORMULATION='DEPLACEMENT'),
     SOLVEUR=_F(METHODE = 'LDLT',),
-    CONVERGENCE=_F(RESI_REFE_RELA=1.0E-05, EFFORT_REFE=1.0),
+    CONVERGENCE=_F(RESI_REFE_RELA=1.0E-05, EFFORT_REFE=1.0, ITER_GLOB_MAXI=25),
     ARCHIVAGE=_F(LIST_INST=L_INST),
 )
 
@@ -110,9 +110,9 @@ DYNL1=DYNA_NON_LINE(
 #       Inst        Reférence       Calculé         Précision
 Resu1Refe={
  1 : ( TempsChute, -2.00000,       -2.000000000000000, 1.0e-06, ),
- 2 : ( TempsDecol, -2.00000,       -2.006350261330867, 1.0E-02, ),
- 3 : (        1.0, -1.88214079833, -1.888144497885116, 1.0E-02, ),
- 4 : (        1.1, -1.81496422497, -1.820548635131636, 1.0E-02, ),
+ 2 : ( TempsDecol, -2.00000,       -2.123270833265481, 1.0E-01, ),
+ 3 : (        1.0, -1.88214079833, -2.0672058402124884, 1.0E-01, ),
+ 4 : (        1.1, -1.81496422497, -2.051874241393103, 15.0E-02, ),
 }
 #
 for ii in Resu1Refe.keys():
