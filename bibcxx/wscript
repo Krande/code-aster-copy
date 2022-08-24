@@ -17,11 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 import os.path as osp
-from distutils.version import LooseVersion
 
-from waflib import Configure, Errors, Utils
+from waflib import Configure, Utils
 
 
 def options(self):
@@ -83,14 +81,27 @@ def check_bibcxx_depends(self):
 @Configure.conf
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
-    # this option is compiler independent (ifort & g++)
-    self.check_cxx(cxxflags="-std=c++17", uselib_store="CXX", mandatory=False)
-
+    # compiler independent (ifort & g++)
+    self.check_cxx_compiler_options("-fPIC")
+    self.check_cxx_compiler_options("-std=c++17")
     # FIXME: should globally add -fvisibility-hidden
-    self.start_msg("Adding C++ flag")
-    flags = ["-Wno-attributes"]
-    self.env.append_unique("CXXFLAGS", flags)
-    self.end_msg(flags)
+    self.check_cxx_compiler_options("-Wno-attributes")
+
+    self.start_msg("C++ compiler flags")
+    self.end_msg(self.env["CXXFLAGS"])
+
+
+@Configure.conf
+def check_cxx_compiler_options(self, options):
+    """Check C++ compiler options"""
+    if type(options) not in (list, tuple):
+        options = [options]
+    self.start_msg("Checking for C++ option")
+    if self.check_cxx(cflags=options, mandatory=False):
+        self.env.append_unique("CXXFLAGS", options)
+        self.end_msg("yes (%s)" % " ".join(options))
+    else:
+        self.end_msg("no (%s)" % " ".join(options), "YELLOW")
 
 
 @Configure.conf

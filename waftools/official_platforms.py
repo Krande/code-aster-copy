@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from waflib import Configure, Errors
 
 def configure(self):
     opts = self.options
-    if os.environ.get('OFFICIAL_PLATFORM'):
+    if os.environ.get("OFFICIAL_PLATFORM"):
         # force to fail if a prerequisite is not found
         opts.enable_all = True
         # force to fail if a program is not found
@@ -45,8 +45,8 @@ def configure(self):
         opts.with_py_med = True
         opts.with_py_medcoupling = True
         opts.with_py_mpi4py = True
-        self.check_prerequisites_package(os.environ['PREREQ_PATH'],
-                                         os.environ['PREREQ_VERSION'])
+        self.check_prerequisites_package(os.environ["PREREQ_PATH"], os.environ["PREREQ_VERSION"])
+
 
 @Configure.conf
 def check_prerequisites_package(self, prereq_dir, minvers):
@@ -62,18 +62,20 @@ def check_prerequisites_package(self, prereq_dir, minvers):
     """
     self.start_msg("Checking prerequisites version >= {0}".format(minvers))
 
-    filename = osp.join(prereq_dir, 'VERSION')
+    filename = osp.join(prereq_dir, "VERSION")
     if osp.isfile(filename):
-        with open(filename, 'r') as fvers:
+        with open(filename, "r") as fvers:
             version = fvers.read().strip()
         ok = version >= minvers
     else:
         version = "not found"
         ok = False
 
-    self.end_msg(version, 'GREEN' if ok else 'YELLOW')
+    self.end_msg(version, "GREEN" if ok else "YELLOW")
     if not ok:
-        msg = ("Official prerequisites not found! "
+        msg = (
+            "Official prerequisites not found! "
             "Please install updated prerequisites using: "
-            "install_env --prerequisites")
+            "install_env --prerequisites"
+        )
         raise Errors.ConfigurationError(msg)

@@ -24,7 +24,7 @@ from functools import partial
 import re
 from distutils.version import LooseVersion
 
-from waflib import Configure, Context, TaskGen, Task, Utils, Errors, Logs
+from waflib import Configure, TaskGen, Task, Utils, Errors, Logs
 
 
 def options(self):

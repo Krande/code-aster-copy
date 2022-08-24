@@ -35,8 +35,11 @@ def sig_explicit_deps(self):
         lst.append(st.st_mtime)
         lst.append(st.st_size)
     self.m.update(Utils.h_list(lst))
+
+
 # overload method for all tasks
 Task.sig_explicit_deps = sig_explicit_deps
+
 
 def _inputs_changed(self):
     """Tell if inputs changed."""
@@ -49,7 +52,10 @@ def _inputs_changed(self):
                 return True
     return False
 
+
 fc_signature_native = fc.fc.signature
+
+
 def signature(self):
     """By-pass signature computation if inputs haven't changed."""
     try:
@@ -59,53 +65,68 @@ def signature(self):
 
     if getattr(fc.fc, "_use_custom_sig", None) and not _inputs_changed(self):
         # do not compute sig_implicit_deps (and avoids scan)
-        self.cache_sig =  self.generator.bld.task_sigs[self.uid()]
+        self.cache_sig = self.generator.bld.task_sigs[self.uid()]
         return self.cache_sig
 
     return fc_signature_native(self)
+
 
 fc.fc.signature = signature
 
 ###############################################################################
 # original run_str command line is store as hcode
-for feature in ('program', 'shlib'):
-    ccroot.USELIB_VARS['c'  + feature].add('CCLINKFLAGS')
-    ccroot.USELIB_VARS['fc' + feature].add('FCLINKFLAGS')
-    ccroot.USELIB_VARS['cxx' + feature].add('CXXLINKFLAGS')
+for feature in ("program", "shlib"):
+    ccroot.USELIB_VARS["c" + feature].add("CCLINKFLAGS")
+    ccroot.USELIB_VARS["fc" + feature].add("FCLINKFLAGS")
+    ccroot.USELIB_VARS["cxx" + feature].add("CXXLINKFLAGS")
+
 
 class fcprogram(fc.fcprogram):
     """Modifying cxxprogram. Add FCLINKFLAGS."""
-    run_str = '${LINK_FC} ${FCLINKFLAGS} ${LINKFLAGS} ${FCLNK_SRC_F}${SRC} ${FCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FCSTLIB_MARKER} ${FCSTLIBPATH_ST:STLIBPATH} ${FCSTLIB_ST:STLIB} ${FCSHLIB_MARKER} ${FCLIBPATH_ST:LIBPATH} ${FCLIB_ST:LIB} ${LDFLAGS}'
+
+    run_str = "${LINK_FC} ${FCLINKFLAGS} ${LINKFLAGS} ${FCLNK_SRC_F}${SRC} ${FCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FCSTLIB_MARKER} ${FCSTLIBPATH_ST:STLIBPATH} ${FCSTLIB_ST:STLIB} ${FCSHLIB_MARKER} ${FCLIBPATH_ST:LIBPATH} ${FCLIB_ST:LIB} ${LDFLAGS}"
+
 
 class fcshlib(fcprogram):
-    """ Modifying fcshlib """
-    inst_to = '${LIBDIR}'
+    """Modifying fcshlib"""
+
+    inst_to = "${LIBDIR}"
+
 
 class cprogram(c.cprogram):
     """Modifying cxxprogram. Add CCLINKFLAGS."""
-    run_str = '${LINK_CC} ${CCLINKFLAGS} ${LINKFLAGS} ${CCLNK_SRC_F}${SRC} ${CCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${FRAMEWORK_ST:FRAMEWORK} ${ARCH_ST:ARCH} ${STLIB_MARKER} ${STLIBPATH_ST:STLIBPATH} ${STLIB_ST:STLIB} ${SHLIB_MARKER} ${LIBPATH_ST:LIBPATH} ${LIB_ST:LIB} ${LDFLAGS}'
+
+    run_str = "${LINK_CC} ${CCLINKFLAGS} ${LINKFLAGS} ${CCLNK_SRC_F}${SRC} ${CCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${FRAMEWORK_ST:FRAMEWORK} ${ARCH_ST:ARCH} ${STLIB_MARKER} ${STLIBPATH_ST:STLIBPATH} ${STLIB_ST:STLIB} ${SHLIB_MARKER} ${LIBPATH_ST:LIBPATH} ${LIB_ST:LIB} ${LDFLAGS}"
+
 
 class cshlib(cprogram):
-    """ Modifying cshlib """
-    inst_to = '${LIBDIR}'
+    """Modifying cshlib"""
+
+    inst_to = "${LIBDIR}"
+
 
 class cxxprogram(cxx.cxxprogram):
     """Modifying cxxprogram. Add CXXLINKFLAGS."""
-    run_str = '${LINK_CXX} ${CXXLINKFLAGS} ${LINKFLAGS} ${CXXLNK_SRC_F}${SRC} ${CXXLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${FRAMEWORK_ST:FRAMEWORK} ${ARCH_ST:ARCH} ${STLIB_MARKER} ${STLIBPATH_ST:STLIBPATH} ${STLIB_ST:STLIB} ${SHLIB_MARKER} ${LIBPATH_ST:LIBPATH} ${LIB_ST:LIB} ${LDFLAGS}'
+
+    run_str = "${LINK_CXX} ${CXXLINKFLAGS} ${LINKFLAGS} ${CXXLNK_SRC_F}${SRC} ${CXXLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${FRAMEWORK_ST:FRAMEWORK} ${ARCH_ST:ARCH} ${STLIB_MARKER} ${STLIBPATH_ST:STLIBPATH} ${STLIB_ST:STLIB} ${SHLIB_MARKER} ${LIBPATH_ST:LIBPATH} ${LIB_ST:LIB} ${LDFLAGS}"
+
 
 class cxxshlib(cxxprogram):
-    """ Modifying cxxshlib """
-    inst_to = '${LIBDIR}'
+    """Modifying cxxshlib"""
+
+    inst_to = "${LIBDIR}"
+
 
 ###############################################################################
 def customize_configure_output():
     """Customize the output of configure"""
+
     def start_msg40(self, *k, **kw):
         """Force output on 40 columns. See :py:meth:`waflib.Context.Context.msg`"""
-        if kw.get('quiet', None):
+        if kw.get("quiet", None):
             return
 
-        msg = kw.get('msg', None) or k[0]
+        msg = kw.get("msg", None) or k[0]
         try:
             if self.in_msg:
                 self.in_msg += 1
@@ -114,34 +135,37 @@ def customize_configure_output():
             self.in_msg = 0
         self.in_msg += 1
 
-        self.line_just = 40 # <--- here is the change
-        for x in (self.line_just * '-', msg):
+        self.line_just = 40  # <--- here is the change
+        for x in (self.line_just * "-", msg):
             self.to_log(x)
-        Logs.pprint('NORMAL', "%s :" % msg.ljust(self.line_just), sep='')
+        Logs.pprint("NORMAL", "%s :" % msg.ljust(self.line_just), sep="")
+
     Context.start_msg = start_msg40
 
+
 customize_configure_output()
+
 
 def format_error(self):
     """Write task details into a file. Print only the first line in console.
     See :py:meth:`waflib.Task.Task.format_error`"""
     text = Task.format_error(self)
     if self.hasrun == CRASHED:
-        msg = getattr(self, 'last_cmd', '')
-        name = getattr(self.generator, 'name', '')
-        bldlog = osp.join(self.generator.bld.path.get_bld().abspath(), '%s.log' % name)
+        msg = getattr(self, "last_cmd", "")
+        name = getattr(self.generator, "name", "")
+        bldlog = osp.join(self.generator.bld.path.get_bld().abspath(), "%s.log" % name)
         try:
             os.makedirs(osp.dirname(bldlog))
         except:
             pass
-        slog = ''
+        slog = ""
         try:
-            open(bldlog, 'w').write('task: %r\nlast command:\n%r\n' % (self, msg))
+            open(bldlog, "w").write("task: %r\nlast command:\n%r\n" % (self, msg))
         except (OSError, IOError) as exc:
-            slog = '\ncan not write the log file: %s' % str(exc)
-        text = text.splitlines()[0] \
-             + '\n    task details in: {0}{1}'.format(bldlog, slog)
+            slog = "\ncan not write the log file: %s" % str(exc)
+        text = text.splitlines()[0] + "\n    task details in: {0}{1}".format(bldlog, slog)
     return text
+
 
 fcprogram.format_error = format_error
 cprogram.format_error = format_error
@@ -162,8 +186,11 @@ class CustomInfo:
         self._lock = Utils.threading.Lock()
         self.prefix = prefix
         self.grouped = (
-            "share/aster/tests_data", "share/aster/tests",
-            "share/locale/aster", "lib/aster/code_aster", "lib/aster/run_aster"
+            "share/aster/tests_data",
+            "share/aster/tests",
+            "share/locale/aster",
+            "lib/aster/code_aster",
+            "lib/aster/run_aster",
         )
 
     def __call__(self, *args, **kwargs):
@@ -190,7 +217,7 @@ class CustomInfo:
             args = list(args)
             args[3] = osp.join(grp, "*" + ext)
             args[5] = osp.dirname(args[5])
-            args[0] = args[0].replace(' (from %s)', '')
+            args[0] = args[0].replace(" (from %s)", "")
             args.pop()
             fun_orig(*args, **kwargs)
 
@@ -200,14 +227,15 @@ class CustomInfo:
                 return True, osp.join(self.prefix, i)
         return False, dirn
 
+
 def build(self):
     if Logs.verbose < 1:
         Logs.info = CustomInfo(self.env.PREFIX)
 
 
 # support for the "dynamic_source" attribute
-@TaskGen.feature('c', 'cxx')
-@TaskGen.before('process_source', 'process_rule')
+@TaskGen.feature("c", "cxx")
+@TaskGen.before("process_source", "process_rule")
 def dynamic_post(self):
     """
     bld(dynamic_source='*.c', ...)
@@ -217,7 +245,7 @@ def dynamic_post(self):
         will search for 'include' in the parent of every new source and
         add it in INCLUDES paths.
     """
-    if not getattr(self, 'dynamic_source', None):
+    if not getattr(self, "dynamic_source", None):
         return
     self.source = Utils.to_list(self.source)
     get_srcs = self.path.get_bld().ant_glob
@@ -225,14 +253,15 @@ def dynamic_post(self):
     self.source.extend(added)
     for node in added:
         node.sig = Utils.h_file(node.abspath())
-        if getattr(self, 'dynamic_incpaths', None):
+        if getattr(self, "dynamic_incpaths", None):
             incpath = node.parent.find_node(self.dynamic_incpaths)
             if incpath:
                 incpath.sig = incpath.abspath()
-                self.env.append_value('INCLUDES', [incpath.abspath()])
-                incs = incpath.get_bld().ant_glob('**/*.h*', quiet=True)
+                self.env.append_value("INCLUDES", [incpath.abspath()])
+                incs = incpath.get_bld().ant_glob("**/*.h*", quiet=True)
                 for node in incs:
                     node.sig = Utils.h_file(node.abspath())
+
 
 ###############################################################################
 @Configure.conf
@@ -244,12 +273,13 @@ def safe_remove(self, var, value):
     while value in self.env[var]:
         self.env[var].remove(value)
 
+
 @Configure.conf
 def remove_flags(self, var, flags):
     """Remove `flags` from `env[var]`."""
     if not isinstance(self.env[var], list):
         return
-    regexps = [re.compile(re.escape(flag) + '.*') for flag in flags]
+    regexps = [re.compile(re.escape(flag) + ".*") for flag in flags]
     # TODO itertools.chain?
     flatten = lambda l: [item for sublist in l for item in sublist]
     fl = []
@@ -265,9 +295,10 @@ def remove_optflags(self, type_flags):
     for var in self.env:
         if var.startswith(type_flags):
             if not isinstance(self.env[var], (list, tuple)):
-                self.env[var] = [self.env[var], ]
+                self.env[var] = [self.env[var]]
             self.env[var] = self.remove_duplicates(self.env[var])
             self.env[var] = [i for i in self.env[var] if not i.startswith("-O")]
+
 
 @Configure.conf
 def remove_duplicates(self, list_in):
@@ -275,5 +306,4 @@ def remove_duplicates(self, list_in):
     and by keeping the order. It ignores empty values."""
     dset = set()
     # relies on the fact that dset.add() always returns None.
-    return [path for path in list_in
-            if path not in dset and not dset.add(path) ]
+    return [path for path in list_in if path not in dset and not dset.add(path)]

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ import os
 import os.path as osp
 import tempfile
 from configparser import ConfigParser
-from functools import partial
 from glob import glob
 from subprocess import Popen
 
@@ -34,39 +33,59 @@ def _read_config(env, prefs, key):
     cfg.read(osp.join(os.environ["HOME"], ".hgrc"))
 
     value = cfg.get("aster", key, fallback="")
-    dkey = 'PREFS_{}'.format(key.upper())
+    dkey = "PREFS_{}".format(key.upper())
     env[dkey] = value
     if value:
         prefs[key] = value
 
+
 def options(self):
     """To get the names of the testcases"""
     group = self.get_option_group("code_aster options")
-    group.add_option('-n', '--name', dest='testname',
-                     action='append', default=None,
-                     help='name of testcases to run (as_run must be in PATH)')
-    group.add_option('--outputdir', action='store', default=None, metavar='DIR',
-                     help='directory to store the output files. A default '
-                          'value can be stored in ~/.hgrc under the section '
-                          '"aster"')
-    group.add_option('--exectool', dest='exectool',
-                     action='store', default=None,
-                     help='run a testcase by passing additional arguments '
-                          '(possible values are "env" + those '
-                          'defined in the configuration)')
-    group.add_option('--time_limit', dest='time_limit',
-                     action='store', default=None,
-                     help='override the time limit of the testcase')
+    group.add_option(
+        "-n",
+        "--name",
+        dest="testname",
+        action="append",
+        default=None,
+        help="name of testcases to run (as_run must be in PATH)",
+    )
+    group.add_option(
+        "--outputdir",
+        action="store",
+        default=None,
+        metavar="DIR",
+        help="directory to store the output files. A default "
+        "value can be stored in ~/.hgrc under the section "
+        '"aster"',
+    )
+    group.add_option(
+        "--exectool",
+        dest="exectool",
+        action="store",
+        default=None,
+        help="run a testcase by passing additional arguments "
+        '(possible values are "env" + those '
+        "defined in the configuration)",
+    )
+    group.add_option(
+        "--time_limit",
+        dest="time_limit",
+        action="store",
+        default=None,
+        help="override the time limit of the testcase",
+    )
+
 
 def configure(self):
     """Store developer preferences"""
-    self.start_msg('Reading build preferences from ~/.hgrc')
+    self.start_msg("Reading build preferences from ~/.hgrc")
     prefs = {}
-    _read_config(self.env, prefs, 'outputdir')
+    _read_config(self.env, prefs, "outputdir")
     self.end_msg(prefs)
 
 
-@TaskGen.feature('test')
+@TaskGen.feature("test")
 def runtest(self):
     """Run a testcase by calling as_run"""
     opts = self.options
@@ -75,16 +94,15 @@ def runtest(self):
         Logs.error("'run_aster' not found, please check your $PATH")
         return
     args = []
-    if opts.exectool == 'env':
-        args.append('--env')
-        wrkdir = tempfile.mkdtemp(prefix='runtest_')
-        args.extend(['--wrkdir', wrkdir])
+    if opts.exectool == "env":
+        args.append("--env")
+        wrkdir = tempfile.mkdtemp(prefix="runtest_")
+        args.extend(["--wrkdir", wrkdir])
     elif opts.exectool is not None:
-        args.append('--exectool=%s' % opts.exectool)
+        args.append("--exectool=%s" % opts.exectool)
     if opts.time_limit:
-        args.append('--time_limit={0}'.format(opts.time_limit))
-    dtmp = opts.outputdir or self.env['PREFS_OUTPUTDIR'] \
-           or tempfile.mkdtemp(prefix='runtest_')
+        args.append("--time_limit={0}".format(opts.time_limit))
+    dtmp = opts.outputdir or self.env["PREFS_OUTPUTDIR"] or tempfile.mkdtemp(prefix="runtest_")
     try:
         os.makedirs(dtmp)
     except (OSError, IOError):
@@ -92,40 +110,40 @@ def runtest(self):
     Logs.info("destination of output files: %s" % dtmp)
     status = 0
     if not opts.testname:
-        raise Errors.WafError('no testcase name provided, use the -n option')
+        raise Errors.WafError("no testcase name provided, use the -n option")
     for test in opts.testname:
         export = test + ".export"
         exp = glob("astest/" + export) + glob("../validation/astest/" + export)
         if not exp:
             raise FileNotFoundError(test + ".export")
         cmd = [run_aster, "--test"]
-        if self.variant == 'debug':
-            cmd.extend(['-g'])
+        if self.variant == "debug":
+            cmd.extend(["-g"])
         cmd.extend(args)
         cmd.append(osp.abspath(exp[0]))
         Logs.info("running %s in '%s'" % (test, self.variant))
-        ext = '.' + osp.basename(self.env['PREFIX']) + '.' + self.variant
-        out = osp.join(dtmp, osp.basename(test) + ext) + '.output'
-        err = osp.join(dtmp, osp.basename(test) + ext) + '.error'
+        ext = "." + osp.basename(self.env["PREFIX"]) + "." + self.variant
+        out = osp.join(dtmp, osp.basename(test) + ext) + ".output"
+        err = osp.join(dtmp, osp.basename(test) + ext) + ".error"
         Logs.info("`- command: %s" % (" ".join(cmd)))
         Logs.info("`- output in %s" % out)
         # do not run from source directory to import installed files
         current = os.getcwd()
         os.chdir(dtmp)
-        with open(out, 'w') as fobj, open(err, 'w') as ferr:
+        with open(out, "w") as fobj, open(err, "w") as ferr:
             proc = Popen(cmd, stdout=fobj, stderr=ferr, bufsize=1)
         retcode = proc.wait()
         os.chdir(current)
-        with open(out, 'rb') as fobj:
+        with open(out, "rb") as fobj:
             btext = fobj.read()
         text = btext.decode("utf8", "replace")
-        if retcode == 2 and 'NOOK_TEST_RESU' in text:
-            retcode = 'nook'
+        if retcode == 2 and "NOOK_TEST_RESU" in text:
+            retcode = "nook"
         if retcode == 0:
             func = Logs.info
         else:
             func = Logs.error
             status += 1
-        func('`- exit %s' % retcode)
+        func("`- exit %s" % retcode)
     if status != 0:
-        raise Errors.WafError('testcase failed')
+        raise Errors.WafError("testcase failed")

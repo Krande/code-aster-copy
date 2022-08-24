@@ -20,7 +20,8 @@
 import os.path as osp
 import re
 from functools import partial
-from waflib import Options, Configure, Logs, Utils, Errors
+
+from waflib import Configure, Errors, Utils
 
 
 def options(self):
@@ -100,7 +101,7 @@ def check_petsc(self):
     if opts.petsc_libs is None:
         opts.petsc_libs = "petsc"
         # add optional libs
-        optlibs = "ml HYPRE superlu stdc++"
+        optlibs = "ml HYPRE superlu slepc hpddm_petsc stdc++"
     if opts.petsc_libs:
         self.check_petsc_libs(optlibs)
 

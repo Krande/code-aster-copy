@@ -18,34 +18,43 @@
 # --------------------------------------------------------------------
 
 import os
-import os.path as osp
-from itertools import product, takewhile
+from itertools import product
 from functools import partial
 from subprocess import Popen, PIPE
-from waflib import Options, Configure, Errors, Logs, Utils
+from waflib import Configure, Errors, Logs, Utils
 
-BLAS = ('openblas', 'blas')
-BLACS = ('blacs', )
-LAPACK = ('lapack', )
-SCALAPACK = ('scalapack', )
-OPTIONAL_DEPS = ('cblas', )
+BLAS = ("openblas", "blas")
+BLACS = ("blacs",)
+LAPACK = ("lapack",)
+SCALAPACK = ("scalapack",)
+OPTIONAL_DEPS = ("cblas",)
+
 
 def options(self):
     group = self.add_option_group("Mathematics  libraries options")
-    group.add_option('--maths-libs', type='string',
-                    dest='maths_libs', default=None,
-                    help='Math librairies to link with like blas and lapack. '
-                         'Use None or "auto" to search them automatically.')
-    group.add_option('--embed-maths', dest='embed_math',
-                    default=False, action='store_true',
-                    help='Embed math libraries as static library')
+    group.add_option(
+        "--maths-libs",
+        type="string",
+        dest="maths_libs",
+        default=None,
+        help="Math librairies to link with like blas and lapack. "
+        'Use None or "auto" to search them automatically.',
+    )
+    group.add_option(
+        "--embed-maths",
+        dest="embed_math",
+        default=False,
+        action="store_true",
+        help="Embed math libraries as static library",
+    )
+
 
 def configure(self):
     # always check for libpthread, libm (never in static)
-    self.check_cc(uselib_store='M', lib='m')
-    self.check_cc(uselib_store='Z', lib='z')
+    self.check_cc(uselib_store="M", lib="m")
+    self.check_cc(uselib_store="Z", lib="z")
     self.check_number_cores()
-    if self.options.maths_libs in (None, 'auto'):
+    if self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
             self.detect_math_lib()
@@ -53,71 +62,83 @@ def configure(self):
         self.check_opts_math_lib()
     self.check_libm_after_files()
 
+
 ###############################################################################
 @Configure.conf
 def check_opts_math_lib(self):
     opts = self.options
     embed = opts.embed_math or opts.embed_all
-    check_lib = lambda lib: self.check_cc(**{
-        'mandatory':True, 'uselib_store':'MATH', 'use':'MATH MPI',
-        ('st' * embed + 'lib'):lib})
+    check_lib = lambda lib: self.check_cc(
+        **{
+            "mandatory": True,
+            "uselib_store": "MATH",
+            "use": "MATH MPI",
+            ("st" * embed + "lib"): lib,
+        }
+    )
 
     for lib in Utils.to_list(opts.maths_libs):
         check_lib(lib)
 
+
 @Configure.conf
 def check_sizeof_blas_int(self):
     """Check size of blas integers"""
-    self.set_define_from_env('ASTER_BLAS_INT_SIZE',
-                             'Setting size of blas/lapack integers',
-                             'unexpected value for blas int: %(size)s',
-                             into=(4, 8), default=4)
+    self.set_define_from_env(
+        "ASTER_BLAS_INT_SIZE",
+        "Setting size of blas/lapack integers",
+        "unexpected value for blas int: %(size)s",
+        into=(4, 8),
+        default=4,
+    )
+
 
 @Configure.conf
 def check_libm_after_files(self):
     """Avoid warning #10315: specifying -lm before files may supercede the
     Intel(R) math library and affect performance"""
-    self.start_msg('Setting libm after files')
+    self.start_msg("Setting libm after files")
     flags = self.env.LINKFLAGS_CLIB
-    if '-lm' in flags:
+    if "-lm" in flags:
         while True:
             try:
-                flags.remove('-lm')
+                flags.remove("-lm")
             except ValueError:
                 break
         self.end_msg('yes ("-lm" removed from LINKFLAGS_CLIB)')
         self.env.LINKFLAGS_CLIB = flags
     else:
-        self.end_msg('nothing done')
+        self.end_msg("nothing done")
+
 
 @Configure.conf
 def detect_mkl(self):
-    """Try to detect MKL """
+    """Try to detect MKL"""
     # MKL can be installed either as a standalone package
     # or with Intel compiler. In both cases MKLROOT is/must be defined
-    if os.environ.get('MKLROOT') is None:
+    if os.environ.get("MKLROOT") is None:
         return False
-    self.start_msg('Detecting MKL libraries')
-    suffix = '_lp64' if "64" in self.env.DEST_CPU else ''
-    scalapack  = ''
+    self.start_msg("Detecting MKL libraries")
+    suffix = "_lp64" if "64" in self.env.DEST_CPU else ""
+    scalapack = ""
     blacs = []
-    thread = 'mkl_sequential'
-    core = 'mkl_core'
-    libs =[]
+    thread = "mkl_sequential"
+    core = "mkl_core"
+    libs = []
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
-    if 'ifort' in self.env.FC_NAME.lower() or 'icc' in self.env.CC_NAME.lower():
-        if self.get_define('ASTER_HAVE_OPENMP'):
-            thread  = 'mkl_intel_thread'
-        interf = 'mkl_intel' + suffix
-        if self.get_define('ASTER_HAVE_MPI'):
-            scalapack  = 'mkl_scalapack' + suffix
-            blacs = 'mkl_blacs_intelmpi' + suffix
+    if "ifort" in self.env.FC_NAME.lower() or "icc" in self.env.CC_NAME.lower():
+        if self.get_define("ASTER_HAVE_OPENMP"):
+            thread = "mkl_intel_thread"
+        interf = "mkl_intel" + suffix
+        if self.get_define("ASTER_HAVE_MPI"):
+            scalapack = "mkl_scalapack" + suffix
+            blacs = "mkl_blacs_intelmpi" + suffix
     else:
-        if self.get_define('ASTER_HAVE_MPI'):
+        if self.get_define("ASTER_HAVE_MPI"):
             scalapack = "scalapack"
-        if self.get_define('ASTER_HAVE_OPENMP'):
-            thread  = 'mkl_gnu_thread'
-        interf = 'mkl_gf' + suffix
+        if self.get_define("ASTER_HAVE_OPENMP"):
+            thread = "mkl_gnu_thread"
+        interf = "mkl_gf" + suffix
     if scalapack:
         libs.append(scalapack)
     libs.append(interf)
@@ -127,67 +148,70 @@ def detect_mkl(self):
         libs.append(blacs)
     try:
         self.env.stash()
-        self.env.append_value('LIB_MATH', libs)
-        self.env.append_value('LIBPATH_MATH', os.environ['MKLROOT'] + '/lib/intel64')
-        self.check_math_libs_call(color='YELLOW')
+        self.env.append_value("LIB_MATH", libs)
+        self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
+        self.check_math_libs_call(color="YELLOW")
     except:
         self.env.revert()
-        self.end_msg('no', color='YELLOW')
+        self.end_msg("no", color="YELLOW")
         return False
     else:
-        self.define('ASTER_HAVE_MKL', 1)
+        self.define("ASTER_HAVE_MKL", 1)
         self.env.commit()
         self.end_msg(self.env.LIBPATH_MATH + self.env.LIB_MATH)
         return True
 
+
 @Configure.conf
 def detect_math_lib(self):
     opts = self.options
-    embed = opts.embed_math or (opts.embed_all and not self.get_define('ASTER_HAVE_MPI'))
-    varlib = ('ST' if embed else '') + 'LIB_MATH'
+    embed = opts.embed_math or (opts.embed_all and not self.get_define("ASTER_HAVE_MPI"))
+    varlib = ("ST" if embed else "") + "LIB_MATH"
 
     # blas
     blaslibs, lapacklibs = self.get_mathlib_from_numpy()
-    self.check_math_libs('blas', list(BLAS) + blaslibs, embed)
+    self.check_math_libs("blas", list(BLAS) + blaslibs, embed)
     # lapack
     opt_lapack = False
-    if 'openblas' in self.env.get_flat(varlib):
+    if "openblas" in self.env.get_flat(varlib):
         # check that lapack is embedded in openblas
         try:
-            self.check_math_libs_call_blas_lapack(color='YELLOW')
+            self.check_math_libs_call_blas_lapack(color="YELLOW")
             opt_lapack = True
         except:
             pass
     if not opt_lapack:
-        self.check_math_libs('lapack', list(LAPACK) + lapacklibs, embed)
+        self.check_math_libs("lapack", list(LAPACK) + lapacklibs, embed)
         self.check_math_libs_call_blas_lapack()
 
     def _scalapack():
         """Check scalapack"""
         libs = list(SCALAPACK)
-        libs = libs + [''.join(n) for n in product(libs, ['mpi', '-mpi', 'openmpi', '-openmpi'])]
-        return self.check_math_libs('scalapack', libs, embed)
+        libs = libs + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
+        return self.check_math_libs("scalapack", libs, embed)
 
     def _blacs():
         """Check blacs"""
         libs = list(BLACS)
-        libs = libs + \
-               [''.join(n) for n in product(libs, ['mpi', '-mpi', 'openmpi', '-openmpi'])] \
-             + [''.join(n) for n in product(['mpi', 'mpi-', 'openmpi', 'openmpi-'], libs)] \
-        # check the 3 blacs libs together: Cinit, F77init, ''
+        libs = (
+            libs
+            + ["".join(n) for n in product(libs, ["mpi", "-mpi", "openmpi", "-openmpi"])]
+            + ["".join(n) for n in product(["mpi", "mpi-", "openmpi", "openmpi-"], libs)]
+        )  # check the 3 blacs libs together: Cinit, F77init, ''
         ins = []
         for i in libs:
-            ins.append([l.replace('blacs', 'blacs' + n) for l, n in \
-                        product([i], ['Cinit', 'F77init', ''])])
+            ins.append(
+                [l.replace("blacs", "blacs" + n) for l, n in product([i], ["Cinit", "F77init", ""])]
+            )
         libs = ins + libs
-        return self.check_math_libs('blacs', libs, embed)
+        return self.check_math_libs("blacs", libs, embed)
 
     def _optional():
         """Check optional dependencies"""
-        self.check_math_libs('optional', OPTIONAL_DEPS, embed, optional=True)
+        self.check_math_libs("optional", OPTIONAL_DEPS, embed, optional=True)
 
     # parallel
-    if self.get_define('ASTER_HAVE_MPI'):
+    if self.get_define("ASTER_HAVE_MPI"):
         self.env.stash()
         try:
             # try first without blacs since now embedded by scalapack
@@ -205,47 +229,50 @@ def detect_math_lib(self):
                 _optional()
                 self.check_math_libs_call()
 
-    self.start_msg('Detected math libraries')
+    self.start_msg("Detected math libraries")
     self.end_msg(self.env[varlib])
-    if self.get_define('ASTER_HAVE_MPI') and embed:
-        msg = "WARNING:\n"\
-              "    Static link with MPI libraries is not recommended.\n"\
-              "    Remove the option --embed-maths in case of link error.\n"\
-              "    See http://www.open-mpi.org/faq/?category=mpi-apps#static-mpi-apps"
+    if self.get_define("ASTER_HAVE_MPI") and embed:
+        msg = (
+            "WARNING:\n"
+            "    Static link with MPI libraries is not recommended.\n"
+            "    Remove the option --embed-maths in case of link error.\n"
+            "    See http://www.open-mpi.org/faq/?category=mpi-apps#static-mpi-apps"
+        )
         Logs.warn(msg)
-    if 'openblas' in self.env[varlib]:
-        self.define('ASTER_HAVE_OPENBLAS', 1)
+    if "openblas" in self.env[varlib]:
+        self.define("ASTER_HAVE_OPENBLAS", 1)
+
 
 @Configure.conf
 def check_math_libs(self, name, libs, embed, optional=False):
     """Check for library 'name', stop on first found"""
-    check_maths = partial(self.check_cc, uselib_store='MATH', use='MATH MPI',
-                          mandatory=False)
+    check_maths = partial(self.check_cc, uselib_store="MATH", use="MATH MPI", mandatory=False)
     if embed:
         check_lib = lambda lib: check_maths(stlib=lib)
     else:
         check_lib = lambda lib: check_maths(lib=lib)
-    self.start_msg('Checking library %s' % name)
+    self.start_msg("Checking library %s" % name)
     found = None
     for lib in libs:
         if check_lib(lib=lib):
-            self.end_msg('yes (%s)' % lib)
+            self.end_msg("yes (%s)" % lib)
             found = lib
             break
     else:
         if not optional:
-            self.fatal('Missing the %s library' % name)
-        self.end_msg('not found', 'YELLOW')
+            self.fatal("Missing the %s library" % name)
+        self.end_msg("not found", "YELLOW")
     return found
+
 
 @Configure.conf
 def check_number_cores(self):
     """Check for the number of available cores."""
-    self.start_msg('Checking for number of cores')
+    self.start_msg("Checking for number of cores")
     try:
-        self.find_program('nproc')
+        self.find_program("nproc")
         try:
-            res = self.cmd_and_log(['nproc'])
+            res = self.cmd_and_log(["nproc"])
             nproc = int(res)
         except Errors.WafError:
             raise Errors.ConfigurationError
@@ -253,12 +280,13 @@ def check_number_cores(self):
         nproc = 1
     else:
         self.end_msg(nproc)
-    self.env['NPROC'] = nproc
+    self.env["NPROC"] = nproc
+
 
 @Configure.conf
 def get_mathlib_from_numpy(self):
-    '''The idea is that numpy shall be linked to blas and lapack.
-    So we will try to get then using ldd if available'''
+    """The idea is that numpy shall be linked to blas and lapack.
+    So we will try to get then using ldd if available"""
     libblas = []
     pathblas = []
     liblapack = []
@@ -266,15 +294,15 @@ def get_mathlib_from_numpy(self):
 
     # numpy already checked
     pymodule_path = self.get_python_variables(
-        ['lapack_lite.__file__'],
-        ['from numpy.linalg import lapack_lite'])[0]
+        ["lapack_lite.__file__"], ["from numpy.linalg import lapack_lite"]
+    )[0]
 
-    self.find_program('ldd')
-    ldd_env = {'LD_LIBRARY_PATH': ':'.join(self.env.LIBPATH)}
+    self.find_program("ldd")
+    ldd_env = {"LD_LIBRARY_PATH": ":".join(self.env.LIBPATH)}
     cmd = self.env.LDD + [pymodule_path]
     out = Popen(cmd, stdout=PIPE, env=ldd_env).communicate()[0].decode()
 
-    for line in out.split('\n'):
+    for line in out.split("\n"):
         lib = _detect_libnames_in_ldd_line(line, LAPACK)
         if lib:
             liblapack.append(lib)
@@ -284,69 +312,84 @@ def get_mathlib_from_numpy(self):
             libblas.append(lib)
     return libblas, liblapack
 
+
 def _detect_libnames_in_ldd_line(line, libnames):
     if not list(filter(line.__contains__, libnames)):
         return None
-    lib = line.split()[0].split('.', 1)[0]
+    lib = line.split()[0].split(".", 1)[0]
     return lib[3:]
 
+
 @Configure.conf
-def check_math_libs_call(self, color='RED'):
+def check_math_libs_call(self, color="RED"):
     """Compile and check programs with blas/lapack, blacs and openmp"""
     self.check_math_libs_call_blas_lapack(color)
     self.check_math_libs_call_blacs(color)
     self.check_math_libs_call_openmp(color)
 
+
 @Configure.conf
-def check_math_libs_call_blas_lapack(self, color='RED'):
+def check_math_libs_call_blas_lapack(self, color="RED"):
     """Compile and run a small blas/lapack program"""
-    self.start_msg('Checking for a program using blas/lapack')
+    self.start_msg("Checking for a program using blas/lapack")
     try:
-        ret = self.check_fc(fragment=blas_lapack_fragment, use='MPI OPENMP MATH',
-                            mandatory=False, execute=True, define_ret=True)
+        ret = self.check_fc(
+            fragment=blas_lapack_fragment,
+            use="MPI OPENMP MATH",
+            mandatory=False,
+            execute=True,
+            define_ret=True,
+        )
         values = map(float, ret and ret.split() or [])
         ref = [10.0, 5.0]
         if list(values) != ref:
-            raise Errors.ConfigurationError('invalid result: %r (expecting %r)' % (values, ref))
+            raise Errors.ConfigurationError("invalid result: %r (expecting %r)" % (values, ref))
     except Exception as exc:
         # the message must be closed
-        self.end_msg('no', color=color)
+        self.end_msg("no", color=color)
         raise Errors.ConfigurationError(str(exc))
     else:
-        self.end_msg('yes')
+        self.end_msg("yes")
+
 
 @Configure.conf
-def check_math_libs_call_blacs(self, color='RED'):
+def check_math_libs_call_blacs(self, color="RED"):
     """Compile and run a minimal blacs program"""
-    if self.get_define('ASTER_HAVE_MPI'):
-        self.start_msg('Checking for a program using blacs')
+    if self.get_define("ASTER_HAVE_MPI"):
+        self.start_msg("Checking for a program using blacs")
         try:
-            ret = self.check_fc(fragment=blacs_fragment, use='MPI OPENMP MATH',
-                                mandatory=True)
+            ret = self.check_fc(fragment=blacs_fragment, use="MPI OPENMP MATH", mandatory=True)
         except Exception as exc:
             # the message must be closed
-            self.end_msg('no', color=color)
+            self.end_msg("no", color=color)
             raise Errors.ConfigurationError(str(exc))
         else:
-            self.end_msg('yes')
+            self.end_msg("yes")
+
 
 @Configure.conf
-def check_math_libs_call_openmp(self, color='RED'):
+def check_math_libs_call_openmp(self, color="RED"):
     """Compile and run a minimal openmp program"""
-    self.start_msg('Checking for a program using omp thread')
+    self.start_msg("Checking for a program using omp thread")
     try:
-        ret = self.check_fc(fragment=omp_thread_fragment, use='MATH OPENMP MPI',
-                            mandatory=True, execute=True, define_ret=True)
+        ret = self.check_fc(
+            fragment=omp_thread_fragment,
+            use="MATH OPENMP MPI",
+            mandatory=True,
+            execute=True,
+            define_ret=True,
+        )
         nbThreads = int((ret and ret.split() or [])[-1])
-        refe = min(self.env['NPROC'], 2) if self.env.BUILD_OPENMP else 1
+        refe = min(self.env["NPROC"], 2) if self.env.BUILD_OPENMP else 1
         if nbThreads < refe:
             raise ValueError("expected at least {0} thread(s)".format(nbThreads))
     except Exception as exc:
         # the message must be closed
-        self.end_msg('no', color=color)
+        self.end_msg("no", color=color)
         raise Errors.ConfigurationError(str(exc))
     else:
-        self.end_msg('yes (on {0} threads)'.format(nbThreads))
+        self.end_msg("yes (on {0} threads)".format(nbThreads))
+
 
 # program testing a blas and a lapack call, output is 10.0 and 5.0
 blas_lapack_fragment = r"""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,58 +19,74 @@
 
 import os.path as osp
 import sys
-from functools import partial
 
-from waflib import Configure, Errors, Logs, TaskGen, Utils
+from waflib import Configure, TaskGen, Utils
 
 
 def options(self):
-    self.load('compiler_c')
+    self.load("compiler_c")
     group = self.get_option_group("code_aster options")
-    group.add_option('-e', '--build-executable', dest='embed_aster',
-                    default=False, action='store_true',
-                    help='build aster as an executable: it is an alias for --embed-aster')
-    group.add_option('--embed-aster', dest='embed_aster',
-                    default=True, action='store_true',
-                    help='embed all aster components within a python interpreter')
-    group.add_option('--shared-aster', dest='embed_aster',
-                    default=True, action='store_false',
-                    help='build each aster component as a shared python module')
+    group.add_option(
+        "-e",
+        "--build-executable",
+        dest="embed_aster",
+        default=False,
+        action="store_true",
+        help="build aster as an executable: it is an alias for --embed-aster",
+    )
+    group.add_option(
+        "--embed-aster",
+        dest="embed_aster",
+        default=True,
+        action="store_true",
+        help="embed all aster components within a python interpreter",
+    )
+    group.add_option(
+        "--shared-aster",
+        dest="embed_aster",
+        default=True,
+        action="store_false",
+        help="build each aster component as a shared python module",
+    )
+
 
 def configure(self):
-    self.load('compiler_c')
+    self.load("compiler_c")
     opts = self.options
     # preserve symbols in the dyn table for stdcalls
-    if sys.platform != 'darwin':
-        self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
+    if sys.platform != "darwin":
+        self.env.append_unique("LINKFLAGS", ["-Wl,--export-dynamic"])
     else:
         # '--export-dynamic' is '-export_dynamic' in OS X linker
         # http://stackoverflow.com/questions/21279036/what-is-clangs-equivalent-to-rdynamic-gcc-flag
-        self.env.append_unique('LINKFLAGS', ['-Wl,-export_dynamic'])
+        self.env.append_unique("LINKFLAGS", ["-Wl,-export_dynamic"])
 
     # prefer memory usage over speed
-    self.env.append_unique('LINKFLAGS', ['-Wl,--no-keep-memory'])
+    self.env.append_unique("LINKFLAGS", ["-Wl,--no-keep-memory"])
 
-    self.env.append_unique('LINKFLAGS_LIBASTER', ['-Wl,--no-as-needed'])
+    self.env.append_unique("LINKFLAGS_LIBASTER", ["-Wl,--no-as-needed"])
 
-    incpath = osp.join(self.path.get_src().abspath(), 'include')
-    self.env.append_value('INCLUDES_BIBC', incpath)
+    incpath = osp.join(self.path.get_src().abspath(), "include")
+    self.env.append_value("INCLUDES_BIBC", incpath)
 
-    if 'ifort' in self.env.FC_NAME.lower():
-        self.env.append_value('LINKFLAGS_fcprogram', ['-nofor-main'])
+    if "ifort" in self.env.FC_NAME.lower():
+        self.env.append_value("LINKFLAGS_fcprogram", ["-nofor-main"])
         if opts.embed_all or opts.embed_aster:
-            self.env.append_value('LINKFLAGS_fcprogram', ['-static-intel'])
-            if self.get_define('ASTER_HAVE_MPI'):
-                self.env.append_value('LINKFLAGS_fcprogram', ['-static-mpi'])
-    self.check_cflags()
+            self.env.append_value("LINKFLAGS_fcprogram", ["-static-intel"])
+            if self.get_define("ASTER_HAVE_MPI"):
+                self.env.append_value("LINKFLAGS_fcprogram", ["-static-mpi"])
+    self.check_c_compiler_flags()
+
 
 @Configure.conf
 def check_bibc_depends(self):
     """check dependencies of bibc"""
     # never in static
-    self.check_cc(uselib_store='SYS', lib='dl')
+    self.check_cc(uselib_store="SYS", lib="dl")
 
-PYMAIN = 'supervis/python.c'
+
+PYMAIN = "supervis/python.c"
+
 
 def build(self):
     # The build is splitted in 3 stages:
@@ -78,77 +94,92 @@ def build(self):
     # - build of the shared lib (libaster)
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
-    excl = [] if env.BUILD_MED else ['**/med_aster_module.c']
+    excl = [] if env.BUILD_MED else ["**/med_aster_module.c"]
 
     build_libbibc(self, env, excl)
     build_libaster(self, env)
 
     self.add_group()
     # install headers
-    self.install_files(
-        env.ASTERINCLUDEDIR,
-        get_srcs('include/*.h')
-    )
+    self.install_files(env.ASTERINCLUDEDIR, get_srcs("include/*.h"))
     # install generated headers (C + fortran)
     bld = self.path.get_bld().parent
-    config_includes = bld.ant_glob('aster*_config.h', quiet=True)
+    config_includes = bld.ant_glob("aster*_config.h", quiet=True)
     self.install_files(env.ASTERINCLUDEDIR, config_includes)
 
-@TaskGen.extension('.h')
+
+@TaskGen.extension(".h")
 def process_h(self, node):
     pass
 
+
 def build_libbibc(self, env, excl):
-    use = ['BIBCXX', 'PETSC', 'SCOTCH', 'PARMETIS', 'METIS', 'MED', 'HDF5',
-           'NUMPY', 'PYEXT']
+    use = ["BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
     # compile *.c
     self(
-        features = 'c cshlib',
-            name = 'asterbibc',
-          source = get_srcs('**/*.c', excl=excl + [PYMAIN]),
-          target = 'bibc',
-         defines = '',
-             use = use,
-             env = env.derive(),
-    install_path = env.ASTERLIBDIR
+        features="c cshlib",
+        name="asterbibc",
+        source=get_srcs("**/*.c", excl=excl + [PYMAIN]),
+        target="bibc",
+        defines="",
+        use=use,
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
     )
+
 
 def build_libaster(self, env):
-    use = ['LIBASTER', 'asterbibfor', 'asterbibc', 'asterbibcxx']
+    use = ["LIBASTER", "asterbibfor", "asterbibc", "asterbibcxx"]
     if env.BUILD_MFRONT:
-        use.append('astermfront')
+        use.append("astermfront")
     # {bibfor, bibc, bibcxx}/*.o
     self(
-        features = 'cxx cxxshlib',
-            name = 'asterlib',
-          target = 'aster',
-          source = PYMAIN,
-         defines = '_MAIN_=_unused_main_', #'ASTER_WITHOUT_PYMOD',
-             env = env.derive(),
-             use = use,
-    install_path = env.ASTERLIBDIR
+        features="cxx cxxshlib",
+        name="asterlib",
+        target="aster",
+        source=PYMAIN,
+        defines="_MAIN_=_unused_main_",  #'ASTER_WITHOUT_PYMOD',
+        env=env.derive(),
+        use=use,
+        install_path=env.ASTERLIBDIR,
     )
     for submodule in ("aster", "aster_core", "aster_fonctions", "med_aster"):
-        src = osp.join(env.ASTERLIBDIR, submodule + '.so')
+        src = osp.join(env.ASTERLIBDIR, submodule + ".so")
         self.symlink_as(src, "libaster.so")
 
+
 @Configure.conf
-def check_cflags(self):
-    self.start_msg('Getting C compiler flags')
-    self.end_msg(self.env['CFLAGS'])
+def check_c_compiler_flags(self):
+    self.check_c_compiler_options("-fPIC")
+    self.start_msg("C compiler flags")
+    self.end_msg(self.env["CFLAGS"])
+
+
+@Configure.conf
+def check_c_compiler_options(self, options):
+    """Check C compiler options"""
+    if type(options) not in (list, tuple):
+        options = [options]
+    self.start_msg("Checking for C option")
+    if self.check_cc(cflags=options, mandatory=False):
+        self.env.append_unique("CFLAGS", options)
+        self.end_msg("yes (%s)" % " ".join(options))
+    else:
+        self.end_msg("no (%s)" % " ".join(options), "YELLOW")
+
 
 @Configure.conf
 def check_optimization_cflags(self):
-    self.setenv('debug')
+    self.setenv("debug")
     self.remove_optflags("CFLAGS")
-    flags = ['-g', '-O0'] + Utils.to_list(self.env['CFLAGS_ASTER_DEBUG'])
-    self.start_msg('Setting C debug flags')
-    self.env.append_unique('CFLAGS', flags)
+    flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
+    self.start_msg("Setting C debug flags")
+    self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
 
-    self.setenv('release')
-    flags = ['-O2']
-    self.start_msg('Setting C optimization flags')
-    self.env.append_unique('CFLAGS', flags)
+    self.setenv("release")
+    flags = ["-O2"]
+    self.start_msg("Setting C optimization flags")
+    self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)

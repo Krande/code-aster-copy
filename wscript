@@ -247,10 +247,6 @@ def configure(self):
 
     self.load("mathematics", tooldir="waftools")
 
-    self.env.append_value("FCFLAGS", "-fPIC")
-    self.env.append_value("CFLAGS", "-fPIC")
-    self.env.append_value("CXXFLAGS", "-fPIC")
-
     self.load("med_cfg", tooldir="waftools")
     self.load("metis", tooldir="waftools")
     self.load("parmetis", tooldir="waftools")
