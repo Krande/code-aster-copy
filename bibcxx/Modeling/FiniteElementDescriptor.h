@@ -138,6 +138,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     int getPhysics( void ) const;
 
+    bool exists() const;
+
     /**
      * @brief Number of super-elements in model
      * @return Number of super elements in model

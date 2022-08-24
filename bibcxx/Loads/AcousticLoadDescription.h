@@ -117,10 +117,22 @@ class AcousticLoadDescription : public DataStructure {
 
     ConstantFieldOnCellsComplexPtr getMultiplicativeField() const { return _multiplier; };
 
+    ConstantFieldOnCellsTypePtr getImpedanceField() const { return _impedanceValues; };
+
     /**
      * @brief Get the model
      */
     ModelPtr getModel() { return _model; };
+
+    bool hasLoad( const std::string &load_name ) const {
+        if ( load_name == "IMPE_FACE" ) {
+            return _impedanceValues->exists();
+        } else {
+            AS_ASSERT( false );
+        }
+
+        return false;
+    }
 
     /**
      * @brief Get the model

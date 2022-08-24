@@ -81,8 +81,16 @@ class AcousticLoad : public DataStructure {
     };
 
     ConstantFieldOnCellsComplexPtr getMultiplicativeField() const {
-        return getAcousticLoadDescription()->getMultiplicativeField();
-    }
+        return _acouLoadDesc->getMultiplicativeField();
+    };
+
+    std::shared_ptr< ConstantFieldOnCellsType > getImpedanceField() const {
+        return _acouLoadDesc->getImpedanceField();
+    };
+
+    bool hasLoad( const std::string &load_name ) const {
+        return _acouLoadDesc->hasLoad( load_name );
+    };
 
     /**
      * @brief Get the model

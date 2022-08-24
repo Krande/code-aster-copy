@@ -46,7 +46,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
                             "RIGI_THER", "MASS_THER", "RIGI_MECA_HYST",
-                            "MASS_ACOU", "RIGI_ACOU", ):
+                            "MASS_ACOU", "RIGI_ACOU", "AMOR_ACOU",):
             return False
 
         strucElem = keywords.get("CARA_ELEM")
@@ -170,6 +170,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
                                                                   externVarField=externVar)
             elif myOption == "MASS_ACOU":
                 self._result = disc_comp.compressibilityMatrix(group_ma)
+
+            elif myOption == "AMOR_ACOU":
+                self._result = disc_comp.impedanceMatrix()
 
             elif myOption == "RIGI_ACOU":
                 self._result = disc_comp.linearMobilityMatrix(group_ma)

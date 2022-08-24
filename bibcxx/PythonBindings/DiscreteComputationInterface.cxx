@@ -194,6 +194,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                 ElementaryMatrix: elementary matrices
         )" )
+
         .def( "dualMobilityMatrix", &DiscreteComputation::dualMobilityMatrix,
               R"(
             Return elementary matrices for dual acoustic BC
@@ -285,6 +286,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "massMatrix" ) = nullptr, py::arg( "stiffnessMatrix" ) = nullptr,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+
+        .def( "impedanceMatrix", &DiscreteComputation::impedanceMatrix, R"(
+            Return the elementary matrices for impedance (acoustic) damping matrix
+
+            Returns:
+                ElementaryMatrixReal: elementary damping matrix
+            )" )
 
         .def( "complexStiffnessMatrix", &DiscreteComputation::complexStiffnessMatrix, R"(
             Return the elementary matrices for viscoelastic Stiffness matrix

@@ -220,6 +220,8 @@ class DiscreteComputation {
                    const VectorString &groupOfCells = VectorString(),
                    const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
+    ElementaryMatrixPressureComplexPtr impedanceMatrix() const;
+
     /**
      * @brief Compute elementary matrices for complex rigidity matrix (RIGI_MECA_HYST)
      * @param stiffnessMatrix  Elementary matrices for mechanical stiffness

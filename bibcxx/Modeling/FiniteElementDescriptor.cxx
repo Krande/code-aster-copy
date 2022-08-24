@@ -196,6 +196,13 @@ bool FiniteElementDescriptor::existsFiniteElement() {
 
 bool FiniteElementDescriptor::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }
 
+bool FiniteElementDescriptor::exists() const {
+    if ( _parameters->exists() && _numberOfDelayedNumberedConstraintNodes->exists() )
+        return true;
+
+    return false;
+};
+
 #ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
