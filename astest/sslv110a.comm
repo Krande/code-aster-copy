@@ -130,7 +130,7 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                        )
                        
 GLOC1_C = CALC_G(   RESULTAT=CHAMDEPL,
-                       OPTION='G',
+                       OPTION=('G','K'),
                        THETA=_F(FISSURE=FISS1,
                                 NB_COUCHE_INF = 2,
                                 NB_COUCHE_SUP = 5,
@@ -142,7 +142,7 @@ GLOC1_C = CALC_G(   RESULTAT=CHAMDEPL,
              
                        
 G1_C_LI = CALC_G(   RESULTAT=CHAMDEPL,
-                       OPTION='G',
+                       OPTION=('G','K'),
                        THETA=_F(FISSURE=FISS1,
                                 NB_COUCHE_INF = 2,
                                 NB_COUCHE_SUP = 5,
@@ -166,7 +166,7 @@ IMPR_TABLE(TABLE=G1_C_LI, UNITE=6)
 
 
 #----------------------------------------------------------------------
-#              TEST DE G(A) ET KJ(A) SUR LES 2 COURONNES
+#              TEST DE G(A), KJ(A), KI(A) ET G_IRWIN(A) SUR LES 2 COURONNES
 #----------------------------------------------------------------------
 
 
@@ -252,9 +252,49 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.0,),
            )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=4.05818E+00,
+           VALE_REFE=4.06798003172,
+           NOM_PARA='K1',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=7.13649E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=4.06197E+00,
+           VALE_REFE=4.06798003172,
+           NOM_PARA='K1',
+           TABLE=G1_C_LI,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=7.14982E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=G1_C_LI,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
 
 #----------------------------------------------------------------------
-#              TEST DE G(B) ET KJ(B) SUR LES 2 COURONNES
+#              TEST DE G(B), KJ(B), KI(B) ET G_IRWIN(B) SUR LES 2 COURONNES
 #----------------------------------------------------------------------
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -337,10 +377,55 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
            VALE=2.66827E+01,),
            )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.04,
+           VALE_CALC=1.657054546491977E-05 ,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+           VALE=2.66827E+01,),
+           )
+           
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=1.955497898328223 ,
+           VALE_REFE=1.99287191298,
+           NOM_PARA='K1',
+           TABLE=GLOC1_C,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+           VALE=2.66827E+01,),
+           )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.06,
+           VALE_CALC=1.81183075198144E-05 ,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=G1_C_LI,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+           VALE=2.66827E+01,),
+           )
+           
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.05,
+           VALE_CALC=2.044785536233065 ,
+           VALE_REFE=1.99287191298,
+           NOM_PARA='K1',
+           TABLE=G1_C_LI,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+           VALE=2.66827E+01,),
+           )
+           
+           
+           
                     
 
 #----------------------------------------------------------------------
-#              TEST DE G(C) ET KJ(C) SUR LES 3 COURONNES
+#              TEST DE G(C) ET KJ(C)  SUR LES 2 COURONNES
 #----------------------------------------------------------------------
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
