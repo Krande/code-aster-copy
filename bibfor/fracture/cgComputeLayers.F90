@@ -45,6 +45,7 @@ use calcG_type
 #include "asterfort/cncinv.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/conare.h"
 
 #include "jeveux.h"
@@ -62,9 +63,10 @@ use calcG_type
     integer, pointer :: v_l_no_cp(:) => null()
     
     real(kind=8), pointer :: v_theta(:) => null()
-    
-    integer :: num_fr,num_c, num_no, iar, iatyma, ima, na, nbar, ndime
-    integer :: ino1, ino2, ino3
+    character(len=8), pointer   :: fondNoeud(:) => null()
+
+    integer :: nume,num_fr,num_c, num_no, iar, iatyma, ima, na, nbar, ndime
+    integer :: ino1, ino2, ino3, i_node
     integer :: nno1, nno2, nno3, numac
     integer :: nno_cm, nno_cp
     integer :: adra, nbmaca, ar(12, 3)
@@ -131,8 +133,14 @@ use calcG_type
         v_l_no_cm(i) = 0
     enddo
     
-    !Recuperation des noeuds du front
-    call cgTheta%getFondNoeudNume(fondNoeudNume)
+    !Recuperation des noeuds du maillage du front
+    call jeveuo(cgTheta%crack//'.FOND.NOEU', 'L', vk8=fondNoeud)
+    AS_ALLOCATE(vi = fondNoeudNume,size = cgTheta%nb_fondNoeud)
+    do i_node = 1, cgTheta%nb_fondNoeud
+        call jenonu(jexnom(cgTheta%nomNoeud, fondNoeud(i_node)), nume)
+        fondNoeudNume(i_node)= nume
+    enddo
+    
     
     !Boucle sur les noeuds du front
     do num_fr = 1, cgTheta%nb_fondNoeud
@@ -233,5 +241,6 @@ use calcG_type
     
     AS_DEALLOCATE(vi = v_l_no_cp)
     AS_DEALLOCATE(vi = v_l_no_cm)
-            
+    AS_DEALLOCATE(vi = fondNoeudNume)
+
 end subroutine
