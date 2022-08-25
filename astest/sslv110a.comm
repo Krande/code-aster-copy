@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
 #----------------------------------------------------------------------
 
 GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
-                       OPTION='G',
+                       OPTION=('G','K'),
                        THETA=_F(FISSURE=FISS1,
                                 R_INF_FO = RINF0,
                                 R_SUP_FO = RSUP0,
@@ -105,7 +105,7 @@ GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
 #----------------------------------------------------------------------
 
 GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
-                       OPTION='G',
+                       OPTION=('G','K'),
                         THETA=_F(FISSURE=FISS1,
                                  R_SUP_FO=RSUP1,
                                  R_INF_FO=RINF1,
@@ -121,7 +121,7 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
 #----------------------------------------------------------------------
 
 GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
-                       OPTION='G',
+                       OPTION=('G','K'),
                        THETA=_F(FISSURE=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2,
                                 DISCRETISATION='LEGENDRE',
                                 DEGRE=7,
@@ -130,7 +130,7 @@ GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
 
                        )
 #----------------------------------------------------------------------
-#              TEST DE G(A) SUR LES 3 COURONNES
+#              TEST DE G(A), K1(A) ET G_IRWIN(A) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
 IMPR_TABLE(TABLE=GLOC0, UNITE=6)
 
@@ -164,8 +164,70 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.0,),
            )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.06,
+           VALE_CALC=3.8376312611006527,
+           VALE_REFE=4.06798003172,
+           NOM_PARA='K1',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.002,
+           VALE_CALC=4.059991785379435,
+           VALE_REFE=4.06798003172,
+           NOM_PARA='K1',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.002,
+           VALE_CALC=4.062195288114215,
+           VALE_REFE=4.06798003172,
+           NOM_PARA='K1',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.12,
+           VALE_CALC=6.381879268343364E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.004,
+           VALE_CALC=7.142864428851008E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.003,
+           VALE_CALC=7.150619908803482E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
 #----------------------------------------------------------------------
-#              TEST DE G(B) SUR LES 3 COURONNES
+#              TEST DE G(B), K1(B) ET G_IRWIN(B) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -197,6 +259,49 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=2.66827E+01,),
            )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02000000000000001,
+           VALE_CALC=1.9698945208400422,
+           VALE_REFE=1.99287191298,
+           NOM_PARA='K1',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66827E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.03,
+           VALE_CALC=1.9525664446874604,
+           VALE_REFE=1.99287191298,
+           NOM_PARA='K1',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66827E+01,),
+           )
+
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.03000000000000001,
+           VALE_CALC=1.6815432500687744E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC0,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66827E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.05,
+           VALE_CALC=1.6520901457317458E-05,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G_IRWIN',
+           TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66827E+01,),
+           )
+
 
 #----------------------------------------------------------------------
 #              TEST DE G(C) SUR LES 3 COURONNES

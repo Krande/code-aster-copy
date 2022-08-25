@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -479,19 +479,16 @@ use calcG_type
                          k1th(1) = k1th(2)/4.d0
                          k2th(1) = k2th(2)/4.d0
                          k3th(1) = k3th(2)/4.d0
-                         g1th(1) = g1th(2)*(s2-s1)/(s3-s1)
-                         g2th(1) = g2th(2)*(s2-s1)/(s3-s1)
-                         g3th(1) = g3th(2)*(s2-s1)/(s3-s1)
+                         g1th(1) = g1th(2)/4.d0
+                         g2th(1) = g2th(2)/4.d0
+                         g3th(1) = g3th(2)/4.d0
                          gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)/4.d0
                          k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)/4.d0
                          k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)/4.d0
                          k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1)/4.d0
-                         g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
+                         g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)/4.d0
+                         g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)/4.d0
+                         g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)/4.d0
                      endif
 
                  endif
