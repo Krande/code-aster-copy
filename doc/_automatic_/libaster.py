@@ -728,11 +728,11 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
     
-    def computeExternalStateVariablesLoad(self, time_value, externVarField):
+    def computeExternalStateVariablesLoad(self, time, externVarField):
         """Compute load from external state variables
         
         Arguments:
-              time_value (float): Current time
+              time (float): Current time
               externVarField (fieldOnCellsReal): external state variable at current time
         
         Returns:
@@ -836,11 +836,11 @@ class DiscreteComputation:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
         """
     
-    def createExternalStateVariablesField(self, time_value):
+    def createExternalStateVariablesField(self, time):
         """Create external state variable field
         
         Arguments:
-              time_value (float): Current time
+              time (float): Current time
         
         Returns:
               FieldOnCells: field of external state variables at current time
@@ -864,10 +864,17 @@ class DiscreteComputation:
         """Return the imposed displacement vector used to remove imposed DDL
         
         Arguments:
-              time_value (float): Current time
+              time (float): Current time
         
         Returns:
               FieldOnNodes: imposed displacement vector
+        """
+    
+    def dualConductivityMatrix(self):
+        """Return elementary matrices for dual thermal BC
+        
+        Returns:
+            ElementaryMatrix: elementary matrices
         """
     
     def dualDisplacement(self, disp_curr, scaling= 1.0):
@@ -904,18 +911,27 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
     
-    def elasticStiffnessMatrix(self, time_value= 0.0, fourierMode= -1, groupOfCells= [], externVarField= None):
+    def elasticStiffnessMatrix(self, time= 0.0, fourierMode= -1, groupOfCells= [], externVarField= None):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
         
         Arguments:
-              time_value (float): Current time (default: 0.0)
+              time (float): Current time (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
               externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
               ElementaryMatrix: elementary elastic Stiffness matrix
+        """
+    
+    def exchangeThermalMatrix(self, time):
+        """Return the elementary matices for exhange thermal matrix.
+        
+        Arguments:
+            time (float): Current time
+        Returns:
+            ElementaryMatrix: elementary exchange thermal matrices
         """
     
     def fluidStrucutreMassMatrix(self, groupOfCells= [], externVarField= None):
@@ -1027,52 +1043,52 @@ class DiscreteComputation:
     def imposedDualBC(self, *args, **kwargs):
         """Overloaded function.
         
-        1. imposedDualBC(self: libaster.DiscreteComputation, time_value: float, time_delta: float, time_theta: float) -> FieldOnNodes<double>
+        1. imposedDualBC(self: libaster.DiscreteComputation, time: float, time_step: float, theta: float) -> FieldOnNodes<double>
         
         
               Return the imposed nodal BC assembled vector
         
               Arguments:
-                    time_value (float): Current time
-                    time_delta (float): Time increment
-                    time_theta (float): Theta parameter for integration
+                    time (float): Current time
+                    time_step (float): Time increment
+                    theta (float): Theta parameter for integration
         
               Returns:
                     FieldOnNodes: imposed dual field
                 
         
-        2. imposedDualBC(self: libaster.DiscreteComputation, time_value: float) -> FieldOnNodes<double>
+        2. imposedDualBC(self: libaster.DiscreteComputation, time: float) -> FieldOnNodes<double>
         
         
               Return the imposed nodal BC assembled vector
         
               Arguments:
-                    time_value (float): Current time
+                    time (float): Current time
         
               Returns:
                     FieldOnNodes: imposed dual field
         """
     
-    def incrementalDirichletBC(self, time_value, disp):
+    def incrementalDirichletBC(self, time, disp):
         """Return the incremental imposed displacement vector used to remove imposed DDL
         for incremental resolution.
         
         incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
         
         Arguments:
-              time_value (float): Current time
+              time (float): Current time
               disp (FieldOnNodes): displacement field at current time
         
         Returns:
               FieldOnNodes: incremental imposed displacement vector
         """
     
-    def linearCapacityMatrix(self, time_delta, groupOfCells= [], externVarField= None):
+    def linearCapacityMatrix(self, time_, groupOfCells= [], externVarField= None):
         """Return the elementary matrices for linear Capacity matrix in thermal computation.
         Option MASS_THER.
         
         Arguments:
-            time_delta (float): Time increment
+            time (float): current time to evaluate rho_cp
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
             externVarField (fieldOnCellsReal): external state variable at current time
@@ -1080,14 +1096,12 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
     
-    def linearConductivityMatrix(self, time_value, time_delta, time_theta, fourierMode= 0, groupOfCells= [], externVarField= None):
+    def linearConductivityMatrix(self, time, fourierMode= 0, groupOfCells= [], externVarField= None):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
         
         Arguments:
-            time_value (float): Current time
-            time_delta (float): Time increment
-            time_theta (float): Theta parameter for integration
+            time (float): Current time
             fourierMode (int): Fourier mode (default: -1)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
@@ -1119,13 +1133,13 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
     
-    def neumann(self, time_value, time_delta, time_theta, externVarField= None, previousPrimalField= None):
+    def neumann(self, time, time_step, theta, externVarField= None, previousPrimalField= None):
         """Return the Neumann load vector
         
         Arguments:
-              time_value (float): Current time
-              time_delta (float): Time increment
-              time_theta (float): Theta parameter for integration
+              time (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for integration
               externVarField (fieldOnCellsReal): external state variable at current time
               previousPrimalField (fieldOnNodesReal): solution field at previous time
         
@@ -1144,13 +1158,13 @@ class DiscreteComputation:
             ElementaryMatrixReal: elementary rotational rigidity matrix
         """
     
-    def transientThermalLoad(self, time_value, time_delta, time_theta, externVarField, previousPrimalField= None):
+    def transientThermalLoad(self, time, time_step, theta, externVarField, previousPrimalField= None):
         """Compute Transient Thermal Load
         
         Arguments:
-              time_value (float): Current time
-              time_delta (float): Time increment
-              time_theta (float): Theta parameter for integration
+              time (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for integration
               externVarField (fieldOnCellsReal): external state variable at current time
               previousPrimalField (fieldOnNodesReal): solution field at previous time
         
@@ -2130,9 +2144,11 @@ class FieldOnNodesReal(DataField):
         
         3. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.FieldOnNodesReal) -> None
         
-        4. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+        4. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
         
-        5. __init__(self: libaster.FieldOnNodesReal, arg0: MeshCoordinatesField) -> None
+        5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
+        
+        6. __init__(self: libaster.FieldOnNodesReal, arg0: MeshCoordinatesField) -> None
         """
     
     def __isub__(self, arg0):
@@ -2235,11 +2251,25 @@ class FieldOnNodesReal(DataField):
     def setMesh(self, arg0):
         pass
     
-    def setValues(self, value):
-        """Set values of the field
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
         
-        Arguments:
-            value (float): value to set
+        1. setValues(self: libaster.FieldOnNodesReal, value: float) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (float): value to set
+                    
+        
+        2. setValues(self: libaster.FieldOnNodesReal, value: List[float]) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (list[float]): list of values to set
         """
     
     def size(self):
@@ -2278,7 +2308,9 @@ class FieldOnNodesComplex(DataField):
         
         3. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.FieldOnNodesComplex) -> None
         
-        4. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.BaseDOFNumbering) -> None
+        4. __init__(self: libaster.FieldOnNodesComplex, arg0: Model) -> None
+        
+        5. __init__(self: libaster.FieldOnNodesComplex, arg0: libaster.BaseDOFNumbering) -> None
         """
     
     def __setitem__(self, arg0, arg1):
@@ -2356,11 +2388,25 @@ class FieldOnNodesComplex(DataField):
     def setMesh(self, arg0):
         pass
     
-    def setValues(self, value):
-        """Set values of the field
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
         
-        Argument:
-            complex: value to set
+        1. setValues(self: libaster.FieldOnNodesComplex, value: complex) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (complex): value to set
+                    
+        
+        2. setValues(self: libaster.FieldOnNodesComplex, value: List[complex]) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (list[complex]): list of values to set
         """
     
     def updateValuePointers(self):
@@ -4993,8 +5039,13 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
     
-    def addElementaryMatrix(self, arg0):
-        pass
+    def addElementaryMatrix(self, matr_elem, coeff= 1.0):
+        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        
+        Arguments:
+            matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
+            coeff [float]: assembling factor (default = 1.0)
+        """
     
     def clearElementaryMatrix(self):
         pass
@@ -5058,8 +5109,13 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     def __rmul__(self, arg0):
         pass
     
-    def addElementaryMatrix(self, arg0):
-        pass
+    def addElementaryMatrix(self, matr_elem, coeff= 1.0):
+        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        
+        Arguments:
+            matr_elem [ElementaryMatrixDisplacementComplex]: elementary matrix to add
+            coeff [float]: assembling factor (default = 1.0)
+        """
     
     def clearElementaryMatrix(self):
         pass
@@ -5140,8 +5196,13 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
     
-    def addElementaryMatrix(self, arg0):
-        pass
+    def addElementaryMatrix(self, matr_elem, coeff= 1.0):
+        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        
+        Arguments:
+            matr_elem [ElementaryMatrixTemperatureReal]: elementary matrix to add
+            coeff [float]: assembling factor (default = 1.0)
+        """
     
     def clearElementaryMatrix(self):
         pass
@@ -5193,8 +5254,13 @@ class AssemblyMatrixTemperatureComplex(BaseAssemblyMatrix):
         2. __init__(self: libaster.AssemblyMatrixTemperatureComplex, arg0: str) -> None
         """
     
-    def addElementaryMatrix(self, arg0):
-        pass
+    def addElementaryMatrix(self, matr_elem, coeff= 1.0):
+        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        
+        Arguments:
+            matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
+            coeff [float]: assembling factor (default = 1.0)
+        """
     
     def clearElementaryMatrix(self):
         pass
@@ -5254,8 +5320,13 @@ class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
     
-    def addElementaryMatrix(self, arg0):
-        pass
+    def addElementaryMatrix(self, matr_elem, coeff= 1.0):
+        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        
+        Arguments:
+            matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
+            coeff [float]: assembling factor (default = 1.0)
+        """
     
     def clearElementaryMatrix(self):
         pass
@@ -5328,8 +5399,13 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
     
-    def addElementaryMatrix(self, arg0):
-        pass
+    def addElementaryMatrix(self, matr_elem, coeff= 1.0):
+        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        
+        Arguments:
+            matr_elem [ElementaryMatrixPressureComplex]: elementary matrix to add
+            coeff [float]: assembling factor (default = 1.0)
+        """
     
     def clearElementaryMatrix(self):
         pass
@@ -5518,6 +5594,9 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
     
     # Methods defined here:
     
+    def __imul__(self, arg0):
+        pass
+    
     def __init__(self, *args, **kwargs):
         """Overloaded function.
         
@@ -5601,6 +5680,9 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
     #     builtins.object
     
     # Methods defined here:
+    
+    def __imul__(self, arg0):
+        pass
     
     def __init__(self, *args, **kwargs):
         """Overloaded function.

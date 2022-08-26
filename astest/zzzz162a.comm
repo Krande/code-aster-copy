@@ -267,12 +267,6 @@ IMPR_RESU(UNITE=82, FORMAT='GMSH',
 
 # DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
-TEST_FICHIER(FICHIER="./fort.82",
-             NB_VALE_I=32,
-             VALE_CALC_I=103,
-             NB_VALE=63,
-             VALE_CALC=1.1398620000e+03,
-)
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
@@ -556,14 +550,6 @@ IMPR_RESU(UNITE=84, FORMAT='GMSH',
 
 # DEFI_FICHIER(UNITE=84, ACTION='LIBERER')
 
-TEST_FICHIER(FICHIER="./fort.84",
-             NB_VALE_I=244,
-             VALE_CALC_I=811,
-             NB_VALE=201,
-             VALE_CALC=1.6920779992e+02,
-)
-import os
-os.system("cat fort.84")
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------

@@ -40,7 +40,11 @@ use sort_module
 #include "asterfort/codlet.h"
 #include "asterfort/decode_join.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -63,8 +67,9 @@ use sort_module
 ! ---------------------------------------------------------------------------------------------
 !
     character(len=4) :: chdomdis
-    character(len=8) :: mesh
-    character(len=24) :: nonulg, nojoin, connex
+    character(len=7) :: code
+    character(len=8) :: mesh, nom
+    character(len=24) :: nonulg, nojoin, connex, nomnoe
     character(len=MED_NAME_SIZE) :: nomjoi, nommad
     character(len=MED_COMMENT_SIZE) :: descri
     integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
@@ -94,6 +99,18 @@ use sort_module
 !
     nonulg = mesh//'.NULOGL'
     call wkvect(nonulg, 'G V I', nbnoeu, jnlogl)
+!
+! --- On renomme les noeuds avec le numéro global
+!
+    nomnoe = mesh//'.NOMNOE'
+    call jedetr(nomnoe)
+    call jecreo(nomnoe, 'G N K8')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
+    do ino = 1 , nbnoeu
+        call codlet(ino, 'G', code)
+        nom = 'N'//code
+        call jecroc(jexnom(nomnoe, nom))
+    end do
 !
 ! --- L'objet .NOEX permet de savoir à qui appartient le noeud.
 !     Pour les noeuds internes, c'est le proc courant
