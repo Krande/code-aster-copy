@@ -38,8 +38,8 @@ ASTERINTEGER Function2D::maximumSize() const {
     _value->build();
     ASTERINTEGER toReturn = 0;
     for ( const auto &[key, obj] : *_value ) {
-        if ( obj.size() > toReturn )
-            toReturn = obj.size();
+        if ( obj->size() > toReturn )
+            toReturn = obj->size();
     }
     return toReturn;
 }
@@ -50,7 +50,7 @@ ASTERINTEGER Function2D::size() const {
     _value->build();
     ASTERINTEGER toReturn = 0;
     for ( const auto &[key, obj] : *_value ) {
-        toReturn += obj.size();
+        toReturn += obj->size();
     }
     return toReturn;
 }

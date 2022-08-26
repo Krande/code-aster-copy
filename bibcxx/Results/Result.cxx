@@ -154,15 +154,16 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
 
     _rspr->updateValuePointer();
 
-    for ( auto &[i, item] : *_calculationParameter ) {
-        auto typevar = trim( item[3].toString() );
+    for ( const auto &[i, item] : *_calculationParameter ) {
+        item->updateValuePointer();
+        auto typevar = trim( ( *item )[3].toString() );
 
         if ( typevar == "ACCES" ) {
             auto var_name = trim( _accessVariables->getStringFromIndex( i ) );
             if ( var_name == "INST" ) {
-                auto nosuff = trim( item[0].toString() );
-                auto ivar = std::stoi( trim( item[1].toString() ) );
-                auto nmax = std::stoi( trim( item[2].toString() ) );
+                auto nosuff = trim( ( *item )[0].toString() );
+                auto ivar = std::stoi( trim( ( *item )[1].toString() ) );
+                auto nmax = std::stoi( trim( ( *item )[2].toString() ) );
 
                 AS_ASSERT( nosuff == ".RSPR" )
 
@@ -377,15 +378,16 @@ py::dict Result::getAccessParameters() const {
     }
     returnDict[var_name.c_str()] = listValues;
 
-    for ( ASTERINTEGER i = 0; i < ( _calculationParameter->getObjects() ).size(); ++i ) {
-        const auto item = _calculationParameter->getObjects()[i];
-        typevar = trim( item[3].toString() );
+    auto items = _calculationParameter->getObjects();
+    for ( auto& item : items ) {
+        item->updateValuePointer();
+        typevar = trim( (*item)[3].toString() );
 
         if ( typevar == "ACCES" ) {
-            var_name = trim( _accessVariables->getStringFromIndex( i + 1 ) );
-            nosuff = trim( item[0].toString() );
-            ivar = std::stoi( trim( item[1].toString() ) );
-            nmax = std::stoi( trim( item[2].toString() ) );
+            var_name = trim( _accessVariables->getStringFromIndex( item->getIndex() ) );
+            nosuff = trim( ( *item )[0].toString() );
+            ivar = std::stoi( trim( ( *item )[1].toString() ) );
+            nmax = std::stoi( trim( ( *item )[2].toString() ) );
 
             py::list listV;
 
@@ -646,12 +648,13 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     ASTERINTEGER cmpt = 1;
-    for ( const auto &curIter : _namesOfFields->getObjects() ) {
+    for ( const auto &[key, obj] : _namesOfFields ) {
+        obj->updateValuePointer();
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
-        AS_ASSERT( nbRanks <= curIter.size() );
+        AS_ASSERT( nbRanks <= obj->size() );
 
         for ( ASTERINTEGER index = 0; index < nbRanks; ++index ) {
-            std::string name( trim( curIter[index].toString() ) );
+            std::string name( trim( ( *obj )[index].toString() ) );
             if ( name != "" ) {
                 const ASTERINTEGER rank = ( *_serialNumber )[index];
                 CALL_JEMARQ();

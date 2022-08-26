@@ -110,21 +110,21 @@ class ThermalLoadDescription : public DataStructure {
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
 
     bool hasLoadField( const std::string name ) const {
-        if ( name == "COEFH")
+        if ( name == "COEFH" )
             return ( _coefh && _coefh->exists() );
-        else if ( name == "T_EXT")
+        else if ( name == "T_EXT" )
             return ( _tExt && _tExt->exists() );
-        else if ( name == "FLURE")
+        else if ( name == "FLURE" )
             return ( _flure && _flure->exists() );
-        else if ( name == "FLUR2")
+        else if ( name == "FLUR2" )
             return ( _flur2 && _flur2->exists() );
-        else if ( name == "SOURE")
+        else if ( name == "SOURE" )
             return ( _soure && _soure->exists() );
-        else if ( name == "SOURC")
+        else if ( name == "SOURC" )
             return ( _sourc && _sourc->exists() );
-        else if ( name == "HECHP")
+        else if ( name == "HECHP" )
             return ( _hechp && _hechp->exists() );
-        else if ( name == "GRAIN")
+        else if ( name == "GRAIN" )
             return ( _grain && _grain->exists() );
         else
             throw std::runtime_error( "Invalid load name : " + name );
@@ -132,19 +132,19 @@ class ThermalLoadDescription : public DataStructure {
 
     ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
         AS_ASSERT( this->hasLoadField( name ) );
-        if ( name == "COEFH")
+        if ( name == "COEFH" )
             return _coefh;
-        else if ( name == "T_EXT")
+        else if ( name == "T_EXT" )
             return _tExt;
-        else if ( name == "FLURE")
+        else if ( name == "FLURE" )
             return _flure;
-        else if ( name == "FLUR2")
+        else if ( name == "FLUR2" )
             return _flur2;
-        else if ( name == "SOURE")
+        else if ( name == "SOURE" )
             return _soure;
-        else if ( name == "HECHP")
+        else if ( name == "HECHP" )
             return _hechp;
-        else if ( name == "GRAIN")
+        else if ( name == "GRAIN" )
             return _grain;
         else
             throw std::runtime_error( "Invalid load name : " + name );
@@ -158,14 +158,12 @@ class ThermalLoadDescription : public DataStructure {
             throw std::runtime_error( "Invalid load name : " + name );
     }
 
-    bool hasLoadResult() const {
-        return _evolChar->exists();
-    }
+    bool hasLoadResult() const { return _evolChar->exists(); }
 
     std::string getLoadResultName() const {
         AS_ASSERT( this->hasLoadResult() );
         _evolChar->updateValuePointer();
-        return ( *_evolChar)[0].toString();
+        return ( *_evolChar )[0].toString();
     }
 
     /**
@@ -177,6 +175,21 @@ class ThermalLoadDescription : public DataStructure {
      * @brief Get the mesh
      */
     BaseMeshPtr getMesh() const { return _model->getMesh(); };
+
+    bool build() {
+        _FEDesc->build();
+        _cimpo->build();
+        _cmult->build();
+        _coefh->build();
+        _flunl->build();
+        _flure->build();
+        _flur2->build();
+        _grain->build();
+        _hechp->build();
+        _soure->build();
+        _tExt->build();
+        return true;
+    };
 };
 
 /**********************************************************/

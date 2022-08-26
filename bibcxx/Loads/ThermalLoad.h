@@ -102,26 +102,19 @@ class ThermalLoad : public DataStructure {
         return _therLoadDesc->hasLoadField( name );
     }
 
-    bool hasLoadResult() const {
-        return _therLoadDesc->hasLoadResult();
-    }
+    bool hasLoadResult() const { return _therLoadDesc->hasLoadResult(); }
 
-    std::string getLoadResultName() const {
-        return _therLoadDesc->getLoadResultName();
-    }
+    std::string getLoadResultName() const { return _therLoadDesc->getLoadResultName(); }
 
-    ConstantFieldOnCellsTypePtr  getImposedField() const { 
-        return _therLoadDesc->getImposedField(); 
-    }
+    ConstantFieldOnCellsTypePtr getImposedField() const { return _therLoadDesc->getImposedField(); }
 
-    ConstantFieldOnCellsRealPtr  getMultiplicativeField() const { 
+    ConstantFieldOnCellsRealPtr getMultiplicativeField() const {
         return _therLoadDesc->getMultiplicativeField();
     }
 
-
     JeveuxVectorChar8 getType() const { return _type; }
-    
-        /**
+
+    /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return true si la mise a jour s'est bien deroulee, false sinon
      */
@@ -129,6 +122,8 @@ class ThermalLoad : public DataStructure {
         _therLoadDesc->updateValuePointers();
         _type->updateValuePointer();
     };
+
+    bool build() { return _therLoadDesc->build(); };
 };
 
 /**********************************************************/

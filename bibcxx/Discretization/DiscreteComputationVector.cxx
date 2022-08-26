@@ -202,6 +202,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time_value,
     if ( dofNume->hasDirichletBC() ) {
         auto diri_curr = dirichletBC( time_value );
         auto diri_impo = *( diri_curr ) - *( disp_curr );
+        diri_impo.updateValuePointers();
 
         // Set to zero terms not imposed
         auto eliminatedDofs = dofNume->getDirichletBCDOFs();

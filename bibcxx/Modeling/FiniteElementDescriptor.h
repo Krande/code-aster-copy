@@ -140,6 +140,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     bool exists() const;
 
+    bool build();
+
     /**
      * @brief Number of super-elements in model
      * @return Number of super elements in model

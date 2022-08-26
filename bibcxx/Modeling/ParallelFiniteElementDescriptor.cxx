@@ -285,6 +285,8 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
             }
         }
     }
+
+    build();
 };
 
 #endif /* ASTER_HAVE_MPI */

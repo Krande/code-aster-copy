@@ -50,6 +50,16 @@ class ModelAssignment(ExecuteCommand):
         FED = self._result.getFiniteElementDescriptor()
         FED.setModel(self._result)
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        FED = self._result.getFiniteElementDescriptor()
+        FED.build()
+
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
 
@@ -58,7 +68,6 @@ class ModelAssignment(ExecuteCommand):
         """
 
         # Add no dependencies since everything is mesh is already added
-
 
 
 AFFE_MODELE = ModelAssignment.run

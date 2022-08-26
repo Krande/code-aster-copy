@@ -44,7 +44,7 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
     std::string name19( _name );
     name19.resize( 19, ' ' );
     _tco = JeveuxVectorChar24( name19 + "._TCO" );
-    if ( !_tco->isAllocated() && name != "" ) {
+    if ( !_tco->exists() && name != "" ) {
         _tco->allocate( 1 );
         if ( type.size() <= 8 && type != "FORMULE" )
             ( *_tco )[0] = std::string( trim( type ) + "_SDASTER" );
@@ -204,7 +204,7 @@ void DataStructure::setUserName( const std::string name ) { _user_name = name; }
 
 void DataStructure::setTitle( const std::string title ) {
     CALL_JEMARQ();
-    if ( !_title->isAllocated() )
+    if ( !_title->exists() )
         _title->allocate( 1 );
 
     _title->updateValuePointer();

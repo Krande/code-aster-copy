@@ -98,10 +98,6 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
 bool ParallelMesh::hasGroupOfCells( const std::string &name, const bool local ) const {
 
     if ( local ) {
-        if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
-            return false;
-        }
-
         return _groupsOfCells->contains( name );
     }
 
@@ -113,9 +109,6 @@ bool ParallelMesh::hasGroupOfCells( const std::string &name, const bool local ) 
 
 bool ParallelMesh::hasGroupOfNodes( const std::string &name, const bool local ) const {
     if ( local ) {
-        if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
-            return false;
-        }
         return _groupsOfNodes->contains( name );
     }
 
@@ -161,7 +154,7 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
         return VectorLong();
     }
 
-    VectorLong cells = ( *_groupsOfCells )[name].toVector();
+    VectorLong cells = ( *_groupsOfCells )[name]->toVector();
     for ( auto &cell : cells )
         cell -= 1;
     return cells;
@@ -177,7 +170,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
         CALL_JEDEMA();
         return VectorLong();
     } else {
-        listOfNodes = ( *_groupsOfNodes )[name].toVector();
+        listOfNodes = ( *_groupsOfNodes )[name]->toVector();
         for ( auto &node : listOfNodes )
             node -= 1;
     }

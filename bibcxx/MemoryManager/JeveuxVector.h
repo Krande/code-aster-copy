@@ -249,6 +249,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         if ( _name != "" && get_sh_jeveux_status() == 1 )
             CALLO_JEDETR( _name );
 
+        _jeveuxAdress = 0;
         _valuePtr = NULL;
         // #ifdef ASTER_DEBUG_CXX
         //         std::cout << "DEBUG: JeveuxVector.dealloc: " << _name << std::endl;
@@ -283,12 +284,6 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Return the name
      */
     std::string getName() const { return _name; };
-
-    /**
-     * @brief Fonction pour savoir si un vecteur est alloue
-     * @return true si le vecteur est alloue
-     */
-    bool isAllocated() { return exists(); };
 
     /**
      * @brief Set the value of DOCU parameter of jeveux object
@@ -344,9 +339,10 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Mise a jour du pointeur Jeveux
      * @return true si la mise a jour s'est bien passee
      */
-    void updateValuePointer() {
-        if ( !_valuePtr || hasMoved() ) {
-            _valuePtr = NULL;
+    void updateValuePointer() const {
+        if ( hasMoved() ) {
+            const_cast< JeveuxVectorClass< ValueType > * >( this )->_valuePtr = NULL;
+            const_cast< JeveuxVectorClass< ValueType > * >( this )->_jeveuxAdress = 0;
 
             const std::string read( "L" );
             CALLO_JEVEUOC( _name, read, (void *)( &_valuePtr ) );
@@ -354,7 +350,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
             JeveuxChar8 param( "IADM" );
             JeveuxChar32 dummy( " " );
-            CALLO_JELIRA( _name, param, &_jeveuxAdress, dummy );
+            CALLO_JELIRA( _name, param,
+                          &const_cast< JeveuxVectorClass< ValueType > * >( this )->_jeveuxAdress,
+                          dummy );
         }
     };
 
@@ -367,18 +365,31 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             return true;
         }
 
+        // check if object is in memory
+        ASTERINTEGER idummy;
+        JeveuxChar8 param0( "USAGE" );
+        JeveuxChar32 usage( " " );
+        CALLO_JELIRA( _name, param0, &idummy, usage );
+
+        if ( usage[0] == 'X' ) {
+            const_cast< JeveuxVectorClass< ValueType > * >( this )->_valuePtr = NULL;
+            return true;
+        }
+
         ASTERINTEGER valTmp;
         JeveuxChar8 param( "IADM" );
         JeveuxChar32 dummy( " " );
         CALLO_JELIRA( _name, param, &valTmp, dummy );
-        if ( valTmp != _jeveuxAdress )
+        if ( valTmp != _jeveuxAdress ) {
+            const_cast< JeveuxVectorClass< ValueType > * >( this )->_valuePtr = NULL;
             return true;
+        }
 
         return false;
     };
 
     /** @brief Convert to std::vector */
-    std::vector< ValueType > toVector() {
+    std::vector< ValueType > toVector() const {
         if ( !exists() ) {
             return std::vector< ValueType >();
         }
@@ -387,10 +398,10 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     /** @brief Vector containing the first n elements */
-    std::vector< ValueType > head( const ASTERINTEGER &n ) { return slice( 0, n ); };
+    std::vector< ValueType > head( const ASTERINTEGER &n ) const { return slice( 0, n ); };
 
     /** @brief Vector containing n elements, starting at position i */
-    std::vector< ValueType > slice( const ASTERINTEGER &first, const ASTERINTEGER &n ) {
+    std::vector< ValueType > slice( const ASTERINTEGER &first, const ASTERINTEGER &n ) const {
 
         CALL_JEMARQ();
 
@@ -422,7 +433,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param size new size of the vector
      */
     void resize( const ASTERINTEGER &size ) {
-        if ( !this->isAllocated() ) {
+        if ( !this->exists() ) {
             this->allocate( size );
         } else if ( size > this->capacity() ) {
             ASTERINTEGER taille = size;
@@ -462,7 +473,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param capacity new capacity.
      */
     void reserve( const ASTERINTEGER &capacity ) {
-        if ( this->isAllocated() ) {
+        if ( this->exists() ) {
             const auto size = this->size();
             this->resize( capacity );
             this->setSize( size );
@@ -510,7 +521,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     /** @brief overload << operator */
     friend std::ostream &operator<<( std::ostream &os,
                                      const JeveuxVectorClass< ValueType > &toPrint ) {
-        const_cast< JeveuxVectorClass< ValueType > & >( toPrint ).updateValuePointer();
+        toPrint.updateValuePointer();
         os << "JeveuxVector: " << toPrint.getName() << "\n";
         os << "Size: " << std::to_string( toPrint.size() )
            << ", and capacity: " << std::to_string( toPrint.capacity() ) << ".\n";
@@ -643,7 +654,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      */
     JeveuxVectorClass< ValueType > &operator-=( const JeveuxVectorClass< ValueType > &vect ) {
         CALL_JEMARQ();
-        const_cast< JeveuxVectorClass< ValueType > & >( vect ).updateValuePointer();
+        vect.updateValuePointer();
         this->updateValuePointer();
         const auto size = this->size();
 
@@ -685,7 +696,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      */
     JeveuxVectorClass< ValueType > &operator+=( const JeveuxVectorClass< ValueType > &vect ) {
         CALL_JEMARQ();
-        const_cast< JeveuxVectorClass< ValueType > & >( vect ).updateValuePointer();
+        vect.updateValuePointer();
         this->updateValuePointer();
         const auto size = this->size();
 
@@ -803,9 +814,9 @@ class JeveuxVector {
 
     auto end() { return _jeveuxVectorPtr->end(); };
 
-    auto cbegin() { return _jeveuxVectorPtr->cbegin(); };
+    const auto cbegin() { return _jeveuxVectorPtr->cbegin(); };
 
-    auto cend() { return _jeveuxVectorPtr->cend(); };
+    const auto cend() { return _jeveuxVectorPtr->cend(); };
 };
 
 /** @typedef Definition d'un vecteur Jeveux entier long */

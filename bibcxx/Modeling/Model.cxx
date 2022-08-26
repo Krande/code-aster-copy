@@ -150,7 +150,7 @@ bool Model::build() {
         dict.container["DISTRIBUTION"] = listeDISTRIBUTION;
     }
 
-    return buildWithSyntax( dict ) && update_tables();
+    return buildWithSyntax( dict ) && update_tables() && _ligrel->build();
 };
 
 bool Model::existsThm() {
@@ -265,13 +265,9 @@ bool Model::existsSTRX() {
     return false;
 };
 
-ASTERINTEGER Model::numberOfSuperElement() {
-    return _ligrel->numberOfSuperElement();
-};
+ASTERINTEGER Model::numberOfSuperElement() { return _ligrel->numberOfSuperElement(); };
 
-bool Model::existsFiniteElement() {
-    return _ligrel->existsFiniteElement();
-};
+bool Model::existsFiniteElement() { return _ligrel->existsFiniteElement(); };
 
 void Model::addModelingOnMesh( Physics phys, Modelings mod ) {
     _modelisations.push_back( listOfModsAndGrpsValue( ElementaryModeling( phys, mod ),

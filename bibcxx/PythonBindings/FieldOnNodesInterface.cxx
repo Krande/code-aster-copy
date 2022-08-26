@@ -38,6 +38,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, const FieldOnNodesReal & > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, MeshCoordinatesFieldPtr > ) )
         .def( "duplicate", &FieldOnNodesReal::duplicate )
@@ -105,11 +106,20 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Returns:
                 int: number of element in the field
             )" )
-        .def( "setValues", &FieldOnNodesReal::setValues, R"(
+        .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
+              R"(
             Set values of the field
 
             Arguments:
                 value (float): value to set
+            )",
+              py::arg( "value" ) )
+        .def( "setValues", py::overload_cast< const VectorReal & >( &FieldOnNodesReal::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                value (list[float]): list of values to set
             )",
               py::arg( "value" ) )
         .def( "getValues", &FieldOnNodesReal::getValues, py::return_value_policy::reference, R"(
@@ -134,6 +144,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, std::string > ) )
         .def( py::init< const FieldOnNodesComplex & >() )
+        .def( py::init( &initFactoryPtr< FieldOnNodesComplex, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
@@ -190,11 +201,21 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 float: euclidean norm
             )",
               py::arg( "normType" ), py::arg( "list_cmp" ) = VectorString() )
-        .def( "setValues", &FieldOnNodesComplex::setValues, R"(
+        .def( "setValues",
+              py::overload_cast< const ASTERCOMPLEX & >( &FieldOnNodesComplex::setValues ), R"(
             Set values of the field
 
-            Argument:
-                complex: value to set
+            Arguments:
+                value (complex): value to set
+            )",
+              py::arg( "value" ) )
+        .def( "setValues",
+              py::overload_cast< const VectorComplex & >( &FieldOnNodesComplex::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                value (list[complex]): list of values to set
             )",
               py::arg( "value" ) )
         .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );

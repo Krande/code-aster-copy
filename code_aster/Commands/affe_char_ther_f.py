@@ -67,6 +67,14 @@ class ThermalLoadFunctionDefinition(ExecuteCommand):
             keywords["MODELE"] = model
             self._result = ParallelThermalLoadFunction(partialThermalLoad, model)
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

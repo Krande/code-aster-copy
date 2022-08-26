@@ -97,7 +97,9 @@ class CellsIteratorFromConnectivity {
   public:
     CellsIteratorFromConnectivity( const JeveuxCollectionLong &connect,
                                    const JeveuxVectorLong &type )
-        : _connect( connect ), _type( type ){};
+        : _connect( connect ), _type( type ) {
+        _connect->build();
+    };
 
     CellObject getCellObject( const int &pos ) const
 
@@ -109,10 +111,11 @@ class CellsIteratorFromConnectivity {
 
         if ( pos > size2 || pos < 0 )
             return CellObject( 0, nullptr, 0, -1 );
-        const auto &obj = ( *_connect )[pos + 1];
-        const auto size = obj.size();
+        auto &obj = ( *_connect )[pos + 1];
+        obj->updateValuePointer();
+        const auto size = obj->size();
         const ASTERINTEGER type = ( *_type )[pos];
-        return CellObject( pos + 1, &obj.operator[]( 0 ), size, type );
+        return CellObject( pos + 1, &obj->operator[]( 0 ), size, type );
     };
 
     int size() const { return _type->size(); };
@@ -138,10 +141,11 @@ class CellsIteratorFromFiniteElementDescriptor {
 
         if ( pos > size2 || pos < 0 )
             return CellObject( 0, nullptr, 0, -1 );
-        const auto &obj = ( *_connectAndType )[pos + 1];
-        const auto size = obj.size() - 1;
-        const ASTERINTEGER type = obj[size];
-        return CellObject( pos + 1, &obj.operator[]( 0 ), size, type );
+        auto &obj = ( *_connectAndType )[pos + 1];
+        obj->updateValuePointer();
+        const auto size = obj->size() - 1;
+        const ASTERINTEGER type = (*obj)[size];
+        return CellObject( pos + 1, &obj->operator[]( 0 ), size, type );
     };
 
     int size() const { return _connectAndType->size(); };

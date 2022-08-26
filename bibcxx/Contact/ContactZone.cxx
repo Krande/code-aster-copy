@@ -233,7 +233,7 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
 }
 
 VectorLong ContactZone::getMasterCellsFromNode( const ASTERINTEGER &i ) const {
-    auto vct = ( *_masterInverseConnectivity )[i + 1].toVector();
+    auto vct = ( *_masterInverseConnectivity )[i + 1]->toVector();
     std::transform( vct.begin(), vct.end(), vct.begin(), [this]( ASTERINTEGER k ) -> ASTERINTEGER {
         return k > 0 ? _masterCells[k - 1] : 0;
     } );
@@ -241,7 +241,7 @@ VectorLong ContactZone::getMasterCellsFromNode( const ASTERINTEGER &i ) const {
 }
 
 VectorLong ContactZone::getSlaveCellsFromNode( const ASTERINTEGER &i ) const {
-    auto vct = ( *_slaveInverseConnectivity )[i + 1].toVector();
+    auto vct = ( *_slaveInverseConnectivity )[i + 1]->toVector();
     std::transform( vct.begin(), vct.end(), vct.begin(), [this]( ASTERINTEGER k ) -> ASTERINTEGER {
         return k > 0 ? _slaveCells[k - 1] : 0;
     } );
@@ -257,7 +257,7 @@ VectorLong ContactZone::getMasterCellNeighbors( const ASTERINTEGER &i ) const {
                                  " between " +
                                  std::to_string( ind_min ) + " and " + std::to_string( ind_max ) );
 
-    auto vct = ( *_masterNeighbors )[i - ind_min + 1].toVector();
+    auto vct = ( *_masterNeighbors )[i - ind_min + 1]->toVector();
     vct.erase( std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
                vct.end() );
     std::transform( vct.begin(), vct.end(), vct.begin(),
@@ -275,7 +275,7 @@ VectorLong ContactZone::getSlaveCellNeighbors( const ASTERINTEGER &i ) const {
                                  " between " +
                                  std::to_string( ind_min ) + " and " + std::to_string( ind_max ) );
 
-    auto vct = ( *_slaveNeighbors )[i - ind_min + 1].toVector();
+    auto vct = ( *_slaveNeighbors )[i - ind_min + 1]->toVector();
     vct.erase( std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
                vct.end() );
     std::transform( vct.begin(), vct.end(), vct.begin(),

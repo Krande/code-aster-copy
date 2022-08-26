@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -107,6 +107,15 @@ class MechanicalLoadDefinition(ExecuteCommand):
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadReal(partialMechanicalLoad, model)
+
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

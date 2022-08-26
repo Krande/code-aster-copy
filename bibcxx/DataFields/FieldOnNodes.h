@@ -208,6 +208,25 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Constructor with DOFNumbering
      */
+    FieldOnNodes( const ModelPtr &model ) : FieldOnNodes() {
+
+        // Create numbering from Local mode (see Cata)
+        auto dofNume = std::make_shared< DOFNumbering >();
+
+        dofNume->setModel( model );
+        dofNume->computeNumbering();
+
+        _dofDescription = dofNume->getDescription();
+        _mesh = dofNume->getMesh();
+
+        const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
+        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
+                           dofNume->getName() );
+    };
+
+    /**
+     * @brief Constructor with DOFNumbering
+     */
     FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
 
         _dofDescription = dofNum->getDescription();
@@ -524,6 +543,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         _valuesList->updateValuePointer();
         _valuesList->assign( value );
         CALL_JEDEMA();
+    };
+
+    void setValues( const std::vector< ValueType > &values ) {
+        AS_ASSERT( values.size() == size() );
+
+        *_valuesList = values;
     };
 
     /**

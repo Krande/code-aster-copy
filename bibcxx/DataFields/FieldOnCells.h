@@ -479,6 +479,7 @@ class FieldOnCells : public DataField {
             AS_ABORT( "Out of bounds" );
         }
 #endif
+        _descriptor->updateValuePointer();
         return ( *_descriptor )[( *_descriptor )[4 + iGrel] - 1 + 1];
     }
 
@@ -488,6 +489,7 @@ class FieldOnCells : public DataField {
             AS_ABORT( "Out of bounds" );
         }
 #endif
+        _descriptor->updateValuePointer();
         return ( *_descriptor )[( *_descriptor )[4 + iGrel] - 1 + 3];
     }
 
@@ -500,6 +502,7 @@ class FieldOnCells : public DataField {
             AS_ABORT( "Out of bounds" );
         }
 #endif
+        _descriptor->updateValuePointer();
         return ( *_descriptor )[( *_descriptor )[4 + iGrel] - 1 + 4 + 4 * iElem + 4] - 1;
     }
 
@@ -555,25 +558,25 @@ class FieldOnCells : public DataField {
         CellsRank->updateValuePointer();
 
         JeveuxCollectionLong collec = _dofDescription->getListOfGroupOfElements();
-        JeveuxVectorLong descr = _descriptor;
-        nbgrp = ( *descr )[1];
+        nbgrp = ( *_descriptor )[1];
 
         for ( auto i = 0; i < nbgrp; i++ ) {
 
-            ASTERINTEGER adress = ( *descr )[4 + i];
-            if ( ( *descr )[adress + 2] == 0 )
+            ASTERINTEGER adress = ( *_descriptor )[4 + i];
+            if ( ( *_descriptor )[adress + 2] == 0 )
                 continue;
 
-            ASTERINTEGER nel = ( *descr )[adress];
+            ASTERINTEGER nel = ( *_descriptor )[adress];
             auto liel = ( *collec )[i + 1];
+            liel->updateValuePointer();
 
             if ( normType == "NORM_1" ) {
                 for ( auto p = 0; p < nel; p++ ) {
 
-                    if ( ( *CellsRank )[liel[p] - 1] != rank )
+                    if ( ( *CellsRank )[( *liel )[p] - 1] != rank )
                         continue;
-                    beg = ( *descr )[adress + 3 + 4 * p + 4] - 1;
-                    end = beg + ( *descr )[adress + 3 + 4 * p + 3];
+                    beg = ( *_descriptor )[adress + 3 + 4 * p + 4] - 1;
+                    end = beg + ( *_descriptor )[adress + 3 + 4 * p + 3];
 
                     for ( int pos = beg; pos < end; ++pos ) {
                         norme += std::abs( ( *this )[pos] );
@@ -582,10 +585,10 @@ class FieldOnCells : public DataField {
             } else if ( normType == "NORM_2" ) {
                 for ( auto p = 0; p < nel; p++ ) {
 
-                    if ( ( *CellsRank )[liel[p] - 1] != rank )
+                    if ( ( *CellsRank )[( *liel )[p] - 1] != rank )
                         continue;
-                    beg = ( *descr )[adress + 3 + 4 * p + 4] - 1;
-                    end = beg + ( *descr )[adress + 3 + 4 * p + 3];
+                    beg = ( *_descriptor )[adress + 3 + 4 * p + 4] - 1;
+                    end = beg + ( *_descriptor )[adress + 3 + 4 * p + 3];
 
                     for ( int pos = beg; pos < end; ++pos ) {
                         norme += ( *this )[pos] * ( *this )[pos];
@@ -594,10 +597,10 @@ class FieldOnCells : public DataField {
             } else if ( normType == "NORM_INFINITY" ) {
                 for ( auto p = 0; p < nel; p++ ) {
 
-                    if ( ( *CellsRank )[liel[p] - 1] != rank )
+                    if ( ( *CellsRank )[( *liel )[p] - 1] != rank )
                         continue;
-                    beg = ( *descr )[adress + 3 + 4 * p + 4] - 1;
-                    end = beg + ( *descr )[adress + 3 + 4 * p + 3];
+                    beg = ( *_descriptor )[adress + 3 + 4 * p + 4] - 1;
+                    end = beg + ( *_descriptor )[adress + 3 + 4 * p + 3];
 
                     for ( int pos = beg; pos < end; ++pos ) {
                         norme = std::max( norme, std::abs( ( *this )[pos] ) );

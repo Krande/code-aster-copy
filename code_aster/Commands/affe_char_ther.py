@@ -71,7 +71,6 @@ class ThermalLoadDefinition(ExecuteCommand):
                 else:
                     self._result = ThermalLoadReal(model)
 
-
     def exec_(self, keywords):
         """Override default _exec in case of parallel load
         """
@@ -90,6 +89,14 @@ class ThermalLoadDefinition(ExecuteCommand):
             keywords["MODELE"] = model
             self._result = ParallelThermalLoadReal(partialThermalLoad, model)
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

@@ -101,6 +101,8 @@ class AcousticLoad : public DataStructure {
      * @brief Get the mesh
      */
     BaseMeshPtr getMesh() { return _acouLoadDesc->getMesh(); };
+
+    bool build() { return _acouLoadDesc->build(); };
 };
 
 /**********************************************************/

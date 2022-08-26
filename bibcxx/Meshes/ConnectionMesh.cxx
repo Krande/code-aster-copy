@@ -246,7 +246,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Get cells lying on nodes */
     for ( auto i = 0; i < numberOfNodesToSend; i++ ) {
         const auto nodeId = nodesToSend[i];
-        const auto listCells = ( *connecInv )[nodeId + 1].toVector();
+        const auto listCells = ( *connecInv )[nodeId + 1]->toVector();
 
         for ( const auto cell : listCells ) {
             const auto cellId = cell - 1;
@@ -265,7 +265,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     for ( auto i = 0; i < numberOfNodesToCheck; i++ ) {
         const auto nodeId = nodesToCheck[i];
-        const auto listCells = ( *connecInv )[nodeId + 1].toVector();
+        const auto listCells = ( *connecInv )[nodeId + 1]->toVector();
 
         for ( const auto cell : listCells ) {
             const auto cellId = cell - 1;
@@ -640,7 +640,7 @@ VectorLong ConnectionMesh::getCells( const std::string name ) const {
         return VectorLong();
     }
 
-    VectorLong cells = ( *_groupsOfCells )[name].toVector();
+    VectorLong cells = ( *_groupsOfCells )[name]->toVector();
     for ( auto &cell : cells )
         cell -= 1;
     return cells;

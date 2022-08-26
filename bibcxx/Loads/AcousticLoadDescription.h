@@ -138,6 +138,16 @@ class AcousticLoadDescription : public DataStructure {
      * @brief Get the model
      */
     BaseMeshPtr getMesh() { return _model->getMesh(); };
+
+    bool build() {
+        _FEDesc->build();
+        _imposedValues->build();
+        _multiplier->build();
+        _impedanceValues->build();
+        _speedValues->build();
+
+        return true;
+    };
 };
 
 /**********************************************************/

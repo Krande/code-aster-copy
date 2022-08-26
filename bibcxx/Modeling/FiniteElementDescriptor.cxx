@@ -85,7 +85,6 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {
-    _delayedNumberedConstraintElementsDescriptor->build();
     return _explorer;
 };
 
@@ -100,17 +99,14 @@ const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesNumbering() cons
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getListOfGroupOfElementsExplorer() const {
-    _listOfGroupOfCells->build();
     return _explorer2;
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfElements() const {
-    _listOfGroupOfCells->build();
     return _listOfGroupOfCells;
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
-    _delayedNumberedConstraintElementsDescriptor->build();
     return _delayedNumberedConstraintElementsDescriptor;
 };
 
@@ -194,7 +190,6 @@ bool FiniteElementDescriptor::existsFiniteElement() {
     return false;
 };
 
-
 bool FiniteElementDescriptor::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }
 
 bool FiniteElementDescriptor::exists() const {
@@ -202,6 +197,13 @@ bool FiniteElementDescriptor::exists() const {
         return true;
 
     return false;
+};
+
+bool FiniteElementDescriptor::build() {
+    _delayedNumberedConstraintElementsDescriptor->build( true );
+    _listOfGroupOfCells->build( true );
+
+    return true;
 };
 
 #ifdef ASTER_HAVE_MPI
@@ -291,7 +293,8 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
             auto numGrel = ( *otherRepe )[2 * cellId];
             if ( numGrel > 0 ) {
                 auto &grel = ( *otherLiel )[numGrel];
-                auto typeFE = grel[grel.size() - 1];
+                grel->updateValuePointer();
+                auto typeFE = (*grel)[grel->size() - 1];
                 typeCellFE.push_back( typeFE );
             } else {
                 typeCellFE.push_back( 0 );

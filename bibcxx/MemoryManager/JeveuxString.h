@@ -190,7 +190,34 @@ class JeveuxString {
         os << toPrint.toString();
 
         return os;
-    }
+    };
+
+    inline const char &operator[]( const ASTERINTEGER &i ) const {
+#ifdef ASTER_DEBUG_CXX
+        if ( i < 0 && i >= this->size() ) {
+            std::string error = "Out of range of JeveuxString, index = " + std::to_string( i ) +
+                                " ( size = " + std::to_string( this->size() ) + " )";
+            AS_ABORT( error );
+        }
+#endif
+        return currentValue[i];
+    };
+
+    /**
+     * @brief Surcharge de l'operateur [] sans const (pour les lvalue)
+     * @param i Indice dans le tableau Jeveux
+     * @return la valeur du tableau Jeveux a la position i
+     */
+    inline char &operator[]( const ASTERINTEGER &i ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( i < 0 && i >= this->size() ) {
+            std::string error = "Out of range of JeveuxString, index = " + std::to_string( i ) +
+                                " ( size = " + std::to_string( this->size() ) + " )";
+            AS_ABORT( error );
+        }
+#endif
+        return currentValue[i];
+    };
 };
 
 /** @typedef Definition d'une chaine Jeveux de longueur 8 */

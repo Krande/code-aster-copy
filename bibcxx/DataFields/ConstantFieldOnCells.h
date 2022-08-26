@@ -146,8 +146,6 @@ class ConstantFieldOnCells : public DataField {
     const BaseMeshPtr _mesh;
     /** @brief Ligrel */
     FiniteElementDescriptorPtr _FEDesc;
-    /** @brief La carte est-elle allouée ? */
-    bool _isAllocated;
     /** @brief Objet temporaire '.NCMP' */
     JeveuxVectorChar8 _componentNames;
     /** @brief Objet temporaire '.VALV' */
@@ -237,7 +235,6 @@ class ConstantFieldOnCells : public DataField {
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
           _mesh( mesh ),
           _FEDesc( FiniteElementDescriptorPtr() ),
-          _isAllocated( false ),
           _componentNames( getName() + ".NCMP" ),
           _valuesListTmp( getName() + ".VALV" ){};
 
@@ -282,7 +279,6 @@ class ConstantFieldOnCells : public DataField {
         *( _componentNames ) = *( toCopy._componentNames );
         *( _valuesListTmp ) = *( toCopy._valuesListTmp );
         _FEDesc = toCopy._FEDesc;
-        _isAllocated = toCopy._isAllocated;
 
         updateValuePointers();
     };
@@ -305,7 +301,6 @@ class ConstantFieldOnCells : public DataField {
 
         std::string strJeveuxBase( "G" );
         fortranAllocate( strJeveuxBase, componant );
-        _isAllocated = true;
     };
 
     /**
@@ -316,7 +311,6 @@ class ConstantFieldOnCells : public DataField {
         auto componant = model->getPhysicalQuantityName();
         std::string strJeveuxBase( "G" );
         fortranAllocate( strJeveuxBase, componant );
-        _isAllocated = true;
     };
 
     /**
@@ -328,7 +322,6 @@ class ConstantFieldOnCells : public DataField {
         _nameOfLigrels->deallocate();
         _listOfMeshCells->deallocate();
         _valuesList->deallocate();
-        _isAllocated = false;
         _componentNames->deallocate();
         _valuesListTmp->deallocate();
     };
@@ -359,7 +352,8 @@ class ConstantFieldOnCells : public DataField {
         const auto name1 = PhysicalQuantityManager::Class().getPhysicalQuantityName( gdeur );
         ASTERINTEGER nec = PhysicalQuantityManager::Class().getNumberOfEncodedInteger( gdeur );
         const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
-        const ASTERINTEGER nbCmpMax = compNames.size();
+        compNames->updateValuePointer();
+        const ASTERINTEGER nbCmpMax = compNames->size();
         VectorString cmpToReturn;
         cmpToReturn.reserve( 30 * nec );
         std::vector< ValueType > valToReturn;
@@ -371,7 +365,7 @@ class ConstantFieldOnCells : public DataField {
             ASTERINTEGER pos = 0;
             for ( const auto &val : vecOfComp ) {
                 if ( val == 1 ) {
-                    cmpToReturn.push_back( compNames[pos + i * 30].toString() );
+                    cmpToReturn.push_back( ( *compNames )[pos + i * 30].toString() );
                     const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
                     valToReturn.push_back( ( *_valuesList )[posInVale] );
                 }
@@ -392,7 +386,8 @@ class ConstantFieldOnCells : public DataField {
         auto size = ( *_descriptor )[2];
         ASTERINTEGER nec = PhysicalQuantityManager::Class().getNumberOfEncodedInteger( gdeur );
         const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
-        const ASTERINTEGER nbCmpMax = compNames.size();
+        compNames->updateValuePointer();
+        const ASTERINTEGER nbCmpMax = compNames->size();
 
         std::vector< ConstantFieldValues< ValueType > > vectorOfConstantFieldValues;
         vectorOfConstantFieldValues.reserve( size );
@@ -409,7 +404,7 @@ class ConstantFieldOnCells : public DataField {
                 ASTERINTEGER pos = 0;
                 for ( const auto &val : vecOfComp ) {
                     if ( val == 1 ) {
-                        cmpToReturn.push_back( compNames[pos + i * 30].toString() );
+                        cmpToReturn.push_back( ( *compNames )[pos + i * 30].toString() );
                         const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
                         valToReturn.push_back( ( *_valuesList )[posInVale] );
                     }
@@ -442,11 +437,11 @@ class ConstantFieldOnCells : public DataField {
         } else if ( code == 3 ) {
             const auto numGrp = ( *_descriptor )[4 + 2 * position];
             const auto &object = ( *_listOfMeshCells )[numGrp];
-            return ConstantFieldOnZone( _mesh, object.toVector() );
+            return ConstantFieldOnZone( _mesh, object->toVector() );
         } else if ( code == -3 ) {
             const auto numGrp = ( *_descriptor )[4 + 2 * position];
             const auto &object = ( *_listOfMeshCells )[numGrp];
-            return ConstantFieldOnZone( _FEDesc, object.toVector() );
+            return ConstantFieldOnZone( _FEDesc, object->toVector() );
         } else
             throw std::runtime_error( "Error in ConstantFieldOnCells" );
     };
@@ -459,7 +454,7 @@ class ConstantFieldOnCells : public DataField {
      */
     bool setValueOnMesh( const JeveuxVectorChar8 &component,
                          const JeveuxVector< ValueType > &values ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+        if ( !_mesh || _mesh->isEmpty() ) {
             AS_ABORT( "Mesh is empty" );
         }
 
@@ -483,7 +478,7 @@ class ConstantFieldOnCells : public DataField {
     bool setValueOnListOfDelayedCells( const JeveuxVectorChar8 &component,
                                        const JeveuxVector< ValueType > &values,
                                        const VectorLong &grp ) {
-        if ( _mesh.use_count() == 0 || _mesh->isEmpty() ) {
+        if ( !_mesh || _mesh->isEmpty() ) {
             AS_ABORT( "Mesh is empty" );
         }
 
@@ -592,9 +587,15 @@ class ConstantFieldOnCells : public DataField {
         _descriptor->updateValuePointer();
         _valuesList->updateValuePointer();
         // Les deux elements suivants sont facultatifs
-        _listOfMeshCells->build();
+        _listOfMeshCells->updateValuePointer();
         if ( _nameOfLigrels->exists() )
             _nameOfLigrels->updateValuePointer();
+    };
+
+    bool build() {
+        _listOfMeshCells->build( true );
+
+        return true;
     };
 };
 

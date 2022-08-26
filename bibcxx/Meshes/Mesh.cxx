@@ -45,16 +45,10 @@ bool Mesh::readGmshFile( const std::string &fileName ) {
 }
 
 bool Mesh::hasGroupOfCells( const std::string &name, const bool ) const {
-    if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
-        return false;
-    }
     return _groupsOfCells->contains( name );
 }
 
 bool Mesh::hasGroupOfNodes( const std::string &name, const bool ) const {
-    if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
-        return false;
-    }
     return _groupsOfNodes->contains( name );
 }
 
@@ -83,7 +77,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
     } else if ( !hasGroupOfCells( name ) ) {
         return VectorLong();
     }
-    VectorLong cells = ( *_groupsOfCells )[name].toVector();
+    VectorLong cells = ( *_groupsOfCells )[name]->toVector();
     for ( auto &cell : cells )
         cell -= 1;
     return cells;
@@ -95,7 +89,7 @@ VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGE
     } else if ( !hasGroupOfNodes( name ) ) {
         return VectorLong();
     }
-    VectorLong nodes = ( *_groupsOfNodes )[name].toVector();
+    VectorLong nodes = ( *_groupsOfNodes )[name]->toVector();
     for ( auto &node : nodes )
         node -= 1;
     return nodes;

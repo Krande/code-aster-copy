@@ -49,7 +49,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
       _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
       _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
-      _model( ModelPtr( nullptr ) ),
+      _model( nullptr ),
       _listOfLoads( new ListOfLoads() ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),

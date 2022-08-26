@@ -150,6 +150,8 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         _trans02->updateValuePointer();
         _poidsMaille->updateValuePointer();
     };
+
+    bool build() { return _mecaLoadDesc->build(); }
 };
 
 /**********************************************************/

@@ -85,7 +85,7 @@ class BaseFunction : public GenericFunction {
      * @type  name string
      */
     void setParameterName( const std::string name ) {
-        if ( !_property->isAllocated() )
+        if ( !_property->exists() )
             propertyAllocate();
         ( *_property )[2] = name.substr( 0, 8 ).c_str();
     }
@@ -96,7 +96,7 @@ class BaseFunction : public GenericFunction {
      * @type  name string
      */
     void setResultName( const std::string name ) {
-        if ( !_property->isAllocated() )
+        if ( !_property->exists() )
             propertyAllocate();
         ( *_property )[3] = name.substr( 0, 8 ).c_str();
     }

@@ -80,7 +80,7 @@ void BaseFunction::setValues( const VectorReal &absc, const VectorReal &ordo ) {
 
 void BaseFunction::setInterpolation( const std::string type ) {
     std::string interp;
-    if ( !_property->isAllocated() )
+    if ( !_property->exists() )
         propertyAllocate();
 
     if ( type.length() != 7 )
@@ -98,7 +98,7 @@ void BaseFunction::setInterpolation( const std::string type ) {
 }
 
 void BaseFunction::setAsConstant() {
-    if ( !_property->isAllocated() )
+    if ( !_property->exists() )
         propertyAllocate();
     _funct_type = "CONSTANT";
     ( *_property )[0] = _funct_type;

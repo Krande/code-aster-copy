@@ -255,15 +255,15 @@ void ContactPairing::buildFiniteElementDescriptor() {
             auto mast_cell_con = ( *meshConnectivty )[mastCellNume + 1];
 
             VectorLong toCopy;
-            toCopy.reserve( slav_cell_con.size() + mast_cell_con.size() + 1 );
+            toCopy.reserve( slav_cell_con->size() + mast_cell_con->size() + 1 );
 
             /*Copy slave nodes*/
-            auto toAdd = slav_cell_con.toVector();
+            auto toAdd = slav_cell_con->toVector();
             toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
             slaveNodePaired.insert( toAdd.begin(), toAdd.end() );
 
             /*Copy master nodes*/
-            toAdd = mast_cell_con.toVector();
+            toAdd = mast_cell_con->toVector();
             toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
 
             /*Copy contact element type*/
@@ -292,7 +292,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
         for ( auto &slavCellNume : slaveCells ) {
             if ( slaveCellPaired.count( slavCellNume ) == 0 ) {
                 slaveCellPaired.insert( slavCellNume );
-                auto slav_cell_con = ( *meshConnectivty )[slavCellNume + 1].toVector();
+                auto slav_cell_con = ( *meshConnectivty )[slavCellNume + 1]->toVector();
                 auto cellType = trim( mesh->getCellTypeName( slavCellNume ) );
                 ASTERINTEGER nno_lgar = 0, nno = 0;
 
@@ -461,6 +461,8 @@ void ContactPairing::buildFiniteElementDescriptor() {
     CALLO_ADALIG_WRAP( _fed->getName() );
     bool l_calc_rigi = false;
     CALLO_INITEL( _fed->getName(), (ASTERLOGICAL *)&l_calc_rigi );
+
+    _fed->build();
 
     CALL_JEDEMA();
 };

@@ -76,6 +76,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
         auto aster_index = i + 1;
         auto type_med = ( *cells_types )[i];
         auto nodes_med = ( *med_connectivity )[aster_index];
+        nodes_med->updateValuePointer();
 
         int mc_type = med_to_mc[type_med][0];
         int dim = med_to_mc[type_med][1];
@@ -84,7 +85,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
         connectivity[dim].push_back( mc_type );
         for ( int j = 0; j < cell_size; ++j ) {
             // shift de 1 sur l'indexe des noeuds
-            connectivity[dim].push_back( nodes_med[j] - 1 );
+            connectivity[dim].push_back( (*nodes_med)[j] - 1 );
         }
 
         // connectivity_index indique la position des types dans connectivity

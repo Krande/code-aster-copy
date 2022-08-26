@@ -37,7 +37,7 @@
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
+class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
   private:
     /** @brief Nom Jeveux de la collection */
     std::string _collectionName;
@@ -86,22 +86,14 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
     };
 
   public:
-    JeveuxCollectionObject()
-        : _collectionName( "" ),
-          _numberInCollection( -1 ),
-          _nameOfObject( "" ),
-          _valuePtr( nullptr ),
-          _size( 0 ),
-          _jeveuxAdress( 0 ){};
-
     /**
      * @brief Constructeur
      * @param collectionName Nom de collection
      * @param number Numero de l'objet dans la collection
      * @param objectName Nom de l'objet de collection
      */
-    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            bool isNamed )
+    JeveuxCollectionObjectClass( const std::string &collectionName, const ASTERINTEGER &number,
+                                 bool isNamed )
         : _collectionName( collectionName ),
           _numberInCollection( number ),
           _nameOfObject( "" ),
@@ -125,8 +117,6 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
         std::string charval = std::string( 32, ' ' );
         CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
         _size = valTmp;
-
-        updateValuePointer();
     };
 
     /**
@@ -134,8 +124,8 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @param collectionName Nom de collection
      * @param number Numero de l'objet dans la collection
      */
-    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            const ASTERINTEGER &size )
+    JeveuxCollectionObjectClass( const std::string &collectionName, const ASTERINTEGER &number,
+                                 const ASTERINTEGER &size )
         : _collectionName( collectionName ),
           _numberInCollection( number ),
           _nameOfObject( "" ),
@@ -151,8 +141,8 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @param number Numero de l'objet dans la collection
      * @param objectName Nom de l'objet de collection
      */
-    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            const std::string &objectName, const ASTERINTEGER &size )
+    JeveuxCollectionObjectClass( const std::string &collectionName, const ASTERINTEGER &number,
+                                 const std::string &objectName, const ASTERINTEGER &size )
         : _collectionName( collectionName ),
           _numberInCollection( number ),
           _nameOfObject( trim( objectName ) ),
@@ -236,24 +226,21 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
      * @brief Mise a jour du pointeur Jeveux
      * @return true si la mise a jour s'est bien passee
      */
-    void updateValuePointer() {
-#ifdef ASTER_DEBUG_CXX
-        if ( !exists() ) {
-            AS_ABORT( getJeveuxName() + " does not exists" );
-        }
-#endif
-        if ( !_valuePtr || hasMoved() ) {
-            _valuePtr = NULL;
+    void updateValuePointer() const {
+        if ( hasMoved() ) {
+            const_cast< JeveuxCollectionObjectClass< ValueType > * >( this )->_valuePtr = NULL;
+
             const std::string read( "L" );
             std::string charJeveuxName = getJeveuxName();
             CALLO_JEVEUOC( charJeveuxName, read, (void *)( &_valuePtr ) );
             AS_ASSERT( _valuePtr );
 
-            ASTERINTEGER valTmp;
+            ASTERINTEGER valTmp = 0;
             JeveuxChar8 param( "IADM" );
             std::string charval = std::string( 32, ' ' );
             CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
-            _jeveuxAdress = valTmp;
+            const_cast< JeveuxCollectionObjectClass< ValueType > * >( this )->_jeveuxAdress =
+                valTmp;
         }
     };
 
@@ -261,7 +248,7 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _valuePtr != nullptr );
         if ( i < 0 && i >= this->size() ) {
-            std::string error = "Out of range of JeveuxCollectionObject '" + getStringName() +
+            std::string error = "Out of range of JeveuxCollectionObjectClass '" + getStringName() +
                                 "', index = " + std::to_string( i ) +
                                 " ( size = " + std::to_string( this->size() ) + " )";
             AS_ABORT( error );
@@ -278,12 +265,26 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
     bool hasMoved() const {
         std::string charJeveuxName = getJeveuxName();
 
+        // check if object is in memory
+        ASTERINTEGER idummy;
+        JeveuxChar8 param0( "USAGE" );
+        JeveuxChar32 usage( " " );
+        CALLO_JELIRA( charJeveuxName, param0, &idummy, usage );
+
+        if ( usage[0] == 'X' ) {
+            const_cast< JeveuxCollectionObjectClass< ValueType > * >( this )->_valuePtr = NULL;
+            return true;
+        }
+
         ASTERINTEGER valTmp;
         JeveuxChar8 param( "IADM" );
-        std::string charval = std::string( 32, ' ' );
-        CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
-        if ( valTmp != _jeveuxAdress )
+        JeveuxChar32 dummy( " " );
+        CALLO_JELIRA( charJeveuxName, param, &valTmp, dummy );
+        if ( valTmp != _jeveuxAdress ) {
+            const_cast< JeveuxCollectionObjectClass< ValueType > * >( this )->_valuePtr = NULL;
             return true;
+        }
+
         return false;
     };
 
@@ -317,9 +318,7 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
 
     /** @brief Convert to std::vector */
     std::vector< ValueType > toVector() const {
-        if ( _valuePtr == nullptr ) {
-            AS_ABORT( "Pointer is null" );
-        }
+        this->updateValuePointer();
         std::vector< ValueType > toReturn;
         toReturn.reserve( size() );
         for ( ASTERINTEGER i = 0; i < size(); ++i )
@@ -327,7 +326,7 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
         return toReturn;
     };
 
-    bool operator==( JeveuxCollectionObject< ValueType > &toCompar ) const {
+    bool operator==( JeveuxCollectionObjectClass< ValueType > &toCompar ) const {
         if ( this->size() != toCompar.size() )
             return false;
 
@@ -360,9 +359,9 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
 
     /**
      * @brief TimesEqual overloading
-     * @return Updated JeveuxVector
+     * @return Updated JeveuxCollectionObject
      */
-    JeveuxCollectionObject< ValueType > &operator*=( const ValueType &scal ) {
+    JeveuxCollectionObjectClass< ValueType > &operator*=( const ValueType &scal ) {
         this->updateValuePointer();
         const auto size = this->size();
 
@@ -373,7 +372,7 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
 
     /** @brief overload << operator */
     friend std::ostream &operator<<( std::ostream &os,
-                                     const JeveuxCollectionObject< ValueType > &toPrint ) {
+                                     const JeveuxCollectionObjectClass< ValueType > &toPrint ) {
         os << "JeveuxCollectionObject: " << toPrint.getStringName() << "\n";
         os << "Size: " << std::to_string( toPrint.size() )
            << ", and capacity: " << std::to_string( toPrint.capacity() ) << ".\n";
@@ -389,6 +388,75 @@ class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
 
         return os;
     }
+};
+
+template < class ValueType >
+class JeveuxCollectionObject {
+  public:
+    typedef std::shared_ptr< JeveuxCollectionObjectClass< ValueType > >
+        JeveuxCollectionObjectTypePtr;
+
+  private:
+    JeveuxCollectionObjectTypePtr _jeveuxCOPtr;
+
+  public:
+    /* Default constructor to be initialized with a null pointer
+     * and really created later.
+     */
+    JeveuxCollectionObject() : _jeveuxCOPtr( nullptr ){};
+
+    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
+                            bool isNamed )
+        : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
+              collectionName, number, isNamed ) ){};
+
+    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
+                            const ASTERINTEGER &size )
+        : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
+              collectionName, number, size ) ){};
+
+    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
+                            const std::string &objectName, const ASTERINTEGER &size )
+        : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
+              collectionName, number, objectName, size ) ){};
+
+    ~JeveuxCollectionObject(){};
+
+    JeveuxCollectionObject &operator=( const JeveuxCollectionObject< ValueType > &tmp ) {
+        _jeveuxCOPtr = tmp._jeveuxCOPtr;
+        return *this;
+    };
+
+    const JeveuxCollectionObjectTypePtr &operator->( void ) const {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _jeveuxCOPtr );
+#endif
+
+        return _jeveuxCOPtr;
+    };
+
+    JeveuxCollectionObjectClass< ValueType > &operator*( void ) const {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _jeveuxCOPtr );
+#endif
+        return *_jeveuxCOPtr;
+    };
+
+    bool isEmpty() const {
+        if ( _jeveuxCOPtr == nullptr )
+            return true;
+        if ( _jeveuxCOPtr.use_count() == 0 )
+            return true;
+        return false;
+    };
+
+    auto begin() { return _jeveuxCOPtr->begin(); };
+
+    auto end() { return _jeveuxCOPtr->end(); };
+
+    const auto cbegin() { return _jeveuxCOPtr->cbegin(); };
+
+    const auto cend() { return _jeveuxCOPtr->cend(); };
 };
 
 /** @typedef Definition d'un objet de collection de type entier long */

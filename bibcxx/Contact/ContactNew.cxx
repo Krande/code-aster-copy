@@ -181,6 +181,8 @@ bool ContactNew::build() {
         bool l_calc_rigi = false;
         CALLO_INITEL( _FEDesc->getName(), (ASTERLOGICAL *)&l_calc_rigi );
         _FEDesc->setModel( getModel() );
+
+        _FEDesc->build();
     }
 
     CALL_JEDEMA();

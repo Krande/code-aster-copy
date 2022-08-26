@@ -118,7 +118,6 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
     auto pair2Zone = pairing->pairsToZones();
 
     auto grel = fed->getListOfGroupOfElements();
-    grel->build();
     auto nbGrel = data->getNumberOfGroupOfElements();
 
     ASTERINTEGER nbPair = 0;
@@ -129,8 +128,9 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
         // size from catalogue
         AS_ASSERT( data->getSizeOfFieldOfElement( iGrel ) == 60 );
         auto liel = ( *grel )[iGrel + 1];
+        liel->updateValuePointer();
         for ( ASTERINTEGER iElem = 0; iElem < nbElem; iElem++ ) {
-            auto iPair = -liel[iElem];
+            auto iPair = -(*liel)[iElem];
 
             if ( iPair <= nbContPair ) {
                 auto iZone = pair2Zone[iPair - 1];

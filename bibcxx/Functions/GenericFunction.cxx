@@ -32,7 +32,7 @@
 #include <vector>
 
 void GenericFunction::setExtrapolation( const std::string type ) {
-    if ( !_property->isAllocated() )
+    if ( !_property->exists() )
         propertyAllocate();
 
     if ( type.length() != 2 )

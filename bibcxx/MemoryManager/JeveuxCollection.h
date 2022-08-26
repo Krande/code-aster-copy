@@ -196,9 +196,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
     auto end() const { return _listObjects.end(); };
 
-    auto cbegin() const { return _listObjects.cbegin(); };
+    const auto cbegin() const { return _listObjects.cbegin(); };
 
-    auto cend() const { return _listObjects.cend(); };
+    const auto cend() const { return _listObjects.cend(); };
 
     /**
      * @brief Allocation
@@ -323,7 +323,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     JeveuxCollObjValType allocateObject( const std::string &name,
                                          const std::vector< ValueType > &values ) {
         auto obj = allocateObject( name, values.size() );
-        obj.setValues( values );
+        obj->setValues( values );
 
         return obj;
     };
@@ -354,7 +354,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     JeveuxCollObjValType allocateObject( const std::vector< ValueType > &values ) {
         auto obj = allocateObject( values.size() );
-        obj.setValues( values );
+        obj->setValues( values );
 
         return obj;
     };
@@ -364,14 +364,14 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     void push_back( const std::vector< ValueType > &values ) {
         auto obj = allocateObject( values.size() );
-        obj.setValues( values );
+        obj->setValues( values );
     };
     /**
      * @brief Allocation of one object by name
      */
     void push_back( const std::string &name, const std::vector< ValueType > &values ) {
         auto obj = allocateObject( name, values.size() );
-        obj.setValues( values );
+        obj->setValues( values );
     };
 
     /**
@@ -406,6 +406,12 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     bool contains( const ASTERINTEGER &number ) const;
 
+    void updateValuePointer() const {
+        for ( const auto &[key, obj] : _listObjects ) {
+            obj->updateValuePointer();
+        }
+    }
+
     /**
      * @brief Methode permettant d'obtenir la liste des objets nommés dans la collection
      * @return vecteur de noms d'objet de collection
@@ -416,7 +422,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         VectorLong ret;
         ret.reserve( size() );
 
-        for ( auto &[key, obj] : _listObjects ) {
+        for ( const auto &[key, obj] : _listObjects ) {
             ret.push_back( key );
         }
 
@@ -427,7 +433,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         std::vector< JeveuxCollObjValType > ret;
         ret.reserve( size() );
 
-        for ( auto &[key, obj] : _listObjects ) {
+        for ( const auto &[key, obj] : _listObjects ) {
             ret.push_back( obj );
         }
 
@@ -529,7 +535,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
                 return false;
             }
 
-            if ( obj != toCompar[key] ) {
+            if ( *obj != *toCompar[key] ) {
                 return false;
             }
         }
@@ -542,7 +548,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         auto size = this->size();
 
         for ( auto &[key, obj] : _listObjects ) {
-            obj *= scal;
+            ( *obj ) *= scal;
         }
 
         return *this;
@@ -573,16 +579,8 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     CALLO_JELIRA( _name, param2, &_capacity, charval );
 
     if ( !force && !_isEmpty && size() == nbColObj ) {
-        for ( auto &[key, obj] : _listObjects )
-            if ( obj.hasMoved() ) {
-                force = true;
-                break;
-            }
-        if ( !force )
-            return true;
+        return true;
     }
-
-    AS_ASSERT( size() <= capacity() );
 
     _listObjects.clear();
 
@@ -600,7 +598,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
             _listObjects[i] = JeveuxCollObjValType( _name, i, _isNamed );
 
             if ( _isNamed ) {
-                _mapNumObject[_listObjects[i].getStringName()] = i;
+                _mapNumObject[_listObjects[i]->getStringName()] = i;
             }
         }
     }
@@ -637,8 +635,8 @@ std::vector< JeveuxChar32 >
 JeveuxCollectionClass< ValueType, AccessType >::getObjectsNames() const {
     std::vector< JeveuxChar32 > toReturn;
     toReturn.reserve( size() );
-    for ( auto &[key, obj] : _listObjects )
-        toReturn.push_back( obj.getName() );
+    for ( const auto &[key, obj] : _listObjects )
+        toReturn.push_back( obj->getName() );
     return toReturn;
 };
 
@@ -700,9 +698,9 @@ class JeveuxCollection {
 
     auto end() { return _jeveuxCollectionPtr->end(); };
 
-    auto cbegin() { return _jeveuxCollectionPtr->cbegin(); };
+    const auto cbegin() { return _jeveuxCollectionPtr->cbegin(); };
 
-    auto cend() { return _jeveuxCollectionPtr->cend(); };
+    const auto cend() { return _jeveuxCollectionPtr->cend(); };
 };
 
 /** @typedef Definition d'une collection de type entier long */
