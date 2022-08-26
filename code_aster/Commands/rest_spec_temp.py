@@ -20,6 +20,7 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 from ..Objects import (
+    FullResult,
     FullHarmonicResult,
     FullTransientResult,
     HarmoGeneralizedResult,
@@ -58,8 +59,10 @@ class FourierTransformation(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if keywords.get("RESULTAT"):
-            self._result.setModel(keywords.get("RESULTAT").getModel())
+        resultat = keywords.get("RESULTAT")
+        if resultat:
+            self._result.setModel(resultat.getModel())
+            self._result.setDOFNumbering(resultat.getDOFNumbering())
         else:
             self._result.setGeneralizedDOFNumbering(
                 keywords["RESU_GENE"].getGeneralizedDOFNumbering()
