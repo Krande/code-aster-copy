@@ -53,11 +53,9 @@ class FieldBuilder {
      */
     FiniteElementDescriptorPtr newFiniteElementDescriptor( const std::string &name,
                                                            const BaseMeshPtr mesh ) {
-#ifdef ASTER_DEBUG_CXX
         if ( _setLigrel.count( trim( name ) ) > 0 ) {
             raiseAsterError( "LIGREL already exists: " + name );
         }
-#endif
 
         auto curDesc = std::make_shared< FiniteElementDescriptor >( name, mesh );
 
@@ -70,11 +68,9 @@ class FieldBuilder {
      * @brief Add a existing FieldOnNodesDescription in FieldBuilder
      */
     FieldOnNodesDescriptionPtr newFieldOnNodesDescription( const std::string &name ) {
-#ifdef ASTER_DEBUG_CXX
         if ( _setProfChno.count( trim( name ) ) > 0 ) {
             raiseAsterError( "PROF_CHNO already exists: " + name );
         }
-#endif
 
         auto curDesc = std::make_shared< FieldOnNodesDescription >( name );
         addFieldOnNodesDescription( curDesc );
