@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -43,19 +43,12 @@ class RemoveLagrangian(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        try:
-            numeDof = keywords["MATR_RIGI"].getDOFNumbering()
-        except:
-            numeDof = None
+        numeDof = keywords["MATR_RIGI"].getDOFNumbering()
+        model = numeDof.getModel()
 
-        if numeDof is None:
-            try:
-                numeDof = keywords["MATR_ASSE"].getDOFNumbering()
-            except:
-                numeDof = None
-
-        if numeDof is not None:
-                self._result.setDOFNumbering(numeDof)
+        self._result.updateDOFNumbering()
+        numeDof = self._result.getDOFNumbering()
+        numeDof.setModel(model)
 
 
 ELIM_LAGR = RemoveLagrangian.run
