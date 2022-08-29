@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,20 +19,22 @@
 !
 !
 interface
-    subroutine lckimp(BEHinteg,&
-                      ndim, typmod, option, mat, epsm,&
-                      deps, vim, sig, vip, dsidep)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: ndim
-        character(len=8) :: typmod
-        character(len=16) :: option
-        integer :: mat
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: vim(2)
-        real(kind=8) :: sig(6)
-        real(kind=8) :: vip(2)
-        real(kind=8) :: dsidep(6, 6, 4)
+    subroutine lckimp(ndim, typmod, option, mat, eps,&
+                  phitot, vim, sig, forc_endo, vip, dsde_1, dsde_2, dsde_3)
+
+    integer           :: ndim
+    character(len=8)  :: typmod
+    character(len=16) :: option
+    integer           :: mat
+    real(kind=8)      :: eps(:)
+    real(kind=8)      :: phitot
+    real(kind=8)      :: vim(:)
+    real(kind=8)      :: vip(:)
+    real(kind=8)      :: sig(:)
+    real(kind=8)      :: forc_endo
+    real(kind=8)      :: dsde_1(:,:)
+    real(kind=8)      :: dsde_2(:)
+    real(kind=8)      :: dsde_3
+
     end subroutine lckimp
 end interface

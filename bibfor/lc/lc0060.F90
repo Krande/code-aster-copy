@@ -15,52 +15,82 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504,W0104,C1509
 
-subroutine lc0060(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
-                  nvi, dsidep, codret)
-
-! aslint: disable=W1504,W0104
+subroutine lc0060(BEHinteg,&
+                  fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm, &
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, ndsde,&
+                  dsidep, codret)
+                  
+    use Behaviour_type
     use endo_loca_module, only: CONSTITUTIVE_LAW, Init, Integrate
     implicit none
 
-! ----------------------------------------------------------------------
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
-    real(kind=8) :: crit(*), angmas(3)
-    real(kind=8) :: instam, instap
-    real(kind=8) :: epsm(6), deps(6)
-    real(kind=8) :: sigm(6), sigp(6)
-    real(kind=8) :: vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6)
-    character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
-    character(len=*) :: fami
-! ----------------------------------------------------------------------
-    integer:: ndimsi
-    real(kind=8):: sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi)
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+! --------------------------------------------------------------------------------------------------
+    type(Behaviour_Integ)        :: BEHinteg
+    character(len=*) ,intent(in) :: fami
+    integer          ,intent(in) :: kpg
+    integer          ,intent(in) :: ksp
+    integer          ,intent(in) :: ndim
+    integer          ,intent(in) :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8)     ,intent(in) :: carcri(*)
+    real(kind=8)     ,intent(in) :: instam
+    real(kind=8)     ,intent(in) :: instap
+    integer          ,intent(in) :: neps
+    real(kind=8)     ,intent(in) :: epsm(neps)
+    real(kind=8)     ,intent(in) :: deps(neps)
+    integer          ,intent(in) :: nsig
+    real(kind=8)     ,intent(in) :: sigm(nsig)
+    integer          ,intent(in) :: nvi
+    real(kind=8)     ,intent(in) :: vim(nvi)
+    character(len=16),intent(in) :: option
+    real(kind=8)     ,intent(in) :: angmas(*)
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    character(len=8) ,intent(in) :: typmod(*)
+    integer          ,intent(in) :: icomp
+    integer          ,intent(in) :: ndsde
+    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    integer          ,intent(out):: codret
+! --------------------------------------------------------------------------------------------------
+!   RELATION ENDO_LOCA_EXP
+! --------------------------------------------------------------------------------------------------
+    aster_logical         :: lMatr, lSigm, lVari
+    integer               :: ndimsi
+    real(kind=8)          :: sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi)
     type(CONSTITUTIVE_LAW):: cl
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+
+    ASSERT (nsig .ge. 2*ndim)
+    ASSERT (neps .ge. 2*ndim)
 
     ndimsi = 2*ndim
+    sig    = 0
+    vi     = 0
+    dsde   = 0
 
-    cl = Init(ndimsi, option, fami, kpg, ksp, imate, nint(crit(1)), &
-            crit(3), instap-instam)
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
 
-    call Integrate(cl, epsm(1:ndimsi), deps(1:ndimsi), vim(1:nvi), sig, &
-            vi, dsde)
+    if (lVari) vip = 0
+
+    cl = Init(ndimsi, option, fami, kpg, ksp, imate,&
+              nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA), instap-instam)
+
+    call Integrate(cl, epsm(1:ndimsi), deps(1:ndimsi), vim(1:nvi), sig, vi, dsde)
 
     codret = cl%exception
 
-    if (option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH') then
-        sigp(1:ndimsi) = sig
-        vip(1:nvi) = vi
-    end if
-
-    if (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL') then
-        dsidep(1:ndimsi,1:ndimsi) = dsde
-    end if
-
-
+    if (codret.eq.0) then
+        if (lSigm) sigp(1:ndimsi) = sig
+        if (lVari) vip(1:nvi) = vi
+        if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
+    endif
 end subroutine

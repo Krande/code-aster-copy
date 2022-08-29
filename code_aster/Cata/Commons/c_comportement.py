@@ -93,7 +93,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 ),
                 SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
             ),
-            DEFORMATION=SIMP(statut="f", typ="TXM", defaut="PETIT", into=("PETIT", "GDEF_LOG")),
+            DEFORMATION=SIMP(statut="f", typ="TXM", defaut="PETIT", into=("PETIT", "GDEF_LOG", "GREEN_LAGRANGE")),
             # Parametres d'integration
             b_mfront_resi=BLOC(
                 condition="""equal_to('RELATION', 'MFRONT')""",
@@ -312,7 +312,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 statut="f",
                 typ="TXM",
                 defaut="PETIT",
-                into=("PETIT", "PETIT_REAC", "GROT_GDEP", "SIMO_MIEHE", "GDEF_LOG"),
+                into=("PETIT", "PETIT_REAC", "GROT_GDEP", "SIMO_MIEHE", "GDEF_LOG", "GREEN_LAGRANGE"),
             ),
             RESI_CPLAN_MAXI=SIMP(
                 statut="f",
@@ -531,7 +531,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 statut="f",
                 typ="TXM",
                 defaut="PETIT",
-                into=("PETIT", "PETIT_REAC", "GROT_GDEP", "SIMO_MIEHE", "GDEF_LOG"),
+                into=("PETIT", "PETIT_REAC", "GROT_GDEP", "SIMO_MIEHE", "GDEF_LOG", "GREEN_LAGRANGE"),
             ),
             RESI_CPLAN_MAXI=SIMP(
                 statut="f",

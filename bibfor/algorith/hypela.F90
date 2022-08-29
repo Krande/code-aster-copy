@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hypela(fami, kpg, ksp, poum, ndim,&
-                  typmod, imate, compor, crit, eps,&
-                  sig, dsidep, codret)
+subroutine hypela(fami, kpg, ksp, ndim,&
+                  typmod, imate, crit, eps,&
+                  option, sig, dsidep, codret)
 !
 implicit none
 !
@@ -37,15 +37,19 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
 
-    integer :: kpg, ksp, ndim
-    character(len=*) :: fami, poum
-    character(len=8) :: typmod(*)
-    integer :: imate
-    character(len=16) :: compor(*)
-    real(kind=8) :: crit(*)
-    real(kind=8) :: eps(6), sig(6)
-    real(kind=8) :: dsidep(6, 6)
-    integer :: codret
+    character(len=*), intent(in) :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    integer, intent(in)          :: ndim
+    character(len=8),intent(in)  :: typmod(*)
+    integer, intent(in)          :: imate
+    real(kind=8),intent(in)      :: crit(*)
+    real(kind=8),intent(in)      :: eps(2*ndim)
+    character(len=16), intent(in):: option
+    real(kind=8),intent(out)     :: sig(6)
+    real(kind=8),intent(out)     :: dsidep(6,6)
+    integer, intent(out)         :: codret
+
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,9 +58,6 @@ implicit none
 !     C10 (I1-3) + C01 (I2-3)+ C20 (I1-3)^2 + K/2(J-1)²
 !
 !     POUR LES ELEMENTS ISOPARAMETRIQUES 3D, CP, ET DP
-!
-!     CONTRAINTES ET MATRICE TANGENTE EN COMP_ELAS
-!
 ! ----------------------------------------------------------------------
 !
 !
@@ -72,15 +73,10 @@ implicit none
 !                             (3) = VALEUR TOLERANCE DE CONVERGENCE
 !                                    (RESI_INTE_RELA == RESCREL)
 ! IN  IMATE  : ADRESSE DU MATERIAU CODE
-! IN  COMPOR  : COMPORTEMENT  (1) = TYPE DE RELATION COMPORTEMENT
-!                             (2) = NB VARIABLES INTERNES / PG
-!                             (3) = HYPOTHESE SUR LES DEFORMATIONS
-!                             (4) = COMP_ELAS (OU COMP_INCR)
 ! IN  FAMI   : FAMILLE DE POINTS DE GAUSS
 ! IN  KPG    : NUMERO DU POINT DE GAUSS
 ! IN  KSP    : NUMERO DU SOUS-POINT DE GAUSS
 ! IN  EPS    : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
-! IN  POUM   : '-' POUR VARIABLES DE COMMANDE
 ! OUT SIG    : CONTRAINTES
 ! OUT DSIDEP : MATRICE TANGENTE
 ! OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
@@ -95,20 +91,17 @@ implicit none
     real(kind=8) :: c10, c01, c20, k
     integer :: nitmax
     real(kind=8) :: epsi
+    character(len=1):: poum
 !
 ! ----------------------------------------------------------------------
 !
     dsidep(:,:) = 0.d0
-    ASSERT(compor(4).eq.'COMP_ELAS')
+    poum = merge('-','+',option(1:9).eq.'RIGI_MECA')
 !
 ! --- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    if ((compor(1)(1:10).eq. 'ELAS_HYPER')) then
-        call hypmat(fami, kpg, ksp, poum, imate,&
+    call hypmat(fami, kpg, ksp, poum, imate,&
                     c10, c01, c20, k)
-    else
-        ASSERT(.false.)
-    endif
 !
 ! --- A PRIORI ON A CONVERGE
 !
@@ -116,9 +109,12 @@ implicit none
 !
 ! --- PRE-TRAITEMENT DES DEFORMATIONS (PAS DE NOTATION DE VOIGT)
 !
+    epstot = 0
     do i = 1, 3
-        epstot( i)=eps( i)
-        epstot(3+i)=eps(3+i)/sqrt(2.d0)
+        epstot( i)=eps(i)
+    end do
+    do i = 4,2*ndim
+        epstot(i)=eps(i)/sqrt(2.d0)
     end do
 !
 ! --- CALCUL CONTRAINTES ET MATRICE TANGENTE
@@ -157,6 +153,7 @@ implicit none
         if (codret .eq. 1) then
             goto 99
         endif
+
 ! --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,21 +19,22 @@
 !
 !
 interface
-    subroutine hypela(fami, kpg, ksp, poum, ndim,&
-                      typmod, imate, compor, crit, eps,&
-                      sig, dsidep, codret)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(len=*) :: poum
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
-        real(kind=8) :: eps(6)
-        real(kind=8) :: sig(6)
-        real(kind=8) :: dsidep(6, 6)
-        integer :: codret
+    subroutine hypela(fami, kpg, ksp, ndim,&
+                  typmod, imate, crit, eps,&
+                  option, sig, dsidep, codret)
+                  
+    character(len=*), intent(in) :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    integer, intent(in)          :: ndim
+    character(len=8),intent(in)  :: typmod(*)
+    integer, intent(in)          :: imate
+    real(kind=8),intent(in)      :: crit(*)
+    real(kind=8),intent(in)      :: eps(2*ndim)
+    character(len=16), intent(in):: option
+    real(kind=8),intent(out)     :: sig(6)
+    real(kind=8),intent(out)     :: dsidep(6,6)
+    integer, intent(out)         :: codret
+    
     end subroutine hypela
 end interface

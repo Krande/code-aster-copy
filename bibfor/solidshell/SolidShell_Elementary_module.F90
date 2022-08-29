@@ -246,8 +246,6 @@ subroutine initBehaProp(option, elemProp, cellGeom, behaPara)
         behaPara%lLarge = ASTER_FALSE
     elseif (behaPara%defoComp .eq. 'GDEF_LOG') then
         behaPara%lLarge = ASTER_TRUE
-    elseif (behaPara%defoComp .eq. 'GROT_GDEP') then
-        behaPara%lLarge = ASTER_TRUE
     else
         ASSERT(ASTER_FALSE)
     endif

@@ -18,7 +18,7 @@
 
 subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
                   imate, poum, deps, sigm, option,&
-                  angmas, sigp, vip, dsidep)
+                  angmas, sigp, dsidep)
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -35,11 +35,19 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 #include "asterfort/verifs.h"
 #include "asterfort/verifepsa.h"
 #include "asterfort/utbtab.h"
-    character(len=*) :: fami, poum
-    integer :: kpg, ksp, ndim, imate
-    real(kind=8) :: deps(6), sigm(6), sigp(6)
-    real(kind=8) :: angmas(3), dsidep(6, 6), p(3, 3), vip
-    character(len=16) :: option, phenom
+    character(len=*), intent(in) :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    integer, intent(in)          :: ndim
+    character(len=16), intent(in):: phenom
+    integer, intent(in)          :: imate
+    character(len=*), intent(in) :: poum
+    real(kind=8),intent(in)      :: deps(2*ndim)
+    real(kind=8),intent(in)      :: sigm(2*ndim)
+    character(len=16), intent(in):: option
+    real(kind=8),intent(in)      :: angmas(3)
+    real(kind=8),intent(out)     :: sigp(2*ndim)
+    real(kind=8),intent(out)     :: dsidep(2*ndim,2*ndim)
 !
 ! --------------------------------------------------------------------
 !  IN    FAMI   : FAMILLE DE POINT DE GAUSS
@@ -57,23 +65,22 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !  IN    OPTION : OPTION A CALCULER
 !  IN    ANGMAS : ANGLE DU REPERE LOCAL D ORTHOTROPIE
 !  OUT   SIGP   : CONTRAINTE A L INSTANT T+
-!  OUT   VIP    : VARIABLE INTERNE (NECESSAIRE
 !                 CAR IL EN EXISTE FORCEMENT UNE)
 !  OUT   DSIDEP : MATRICE DE RIGIDITE TANGENTE
 !
 ! --------------------------------------------------------------------
+    real(kind=8) :: p(3, 3)
     real(kind=8) :: rbid, repere(7), hookf(36), mkooh(36), xyzgau(3)
     real(kind=8) :: depstr(6)
     real(kind=8) :: epsth_anis(3), deplth(6), depgth(6)
     real(kind=8) :: depghy, depgse, depgepsa(6)
     real(kind=8) :: depsme(6), rac2, epsm2(6)
     real(kind=8) :: work(3,3), deplth_mat(3,3), depgth_mat(3,3)
-    integer :: nbsigm, i, j
-    character(len=2) :: k2bid
+    real(kind=8) :: sigm2(2*ndim)
+    integer :: ndimsi, i, j
     aster_logical :: vrai
 ! --------------------------------------------------------------------
 !
-    k2bid = '  '
     rbid = r8vide()
 !
     if (phenom.eq.'ELAS_ISTR' .and. ndim.eq.2)then
@@ -81,14 +88,12 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     endif
 
     rac2=sqrt(2.d0)
-    nbsigm=ndim*2
-    call r8inir(36, 0.d0, dsidep, 1)
-    do i = 1, nbsigm
-        depgth(i)=0.d0
-    end do
+    ndimsi=ndim*2
+    dsidep = 0
+    depgth = 0
 !
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
-        do i = 1, nbsigm
+        do i = 1, ndimsi
             if (i .le. 3) then
                 depstr(i)=deps(i)
             else
@@ -147,19 +152,19 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     else
         if (option .eq. 'RIGI_MECA_TANG') then
             call dmatmc(fami, imate, rbid, '-', kpg,&
-                        ksp, repere, xyzgau, nbsigm, hookf)
+                        ksp, repere, xyzgau, ndimsi, hookf)
         else
             call d1mamc(fami, imate, rbid, '-', kpg,&
-                        ksp, repere, xyzgau, nbsigm, mkooh)
+                        ksp, repere, xyzgau, ndimsi, mkooh)
             call dmatmc(fami, imate, rbid, '+', kpg,&
-                        ksp, repere, xyzgau, nbsigm, hookf)
+                        ksp, repere, xyzgau, ndimsi, hookf)
         endif
     endif
 !
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
-        do i = 1, nbsigm
-            do j = 1, nbsigm
-                dsidep(i,j)=hookf(nbsigm*(j-1)+i)
+        do i = 1, ndimsi
+            do j = 1, ndimsi
+                dsidep(i,j)=hookf(ndimsi*(j-1)+i)
             end do
         end do
     endif
@@ -233,7 +238,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
 ! CALCUL DES DEFORMATIONS MECANIQUES
 !
-        do i = 1, nbsigm
+        do i = 1, ndimsi
             if (i .le. 3) then
                 depsme(i)=depstr(i)-depgth(i)-depghy-depgse-depgepsa(i)
             else
@@ -242,44 +247,43 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         end do
 !
 ! CONTRAINTE A L ETAT +
-        do i = 4, nbsigm
-            sigm(i)=sigm(i)/rac2
+        sigm2 = sigm
+        do i = 4, ndimsi
+            sigm2(i)=sigm2(i)/rac2
         end do
+        
 ! MODIFICATION DE SIGM POUR PRENDRE EN COMPTE LA VARIATION DE
 ! COEF ELASTIQUES AVEC LA TEMPERATURE
 !
-        do i = 1, nbsigm
+        do i = 1, ndimsi
             epsm2(i)=0.d0
-            do j = 1, nbsigm
-                epsm2(i)=epsm2(i)+mkooh(nbsigm*(j-1)+i)*sigm(j)
+            do j = 1, ndimsi
+                epsm2(i)=epsm2(i)+mkooh(ndimsi*(j-1)+i)*sigm2(j)
             end do
         end do
 !
-        do i = 1, nbsigm
+        do i = 1, ndimsi
             sigp(i)=0.d0
-            do j = 1, nbsigm
-                sigp(i)=sigp(i)+hookf(nbsigm*(j-1)+i)*(depsme(j)+&
+            do j = 1, ndimsi
+                sigp(i)=sigp(i)+hookf(ndimsi*(j-1)+i)*(depsme(j)+&
                 epsm2(j))
             end do
         end do
 !
-! PAS DE VARIABLE INTERNE POUR CE COMPORTEMENT
-        vip=0.d0
-!
 ! REMISE AU FORMAT ASTER DES VALEURS EXTRA DIAGONALES
-        do i = 4, nbsigm
+        do i = 4, ndimsi
             sigp(i)=sigp(i)*rac2
         end do
     endif
 !
     if  (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
-        do i = 1, 6
-            do j = 4, 6
+        do i = 1, ndimsi
+            do j = 4, ndimsi
                 dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
             end do
         end do
-        do i = 4, 6
-            do j = 1, 6
+        do i = 4, ndimsi
+            do j = 1, ndimsi
                 dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
             end do
         end do

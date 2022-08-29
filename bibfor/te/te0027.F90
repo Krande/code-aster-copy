@@ -41,6 +41,7 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -63,17 +64,17 @@ implicit none
     integer :: iepsr, iepsf, isigi, isigm
     integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
     integer :: jgano, nno, nnos, npg, ncmp
-    integer :: i, j, k, kk, l, m, kp, ndim, compt, nbvari, iret
+    integer :: i, j, k, kk, l, m, kp, ndim, compt, iret
     integer :: ivites, iaccel, j1, j2, ireth, matcod
 !
-    real(kind=8) :: epsref(6), epsi, rac2, crit(13)
+    real(kind=8) :: epsref(6), epsi, rac2
     real(kind=8) :: dfdi(81), f(3, 3), sr(3, 3)
     real(kind=8) :: eps(6), epsin(6), depsin(6, 3), epsp(6)
     real(kind=8) :: epsino(162), fno(81)
     real(kind=8) :: sigl(6), sigin(6), dsigin(6, 3)
     real(kind=8) :: thet, tgdm(3), tgd(20)
     real(kind=8) :: prod, prod1, prod2, divt, valpar(4)
-    real(kind=8) :: tcla, tthe, tfor, tini, poids, rbid, dsidep(6, 6)
+    real(kind=8) :: tcla, tthe, tfor, tini, poids, rbid
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4), dvdm(3, 4)
     real(kind=8) :: energi(2), rho(1), om, omo
     real(kind=8) :: ecin, prod3, prod4, accele(3), e(1), nu(1), mu
@@ -84,14 +85,13 @@ implicit none
     integer :: icodre(1)
     character(len=4) :: fami
     character(len=8) :: nompar(4), typmod(2)
-    character(len=16) :: compor(4), oprupt, phenom
+    character(len=16) :: compor(4), phenom
 !
 ! DEB ------------------------------------------------------------------
 !
 !
     epsi = r8prem()
     rac2 = sqrt(2.d0)
-    oprupt = 'RUPTURE'
     epsini = .false.
     typmod(1) = '3D      '
     typmod(2) = ' '
@@ -158,7 +158,6 @@ implicit none
     end do
     grand = compor(3).eq. 'GROT_GDEP'
     incr = compor(4) (1:9) .eq. 'COMP_INCR'
-    read (zk16(icomp+1),'(I16)') nbvari
     if (incr) then
         call jevech('PCONTRR', 'L', isigm)
     endif
@@ -375,17 +374,10 @@ implicit none
             end do
         else
 !
-            crit(1) = 300
-            crit(2) = 0.d0
-            crit(3) = 1.d-3
-            crit(9) = 300
-            crit(8) = 1.d-3
-!
             call nmelnl(BEHinteg,&
-                        fami, kp, 1, '+',&
-                        ndim, typmod, matcod, compor, crit,&
-                        oprupt, eps, sigl, rbid, dsidep,&
-                        energi)
+                        fami, kp, 1, &
+                        ndim, typmod, matcod, compor, &
+                        eps, sigl, energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret .eq. 0) then
                 call jevech('PCONTGR', 'L', isigm)

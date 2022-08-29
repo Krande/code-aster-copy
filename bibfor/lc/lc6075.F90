@@ -15,51 +15,59 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,W1306
-!
-subroutine lc6075(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps, &
-                    epsm, deps, nsig, sigm, nvi, &
-                    vim, option, angmas, sigp, vip, &
-                    typmod, icomp, ndsde, dsidep, codret)
-!
-use lcgtn_module, only: CONSTITUTIVE_LAW, Init, InitGradVari, InitViscoPlasticity, &
-                        Integrate
-!
-implicit none
-!
+! aslint: disable=W1504,W0104,C1509
+
+subroutine lc6075(BEHinteg,&
+                  fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm, &
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, ndsde,&
+                  dsidep, codret)
+                  
+    use Behaviour_type
+    use lcgtn_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate, InitGradVari
+    implicit none
+
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lcgrad.h"
-!
-integer             :: imate, ndim, kpg, ksp, codret, icomp
-integer             :: nvi,neps,nsig,ndsde
-real(kind=8)        :: carcri(CARCRI_SIZE), angmas(*)
-real(kind=8)        :: instam, instap
-real(kind=8)        :: epsm(neps), deps(neps)
-real(kind=8)        :: sigm(nsig), sigp(nsig)
-real(kind=8)        :: vim(nvi), vip(nvi)
-real(kind=8)        :: dsidep(nsig,neps)
-character(len=16)   :: compor(COMPOR_SIZE), option
-character(len=8)    :: typmod(*)
-character(len=*)    :: fami
-!
 ! --------------------------------------------------------------------------------------------------
-!
-! Behaviour
-!
-! GTN with GRADVARI
-!
+    type(Behaviour_Integ)        :: BEHinteg
+    character(len=*) ,intent(in) :: fami
+    integer          ,intent(in) :: kpg
+    integer          ,intent(in) :: ksp
+    integer          ,intent(in) :: ndim
+    integer          ,intent(in) :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8)     ,intent(in) :: carcri(*)
+    real(kind=8)     ,intent(in) :: instam
+    real(kind=8)     ,intent(in) :: instap
+    integer          ,intent(in) :: neps
+    real(kind=8)     ,intent(in) :: epsm(neps)
+    real(kind=8)     ,intent(in) :: deps(neps)
+    integer          ,intent(in) :: nsig
+    real(kind=8)     ,intent(in) :: sigm(nsig)
+    integer          ,intent(in) :: nvi
+    real(kind=8)     ,intent(in) :: vim(nvi)
+    character(len=16),intent(in) :: option
+    real(kind=8)     ,intent(in) :: angmas(*)
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    character(len=8) ,intent(in) :: typmod(*)
+    integer          ,intent(in) :: icomp
+    integer          ,intent(in) :: ndsde
+    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    integer          ,intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
-!
-    aster_logical :: lMatr, lVect, lSigm, lVari, visc
-    integer :: ndimsi
-    real(kind=8) :: sig(2*ndim),vi(nvi),ka
-    real(kind=8) :: deps_sig(2*ndim,2*ndim),deps_vi(2*ndim),dphi_sig(2*ndim),dphi_vi
-    real(kind=8) :: apg,lag,grad(ndim),eps_gene(neps),eps_meca(2*ndim)
-    type(CONSTITUTIVE_LAW) :: cl
-!
+!   RELATIONS GTN ET VISC_GTN + GRAD_VARI
+! --------------------------------------------------------------------------------------------------
+    aster_logical         :: lMatr, lSigm, lVari, visc
+    integer               :: ndimsi
+    real(kind=8)          :: sig(2*ndim),vi(nvi),ka
+    real(kind=8)          :: deps_sig(2*ndim,2*ndim),deps_vi(2*ndim),dphi_sig(2*ndim),dphi_vi
+    real(kind=8)          :: apg,lag,grad(ndim),eps_gene(neps),eps_meca(2*ndim)
+    type(CONSTITUTIVE_LAW):: cl
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT (neps*nsig .eq. ndsde)
@@ -67,22 +75,27 @@ character(len=*)    :: fami
     ASSERT (neps .ge. 2*ndim)
     ASSERT (neps .ge. 3*ndim+2)
 !
-    ndimsi = 2*ndim
+    ndimsi   = 2*ndim
+    sig      = 0
+    vi       = 0
+    deps_sig = 0
+    deps_vi  = 0
+    dphi_sig = 0
+    dphi_vi  = 0
     eps_gene = epsm(1:neps)+deps(1:neps)
     eps_meca = eps_gene(1:ndimsi)
     apg      = eps_gene(ndimsi+1)
     lag      = eps_gene(ndimsi+2)
     grad     = eps_gene(ndimsi+3:ndimsi+2+ndim)
-!
+
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
-    lVect = L_VECT(option)
     lMatr = L_MATR(option)
-!
+
+    if (lVari) vip = 0
+
     cl = Init(ndimsi, option, fami, kpg, ksp, imate,&
               nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA))
-    ASSERT(.not. lMatr .or. cl%rigi)
-    ASSERT(.not. lVari .or. cl%vari)
 
     call InitGradVari(cl,fami,kpg,ksp,imate,lag,apg)
 

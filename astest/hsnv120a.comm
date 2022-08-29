@@ -151,7 +151,7 @@ VL=STAT_NON_LINE(
                 FONC_MULT = F_CHAR)),
                          COMPORTEMENT=_F(
                 RELATION = 'ELAS_VMIS_LINE',
-                DEFORMATION = 'GROT_GDEP'),
+                DEFORMATION = 'GREEN_LAGRANGE'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
@@ -159,7 +159,7 @@ VL=STAT_NON_LINE(
                 REAC_ITER = 1),
                 SOLVEUR=_F(METHODE='MUMPS'),
                        CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-6,
+                RESI_GLOB_MAXI = 1.E-5,
                 ITER_GLOB_MAXI = 50),
               )
 
@@ -172,7 +172,7 @@ VT=STAT_NON_LINE(
                 FONC_MULT = F_CHAR)),
                          COMPORTEMENT=_F(
                 RELATION = 'ELAS_VMIS_TRAC',
-                DEFORMATION = 'GROT_GDEP'),
+                DEFORMATION = 'GREEN_LAGRANGE'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
@@ -180,7 +180,7 @@ VT=STAT_NON_LINE(
                 REAC_ITER = 1),
                 SOLVEUR=_F(METHODE='MUMPS'),
                        CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-6,
+                RESI_GLOB_MAXI = 1.E-5,
                 ITER_GLOB_MAXI = 50),
               )
 

@@ -17,25 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+# person_in_charge: mickael.abbas at edf.fr
 
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'ELAS',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """élasticité linéaire isotrope"""              ,
-    num_lc         = 1,
-    nb_vari        = 1,
-    nom_vari       = ('VIDE',),
-    mc_mater       = ('ELAS','ELAS_ORTH','ELAS_ISTR',),
-    modelisation   = ('3D','AXIS','C_PLAN','D_PLAN','1D',
-        ),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','GDEF_LOG','GREEN_LAGRANGE'),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION','IMPLEX',),
-    proprietes     = ('COMP_ELAS',),
+    nom            = 'GREEN_LAGRANGE',
+    lc_type        = ('DEFORMATION',),
+    doc            =   """Algo pour résolution en grandes déformations."""              ,
+    num_lc         = 0,
+    nb_vari        = 0,
+    nom_vari       = None,
+    mc_mater       = None,
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('GREEN_LAGRANGE',),
+    algo_inte      = ('SANS_OBJET',),
+    type_matr_tang = None,
+    proprietes     = None,
     syme_matr_tang = ('Yes',),
     exte_vari      = None,
-    deform_ldc     = ('OLD',),
+    deform_ldc     = ('MECANIQUE',),
     regu_visc      = ('No',),
 )

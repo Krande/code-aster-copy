@@ -15,44 +15,45 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterfort/Behaviour_type.h"
+! aslint: disable=C1509
+
+!
 !
 interface
-    subroutine lc7077(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
+    subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps, epsm,&
-                  deps, nsig, sigm, nvi, vim, option, angmas,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp,&
                   ndsde, dsidep, codret)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(inout) :: BEHinteg
-        character(len=*), intent(in)  :: fami
-        integer, intent(in)           :: kpg
-        integer, intent(in)           :: ksp
-        integer, intent(in)           :: ndim
-        integer, intent(in)           :: imate
-        character(len=16), intent(in) :: compor(COMPOR_SIZE)
-        real(kind=8), intent(in)      :: carcri(CARCRI_SIZE)
-        real(kind=8), intent(in)      :: instam
-        real(kind=8), intent(in)      :: instap
-        integer, intent(in)           :: neps
-        real(kind=8), intent(in)      :: epsm(neps)
-        real(kind=8), intent(in)      :: deps(neps)
-        integer, intent(in)           :: nsig
-        real(kind=8), intent(in)      :: sigm(nsig)
-        integer, intent(in)           :: nvi
-        real(kind=8), intent(in)      :: vim(nvi)
-        character(len=16), intent(in) :: option
-        real(kind=8), intent(in)      :: angmas(3)
-        real(kind=8), intent(out)     :: sigp(nsig)
-        real(kind=8), intent(out)     :: vip(nvi)
-        character(len=8), intent(in)  :: typmod(*)
-        integer, intent(in)           :: icomp
-        integer, intent(in)           :: ndsde
-        real(kind=8), intent(out)     :: dsidep(nint(sqrt(ndsde*1.d0)),nint(sqrt(ndsde*1.d0)))
-        integer, intent(out)          :: codret
-    end subroutine lc7077
+
+    use Behaviour_type
+                      
+    type(Behaviour_Integ)        :: BEHinteg
+    character(len=*) ,intent(in) :: fami
+    integer          ,intent(in) :: kpg
+    integer          ,intent(in) :: ksp
+    integer          ,intent(in) :: ndim
+    integer          ,intent(in) :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8)     ,intent(in) :: carcri(*)
+    real(kind=8)     ,intent(in) :: instam
+    real(kind=8)     ,intent(in) :: instap
+    integer          ,intent(in) :: neps
+    real(kind=8)     ,intent(in) :: epsm(neps)
+    real(kind=8)     ,intent(in) :: deps(neps)
+    integer          ,intent(in) :: nsig
+    real(kind=8)     ,intent(in) :: sigm(nsig)
+    integer          ,intent(in) :: nvi
+    real(kind=8)     ,intent(in) :: vim(nvi)
+    character(len=16),intent(in) :: option
+    real(kind=8)     ,intent(in) :: angmas(*)
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    character(len=8) ,intent(in) :: typmod(*)
+    integer          ,intent(in) :: icomp
+    integer          ,intent(in) :: ndsde
+    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    integer          ,intent(out):: codret
+
+    end subroutine 
 end interface
-
-
-!

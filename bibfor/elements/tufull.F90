@@ -76,7 +76,7 @@ character(len=16) :: option
     real(kind=8) :: h, a, l, fi, gxz, rac2, sinfi, rbid(4), pi, deuxpi
     real(kind=8) :: deplm(nbrddl), deplp(nbrddl), b(4, nbrddl), pgl4(3, 3)
     real(kind=8) :: epsi(4), depsi(4), eps2d(6), deps2d(6)
-    real(kind=8) :: sign(4), sigma(4), sgmtd(4)
+    real(kind=8) :: sign(6), sigma(6), sgmtd(4)
     real(kind=8) :: dsidep(6, 6), dtild(4, 4)
     real(kind=8) :: cisail, wgt, r, instm, instp
     real(kind=8) :: ktild(nbrddl, nbrddl), effint(nbrddl)
@@ -99,6 +99,8 @@ character(len=16) :: option
     type(Behaviour_Integ) :: BEHinteg
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
+    integer                 :: lg_varip
+    real(kind=8),allocatable:: varip(:)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ','EP1'/)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -159,12 +161,6 @@ character(len=16) :: option
     type_comp = zk16(icompo-1+INCRELAS)
     ASSERT(defo_comp .eq. 'PETIT')
 
-! - Some checks
-    if (type_comp .eq. 'COMP_ELAS') then
-        if (rela_comp .ne. 'ELAS') then
-            call utmess('F', 'TUYAU0_90')
-        endif
-    endif
 !
 ! - For section
 !
@@ -195,12 +191,14 @@ character(len=16) :: option
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
     endif
+    
+    lg_varip = npg*lgpg
+    allocate(varip(lg_varip))
     if (lVari) then
-        call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
-        call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+        varip = zr(ivarix:ivarix+lg_varip-1)
     else
-        ivarip = ivarim
+        varip = zr(ivarim:ivarim+lg_varip-1)
     endif
 !
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
@@ -347,6 +345,7 @@ character(len=16) :: option
 !
 !  RAPPEL DU VECTEUR CONTRAINTE
 !
+                sign = 0
                 do i = 1, 3
                     sign(i) = zr(icontm-1+k1+i)
                 end do
@@ -361,7 +360,7 @@ character(len=16) :: option
                             zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
                             6, eps2d, deps2d, 6, sign,&
                             zr(ivarim+k2), option, angmas, &
-                            sigma, zr( ivarip+k2), 36, dsidep, cod)
+                            sigma, varip(1+k2), 36, dsidep, cod)
 !
                 if (elasKeyword .eq. 'ELAS') then
                     nbv = 2
@@ -462,8 +461,18 @@ character(len=16) :: option
         end do
     endif
 !
+! STOCKAGE DES VARIABLES INTERNES
+
+    if (lVari) then
+        call jevech('PVARIPR', 'E', ivarip)
+        zr(ivarip:ivarip+lg_varip-1) = varip(1:lg_varip)
+    end if
+    
+    
+
     if (lSigm) then
         zi(jcret) = codret
     endif
 !
+    deallocate(varip)
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ loi = LoiComportement(
     nom            = 'ELAS_VMIS_LINE',
     lc_type        = ('MECANIQUE',),
     doc            =   """Elasticité non linéaire de Von Mises - Hencky à écrouissage isotrope linéaire"""              ,
-    num_lc         = 0,
-    nb_vari        = 2,
-    nom_vari       = ('EPSPEQ','INDIPLAS',),
+    num_lc         = 78,
+    nb_vari        = 1,
+    nom_vari       = ('EPSPEQ',),
     mc_mater       = ('ELAS','ECRO_LINE',),
     modelisation   = ('3D','AXIS','C_PLAN','D_PLAN',),
-    deformation    = ('PETIT','GROT_GDEP',),
+    deformation    = ('PETIT','GDEF_LOG','GREEN_LAGRANGE'),
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = ('COMP_ELAS',),

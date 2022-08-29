@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,20 +21,21 @@
 interface
     subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
                       imate, poum, deps, sigm, option,&
-                      angmas, sigp, vip, dsidep)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        character(len=16) :: phenom
-        integer :: imate
-        character(len=*) :: poum
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        character(len=16) :: option
-        real(kind=8) :: angmas(3)
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip
-        real(kind=8) :: dsidep(6, 6)
+                      angmas, sigp, dsidep)
+                      
+    character(len=*), intent(in) :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    integer, intent(in)          :: ndim
+    character(len=16), intent(in):: phenom
+    integer, intent(in)          :: imate
+    character(len=*), intent(in) :: poum
+    real(kind=8),intent(in)      :: deps(2*ndim)
+    real(kind=8),intent(in)      :: sigm(2*ndim)
+    character(len=16), intent(in):: option
+    real(kind=8),intent(in)      :: angmas(3)
+    real(kind=8),intent(out)     :: sigp(2*ndim)
+    real(kind=8),intent(out)     :: dsidep(2*ndim,2*ndim)
+    
     end subroutine nmorth
 end interface

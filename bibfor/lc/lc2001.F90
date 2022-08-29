@@ -28,7 +28,7 @@ use Behaviour_type
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/nmelas.h"
+#include "asterfort/nmelas_incr.h"
 #include "asterfort/rccoma.h"
 !
 type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -47,7 +47,7 @@ real(kind=8), intent(out) :: sigp(nsig)
 real(kind=8), intent(out) :: vip(1)
 character(len=8), intent(in) :: typmod(*)
 integer, intent(in) :: ndsde
-real(kind=8), intent(out) :: dsidep(ndsde)
+real(kind=8), intent(out) :: dsidep(nsig,neps)
 integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,13 +63,18 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    ASSERT (neps*nsig .eq. ndsde)
+    ASSERT (neps .eq. nsig)
+    ASSERT (neps .ge. 2*ndim)
+
+    codret = 0
     call rccoma(imate, 'ELAS', 1, mcmate, icodre)
     ASSERT(icodre.eq.0)
     if (mcmate .eq. 'ELAS') then
-        call nmelas(BEHinteg,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, deps, sigm, option, sigp,&
-                    vip, dsidep, codret)
+        call nmelas_incr(BEHinteg,&
+                    fami, kpg, ksp, typmod,&
+                    imate, deps(1:2*ndim), sigm(1:2*ndim), option, &
+                    sigp(1:2*ndim), vip, dsidep(1:2*ndim,1:2*ndim))
     else
         ASSERT(.false.)
     endif

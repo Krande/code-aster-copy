@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmelnl(BEHinteg,&
+subroutine lcelnl(BEHinteg,&
                   fami, kpg, ksp, ndim, &
-                  typmod, imate, compor,&
-                  eps, sig, energi)
+                  typmod, imate, compor, crit,&
+                  option, eps, sig, vi, dsidep, codret)
 !
 use Behaviour_type
 !
@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/ecpuis.h"
 #include "asterfort/nmcri1.h"
 #include "asterfort/nmcri2.h"
-#include "asterfort/nmelru.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rcvala.h"
@@ -45,43 +44,54 @@ implicit none
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(*)
-    integer :: kpg, ksp, ndim, imate
-    real(kind=8) :: eps(:), sig(:), energi(2)
-! --------------------------------------------------------------------------------------------------
-!     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES ET CALCULE L'ENERGIE
-!     RESERVE AUX CALCULS DE MECANIQUE DE LA RUPTURE
-! --------------------------------------------------------------------------------------------------
+    character(len=16) :: compor(*), option
+    integer :: kpg, ksp, ndim, imate, codret
+    real(kind=8) :: crit(*)
+    real(kind=8) :: eps(:), sig(:), vi(1), dsidep(:,:)
+
+
+
+!     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES
+!
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : NATURE DU MATERIAU
 ! IN  COMPOR  : COMPORTEMENT
+! IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 ! IN  TEMP    : TEMPERATURE.
 ! IN  TREF    : TEMPERATURE DE REFERENCE.
 ! IN  EPS     : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
-! OUT SIG     : CONTRAINTES LAGRANGIENNES
-! OUT P       : VARIABLE INTERNE (AUXILIAIRE DE CALCUL)
-! --------------------------------------------------------------------------------------------------
-    integer, parameter      :: niter=300, elas_id = 1
-    real(kind=8), parameter :: prec_rela = 1.d-3
-    real(kind=8), dimension(6), parameter:: kron = [1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0]
-    character(len=16), parameter :: elas_keyword = 'ELAS'
-    character(len=16), dimension(6), parameter:: epsa_data=['EPSAXX','EPSAYY','EPSAZZ', &
-                                                            'EPSAXY','EPSAXZ','EPSAYZ']
-! --------------------------------------------------------------------------------------------------
-    aster_logical:: cplan, line, nonlin, inco, puis, trac, elas
-    integer      :: iret, codret, isec, ihyd, ieps
+! IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG -> SIG    DSIDEP
+!                                 FULL_MECA      -> SIG VI DSIDEP
+!                                 RAPH_MECA      -> SIG VI
+! OUT SIG    : CONTRAINTES LAGRANGIENNES
+! OUT VI     : VARIABLE INTERNE (AUXILIAIRE DE CALCUL)
+! OUT DSIDEP : MATRICE CARREE
+! ----------------------------------------------------------------------
+! CORPS DU PROGRAMME
+
+    
+    
+    integer :: iret, isec, ihyd, ieps
     real(kind=8) :: temp, hydr, sech
     real(kind=8) :: secref
-    integer      :: icodre(5)
-    character(len=16) :: nomres(5)
-    integer :: jprol, jvale, nbvale, ndimsi, k, ibid
+!
+! DECLARATION VARIABLES LOCALES
+    aster_logical :: cplan, line, nonlin, inco, puis, trac, resi, rigi
+    integer :: icodre(5)
+    character(len=16) :: nomres(5), epsa_data(6)
+    integer :: jprol, jvale, nbvale, ndimsi, niter, k, l, ibid
+!
     real(kind=8) :: valres(5), e, nu, troisk, deuxmu, sigy, dsde
     real(kind=8) :: kdess, bendo, ther, epsth(6), epsmo, epsdv(6), epseq, sieleq
-    real(kind=8) :: p, rp, rprim, g, epsi, airerp
-    real(kind=8) :: approx, prec, x, rac2
+    real(kind=8) :: p, rp, rprim, g, coef, epsi, airerp
+    real(kind=8) :: approx, prec, x, kron(6), rac2
     real(kind=8) :: coco, dp0, rprim0, xap, precr
     real(kind=8) :: epsa(6)
+    integer, parameter :: elas_id = 1
+    character(len=16), parameter :: elas_keyword = 'ELAS'
+    character(len=1) :: poum
+!
 !====================================================================
 !---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
 !====================================================================
@@ -94,28 +104,29 @@ implicit none
 !====================================================================
     common /rconm2/alfafa,unsurn,sieleq
     real(kind=8) :: alfafa, unsurn
-! --------------------------------------------------------------------------------------------------
-
-
-
 !====================================================================
 ! - INITIALISATIONS
 !====================================================================
+    data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data  epsa_data/ 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/
     
+    
+    codret = 0
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
-    elas = (compor(1)(1:5) .eq. 'ELAS ')
+    resi = option.eq.'RAPH_MECA' .or. option.eq.'FULL_MECA' .or. option.eq.'FULL_MECA_ELAS' 
+    rigi = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS'
+    ASSERT(resi .or. rigi)
+    
     line = (compor(1)(1:14).eq. 'ELAS_VMIS_LINE')
     puis = (compor(1)(1:14).eq. 'ELAS_VMIS_PUIS')
     trac = (compor(1)(1:14).eq. 'ELAS_VMIS_TRAC')
-    ASSERT (elas .or. line .or. puis .or. trac)
+    ASSERT (line .or. puis .or. trac)
 
     epsi = r8prem()
     rac2 = sqrt(2.d0)
     ndimsi = 2*ndim
-    
-    p = 0
-
+    poum = merge('+','-',resi)
     
 !====================================================================
 ! - LECTURE DES CARACTERISTIQUES ELASTIQUES
@@ -125,36 +136,36 @@ implicit none
     nomres(3)='ALPHA'
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
-    call verift(fami, kpg, ksp, '+', imate,&
+    call verift(fami, kpg, ksp, poum, imate,&
                 epsth_=epsthe)
 !
-    call verift(fami, kpg, ksp, '+', imate,&
+    call verift(fami, kpg, ksp, poum, imate,&
                 epsth_=epsthe)
 !
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret)
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    call rcvarc(' ', 'HYDR', poum, fami, kpg,&
                 ksp, hydr, ihyd)
     if (ihyd .ne. 0) hydr=0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    call rcvarc(' ', 'SECH', poum, fami, kpg,&
                 ksp, sech, isec)
     if (isec .ne. 0) sech=0.d0
     call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
                 ksp, secref, iret)
     if (iret .ne. 0) secref=0.d0
-    call get_elas_para(fami    , imate, '+', kpg, ksp, &
+    call get_elas_para(fami    , imate, poum, kpg, ksp, &
                        elas_id , elas_keyword,&
                        e_ = e, nu_ = nu, BEHinteg = BEHinteg)
-    if (elas .or. line .or. puis) then
-        call rcvalb(fami, kpg, ksp, '+', imate,&
+    if (line .or. puis) then
+        call rcvalb(fami, kpg, ksp, poum, imate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if (icodre(3) .ne. 0) valres(3)=0.d0
     else
         call rctrac(imate, 1, 'SIGM', temp, jprol,&
                     jvale, nbvale, valres(1))
-        call rcvalb(fami, kpg, ksp, '+', imate,&
+        call rcvalb(fami, kpg, ksp, poum, imate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(3), valres(3), icodre(3), 0)
         e = valres(1)
@@ -172,13 +183,13 @@ implicit none
 !
     nomres(4)='B_ENDOGE'
     nomres(5)='K_DESSIC'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
+    call rcvalb(fami, kpg, ksp, poum, imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(4), valres(4), icodre(4), 0)
     if (icodre(4) .ne. 0) valres(4) = 0.d0
     bendo = valres(4)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
+    call rcvalb(fami, kpg, ksp, poum, imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(5), valres(5), icodre(5), 0)
     if (icodre(5) .ne. 0) valres(5) = 0.d0
@@ -188,7 +199,7 @@ implicit none
 !     + MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
     do k = 1, ndimsi
-        call rcvarc(' ', epsa_data(k), '+', fami, kpg,&
+        call rcvarc(' ', epsa_data(k), poum, fami, kpg,&
                     ksp, epsa(k), ieps)
         if (ieps .ne. 0) epsa(k) = 0.d0
     end do
@@ -203,7 +214,7 @@ implicit none
     if (line) then
         nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
+        call rcvalb(fami, kpg, ksp, poum, imate,&
                     ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         dsde = valres(1)
@@ -221,7 +232,7 @@ implicit none
         coco = e/alfafa/sigy
         unsurn = 1.d0/valres(3)
 !
-    else if (trac) then
+    else 
         call rcfonc('S', 1, jprol, jvale, nbvale,&
                     sigy = sigy)
     endif
@@ -259,8 +270,7 @@ implicit none
     end do
     epseq = sqrt(1.5d0*epseq)
     sieleq = deuxmu * epseq
-    nonlin = .false.
-    if (.not. elas) nonlin = (sieleq.ge.sigy)
+    nonlin = (sieleq.ge.sigy)
 !====================================================================
 ! CAS NON LINEAIRE
 !====================================================================
@@ -292,10 +302,11 @@ implicit none
             endif
 !         CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
             approx = 2.d0*epseq/3.d0 - sigy/1.5d0/deuxmu
-            prec = prec_rela * sigy
+            prec = abs(crit(3)) * sigy
+            niter = abs(nint(crit(1)))
             call zerofr(0, 'DEKKER', nmcri1, 0.d0, approx,&
                         prec, niter, p, codret, ibid)
-            if (codret .ne. 0) call utmess('F', 'ALGORITH8_65')
+            if (codret .ne. 0) goto 999
             if (line) then
                 rp = sigy +rprim*p
                 airerp = 0.5d0*(sigy+rp)*p
@@ -303,7 +314,7 @@ implicit none
                 call utmess('F', 'ALGORITH_1')
             else
                 call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            p = p, rp = rp, rprim = rprim)
+                            p = p, rp = rp, rprim = rprim, airerp = airerp)
             endif
 !
             epseq = 1.5d0*p + rp/deuxmu
@@ -331,10 +342,11 @@ implicit none
                 rprim0 = unsurn*sigy*coco * (coco*dp0)**(unsurn-1.d0)
                 dp0 = dp0 / (1+rprim0/1.5d0/deuxmu)
                 xap = dp0
-                precr = prec_rela * sigy
+                precr = crit(3) * sigy
+                niter = nint(crit(1))
                 call zerofr(0, 'DEKKER', nmcri2, 0.d0, xap,&
                             precr, niter, p, codret, ibid)
-                if (codret .ne. 0) call utmess('F', 'ALGORITH8_65')
+                if (codret .ne. 0) goto 999
                 call ecpuis(e, sigy, alfafa, unsurn, pm,&
                             p, rp, rprim)
             else
@@ -362,12 +374,53 @@ implicit none
             sig(k) = troisk*epsmo*kron(k) + g*epsdv(k)
         end do
     endif
-
-
 !====================================================================
-! - CALCUL DE L'ENERGIE
+! TRAITEMENTS PARTICULIERS
 !====================================================================
-        call nmelru(fami, kpg, ksp, &
-                    imate, compor, epseq, p, 3.d0*epsmo,&
-                    nonlin, energi)
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' ) then
+        vi(1) = merge(p,0.d0,nonlin)
+    endif
+
+! - CALCUL DE LA MATRICE DE RIGIDITE TANGENTE
+    if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option(1:9) .eq.&
+        'FULL_MECA') then
+!
+        do k = 1, ndimsi
+            do l = 1, ndimsi
+                dsidep(k,l) = 0.d0
+            end do
+        end do
+!      TERME LINEAIRE
+        do k = 1, 3
+            do l = 1, 3
+                dsidep(k,l) = (troisk-g)/3.d0
+            end do
+        end do
+        do k = 1, ndimsi
+            dsidep(k,k) = dsidep(k,k) + g
+        end do
+!      TERME NON LINEAIRE
+        if (nonlin .and. (option(11:14).ne.'ELAS')) then
+            coef = deuxmu*rprim/(1.5d0*deuxmu+rprim) - g
+            coef = coef * 3.d0 / (2.d0*epseq*epseq)
+            do k = 1, ndimsi
+                do l = 1, ndimsi
+                    dsidep(k,l) = dsidep(k,l) + coef*epsdv(k)*epsdv(l)
+                end do
+            end do
+        endif
+!      CORRECTION POUR LES CONTRAINTES PLANES
+        if (cplan) then
+            do 130 k = 1, ndimsi
+                if (k .eq. 3) goto 130
+                do 140 l = 1, ndimsi
+                    if (l .eq. 3) goto 140
+                    dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
+                    k,3)*dsidep(3,l)
+140             continue
+130         continue
+        endif
+    endif
+
+999 continue
 end subroutine

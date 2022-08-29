@@ -179,10 +179,10 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PMATUUR', 'E', imatuu)
         lgpg   = 0
         compor = ' '
-        call xnmel('+', nno, nfh, nfe, ddlc,&
+        call xnmel(nno, nfh, nfe, ddlc,&
                    ddlm, igeom, typmod, option, zi( imate),&
                    compor, lgpg, crit, jpintt, zi(jcnset),&
-                   zi(jheavt), zi( jlonch), zr(jbaslo), ibid, zr(jlsn),&
+                   zi(jheavt), zi( jlonch), zr(jbaslo), zr(iinstm), zr( iinstp), ibid, zr(jlsn),&
                    zr(jlst), sig, vi, zr(imatuu), ibid,&
                    codret, jpmilt, nfiss, jheavn, jstno,&
                    l_line, l_nonlin, lMatr, lVect, lSigm)
@@ -238,10 +238,10 @@ character(len=16), intent(in) :: option, nomte
 !
     if (type_comp .eq. 'COMP_ELAS') then
         if (lMatrPred) then
-            call xnmel('-', nno, nfh, nfe, ddlc,&
+            call xnmel(nno, nfh, nfe, ddlc,&
                        ddlm, igeom, typmod, option, zi(imate),&
                        zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
-                       zi(jheavt), zi(jlonch), zr(jbaslo), ideplm, zr(jlsn),&
+                       zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr( iinstp),ideplm,zr(jlsn),&
                        zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), ivectu,&
                        codret, jpmilt, nfiss, jheavn, jstno,&
                        l_line, l_nonlin, lMatr, lVect, lSigm)
@@ -249,10 +249,10 @@ character(len=16), intent(in) :: option, nomte
             do li = 1, nddl
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
             end do
-            call xnmel('+', nno, nfh, nfe, ddlc,&
+            call xnmel(nno, nfh, nfe, ddlc,&
                        ddlm, igeom, typmod, option, zi(imate),&
                        zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
-                       zi(jheavt), zi(jlonch), zr(jbaslo), ideplp, zr(jlsn),&
+                       zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr( iinstp),ideplp,zr(jlsn),&
                        zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), ivectu,&
                        codret, jpmilt, nfiss, jheavn, jstno,&
                        l_line, l_nonlin, lMatr, lVect, lSigm)

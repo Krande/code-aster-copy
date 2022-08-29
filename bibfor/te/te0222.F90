@@ -76,7 +76,6 @@ implicit none
     type(Behaviour_Integ) :: BEHinteg
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    character(len=16), parameter :: oprupt = 'RUPTURE'
     character(len=16), parameter :: nomres(4) = ['E    ', 'NU   ', 'ALPHA', 'RHO  ']
 !
     integer           :: i, j, k, j1, j2, m, kk, l
@@ -89,9 +88,9 @@ implicit none
     integer           :: irota, ipesa, isigi, isigm
     integer           :: iret, ireth, ibalo, ideg, ilag
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3,3)
-    real(kind=8)      :: der(4), energi(2), divt, dsidep(6,6), mu
+    real(kind=8)      :: der(4), energi(2), divt, mu
     real(kind=8)      :: epsi, valpar(4), accele(3), dsigin(6,3)
-    real(kind=8)      :: crit(13), e, ecin, tpg(27), tref, absno
+    real(kind=8)      :: e, ecin, tpg(27), tref, absno
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
     real(kind=8)      :: dtdm(3, 4), dfdm(3,4), dudm(3,4), dvdm(3,4)
     real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3), u1(2), u2(2)
@@ -625,17 +624,10 @@ implicit none
             endif
         else
 !
-            crit(1) = 300
-            crit(2) = 0.d0
-            crit(3) = 1.d-3
-            crit(9) = 300
-            crit(8) = 1.d-3
-!
             call nmelnl(BEHinteg,&
-                        fami, kp, 1, '+',&
-                        ndim, typmod, matcod, compor, crit,&
-                        oprupt, eps, sigl, rbid, dsidep,&
-                        energi)
+                        fami, kp, 1, &
+                        ndim, typmod, matcod, compor, &
+                        eps, sigl, energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret == 0) then
                 call jevech('PCONTGR', 'L', isigm)

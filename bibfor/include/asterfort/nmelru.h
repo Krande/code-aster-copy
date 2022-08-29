@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmelru(fami, kpg, ksp, poum, imate,&
-                      compor, epseq, p, divu, nonlin,&
-                      ener)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(len=*) :: poum
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: epseq
-        real(kind=8) :: p
-        real(kind=8) :: divu
-        aster_logical :: nonlin
-        real(kind=8) :: ener(2)
-    end subroutine nmelru
+    subroutine nmelru(fami, kpg, ksp, imate, compor, &
+                      epseq, p_arg, divu, nonlin, ener)
+    
+    character(len=*),intent(in)  :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    integer, intent(in)          :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8), intent(in)     :: epseq
+    real(kind=8), intent(in)     :: p_arg
+    real(kind=8), intent(in)     :: divu
+    aster_logical, intent(in)    :: nonlin
+    real(kind=8), intent(out)    :: ener(2)
+    
+    end subroutine 
 end interface

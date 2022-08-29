@@ -15,52 +15,35 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104
-!
-subroutine lc0038(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
-                  nvi, dsidep, codret)
-!
-implicit none
-!
-#include "asterfort/lcsans.h"
-!
+! aslint: disable=C1509
 
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam
-real(kind=8), intent(in) :: instap
-real(kind=8), intent(in) :: epsm(6)
-real(kind=8), intent(in) :: deps(6)
-real(kind=8), intent(in) :: sigm(6)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(out) :: sigp(6)
-real(kind=8), intent(out) :: vip(*)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: icomp
-integer, intent(in) :: nvi
-real(kind=8), intent(out) :: dsidep(6,6)
-integer, intent(out) :: codret
-!
+subroutine lc0038(neps, nsig, option, sigp, vip, ndsde, dsidep)
+
+    use Behaviour_type
+    implicit none
+
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+
+    integer,           intent(in) :: neps
+    integer,           intent(in) :: nsig
+    character(len=16), intent(in) :: option
+    real(kind=8),      intent(out):: sigp(nsig)
+    real(kind=8),      intent(out):: vip(1)
+    integer,           intent(in) :: ndsde
+    real(kind=8),      intent(out):: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
 ! --------------------------------------------------------------------------------------------------
-!
-! Behaviour
-!
-! SANS
-!
+! Behaviour SANS
 ! --------------------------------------------------------------------------------------------------
-!
-    codret = 0
-    call lcsans(option, sigp, dsidep)
-    vip(1) = 0.d0
-!
+    aster_logical:: lMatr, lSigm, lVari
+! --------------------------------------------------------------------------------------------------
+
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+
+    if (lSigm) sigp   = 0
+    if (lVari) vip(1) = 0
+    if (lMatr) dsidep = 0
+
 end subroutine

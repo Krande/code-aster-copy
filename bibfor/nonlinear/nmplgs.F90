@@ -124,6 +124,9 @@ implicit none
     nddl   = nno1*ndim + nno2*ndimsi
     cod    = 0
     dfdi2(:,:) = 0.
+    
+    epsgm = 0
+    epsgd = 0
 !
 ! - Get length
 !
@@ -515,9 +518,9 @@ implicit none
                     iw, vff1(1, g), idfde1, r, wg,&
                     dfdi1)
         call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dfdi1, deplm, f, epsgm)
+                    r, dfdi1, deplm, f, epsgm(:,1))
         call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dfdi1, depld, f, epsgd)
+                    r, dfdi1, depld, f, epsgd(:,1))
         call nmmabu(ndim, nno1, axi, grand, dfdi1,&
                     b)
 !

@@ -50,9 +50,7 @@ type(THM_DS), intent(inout) :: ds_thm
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: codret
-    integer :: i_dimuel
     real(kind=8) :: angl_naut(3)
-    integer :: jv_sigm, jv_vari, jv_disp
     integer :: jv_geom, jv_matr, jv_vect, jv_sigmm, jv_varim, jv_cret
     integer :: jv_mater, jv_instm, jv_instp, jv_dispm
     integer :: jv_dispp, jv_compor, jv_carcri, jv_varip, jv_sigmp
@@ -65,6 +63,8 @@ type(THM_DS), intent(inout) :: ds_thm
     integer :: npi, npg, nbvari
     integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2, jv_gano
     character(len=8) :: type_elem(2)
+    integer:: lg_vi, lg_sig
+    real(kind=8),allocatable:: varip(:), sigp(:), deplp(:)
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
 !
 ! --------------------------------------------------------------------------------------------------
@@ -106,48 +106,53 @@ type(THM_DS), intent(inout) :: ds_thm
                          codret)
 !
 ! - Output fields
-!
-    jv_matr  = ismaem()
-    jv_vect  = ismaem()
-    jv_sigmp = ismaem()
-    jv_varip = ismaem()
-    jv_cret  = ismaem()
+!   
     if (lMatr) then
         call jevech('PMATUNS', 'E', jv_matr)
+    else
+        jv_matr  = ismaem()
     endif
+
     if (lVect) then
         call jevech('PVECTUR', 'E', jv_vect)
+    else
+        jv_vect  = ismaem()
     endif
-    if (lVari) then
-        call jevech('PVARIPR', 'E', jv_varip)
-    endif
-    if (lSigm) then
-        call jevech('PCONTPR', 'E', jv_sigmp)
-        call jevech('PCODRET', 'E', jv_cret)
-    endif
+    
 !
 ! - Get frame orientation for anisotropy
 !
     call thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
-!
-! - Prepare reference configuration
-!
-    if (lMatrPred) then
-        jv_disp = jv_dispm
-        jv_sigm = jv_sigmm
-        jv_vari = jv_varim
-    else
-        do i_dimuel = 1, dimuel
-            zr(jv_dispp+i_dimuel-1) = zr(jv_dispm+i_dimuel-1) + zr(jv_dispp+i_dimuel-1)
-        end do
-        jv_disp = jv_dispp
-        jv_sigm = jv_sigmp
-        jv_vari = jv_varip
-    endif
+    
 !
 ! - Number of (total) internal variables
 !
     read (zk16(jv_compor-1+NVAR),'(I16)') nbvari
+
+    
+! - Intermediate arrays to be safe when the addresses do not exist
+    lg_sig = dimcon*npi
+    allocate(sigp(lg_sig))
+    if (lMatrPred) then
+        sigp(1:lg_sig) = zr(jv_sigmm:jv_sigmm+lg_sig-1)
+    else
+        sigp(1:lg_sig) = 0
+    end if
+    
+    lg_vi = nbvari*npi
+    allocate(varip(lg_vi))
+    if (lMatrPred) then
+        varip(1:lg_vi) = zr(jv_varim:jv_varim+lg_vi-1)
+    else
+        varip(1:lg_vi) = 0
+    end if
+   
+!
+! - Prepare reference configuration
+!
+    allocate(deplp(dimuel))
+    deplp(1:dimuel) = zr(jv_dispm:jv_dispm+dimuel-1) + zr(jv_dispp:jv_dispp+dimuel-1)
+       
 !
 ! - Compute
 !
@@ -165,18 +170,32 @@ type(THM_DS), intent(inout) :: ds_thm
                 jv_poids       , jv_poids2    ,&
                 jv_func        , jv_func2     ,&
                 jv_dfunc       , jv_dfunc2    ,&
-                zr(jv_geom)    , zr(jv_dispm) , zr(jv_disp) ,&
-                zr(jv_sigmm)   , zr(jv_sigm)  ,&
-                zr(jv_varim)   , zr(jv_vari)  ,&
+                zr(jv_geom)    , zr(jv_dispm) , deplp ,&
+                zr(jv_sigmm)   , sigp  ,&
+                zr(jv_varim)   , varip  ,&
                 zr(jv_instm)   , zr(jv_instp) ,&
                 zr(jv_matr)    , zr(jv_vect)  , codret)
 
 
-!
-! - Save error from integration
-!
+! Copy fields if required
     if (lSigm) then
+        call jevech('PCONTPR', 'E', jv_sigmp)
+        zr(jv_sigmp:jv_sigmp+lg_sig-1) = sigp(1:lg_sig)
+
+        call jevech('PCODRET', 'E', jv_cret)
         zi(jv_cret) = codret
     endif
+
+    if (lVari) then
+        call jevech('PVARIPR', 'E', jv_varip)
+        zr(jv_varip:jv_varip+lg_vi-1) = varip(1:lg_vi)
+    endif
+
+
+! Memory management
+    deallocate(deplp)
+    deallocate(sigp)
+    deallocate(varip)
+    
 !
 end subroutine

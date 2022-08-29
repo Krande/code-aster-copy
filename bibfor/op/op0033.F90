@@ -42,7 +42,6 @@ implicit none
 #include "asterfort/mgauss.h"
 #include "asterfort/nmadat.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/nmcpel.h"
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmfinp.h"
 #include "asterfort/pmactn.h"
@@ -88,7 +87,7 @@ implicit none
     character(len=19) :: codi, sddisc, k19b, sdcrit
     character(len=24) :: sderro
     real(kind=8) :: instam, instap, ang(7), r8b, carcri(CARCRI_SIZE), fem(9)
-    real(kind=8) :: deps(9), sigm(6), sigp(6), epsm(9), eps(9), vr(ntamax)
+    real(kind=8) :: deps(9), sigm(6), sigp(6), epsm(9), vr(ntamax)
     real(kind=8) :: valimp(9), r(12), rini(12), dy(12), ddy(12), y(12), rac2
     real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
@@ -265,26 +264,16 @@ implicit none
             call lcdetf(3, deps, jd)
             jp = jm*jd
         endif
-        if (type_comp .eq. 'COMP_INCR') then
-            call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
-            sigp = 0.d0
-            call nmcomp(BEHinteg,&
-                        fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, carcri, instam, instap,&
-                        ncmp, epsm, deps, 6, sigm,&
-                        zr(lvim2), opt2, ang, &
-                        sigp, zr(lvip), 6*ncmp, dsidep, iret, mult_comp)
-            if (compor(DEFO) .eq. 'SIMO_MIEHE') then
-                call dscal(2*ndim, 1.d0/jp, sigp, 1)
-            endif
-        else if (type_comp .eq. 'COMP_ELAS') then
-            call dcopy(ncmp, epsm, 1, eps, 1)
-            call daxpy(ncmp, 1.d0, deps, 1, eps, 1)
-            call nmcpel(BEHinteg,&
-                        fami, kpg, 1, '+', ndim,&
-                        typmod, ang, imate, compor, carcri,&
-                        option, eps, sigp, zr(lvip), dsidep,&
-                        iret)
+        call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
+        sigp = 0.d0
+        call nmcomp(BEHinteg,&
+                    fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, carcri, instam, instap,&
+                    ncmp, epsm, deps, 6, sigm,&
+                    zr(lvim2), opt2, ang, &
+                    sigp, zr(lvip), 6*ncmp, dsidep, iret, mult_comp)
+        if (compor(DEFO) .eq. 'SIMO_MIEHE') then
+            call dscal(2*ndim, 1.d0/jp, sigp, 1)
         endif
         call pmimpr(0, instap, indimp, valimp,&
                     0, epsm, sigm, zr(lvim), nbvari,&
@@ -307,21 +296,13 @@ implicit none
         deps(:) = 0.d0
         opt2='RIGI_MECA_TANG'
         call dcopy(nbvari, zr(lvim), 1, zr(lsvip), 1)
-        if (type_comp .eq. 'COMP_INCR') then
-            ssigp = 0.d0
-            call nmcomp(BEHinteg,&
-                        fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, carcri, instam, instap,&
-                        6, epsm, deps, 6, sigm,&
-                        zr(lsvip), opt2, ang, &
-                        ssigp, zr(lsvip), 36, dsidep, iret, mult_comp)
-        else if (type_comp .eq. 'COMP_ELAS') then
-            call nmcpel(BEHinteg,&
-                        fami, kpg, 1, '+', ndim,&
-                        typmod, ang, imate, compor, carcri,&
-                        option, epsm, sigp, zr(lvip), dsidep,&
-                        iret)
-        endif
+        ssigp = 0.d0
+        call nmcomp(BEHinteg,&
+                    fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, carcri, instam, instap,&
+                    6, epsm, deps, 6, sigm,&
+                    zr(lsvip), opt2, ang, &
+                    ssigp, zr(lsvip), 36, dsidep, iret, mult_comp)
         if (iret .ne. 0) then
             pred=0
         else
@@ -381,24 +362,14 @@ implicit none
 !
 !           CALCUL DU RESIDU
     liccvg(2) = 0
-    if (type_comp .eq. 'COMP_INCR') then
-        call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
-        sigp = 0.d0
-        call nmcomp(BEHinteg,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, carcri, instam, instap,&
-                    6, epsm, deps, 6, sigm,&
-                    zr(lvim2), option, ang, &
-                    sigp, zr(lvip), 36, dsidep, iret, mult_comp)
-    else if (type_comp .eq. 'COMP_ELAS') then
-        call dcopy(6, epsm, 1, eps, 1)
-        call daxpy(6, 1.d0, deps, 1, eps, 1)
-        call nmcpel(BEHinteg,&
-                        fami, kpg, 1, '+', ndim,&
-                    typmod, ang, imate, compor, carcri,&
-                    option, eps, sigp, zr(lvip), dsidep,&
-                    iret)
-    endif
+    call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
+    sigp = 0.d0
+    call nmcomp(BEHinteg,&
+                fami, kpg, ksp, ndim, typmod,&
+                imate, compor, carcri, instam, instap,&
+                6, epsm, deps, 6, sigm,&
+                zr(lvim2), option, ang, &
+                sigp, zr(lvip), 36, dsidep, iret, mult_comp)
 !
     call pmimpr(1, instap, indimp, valimp,&
                 iter, deps, sigp, zr(lvip), nbvari,&

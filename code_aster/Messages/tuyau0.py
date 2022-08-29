@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,5 @@ cata_msg = {
     44 : _("""Le comportement élastique %(k1)s n'est pas autorisé pour un élément tuyau."""),
 
     46 : _("""Le nombre de couches et de secteurs d'un élément tuyau doit être supérieur a zéro."""),
-
-    90 : _("""Le seul comportement élastique valide est ELAS pour les éléments tuyaux."""),
 
 }

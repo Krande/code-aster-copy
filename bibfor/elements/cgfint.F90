@@ -89,15 +89,21 @@ implicit none
 ! OUT MATR    : MATRICE DE RIGIDITE   (RIGI_MECA_* ET FULL_MECA_*)
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+    integer, parameter:: nepsSheath=2, nsigSheath=1, ndsdeSheath=2
+! --------------------------------------------------------------------------------------------------
+    aster_logical     :: lMatr, lSigm, lVari
     character(len=16) :: relaSheath, relaCable
     integer :: numeSheath, nbviSheath, nbviCable
     aster_logical :: resi, rigi
     integer :: nddl, g, cod(27), n, i, m, j, kk, codm(1)
     integer :: nume
-    real(kind=8) :: r, mu, epsm, deps, wg, l(3), de(1), ddedt, t1
+    real(kind=8) :: r, mu, epsm, deps, wg, l(3), de, ddedt, t1
+    real(kind=8) :: epsmSheath(nepsSheath),depsSheath(nepsSheath)
+    real(kind=8) :: sigmSheath(nsigSheath),sigpSheath(nsigSheath)
+    real(kind=8) :: dsdeSheath(nsigSheath,nepsSheath)
     real(kind=8) :: b(4, 3), gliss
-    real(kind=8) :: sigcab, dsidep, dde(2), ddedn, courb
+    real(kind=8) :: sigcab, dsidep, dde(nepsSheath), ddedn, courb
     real(kind=8) :: val(1)
     character(len=16) :: nom(1), comporSheath(COMPOR_SIZE)
     character(len=1) :: poum
@@ -117,6 +123,7 @@ implicit none
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
+    
 
 ! - Prepare compor maps
     ASSERT(comporKit(RELA_NAME) .eq. 'KIT_CG')
@@ -133,6 +140,10 @@ implicit none
 !
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
     if (resi) call r8inir(nddl, 0.d0, vect, 1)
+
+    lSigm = L_SIGM(option)
+    lVari = L_VARI(option)
+    lMatr = L_MATR(option)
 !
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
@@ -216,13 +227,19 @@ implicit none
         BEHinteg%elga%curvcab = courb
 !
         de = 0.d0
+        epsmSheath = [mu,gliss]
+        depsSheath = [0.d0,0.d0]
+        sigmSheath = [0.d0]
         call nmcomp(BEHinteg,&
                     'RIGI', g, 1, ndim, typmod,&
                     mat, comporSheath, carcri, instam, instap,&
-                    1, [mu], [gliss], 1, [0.d0],&
-                    vim(nbviCable+1, g), option, [0.d0], &
-                    de, vip(nbviCable+1, g), 36, dde, cod(g))
-        if (cod(g) .eq. 1) goto 999
+                    nepsSheath, epsmSheath, depsSheath, nsigSheath, sigmSheath,&
+                    vim(nbviCable+1, g), option, [0.d0,0.d0,0.d0], &
+                    sigpSheath, vip(nbviCable+1, g), ndsdeSheath, dsdeSheath, cod(g))
+                    
+        if (cod(g) .ne. 0) goto 999
+        if (lSigm) de = sigpSheath(1)
+        if (lMatr) dde = dsdeSheath(1,:)
 !
 !      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
 !
@@ -231,8 +248,8 @@ implicit none
 !        STOCKAGE DES CONTRAINTES
 !        CONVENTION DE RANGEMENT SIGP(1,2,3) EXPLICITE CI-DESSOUS
             sigp( 1,g) = sigcab*a
-            sigp( 2,g) = mu + r*(gliss-de(1))
-            sigp( 3,g) = gliss-de(1)
+            sigp( 2,g) = mu + r*(gliss-de)
+            sigp( 3,g) = gliss-de
 !
 !        VECTEUR FINT:U ET UC
             do n = 1, nno1

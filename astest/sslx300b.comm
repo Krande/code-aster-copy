@@ -450,7 +450,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='MAX',),
                   ),)
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 3536.3740877,
+           VALE_CALC= 3536.4017021257337,
            NOM_PARA='VALE',
            TABLE=tab3,
            FILTRE=(

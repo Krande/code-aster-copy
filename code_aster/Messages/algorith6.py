@@ -260,8 +260,4 @@ Contactez le support technique.
  pas de contraintes planes
 """),
 
-    96 : _("""
- Grandes déformations GROT_GDEP requises pour le matériau ELAS_HYPER.
-"""),
-
 }

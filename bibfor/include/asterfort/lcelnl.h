@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,27 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine hypinc(fami, kpg, ksp, poum, ndim,&
-                      typmod, imate, compor, crit, epsm,&
-                      deps, sigm, sigp, dsidep, codret)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(len=*) :: poum
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: dsidep(6, 6)
-        integer :: codret
-    end subroutine hypinc
+    subroutine lcelnl(BEHinteg,&
+                  fami, kpg, ksp, ndim, &
+                  typmod, imate, compor, crit,&
+                  option, eps, sig, vi, dsidep, codret)
+
+    use Behaviour_type
+
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*) :: fami
+    character(len=8) :: typmod(*)
+    character(len=16) :: compor(*), option
+    integer :: kpg, ksp, ndim, imate, codret
+    real(kind=8) :: crit(*)
+    real(kind=8) :: eps(:), sig(:), vi(1), dsidep(:,:)
+
+    end subroutine lcelnl
 end interface

@@ -33,6 +33,7 @@ implicit none
 private
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
@@ -43,7 +44,6 @@ private
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/nmcpel.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/pk2topk1.h"
@@ -64,7 +64,7 @@ private
 ! --------------------------------------------------------------------------------------------------
     public  :: hhoLargeStrainLCMeca
     private :: hhoComputeAgphi, hhoComputeRhs, hhoComputeLhs, hhoCalculF, transfo_A
-    private :: select_behavior, gdeflog, nbsigm_cmp, hyperelas, grotgdepl
+    private :: select_behavior, gdeflog, nbsigm_cmp, greenlagr
 !
 contains
 !
@@ -152,7 +152,7 @@ contains
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer :: cod(27), nbsig
-        aster_logical :: l_gdeflog, l_grotgdepl, l_hyperelas, l_simo_miehe, l_tang
+        aster_logical :: l_gdeflog, l_green_lagr, l_simo_miehe, l_tang
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -172,7 +172,7 @@ contains
 !
 ! ----- Type of behavior
 !
-        call select_behavior(compor, l_gdeflog, l_grotgdepl, l_simo_miehe, l_hyperelas)
+        call select_behavior(compor, l_gdeflog, l_green_lagr, l_simo_miehe)
 !
 ! ----- Initialisation of behaviour datastructure
 !
@@ -186,7 +186,7 @@ contains
             call ortrep(hhoCell%ndim, hhoCell%barycenter, repere)
         end if
 !
-        if (cplan .and. (l_simo_miehe .or. l_grotgdepl)) then
+        if (cplan .and. (l_simo_miehe .or. l_green_lagr)) then
             ASSERT(ASTER_FALSE)
         endif
 !
@@ -242,33 +242,22 @@ contains
 !
 ! ------- Compute behavior
 !
-            if(l_hyperelas) then
-                if(l_grotgdepl) then
-                    call hyperelas(BEHinteg,&
-                                   hhoCell%ndim, fami, typmod, imate, compor, option, carcri, ipg, &
-                                   angmas, F_curr, sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
-                                   Pk1_curr, module_tang, cod(ipg), l_tang)
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
+            if(l_gdeflog) then
+                call gdeflog(BEHinteg,&
+                             hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg, &
+                             ipg, time_prev, time_curr, angmas, mult_comp, cplan, &
+                             F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
+                             sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
+                             Pk1_curr, module_tang, cod(ipg), l_tang)
+            elseif(l_green_lagr) then
+                call greenlagr(BEHinteg,&
+                               hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg,&
+                               ipg, time_prev, time_curr, mult_comp, resi, &
+                               F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
+                               sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
+                               Pk1_curr, module_tang, cod(ipg), l_tang)
             else
-                if(l_gdeflog) then
-                    call gdeflog(BEHinteg,&
-                                 hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg, &
-                                 ipg, time_prev, time_curr, angmas, mult_comp, cplan, &
-                                 F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
-                                 sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
-                                 Pk1_curr, module_tang, cod(ipg), l_tang)
-                elseif(l_grotgdepl) then
-                    call grotgdepl(BEHinteg,&
-                                   hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg,&
-                                   ipg, time_prev, time_curr, mult_comp, resi, &
-                                   F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
-                                   sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
-                                   Pk1_curr, module_tang, cod(ipg), l_tang)
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
+                ASSERT(ASTER_FALSE)
             end if
 !
 ! -------- Use Hooke matrix for the elastic modulus
@@ -663,15 +652,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine select_behavior(behavior, l_gdeflog, l_grotgdepl, l_simo_miehe, l_hyperelas)
+    subroutine select_behavior(behavior, l_gdeflog, l_green_lagr, l_simo_miehe)
 !
     implicit none
 !
         character(len=16), intent(in)   :: behavior(*)
         aster_logical, intent(out)      :: l_gdeflog
-        aster_logical, intent(out)      :: l_grotgdepl
+        aster_logical, intent(out)      :: l_green_lagr
         aster_logical, intent(out)      :: l_simo_miehe
-        aster_logical, intent(out)      :: l_hyperelas
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -679,30 +667,24 @@ contains
 !   Select the appropriate behavior
 !   In behavior     : type of behavior
 !   Out l_gdeflog   : use GDEF_LOG ?
-!   Out l_grotgdepl : use GROT_GDEPL ?
+!   Out l_green_lagr: use GREEN_LAGRANGE ?
 !   Out l_simo_miehe: use SIMO_MIEHE ?
-!   Out l_hyperelas : hyperlastic law ?
 ! --------------------------------------------------------------------------------------------------
 !
         l_gdeflog    = ASTER_FALSE
-        l_grotgdepl  = ASTER_FALSE
+        l_green_lagr = ASTER_FALSE
         l_simo_miehe = ASTER_FALSE
-        l_hyperelas  = ASTER_FALSE
 !
         select case (behavior(DEFO))
             case ('GDEF_LOG')
                 l_gdeflog = ASTER_TRUE
-            case ('GROT_GDEP')
-                l_grotgdepl = ASTER_TRUE
+            case ('GREEN_LAGRANGE')
+                l_green_lagr = ASTER_TRUE
             case ('SIMO_MIEHE')
                 l_simo_miehe = ASTER_TRUE
             case default
                 ASSERT(ASTER_FALSE)
         end select
-!
-        if (behavior(INCRELAS) .eq. 'COMP_ELAS') then
-            l_hyperelas = ASTER_TRUE
-        end if
 !
     end subroutine
 !
@@ -851,103 +833,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hyperelas(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, ipg, &
-                         angmas, F, sig_pg, vi_pg, pk1, module_tang, cod, l_tang)
-!
-    implicit none
-!
-        type(Behaviour_Integ), intent(inout) :: BEHinteg
-        integer, intent(in)             :: ndim
-        character(len=*), intent(in)    :: fami
-        character(len=8), intent(in)    :: typmod(*)
-        integer, intent(in)             :: imate
-        character(len=16), intent(in)   :: compor(*)
-        character(len=16), intent(in)   :: option
-        real(kind=8), intent(in)        :: carcri(*)
-        integer, intent(in)             :: ipg
-        real(kind=8), intent(in)        :: angmas(*)
-        real(kind=8), intent(in)        :: F(3,3)
-        real(kind=8), intent(out)       :: sig_pg(2*ndim)
-        real(kind=8), intent(out)       :: vi_pg(*)
-        real(kind=8), intent(out)       :: pk1(3,3)
-        real(kind=8), intent(out)       :: module_tang(3,3,3,3)
-        integer, intent(out)            :: cod
-        aster_logical, intent(in)       :: l_tang
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO - mechanics
-!
-!   Compute the local contribution for mechanics in large deformations
-!   IO BEHinteg     : integration informations
-!   In ndim          : dimension of the problem
-!   In fami         : familly of quadrature points
-!   In typmod       : type of modelization
-!   In imate        : materiau code
-!   In compor       : type of behavior
-!   In option       : option of computations
-!   In carcri       : local criterion of convergence
-!   In ipg          : i-th quadrature point
-!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
-!   In F            : deformation gradient
-!   Out vi_pg       : internal variables
-!   Out sig_pg      : stress   (XX, YY, ZZ, XY, XZ, YZ)
-!   Out Pk1         : piola-kirschooff 1
-!   Out module_tang : tangent modulus dPk1/dF
-!   Out cod         : info on integration of the LDC
-!   In  l_tang      : compute tangent modulus ?
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8) :: GL(6), dpk2dc(6,6), me(3,3,3,3), pk2(6), detF
-        character(len=1) :: poum
-!
-        if (option(1:10) .eq. 'RIGI_MECA_') then
-            poum = '-'
-        else
-            poum = '+'
-        end if
-!
-! ----- Compute pre-processing E (Green-Lagrange)
-!
-        call hhoCalculGreenLagrange(ndim, F, GLvec=GL)
-!
-! ----- Compute Stress PK2(C) and module_tangent dPk2dc(C)
-!
-        call nmcpel(BEHinteg, fami, ipg, 1, poum, 3, typmod, angmas, imate, compor, &
-                    carcri, option, GL, pk2, vi_pg, dpk2dc, cod)
-!
-! ----- Test the code of the LDC
-!
-        if (cod .ne. 0) goto 999
-!
-! ----- Compute Cauchy stress and save them
-!
-        call lcdetf(ndim, F, detF)
-        call pk2sig(ndim, F, detF, pk2, sig_pg, 1)
-!
-! ----- Compute PK1
-!
-        call pk2topk1(ndim, pk2, F, pk1)
-!
-        if(l_tang) then
-!
-! ----- Unpack lagrangian tangent modulus
-!
-            call desymt46(dpk2dc, me)
-!
-! ----- Compute nominal tangent modulus
-!
-            call lagmodtonommod(me, pk2, F, module_tang)
-        end if
-!
-999 continue
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine grotgdepl(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, lgpg, ipg, &
+    subroutine greenlagr(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, lgpg, ipg, &
                        time_prev, time_curr, mult_comp, resi, &
                        F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
                        PK1_curr, module_tang, cod, l_tang)
@@ -982,7 +868,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
 !
-!   Compute the behavior laws for GROT_GDEPL
+!   Compute the behavior laws for GREEN_LAGRANGE
 !   IO BEHinteg     : integration informations
 !   In ndim         : dimension of the problem
 !   In fami         : familly of quadrature points
@@ -1010,7 +896,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: GL_prev(6), GL_curr(6), GL_incr(6), dpk2dc(6,6), me(3,3,3,3), detF_prev
-        real(kind=8) :: maxeps, PK2_prev(6), PK2_curr(6), detF_curr, sig(6)
+        real(kind=8) :: PK2_prev(6), PK2_curr(6), detF_curr, sig(6)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: angmas(1:3)
         integer :: jstrainexte
@@ -1042,24 +928,11 @@ contains
             call hhoCalculGreenLagrange(ndim, F_curr, GLvec=GL_curr)
             GL_incr = GL_curr - GL_prev
 !
-! --------- Check "small strains"
-!
-            maxeps = abs(maxval(GL_incr))
-            if ((maxeps .gt. 0.05d0) .and. (compor(RELA_NAME) .ne. 'ELAS')) then
-                call utmess('A', 'COMPOR2_9', sr=maxeps)
-            endif
-!
 ! --------- Compute behaviour
 !
             call nmcomp(BEHinteg  , fami      , ipg       , 1      , ndim     , typmod   ,&
                         imate     , compor    , carcri , time_prev, time_curr,&
                         6         , GL_prev   , GL_incr, 6        , PK2_prev ,&
-                        vi_prev_pg, option    , angmas , &
-                        PK2_curr  , vi_curr_pg, 36     , dpk2dc   , cod       , mult_comp)
-        elseif (jstrainexte .eq. MFRONT_STRAIN_GROTGDEP_L) then
-            call nmcomp(BEHinteg  , fami      , ipg       , 1      , ndim     , typmod   ,&
-                        imate     , compor    , carcri , time_prev, time_curr,&
-                        9         , F_prev    , F_curr , 6        , PK2_prev ,&
                         vi_prev_pg, option    , angmas , &
                         PK2_curr  , vi_curr_pg, 36     , dpk2dc   , cod       , mult_comp)
         else

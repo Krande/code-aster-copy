@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmelas(BEHinteg,&
-                      fami, kpg, ksp, ndim, typmod,&
-                      imate, deps, sigm, option, sigp,&
-                      vip, dsidep, iret)
+    subroutine nmelas_elas(BEHinteg,&
+                  fami, kpg, ksp, typmod,&
+                  imate, eps, option, sig,&
+                  vi, dsidep)
         use Behaviour_type
+
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        character(len=16) :: option
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(1)
-        real(kind=8) :: dsidep(6, 6)
-        integer :: iret
-    end subroutine nmelas
+        character(len=*), intent(in)      :: fami
+        character(len=8), intent(in)      :: typmod(*)
+        character(len=16), intent(in)     :: option
+        integer, intent(in)               :: imate, kpg, ksp
+        real(kind=8), intent(in)          :: eps(:)
+        real(kind=8), intent(out)         :: sig(:),vi(1),dsidep(:,:)
+    end subroutine nmelas_elas
 end interface

@@ -15,32 +15,32 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
-                  epsm, deps, vim, sig, vip,&
-                  dsidep)
-!
-    use Behaviour_type
-!
-    implicit none
-!
+
+subroutine lckimp(ndim, typmod, option, mat, eps,&
+                  phitot, vim, sig, forc_endo, vip, dsde_1, dsde_2, dsde_3)
+
+implicit none
+
 #include "asterf_types.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/ddot.h"
-    type(Behaviour_Integ), intent(in) :: BEHinteg
-    character(len=8) :: typmod
+
+    integer           :: ndim
+    character(len=8)  :: typmod
     character(len=16) :: option
-    integer :: ndim, mat
-    real(kind=8) :: epsm(6), deps(6), vim(2)
-    real(kind=8) :: vip(2), sig(6), dsidep(6, 6, 4)
+    integer           :: mat
+    real(kind=8)      :: eps(:)
+    real(kind=8)      :: phitot
+    real(kind=8)      :: vim(:)
+    real(kind=8)      :: vip(:)
+    real(kind=8)      :: sig(:)
+    real(kind=8)      :: forc_endo
+    real(kind=8)      :: dsde_1(:,:)
+    real(kind=8)      :: dsde_2(:)
+    real(kind=8)      :: dsde_3
 !
 !     -----------------------------------------------------------------
 !     ENDOMMAGEMENT FRAGILE ENDO_CARRE POUR GVNO
 !     -----------------------------------------------------------------
-!     IN  BEHinteg%elga%nonloc  VARIABLES NON LOCALES
 !     IN  NDIM    DIMENSION DE L'ESPACE
 !     IN  TYPMOD  TYPE DE MODELISATION
 !     IN  OPTION  OPTION DE CALCUL
@@ -57,16 +57,16 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
 !     -----------------------------------------------------------------
 !
     aster_logical :: cplan, resi
-    integer :: ndimsi, ij, kl, i
+    integer :: ndimsi, ij, kl
     real(kind=8) :: val(3), nu, lambda, deuxmu
-    real(kind=8) :: e
-    real(kind=8) :: coplan, eps(6), phi, w, treps, epseps, sigel(6)
+    real(kind=8) :: e, phi
+    real(kind=8) :: coplan, w, treps, epseps, sigel(2*ndim)
     real(kind=8) :: fd
-    real(kind=8) :: kk, epsd(6)
+    real(kind=8) :: kk, epsd(2*ndim)
     real(kind=8) :: sigm, w0
     integer :: k2(4)
     character(len=8) :: nom(3)
-    real(kind=8) :: kron(6), rigmin
+    real(kind=8) :: kron(6), rigmin, kr(2*ndim)
     parameter (rigmin = 1.d-5)
     data   kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !     -----------------------------------------------------------------
@@ -84,6 +84,9 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
 !      RIGI=OPTION(1:9).EQ.'RIGI_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA'
 !      ELAS=OPTION.EQ.'RIGI_MECA_ELAS'.OR.OPTION.EQ.'FULL_MECA_ELAS'
     ndimsi = 2*ndim
+    kr     = kron(1:ndimsi)
+    
+    phi = min(phitot,1.d0)
 !
 !
 !     -- LECTURE DES CARACTERISTIQUES MATERIAU
@@ -109,12 +112,8 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
     sigm = val(3)
 !
     w0 = sigm**2/(2*e)
-!
-!     -- DEFORMATIONS COURANTES
-!
-    call dcopy(ndimsi, epsm, 1, eps, 1)
-    if (resi) call daxpy(ndimsi, 1.d0, deps, 1, eps,&
-                         1)
+
+
 !
 !     DEFORMATION HORS PLAN POUR LES CONTRAINTES PLANES
     if (cplan) then
@@ -122,7 +121,6 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
         eps(3) = coplan * (eps(1)+eps(2))
     endif
 !
-    phi = BEHinteg%elga%nonloc(1)
 !
 !     -- ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
 !
@@ -130,20 +128,16 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
 !
 !     -- DEVIATEUR DES DEFORMATIONS
 !
-    do i = 1, ndimsi
-        epsd(i) = eps(i) - treps*kron(i)/(3.0d0)
-    end do
+    epsd = eps - treps*kr/3.0d0
 !
-    epseps = ddot(ndimsi,eps,1,eps,1)
+    epseps = dot_product(eps,eps)
     w = 0.5d0 * (lambda*treps**2 + deuxmu*epseps)
-    do ij = 1, ndimsi
-        sigel(ij) = lambda*treps*kron(ij) + deuxmu*eps(ij)
-    end do
+    sigel = lambda*treps*kr + deuxmu*eps
 !
 !     CORRECTION 1 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 !
     if (treps .lt. 0.d0) then
-        w = 0.5d0 * deuxmu*ddot(ndimsi,epsd,1,epsd,1)
+        w = 0.5d0 * deuxmu*dot_product(epsd,epsd)
     endif
 !
 !     -----------------------------------------------------------------
@@ -152,15 +146,11 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
 !
     fd = (1.d0 - phi)**2 + rigmin
 !
-    if (.not.resi) goto 5000
+    if (.not.resi) goto 500
 !
     vip(1) = phi
+    vip(2) = merge(1.d0, 0.d0, vip(1).gt.vim(1))
 !
-    if (vip(1) .gt. vim(1)) then
-        vip(2) = 1
-    else
-        vip(2) = 0
-    endif
 !
 !     STOCKAGE DES CONTRAINTES ET DES VARIABLES INTERNES
 !
@@ -168,53 +158,45 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
 !     FORMULATION LOI DE COMPORTMENT AVEC CORRECTION EN COMPRESSION
 !
     if (treps .lt. 0.d0) then
-        do ij = 1, ndimsi
-            sig(ij) = kk*treps*kron(ij) + deuxmu*epsd(ij)*fd
-        end do
+        sig = kk*treps*kr + deuxmu*epsd*fd
     else
-        do ij = 1, ndimsi
-            sig(ij) = sigel(ij)*fd
-        end do
+        sig = sigel*fd
     endif
 !
-5000 continue
+500 continue
 !
 !     -----------------------------------------------------------------
 !     CALCUL DES MATRICES TANGENTES
 !     -----------------------------------------------------------------
 !
-    call r8inir(36*4, 0.d0, dsidep, 1)
 !
+    dsde_1 = 0
+    dsde_2 = 0
+    dsde_3 = 0
+    
     fd = (1.d0 - phi)**2 + rigmin
 !
 !     -- CONTRIBUTION ELASTIQUE
 !
-    do ij = 1, 3
-        do kl = 1, 3
-            if (treps .lt. 0.d0) then
-                dsidep(ij,kl,1) = lambda+deuxmu/(3.0d0)*(1.d0-fd)
-            else
-                dsidep(ij,kl,1) = fd*lambda
-            endif
-        end do
-    end do
+    if (treps .lt. 0.d0) then
+        dsde_1(1:3,1:3) = lambda+deuxmu/(3.0d0)*(1.d0-fd)
+    else
+        dsde_1(1:3,1:3) = fd*lambda
+    endif
     do ij = 1, ndimsi
-        dsidep(ij,ij,1) = dsidep(ij,ij,1) + fd*deuxmu
+        dsde_1(ij,ij) = dsde_1(ij,ij) + fd*deuxmu
     end do
 !
 !     -- CORRECTION POUR LES CONTRAINTES PLANES
 !
     if (cplan) then
-        do ij = 1, ndimsi
+        do 130 ij = 1, ndimsi
             if (ij .eq. 3) goto 130
-            do kl = 1, ndimsi
+            do 140 kl = 1, ndimsi
                 if (kl .eq. 3) goto 140
-                dsidep(ij,kl,1)=dsidep(ij,kl,1) - 1.d0/dsidep(3,3,1)*&
-                dsidep(ij,3,1)*dsidep(3,kl,1)
-140             continue
-            end do
-130         continue
-        end do
+                dsde_1(ij,kl)=dsde_1(ij,kl) - 1.d0/dsde_1(3,3)*dsde_1(ij,3)*dsde_1(3,kl)
+140         continue
+130     continue
     endif
 !
 !     -- CORRECTION DISSIPATIVE
@@ -222,24 +204,20 @@ subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
 !     CORRECTION 2 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 !
     if (treps .lt. 0.d0) then
-        do ij = 1, ndimsi
-            sigel(ij) = deuxmu*epsd(ij)
-        end do
+        sigel = deuxmu*epsd
     endif
 !
 !     DERIVEES CROISEES
 !
-    do ij = 1, ndimsi
-        dsidep(ij,1,2) = -2.d0*(1.0d0-phi)*sigel(ij)
-    end do
+    dsde_2 = -2.d0*(1.0d0-phi)*sigel
 !
 !     DERIVEE SECONDE /ENDO
 !
-    dsidep(1,1,3) = 2.0d0*w
+    dsde_3 = 2.0d0*w
 !
 !    DERIVEE PREMIERE /ENDO
 !
-    dsidep(1,1,4) = 2.0d0*(w0-(1.0d0-phi)*w)
+    forc_endo = 2.0d0*(w0-(1.0d0-phi)*w)
 !
 !
 !

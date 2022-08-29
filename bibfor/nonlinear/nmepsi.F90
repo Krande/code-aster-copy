@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff,&
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
@@ -30,7 +31,7 @@ aster_logical, intent(in) :: l_axi, l_large
 integer, intent(in) :: ndim, nno
 real(kind=8), intent(in) :: vff(nno), r, dfdi(nno, ndim), disp(ndim, nno)
 real(kind=8), intent(out) :: f(3, 3)
-real(kind=8), optional, intent(out) :: epsi_(6)
+real(kind=8), optional, intent(out) :: epsi_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,6 +62,10 @@ real(kind=8), optional, intent(out) :: epsi_(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (present(epsi_)) then
+        ASSERT(size(epsi_) .ge. 2*ndim)
+    end if
+    
     grad(:,:) = 0.d0
 !
 ! - Gradient Grad(U)
@@ -90,7 +95,7 @@ real(kind=8), optional, intent(out) :: epsi_(6)
 ! - Compute small strains
 !
     if (present(epsi_)) then
-        epsi_(:) = 0.d0
+        epsi_= 0.d0
         epsi_(1) = grad(1,1)
         epsi_(2) = grad(2,2)
         epsi_(3) = 0.d0

@@ -42,6 +42,7 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -63,15 +64,15 @@ implicit none
     integer :: icodre(1), kpg, spt
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
-    character(len=16) :: compor(4), oprupt, phenom
+    character(len=16) :: compor(4), phenom
 !
     real(kind=8) :: epsref(6), e(1), mu
-    real(kind=8) :: epsi, rac2, crit(13)
+    real(kind=8) :: epsi, rac2
     real(kind=8) :: dfdi(27), f(3, 3), sr(3, 3), sigl(6), sigin(6), dsigin(6, 3)
     real(kind=8) :: eps(6), epsin(6), depsin(6, 3), epsp(6)
     real(kind=8) :: epsino(36), fno(18)
     real(kind=8) :: thet, tn(20), tgdm(3), prod, prod1, prod2, divt
-    real(kind=8) :: valpar(3), tcla, tthe, tfor, tini, poids, r, rbid, dsidep(6, 6)
+    real(kind=8) :: valpar(3), tcla, tthe, tfor, tini, poids, r, rbid
     real(kind=8) :: energi(2), rho(1), om, omo
     real(kind=8) :: dtdm(3, 5), der(6), dfdm(3, 5), dudm(3, 4), dvdm(3, 4)
     real(kind=8) :: vepscp
@@ -83,7 +84,7 @@ implicit none
     integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
     integer :: ivites, iaccel, j1, j2
     integer :: nno, nnos, ncmp, jgano
-    integer :: i, j, k, kk, l, m, kp, ndim, compt, nbvari
+    integer :: i, j, k, kk, l, m, kp, ndim, compt
     integer :: ij, ij1, matcod, i1, iret, iret1, npg1
     type(Behaviour_Integ) :: BEHinteg
 !
@@ -98,7 +99,6 @@ implicit none
 !
     epsi = r8prem()
     rac2 = sqrt(2.d0)
-    oprupt = 'RUPTURE'
     axi = .false.
     cp = .false.
     epsini = .false.
@@ -183,7 +183,6 @@ implicit none
 !   LOI DE COMPORTEMENT
     grand = compor(3).eq.'GROT_GDEP'
     incr = compor(4)(1:9).eq.'COMP_INCR'
-    read(zk16(icomp+1),'(I16)') nbvari
     if (incr) then
         call jevech('PCONTRR', 'L', isigm)
     endif
@@ -426,16 +425,10 @@ implicit none
             end do
             sigl(4)= zr(isigm+ncmp*(kp-1)+3)*rac2
         else
-            crit(1) = 300
-            crit(2) = 0.d0
-            crit(3) = 1.d-3
-            crit(9) = 300
-            crit(8) = 1.d-3
             call nmelnl(BEHinteg,&
-                        fami, kp, 1, '+',&
-                        ndim, typmod, matcod, compor, crit,&
-                        oprupt, eps, sigl, rbid, dsidep,&
-                        energi)
+                        fami, kp, 1, &
+                        ndim, typmod, matcod, compor, &
+                        eps, sigl, energi)
 !
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret .eq. 0) then

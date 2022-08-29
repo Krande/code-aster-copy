@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W1306
 !
-subroutine nmgr3d(option  , typmod  ,&
+subroutine nmgrla(option  , typmod  ,&
                   fami    , imate   ,&
-                  nno     , npg     , lgpg     ,&
+                  ndim    , nno     , npg     , lgpg     ,&
                   ipoids  , ivf     , vff      , idfde,&
                   compor  , carcri  , mult_comp,&
                   instam  , instap  ,&
                   geomInit, dispPrev, dispIncr ,&
-                  sigmPrev, sigmCurr,&
+                  angmas  , sigmPrev, sigmCurr,&
                   vim     , vip     ,&
                   matsym  , matuu   , vectu    ,&
                   codret)
@@ -50,27 +50,28 @@ character(len=16), intent(in) :: option
 character(len=8), intent(in) :: typmod(*)
 character(len=*), intent(in) :: fami
 integer, intent(in) :: imate
-integer, intent(in) :: nno, npg, lgpg
+integer, intent(in) :: ndim, nno, npg, lgpg
 integer, intent(in) :: ipoids, ivf, idfde
 real(kind=8), intent(in) :: vff(*)
 character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
+real(kind=8), intent(in) :: carcri(*), angmas(*)
 character(len=16), intent(in) :: mult_comp
 real(kind=8), intent(in) :: instam, instap
-real(kind=8), intent(in) :: geomInit(3, nno)
-real(kind=8), intent(inout) :: dispPrev(3*nno),  dispIncr(3*nno)
-real(kind=8), intent(inout) :: sigmPrev(6, npg), sigmCurr(6, npg)
+real(kind=8), intent(in) :: geomInit(ndim, nno)
+real(kind=8), intent(inout) :: dispPrev(ndim*nno),  dispIncr(ndim*nno)
+real(kind=8), intent(inout) :: sigmPrev(2*ndim, npg), sigmCurr(2*ndim, npg)
 real(kind=8), intent(inout) :: vim(lgpg, npg), vip(lgpg, npg)
 aster_logical, intent(in) :: matsym
 real(kind=8), intent(inout) :: matuu(*)
-real(kind=8), intent(inout) :: vectu(3, nno)
+real(kind=8), intent(inout) :: vectu(ndim*nno)
 integer, intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Elementary computation
 !
-! Elements: 3D
+! Elements: C_PLAN, D_PLAN, AXIS
+!
 ! Options: RIGI_MECA_TANG, RAPH_MECA and FULL_MECA - Large displacements/rotations (GROT_GDEP)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,6 +79,7 @@ integer, intent(inout) :: codret
 ! In  option           : name of option to compute
 ! In  fami             : Gauss family for integration point rule
 ! In  imate            : coded material address (JEVEUX)
+! In  ndim             : dimension (2 ou 3)
 ! In  nno              : number of nodes
 ! In  npg              : number of Gauss integration point
 ! In  lgpg             : total length of vector for internal state variable
@@ -104,28 +106,25 @@ integer, intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndim = 3
     aster_logical :: grand, axi, cplan
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
-    integer :: kpg, j, strain_model
+    integer :: kpg
     integer :: cod(npg)
-    real(kind=8) :: dsidep(6, 9)
+    real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: fPrev(3, 3), fCurr(3, 3)
     real(kind=8) :: epsgPrev(6), epsgIncr(6), epsgCurr(6)
     real(kind=8) :: detfPrev, detfCurr
-    real(kind=8) :: dispCurr(3*nno)
-    real(kind=8) :: r, sigmPost(6), sigmPrep(6), poids, maxeps
-    real(kind=8) :: angl_naut(3)
+    real(kind=8) :: dispCurr(ndim*nno)
+    real(kind=8) :: r, sigmPost(6), sigmPrep(6), poids
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8) :: dfdi(nno, 3), pff(6,nno,nno), def(6,nno,3)
-    character(len=16) :: rela_comp
+    real(kind=8) :: dfdi(nno,ndim), pff(2*ndim,nno,nno), def(2*ndim,nno,ndim)
     type(Behaviour_Integ) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
     grand      = ASTER_TRUE
-    axi        = ASTER_FALSE
-    cplan      = ASTER_FALSE
+    axi        = typmod(1) .eq. 'AXIS'
+    cplan      = typmod(1) .eq. 'C_PLAN'
     cod        = 0
     lSigm      = L_SIGM(option)
     lVect      = L_VECT(option)
@@ -133,15 +132,10 @@ integer, intent(inout) :: codret
     lPred      = L_PRED(option)
     lMatrPred  = L_MATR_PRED(option)
     dispCurr   = 0.d0
-    rela_comp  = compor(RELA_NAME)
 !
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
-!
-! - Get coded integer for external state variable
-!
-    strain_model = nint(carcri(EXTE_STRAIN))
 !
 ! - Prepare external state variables
 !
@@ -151,10 +145,6 @@ integer, intent(inout) :: codret
                                geomInit, BEHinteg,&
                                dispPrev, dispIncr)
 !
-! - Only isotropic material !
-!
-    angl_naut(1:3) = r8nnem()
-!
 ! - Update displacements
 !
     dispCurr(:) = dispPrev(:) + dispIncr(:)
@@ -163,7 +153,6 @@ integer, intent(inout) :: codret
 !
     do kpg = 1, npg
         epsgPrev = 0.d0
-        epsgIncr = 0.d0
         epsgCurr = 0.d0
 ! ----- Kinematic - Previous strains
         call nmgeom(ndim    , nno   , axi , grand, geomInit,&
@@ -173,80 +162,45 @@ integer, intent(inout) :: codret
 ! ----- Kinematic - Current strains
         call nmgeom(ndim     , nno   , axi , grand, geomInit,&
                     kpg      , ipoids, ivf , idfde, dispCurr,&
-                    .false._1, poids , dfdi, fCurr, epsgCurr,&
+                    .true._1, poids , dfdi, fCurr, epsgCurr,&
                     r)
+        
 ! ----- Stresses: convert Cauchy to PK2
         call lcdetf(ndim, fPrev, detfPrev)
         call pk2sig(ndim, fPrev, detfPrev, sigmPrep, sigmPrev(1, kpg), -1)
-        sigmPrep(4) = sigmPrep(4)*rac2
-        sigmPrep(5) = sigmPrep(5)*rac2
-        sigmPrep(6) = sigmPrep(6)*rac2
-! ----- Jacobian must been positive !
-        call lcdetf(ndim, fCurr, detfCurr)
-        if (detfCurr .le. 1.D-6) then
-            cod(kpg) = 1
-            goto 999
-        endif
+        sigmPrep(4:2*ndim) = sigmPrep(4:2*ndim)*rac2
+
+        
 ! ----- Compute behaviour
-        if ((strain_model .eq. MFRONT_STRAIN_GROTGDEP_S) .or. &
-            (strain_model .eq. 0)) then
-! --------- Check "small strains"
-            maxeps = 0.d0
-            do j = 1, 6
-                epsgIncr(j) = epsgCurr(j)-epsgPrev(j)
-                maxeps       = max(maxeps,abs(epsgIncr(j)))
-            end do
-            if (maxeps .gt. 0.05d0) then
-                if (rela_comp(1:4) .ne. 'ELAS') then
-                    call utmess('A', 'COMPOR2_9', sr=maxeps)
-                endif
-            endif
-! --------- Compute behaviour
-            sigmPost = 0.d0
-            call nmcomp(BEHinteg   ,&
-                        fami       , kpg        , 1        , ndim  , typmod  ,&
-                        imate      , compor     , carcri   , instam, instap  ,&
-                        6          , epsgPrev   , epsgIncr , 6     , sigmPrep,&
-                        vim(1, kpg), option     , angl_naut,&
-                        sigmPost   , vip(1, kpg), 36       , dsidep,&
-                        cod(kpg)   , mult_comp)
-            if (cod(kpg) .eq. 1) then
-                goto 999
-            endif
-        elseif (strain_model .eq. MFRONT_STRAIN_GROTGDEP_L) then
-! --------- Jacobian must been positive !
-            call lcdetf(ndim, fCurr, detfCurr)
-            if (detfCurr .le. 1.D-6) then
-                cod(kpg) = 1
-                goto 999
-            endif
-! --------- Compute behaviour
-! Remarque: dsidep est dimensionne (6,9) pour la zone memoire et le controle dans lc0000
-! Mais seule la partie (6,6) est effectivement remplie par MFRONT (curieusement)
-            sigmPost = 0.d0
-            call nmcomp(BEHinteg   ,&
-                        fami       , kpg        , 1        , ndim  , typmod  ,&
-                        imate      , compor     , carcri   , instam, instap  ,&
-                        9          , fPrev      , fCurr    , 6     , sigmPrep,&
-                        vim(1, kpg), option     , angl_naut,&
-                        sigmPost   , vip(1, kpg), 54       , dsidep,&
-                        cod(kpg)   , mult_comp)
-            if (cod(kpg) .eq. 1) then
-                goto 999
-            endif
-        else
-            ASSERT(ASTER_FALSE)
-        endif
-! ----- For PREDICTION: initialization of stress
-        if (lPred) then
-            sigmPost = sigmPrep
-        endif
+        sigmPost = 0
+        epsgIncr = epsgCurr - epsgPrev
+        
+        call nmcomp(BEHinteg   ,&
+                    fami       , kpg        , 1        , ndim  , typmod  ,&
+                    imate      , compor     , carcri   , instam, instap  ,&
+                    6          , epsgPrev   , epsgIncr , 6     , sigmPrep,&
+                    vim(1, kpg), option     , angmas   ,&
+                    sigmPost   , vip(1, kpg), 36       , dsidep,&
+                    cod(kpg)   , mult_comp)
+        if (cod(kpg) .eq. 1) goto 999
+!        write (6,*) 'option = ',option
+!        write (6,*) 'epsm   = ',epsgPrev
+!        write (6,*) 'deps   = ',epsgIncr
+!        write (6,*) 'sigm   = ',sigmPrep     
+!        if (lSigm) write(6,*) 'sigp   = ',sigmPost                  
+!        if (lVect) write(6,*) 'vip    = ',vip(:,kpg)                  
+!        if (lMatr) write(6,*) 'dsdiep = ',dsidep                  
+        
+                    
+        
 ! ----- Compute internal forces vector and rigidity matrix
         call nmgrtg(ndim    , nno   , poids    , kpg   , vff     ,&
-                    dfdi    , def   , pff      , axi   ,&
+                    dfdi    , def   , pff      , axi     ,&
                     lVect   , lMatr , lMatrPred,&
                     r       , fPrev , fCurr    , dsidep, sigmPrep,&
                     sigmPost, matsym, matuu    , vectu)
+                    
+                    
 ! ----- Stresses: convert PK2 to Cauchy
         if (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL') then
             call lcdetf(ndim, fCurr, detfCurr)

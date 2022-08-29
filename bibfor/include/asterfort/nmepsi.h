@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,6 @@ interface
         integer, intent(in) :: ndim, nno
         real(kind=8), intent(in) :: vff(nno), r, dfdi(nno, ndim), disp(ndim, nno)
         real(kind=8), intent(out) :: f(3, 3)
-        real(kind=8), optional, intent(out) :: epsi_(6)
+        real(kind=8), optional, intent(out) :: epsi_(:)
     end subroutine nmepsi
 end interface

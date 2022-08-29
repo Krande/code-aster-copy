@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmelru(fami, kpg, ksp, poum,&
-                  imate, compor, epseq, p, divu,&
+subroutine nmelru(fami, kpg, ksp, &
+                  imate, compor, epseq, p_arg, divu,&
                   nonlin, ener)
 !
 ! FONCTION REALISEE:
@@ -37,7 +37,8 @@ subroutine nmelru(fami, kpg, ksp, poum,&
 ! OUT ENER(2) : DERIVEE DE L'ENERGIE LIBRE / TEMPERATURE
 !
 ! ----------------------------------------------------------------------
-! CORPS DU PROGRAMME
+
+    use Behaviour_type
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -50,37 +51,40 @@ subroutine nmelru(fami, kpg, ksp, poum,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
-    integer :: kpg, ksp, imate
-    real(kind=8) :: epseq, p, divu, ener(2)
-    character(len=*) :: fami, poum
-    character(len=16) :: compor(*)
-    aster_logical :: nonlin
-!
-! DECLARATION VARIABLES LOCALES
+    character(len=*),intent(in)  :: fami
+    integer, intent(in)          :: kpg
+    integer, intent(in)          :: ksp
+    integer, intent(in)          :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8), intent(in)     :: epseq
+    real(kind=8), intent(in)     :: p_arg
+    real(kind=8), intent(in)     :: divu
+    aster_logical, intent(in)    :: nonlin
+    real(kind=8), intent(out)    :: ener(2)
+! --------------------------------------------------------------------------------------------------
+    character(len=1),parameter:: poum='+'
     integer :: icodre(3)
     integer :: jprol, jvale, nbvale, iret1, iret2
-!
-    real(kind=8) :: temp, tref
+    real(kind=8) :: temp, tref, p
     real(kind=8) :: e, nu, demu, k, k3, alpha, para_vale
     real(kind=8) :: de, dnu, demudt, dk, dalpha
     real(kind=8) :: dsde, sigy, rprim, rp, airep, coco
     real(kind=8) :: dsdedt, dsigy, drprim, dp, drp, dairep
     real(kind=8) :: nrj, dnrj, valres(3), devres(3)
-!
     character(len=16) :: nomres(3)
     character(len=8) :: para_type
-!
     aster_logical :: trac, line, puis
-!
+! --------------------------------------------------------------------------------------------------
     common        /rconm2/alfafa,unsurn,sieleq
     real(kind=8) :: alfafa, unsurn, sieleq
-!
 ! ----------------------------------------------------------------------
 !
-    trac = (compor(1)(1:14).eq.'ELAS_VMIS_TRAC')
-    line = (compor(1)(1:14).eq.'ELAS_VMIS_LINE')
-    puis = (compor(1)(1:14).eq.'ELAS_VMIS_PUIS')
+    p    = p_arg
+    trac = (compor(RELA_NAME)(1:14).eq.'ELAS_VMIS_TRAC')
+    line = (compor(RELA_NAME)(1:14).eq.'ELAS_VMIS_LINE')
+    puis = (compor(RELA_NAME)(1:14).eq.'ELAS_VMIS_PUIS')
 !
 !====================================================================
 ! -  LECTURE DE E, NU, ALPHA ET DERIVEES / TEMPERATRURE

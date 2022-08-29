@@ -18,11 +18,11 @@
 ! aslint: disable=W1306,W1504
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
+subroutine xxnmel(elrefp, elrese, ndim, coorse,&
                   igeom, he, nfh, ddlc, ddlm,&
                   nnops, nfe, basloc, nnop, npg,&
                   typmod, option, imate, compor, lgpg,&
-                  carcri, idepl, lsn, lst, idecpg,&
+                  carcri, instam, instap, idepl, lsn, lst, idecpg,&
                   sig, vi, matuu, ivectu, codret,&
                   nfiss, heavn, jstno,&
                   l_line, l_nonlin, lMatr, lVect, lSigm)
@@ -42,7 +42,7 @@ implicit none
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
-#include "asterfort/nmcpel.h"
+#include "asterfort/nmcomp.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
@@ -60,9 +60,8 @@ integer :: idecpg, idepl, igeom, imate, ivectu, nnops
 integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
 integer :: jstno
 real(kind=8) :: basloc(3*ndim*nnop), coorse(*), carcri(*), he(nfiss)
-real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
+real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg), instam, instap
 real(kind=8) :: matuu(*), vi(lgpg, npg)
-character(len=*) :: poum
 character(len=8) :: elrefp, elrese, typmod(*), fami_se
 character(len=16) :: option, compor(*)
 aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
@@ -124,12 +123,14 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
     aster_logical :: grdepl, axi, cplan
     type(Behaviour_Integ) :: BEHinteg
     real(kind=8) :: angmas(3)
+    real(kind=8):: vim(lgpg), zero6(6)
     integer, parameter :: indi(6) = (/ 1 , 2 , 3 , 1 , 1 , 2 /)
     integer, parameter :: indj(6) = (/ 1 , 2 , 3 , 2 , 3 , 3 /)
     real(kind=8), parameter :: rac2 = 1.4142135623731d0
     real(kind=8), parameter :: rind(6) = (/ 0.5d0, 0.5d0,&
                                             0.5d0, 0.70710678118655d0,&
                                             0.70710678118655d0, 0.70710678118655d0 /)
+                                            
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -427,11 +428,18 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !       DE DONNER LA POSITION DU POINT DE GAUSS COURRANT DANS LA
 !       FAMILLE 'XFEM'
         ipg = idecpg + kpg
-        call nmcpel(BEHinteg,&
-                    'XFEM', ipg, 1, poum, ndim,&
-                    typmod, angmas, imate, compor, carcri,&
-                    option, eps, sigma, vi(1, kpg), dsidep,&
-                    codret)
+        
+        ! Aooel aux routines de comportement hyperelastiques (on pourrait refondre avec xxnmpl)
+        zero6  = 0
+        vim    = 0
+        call nmcomp(BEHinteg   ,&
+            'XFEM'     , ipg        , 1       , ndim  , typmod  ,&
+            imate      , compor     , carcri  , instam, instap  ,&
+            6          , eps        , zero6   , 6     , zero6   ,&
+            vim        , option     , angmas  , sigma , vi (1, kpg), &
+            36         , dsidep     , codret)
+
+
 !
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE POUR LES OPTIONS RIGI_MECA_TANG

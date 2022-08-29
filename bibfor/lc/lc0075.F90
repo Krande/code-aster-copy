@@ -15,64 +15,75 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,W1306
-!
-subroutine lc0075(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps, &
-                    epsm, deps, nsig, sigm, nvi, &
-                    vim, option, angmas, sigp, vip, &
-                    typmod, icomp, ndsde, dsidep, codret)
-!
-use lcgtn_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate
-!
-implicit none
-!
+! aslint: disable=W1504,W0104,C1509
+
+subroutine lc0075(BEHinteg,&
+                  fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm, &
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, ndsde,&
+                  dsidep, codret)
+                  
+    use Behaviour_type
+    use lcgtn_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate
+    implicit none
+
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-!
-integer      :: imate, ndim, kpg, ksp, codret, icomp
-integer      :: nvi,neps,nsig,ndsde
-real(kind=8) :: carcri(CARCRI_SIZE), angmas(*)
-real(kind=8) :: instam, instap
-real(kind=8) :: epsm(neps), deps(neps)
-real(kind=8) :: sigm(nsig), sigp(nsig)
-real(kind=8) :: vim(nvi), vip(nvi)
-real(kind=8) :: dsidep(nsig,neps)
-character(len=16) :: compor(COMPOR_SIZE), option
-character(len=8) :: typmod(*)
-character(len=*) :: fami
-!
 ! --------------------------------------------------------------------------------------------------
-!
-! Behaviour
-!
-! GTN
-!
+    type(Behaviour_Integ)        :: BEHinteg
+    character(len=*) ,intent(in) :: fami
+    integer          ,intent(in) :: kpg
+    integer          ,intent(in) :: ksp
+    integer          ,intent(in) :: ndim
+    integer          ,intent(in) :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8)     ,intent(in) :: carcri(*)
+    real(kind=8)     ,intent(in) :: instam
+    real(kind=8)     ,intent(in) :: instap
+    integer          ,intent(in) :: neps
+    real(kind=8)     ,intent(in) :: epsm(neps)
+    real(kind=8)     ,intent(in) :: deps(neps)
+    integer          ,intent(in) :: nsig
+    real(kind=8)     ,intent(in) :: sigm(nsig)
+    integer          ,intent(in) :: nvi
+    real(kind=8)     ,intent(in) :: vim(nvi)
+    character(len=16),intent(in) :: option
+    real(kind=8)     ,intent(in) :: angmas(*)
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    character(len=8) ,intent(in) :: typmod(*)
+    integer          ,intent(in) :: icomp
+    integer          ,intent(in) :: ndsde
+    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    integer          ,intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
-!
-    aster_logical :: lMatr, lVect, lSigm, lVari, visc
-    integer :: ndimsi
-    real(kind=8) :: eps(2*ndim), sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi)
-    type(CONSTITUTIVE_LAW) :: cl
-!
+!   RELATIONS GTN ET VISC_GTN
 ! --------------------------------------------------------------------------------------------------
-!
-    ASSERT (neps*nsig .eq. ndsde)
-    ASSERT (neps .eq. nsig)
+    aster_logical         :: lMatr, lSigm, lVari, visc
+    integer               :: ndimsi
+    real(kind=8)          :: sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi), eps(2*ndim)
+    type(CONSTITUTIVE_LAW):: cl
+! --------------------------------------------------------------------------------------------------
+
+    ASSERT (nsig .ge. 2*ndim)
     ASSERT (neps .ge. 2*ndim)
+
     ndimsi = 2*ndim
+    sig    = 0
+    vi     = 0
+    dsde   = 0
     eps    = epsm(1:ndimsi) + deps(1:ndimsi)
-!
+
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
-    lVect = L_VECT(option)
     lMatr = L_MATR(option)
-!
+
+    if (lVari) vip = 0
+
     cl = Init(ndimsi, option, fami, kpg, ksp, imate,&
               nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA))
-    ASSERT(.not. lMatr .or. cl%rigi)
-    ASSERT(.not. lVari .or. cl%vari)
 
     visc = compor(RELA_NAME)(1:4) .eq. 'VISC'
     call InitViscoPlasticity(cl,visc,fami,kpg,ksp,imate,instap-instam)
@@ -80,6 +91,7 @@ character(len=*) :: fami
     call Integrate(cl, eps, vim(1:nvi), sig, vi, dsde)
 
     codret = cl%exception
+
     if (codret.eq.0) then
         if (lSigm) sigp(1:ndimsi) = sig
         if (lVari) vip(1:nvi) = vi

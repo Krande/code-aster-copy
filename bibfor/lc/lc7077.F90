@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W0104,W1306
+! aslint: disable=W1504,W0104,W1306,C1509
 !
-subroutine lc7077(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
+subroutine lc7077(BEHinteg, fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps, epsm,&
-                  deps, nsig, sigm, nvi, vim, option, angmas,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp,&
                   ndsde, dsidep, codret)
 !
@@ -32,32 +31,32 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(Behaviour_Integ), intent(inout) :: BEHinteg
-character(len=*), intent(in)  :: fami
-integer, intent(in)           :: kpg
-integer, intent(in)           :: ksp
-integer, intent(in)           :: ndim
-integer, intent(in)           :: imate
-character(len=16), intent(in) :: compor(COMPOR_SIZE)
-real(kind=8), intent(in)      :: carcri(CARCRI_SIZE)
-real(kind=8), intent(in)      :: instam
-real(kind=8), intent(in)      :: instap
-integer, intent(in)           :: neps
-real(kind=8), intent(in)      :: epsm(neps)
-real(kind=8), intent(in)      :: deps(neps)
-integer, intent(in)           :: nsig
-real(kind=8), intent(in)      :: sigm(nsig)
-integer, intent(in)           :: nvi
-real(kind=8), intent(in)      :: vim(nvi)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in)      :: angmas(3)
-real(kind=8), intent(out)     :: sigp(nsig)
-real(kind=8), intent(out)     :: vip(nvi)
-character(len=8), intent(in)  :: typmod(*)
-integer, intent(in)           :: icomp
-integer, intent(in)           :: ndsde
-real(kind=8), intent(out)     :: dsidep(nint(sqrt(ndsde*1.d0)),nint(sqrt(ndsde*1.d0)))
-integer, intent(out)          :: codret
+    type(Behaviour_Integ)        :: BEHinteg
+    character(len=*) ,intent(in) :: fami
+    integer          ,intent(in) :: kpg
+    integer          ,intent(in) :: ksp
+    integer          ,intent(in) :: ndim
+    integer          ,intent(in) :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8)     ,intent(in) :: carcri(*)
+    real(kind=8)     ,intent(in) :: instam
+    real(kind=8)     ,intent(in) :: instap
+    integer          ,intent(in) :: neps
+    real(kind=8)     ,intent(in) :: epsm(neps)
+    real(kind=8)     ,intent(in) :: deps(neps)
+    integer          ,intent(in) :: nsig
+    real(kind=8)     ,intent(in) :: sigm(nsig)
+    integer          ,intent(in) :: nvi
+    real(kind=8)     ,intent(in) :: vim(nvi)
+    character(len=16),intent(in) :: option
+    real(kind=8)     ,intent(in) :: angmas(*)
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    character(len=8) ,intent(in) :: typmod(*)
+    integer          ,intent(in) :: icomp
+    integer          ,intent(in) :: ndsde
+    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    integer          ,intent(out):: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,47 +65,30 @@ integer, intent(out)          :: codret
 ! CZM_ELAS
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    aster_logical :: lMatr, lVect, lSigm, lVari
+    aster_logical :: lMatr, lSigm, lVari
     real(kind=8)  :: t(ndim), su(ndim), delta(ndim), dphi_delta(ndim,ndim), vi(nvi)
     type(CONSTITUTIVE_LAW) :: cl
-!
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT (neps  .ge. ndim)
-    ASSERT (nsig  .ge. ndim)
-    ASSERT (ndsde .ge. ndim*ndim)
-    ASSERT (nint(sqrt(ndsde*1.d0))*nint(sqrt(ndsde*1.d0)) .eq. ndsde)
-!
-    t  = epsm(1:ndim)
-    su = deps(1:ndim)
-!
+    ASSERT (nsig .ge. ndim)
+    ASSERT (neps .ge. 2*ndim)
+
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
-    lVect = L_VECT(option)
     lMatr = L_MATR(option)
-!
+
+    t  = epsm(1:ndim)        + deps(1:ndim)
+    su = epsm(ndim+1:2*ndim) + deps(ndim+1:2*ndim)
+
     cl = Init(ndim, fami, kpg, ksp, imate, t, su)
-
     call Integrate(cl, delta, dphi_delta, vi)
-
     codret = cl%exception
-    if (codret.eq.0) then
-
-        if (lSigm) then
-            sigp = 0
-            sigp(1:ndim) = delta
-        end if
-
-        if (lVari) vip = vi
-
-        if (lMatr) then
-            dsidep = 0
-            dsidep(1:ndim,1:ndim) = dphi_delta
-        end if
-
-        BEHinteg%elga%r = cl%r
-
-    endif
-!
+    if (codret.ne.0) goto 999
+    
+    BEHinteg%elga%r = cl%r
+    if (lSigm) sigp(1:ndim) = delta
+    if (lVari) vip(1:nvi)   = vi(1:nvi)
+    if (lMatr) dsidep(1:ndim,1:ndim) = dphi_delta
+        
+999 continue
 end subroutine

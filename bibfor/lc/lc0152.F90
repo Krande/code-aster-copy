@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,56 +16,74 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0152(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
+subroutine lc0152(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, crit, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
                   sigp, vip, typmod, icomp,&
-                  nvi, dsidep, codret)
-!
-use Behaviour_type
-!
-implicit none
-!
+                  ndsde, dsidep, codret)
+! aslint: disable=W1504,W0104,C1509
+                  
+    use Behaviour_type
+    implicit none
+
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/lccgad.h"
-!
-! aslint: disable=W0104,W1504
-!
-    type(Behaviour_Integ), intent(in) :: BEHinteg
-    character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
-    real(kind=8), intent(in) :: instam
-    real(kind=8), intent(in) :: instap
-    real(kind=8), intent(in) :: epsm(6)
-    real(kind=8), intent(in) :: deps(6)
-    real(kind=8), intent(in) :: sigm(6)
-    real(kind=8), intent(in) :: vim(*)
-    character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: angmas(3)
-    real(kind=8), intent(out) :: sigp(6)
-    real(kind=8), intent(out) :: vip(*)
-    character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
-    real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: codret
-!
+
+    type(Behaviour_Integ)        :: BEHinteg
+    character(len=*) ,intent(in) :: fami
+    integer          ,intent(in) :: kpg
+    integer          ,intent(in) :: ksp
+    integer          ,intent(in) :: ndim
+    integer          ,intent(in) :: imate
+    character(len=16),intent(in) :: compor(*)
+    real(kind=8)     ,intent(in) :: crit(*)
+    real(kind=8)     ,intent(in) :: instam
+    real(kind=8)     ,intent(in) :: instap
+    integer          ,intent(in) :: neps
+    real(kind=8)     ,intent(in) :: epsm(neps)
+    real(kind=8)     ,intent(in) :: deps(neps)
+    integer          ,intent(in) :: nsig
+    real(kind=8)     ,intent(in) :: sigm(nsig)
+    integer          ,intent(in) :: nvi
+    real(kind=8)     ,intent(in) :: vim(nvi)
+    character(len=16),intent(in) :: option
+    real(kind=8)     ,intent(in) :: angmas(*)
+    real(kind=8)                 :: sigp(nsig)
+    real(kind=8)                 :: vip(nvi)
+    character(len=8) ,intent(in) :: typmod(*)
+    integer          ,intent(in) :: icomp
+    integer          ,intent(in) :: ndsde
+    real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
+    integer          ,intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
-!
-! Behaviour
-!
-! CABLE_GAINE
-!
+!  RELATION DE COMPORTEMENT CABLE_GAINE
 ! --------------------------------------------------------------------------------------------------
-!
+    aster_logical :: lMatr, lSigm, lVari
+    real(kind=8)  :: mu, su, eps(2), de, dsde(2), vi(nvi)
+! --------------------------------------------------------------------------------------------------
+    ASSERT(neps .ge. 2)
+    
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+    lVari = L_VARI(option)
+    
     codret = 0
+    de     = 0
+    dsde   = 0
+    vi     = 0
+
+    eps = epsm(1:2) + deps(1:2)
+    mu  = eps(1)
+    su  = eps(2)
+    
     call lccgad(BEHinteg,&
                 fami, kpg, ksp, imate, option,&
-                epsm(1), deps(1), sigp(1), dsidep(1,1), vim, vip)
-!
+                mu, su, de, dsde, vim, vi)
+                
+    if (lSigm) sigp(1) = de
+    if (lMatr) dsidep(1,1:2) = dsde
+    if (lVari) vip(1:nvi) = vi
+    
 end subroutine

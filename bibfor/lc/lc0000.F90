@@ -269,15 +269,16 @@ integer :: codret
     integer, parameter                 :: nvi_regu_visc = 8
     integer, parameter                 :: nvi_gdef_log  = 6
     character(len=16) :: defo_ldc, defo_comp, regu_visc
-    aster_logical :: l_pred, l_czm, l_defo_meca, l_large
+    aster_logical :: l_pred, l_czm, l_defo_meca, l_large, lVari, lSigm, lMatr
     aster_logical :: l_regu_visc, l_gdef_log, lImplex
     integer:: nvi, idx_regu_visc, ndimsi
     real(kind=8):: sigm(nsig)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret = 0
-    !ASSERT(nsig*neps .eq. ndsde)
+
+    ASSERT (neps*nsig.eq.ndsde .or. (ndsde.eq.36 .and. neps.le.6 .and. nsig.le.6))
+    
     read (compor(DEFO_LDC),'(A16)') defo_ldc
     read (compor(DEFO),'(A16)') defo_comp
     read (compor(REGUVISC),'(A16)') regu_visc
@@ -288,6 +289,14 @@ integer :: codret
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_regu_visc = regu_visc .eq. 'REGU_VISC_ELAS'
     lImplex = option .eq. "RIGI_MECA_IMPLEX" .or. option .eq. "RAPH_MECA_IMPLEX"
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+
+    codret = 0
+    if (lSigm) sigp   = 0.d0
+    if (lMatr) dsidep = 0.d0
+
 !
 ! - Prepare parameters at Gauss point
 !
@@ -348,15 +357,16 @@ integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
+!    write (6,*) 'LC0000: ', numlc, ndim, neps, nsig, ndsde, option, typmod(1:2), compor(1:4)
     select case (numlc)
 !
     case (1)
 !     ELAS
-        call lc0001(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    neps, deps, nsig, sigm, option,&
-                    angmas, sigp, vip, typmod, ndsde,&
-                    dsidep, codret)
+        call lc0001(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (2)
 !     VMIS_ISOT_XXX, VISC_ISOT_XXX
         call lc0002(fami, kpg, ksp, ndim, imate, l_epsi_varc,&
@@ -438,11 +448,11 @@ integer :: codret
                     nvi, dsidep, codret)
     case (19)
 !     ELAS_HYPER
-        call lc0019(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc0019(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (21)
         call lc0021(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -551,11 +561,8 @@ integer :: codret
                     typmod, icomp, nvi, ndsde,&
                     dsidep, codret)
     case (38)
-        call lc0038(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+!       SANS
+        call lc0038(neps, nsig, option, sigp, vip, ndsde, dsidep)
     case (39)
         call lc0039(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -595,7 +602,7 @@ integer :: codret
                     imate   , compor, carcri, instam, instap,&
                     neps    , epsm  , deps  , nsig  , sigm  ,&
                     nvi     , vim   , option, angmas,&
-                    sigp    , vip   , dsidep, codret)
+                    sigp    , vip   , ndsde,  dsidep, codret)
     case (59)
         call lc0059(BEHinteg,&
                     fami, kpg, ksp, imate,&
@@ -604,11 +611,11 @@ integer :: codret
                     sigp, vip,&
                     typmod, icomp, dsidep, codret)
     case (60)
-        call lc0060(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp, &
-                    nvi, dsidep, codret)
+        call lc0060(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (61)
         call lc0061(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -676,30 +683,29 @@ integer :: codret
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (75)
-        call lc0075(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps,&
-                    epsm, deps, nsig, sigm, nvi, vim,&
-                    option, angmas, sigp, vip,&
-                    typmod, icomp, ndsde,&
-                    dsidep, codret)
+        call lc0075(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (76)
-        call lc0076(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps, &
-                    epsm, deps, nsig, sigm, nvi, vim, &
-                    option, angmas, sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret)
+        call lc0076(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (77)
-        call lc0077(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps, &
-                    epsm, deps, nsig, sigm, nvi, vim, &
-                    option, angmas, sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret)
+        call lc0077(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (78)
-        call lc0078(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc0078(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (79)
         call lc0079(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -860,12 +866,11 @@ integer :: codret
 
     case (152)
 !     CABLE_GAINE
-        call lc0152(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc0152(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (165)
 !     FLUA_PORO_BETON
         call lc0165(fami  , kpg   , ksp   , ndim  , imate,&
@@ -973,11 +978,7 @@ integer :: codret
 
     case (2038)
 !     SANS
-        call lc2038(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc2038(neps, nsig, option, sigp, vip, ndsde, dsidep)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With GDVARINO
@@ -985,12 +986,11 @@ integer :: codret
 !
     case (3053)
 !     ENDO_CARRE
-        call lc3053(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc3053(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1028,30 +1028,27 @@ integer :: codret
 !
     case (6057)
 !     ENDO_FISS_EXP
-        call lc6057(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps,&
-                    epsm, deps, nsig, sigm, nvi, vim,&
-                    option, angmas, sigp, vip,&
-                    typmod, icomp, ndsde,&
-                    dsidep, codret)
+        call lc6057(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
 !
     case (6075)
 !     GTN
-        call lc6075(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps,&
-                    epsm, deps, nsig, sigm, nvi, vim,&
-                    option, angmas, sigp, vip,&
-                    typmod, icomp, ndsde,&
-                    dsidep, codret)
+        call lc6075(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
 !
     case (6076)
 !     VMIS_ISOT_NL
-        call lc6076(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps,&
-                    epsm, deps, nsig, sigm, nvi, vim,&
-                    option, angmas, sigp, vip,&
-                    typmod, icomp, ndsde,&
-                    dsidep, codret)
+        call lc6076(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With INTERFAC/ELEMDISC/EJ_HYME/ELEMJOIN
@@ -1079,26 +1076,23 @@ integer :: codret
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (7040)
-        call lc7040(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc7040(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (7041)
-        call lc7041(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc7041(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (7043)
-        call lc7043(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc7043(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (7045)
         call lc7045(BEHinteg,&
                     fami, kpg, ksp, ndim, imate,&
@@ -1131,26 +1125,23 @@ integer :: codret
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (7049)
-        call lc7049(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc7049(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (7051)
-        call lc7051(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc7051(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (7056)
-        call lc7056(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc7056(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
     case (7058)
 !     MFRONT
         call lc7058(BEHinteg,&
@@ -1160,12 +1151,11 @@ integer :: codret
                     nvi     , vim   , option, angmas,&
                     sigp    , vip   , dsidep, codret)
     case (7077)
-        call lc7077(BEHinteg,&
-                    fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps, epsm,&
-                    deps, nsig, sigm, nvi, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret)
+        call lc7077(BEHinteg, fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, neps, epsm,&
+                  deps, nsig, sigm, nvi, vim, option, angmas, &
+                  sigp, vip, typmod, icomp,&
+                  ndsde, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - For KIT_DDI
@@ -1225,6 +1215,10 @@ integer :: codret
         call utmess('F', 'COMPOR1_43', si=numlc)
     end select
 !
+! --------------------------------------------------------------------------------------------------
+
+! - Prediction
+    if (l_Pred .and. lSigm .and. .not. l_defo_meca) sigp = sigm
 ! --------------------------------------------------------------------------------------------------
 
 !

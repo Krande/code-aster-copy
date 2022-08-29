@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
+! aslint: disable=W1504,C1509
 !
 subroutine lc0058(BEHinteg,&
                   fami    , kpg   , ksp   , ndim  , typmod,&
                   imate   , compor, carcri, instam, instap,&
                   neps    , epsm  , deps  , nsig  , sigm  ,&
                   nvi     , vim   , option, angmas,&
-                  sigp    , vip   , dsidep, codret)
+                  sigp    , vip   , ndsde,  dsidep, codret)
 !
 use Behaviour_type
 !
@@ -48,16 +48,17 @@ character(len=16), intent(in) :: compor(*)
 real(kind=8), intent(in) :: carcri(*)
 real(kind=8), intent(in) :: instam, instap
 integer, intent(in) :: neps
-real(kind=8), intent(in) :: epsm(*), deps(*)
+real(kind=8), intent(in) :: epsm(neps), deps(neps)
 integer, intent(in) :: nsig
-real(kind=8), intent(in) :: sigm(6)
+real(kind=8), intent(in) :: sigm(nsig)
 integer, intent(in) :: nvi
-real(kind=8), intent(in) :: vim(*)
+real(kind=8), intent(in) :: vim(nvi)
 character(len=16), intent(in) :: option
 real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(out) :: sigp(6)
-real(kind=8), intent(out) :: vip(nvi)
-real(kind=8), intent(out) :: dsidep(6, 6)
+real(kind=8)                 :: sigp(nsig)
+real(kind=8)                 :: vip(nvi)
+integer, intent(in)          :: ndsde
+real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
 integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,6 +97,7 @@ integer, intent(out) :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: npropmax = 197
+    aster_logical     :: lMatr, lSigm, lVari
     integer :: nprops, nstatv, j, i, pfcmfr, nummod
     integer :: strain_model
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
@@ -109,11 +111,25 @@ integer, intent(out) :: codret
     real(kind=8) :: temp, dtemp
     character(len=16) :: rela_comp, defo_comp
     aster_logical :: l_simomiehe, l_grotgdep, l_czm, l_pred
+    real(kind=8) :: sigp_loc(6), vi_loc(nvi), dsidep_loc(6,6)
     integer :: ntens, ndi
     common/tdim/  ntens  , ndi
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+    ASSERT (neps*nsig.eq.ndsde .or. (ndsde.eq.36 .and. neps.le.6 .and. nsig.le.6))
+    ASSERT (nsig .ge. 2*ndim)
+    ASSERT (neps .ge. 2*ndim)
+
+    lSigm = L_SIGM(option)
+    lVari = L_VARI(option)
+    lMatr = L_MATR(option)
+
+    sigp_loc   = 0
+    vi_loc     = 0
+    dsidep_loc = 0
+
     ntens          = 2*ndim
     ndi            = 3
     codret         = 0
@@ -191,19 +207,6 @@ integer, intent(out) :: codret
         end do
     end do
 !
-!    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-!        write(6,*)' '
-!        write(6,*)'AVANT APPEL MFRONT, INSTANT=',time(2)+dtime
-!        write(6,*)'DEFORMATIONS INSTANT PRECEDENT STRAN='
-!        write(6,'(6(1X,E11.4))') (stran(i),i=1,ntens)
-!        write(6,*)'ACCROISSEMENT DE DEFORMATIONS DSTRAN='
-!        write(6,'(6(1X,E11.4))') (dstran(i),i=1,ntens)
-!        write(6,*)'CONTRAINTES INSTANT PRECEDENT STRESS='
-!        write(6,'(6(1X,E11.4))') (sigm(i),i=1,ntens)
-!        write(6,*)'NVI=',nstatv,' VARIABLES INTERNES STATEV='
-!        write(6,'(10(1X,E11.4))') (vim(i),i=1,nstatv)
-!    endif
-!
 ! - Type of matrix for MFront
 !
     ddsdde = 1.d0
@@ -222,56 +225,40 @@ integer, intent(out) :: codret
 ! - Call MFront
 !
     pnewdt = 1.d0
+    sigp_loc(1:2*ndim) = sigm(1:2*ndim)
+    sigp_loc(4:6)      = sigp_loc(4:6)*usrac2
+    vi_loc(1:nstatv)   = vim(1:nstatv)
+
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call dcopy(nsig, sigm, 1, sigp, 1)
-        call dscal(3, usrac2, sigp(4), 1)
-        vip(1:nstatv) = vim(1:nstatv)
-        call mfront_behaviour(pfcmfr, sigp, vip, ddsdde,&
+        call mfront_behaviour(pfcmfr, sigp_loc, vi_loc, ddsdde,&
                               stran, dstran, dtime,&
                               temp, dtemp,&
                               BEHinteg%exte%predef, BEHinteg%exte%dpred,&
                               ntens, nstatv, props,&
-                              nprops, drot, pnewdt, nummod)
-    else if (option(1:9).eq. 'RIGI_MECA') then
-        sigp = sigm
-        call mfront_behaviour(pfcmfr, sigm, vim, ddsdde,&
+                              nprops, drot, pnewdt, nummod)                            
+        ASSERT(nstatv .le. nvi)
+        
+    else if (option(1:9).eq. 'RIGI_MECA') then        
+        call mfront_behaviour(pfcmfr, sigp_loc, vi_loc, ddsdde,&
                               stran, dstran, dtime,&
                               temp, dtemp,&
                               BEHinteg%exte%predef, BEHinteg%exte%dpred,&
                               ntens, nstatv, props, nprops,&
                               drot, pnewdt, nummod)
+        ASSERT(nstatv .le. nvi)
     endif
-!
-    !if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-    !    write(6,*)' '
-    !    write(6,*)'APRES APPEL MFRONT, STRESS='
-    !    write(6,'(6(1X,E11.4))') (sigp(i),i=1,ntens)
-    !    write(6,*)'APRES APPEL MFRONT, STATEV='
-    !    write(6,'(10(1X,E11.4))')(vip(i),i=1,nstatv)
-    !endif
 !
 ! - Convert stresses
 !
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call dscal(3, rac2, sigp(4), 1)
-    endif
+    sigp_loc(4:6) = sigp_loc(4:6)*rac2
 !
 ! - Convert matrix
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        dsidep(:,:) = 0.d0
         call lcicma(ddsdde, ntens, ntens, ntens, ntens, &
-                    1, 1, dsidep, 6, 6, 1, 1)
-        do i = 1, 6
-            do j = 4, 6
-                dsidep(i,j) = dsidep(i,j)*rac2
-            end do
-        end do
-        do i = 4, 6
-            do j = 1, 6
-                dsidep(i,j) = dsidep(i,j)*rac2
-            end do
-        end do
+                    1, 1, dsidep_loc, 6, 6, 1, 1)                   
+        dsidep_loc(1:6,4:6) = dsidep_loc(1:6,4:6)*rac2
+        dsidep_loc(4:6,1:6) = dsidep_loc(4:6,1:6)*rac2
     endif
 !
 ! - Return code from MFront
@@ -289,5 +276,14 @@ integer, intent(out) :: codret
             call utmess('F', 'MFRONT_3')
         endif
     endif
+    
+    
+    if (lSigm) sigp(1:2*ndim) = sigp_loc(1:2*ndim)
+    if (lVari) then
+        vip(1:nvi) = 0
+        vip(1:nstatv) = vi_loc(1:nstatv)
+    end if
+    if (lMatr) dsidep(1:2*ndim, 1:2*ndim)=dsidep_loc(1:2*ndim,1:2*ndim)
+    
 !
 end subroutine

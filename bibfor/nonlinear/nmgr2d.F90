@@ -110,7 +110,7 @@ integer, intent(inout) :: codret
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
     integer :: kpg, j, strain_model
     integer :: cod(npg)
-    real(kind=8) :: dsidep(6, 6)
+    real(kind=8) :: dsidep(6, 9)
     real(kind=8) :: fPrev(3, 3), fCurr(3, 3)
     real(kind=8) :: epsgPrev(6), epsgIncr(6), epsgCurr(6)
     real(kind=8) :: detfPrev, detfCurr
@@ -177,9 +177,9 @@ integer, intent(inout) :: codret
                     .true._1, poids , dfdi, fCurr, epsgCurr,&
                     r)
 ! ----- Stresses: convert Cauchy to PK2
-        if (cplan) then
-            fPrev(3,3) = sqrt(abs(2.d0*epsgPrev(3)+1.d0))
-        endif
+!        if (cplan) then
+!            fPrev(3,3) = sqrt(abs(2.d0*epsgPrev(3)+1.d0))
+!        endif
         call lcdetf(ndim, fPrev, detfPrev)
         call pk2sig(ndim, fPrev, detfPrev, sigmPrep, sigmPrev(1, kpg), -1)
         sigmPrep(4) = sigmPrep(4)*rac2
@@ -209,6 +209,7 @@ integer, intent(inout) :: codret
             if (cod(kpg) .eq. 1) then
                 goto 999
             endif
+            
         elseif (strain_model .eq. MFRONT_STRAIN_GROTGDEP_L) then
 ! --------- Jacobian must been positive !
             call lcdetf(ndim, fCurr, detfCurr)
@@ -217,13 +218,16 @@ integer, intent(inout) :: codret
                 goto 999
             endif
 ! --------- Compute behaviour
+! Remarque: dsidep est dimensionne (6,9) pour la zone memoire et le controle dans lc0000
+! Mais seule la partie (6,6) est effectivement remplie par MFRONT (curieusement)
             sigmPost = 0.d0
+            
             call nmcomp(BEHinteg   ,&
                         fami       , kpg        , 1        , ndim  , typmod  ,&
                         imate      , compor     , carcri   , instam, instap  ,&
                         9          , fPrev      , fCurr    , 6     , sigmPrep,&
                         vim(1, kpg), option     , angl_naut,&
-                        sigmPost   , vip(1, kpg), 36       , dsidep,&
+                        sigmPost   , vip(1, kpg), 54       , dsidep,&
                         cod(kpg)   , mult_comp)
             if (cod(kpg) .eq. 1) then
                 goto 999
@@ -243,9 +247,9 @@ integer, intent(inout) :: codret
                     sigmPost, matsym, matuu    , vectu)
 ! ----- Stresses: convert PK2 to Cauchy
         if (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL') then
-            if (cplan) then
-                fCurr(3,3) = sqrt(abs(2.d0*epsgCurr(3)+1.d0))
-            endif
+!            if (cplan) then
+!                fCurr(3,3) = sqrt(abs(2.d0*epsgCurr(3)+1.d0))
+!            endif
             call lcdetf(ndim, fCurr, detfCurr)
             call pk2sig(ndim, fCurr, detfCurr, sigmPost, sigmCurr(1, kpg), 1)
         endif

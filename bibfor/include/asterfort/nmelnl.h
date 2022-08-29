@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,25 +18,18 @@
 !
 interface
     subroutine nmelnl(BEHinteg,&
-                      fami    , kpg, ksp, poum, ndim,&
-                      typmod, imate, compor, crit, option,&
-                      eps, sig, vi, dsidep, energi)
-        use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(len=*) :: poum
-        integer :: ndim
-        character(len=8) :: typmod(*)
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
-        character(len=16) :: option
-        real(kind=8) :: eps(6)
-        real(kind=8) :: sig(6)
-        real(kind=8) :: vi
-        real(kind=8) :: dsidep(6, 6)
-        real(kind=8) :: energi(2)
+                  fami, kpg, ksp, ndim, &
+                  typmod, imate, compor,&
+                  eps, sig, energi)
+
+    use Behaviour_type
+
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*) :: fami
+    character(len=8) :: typmod(*)
+    character(len=16) :: compor(*)
+    integer :: kpg, ksp, ndim, imate
+    real(kind=8) :: eps(:), sig(:), energi(2)
+
     end subroutine nmelnl
 end interface

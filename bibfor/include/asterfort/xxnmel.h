@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
+    subroutine xxnmel(elrefp, elrese, ndim, coorse,&
                       igeom, he, nfh, ddlc, ddlm,&
                       nnops, nfe, basloc, nnop, npg,&
                       typmod, option, imate, compor, lgpg,&
-                      carcri, idepl, lsn, lst, idecpg,&
+                      carcri, instam, instap, idepl, lsn, lst, idecpg,&
                       sig, vi, matuu, ivectu, codret,&
                       nfiss, heavn, jstno,&
                       l_line, l_nonlin, lMatr, lVect, lSigm)
@@ -34,7 +34,6 @@ interface
         integer :: nfe
         integer :: nfh
         integer :: ndim
-        character(len=*) :: poum
         character(len=8) :: elrefp
         character(len=8) :: elrese
         real(kind=8) :: coorse(*)
@@ -49,6 +48,8 @@ interface
         integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
+        real(kind=8) :: instam
+        real(kind=8) :: instap
         integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

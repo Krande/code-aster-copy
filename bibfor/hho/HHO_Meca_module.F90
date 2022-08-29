@@ -596,7 +596,7 @@ contains
             bool = ASTER_TRUE
         elseif (defo_comp .eq. 'SIMO_MIEHE') then
             bool = ASTER_TRUE
-        elseif (defo_comp .eq. 'GROT_GDEP') then
+        elseif (defo_comp .eq. 'GREEN_LAGRANGE') then
             bool = ASTER_TRUE
         else
             ASSERT(ASTER_FALSE)

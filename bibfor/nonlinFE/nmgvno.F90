@@ -98,8 +98,8 @@ implicit none
     real(kind=8) :: rac2, c, val(1)
     real(kind=8) :: deplm(3*27), depld(3*27), dfdi1(27, 3)
     real(kind=8) :: avm, avd, avp, agm(3), agd(3), agp(3), bp
-    real(kind=8) :: r, wg, epsm(6), epsd(6), f(3, 3), b(6, 3, 27)
-    real(kind=8) :: sigmam(6), sigma(6), dsidep(6, 6, 4), t1, t2
+    real(kind=8) :: r, wg, epsm(2*ndim+1), epsd(2*ndim+1), f(3, 3), b(6, 3, 27)
+    real(kind=8) :: sigmam(2*ndim+1), sigma(2*ndim+1), dsidep(2*ndim+1,2*ndim+1), t1, t2
     real(kind=8) :: di, char
     real(kind=8) :: dfdi2(8*3)
     real(kind=8) :: critd(20)
@@ -126,9 +126,7 @@ implicit none
     axi = typmod(1) .eq. 'AXIS'
     nddl = nno1*ndim + nno2
     ndimsi = 2*ndim
-!
-!      NOM(1) = 'C_GRAD_VARI'
-!
+
     famil='FPG1'
     kpg=1
     spt=1
@@ -193,9 +191,7 @@ implicit none
         end do
         avp = avm + avd
 !
-        if (avp .gt. 1.d0) then
-            avp = 1.d0
-        endif
+
 !
         do i = 1, ndim
             agm(i) = 0
@@ -215,13 +211,12 @@ implicit none
         call dfdmip(ndim, nno1, axi, geom, g,&
                     iw, vff1(1, g), idfde1, r, wg,&
                     dfdi1)
-        call r8inir(6, 0.d0, epsm, 1)
-        call r8inir(6, 0.d0, epsd, 1)
+
 !
         call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dfdi1, deplm, f, epsm)
+                    r, dfdi1, deplm, f, epsm(1:ndimsi))
         call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dfdi1, depld, f, epsd)
+                    r, dfdi1, depld, f, epsd(1:ndimsi))
         call nmmabu(ndim, nno1, .false._1, grand, dfdi1,&
                     b)
         if (axi) then
@@ -236,17 +231,17 @@ implicit none
         do kl = 4, ndimsi
             sigmam(kl) = sigm(kl,g)*rac2
         end do
+        sigmam(ndimsi+1) = sigm(ndimsi+1,g)
 !
-        BEHinteg%elga%nonloc(1) = avp
-        BEHinteg%elga%nonloc(2) = c
-!
-        sigma = 0.d0
+        epsm(2*ndim+1) = avm
+        epsd(2*ndim+1) = avd
+        
         call nmcomp(BEHinteg,&
                     fami, g, 1, ndim, typmod,&
                     mat, compor, crit, instam, instap,&
-                    6, epsm, epsd, 6, sigmam,&
+                    ndimsi+1, epsm, epsd, ndimsi+1, sigmam,&
                     vim(1, g), option, angmas, &
-                    sigma, vip(1, g), 6*6*4, dsidep, cod(g))
+                    sigma, vip(1, g), (ndimsi+1)*(ndimsi+1), dsidep, cod(g))
 !
         if (cod(g) .eq. 1) goto 900
 !
@@ -262,9 +257,10 @@ implicit none
             do kl = 4, ndimsi
                 sigp(kl,g) = sigma(kl)/rac2
             end do
-!
-            sigp(ndimsi+1,g) = dsidep(1,1,4)
+            sigp(ndimsi+1,g) = sigma(ndimsi+1)
         endif
+        
+        
         if (lVect) then
             bp = sigp(ndimsi+1,g)
 !
@@ -311,7 +307,7 @@ implicit none
                             t1 = 0
                             do kl = 1, ndimsi
                                 do pq = 1, ndimsi
-                                    t1 = t1+dsidep(kl,pq,1)*b(pq,j,m)* b(kl,i,n)
+                                    t1 = t1+dsidep(kl,pq)*b(pq,j,m)* b(kl,i,n)
                                 end do
                             end do
                             matr(kk) = matr(kk) + wg*t1
@@ -326,7 +322,7 @@ implicit none
             do n = 1, nno2
                 osa = ((ia(n)-1)*ia(n))/2
                 do m = 1, nno2
-                    t1 = vff2(n,g)*vff2(m,g)*dsidep(1,1,3)
+                    t1 = vff2(n,g)*vff2(m,g)*dsidep(ndimsi+1,ndimsi+1)
                     t2 = 0
                     do i = 1, ndim
                         t2 = t2 + dfdi2(nno2*(i-1)+n)*dfdi2(nno2*(i-1) +m)
@@ -349,7 +345,7 @@ implicit none
                     do j = 1, ndim
                         t1 = 0
                         do kl = 1, ndimsi
-                            t1 = t1 + dsidep(kl,1,2)*b(kl,j,m)
+                            t1 = t1 + dsidep(kl,ndimsi+1)*b(kl,j,m)
                         end do
                         t1 = vff2(n,g)*t1
                         if (ia(n) .ge. iu(nno1*(j-1)+m)) then

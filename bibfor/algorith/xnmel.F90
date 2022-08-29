@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 ! aslint: disable=W1306,W1504
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
+subroutine xnmel(nnop, nfh, nfe, ddlc,&
                  ddlm, igeom, typmod, option, imate,&
                  compor, lgpg, carcri, jpintt, cnset,&
-                 heavt, lonch, basloc, idepl, lsn,&
+                 heavt, lonch, basloc, instam, instap, idepl, lsn,&
                  lst, sig, vi, matuu, ivectu,&
                  codret, jpmilt, nfiss, jheavn, jstno,&
                  l_line, l_nonlin, lMatr, lVect, lSigm)
@@ -42,9 +42,9 @@ integer :: cnset(4*32), heavt(*), lonch(10), ndim
 integer :: nfh, nfe, ddlc, ddlm
 integer :: ivectu, idepl, jpintt, jpmilt
 integer :: jstno
-character(len=*) :: poum
 character(len=8) :: typmod(*)
 character(len=16) :: option, compor(*)
+real(kind=8) :: instam, instap
 real(kind=8) :: carcri(*), vi(*), crit2(1), vi2(1), sig2(1)
 real(kind=8) :: lsn(nnop)
 real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
@@ -193,20 +193,20 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
         endif
 !
         if (l_line) then
-            call xxnmel(poum, elrefp, elrese(ndim+irese), ndim, coorse,&
+            call xxnmel(elrefp, elrese(ndim+irese), ndim, coorse,&
                         igeom, he, nfh, ddlc, ddlm,&
                         nnops, nfe, basloc, nnop, npg,&
                         typmod, option, imate, compor, lgpg,&
-                        crit2, ibid, lsn, lst, idecpg,&
+                        crit2, instam, instap, ibid, lsn, lst, idecpg,&
                         sig2, vi2, matuu, ibid2, codret,&
                         nfiss, heavn, jstno,&
                         l_line, l_nonlin, lMatr, lVect, lSigm)
         elseif (l_nonlin) then
-            call xxnmel(poum, elrefp, elrese(ndim+irese), ndim, coorse,&
+            call xxnmel(elrefp, elrese(ndim+irese), ndim, coorse,&
                         igeom, he, nfh, ddlc, ddlm,&
                         nnops, nfe, basloc, nnop, npg,&
                         typmod, option, imate, compor, lgpg,&
-                        carcri, idepl, lsn, lst, idecpg,&
+                        carcri, instam, instap, idepl, lsn, lst, idecpg,&
                         sig(idebs+1), vi(idebv+1), matuu, ivectu, codret,&
                         nfiss, heavn, jstno,&
                         l_line, l_nonlin, lMatr, lVect, lSigm)

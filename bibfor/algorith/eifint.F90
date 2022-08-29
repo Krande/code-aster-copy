@@ -89,8 +89,10 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nddl, g, cod(npg), n, i, m, j, k, l, os, kk
-    real(kind=8) :: rbid(1), r(1), mu(3), su(3), wg, b(3, 3, 18), de(6)
-    real(kind=8) :: ddedt(6, 6), t1
+    real(kind=8) :: angmas(3), r, wg, b(3, 3, 18), t1
+    real(kind=8) :: mu_m(ndim), su_m(ndim), mu_d(ndim), su_d(ndim), mu_p(ndim), su_p(ndim)
+    real(kind=8) :: eps_m(2*ndim), eps_d(2*ndim), sig_m(2*ndim), de(2*ndim), ddedt(2*ndim, 2*ndim)
+    real(kind=8) :: cl(ndim)
     type(Behaviour_Integ) :: BEHinteg
 !
 ! TODO: passer de(3) et ddedt(3,3) avec impact sur les lois de comportement
@@ -99,20 +101,17 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
     nddl   = nno1*2*ndim + nno2*ndim
     cod    = 0
-    su     = 0.d0
-    mu     = 0.d0
     codret = 0
+    sig_m  = 0
+    angmas = 0
 !
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
 
-    if (lMatr) then
-        matr(1:(nddl*(nddl+1))/2) = 0.d0
-    endif
-    if (lVect) then
-        vect(1:nddl) = 0.d0
-    endif
+    if (lMatr) matr(1:(nddl*(nddl+1))/2) = 0.d0
+    if (lVect) vect(1:nddl) = 0.d0
+
 !
 ! - Loop on Gauss points
 !
@@ -123,68 +122,83 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
         call eicine(ndim, axi, nno1, nno2, vff1(1, g),&
                     vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang,&
                     wg, b)
+        
+        su_m = 0
+        su_d = 0            
         do i = 1, ndim
-            su(i) = 0.d0
             do j = 1, ndim
                 do n = 1, 2*nno1
-                    su(i) = su(i) + b(i,j,n)*(ddlm(iu(j,n))+ddld(iu(j, n)))
+                    su_m(i) = su_m(i) + b(i,j,n)*ddlm(iu(j,n))
+                    su_d(i) = su_d(i) + b(i,j,n)*ddld(iu(j,n))
                 end do
             end do
         end do
+        su_p = su_m + su_d
 !
+        mu_m = 0
+        mu_d = 0
         do i = 1, ndim
-            mu(i) = 0.d0
             do n = 1, nno2
-                mu(i) = mu(i) + vff2(n,g)*(ddlm(im(i,n))+ddld(im(i,n)) )
+                mu_m(i) = mu_m(i) + vff2(n,g)*ddlm(im(i,n))
+                mu_d(i) = mu_d(i) + vff2(n,g)*ddld(im(i,n))
             end do
         end do
+        mu_p = mu_m + mu_d
+        
+        
 ! ----- Integration of behaviour
-!      CONVENTIONS :
-!       1. MU EST RANGE DANS EPSM(1:3)
-!       2. SU EST RANGE DANS EPSD(1:3)
-!       3. DELTA EST RENVOYE DANS SIGP(1:3)             : DE
-!       4. D(DELTA)/DT EST RENVOYE DANS DSIDEP(1:3,1:3) : DDEDT
-!       5. R (PENALISATION) EST RENVOYE DANS TAMPON(1)  : R
-        de = 0.d0
+!      conventions :
+!       1. mu est range dans eps(1:ndim)
+!       2. su est range dans eps(ndim+1:2*ndim)
+!       3. delta est renvoye dans sig(1:ndim)           : de
+!       4. d(delta)/dt est renvoye dans dsidep(1:3,1:3) : ddedt
+!       5. r (penalisation) est renvoye dans tampon(1)  : r
+
+        eps_m(1:ndim) = mu_m
+        eps_m(ndim+1:2*ndim) = su_m
+        eps_d(1:ndim) = mu_d
+        eps_d(ndim+1:2*ndim) = su_d
+        
         call nmcomp(BEHinteg,&
                     'RIGI', g, 1, ndim, typmod,&
                     mat, compor, carcri, instam, instap,&
-                    3, mu, su, 6, rbid,&
-                    vim(1, g), option, rbid, &
-                    de, vip(1, g), 36, ddedt, cod(g))
-        if (cod(g) .eq. 1) then
-            goto 999
-        endif
+                    2*ndim, eps_m, eps_d, 2*ndim, sig_m,&
+                    vim(1, g), option, angmas, &
+                    de, vip(1, g), 2*ndim*2*ndim, ddedt, cod(g))
+        if (cod(g) .eq. 1) goto 999
+
         r = BEHinteg%elga%r
+        cl = su_p(1:ndim) - de(1:ndim)
+
 ! ----- Stresses
         if (lSigm) then
-            do i = 1, ndim
-                sigp(i,g) = mu(i) + r(1)*(su(i)-de(i))
-                sigp(ndim+i,g) = su(i) - de(i)
-            end do
+            sigp(1:ndim,g)        = mu_p + r*cl
+            sigp(ndim+1:2*ndim,g) = cl
         endif
+
+
 ! ----- Internal forces
         if (lVect) then
 ! --------- Vector (DOF: U)
             do n = 1, 2*nno1
                 do i = 1, ndim
                     kk = iu(i,n)
-                    t1 = 0
-                    do k = 1, ndim
-                        t1 = t1 + b(k,i,n)*(mu(k) + r(1)*(su(k)-de(k)))
-                    end do
+                    t1 = dot_product(b(1:ndim,i,n),mu_p+r*cl)
                     vect(kk) = vect(kk) + wg*t1
                 end do
             end do
+            
 ! --------- Vector (DOF: MU)
             do n = 1, nno2
                 do i = 1, ndim
                     kk = im(i,n)
-                    t1 = vff2(n,g)*(su(i) - de(i))
+                    t1 = vff2(n,g)*cl(i)
                     vect(kk) = vect(kk) + wg*t1
                 end do
             end do
         endif
+        
+        
 ! ----- Matrix
         if (lMatr) then
 ! --------- Matrix [U(I,N),U(J,M)]
@@ -199,15 +213,16 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
                             do k = 1, ndim
                                 t1 = t1 + b(k,i,n)*b(k,j,m)
                                 do l = 1, ndim
-                                    t1 = t1 - b(k,i,n)*r(1)*ddedt(k,l) *b(l,j,m)
+                                    t1 = t1 - b(k,i,n)*r*ddedt(k,l) *b(l,j,m)
                                 end do
                             end do
-                            t1 = t1 * r(1)
+                            t1 = t1 * r
                             matr(kk) = matr(kk) + wg*t1
                         end do
                     end do
                 end do
             end do
+            
 ! --------- Matrix [MU(I,N),U(J,M)]
             do n = 1, nno2
                 do i = 1, ndim
@@ -220,13 +235,14 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
                             endif
                             t1 = vff2(n,g)*b(i,j,m)
                             do l = 1, ndim
-                                t1 = t1 - vff2(n,g)*r(1)*ddedt(i,l)*b( l,j,m)
+                                t1 = t1 - vff2(n,g)*r*ddedt(i,l)*b( l,j,m)
                             end do
                             matr(kk) = matr(kk) + wg*t1
                         end do
                     end do
                 end do
             end do
+            
 ! --------- Matrix [MU(I,N),MU(J,M)]
             do n = 1, nno2
                 do i = 1, ndim

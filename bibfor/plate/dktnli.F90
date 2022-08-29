@@ -82,7 +82,7 @@ integer , intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: defo_comp
+    character(len=16) :: defo_comp, incr_elas
     character(len=8) :: typmod(2)
     integer, parameter :: nbNodeMaxi = 4
     real(kind=8) :: distn, angmas(3)
@@ -161,7 +161,7 @@ integer , intent(out) :: codret
     integer :: jtab(7), codkpg, i, ksp
     integer :: icacoq, icarcr, icompo, icontm, icontp, icou, icpg, igauh, iinstm
     integer :: iinstp, imate, ino, ipg, iret, isp, ivarim, ivarip, ivarix, ivpg
-    integer :: j, k, nbsp, nbvar, ndimv
+    integer :: j, k, nbsp, nbvar
     real(kind=8), parameter :: deux = 2.d0, rac2 = sqrt(2.d0)
     real(kind=8) :: qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd, zmax, quotient, a, b, c
@@ -175,6 +175,8 @@ integer , intent(out) :: codret
     real(kind=8) ::   t2iuel(4), t2uiel(4), t1veel(9)
     aster_logical :: coupmfel
     integer :: multicel
+    integer :: lg_varip
+    real(kind=8),allocatable:: varip(:)
     character(len=4), parameter :: fami = 'RIGI'
     type(Behaviour_Integ) :: BEHinteg
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -235,8 +237,12 @@ integer , intent(out) :: codret
 !
     call jevech('PCOMPOR', 'L', icompo)
     defo_comp = zk16(icompo-1+DEFO)
+    incr_elas = zk16(icompo-1+INCRELAS)
     leul      = defo_comp .eq. 'GROT_GDEP'
     read (zk16(icompo-1+NVAR),'(I16)') nbvar
+    
+    ASSERT ( (.not. defo_comp.eq.'GROT_GDEP') .or. (.not. incr_elas.eq.'COMP_ELAS') )
+     
 !
 ! - Geometric parameters
 !
@@ -254,16 +260,17 @@ integer , intent(out) :: codret
 !
 ! - Output fields
 !
-    ivarip = ivarim
-    icontp = icontm
+
+    
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
     endif
+
+    lg_varip=npg*nbsp*nbvar
+    allocate(varip(lg_varip))
     if (lVari) then
         call jevech('PVARIMP', 'L', ivarix)
-        call jevech('PVARIPR', 'E', ivarip)
-        ndimv=npg*nbsp*nbvar
-        call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
+        varip(1:lg_varip) = zr(ivarix:ivarix+lg_varip-1)
     endif
 !
 ! - Preparation of displacements
@@ -414,13 +421,18 @@ integer , intent(out) :: codret
                             zi(imate)      , zk16(icompo)   , zr(icarcr), instm , instp   ,&
                             4              , eps2d          , deps2d    , 4     , sigmPrep,&
                             zr(ivarim+ivpg), option         , angmas    , &
-                            zr(icontp+icpg), zr(ivarip+ivpg), 36        , dsidep,&
+                            zr(icontp+icpg), varip(1+ivpg), 36        , dsidep,&
                             codkpg)
+                            
                 if (codkpg .ne. 0) then
                     if (codret .ne. 1) then
                         codret = codkpg
                     endif
                 endif
+                
+                
+                
+                
 ! ------------- Get stresses
                 if (lSigm) then
                     zr(icontp+icpg+3) = zr(icontp+icpg+3)/rac2
@@ -487,4 +499,13 @@ integer , intent(out) :: codret
             ASSERT(ASTER_FALSE)
         endif
     endif
+    
+! ------------- Get internal variables
+    if (lVari) then
+        call jevech('PVARIPR', 'E', ivarip)
+        zr(ivarip:ivarip+lg_varip-1) = varip(1:lg_varip)
+    end if
+    
+    
+    deallocate(varip)
 end subroutine
