@@ -50,7 +50,6 @@ from .fieldoncells_ext import FieldOnCellsReal
 from .fieldonnodes_ext import FieldOnNodesReal
 from .finiteelementdescriptor_ext import FiniteElementDescriptor
 from .formula_ext import Formula
-from .fulltransientresult_ext import FullTransientResult
 from .function2d_ext import Function2D
 from .function_ext import Function
 from .generalizedassemblymatrix_ext import (
@@ -88,6 +87,7 @@ from .result_ext import Result
 from .table_ext import Table
 from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
 from .thermalresult_ext import ThermalResult
+from .fullresult_ext import FullResult
 from .generalizedresults_ext import TransientGeneralizedResult, HarmoGeneralizedResult
 from .xfemcrack_ext import XfemCrack
 from .parallelthermalload_ext import ParallelThermalLoadReal, ParallelThermalLoadFunction

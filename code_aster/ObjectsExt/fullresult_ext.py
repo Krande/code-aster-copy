@@ -22,20 +22,20 @@
 ****************************************************
 """
 
-from libaster import FullTransientResult
+from libaster import FullResult
 
 from ..Utilities import injector
 from ..ObjectsExt.result_ext import ResultStateBuilder
 
 
-class FullTransientResultStateBuilder(ResultStateBuilder):
-    """Class that returns the internal state of a *FullTransientResult* to be pickled."""
+class FullResultStateBuilder(ResultStateBuilder):
+    """Class that returns the internal state of a *FullResult* to be pickled."""
 
     def save(self, result):
-        """Return the internal state of a *FullTransientResult* to be pickled.
+        """Return the internal state of a *FullResult* to be pickled.
 
         Arguments:
-            result (*FullTransientResult*): The *FullTransientResult* object to be pickled.
+            result (*FullResult*): The *FullResult* object to be pickled.
 
         Returns:
             *InternalStateBuilder*: The internal state itself.
@@ -47,18 +47,18 @@ class FullTransientResultStateBuilder(ResultStateBuilder):
         return self
 
     def restore(self, result):
-        """Restore the *FullTransientResult* content from the previously saved internal
+        """Restore the *FullResult* content from the previously saved internal
         state.
 
         Arguments:
-            result (*FullTransientResult*): The *DataStructure* object to be pickled.
+            result (*FullResult*): The *DataStructure* object to be pickled.
         """
         result.setDOFNumbering(self._st["numbering"])
         super().restore(result)
 
 
-@injector(FullTransientResult)
-class ExtentedFullTransientResult:
-    """Object for FullTransientResult."""
+@injector(FullResult)
+class ExtentedFullResult:
+    """Object for FullResult."""
     cata_sdj = "SD.sd_resultat.sd_resultat"
-    internalStateBuilder = FullTransientResultStateBuilder
+    internalStateBuilder = FullResultStateBuilder
