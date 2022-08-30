@@ -64,11 +64,12 @@ testrefe = {
     "MEMB_T": 1.09890,
 }
 
+h = 2*MA.createMedCouplingMesh()[0].getBoundingBox()[-1][1]
+E = 1
+c_flex = E*(h**3)/12
+c_memb = E*h
+
 def update_refe(para, value):
-    h = 534
-    E = 1
-    c_flex = E*(h**3)/12
-    c_memb = E*h
     upvalue = value
     if "FLEX" in para:
         upvalue *= c_flex
@@ -91,6 +92,7 @@ for para, value in testrefe.items():
                VALE_REFE=vale_refe,
                REFERENCE="SOURCE_EXTERNE",
                VALE_CALC=vale_calc,
+               PRECISION=1.E-2,
                FILTRE=_F(NOM_PARA="TEMP",
                          VALE=float(temp)))
 
