@@ -26,17 +26,15 @@ import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-testname = 'hplv108c'
+testname = "hplv108c"
 
-datadir = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data')
-meshfile = osp.join(datadir, 'hplv108a.med')
-with open(osp.join(datadir, '%s.json'%testname)) as f:
+with open("%s.json"%testname) as f:
     testresu = json.load(f)
 
-MA = code_aster.Mesh()
-MA.readMedFile(meshfile)
+MA = LIRE_MAILLAGE(UNITE=20,
+                   FORMAT="MED")
 
 UN = DEFI_CONSTANTE(VALE=1.0)
 POISSON = DEFI_CONSTANTE(VALE=0.3)
@@ -47,12 +45,12 @@ MATEUNI = DEFI_MATERIAU(ELAS_FO=_F(E=UN,
                         THER_FO=_F(LAMBDA=UN))
 
 TAB_HOMO = CALC_MATE_HOMO(MAILLAGE=MA,
-                          AFFE=_F(TOUT='OUI',
+                          AFFE=_F(TOUT="OUI",
                                   MATER=MATEUNI),
-                          VARC=_F(NOM_VARC='TEMP',
+                          VARC=_F(NOM_VARC="TEMP",
                                   VALE=(20,)),
-                          TYPE_HOMO='PLAQUE',
-                          VECT_NORM='Z',
+                          TYPE_HOMO="PLAQUE",
+                          VECT_NORM="Z",
                           UNITE=80)
 
 testrefe = {
@@ -93,7 +91,7 @@ for para, value in testrefe.items():
                VALE_REFE=vale_refe,
                REFERENCE="SOURCE_EXTERNE",
                VALE_CALC=vale_calc,
-               FILTRE=_F(NOM_PARA='TEMP',
+               FILTRE=_F(NOM_PARA="TEMP",
                          VALE=float(temp)))
 
 tab_values = {para : items for para, items in TAB_HOMO.EXTR_TABLE().values().items()
@@ -101,10 +99,10 @@ tab_values = {para : items for para, items in TAB_HOMO.EXTR_TABLE().values().ite
 
 vale_calc = {temp : {para : item[i]
                      for para, item in tab_values.items()}
-             for i, temp in enumerate(tab_values['TEMP'])}
+             for i, temp in enumerate(tab_values["TEMP"])}
 
 tmpdir = tempfile.mkdtemp()
-with open(osp.join(tmpdir, '%s.json'%testname), 'w') as f:
+with open(osp.join(tmpdir, "%s.json"%testname), "w") as f:
     json.dump(vale_calc, f, indent=1, sort_keys=True)
 
 FIN()
