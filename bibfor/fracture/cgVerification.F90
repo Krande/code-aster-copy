@@ -30,6 +30,10 @@ use calcG_type
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getfac.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
@@ -45,10 +49,11 @@ use calcG_type
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    character(len=8) :: model, mesh, typmo
+    character(len=8) :: model, mesh, typmo, mesh0, nomgd
     aster_logical :: lmodemeca, ldynatrans
-    integer :: nexci
-    real(kind=8) :: start, finish
+    integer :: nexci, nbel, i, desc, gd
+    real(kind=8) :: start, finish, dirz, absccur, long
+    real(kind=8), pointer :: jvale(:) => null()
 !
     call cpu_time(start)
 !
@@ -56,10 +61,6 @@ use calcG_type
 !
     if(cgField%level_info>1) then
         call utmess('I', 'RUPTURE3_1')
-    end if
-!
-    if(any(cgField%list_option == 'KJ') .or. any(cgField%list_option == 'KJ_EPSI')) then 
-        call utmess('I', 'RUPTURE3_11')
     end if
 !
     call dismoi('MODELE', cgField%result_in, 'RESULTAT', repk=model)
@@ -89,6 +90,50 @@ use calcG_type
         call utmess('I', 'RUPTURE3_10')
     endif
 !
+!--- Verify the input theta factors field
+    if (cgTheta%theta_factors_in ) then
+        call dismoi('NOM_MAILLA', cgTheta%theta_factors, 'CHAM_NO', repk=mesh0)
+        ASSERT(mesh0 .eq. mesh)
+
+        call jeveuo(cgTheta%theta_factors(1:19)//'.DESC', 'L', desc)
+        gd = zi(desc-1+1) 
+        call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
+        if ((nomgd(1:6) .ne. 'THET_R')) then
+           call utmess('F', 'RUPTURE3_5', sk=nomgd)
+        endif
+
+        ! Vérifications spécifiques en 3D
+        if (cgField%ndim .eq. 3) then
+            ! VERIFICATION PRESENCE NB_POINT_FOND
+            if (cgTheta%nb_point_fond .ne. 0) then
+            ! INTERDICTION D AVOIR NB_POINT_FOND AVEC
+            ! DISCTRETISATION =  LEGENDRE
+                if (cgTheta%discretization.eq.'LEGENDRE') then
+                    call utmess('F', 'RUPTURE1_73')
+                endif
+            endif
+        endif
+
+        ! Vérifications spécifiques en 3D
+        ! Les cmp DIR_Z /ABSC_CUR /LONG doivent 0
+        if(cgField%ndim .eq. 2) then
+            call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbel)
+            call jeveuo(cgTheta%theta_factors(1:19)//'.VALE','L',vr= jvale)
+            dirz = 0.0
+            absccur = 0.0
+            long = 0.0
+            do i = 1, nbel
+                dirz = dirz + jvale((i-1)*6+4) 
+                absccur = absccur + jvale((i-1)*6+5) 
+                long = long + jvale((i-1)*6+6) 
+            enddo            
+            if ( .not. ( (dirz .eq. 0.0) .and. (absccur .eq. 0.0) .and. (long .eq. 0.0) ) ) then
+                call utmess('F', 'RUPTURE1_76')
+            endif
+        endif
+
+    endif
+
     call jedema()
 !
     call cpu_time(finish)

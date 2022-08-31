@@ -150,7 +150,14 @@ G1_C_LI = CALC_G(   RESULTAT=CHAMDEPL,
                                 ),
                 )
              
-             
+GLOC1x=CALC_G(  RESULTAT=CHAMDEPL,
+                       OPTION=('G','KJ'),
+                        THETA=_F(FISSURE=FISS1,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                CHAM_THETA=cham_theta_no1,
+                                 ),
+                       )             
              
 IMPR_TABLE(TABLE=GLOC0, UNITE=6)
 IMPR_TABLE(TABLE=GLOC1, UNITE=6)
@@ -190,6 +197,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.0,),
            )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=7.129074985953437E-05,
+           VALE_REFE=7.1710000000000003E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1x,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
            
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.01,
@@ -208,6 +225,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=4.06798003172,
            NOM_PARA='KJ',
            TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=4.056070944404992,
+           VALE_REFE=4.06798003172,
+           NOM_PARA='KJ',
+           TABLE=GLOC1x,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.0,),
            )
@@ -317,7 +344,17 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=2.66861E+01,),
            )
-           
+ 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.1,
+           VALE_CALC=1.5593873491552517E-05 ,
+           VALE_REFE=1.721E-05,
+           NOM_PARA='G',
+           TABLE=GLOC1x,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66861E+01,),
+           )
+          
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.1,
            VALE_CALC=1.8956126456573978,
@@ -334,6 +371,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=1.99287191298,
            NOM_PARA='KJ',
            TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=2.66861E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.1,
+           VALE_CALC=1.8969939879605011 ,
+           VALE_REFE=1.99287191298,
+           NOM_PARA='KJ',
+           TABLE=GLOC1x,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=2.66861E+01,),
            )
@@ -448,7 +495,17 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.80645E+01,),
            )
-           
+  
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=5.157172899497275E-05,
+           VALE_REFE=5.14212639594e-05,
+           NOM_PARA='G',
+           TABLE=GLOC1x,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.80645E+01,),
+           )
+        
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.01,
            VALE_CALC=3.4613484260913854,
@@ -466,6 +523,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=3.44477075131,
            NOM_PARA='KJ',
            TABLE=GLOC1,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=1.80645E+01,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=3.4498069843991424,
+           VALE_REFE=3.44477075131,
+           NOM_PARA='KJ',
+           TABLE=GLOC1x,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.80645E+01,),
            )

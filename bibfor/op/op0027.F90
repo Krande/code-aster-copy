@@ -70,7 +70,9 @@ implicit none
     call cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
 !-- Compute Theta factors
-    call cgComputeFactors(cgField, cgTheta, cgStat)
+    if (.not. cgTheta%theta_factors_in) then
+        call cgComputeFactors(cgField, cgTheta, cgStat)
+    endif
 !
 ! --- Compute A Matrix from equation A*G(s)=g(theta)
 !

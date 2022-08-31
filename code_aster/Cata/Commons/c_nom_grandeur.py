@@ -121,4 +121,5 @@ def C_NOM_GRANDEUR():
         "VFAC_F",
         "VFAC_R",
         "CLAC_R",
+        "THET_R",
     )

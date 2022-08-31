@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -439,6 +439,10 @@ POST_K1_K2_K3 : Cet opérateur est incompatible avec les modélisations incompre
 CALC_G : On ne peut pas calculer les dérivées des fonctions singulières car on se trouve sur le fond de fissure. 
 """),
 
+    76: _("""
+CALC_G : Le champ fourni par CHAM_THETA_IN n'est pas correct. Les composants DIR_Z, ABSC_CUR et LONG doivent être nuls en 2D. 
+"""),
+
     80: _("""
 RESULTAT et fichier MED d'entrée doivent avoir la même liste d'instant
 """),
@@ -465,4 +469,3 @@ Un seul GROUP_MA est autorisé
 """),
    
 }
-

@@ -75,6 +75,8 @@ private
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
 #include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/exisd.h"
 !
 public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
@@ -179,6 +181,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
     type CalcG_Theta
 ! ----- name of theta field
         character(len=24)       :: theta_field = ' '
+!------ if a input field for theta factors
+        aster_logical           :: theta_factors_in = ASTER_FALSE
 ! ----- name of factors necessary to create theta field in te
         character(len=24)       :: theta_factors = ' '
 ! ----- name of the matrix from A*G(s)=g(theta)
@@ -912,13 +916,14 @@ contains
         real(kind=8), pointer :: absfon(:)  => null()
         integer, pointer :: typmail(:) => null()
         real(kind=8) :: start, finish
+        character(len=8) :: thetafactorsin
 !
         call cpu_time(start)
 !
         call jemarq()
+
 ! --- get automatic name
         call gcncon("_", this%theta_field)
-        call gcncon("_", this%theta_factors)
         call gcncon("_", this%matrix)
         call gcncon("_", this%fondNoeudNume)
 !
@@ -1016,65 +1021,84 @@ contains
             (this%nb_couche_inf >= this%nb_couche_sup))) then
             call utmess('F', 'RUPTURE3_4', ni=2, vali=[this%nb_couche_inf, this%nb_couche_sup])
         end if
+
+
+        call this%getAbsfon(absfon)
+        this%lonfis = absfon(this%nnof)
+
+        ier = 0
+        call getvtx('THETA', 'CHAM_THETA', iocc=1, scal=this%theta_factors, nbret=ier)
+        if (ier > 0) then
+            call exisd('CHAM_NO',this%theta_factors, ier)
+        endif
+
+        if (ier == 0) then 
+! --- get automatic name
+            call gcncon("_", this%theta_factors) 
 !
 ! --- Get RINF and RSUP from command file or from SD FOND_FISSURE
 
-        call getvr8('THETA', 'R_INF', iocc=1, scal=this%r_inf, nbret=ier)
-        call getvr8('THETA', 'R_SUP', iocc=1, scal=this%r_sup, nbret=ier)
-        if(ier.ne.0)then
-            this%radius_type='R'
-        endif
+            call getvr8('THETA', 'R_INF', iocc=1, scal=this%r_inf, nbret=ier)
+            call getvr8('THETA', 'R_SUP', iocc=1, scal=this%r_sup, nbret=ier)
+            if(ier.ne.0)then
+                this%radius_type='R'
+            endif
 !
-        call getvid('THETA', 'R_INF_FO', iocc=1, scal=this%r_inf_fo, nbret=ier)
-        call getvid('THETA', 'R_SUP_FO', iocc=1, scal=this%r_sup_fo, nbret=ier)
-        if(ier.ne.0)then
-            this%radius_type='R_FO'
-        endif
+            call getvid('THETA', 'R_INF_FO', iocc=1, scal=this%r_inf_fo, nbret=ier)
+            call getvid('THETA', 'R_SUP_FO', iocc=1, scal=this%r_sup_fo, nbret=ier)
+            if(ier.ne.0)then
+                this%radius_type='R_FO'
+            endif
 !
 !       Verifications
-        if(this%radius_type=='R' .and. ((this%r_inf < 0.d0) .or. (this%r_inf >= this%r_sup))) then
-            call utmess('F', 'RUPTURE3_3', nr=2, valr=[this%r_inf, this%r_sup])
-        end if
+            if(this%radius_type=='R' .and. &
+                      ((this%r_inf < 0.d0) .or. (this%r_inf >= this%r_sup))) then
+                call utmess('F', 'RUPTURE3_3', nr=2, valr=[this%r_inf, this%r_sup])
+            end if
 !
-        call this%getAbsfon(absfon)
-        this%lonfis = absfon(this%nnof)
-        if(this%radius_type == 'R_FO')then
-            do i = 1, this%nnof
-                nompar(1) = 'ABSC'
-                valpar(1) = absfon(i)
-                call fointe('FM', this%r_inf_fo, 1, nompar, valpar, valres_i, ier)
-                call fointe('FM', this%r_sup_fo, 1, nompar, valpar, valres_s, ier)
-                if ( valres_s .le. valres_i) then
-                    call utmess('F', 'RUPTURE1_6')
-                endif
-            end do
-        endif
+            if(this%radius_type == 'R_FO')then
+                do i = 1, this%nnof
+                    nompar(1) = 'ABSC'
+                    valpar(1) = absfon(i)
+                    call fointe('FM', this%r_inf_fo, 1, nompar, valpar, valres_i, ier)
+                    call fointe('FM', this%r_sup_fo, 1, nompar, valpar, valres_s, ier)
+                    if ( valres_s .le. valres_i) then
+                        call utmess('F', 'RUPTURE1_6')
+                    endif
+                end do
+            endif
 !
 !       if no radius is defined
-        if (this%radius_type.ne.'R' .and. this%radius_type.ne.'R_FO' &
-        .and. this%radius_type.ne.'NB_COUCHE') then
-            this%radius_type='R'
-            if (this%config_init == 'DECOLLEE') then
-!           A vérifier si toujours impossible de calculer r dans ce cas
-!           (fond_taille_r disponible dans la sd_fond_fissure même si
-!           DECOLLEE?)
-                call utmess('F', 'RUPTURE1_7')
+            if (this%radius_type.ne.'R' .and. this%radius_type.ne.'R_FO' &
+            .and. this%radius_type.ne.'NB_COUCHE') then
+                this%radius_type='R'
+                if (this%config_init == 'DECOLLEE') then
+!               A vérifier si toujours impossible de calculer r dans ce cas
+!               (fond_taille_r disponible dans la sd_fond_fissure même si
+!               DECOLLEE?)
+                    call utmess('F', 'RUPTURE1_7')
+                endif
+                call this%getFondTailleR(fondTailleR)
+                maxtai = fondTailleR(1)
+                mintai = fondTailleR(1)
+                do i = 1, this%nb_fondNoeud
+                    maxtai = max(maxtai,fondTailleR(i))
+                    mintai = min(mintai,fondTailleR(i))
+                end do
+                this%r_inf = 2*maxtai
+                this%r_sup = 4*maxtai
+                call utmess('I', 'RUPTURE1_5', nr=2, valr=[this%r_inf, this%r_sup])
+                if (maxtai .gt. 2*mintai) then
+                    call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
+                endif
             endif
-            call this%getFondTailleR(fondTailleR)
-            maxtai = fondTailleR(1)
-            mintai = fondTailleR(1)
-            do i = 1, this%nb_fondNoeud
-                maxtai = max(maxtai,fondTailleR(i))
-                mintai = min(mintai,fondTailleR(i))
-            end do
-            this%r_inf = 2*maxtai
-            this%r_sup = 4*maxtai
-            call utmess('I', 'RUPTURE1_5', nr=2, valr=[this%r_inf, this%r_sup])
-            if (maxtai .gt. 2*mintai) then
-                call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
-            endif
+        else
+            this%theta_factors_in = ASTER_TRUE
+!           pour COPIER ET STOCKER LE INPUT CHAMP_NO THETA_FACTORS 
+            thetafactorsin = this%theta_factors
+            this%theta_factors = this%theta_factors(1:8)//'_CHAM_THETA_FACT'
+            call copisd('CHAMP_GD', 'G', thetafactorsin, this%theta_factors)
         endif
-
 !
         call jedema()
 !

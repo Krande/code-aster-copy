@@ -63,7 +63,7 @@ def calc_g_with_co(self, **args):
     _cham_theta_no.setMesh(args["RESULTAT"].getMesh())
     _cham_theta_no.build()
 
-    if "CHAM_THETA" in args["THETA"]:
+    if ("CHAM_THETA" in args["THETA"]) and (args["THETA"]["CHAM_THETA"].is_typco()):
         # number of CHAM_THETA fields
         self.register_result(_cham_theta_no, args["THETA"]["CHAM_THETA"])
     else:

@@ -41,6 +41,12 @@ Le nombre de couches d'élément inférieur et supérieur pour le calcul de thê
     Nombre de couches supérieur: %(i2)d
 """),
 
+    5: _("""
+Le champ thêta fourni est de type %(k1)s, au lieu de THET_R.
+
+Conseil : vérifiez le champ thêta.
+"""),
+
     6: _("""
 Le mot-clé EXCIT n'est pas renseigné alors que la structure de données résultat est de type DYNA_TRANS ou MODE_MECA. Hors, on ne peux pas récupérer les chargements automatiquement.
 
@@ -68,17 +74,6 @@ A partir de la V15, il n'est plus nécessaire à l'utilisateur de diviser le ré
 en sortie de CALC_G par la distance du fond de fissure à l'axe d’axis-symétrie. 
 
 Cette division est réalisée automatiquement par CALC_G.
-"""),
-
-    11: _("""
-Vous réalisez un calcul de K à partir de G et de la formule d'Irwin : attention, cette option ne peut être utilisée que pour
-des chargements en mode 1. 
-"""),
-
-    12: _("""
-Valeur de G ou G_EPSI négative au noeud %(i1)d. On ne peut pas calculer K avec la formule d'Irwin.
-
-G   =   %(r1)f
 """),
 
 }

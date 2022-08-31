@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ G0 = CALC_G(OPTION='G_EPSI',
                      FISSURE=FISS_NEW,
                      R_INF=0.0203282,
                      R_SUP=0.025))
+
 
 
 TEST_RESU(
@@ -142,7 +143,26 @@ H0 = CALC_G(RESULTAT=RES0,
                      R_INF=0.0203282,
                      R_SUP=0.025))
 
+H0X = CALC_G(OPTION='G_EPSI',
+            RESULTAT=RES0,
+            THETA=_F(CHAM_THETA=cham_theta_no2,
+                     FISSURE=FISSH,))
 
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.,
+           VALE_REFE=0.,
+           NOM_PARA='G_EPSI',
+           TABLE=H0,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.,
+           VALE_REFE=0.,
+           NOM_PARA='G_EPSI',
+           TABLE=H0X,
+           )
+#------------------
 
 TEST_RESU(
     CHAM_NO=(_F(
