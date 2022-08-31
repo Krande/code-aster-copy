@@ -244,4 +244,52 @@ depl.printMedFile("depl.med")
 chvga = SOLUT.getField("VARI_ELGA", 0)
 chvga.printMedFile("vari_elga.med")
 
+
+chmaxsig = CREA_CHAMP(CRITERE='RELATIF',
+                      INFO=1,
+                      NUME_ORDRE=0,
+                      NOM_CHAM='SIEF_ELGA',
+                      OPERATION='EXTR',
+                      PRECISION=1e-06,
+                      PROL_ZERO='NON',
+                      RESULTAT=SOLUT,
+                      TYPE_CHAM='ELGA_SIEF_R',
+                      TYPE_MAXI='MAXI',
+                      TYPE_RESU='VALE')
+
+print("CHMAX1: ", chmaxsig.getDescription())
+
+chprint = CREA_RESU(AFFE=_F(CHAM_GD=chmaxsig,
+                            CRITERE='RELATIF',
+                            INST=0.0,
+                            PRECISION=0.0),
+                    NOM_CHAM='SIEF_ELGA',
+                    OPERATION='AFFE',
+                    TYPE_RESU='EVOL_NOLI',
+                    VERI_VARI='OUI')
+
+chmaxsig2 = CREA_CHAMP(CRITERE='RELATIF',
+                      INFO=1,
+                      INST=0.0,
+                      NOM_CHAM='SIEF_ELGA',
+                      OPERATION='EXTR',
+                      PRECISION=1e-06,
+                      PROL_ZERO='NON',
+                      RESULTAT=chprint,
+                      TYPE_CHAM='ELGA_SIEF_R',
+                      TYPE_MAXI='MAXI',
+                      TYPE_RESU='VALE')
+
+print("CHMAX2: ", chmaxsig2.getDescription())
+
+
+chprint2 = CREA_RESU(AFFE=_F(CHAM_GD=chmaxsig2,
+                            CRITERE='RELATIF',
+                            INST=0.0,
+                            PRECISION=0.0),
+                    NOM_CHAM='SIEF_ELGA',
+                    OPERATION='AFFE',
+                    TYPE_RESU='EVOL_NOLI',
+                    VERI_VARI='OUI')
+
 FIN()

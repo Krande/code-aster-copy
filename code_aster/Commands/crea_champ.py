@@ -135,7 +135,9 @@ class FieldCreator(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        if isinstance(self._result, FieldOnNodesReal):
+        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
+
+        if location == "NOEU":
             if not self._result.getDescription():
                 for comb in force_list(keywords.get("COMB", [])):
                     desc = comb["CHAM_GD"].getDescription()
@@ -149,7 +151,17 @@ class FieldCreator(ExecuteCommand):
                         self._result.setMesh(mesh)
                         break
 
-        self._result.build()
+            self._result.build()
+        elif location[:2] == "EL":
+            resultat = keywords.get("RESULTAT")
+            fed = []
+            if resultat:
+                fed = resultat.getFiniteElementDescriptors()
+
+            self._result.build(fed)
+
+        else:
+            self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

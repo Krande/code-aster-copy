@@ -226,7 +226,8 @@ class FieldOnCells : public DataField {
     /**
      * @brief Update field and build FiniteElementDescriptor if necessary
      */
-    ASTERBOOL build() {
+    ASTERBOOL build( std::vector< FiniteElementDescriptorPtr > FEDs =
+                         std::vector< FiniteElementDescriptorPtr >() ) {
         if ( !_dofDescription ) {
             CALL_JEMARQ();
             _reference->updateValuePointer();
@@ -235,6 +236,13 @@ class FieldOnCells : public DataField {
 
             if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
                 setDescription( std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() ) );
+            } else {
+                for ( auto &fed : FEDs ) {
+                    if ( fed && trim( fed->getName() ) == ligrel ) {
+                        setDescription( fed );
+                        break;
+                    }
+                }
             }
         }
 

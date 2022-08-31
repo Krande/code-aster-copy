@@ -66,11 +66,15 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             )" )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "getDescription", &FieldOnCellsReal::getDescription )
-        .def( "build", &FieldOnCellsReal::build )
-        .def( "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsReal &v, ASTERINTEGER i,
-                                  float f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
+        .def( "build", &FieldOnCellsReal::build,
+              py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
+        .def(
+            "__setitem__",
+            +[]( FieldOnCellsReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -177,17 +181,21 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 Model: Model object
             )" )
-        .def( "build", &FieldOnCellsComplex::build )
+        .def( "build", &FieldOnCellsComplex::build,
+              py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
         .def( "getValues", &FieldOnCellsComplex::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[complex]: List of values.
             )" )
-        .def( "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsComplex &v, ASTERINTEGER i,
-                                  ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsComplex &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
+        .def(
+            "__setitem__", +[]( FieldOnCellsComplex &v, ASTERINTEGER i,
+                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsComplex &v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )
@@ -240,17 +248,21 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 Model: Model object
             )" )
-        .def( "build", &FieldOnCellsLong::build )
+        .def( "build", &FieldOnCellsLong::build,
+              py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
         .def( "getValues", &FieldOnCellsLong::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[int]: List of values.
             )" )
-        .def( "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsLong &v, ASTERINTEGER i,
-                                  ASTERINTEGER f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsLong &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
+        .def(
+            "__setitem__", +[]( FieldOnCellsLong &v, ASTERINTEGER i,
+                                ASTERINTEGER f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsLong &v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )
@@ -298,5 +310,7 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
 
             Returns:
                 Model: Model object
-            )" );
+            )" )
+        .def( "build", &FieldOnCellsChar8::build,
+              py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() );
 };
