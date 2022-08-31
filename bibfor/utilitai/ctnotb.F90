@@ -19,7 +19,7 @@
 subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                   nkcmp, toucmp, nbcmp, typac, ndim,&
                   nrval, resu, nomtb, nsymb, nival,&
-                  niord)
+                  niord, label)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,6 +40,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     character(len=16) :: nsymb
     character(len=24) :: nkcha, nkcmp, mesnoe, nival, nrval, niord
     aster_logical :: toucmp
+    character(len=24) :: label, slabel
 !     ----- OPERATEUR CREA_TABLE , MOT-CLE FACTEUR RESU   --------------
 !
 !        BUT : REMPLISSAGE DE LA TABLE POUR UN CHAM_NO
@@ -105,12 +106,10 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     AS_ALLOCATE(vr=table_valr, size=50)
     AS_ALLOCATE(vi=table_vali, size=50)
     AS_ALLOCATE(vk16=table_valk, size=50)
-!
+
     do i = 1, nbval
 !
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
-!
-!
 !            -- PASSAGE CHAM_NO => CHAM_NO_S
             call cnocns(zk24(jkcha+i-1), 'V', chamns)
             call jeveuo(chamns//'.CNSV', 'L', vr=cnsv)
@@ -118,6 +117,16 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
             call jeveuo(chamns//'.CNSD', 'L', vi=cnsd)
             call jeveuo(chamns//'.CNSC', 'L', vk8=cnsc)
 !
+!           Colonne CHAM_GD/RESULTAT
+            slabel = label
+            if (slabel .eq. ' ') then
+                if (resu .ne. ' ') then
+                    slabel = resu
+                else
+                    slabel = zk24(jkcha+i-1)
+                endif
+            endif
+
 !             NOMBRE DE NOEUDS MAX DU CHAMP: NBNOX
             nbnox=cnsd(1)
 !             NOMBRE DE COMPOSANTES MAX DU CHAMP : NBCMPX
@@ -199,12 +208,9 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                 end do
 !
                 kk=0
-                if (resu .eq. ' ') then
-                    table_valk(kk+1)=zk24(jkcha+i-1)(1:16)
-                    kk=kk+1
-                else
-                    table_valk(kk+1)=resu
-                    kk=kk+1
+                table_valk(kk+1) = slabel
+                kk=kk+1
+                if (resu .ne. ' ') then
                     table_valk(kk+1)=nsymb
                     kk=kk+1
                     table_vali(1)=zi(jniord+i-1)

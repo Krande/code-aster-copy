@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                   nkcmp, nkvari, toucmp, nbcmp, typac, ndim,&
                   nrval, resu, nomtb, nsymb, chpgs, chpsu, &
-                  tych, nival, niord)
+                  tych, nival, niord, label)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,6 +81,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     character(len=19) :: chpgs, chpsu
     character(len=24) :: nkcha, nkcmp, nkvari, mesmai, nival, nrval, niord
     aster_logical :: toucmp
+    character(len=24) :: label, slabel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -160,7 +161,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     AS_ALLOCATE(vr=table_valr, size=250)
     AS_ALLOCATE(vi=table_vali, size=250)
     AS_ALLOCATE(vk16=table_valk, size=250)
-!
+
 !   LECTURE DES CHAMPS ET REMPLISSAGE DE LA TABLE
     do i = 1, nbval
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
@@ -178,6 +179,16 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
             call jeveuo(chames//'.CESD', 'L', jcesd)
             call jeveuo(chames//'.CESC', 'L', vk8=cesc)
 !
+!           Colonne CHAM_GD/RESULTAT
+            slabel = label
+            if (slabel .eq. ' ') then
+                if (resu .ne. ' ') then
+                    slabel = resu
+                else
+                    slabel = zk24(jkcha+i-1)(1:16)
+                endif
+            endif
+
 !           NOMBRE DE MAILLES MAX DU CHAMP : NBMAX
             nbmax=zi(jcesd)
 !           NOMBRE DE COMPOSANTES MAX DU CHAMP : NBCMPX
@@ -344,12 +355,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                         ASSERT(kk .eq. ni)
 !
                         kk=0
-                        if (resu .eq. ' ') then
-                            table_valk(kk+1)=zk24(jkcha+i-1)(1:16)
-                            kk=kk+1
-                        else
-                            table_valk(kk+1)=resu
-                            kk=kk+1
+                        table_valk(kk+1) = slabel
+                        kk=kk+1
+                        if (resu .ne. ' ') then
                             table_valk(kk+1)=nsymb
                             kk=kk+1
                         endif

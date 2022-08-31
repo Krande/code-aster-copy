@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class TableCreation(ExecuteCommand):
     """Execute legacy operator CREA_TABLE."""
+
     command_name = "CREA_TABLE"
 
     def adapt_syntax(self, keywords):
@@ -34,6 +35,13 @@ class TableCreation(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        if keywords.get("RESU"):
+            fkwd = keywords["RESU"]
+            if fkwd.get("RESULTAT"):
+                name = fkwd["RESULTAT"].userName
+            else:
+                name = fkwd["CHAM_GD"].userName
+            fkwd["INTITULE"] = name
         if keywords["TYPE_TABLE"] != "TABLE_CONTAINER" or not keywords.get("LISTE"):
             return
         for occ in keywords["LISTE"]:

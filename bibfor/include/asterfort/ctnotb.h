@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                       nkcmp, toucmp, nbcmp, typac, ndim,&
                       nrval, resu, nomtb, nsymb, nival,&
-                      niord)
+                      niord,label)
         integer :: nbno
         character(len=24) :: mesnoe
         character(len=8) :: noma
@@ -41,5 +41,6 @@ interface
         character(len=16) :: nsymb
         character(len=24) :: nival
         character(len=24) :: niord
+        character(len=24) :: label
     end subroutine ctnotb
 end interface

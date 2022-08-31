@@ -1,0 +1,85 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI")
+
+tab_stress = CREA_TABLE(
+    RESU=_F(
+        NOM_CMP=("SIXX", "SIXY", "SIXZ"),
+        NUME_ORDRE=(1,),
+        RESULTAT=RESU2A,
+        NOM_CHAM="SIEF_ELGA",
+        GROUP_MA=("M801", "M880"),
+    )
+)
+IMPR_TABLE(TABLE=tab_stress, FORMAT="ASTER", UNITE=6)
+
+TEST_TABLE(
+    TABLE=tab_stress,
+    FILTRE=(
+        _F(NOM_PARA="RESULTAT", VALE_K="RESU2A"),
+        _F(NOM_PARA="MAILLE", VALE_K="M880"),
+        _F(NOM_PARA="POINT", VALE_I=1),
+        _F(NOM_PARA="SOUS_POINT", VALE_I=2),
+    ),
+    NOM_PARA="SIXX",
+    VALE_CALC=0.0,
+    CRITERE="ABSOLU",
+    ORDRE_GRANDEUR=800.0,
+)
+
+tab_displ = CREA_TABLE(
+    RESU=_F(
+        NOM_CMP=("DX", "DY", "DZ"), NUME_ORDRE=(1,), RESULTAT=RESU2A, NOM_CHAM="DEPL", GROUP_NO="A3"
+    )
+)
+IMPR_TABLE(TABLE=tab_displ, FORMAT="ASTER", UNITE=6)
+
+TEST_TABLE(
+    TABLE=tab_displ,
+    FILTRE=_F(NOM_PARA="RESULTAT", VALE_K="RESU2A"),
+    NOM_PARA="DZ",
+    VALE_CALC=-4.4217688323441e-05,
+)
+
+# Sur un champ:
+resu2 = POST_CHAMP(
+    RESULTAT=RESU2A,
+    TOUT_ORDRE="OUI",
+    TOUT="OUI",
+    EXTR_COQUE=_F(NOM_CHAM="SIEF_ELGA", NUME_COUCHE=1, NIVE_COUCHE="MOY"),
+)
+
+too_long_username = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=resu2, NOM_CHAM="SIEF_ELGA", NUME_ORDRE=1
+)
+
+tab_field = CREA_TABLE(
+    RESU=_F(CHAM_GD=too_long_username, NOM_CMP=("SIXX", "SIXY", "SIXZ"), GROUP_MA="M880")
+)
+IMPR_TABLE(TABLE=tab_field, FORMAT="ASTER", UNITE=6)
+
+TEST_TABLE(
+    TABLE=tab_field,
+    FILTRE=(_F(NOM_PARA="CHAM_GD", VALE_K="too_long_usernam"), _F(NOM_PARA="POINT", VALE_I=1)),
+    NOM_PARA="SIXZ",
+    VALE_CALC=-2.4682640e03,
+)
+
+FIN()

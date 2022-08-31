@@ -197,7 +197,7 @@ class ExtendedParallelMesh:
 
         with shared_tmpdir("buildCube") as tmpdir:
             filename = osp.join(tmpdir, "buildCube.med")
-            # nrefine is added to create a mesh with enougth cells
+            # nrefine is added to create a mesh with enough cells
             # to be partitioned equally and not generated a too big file
             min_level = 6
             if MPI.ASTER_COMM_WORLD.Get_size() > 512:

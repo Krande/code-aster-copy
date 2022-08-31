@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine ctresu(nomtb)
 #include "asterfort/ctdata.h"
 #include "asterfort/cteltb.h"
 #include "asterfort/ctnotb.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -43,6 +44,7 @@ subroutine ctresu(nomtb)
     character(len=16) :: nsymb
     character(len=19) :: chpgs, chpsu
     character(len=24) :: nival, nrval, niord, nkcha, nkcmp, nkvari, mesnoe, mesmai
+    character(len=24) :: label
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -67,7 +69,9 @@ subroutine ctresu(nomtb)
     call ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
                 nkcmp,  nkvari, nbcmp, ndim, chpgs,  &
                 chpsu,  noma,   nbno,  nbma, nbval, tygd)
-!
+!   field or result user name
+    call getvtx('RESU', 'INTITULE', iocc=1, scal=label)
+
 !   CREATION DE LA TABLE
     call ctcrtb(nomtb, tych, sdres, nkcha, typac,&
                 toucmp, nbcmp, nbval, nkcmp, nkvari, ndim)
@@ -76,12 +80,14 @@ subroutine ctresu(nomtb)
     if (tych .eq. 'NOEU') then
         call ctnotb(nbno,   mesnoe, noma,  nbval, nkcha,&
                     nkcmp,  toucmp, nbcmp, typac, ndim, &
-                    nrval,  sdres,  nomtb, nsymb, nival, niord)
+                    nrval,  sdres,  nomtb, nsymb, nival,&
+                    niord, label)
     else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
         call cteltb(nbma,  mesmai, noma,   nbval, nkcha, &
                     nkcmp, nkvari, toucmp, nbcmp, typac, &
                     ndim,  nrval,  sdres,  nomtb, nsymb, &
-                    chpgs, chpsu,  tych,   nival, niord)
+                    chpgs, chpsu,  tych,   nival, niord, &
+                    label)
     endif
 !
 !   NETTOYAGE

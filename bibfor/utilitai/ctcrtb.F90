@@ -180,11 +180,11 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     kk=0
     if (resu .eq. ' ') then
         table_parak(kk+1)='CHAM_GD'
-        table_typek(kk+1)='K8'
+        table_typek(kk+1)='K16'
         kk=kk+1
     else
         table_parak(kk+1)='RESULTAT'
-        table_typek(kk+1)='K8'
+        table_typek(kk+1)='K16'
         kk=kk+1
         table_parak(kk+1)='NOM_CHAM'
         table_typek(kk+1)='K16'

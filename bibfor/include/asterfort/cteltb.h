@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,8 @@ interface
     subroutine cteltb(nbma,  mesmai, noma,   nbval, nkcha, &
                       nkcmp, nkvari, toucmp, nbcmp, typac, &
                       ndim,  nrval,  resu,   nomtb, nsymb, &
-                      chpgs, chpsu,  tych,   nival, niord)
+                      chpgs, chpsu,  tych,   nival, niord, &
+                      label)
         integer :: nbma
         character(len=24) :: mesmai
         character(len=8) :: noma
@@ -43,5 +44,6 @@ interface
         character(len=4) :: tych
         character(len=24) :: nival
         character(len=24) :: niord
+        character(len=24) :: label
     end subroutine cteltb
 end interface
