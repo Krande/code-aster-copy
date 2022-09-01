@@ -429,16 +429,16 @@ contains
 !
 ! --- Remove option G* if option KJ* exists
 !
-            if (any('G' == this%list_option) .and. any('KJ' == this%list_option)) then 
-                this%nb_option = this%nb_option - 1 
+            if (any('G' == this%list_option) .and. any('KJ' == this%list_option)) then
+                this%nb_option = this%nb_option - 1
                 this%list_option = pack(this%list_option, this%list_option.ne.'G')
             endif
-            
-            if (any('G_EPSI' == this%list_option) .and. any('KJ_EPSI' == this%list_option)) then 
-                this%nb_option = this%nb_option - 1 
+
+            if (any('G_EPSI' == this%list_option) .and. any('KJ_EPSI' == this%list_option)) then
+                this%nb_option = this%nb_option - 1
                 this%list_option = pack(this%list_option, this%list_option.ne.'G_EPSI')
             endif
-                        
+
         end if
 !
 ! --- Level of information
@@ -1032,9 +1032,9 @@ contains
             call exisd('CHAM_NO',this%theta_factors, ier)
         endif
 
-        if (ier == 0) then 
+        if (ier == 0) then
 ! --- get automatic name
-            call gcncon("_", this%theta_factors) 
+            call gcncon("_", this%theta_factors)
 !
 ! --- Get RINF and RSUP from command file or from SD FOND_FISSURE
 
@@ -1094,8 +1094,8 @@ contains
             endif
         else
             this%theta_factors_in = ASTER_TRUE
-!           pour COPIER ET STOCKER LE INPUT CHAMP_NO THETA_FACTORS 
-            thetafactorsin = this%theta_factors
+!           pour COPIER ET STOCKER LE INPUT CHAMP_NO THETA_FACTORS
+            thetafactorsin = this%theta_factors(1:8)
             this%theta_factors = this%theta_factors(1:8)//'_CHAM_THETA_FACT'
             call copisd('CHAMP_GD', 'G', thetafactorsin, this%theta_factors)
         endif
@@ -1491,10 +1491,10 @@ contains
                     call this%addPara('K3', 'R')
                 endif
                 call this%addPara('G_IRWIN', 'R')
-            elseif (option == "KJ") then 
+            elseif (option == "KJ") then
                 call this%addPara('KJ', 'R')
                 call this%addPara('G', 'R')
-            elseif (option == "KJ_EPSI") then 
+            elseif (option == "KJ_EPSI") then
                 call this%addPara('KJ_EPSI', 'R')
                 call this%addPara('G_EPSI', 'R')
             elseif (option == "G_EPSI" ) then
@@ -1559,17 +1559,17 @@ contains
             end if
             this%v_G_IRWIN(node_id) = cgStudy%gth(5)**2 + cgStudy%gth(6)**2 + cgStudy%gth(7)**2
         elseif(cgStudy%option == "KJ") then
-            if (cgStudy%gth(2) .ge. 0) then 
+            if (cgStudy%gth(2) .ge. 0) then
                 this%v_KJ(node_id) = sqrt(cgStudy%gth(2))
-            else 
+            else
                 call utmess('F', 'RUPTURE3_12', ni = 1, vali = [node_id], &
                             nr = 1, valr = [cgStudy%gth(2)])
             endif
             this%v_G(node_id) = cgStudy%gth(1)
         elseif(cgStudy%option == "KJ_EPSI") then
-            if (cgStudy%gth(2) .ge. 0) then 
+            if (cgStudy%gth(2) .ge. 0) then
                 this%v_KJ_EPSI(node_id) = sqrt(cgStudy%gth(2))
-            else 
+            else
                 call utmess('F', 'RUPTURE3_12', ni = 1, vali = [node_id], &
                             nr = 1, valr = [cgStudy%gth(2)])
             endif
@@ -1669,7 +1669,7 @@ contains
                     call tbajvr(this%table_g, this%nb_para, 'KJ_EPSI', this%v_KJ_EPSI(i_node), livr)
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
                 elseif(option == "KJ_EPSI") then
-                
+
                 elseif(option == "G_EPSI") then
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
                 else
