@@ -124,6 +124,8 @@ class MESSAGE_LOGGER(metaclass=Singleton):
         """Stocke les informations nécessaires pour la gestion des erreurs en MPI."""
         if not config["ASTER_HAVE_MPI"]:
             return
+        if not MPI.Is_initialized():
+            return
         self._mpi_rank = MPI.ASTER_COMM_WORLD.Get_rank()
         self._mpi_nbcpu = MPI.ASTER_COMM_WORLD.Get_size()
 

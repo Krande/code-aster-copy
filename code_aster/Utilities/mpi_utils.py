@@ -96,6 +96,10 @@ except:
             if haveMPI():
                 raise RuntimeError("mpi4py is mandatory for mpi execution")
 
+        def Is_initialized(self):
+            """Tell if MPI is initialized."""
+            return True
+
         def Get_rank(self):
             """Return the process rank."""
             return 0
