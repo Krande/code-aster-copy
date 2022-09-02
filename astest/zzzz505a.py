@@ -148,6 +148,7 @@ test.printSummary()
 ftest = fieldp.duplicate()
 values_test = {'MAX': 4.0, 'MIN': -7.0, 'SOMM': 25 *
                1.0 + 4.0 - 7.0, 'SOMM_ABS': 25 * 1.0 + 4.0 + 7.0}
+ftest.updateValuePointers()
 # for 'MAX' - DX
 ftest[0] = 4.0
 # for 'MIN' - DX

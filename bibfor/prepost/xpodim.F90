@@ -206,6 +206,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call jecrec(maxfem//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbma2)
         call jeecra(maxfem//'.CONNEX', 'LONT', ncotot)
+        call jeecra(maxfem//'.CONNEX','NUTIOC',nbma2)
+
 !
 !       .GROUPEMA
 !       NOMBRE DE GROUP_MA A CREER DANS MAXFEM : NBGMA2

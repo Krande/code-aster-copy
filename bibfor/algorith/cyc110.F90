@@ -217,6 +217,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
     call jecrec(nomres//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)
+    call jeecra(nomres//'.CONNEX','NUTIOC',nbmato)
     call jeecra(nomres//'.CONNEX', 'LONT', ntacon)
 !
     call wkvect(nomres//'.TYPMAIL', 'G V I', nbmato, ibid)

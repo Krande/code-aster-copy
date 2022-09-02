@@ -571,7 +571,11 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     // This is very stange that the size is 0
     // The most probable is that NUTIOC has not been setted
     if ( nbColObj <= 0 ) {
+#ifdef ASTER_HAVE_MPI
+        std::cout << getName() + " seems empty" << std::endl;
+#else
         AS_ABORT( getName() + " seems empty" );
+#endif
     }
 #endif
 

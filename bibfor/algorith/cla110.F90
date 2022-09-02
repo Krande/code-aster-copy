@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -408,6 +408,7 @@ subroutine cla110(nomres, modgen)
     call jeecra(nomres//'.NOMMAI', 'NOMMAX', nbmat)
     call jecrec(nomcon, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmat)
+    call jeecra(nomcon,'NUTIOC',nbmat)
     call jeecra(nomcon, 'LONT', nctail)
     call wkvect(nomres//'.TYPMAIL', 'G V I', nbmat, ibid)
 !

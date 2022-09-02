@@ -229,6 +229,7 @@ subroutine asmael(ma1, ma2, mag)
     if (nbma .gt. 0) then
         call jecrec(mag//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbma)
+        call jeecra(mag//'.CONNEX','NUTIOC',nbma)
         l1=0
         l2=0
         if (nbm1 .gt. 0) call jelira(ma1//'.CONNEX', 'LONT', l1)

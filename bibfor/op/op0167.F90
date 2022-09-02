@@ -886,6 +886,7 @@ implicit none
     call jeecra(meshOut//'.NOMMAI', 'NOMMAX', nbCellOut, ' ')
     call wkvect(meshOut//'.TYPMAIL', 'G V I', nbCellOut, vi = meshTypmailOut)
     call jecrec(meshOut//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', nbCellOut)
+    call jeecra(meshOut//'.CONNEX','NUTIOC',nbCellOut)
 
 ! - Object to save parameters of cells
     AS_ALLOCATE(vi=nbNodeByCellOut, size=nbCellOut)

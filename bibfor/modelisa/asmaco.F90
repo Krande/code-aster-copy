@@ -329,6 +329,8 @@ subroutine asmaco(ma1, ma2, mag)
     if (nbma .gt. 0) then
         call jecrec(mag//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbma)
+        call jeecra(mag//'.CONNEX','NUTIOC',nbma)
+
         call wkvect('&&ASMACO'//'.MAM1', 'V V I', nbm1*2, iamam1)
         call wkvect('&&ASMACO'//'.MAM2', 'V V I', nbm2*2, iamam2)
         do i = 1, nbm1

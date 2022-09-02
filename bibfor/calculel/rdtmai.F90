@@ -235,6 +235,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 ! --- OBJET .CONNEX
     call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmaou)
+    call jeecra(connex,'NUTIOC',nbmaou)
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
     lont=0
