@@ -37,7 +37,7 @@ subroutine te0330(option, nomte)
 #include "asterfort/jevech.h"
 !
     real(kind=8) :: k(10, 10), valpar(4), result
-    integer :: i, ier, j, ndl, ip, jalpha, jmat, jdimp, jdmul, jgeom, jlagr
+    integer :: i, ier, j, ndl, ip, jmat, jdimp, jdmul, jgeom, jlagr
     integer :: jvec, jtime, nbpar
     complex(kind=8) :: kc(10, 10)
 !
@@ -49,13 +49,9 @@ subroutine te0330(option, nomte)
 !
     ndl = 1
 !
-    if (option(6:11) .eq. 'DDLM_R') then
+    if (option(6:12) .eq. 'DDLM_R') then
         call jevech('PDDLMUR', 'L', jdmul)
-        do i = 1, ndl + 1
-            do j = 1, ndl + 1
-                k(i,j) = 0.d0
-            end do
-        end do
+        k = 0.d0
 !
         do i = 1, ndl
             k(i,ndl+1) = zr(jdmul-1+i)
@@ -70,24 +66,17 @@ subroutine te0330(option, nomte)
             ip = ip + i
         end do
 !
-    else if (option(6:11) .eq. 'DDLM_C') then
+    else if (option(6:12) .eq. 'DDLM_C') then
         ASSERT(.false.)
         call jevech('PDDLMUC', 'L', jdmul)
-        do i = 1, ndl + 2
-            do j = 1, ndl + 2
-                kc(i,j) = (0.d0,0.d0)
-            end do
-        end do
-        kc(ndl+1,ndl+1) = (-1.0d0, 0.0d0)
-        kc(ndl+2,ndl+2) = (-1.0d0, 0.0d0)
-        kc(ndl+1,ndl+2) = ( 1.0d0, 0.0d0)
+        kc = (0.d0,0.d0)
+!
         do i = 1, ndl
             kc(i,ndl+1) = zc(jdmul-1+i)
-            kc(i,ndl+2) = zc(jdmul-1+i)
         end do
         if (option(1:4) .eq. 'ACOU') call jevech('PMATTTC', 'E', jmat)
         ip = 0
-        do i = 1, ndl + 2
+        do i = 1, ndl + 1
             do j = 1, i
                 zc(jmat-1+ip+j) = kc(j,i)
             end do
@@ -97,19 +86,18 @@ subroutine te0330(option, nomte)
     else if (option(6:11) .eq. 'BTLA_R') then
         call jevech('PDDLMUR', 'L', jdmul)
         call jevech('PLAGRAR', 'L', jlagr)
-        if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jmat)
-        if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jmat)
-        zr(jmat )=zr(jdmul)*zr(jlagr+1)
-        zr(jmat+1)=0.d0
+        if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
+        if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
+        zr(jvec )=zr(jdmul)*zr(jlagr+1)
+        zr(jvec+1)=0.d0
 !
     else if (option(6:9) .eq. 'BU_R') then
         call jevech('PDDLMUR', 'L', jdmul)
         call jevech('PDDLIMR', 'L', jdimp)
-        call jevech('PALPHAR', 'L', jalpha)
-        if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jmat)
-        if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jmat)
-        zr(jmat )=0.d0
-        zr(jmat+1)=zr(jdmul)*zr(jdimp) -zr(jalpha)*zr(jdimp+1)
+        if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
+        if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
+        zr(jvec )=0.d0
+        zr(jvec+1)=zr(jdmul)*zr(jdimp)
 !
     else if (option(6:11) .eq. 'DDLI_R') then
         call jevech('PDDLIMR', 'L', jdimp)
