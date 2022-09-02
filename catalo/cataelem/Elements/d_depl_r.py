@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,9 @@ for cmp in ( 'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'K1', 'K2', 'K3',
     MMATUUR = ArrayOfComponents(
         phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
+    MMATUUC = ArrayOfComponents(
+        phys=PHY.MDEP_C, locatedComponents=DDL_MECA)
+
 #     Attention : il faut nommer explicitement TOUS les modes locaux crees dans la boucle
 #     --------------------------------------------------------------------
     DDL_MECA.setName('DDL_MECA')
@@ -73,6 +76,7 @@ for cmp in ( 'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'K1', 'K2', 'K3',
     MVECTUR.setName('MVECTUR')
     MVECTUC.setName('MVECTUC')
     MMATUUR.setName('MMATUUR')
+    MMATUUC.setName('MMATUUC')
 
     name = 'D_DEPL_R_' + cmp
 
@@ -120,7 +124,11 @@ for cmp in ( 'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'K1', 'K2', 'K3',
             OP.MECA_DDLM_R(te=2,
                 para_in=((SP.PDDLMUR, LC.MDDLMUR), ),
                 para_out=((SP.PMATUUR, MMATUUR), ),
-            )
+            ),
+            OP.MECA_DDLM_RC(te=2,
+                para_in=((SP.PDDLMUR, LC.MDDLMUR), ),
+                para_out=((SP.PMATUUC, MMATUUC), ),
+            ),
         )
 
     globals()[name] = TempClass

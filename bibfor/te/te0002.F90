@@ -47,7 +47,7 @@ subroutine te0002(option, nomte)
 !
     ndl = 1
 !
-    if (option(6:11) .eq. 'DDLM_R') then
+    if (option(6:12) .eq. 'DDLM_R') then
         call jevech('PDDLMUR', 'L', jdmul)
         do i = 1, ndl + 2
             do j = 1, ndl + 2
@@ -73,7 +73,7 @@ subroutine te0002(option, nomte)
             ip = ip + i
         end do
 !
-    else if (option(6:11) .eq. 'DDLM_C') then
+    else if (option(6:12) .eq. 'DDLM_C') then
         call jevech('PDDLMUC', 'L', jdmul)
         do i = 1, ndl + 2
             do j = 1, ndl + 2
@@ -88,6 +88,28 @@ subroutine te0002(option, nomte)
             kc(i,ndl+2) = zc(jdmul-1+i)
         end do
         if (option(1:4) .eq. 'ACOU') call jevech('PMATTTC', 'E', jmat)
+        ip = 0
+        do i = 1, ndl + 2
+            do j = 1, i
+                zc(jmat-1+ip+j) = kc(j,i)
+            end do
+            ip = ip + i
+        end do
+    else if (option(6:12) .eq. 'DDLM_RC') then
+        call jevech('PDDLMUR', 'L', jdmul)
+        do i = 1, ndl + 2
+            do j = 1, ndl + 2
+                kc(i,j) = (0.d0,0.d0)
+            end do
+        end do
+        kc(ndl+1,ndl+1) = (-1.0d0, 0.0d0)
+        kc(ndl+2,ndl+2) = (-1.0d0, 0.0d0)
+        kc(ndl+1,ndl+2) = ( 1.0d0, 0.0d0)
+        do i = 1, ndl
+            kc(i,ndl+1) = cmplx(zr(jdmul-1+i), kind=8)
+            kc(i,ndl+2) = cmplx(zr(jdmul-1+i), kind=8)
+        end do
+        if (option(1:4) .eq. 'MECA') call jevech('PMATUUC', 'E', jmat)
         ip = 0
         do i = 1, ndl + 2
             do j = 1, i
@@ -139,7 +161,7 @@ subroutine te0002(option, nomte)
         if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
         if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
         if (option(1:4) .eq. 'ACOU') call jevech('PVECTTC', 'E', jvec)
-        nomfon = zk24(jdimp-1+1)
+        nomfon = zk24(jdimp-1+1)(1:19)
         nbpar = 4
         nompar(1) = 'X'
         nompar(2) = 'Y'

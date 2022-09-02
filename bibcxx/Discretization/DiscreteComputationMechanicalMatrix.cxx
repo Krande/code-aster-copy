@@ -588,7 +588,7 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
     const auto &listOfLoads = _phys_problem->getListOfLoads();
 
     // Select option
-    calcul->setOption( "MECA_DDLM_R" );
+    calcul->setOption( "MECA_DDLM_RC" );
 
     auto impl = [&calcul, elemMatr]( auto loads ) {
         for ( const auto &load : loads ) {
@@ -599,12 +599,12 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
                 calcul->clearOutputs();
                 calcul->setFiniteElementDescriptor( FEDesc );
                 calcul->addInputField( "PDDLMUR", field );
-                calcul->addOutputElementaryTerm( "PMATUUR",
+                calcul->addOutputElementaryTerm( "PMATUUC",
                                                  std::make_shared< ElementaryTermComplex >() );
                 calcul->compute();
-                if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                if ( calcul->hasOutputElementaryTerm( "PMATUUC" ) ) {
                     elemMatr->addElementaryTerm(
-                        calcul->getOutputElementaryTermComplex( "PMATUUR" ) );
+                        calcul->getOutputElementaryTermComplex( "PMATUUC" ) );
                 }
             }
         }
