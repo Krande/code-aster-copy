@@ -171,6 +171,7 @@ def C_RELATION(COMMAND):
             "MOHR_COULOMB",
             "RANKINE",
             "RGI_BETON",
+            "RGI_BETON_BA",
             "MONOCRISTAL",
             "MULTIFIBRE",
             "NORTON",

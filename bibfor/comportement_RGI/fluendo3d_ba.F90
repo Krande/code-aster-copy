@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fluendo3d(xmat,sig0,sigf,deps,&
+subroutine fluendo3d_ba(xmat,sig0,sigf,deps,&
                      nstrs,var0,varf,nvari,nbelas3d,&
-                     teta1,teta2,dt,vrgi,ierr1,&
+                     teta1,teta2,dt,vrgi,epstf,ierr1,&
                      iso,mfr,end3d,fl3d,local,&
-                     ndim,iteflumax,sech)
+                     ndim,nvarbe,iteflumax,sech)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
-
+ 
 implicit none
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
@@ -48,10 +48,14 @@ implicit none
 #include "asterfort/criter3d.h"
 #include "asterfort/majw3d.h"
 #include "asterfort/utmess.h"
+#include "asterfort/renfort3d.h"
+#include "asterfort/x33x6.h"
+#include "asterfort/chrep3d.h"
+#include "asterfort/indice0.h"
+#include "asterfort/goujon3d.h"
 
 !    nombre maximal de sous-itération de fluage
      integer      :: iteflumax
-
 
      real(kind=8) ::  beta, beta00,bg0,biotw,biotw00,brgi,ccmin0,dim3,brgi00
      real(kind=8) ::  ccmin1,cthp,cthp1,cthv,cthv1,cthvm,cwtauk0,cwtauk1,depleqc
@@ -61,39 +65,40 @@ implicit none
      real(kind=8) :: epc0,epc00,epc1,epleqc,epleqc0,epleqc00
      real(kind=8) ::  epleqc01,epp1,epser,epsklim1,epsklim2,epsm00
      real(kind=8) ::  epsmin,ept,ept00,ept1,epsklim,hyd00
-     integer      :: ipla2
+     integer      :: ipla2, nvaribe
      real(kind=8) :: pg0,rc00,rc1,reduc1,ref00,ref1,rt00,rt1
      real(kind=8) ::  tauk00,tauk1,taum00,teta,treps,trepspg
      real(kind=8) ::  umdt,vrgi00,vrgi1,vrgi2,vsrw,vw,vw1,vw2,we0s,xb1mg00
      real(kind=8) ::  xflu,xk00,xlim00,young00,xm00,xnsat,xnsat00,xpas1
      real(kind=8) ::  xx1,gfr,epeqpc,errgf
-
+     parameter(nvaribe=114)
      integer i,j,k,l,ndim,npas1,nt,ifour
-
+      
 !            calcul de l ecoulement visco-elasto-plastique: Sellier mars 2014
-
+        
 !            tables de dimension fixe pour resolution des sytemes lineaires
-
+        
 !            variable logique pour activer le fluage, l endo, le traitement local
              aster_logical ::  end3d,fl3d,local
-
+        
 !            decalage Gauss pour la plasticite en cas de fluage nf0
              integer nf0
-
+        
 !            declaration des variables externes
-             integer nstrs,nvari,nbelas3d,ierr1,mfr
+             integer nstrs,nvari,nbelas3d,ierr1,mfr,nvarbe
              real(kind=8) :: xmat(:),sig0(:),sigf(:),deps(:)
-             real(kind=8) ::  var0(:),varf(:)
+             real(kind=8) ::  var0(:),varf(:),epstf(6)
              real(kind=8) ::  dt,vrgi,teta1,teta2
-
+        
 !            tableau pour la resolution des systemes lineaires
              integer ngf
-             parameter (ngf=22)
-             real(kind=8) ::  X(ngf),B(ngf),A(ngf,(ngf+1))
+             parameter (ngf=65)
+             real(kind=8) ::  X(ngf),B(ngf),A(ngf,ngf+1)
+             real(kind=8) ::  XN(ngf),BN(ngf),ANN(ngf,ngf+1)
              integer ipzero(ngf)
 !            variable de controle d erreur dans methode de gauss
              integer errgauss
-
+        
 !            donnes pour test fluage3d
              real(kind=8) ::  epse06(6),epsk06(6),epsm06(6),sig06(6)
              real(kind=8) ::  phi0,we0
@@ -250,7 +255,7 @@ implicit none
              real(kind=8) :: CNa
              real(kind=8) :: nrjp,ttrd,tfid,ttdd
              real(kind=8) :: tdid,exmd,exnd,cnab,cnak,ssad
-             real(kind=8) :: At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,ttkf,nrjf
+             real(kind=8) :: At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,ttkf,nrjf 
 !            valuer fluage debut de pas
              real(kind=8) ::  epsk006(6),epsm006(6)
 !            Def thermiques transitoires (si Dtheta sous charge)
@@ -264,10 +269,35 @@ implicit none
              real(kind=8) ::  wplx3(3),vwplx33(3,3),vwplx33t(3,3)
 !             taux de cisaillement
              real(kind=8) ::  tauc,depleqc3
-!             Pression gel max atteinte
+!            Pression gel max atteinte
              real(kind=8) ::  pgmax
-    real(kind=8), dimension(2) :: valr
-    integer, dimension(3) :: vali
+             real(kind=8), dimension(2) :: valr
+             integer, dimension(3) :: vali
+
+!            paramètres armatures réparties
+             integer nbrenf,nbparr,istep,numf,numr,nrenf00
+             parameter (nbrenf=5,nbparr=21)
+             ! integer nbrenf3d,nbrflu3d,nbsupp3d
+             aster_logical :: plast_seule,errr
+             real(kind=8) :: rhor(nbrenf),deqr(nbrenf),yor(nbrenf)
+             real(kind=8) :: syr(nbrenf),taur(nbrenf),vecr(nbrenf,3)
+             real(kind=8) :: hplr(nbrenf),tor(nbrenf),ekr(nbrenf)
+             real(kind=8) :: skr(nbrenf),ATRR(nbrenf),gamr(nbrenf)
+             real(kind=8) :: khir(nbrenf),sprec(nbrenf),spref(nbrenf)
+             real(kind=8) :: ttaref(nbrenf),xnr(nbrenf),xmuthr(nbrenf)
+             real(kind=8) :: tokr(nbrenf),yksyr(nbrenf)
+             real(kind=8) :: sigrm33(3,3),sigrf33(3,3),epspmf6(6),epsr0(nbrenf)
+             real(kind=8) :: eplr0(nbrenf),sigr0(nbrenf),eprm0(nbrenf),mu_r0(nbrenf)
+             real(kind=8) :: spre0(nbrenf),sigrfissp(nbrenf,3,3),sigrd33p(3,3),sigrf33p(3,3)
+             real(kind=8) :: sigrh6p(6),dti,epspmf33(3,3),epstf33(3,3),epstf6(6)
+             real(kind=8) :: rhov,sigrf6p(6),sigrh33(3,3),sigrh33p(3,3)
+             real(kind=8) :: sigrm33p(3,3),sigrm6p(6),vnorm
+             real(kind=8) :: epsrf(nbrenf),epspmf(nbrenf)
+             real(kind=8) :: sigrf(nbrenf),eprk0(nbrenf),eplrf(nbrenf)
+             real(kind=8) :: eps_nl(nbrenf),eprkf(nbrenf),eprmf(nbrenf)
+             real(kind=8) :: sigrh6(6),sigrm6(6),sigmf6(6)
+             real(kind=8) :: rc_app,eprp0(nbrenf),eprpf(nbrenf),your(nbrenf)
+             real(kind=8) :: sigfr(nbrenf),sigfd6(6)
 
         depstt6(:) = 0.d0
         deps6r2(:) = 0.d0
@@ -275,7 +305,7 @@ implicit none
         deps6(:) = 0.d0
         deps6r(:) = 0.d0
         sig06(:)=0.d0
-        dsw06(:)=0.d0
+        dsw06(:)=0.d0  
         epsklim1=0.d0
         epsklim2=0.d0
         epsklim=0.d0
@@ -288,7 +318,7 @@ implicit none
         ref33(:,:) = 0.d0
         ref33p(:,:) = 0.d0
         rt33(:,:)=0.d0
-        sigf6(:)=0.d0
+        sigf6(:)=0.d0       
         sigf6d(:)=0.d0
         souplesse66(:,:)=0.d0
         souplesse66p(:,:)=0.d0
@@ -569,7 +599,7 @@ implicit none
      tdef=0.d0
      nrjd=0.d0
      def0=0.d0
-     srsdef=0.d0
+     srsdef=0.d0  
      cna=0.d0
      nrjp=0.d0
      ttrd=0.d0
@@ -616,7 +646,7 @@ implicit none
      vwplx33t(:,:)=0.d0
      tauc=0.d0
      depleqc3=0.d0
-     valr(:)=0.d0
+     valr(:)=0.d0                 
      limit1=.false.
      ppas=.false.
      referm3(:)=.false.
@@ -638,13 +668,16 @@ implicit none
      errgauss=0
      na=0
      ig(:)=0
-     ipla=0
+     ipla=0 
      err1=0
      irr=0
      nsupr=0
      nared=0
-     supr(:)=0
+     supr(:)=0  
 
+!    pour ne pas avoir de fluage mettre plast_seule à vrai
+     plast_seule=.false. 
+    
 !***********************************************************************
 !     initialisation de matrice identité
        do i=1,3
@@ -654,48 +687,48 @@ implicit none
                  vref33t(i,j)=1.d0
             else
                  vref33(i,j)=0.d0
-                 vref33t(i,j)=0.d0
+                 vref33t(i,j)=0.d0 
             end if
         end do
       end do
-
+         
 !     chargement des parametres materiaux
 !     l hydratation est considéree en fin de pas pour ne pas avoir
 !     a recuperer celle du pas precedent  les exposants de De Shutter
 !     sont  E   2/3  gf 1/2 rt 2/3 rc 1  ekfl 2/3  biot 1/2
-!     hydratation
-      hydr=xmat(nbelas3d+1)
+!     hydratation 
+      hydr=xmat(nbelas3d+1) 
 !     stockage dans une variable interne pour avoir la vitesse
       if (abs(var0(64)-1.d0).ge.r8prem()) then
 !       au 1er passage on suppose hyd0=hydr
         hyd0=hydr
-!       on initialise var03d en cas de sous incrementation par fluage
+!       on initialise var03d en cas de sous incrementation par fluage        
         var0(48)=hyd0
       else
         hyd0=var0(48)
       end if
       dhydr=hydr-hyd0
-      varf(48)=hydr
+      varf(48)=hydr      
 !     stockage hydratation initiale pour calcul final de pression
-      hyd00=hyd0
+      hyd00=hyd0      
 !     hydratation seuil
-      hyds=xmat(nbelas3d+2)
-!     Module d young
-      young00=xmat(1)
-!     coefficient de Poisson
-      nu00=xmat(2)
-!     resistances et pression limite     2/3
+      hyds=xmat(nbelas3d+2) 
+!     Module d young                            
+      young00=xmat(nbelas3d+58)    
+!     coefficient de Poisson      
+      nu00=xmat(nbelas3d+59) 
+!     resistances et pression limite     2/3 
       rt00=xmat(nbelas3d+3)
 !     seuil pour la refermeture des fissures
       ref00=xmat(nbelas3d+4)
 !     resistance en compression-par cisaillement
-      rc00=xmat(nbelas3d+5)
+      rc00=xmat(nbelas3d+5) 
 !     deformation de reference  pour le fluage prise aqu 1/3 de rc
-      epser=(rc00/young00)/3.d0
+      epser=(rc00/young00)/3.d0      
 !     coeff drucker prager
-      delta00=xmat(nbelas3d+6)
+      delta00=xmat(nbelas3d+6)      
 !     coeff dilatance de cisaillement
-      beta00=xmat(nbelas3d+7)
+      beta00=xmat(nbelas3d+7) 
 !     verif validite de la dilatance
       xx1=dsqrt(3.d0)
       if(beta00.gt.xx1) then
@@ -703,10 +736,10 @@ implicit none
         call utmess('E', 'COMPOR3_23', nr=1, valr=valr)
         ierr1=1
         go to 999
-      end if
-!     deformation au pic de traction
-      ept00=xmat(nbelas3d+8)
-!     taux d ecrouissage des phases effectives / RGI
+      end if        
+!     deformation au pic de traction      
+      ept00=xmat(nbelas3d+8)      
+!     taux d ecrouissage des phases effectives / RGI  
       hplg=xmat(nbelas3d+9)
 !      if(hplg.le.0.d0) then
 !         call utmess('E', 'COMPOR3_24')
@@ -714,26 +747,26 @@ implicit none
 !         go to 999
 !      end if
 !     ratio pour levolution du module decrouissage
-      hpev=xmat(nbelas3d+57)     
-!     vide accesible au gel
+      hpev=xmat(nbelas3d+57)
+!     vide accesible au gel      
       phivg=xmat(nbelas3d+10)
 !     parametre induisant periode de latence initiale 
       alat=xmat(nbelas3d+31)
-!     module biot gel matrice
+!     module biot gel matrice      
 !      mg=xmat(nbelas3d+11)
 !     Rigidite gel matrice      
       kgel=xmat(nbelas3d+11)
 !     energie de fissuration en traction directe
       gft00=xmat(nbelas3d+12)
-!     deformation caracteristique du potentiel de fluage
+!     deformation caracteristique du potentiel de fluage      
       epsm00=xmat(nbelas3d+13)
-!     raideur relative Kelvin / Young
+!     raideur relative Kelvin / Young      
       psik=xmat(nbelas3d+14)
-!     endommagement maximum par fluage
+!     endommagement maximum par fluage      
       xflu=xmat(nbelas3d+15)
-!     temps caracteristique pour Kelvin
+!     temps caracteristique pour Kelvin      
       tauk00=xmat(nbelas3d+16)
-!     temps caracteristique pour Maxwell
+!     temps caracteristique pour Maxwell      
       taum00=xmat(nbelas3d+17)
 !     volume forme par les rgi : vrgi
 !     nrj activation du potentiel de fluage
@@ -745,7 +778,7 @@ implicit none
       biotw00=xmat(nbelas3d+20)
 !     module de biot pour le non sature
       xnsat00=xmat(nbelas3d+21)
-!     porosite ou grandeur permettant de passer du champ sech au degrès de saturation
+!     porosite ou grandeur permettant de passer du champ sech au degrès de saturation     
       poro2=xmat(nbelas3d+22)
 !     volume maximal de rgi comprenant le volume non effectif
       vrag00=xmat(nbelas3d+23)
@@ -758,30 +791,30 @@ implicit none
       end if
 !     calcul de la vitesse de saturation moyenne
       if (fl3d) then
-          vsrw=(vw2-var0(58))/(0.5d0*(poro2+var0(59)))
+          vsrw=(vw2-var0(58))/(0.5d0*(poro2+var0(59))) 
       end if
 !     energie de fixation des alus en HG (RSI)
-      nrjf=xmat(nbelas3d+24)
+      nrjf=xmat(nbelas3d+24)     
 !     contrainte caracteristique pour l endo capillaire
       sfld=xmat(nbelas3d+25)
 !     exposant de Van Genuchten pour la pression capillaire
       mvgn=xmat(nbelas3d+26)
 !     deformation au pic de compression
       epc0=xmat(nbelas3d+27)
-!     verif coherence deformation pic de compression
+!     verif coherence deformation pic de compression 
       epc1=rc00/young00
-!     eps pic comp ne peut pas etre inferieur à rc/E
+!     eps pic comp ne peut pas etre inferieur à rc/E      
       epc00=dmax1(epc0,epc1)
-!     deformation plastique au pic de compression
+!     deformation plastique au pic de compression      
       epp1=epc00-epc1
 !     deformation cracateristique endo de compression
       ekdc=xmat(nbelas3d+28)
 !     deformation caracteristique pour l endo de rgi
-      eprg00=xmat(nbelas3d+29)
+      eprg00=xmat(nbelas3d+29) 
 !     deformation caracteristique pour l endo de traction
       gfr=xmat(nbelas3d+30)
 !     coeff de concentration de contrainte des RGI
-      krgi00=xmat(nbelas3d+32)
+      krgi00=xmat(nbelas3d+32)      
 !     chargement des tailles si l endo est active
       ierr1=0
 !     verif des conditions de couplage rgi-traction
@@ -790,57 +823,57 @@ implicit none
       xlim00=xk00+(4.d0/3.d0)*xm00
       xb1mg00=brgi00*mg
       if(xb1mg00.gt.xlim00) then
-!        une deformation rgi est favorable au critere de traction
+!        une deformation rgi est favorable au critere de traction  
          valr(1) = xb1mg00
          valr(2) = xlim00
          call utmess('E', 'COMPOR3_25', nr=2, valr=valr)
-         ierr1=1
-         go to 999
-      end if
-!     temperature de reference des parametres de fluage (celsius)
-      tetar=xmat(nbelas3d+33)
-!     temperature seuil pour l endo thermique (celsisu)
-      tetas=xmat(nbelas3d+34)
+         ierr1=1     
+         go to 999 
+      end if 
+!     temperature de reference des parametres de fluage (celsius)      
+      tetar=xmat(nbelas3d+33)       
+!     temperature seuil pour l endo thermique (celsisu)      
+      tetas=xmat(nbelas3d+34) 
 !     endommagement maximum par fluage
       dfmx=xmat(nbelas3d+35)
-!     tempas caracterisqtique de la rgi à tref
+!     tempas caracterisqtique de la rgi à tref      
       taar=xmat(nbelas3d+36)
 !     nrj d'activation de la rgi
       nrjg=xmat(nbelas3d+37)
 !     seuil de saturation minimal pour avoir la rgi
-      srsrag=xmat(nbelas3d+38)
-!     temperature de reference des parametres de RAG (celsius)
-      trag=xmat(nbelas3d+39)
+      srsrag=xmat(nbelas3d+38) 
+!     temperature de reference des parametres de RAG (celsius)  
+      trag=xmat(nbelas3d+39)    
 !     dimension 3 en 2D
       dim3=xmat(nbelas3d+40)
-!     temps cracteristique pour la def
+!     temps cracteristique pour la def      
       tdef=xmat(nbelas3d+41)
 !     energie d activation de precipitation de la def
       nrjp=xmat(nbelas3d+42)
 !     seuil de saturation pour declancher la def
       srsdef=xmat(nbelas3d+43)
-!     quantite maximale de def pouvant etre realise
+!     quantite maximale de def pouvant etre realise      
       vdef00=xmat(nbelas3d+44)
 !     teneur en alcalin pour la def
       cna=xmat(nbelas3d+45)
-!     rapport molaire S03 / Al2O3 du ciment
-      ssad=xmat(nbelas3d+46)
-!     concentration caracteristique pour les lois de couplage de la def
+!     rapport molaire S03 / Al2O3 du ciment      
+      ssad=xmat(nbelas3d+46) 
+!     concentration caracteristique pour les lois de couplage de la def      
       cnak=xmat(nbelas3d+47)
-!     concetration en alcalin de blocage de la def
+!     concetration en alcalin de blocage de la def      
       cnab=xmat(nbelas3d+48)
-!     exposant de la loi de couplage temperature de dissolution alcalins
+!     exposant de la loi de couplage temperature de dissolution alcalins      
       exnd=xmat(nbelas3d+49)
-!     exposant de la loi de couplage precipitation def alcalins
+!     exposant de la loi de couplage precipitation def alcalins     
       exmd=xmat(nbelas3d+50)
 !     temperature de reference pour la dissolution de la def
       ttdd=xmat(nbelas3d+51)
 !     temps caracteristique pour la dissolution de l ettringite primaire
-      tdid=xmat(nbelas3d+52)
+      tdid=xmat(nbelas3d+52) 
 !     temps caracteristique pour la fixation des aluminiums en temperature
       tfid=xmat(nbelas3d+53)
 !     energie d activation des processus de dissolution des phases primaires
-      nrjd=xmat(nbelas3d+54)
+      nrjd=xmat(nbelas3d+54) 
 !     temperature de reference pour la precipitation de la def
       ttrd=xmat(nbelas3d+55)
 !     température seuil de fixation des alus en HG (RSI)
@@ -849,39 +882,132 @@ implicit none
 !       si ept > Rt/E
         ept00=dmax1(rt00/young00,ept00)
 
-!***********************************************************************
-!     indicateur de premier passage pour hydracomp3d
-      if (abs(var0(64)-1.d0).ge.r8prem()) then
-         ppas=.true.
-      else
-         ppas=.false.
-      end if
 
-!***********************************************************************
+
+!     ******************************************************************      
+        
+!     nombre de renforts anisotropes reparties (min 0, max 6)
+      nrenf00=int(max (xmat(nbelas3d+nvarbe+1),0.) )   
+
+!     ********** récupérer ici les NBSUPP3D paramètres rajoutés ********* 
+
+!     ********** récuperation des paramètres des renforts répartis ******
+    
+!      print*,'fluendo3d : nbre de renforts repartis:',nrenf00     
+      if( nrenf00.gt.0) then
+         if(nrenf00.gt.nbrenf) then
+!           nre maxi de renforts : NBRENF
+!           nbre de parametres par renforts : nbparr         
+            print*,'Nbre de renforts repartie imprevu ds rgi_beton_ba'           
+            print*,'Nombre de renforts souhaitable:',nrenf00
+            ierr1=1
+            go to 999
+         end if            
+         do i=1,nrenf00  
+
+!            taux de renforts élastoplastiques dans 3 directions 
+             rhor(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+1)
+!            diamètre équivalent des renforts
+             deqr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+2)              
+!            module d Young des renforts passifs
+             yor(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+3) 
+!            limite élastique des renforts
+             syr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+4)
+!            cisaillement maxi renfort matrice
+             taur(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+5)
+!            direction projetée axe base fixe 1             
+             vecr(i,1)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+6)
+!            direction projetée axe base fixe 1             
+             vecr(i,2)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+7)
+!            direction projetée axe base fixe 1             
+             vecr(i,3)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+8)
+
+!            vérif / normalisation vecteur direction             
+             vnorm=vecr(i,1)**2+vecr(i,2)**2+vecr(i,3)**2
+             vnorm=sqrt(vnorm)
+!             print*,'Vec1',vecr(4,1),'Vec2',vecr(4,2),'Vec3',vecr(4,3)         
+             if(vnorm.eq.0.) then
+!                il manque la direction du renfort             
+                 print*,'Donner la direction du renfort:', i
+                 ierr1=1
+                 go to 999
+             else if (vnorm.ne.1.) then
+!                normalisation du vecteur direction             
+                 do j=1,3
+                      vecr(i,j)=vecr(i,j)/vnorm
+                 end do
+             end if 
+!             do j=1,3
+!             print*,'fluendo3d verc(',i,j,')=',vecr(i,j) 
+!             end do 
+!            module d ecrouissage cinematique des armatures
+             hplr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+9)
+!            temps caracteristique de fluage/relaxation             
+             tor(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+10)
+!            deformation caracteristique de fluage relaxation             
+             ekr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+11)
+!            contrainte caracteristique de la loi de relaxation/ fluage             
+             skr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+12)
+!            energie d'activation de reference pour la relaxation             
+             ATRR(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+13)
+!            coeff de couplage thermo-mecanique pour la relaxation             
+             gamr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+14)
+!            coeff de non linearite mecanique de la relaxation             
+             khir(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+15)
+!            precontrainte imposee             
+             sprec(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+16)
+!            precontrainte fin de pas             
+             spref(i)=sprec(i)             
+!            temperature de reference armature
+             ttaref(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+17) 
+!            exposant de loi d'activation thermique
+             xnr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+18)
+!            taux de chargement à partir duquel l activation therm dépend du chargement
+             xmuthr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+19)
+!            temps caractéristique de kelvin pour les renforts             
+             tokr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+20)
+!            rapport Ekelvin/Eélastique pour les renforts             
+             yksyr(i)=xmat(nbelas3d+nvarbe+1+nbparr*(i-1)+21)     
+        
+         end do       
+      end if  
+
 !     chargement de l increment de deformation imposee
-      do i=1,nstrs
-        deps6(i)=deps(i)
-      end do
       if(nstrs.lt.6) then
-        do i=nstrs+1,6
-          deps6(i)=0.d0
-        end do
+         do i=1,nstrs
+             deps6(i)=deps(i)
+             epstf6(i)=epstf(i)             
+         end do
+         do i=nstrs+1,6
+             deps6(i)=0.d0
+             epstf6(i)=0.d0
+         end do
+      else
+         do i=1,6
+             deps6(i)=deps(i)
+             epstf6(i)=epstf(i)
+         end do      
       end if
+!     passage en epsilon
+      do i=4,6
+         deps6(i)=0.5d0*deps6(i)
+         epstf6(i)=0.5d0*epstf6(i) 
+      end do  
 
-!***********************************************************************
+!***********************************************************************      
 
 !     remarque si rt rtg ref et rc dependent de  l ecrouissage
 !     il faut les actualiser en fonction de l ecrouissage avant de
-!     de passer dans hydramat, il faut egalement que dra_dl soit
+!     de passer dans hydramat, il faut egalement que dra_dl soit 
 !     parfaitement compatible avec le recalcul en fonction des deformations
 !     plastiques (ou bien rajouter des vari pour stocker les resistances)
       rc1=rc00
 !     l hydratation n a pas d influence sur la deofrmation plastique
-!     caracteristique de cisaillement
+!     caracteristique de cisaillement      
       rt1=rt00
       ept1=ept00
       ref1=ref00
-
+      
 !     parametres materiau dependant eventuellement de l hydratation et
 !     de l endo de fluage
 !     pour le 1er passage la reduction des resistances par fluage est
@@ -891,56 +1017,56 @@ implicit none
       epsm00,epsm11,xnsat00,xnsat,biotw00,biotw,krgi00,&
       krgi,iso,lambda,mu,rt33,rtg33,ref33,raideur66,souplesse66,xmt,&
       dtiso,err1)
-
+     
 !***********************************************************************
 !      influence de la temperature sur les parametres  materiau et
-!      actualisation de l endo thermique initial
-       dth00=var0(49)
+!      actualisation de l endo thermique initial 
+       dth00=var0(49)    
        call thermat3d(teta1,nrjm,tetas,tetar,DT80,dth00,&
          dth0,CTHp0,CTHv0)
-!      endommagement thermique en fin de pas
+!      endommagement thermique en fin de pas     
        call thermat3d(teta2,nrjm,tetas,tetar,DT80,dth0,&
          dth1,CTHp1,CTHv1)
-       varf(49)=dth1
-
-!***********************************************************************
-!        chargement des variables internes du fluage
+       varf(49)=dth1     
+     
+!***********************************************************************        
+!        chargement des variables internes du fluage 
 !        (etat du squelette solide)
          do i=1,6
             epsk006(i)=var0(i+6)
             epsm006(i)=var0(i+12)
             sig06(i)=var0(i+18)
             sigke06(i)=var0(i+49)
-            dsw06(i)=var0(73+i)
+            dsw06(i)=var0(73+i)             
          end do
-!        dissipation visqueuse
-         phi00=var0(25)
+!        dissipation visqueuse         
+         phi00=var0(25)  
 !        endommagement effectif par fluage
-         dfl00=var0(27)
-!        endommagement thermique
-         dth00=var0(49)
-!        deformation plastique equivallente
+         dfl00=var0(27)        
+!        endommagement thermique         
+         dth00=var0(49)                 
+!        deformation plastique equivallente         
          epleqc00=var0(67)
-!        pression capillaire
+!        pression capillaire          
          bw0=var0(66)
          pw0=var0(56)
-!        pression RGI
+!        pression RGI         
          bg0=var0(65)
-         pg0=var0(61)
-!        tenseurs de deformations plastique et surpression capillaire
-         do j=1,6
+         pg0=var0(61)         
+!        tenseurs de deformations plastique et surpression capillaire        
+         do j=1,6        
               epspt600(j)=var0(29+j)
-              epspg600(j)=var0(35+j)
-              epspc600(j)=var0(41+j)
-              ett600(j)=var0(96+j)
-!             14mai2015
+              epspg600(j)=var0(35+j)             
+              epspc600(j)=var0(41+j)    
+              ett600(j)=var0(96+j) 
+!             14mai2015              
               wplt006(j)=var0(102+j)
-              wpltx006(j)=var0(67+j)
+              wpltx006(j)=var0(67+j)             
          end do
-
-
-!***********************************************************************
-!        influence du degre d hydratation sur les variables internes
+         
+      
+!***********************************************************************         
+!        influence du degre d hydratation sur les variables internes         
          call hydravar3d(hyd0,hydr,hyds,phi00,phi0,dth00,dth0,&
         epleqc00,epleqc0,epspt600,epspt60,&
         epspg600,epspg60,epspc600,epspc60,epsk006,epsk06,&
@@ -953,72 +1079,72 @@ implicit none
              call bwpw3d(mfr,biotw,poro2,vw2,xnsat,mvgn,pw,bw,srw)
              varf(56)=pw
              varf(66)=bw
-!            modif eventuelle des viscosites en fonction de srw
+!            modif eventuelle des viscosites en fonction de srw         
              CWtauk1=1.d0/srw
              varf(57)=CWtauk1
          end if
-
-!***********************************************************************
+         
+!*********************************************************************** 
 !        reevaluation de la deformation compatible avec l etat
-!        de contrainte debut de pas(pour evaluer la sous incrementation)
+!        de contrainte debut de pas(pour evaluer la sous incrementation)  
          call hydracomp3d(we0,we0s,epse06,souplesse66,sig06,deps6,&
                           deps6r,sigke06,epsk06,psik,fl3d)
 
 !***********************************************************************
 !        reevaluation des coeffs de consolidation en debut de pas
          if (fl3d) then
-!           effet de l eau
+!           effet de l eau          
             CWp0=var0(58)/var0(59)
-            CWtauk0=var0(59)/var0(58)
-!           effet l endo de fluage sur le potentiel de fluage
+            CWtauk0=var0(59)/var0(58)                         
+!           effet l endo de fluage sur le potentiel de fluage           
             call dflufin3d(sig06,bw0,pw0,bg0,pg0,dsw06,delta,rc,&
                            xflu,dfin0,CMp0,dfmx)
-!           effet de la temperature sur le potentiel
+!           effet de la temperature sur le potentiel         
             call conso3d(epsm11,epser,ccmin0,ccmax0,epsm06,&
                          epse06,cc03,vcc33,vcc33t,CWp0,CMp0,CthP0,Cthv0)
          end if
 
-!***********************************************************************
+!***********************************************************************     
 !       determination de la subdivision eventuelle du pas de temps
-        if (fl3d) then
+        if (fl3d) then 
          dtmaxi=dt
          do i=1,6
-!            extremes de epsk
+!            extremes de epsk         
              epsklim1=epse06(i)/psik
              epsklim2=(epse06(i)+deps6r(i))/psik
-!            valeur maximale possible de l increment de deformation de kelvin
+!            valeur maximale possible de l increment de deformation de kelvin            
              if(dabs(epsklim1).gt.dabs(epsklim2))  then
                  epsklim=epsklim1
              else
                  epsklim=epsklim2
              end if
-!            cas ou epsklim est faible
+!            cas ou epsklim est faible             
              if(epsklim.gt. 1.d-6) then
                  denom=dabs(1.d0-epsk06(i)/epsklim)
              else if (epsklim.lt. -1.d-6) then
                  denom=dabs(1.d0-epsk06(i)/epsklim)
-             else
+             else 
                  denom=dabs(1.d0-epsk06(i)/1.d-6)
              end if
-!            comparaison avec la valeur permettant de franchir dt en 1/heta pas
+!            comparaison avec la valeur permettant de franchir dt en 1/heta pas 
              cwtaukm=(CWtauk0+cwtauk1)/2.d0
-             cthvm=(cthv0+cthv1)/2.d0
+             cthvm=(cthv0+cthv1)/2.d0             
              if(abs(dt).ge.r8prem()) then
                  denomin=heta*tauk00*CWtaukm/CTHVm/dt
              else
                  denomin=1.d0
              end if
-!            comparaison avec les autres composantes de deformation
+!            comparaison avec les autres composantes de deformation             
              if(denom.le.denomin) then
                 denom=denomin
              end if
              dtmaxik=tauk00*CWtaukm/CTHVm/denom
-!            cas de la deformation de maxwell
+!            cas de la deformation de maxwell             
              dtmaxim=heta*(taum00*ccmin0)
-!            choix entre condition maxwell et kelvin
+!            choix entre condition maxwell et kelvin             
              dtmaxi=dmin1(dtmaxi,dtmaxim,dtmaxik)
         end do
-!       *** subdivision du pas si necessaire  **************************
+!       *** subdivision du pas si necessaire  **************************      
         if (dtmaxi.lt.dt) then
             xpas1=dt/dtmaxi
             npas1=int(xpas1)+1
@@ -1029,30 +1155,30 @@ implicit none
             npas1=1
         end if
        else
-!        pas de fluage
+!        pas de fluage       
          npas1=1
        end if
-!      coeff de reduction de l increment
+!      coeff de reduction de l increment        
        reduc1=1.d0/dble(npas1)
-!      reduction des pas d hydratation
+!      reduction des pas d hydratation        
        dhydr=reduc1*(hydr-hyd0)
-!      pas de temps reduit
+!      pas de temps reduit        
        dt1=dt*reduc1
 !      increment de temperature reduit
        dteta=(teta2-teta1)*reduc1
-!      initialisation de la temperature debut de pas
+!      initialisation de la temperature debut de pas        
        teta=teta1
 !      increment de volume d eau reduit
        vw1=var0(58)
-       dvw=(vw2-vw1)*reduc1
+       dvw=(vw2-vw1)*reduc1    
 !      increment de poro capillaire reduite
        poro1=var0(59)
-       dporo=(poro2-poro1)*reduc1
+       dporo=(poro2-poro1)*reduc1  
 !      increment des potentiels de rgi
        vrgi1=var0(60)
-       dvrgi=(vrgi2-vrgi1)*reduc1
+       dvrgi=(vrgi2-vrgi1)*reduc1         
 !      increments de deformations reduits, on reduit deps6 et non deps6r
-!      car hydracomp est reapplique plus bas
+!      car hydracomp est reapplique plus bas        
        if(npas1.ne.1) then
             do i=1,6
                  deps6r(i)=reduc1*deps6(i)
@@ -1063,36 +1189,36 @@ implicit none
             end do
        end if
 
-!***********************************************************************
-!***********************************************************************
+!***********************************************************************        
+!*********************************************************************** 
 !       debut du chargement sous-discretise sur le pas de temps
 !***********************************************************************
 !***********************************************************************
         do nt=1,npas1
-!        chargement des variables internes
+!        chargement des variables internes          
          do i=1,6
             epsk006(i)=var0(i+6)
             epsm006(i)=var0(i+12)
             sig06(i)=var0(i+18)
             sigke06(i)=var0(i+49)
-            dsw06(i)=var0(73+i)
+            dsw06(i)=var0(73+i) 
          end do
-!        pression capillaire
+!        pression capillaire          
          bw0=var0(66)
          pw0=var0(56)
-!        pression RGI
+!        pression RGI         
          bg0=var0(65)
-         pg0=var0(61)
+         pg0=var0(61)         
 !        dissipation visqueuse
          phi00=var0(25)
 !        recuperation de l endo thermique
          dth00=var0(49)
-!        actualisation du degre d hydratation
-         hyd0=var0(48)
-         hydr=hyd0+dhydr
+!        actualisation du degre d hydratation         
+         hyd0=var0(48) 
+         hydr=hyd0+dhydr        
          varf(48)=hydr
 !        actualisation de la temperature
-         teta=teta+dteta
+         teta=teta+dteta 
 !        actualisation volume deau capillaire
          vw=var0(58)
          vw=vw+dvw
@@ -1100,7 +1226,7 @@ implicit none
 !        actualisation de la porosite capillaire
          poro=var0(59)
          poro=poro+dporo
-         varf(59)=poro
+         varf(59)=poro          
 !        actualisation du volume pour les rgi
          vrgi00=var0(60)
          vrgi00=vrgi00+dvrgi
@@ -1108,31 +1234,31 @@ implicit none
 !        recuperation de la deformation plastique equivalente de cisaillement
          epleqc00=var0(67)
 !        recuperation de la deformation maximale de traction
-         do j=1,6
+         do j=1,6         
           epspt600(j)=var0(29+j)
-          epspg600(j)=var0(35+j)
-          epspc600(j)=var0(41+j)
-          ett600(j)=var0(96+j)
+          epspg600(j)=var0(35+j)             
+          epspc600(j)=var0(41+j) 
+          ett600(j)=var0(96+j)  
           wplt006(j)=var0(102+j)
-          wpltx006(j)=var0(67+j)
+          wpltx006(j)=var0(67+j)           
          end do
 !        recuperation de l endommagement par fluage
          dfl00=var0(27)
 !        recuperation de l endommagement thermique
-         dth00=var0(49)
+         dth00=var0(49)         
 
-!        prise en compte  hydratation intermediaire si sous-increment
+!        prise en compte  hydratation intermediaire si sous-increment                
          call hydravar3d(hyd0,hydr,hyds,phi00,phi0,dth00,dth0,&
         epleqc00,epleqc0,epspt600,epspt60,&
         epspg600,epspg60,epspc600,epspc60,epsk006,epsk06,&
         epsm006,epsm06,dfl00,dfl0,ett600,ett60,wplt006,wplt06,&
         wpltx006,wpltx06)
-
-!        stockage de la valeur de la deformation plastique cumulee
+     
+!        stockage de la valeur de la deformation plastique cumulee 
 !        modifiee par l hydratation pour mise a jour incrementale
          epleqc01=epleqc0
 !        effet de l endommagement de fluage et de l'hydratation sur les
-!        parametres materiau
+!        parametres materiau         
          call hydramat3d(hyd0,hydr,hyds,young00,young,nu00,nu,rt1,&
         rt,ref1,ref,rc1,rc,delta00,delta,beta00,beta,gft00,&
         gft,ept1,ept,pglim,epsm00,epsm11,xnsat00,xnsat,biotw00,biotw,&
@@ -1148,60 +1274,60 @@ implicit none
          if (fl3d) then
              call bwpw3d(mfr,biotw,poro,vw,xnsat,mvgn,pw,bw,srw)
              varf(56)=pw
-             varf(66)=bw
+             varf(66)=bw         
 !        reevaluation des coeffs de consolidation apres increment hydra
-!        effet de l eau sur le potentiel de fluage
-             Cwp=Srw
+!        effet de l eau sur le potentiel de fluage         
+             Cwp=Srw           
              CWtauk=1.d0/srw
-             varf(57)=CWtauk
-
-!        Modification eventuelle de la viscosite en fonction de Srw
+             varf(57)=CWtauk         
+         
+!        Modification eventuelle de la viscosite en fonction de Srw         
              tauk1=tauk00*CWtauk/CTHV
-
+         
 !        la modif de la viscosite de Maxwell est comprise dans le coeff
-!        de consolidation (cf. conso3d)
-             taum1=taum00
+!        de consolidation (cf. conso3d)         
+             taum1=taum00      
          end if
 
 !        compatibilite des anciennes contraintes avec nouveau materiau
-!        deduction de la deformation de solidification de l increment
+!        deduction de la deformation de solidification de l increment     
          call hydracomp3d(we0,we0s,epse06,souplesse66,sig06,deps6r,&
                           deps6r2,sigke06,epsk06,psik,fl3d)
 
-
+       
 !        coeff theta methode pour tir visco elastique
-         theta1=theta
+         theta1=theta 
 !***********************************************************************
 !        tir visco elastique
 !***********************************************************************
 
          if(fl3d) then
-
-!            effet du chargement sur le potentiel de fluage
+         
+!            effet du chargement sur le potentiel de fluage           
              call dflufin3d(sig06,bw0,pw0,bg0,pg0,dsw06,delta,rc,&
-                            xflu,dfin0,CMp0,dfmx)
-
-!            actualisation coeffs de consolidation
+                            xflu,dfin0,CMp0,dfmx)      
+             
+!            actualisation coeffs de consolidation             
              call conso3d(epsm11,epser,ccmin0,ccmax0,epsm06,&
-                          epse06,cc03,vcc33,vcc33t,CWp,CMp0,CthP,Cthv)
-
+                          epse06,cc03,vcc33,vcc33t,CWp,CMp0,CthP,Cthv) 
+     
 !            prise en compte de la deformation thermique transitoire
              do i=1,6
                varf(96+i)=ett61(i)
                deps6r3(i)=deps6r2(i)-depstt6(i)
              end do
-
-!            construction des matrices de couplage ds base fixe
+     
+!            construction des matrices de couplage ds base fixe         
              call matfluag3d(epse06,epsk06,sig06,&
             psik,tauk1,taum1,&
             deps6r2,dt1,theta1,kveve66,kvem66,kmve66,&
             kmm66,bve6,bm6,deltam,avean,&
             cc03,vcc33,vcc33t,vref33,vref33t)
-
-!            assemblage des matrices de couplage de fluage ds base fixe
+     
+!            assemblage des matrices de couplage de fluage ds base fixe     
              call couplagf3d(A,B,ngf,kveve66,kmm66,&
                              kmve66,kvem66,bve6,bm6)
-
+      
 !            resolution du tir visco elastique
              call gauss3d(12,A,X,B,ngf,errgauss,ipzero)
              if(errgauss.eq.1) then
@@ -1228,28 +1354,28 @@ implicit none
              do i=1,6
                varf(96+i)=ett61(i)
                deps6r3(i)=deps6r2(i)-depstt6(i)
-             end do
-
+             end do    
+    
 !           tir elastique
             x(:)=0.d0
          end if
-
+      
 !        recuperation des increments et affectation
          do i=1,6
-!           increment deformation kelvin
+!           increment deformation kelvin         
             depsk6(i)=x(i)
-            epsk16(i)=epsk06(i)+depsk6(i)
-!           ipla deformation maxwell
+            epsk16(i)=epsk06(i)+depsk6(i) 
+!           ipla deformation maxwell            
             depsm6(i)=x(i+6)
             epsm16(i)=epsm06(i)+depsm6(i)
-!           increment deformation elastique
+!           increment deformation elastique            
             depse6(i)=deps6r3(i)-depsm6(i)-depsk6(i)
             epse16(i)=epse06(i)+depse6(i)
          end do
-
+         
 !        etat du materiau apres tir visco elastique
          phi1=phi0
-         we1=0.d0
+         we1=0.d0 
          do i=1,6
              sig16(i)=sig06(i)
              sigke16(i)=sigke06(i)
@@ -1265,7 +1391,7 @@ implicit none
                  logic1=.false.
              end if
              phi1=phi1+dphi
-!            actualisation du potentiel elastique
+!            actualisation du potentiel elastique             
              we1=we1+0.5d0*(sig16(i)*epse16(i))
         end do
 
@@ -1273,8 +1399,8 @@ implicit none
         treps=var0(28)
         do i=1,3
            treps=treps+deps6r(i)
-        end do
-        varf(28)=treps
+        end do        
+        varf(28)=treps 
 
 !       chargement des deformations plastiques du pas precedent
 !       actualisee par l hydratation
@@ -1282,47 +1408,47 @@ implicit none
 !         traction
           epspt6(j)=epspt60(j)
 !         rgi
-          epspg6(j)=epspg60(j)
-!         compression
-          epspc6(j)=epspc60(j)
-!         chargement des ouvertures de fissures du pas precedent
+          epspg6(j)=epspg60(j)   
+!         compression           
+          epspc6(j)=epspc60(j) 
+!         chargement des ouvertures de fissures du pas precedent 
           wplt6(j)=wplt06(j)
 !         chargement des ouvertures maxi de fissure          
           wpltx6(j)=wpltx06(j)
-!         fin14mai2015:
-        end do
-!       chargement de la def equivalente actualisee par l hydratation
+!         fin14mai2015:          
+        end do        
+!       chargement de la def equivalente actualisee par l hydratation        
         epleqc=epleqc0
-
-!       recuperation de la variation volumique due a la rgi non
+             
+!       recuperation de la variation volumique due a la rgi non 
 !       actualisee par l hydratation
         trepspg=var0(29)
-
+        
 !***********************************************************************
 !       verification des criteres de plasticite et ecoulements
 !***********************************************************************
-
+           
 !       initialisation du compteur sur la boucle de coherence plastique
         ipla=0
-!       initialisation du compteur sur la boucle de retour radial
-        irr=0
+!       initialisation du compteur sur la boucle de retour radial        
+        irr=0 
 !       initialisation indicateur reduction nbre de criteres actifs
-        indic2=.false.
-
-!       *** actualisation du compteur de boucle elasto plastique *******
-
+        indic2=.false.  
+        
+!       *** actualisation du compteur de boucle elasto plastique *******        
+  
 10 continue
-   if(ipla.lt.4) then
+   if(ipla.lt.1000) then
    ipla=ipla+1
 !       compteur reduction du systeme de couplage
         ipla2=0
-!       nombre de lignes a supprimer dans le couplage
+!       nombre de lignes a supprimer dans le couplage        
         nsupr=0
 !       nbr itermax atteint
-        if(ipla.gt.200) then
+        if(ipla.gt.3) then
             vali(1) = ipla
             call utmess('A', 'COMPOR3_27', ni=1, vali=vali)
-        end if
+        end if  
 !       reevaluation de la pression capillaire due a l eau si plasticite
         if (fl3d) then
             call bwpw3d(mfr,biotw,poro,vw,xnsat,mvgn,pw,bw,srw)
@@ -1330,7 +1456,7 @@ implicit none
             varf(66)=bw
         end if
 
-!       reevaluation de la pression de rgi si plasticite
+!       reevaluation de la pression de rgi si plasticite 
 !       vrgi volume effectivement formee pour ce pas
         aar0=var0(62)
         def0=var0(63)
@@ -1342,14 +1468,14 @@ implicit none
         St=var0(102)
         vrgi0=var0(60)
         pgmax=var0(114)
-!       l avancement est actualisee dans bgpg
+!       l avancement est actualisee dans bgpg        
         call bgpg3d(ppas,bg,pg,mg,vrgi,treps,trepspg,epspt6,epspc6,&
         phivg,pglim,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
         srw,srsrag,teta,dt1,vrag00,aar1,tdef,nrjd,def0,srsdef,vdef00,&
         def1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,cnab,cnak,ssad,&
         At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf,alat,&
         young00,nu00,kgel,pgmax)
-!       stockage avancement et pression
+!       stockage avancement et pression     
         varf(62)=aar1
         varf(63)=def1
         varf(60)=vrgi
@@ -1361,55 +1487,55 @@ implicit none
         varf(100)=M2f
         varf(101)=Atf
         varf(102)=Stf
-        varf(114)=pgmax 
+        varf(114)=pgmax
 
 !       prise en compte de l'amplification des depressions capillaires
 !       sous charge (l effet du chargement sur la pression capillaire
-!       est traité explicitement via sig0)
+!       est traité explicitement via sig0) 
         do i=1,6
             dsw6(i)=var0(73+i)
-        end do
+        end do       
         bw0=var0(66)
         pw0=var0(56)
         call fludes3d(bw0,pw0,bw,pw,sfld,sig0,dsw6,nstrs)
         do i=1,6
             varf(73+i)=dsw6(i)
-        end do
-
+        end do        
+          
 !       possibilite ecoulement plastique couplé au fluage
 !       les criteres de Rankine etant definis dans la base principale
 !       des contraintes, on se place dans cette base pour la verification
 !       des criteres et le retour radial le cas echeant
 
 !       diagonalisation du vecteur des contraintes si 1er passage dans criter3d (irr=0)
-        call x6x33(sig16,sig133)
+        call x6x33(sig16,sig133)         
 !       call valp3d(sig133,sig13,vsig133)
         call b3d_valp33(sig133,sig13,vsig133)
-!       construction matrice de passage inverse
-        call transpos1(vsig133t,vsig133,3)
+!       construction matrice de passage inverse         
+        call transpos1(vsig133t,vsig133,3) 
 
 !       si irr.ne.0 on est dans la boucle de sous iteration radiale
-!       on garde la base du tir elastique pour le retour
-!       notation pseudo vecteur pour ecoulement plastique
+!       on garde la base du tir elastique pour le retour        
+!       notation pseudo vecteur pour ecoulement plastique 
 !       en base principale (en raison des criteres de rankine)
         call chrep6(sig16,vsig133,.false._1,sig16p)
 
 !       passage de la loi de comportement dans la base principale
 !       des contraintes
-        if(iso) then
+        if(iso) then 
 !          cas isotrope : rien a faire
            do k=1,6
              do l=1,6
                 raideur66p(k,l)=raideur66(k,l)
                 souplesse66p(k,l)=souplesse66(k,l)
              end do
-           end do
+           end do 
         else
 !          cas elasticite anisotrope : passge de la loi de comportement
-!          en base principale des contraintes necessaire
-           ierr1=1
+!          en base principale des contraintes necessaire 
+           ierr1=1       
            call utmess('F', 'COMPOR3_28')
-        end if
+        end if 
 
 !       passage des resistances et contraintes de refermeture
 !       dans la base principale des contraintes
@@ -1427,21 +1553,21 @@ implicit none
            call utmess('E', 'COMPOR3_29')
           read*
           ierr1=1
-        end if
-
+        end if 
+        
 !       passage des deformations plastiques de traction
 !       dans la base principale du tir visco elastique
         call chrep6(epspt6,vsig133,.true._1,epspt6p)
 !       passage des deformations plastiques de gel
         call chrep6(epspg6,vsig133,.true._1,epspg6p)
 !       passage des deformations plastiques de cisaillement
-        call chrep6(epspc6,vsig133,.true._1,epspc6p)
+        call chrep6(epspc6,vsig133,.true._1,epspc6p)       
 !       initialisation des increments de deformations
         do j=1,6
              depspt6p(j)=0.d0
              depspg6p(j)=0.d0
-             depspc6p(j)=0.d0
-        end do
+             depspc6p(j)=0.d0 
+        end do  
 
 !       evaluation des criteres actifs, des derivees et des directions
 !       d ecoulement dans la base principale des contraintes
@@ -1451,17 +1577,17 @@ implicit none
        depleqc_dl,irr,fglim,krgi,&
        hpla,ekdc,hplg,dpfa_dr,tauc,epeqpc,hpev)   
 !       stockage taux de cisaillement
-!         varf(109)=tauc
+!         varf(109)=tauc     
 
 !       reinitalisation de l indicateur de reduction du nbr de critere
         indic2=.false.
-
-!       detection d erreur dans les criteres
+        
+!       detection d erreur dans les criteres     
         if(err1.eq.1) then
              ierr1=1
              go to 999
         end if
-
+        
 
 !       ****************************************************************
 !       controle de la boucle de consitance visco elasto plastique
@@ -1471,67 +1597,67 @@ implicit none
 !       un critere est actifs
 
         if(na.ne.0) then
-
+        
 !         *** ecoulement plastique *************************************
 
-!         reconstruction de la matrice de couplage fluage->fluage
-!         dans la base principale actuelle
-          if (fl3d) then
-             call chrep6(epse16,vsig133,.true._1,epse06p)
+!         reconstruction de la matrice de couplage fluage->fluage 
+!         dans la base principale actuelle 
+          if (fl3d) then 
+             call chrep6(epse16,vsig133,.true._1,epse06p)          
              call chrep6(epsk16,vsig133,.true._1,epsk06p)
              call chrep6(epsm16,vsig133,.true._1,epsm06p)
           end if
-
-!         pas d increments de deformation pendant la boucle de consistance
+          
+!         pas d increments de deformation pendant la boucle de consistance          
           do i=1,6
             deps6r3(i)=0.d0
           end do
-
+          
 !         ****** couplages ds nouvelle base ****************************
 
-          theta1=theta
+          theta1=theta   
           if (fl3d) then
 !            actualisation de la matrice de couplage visco plastique
 
 !            effet du chargement sur le potentiel de fluage
 !            la surpression hydrique est celle de debit de pas
-!            si elle utilise la contrainte totale convergee
+!            si elle utilise la contrainte totale convergee           
              call dflufin3d(sig16,bw,pw,bg,pg,dsw6,delta,rc,&
-                            xflu,dfin1,CMp1,dfmx)
-
-!            actualisation coeffs de consolidation
+                            xflu,dfin1,CMp1,dfmx)          
+             
+!            actualisation coeffs de consolidation             
              call conso3d(epsm11,epser,ccmin1,ccmax1,epsm16,&
                           epse16,cc13,vcc33,vcc33t,CWp,CMp1,CthP,Cthv)
-
+     
              call matfluag3d(epse06p,epsk06p,sig16p,&
             psik,tauk1,taum1,deps6r3,&
             dt1,theta1,kveve66,kvem66,kmve66,kmm66,bve6,bm6,deltam,&
             avean,cc13,vcc33,vcc33t,vsig133,vsig133t)
-
+     
 !            mise a zero des seconds membres de fluage pour le retour radial
              do i=1,6
                  bve6(i)=0.d0
                  bm6(i)=0.d0
              end do
-
-!            reinitialisation et reassembalge de
+             
+!            reinitialisation et reassembalge de 
 !            la matrice de couplage : a
 
-!            ****  cas du couplage fluage fluage ***********************
-
+!            ****  cas du couplage fluage fluage *********************** 
+        
              call couplagf3d(A,B,ngf,kveve66,kmm66,&
                              kmve66,kvem66,bve6,bm6)
-
+     
 !            ************* couplage avec la plasticite *****************
-
-!            complement de la matrice de couplage pour la plasticite
+     
+!            complement de la matrice de couplage pour la plasticite     
 !            autres couplages : plasticite -> fluage
-             do i=1,6
+             do i=1,6 
                  do j=1,na
-!                   couplage plasticite ->  kelvin
+!                   couplage plasticite ->  kelvin           
                     a(i,12+j)=avean*dgfa_ds(j,i)
 !                   couplage plasticite -> maxwell
-!                   attention kmve66 doit être dans la bonne base...
+!                   attention kmve66 doit être dans la bonne base... 
                     a(i+6,12+j)=dgfa_ds(j,i)*(deltam+kmve66(i,i))
                     do k=1,6
                       if (k.ne.i) then
@@ -1541,27 +1667,27 @@ implicit none
                  end do
 !                mise a zero des seconds membre de fluage (deja fait normalement)
                  b(i)=0.d0
-                 b(i+6)=0.d0
+                 b(i+6)=0.d0            
              end do
-
+             
 !            **** couplage  fluage -> plasticite ***********************
 
-             do i=1,na
+             do i=1,na          
                 do j=1,6
 !                couplage kelvin -> plasticite
                  a(12+i,j)=0.d0
                  do k=1,6
-                     a(12+i,j)=a(12+i,j)-dpfa_ds(i,k)*raideur66p(k,j)
+                     a(12+i,j)=a(12+i,j)-dpfa_ds(i,k)*raideur66p(k,j)                
                  end do
 !                ici les deformation anelastique sont du fluage donc
-!                on prend dpg_depsa6 du cas general
-                 a(12+i,j)=a(12+i,j)+dpfa_dpg(i)*dpg_depsa6(j)
+!                on prend dpg_depsa6 du cas general                
+                 a(12+i,j)=a(12+i,j)+dpfa_dpg(i)*dpg_depsa6(j)              
 !                couplage maxwell -> plasticite
-                 a(12+i,j+6)=a(12+i,j)
+                 a(12+i,j+6)=a(12+i,j)              
                 end do
              end do
           end if
-
+          
 !         *** couplage plasticite -> plasticite ************************
 
           if(fl3d) then
@@ -1571,15 +1697,15 @@ implicit none
           end if
           do i=1,na
             do j=1,na
-                som2=0.d0
+                som2=0.d0                
                 do k=1,6
-!                   influence des autres deformations plastiques
+!                   influence des autres deformations plastiques                
                     som1=0.d0
                     do l=1,6
                       som1=som1-raideur66p(k,l)*dgfa_ds(j,l)
                     end do
                     som2=som2+dpfa_ds(i,k)*som1
-!                   influence de la pression intra poreuse
+!                   influence de la pression intra poreuse                    
                     if((ig(j).ge.7).and.(ig(j).le.9)) then
                       som2=som2+dpfa_dpg(i)*dpg_depspg6(k)*dgfa_ds(j,k)
                     else
@@ -1588,17 +1714,17 @@ implicit none
                 end do
                 a(nf0+i,nf0+j)=som2
                 if(i.eq.j) then
-!                  prise en compte de l ecrouissage (dra_dl derivve de
+!                  prise en compte de l ecrouissage (dra_dl derivve de 
 !                  la resistance par rapport au multiplicateur plastique)
-                   a(nf0+i,nf0+j)=a(nf0+i,nf0+j)+dpfa_dr(i)*dra_dl(i)
-                end if
-            end do
+                   a(nf0+i,nf0+j)=a(nf0+i,nf0+j)+dpfa_dr(i)*dra_dl(i)                    
+                end if                   
+            end do              
           end do
 !         second membre de la plasticite : oppose des criteres actifs
           do i=1,na
             b(nf0+i)=-fa(i)
           end do
-
+          
 !         *** resolution du retour radial ******************************
 
 20        continue
@@ -1608,25 +1734,25 @@ implicit none
               ierr1=1
               go to 999
           end if
-
-!         **** verif positivite des multiplicateurs plastiques *********
+          
+!         **** verif positivite des multiplicateurs plastiques *********     
           if(na.ne.0) then
             testtpi=.true.
-!           initialisation du compteur de nbre de lignes a supprimer
-            nsupr=0
+!           initialisation du compteur de nbre de lignes a supprimer            
+            nsupr=0             
             do i=(nf0+1),(nf0+na)
-!             test positivite des multiplicateurs
+!             test positivite des multiplicateurs         
               if((x(i).lt.0.d0).and.(irr.eq.0)) then
 !               actualisation des numero de ligne a supprimer
-!               pour la mise a zero des multiplicateurs negatifs
+!               pour la mise a zero des multiplicateurs negatifs                
                 nsupr=nsupr+1
                 supr(nsupr)=i
               end if
             end do
             if(nsupr.gt.0) then
 !             indicateur de reduction matrice de couplage
-              indic2=.true.
-!             compteur reduction
+              indic2=.true.               
+!             compteur reduction              
               ipla2=ipla2+1
               if(ipla2.le.imax) then
                 nared=na
@@ -1636,11 +1762,11 @@ implicit none
 !                 decallage vers le haut des lignes du dessous
                   do j=supr(i),nf0+(nared-1)
                     ig(j-nf0)=ig(j-nf0+1)
-!                   on boucle sur les colonnes
+!                   on boucle sur les colonnes                    
                     do k=1,nf0+nared
                        a(j,k)=a(j+1,k)
                     end do
-!                   pareil au second membre
+!                   pareil au second membre  
                     b(j)=b(j+1)
                   end do
 !                 decalage des colonnes vers la gauche
@@ -1648,21 +1774,21 @@ implicit none
                     do k=1,nf0+(nared-1)
                        a(k,j)=a(k,j+1)
                     end do
-                  end do
+                  end do 
 !                 decalage des derives des fonctions de charge
                   do j=supr(i)-nf0,nf0+(nared-1)-nf0
                     do k=1,6
                        dgfa_ds(j,k)=dgfa_ds(j+1,k)
                     end do
-                  end do
+                  end do                   
 !                 mise a jour de la taille de la matrice
                   nared=nared-1
-!                 mise a jour des numeros de lignes a supprimer
+!                 mise a jour des numeros de lignes a supprimer 
                   do j=i,nsupr
 !                   comme on vient d eliminer une ligne
-!                   les lignes restantes sont remontees de 1
+!                   les lignes restantes sont remontees de 1                  
                     supr(j)=supr(j)-1
-                  end do
+                  end do                 
                 end do
 !               resolution du systeme reduit
                 na=nared
@@ -1673,24 +1799,24 @@ implicit none
                 ierr1=1
                 go to 999
               end if
-            end if
+            end if               
           end if
 
 !         *** mise a jour des variables dependantes de la plasticite ***
-
+          
 !         initialisation de la deformation equivalente de compression
           depleqc=0.d0
 !         bouclage sur les criteres possibles
-          do j=1,3
+          do j=1,3 
              referm3(j)=.false.
-          end do
+          end do  
           do i=1,na
-            do j=1,6
-                if (ig(i).le.6) then
-!                    cas des deformations plastiques de traction
+            do j=1,6              
+                if (ig(i).le.6) then   
+!                    cas des deformations plastiques de traction 
                      depspt6p(j)=depspt6p(j)+x(nf0+i)*dgfa_ds(i,j)
                      if(ig(i).gt.3) then
-!                         indicateur de refermeture active
+!                         indicateur de refermeture active                     
                           referm3(ig(i)-3)=.true.
                      end if
                 else if (ig(i).le.9) then
@@ -1708,16 +1834,16 @@ implicit none
             if(ig(i).eq.10) then
 !                actualisation de la deformation equivalente de compression
                  depleqc=depleqc_dl*x(nf0+i)
-!                si non actif : deja actualise a la valeur init avant la boucle
-            end if
+!                si non actif : deja actualise a la valeur init avant la boucle             
+            end if            
           end do
-
+          
 !         *** limitation des refermetures si necessaire ****************
 !         indicateur d'au moins une refermeture forcée
           limit1=.false.
-!         déformation minimale admissible
+!         déformation minimale admissible          
           epsmin=0.d0
-!         test des refermetures
+!         test des refermetures          
           do j=1,3
              if(((epspt6p(j)+depspt6p(j)).lt.epsmin).and.referm3(j))&
                  then
@@ -1728,13 +1854,13 @@ implicit none
                      depsm6p(i)=0.d0
                      if(i.ne.j) then
                          depspt6p(i)=0.d0
-                     end if
+                     end if                    
                      depspg6p(i)=0.d0
                      depspc6p(i)=0.d0
                  end do
 !                on utilise pas les autres multiplicateurs
-!                car la refermeture a été forcée dans une direction
-                 goto 50
+!                car la refermeture a été forcée dans une direction                
+                 goto 50                 
              end if
           end do
 
@@ -1742,40 +1868,40 @@ implicit none
 !         cas du fluage
           if(fl3d) then
              do i=1,6
-!               increment deformation kelvin
+!               increment deformation kelvin         
                 depsk6p(i)=x(i)
-!               increment deformation maxwell
+!               increment deformation maxwell            
                 depsm6p(i)=x(i+6)
-             end do
+             end do 
           else
              do i=1,6
-!               increment deformation kelvin
+!               increment deformation kelvin         
                 depsk6p(i)=0.d0
-!               increment deformation maxwell
+!               increment deformation maxwell            
                 depsm6p(i)=0.d0
              end do
-          end if
-
+          end if  
+          
 !         *** increment deformation elastique en base principale *******
 50        continue
-          do i=1,6
+          do i=1,6           
             depse6p(i)=-depsm6p(i)-depsk6p(i)&
            -depspt6p(i)-depspg6p(i)-depspc6p(i)
           end do
-
+               
 !         *** retour des increments de deformation dans la base fixe ***
-!         plasticite traction
-          call chrep6(depspt6p,vsig133t,.true._1,depspt6)
-!         elasticite
+!         plasticite traction          
+          call chrep6(depspt6p,vsig133t,.true._1,depspt6) 
+!         elasticite          
           call chrep6(depse6p,vsig133t,.true._1,depse6)
 !         cas des increments remis a zero si refermeture forcee
-          if( .not. limit1) then
-            call chrep6(depsk6p,vsig133t,.true._1,depsk6)
-            call chrep6(depsm6p,vsig133t,.true._1,depsm6)
-            call chrep6(depspg6p,vsig133t,.true._1,depspg6)
+          if( .not. limit1) then 
+            call chrep6(depsk6p,vsig133t,.true._1,depsk6)           
+            call chrep6(depsm6p,vsig133t,.true._1,depsm6)          
+            call chrep6(depspg6p,vsig133t,.true._1,depspg6) 
             call chrep6(depspc6p,vsig133t,.true._1,depspc6)
            else
-!            mise a zero des increments en cas de refermeture forcee
+!            mise a zero des increments en cas de refermeture forcee           
               do i=1,6
                 depsk6(i)=0.d0
                 depsm6(i)=0.d0
@@ -1783,10 +1909,10 @@ implicit none
                 depspc6(i)=0.d0
               end do
 !             actualisation variable ecrouissage isotrope cisaillement
-              depleqc=0.d0
-           end if
+              depleqc=0.d0              
+           end if         
          else
-
+         
 !         pas d ecoulement plastique
           do i=1,6
             depsk6(i)=0.d0
@@ -1796,64 +1922,64 @@ implicit none
             depspg6(i)=0.d0
             depspc6(i)=0.d0
           end do
-
+          
 !         actualisation variable ecrouissage isotrope cisaillement
           depleqc=0.d0
 
-          if(fl3d) then
+          if(fl3d) then          
 !         actualisation endo de fluage
             call dflufin3d(sig16,bw,pw,bg,pg,dsw6,delta,rc,&
-                           xflu,dfin1,CMp1,dfmx)
-
-!         actualisation coeffs de consolidation
+                           xflu,dfin1,CMp1,dfmx)          
+             
+!         actualisation coeffs de consolidation             
             call conso3d(epsm11,epser,ccmin1,ccmax1,epsm16,&
                          epse16,cc13,vcc33,vcc33t,CWp,CMp1,CthP,Cthv)
-          end if
+          end if         
          end if
 
 !        actualisation des deformations (base fixe)
          do i=1,6
 !           pour les visco elastique l increment du tir visco elastique
 !           a deja ete comptabilise avant l ecoulement et une
-!           premiere mise a jour a ete faite
-!           kelvin
+!           premiere mise a jour a ete faite         
+!           kelvin         
             epsk16(i)=epsk16(i)+depsk6(i)
-            varf(i+6)=epsk16(i)
-!           maxwell
+            varf(i+6)=epsk16(i)           
+!           maxwell            
             epsm16(i)=epsm16(i)+depsm6(i)
             varf(i+12)=epsm16(i)
-!           elastique
+!           elastique            
             epse16(i)=epse16(i)+depse6(i)
             varf(i)=epse16(i)
 !           cas des deformations plastiques
 !           traction base fixe
             epspt6(i)=epspt6(i)+depspt6(i)
-            varf(29+i)=epspt6(i)
+            varf(29+i)=epspt6(i)    
 !           gel dans les pores
             epspg6(i)=epspg6(i)+depspg6(i)
             varf(35+i)=epspg6(i)
 !           cisaillement et dilatance
-            epspc6(i)=epspc6(i)+depspc6(i)
-            varf(41+i)=epspc6(i)
-         end do
+            epspc6(i)=epspc6(i)+depspc6(i)            
+            varf(41+i)=epspc6(i)           
+         end do      
 !        *** actualisation deformation equivalente de compression ******
 !        comparaison avec calcul direct par la trace
 !        par l invariant
          depleqc3=0.d0
          do i=1,6
             if (i.le.3) then
-                depleqc3=depleqc3+ depspc6(i)**2
-            else
-!               0.5 car on a des gama dans les depsc
+                depleqc3=depleqc3+ depspc6(i)**2  
+            else   
+!               0.5 car on a des gama dans les depsc            
                 depleqc3=depleqc3+ 0.5d0*(depspc6(i)**2)
             end if
          end do
-         depleqc3=dsqrt(depleqc3*2.d0/3.d0)
-!        actualisation et stockage
-         epleqc=dmax1(epleqc+depleqc3,epleqc01)
+         depleqc3=dsqrt(depleqc3*2.d0/3.d0)         
+!        actualisation et stockage  
+         epleqc=dmax1(epleqc+depleqc3,epleqc01)       
          varf(67)=epleqc
-
-
+        
+        
 
 !        *** actualisation des ouvertures de fissures ******************
          if(end3d) then
@@ -1866,22 +1992,22 @@ implicit none
                wpltx6(j)=0.d0
             end do
          end if
-!        tenseur des ouvertures
-         do j=1,6
+!        tenseur des ouvertures     
+         do j=1,6              
              varf(102+j)=wplt6(j)
              varf(67+j)=wpltx6(j)
          end do
 
 !        Ouverture de fissure maximale Wpl0
          varf(111)=dmax1((varf(103)),(varf(104)),(varf(105)))
-         
+
 !        *** actualisation de la dissipation et de l energie elastique *
-!        pour calcul consolidation debut de pas suivant
+!        pour calcul consolidation debut de pas suivant         
          phi1=phi0
-         we1=0.d0
+         we1=0.d0          
          do i=1,6
 !            pas de remise a l etat initial on repart
-!            du tir visco elastique
+!            du tir visco elastique         
              do j=1,6
                  sig16(i)=sig16(i)+raideur66(i,j)*depse6(j)
                  sigke16(i)=sigke16(i)+raideur66(i,j)*depsk6(j)*psik
@@ -1891,38 +2017,38 @@ implicit none
              dphi=0.5d0*(sig06(i)+sig16(i))*(epsm16(i)-epsm06(i))
              if(dphi.lt.0.) then
                  logic1=.true.
-             else
+             else 
                  logic1=.false.
              end if
              phi1=phi1+dphi
-!            actualisation du potentiel elastique
+!            actualisation du potentiel elastique             
              we1=we1+0.5d0*(sig16(i)*epse16(i))
-        end do
-
+        end do    
+      
 !       *** actualisation variation volumique plastique rgi ************
         trepspg=0.d0
         do i=1,3
            trepspg=trepspg+epspg6(i)
-        end do
+        end do 
 !       actualisation variation volumique totale dans variable interne
-        varf(29)=trepspg
+        varf(29)=trepspg         
 !       actualisation des contraintes effectives (sans bgpg)
         do i=1,6
           varf(i+18)=sig16(i)
           varf(i+49)=sigke16(i)
         end do
-!       dissipation
+!       dissipation        
         varf(25)=phi1
-!       energie elastique
-        varf(26)=we1
-
+!       energie elastique        
+        varf(26)=we1   
+            
 !       *** test de consistance apres ecoulement plastique *************
         if((na.ne.0).or.indic2) then
              if(ipla.le.imax) then
 !                nouvelle sous iteration de consistance plastique
                  goto 10
              else
-!               on vient d atteindre le nbr maxi de sous iteration
+!               on vient d atteindre le nbr maxi de sous iteration          
                 vali(1) = imax
                 vali(2) = ipla
                 vali(3) = ipla2
@@ -1931,30 +2057,30 @@ implicit none
                 go to 999
              end if
         end if
-end if
+end if 
 !       fin de la boucle de consistance visco-elasto-plastique
-!       ****************************************************************
-!       transfert des variables internes pour la sous iteration
-!       temporelle suivante
+!       **************************************************************** 
+!       transfert des variables internes pour la sous iteration 
+!       temporelle suivante 
 !       si le nbre de sous iteration locale le justifie
         if(npas1.gt.1 ) then
              do i=1,nvari
                 var0(i)=varf(i)
              end do
         end if
+        
+       end do 
+!      fin de la boucle de discretisation du pas de temps 
+!*********************************************************************** 
 
-       end do
-!      fin de la boucle de discretisation du pas de temps
-!***********************************************************************
-
-!***********************************************************************
+!***********************************************************************      
 !       reevaluation de la pression de gel en fin de pas pour le calcul
 !       des contraintes totales (effective+rgi)
-        if(ipla.gt.1) then
+        if(ipla.gt.1) then 
 !          la calcul de l avancement de la rgi est inclus dans
-!          le sous programme de calcul de pression
+!          le sous programme de calcul de pression 
 !          vrgi le volume effectif de gel pour le calcul de la pression
-           vrgi0=vrgi
+           vrgi0=vrgi  
            pgmax=var0(114)
 !          dt mis a zero pour forcer la reprise de vrgi0
            call bgpg3d(ppas,bg,pg,mg,vrgi,treps,trepspg,epspt6,epspc6,&
@@ -1963,51 +2089,50 @@ end if
            def1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,cnab,cnak,ssad,&
            At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf,alat,&
            young00,nu00,kgel,pgmax)
-!          stockage avancement rag
+!          stockage avancement rag    
         end if
 !       stockage de la pression RGI
-        varf(61)=pg
+        varf(61)=pg     
         varf(65)=bg
         varf(114)=pgmax
-
+        
 !***********************************************************************
 !       endommagement de fluage
         if(fl3d) then
             dflu0=var0(27)
             call dflueff3d(ccmax1,dflu0,dflu1,dfin1)
         else
-            dflu1=0.d0
-        end if
+            dflu1=0.d0             
+        end if 
         varf(27)=dflu1
-
-
+        
+        
 !***********************************************************************
 !       contraintes dans solide et rgi en fin de pas avec
 !       prise en compte de l endo thermique et de fluage
-        umdt=(1.d0-dth1)*(1.d0-dflu1)
+        umdt=(1.d0-dth1)*(1.d0-dflu1)           
 !       resultante des pressions intraporeuses RGI et Capillaire (depression)
         sigp=-bg*pg-bw*pw
-!       effet sur la contrainte apparente en non sature
+!       effet sur la contrainte apparente en non sature        
         do i=1,6
             if(i.le.3) then
-!               prise en compte de la pression rgi
+!               prise en compte de la pression rgi           
                 sigf6(i)=(sig16(i)+sigp+dsw6(i))*umdt
             else
                 sigf6(i)=(sig16(i)+dsw6(i))*umdt
             end if
         end do
-
-
+               
 !***********************************************************************
 !       prise en compte de l'endommagement mécanique
-        if(end3d) then
+        if(end3d) then 
 !            chargement endo traction pre-pic
-             dtr=var0(96)
+             dtr=var0(96) 
 !            chargement endo localisee pour condition de croissance
              do i=1,3
                 dt3(i)=var0(79+i)
              end do
-!            calcul des endommagements et ouvertures de fissures
+!            calcul des endommagements et ouvertures de fissures   
                   call endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
                  gft,gfr,iso,sigf6,sigf6d,rt33,ref33,&
                  souplesse66,epspg6,eprg00,a,b,x,ipzero,ngf,&
@@ -2016,15 +2141,15 @@ end if
 !            stockage des endommagements de fissuration et ouverture
              varf(96)=dtr
              do i=1,3
-!               endo de traction
+!               endo de traction             
                 varf(79+i)=dt3(i)
-!               endo refermeture
+!               endo refermeture                
                 varf(82+i)=dr3(i)
-!               endo RGI en traction
+!               endo RGI en traction                
                 varf(85+i)=dgt3(i)
-!               endo RGI en compression
+!               endo RGI en compression                
                 varf(88+i)=dgc3(i)
-!               ouverture non visco elastique
+!               ouverture non visco elastique                
                 varf(91+i)=wl3(i)
              end do
 !            endo de traction global
@@ -2033,27 +2158,219 @@ end if
              varf(112)=1.d0-((1.d0-(varf(86)))*(1.d0-(varf(87)))*(1.d0-(varf(88))))
 !            endo de compression de RGI global
              varf(113)=1.d0-((1.d0-(varf(89)))*(1.d0-(varf(90)))*(1.d0-(varf(91))))
-!            endommagement de compression
+!            endommagement de compression             
              varf(95)=dc
-!            erreur de dissipation d'énergie en traction          
-             varf(109)=errgf
+!            erreur de dissipation d'énergie en traction            
+             varf(109)=errgf                
 !            traitement erreur endo
              if (err1.eq.1) then
                  call utmess('E', 'COMPOR3_34')
-                 ierr1=1
-                 go to 999
+                 ierr1=1     
+                 go to 999 
              end if
+!            contraintes totale dans la matrice apres endommagement 
+             do i=1,6
+                 sigmf6(i)=sigf6d(i)
+             end do      
         else
-!           pas d endommagement
+!           pas d endommagement 
             do i=1,6
-                 sigf6d(i)=sigf6(i)
+                 sigmf6(i)=sigf6(i)
             end do
-        end if
+        end if  
+! Contrainte princales du beton
+        call x6x33(sigmf6,sig133)        
+        call b3d_valp33(sig133,sig13,vsig133)
+         varf(161)=MAX(sig13(1),sig13(2),sig13(3))
+         varf(163)=MIN(sig13(1),sig13(2),sig13(3))
+         varf(162)=(0.5*(varf(161)-varf(163)))
 
 !***********************************************************************
+!       calcul des contraintes dans les renforts
+        ! J'enlève le istep dans la ligne de dessous car pas de non local pour le moment
+        if (nrenf00.ne.0) then 
+!.and.((istep.eq.0).or.(istep.eq.2))) then
+!            calcul du taux volumique d armature
+             rhov=0.d0
+             do j=1,nrenf00
+                rhov=rhov+rhor(j)
+             end do
+             if (rhov.gt.1.d0) then
+               print*,'Taux d armature > 1 dans fluendo3d_BA !'
+               ierr1=1
+               go to 999
+             end if
+!            initialisation des tenseurs de contraintes homogeneisee        
+             do j=1,3
+                do k=1,3
+                    sigrm33(j,k)=0.d0
+                    sigrf33(j,k)=0.d0
+                end do
+             end do                          
+!            recuperation du tenseur des deformations finales
+             call x6x33(epstf6,epstf33)
+!            recuperation du tenseur des deformations localisees dans la matrice
+             do i=1,6
+                 epspmf6(i)=epspt6(i)
+             end do
+             call x6x33(epspmf6,epspmf33)
+!            calcul des contraintes axiales dans chaque renfort            
+             do i=1,nrenf00
+                 epsr0(i)=var0(nvaribe+8*(i-1)+1)
+! pas de non local pour le moment donc pas de variable +2
+                 eplr0(i)=var0(nvaribe+8*(i-1)+3)
+                 sigr0(i)=var0(nvaribe+8*(i-1)+4)
+                 eprm0(i)=var0(nvaribe+8*(i-1)+5)
+                 mu_r0(i)=var0(nvaribe+8*(i-1)+6)
+                 eprk0(i)=var0(nvaribe+8*(i-1)+7)
+                 spre0(i)=var0(nvaribe+8*(i-1)+8)
+!                 if(istep.eq.2) then
+!                  recuperation de la deformation finale non locale
+!                   eps_nl(i)=var0(NVARFLU3D+NVARSUP3D+(i-1)*NVARENF3D+2)
+!                  sinon elle est estimée dans renfort3d
+!                end if
+!                contrainte axiale dans les renforts                 
+                 call renfort3d(istep,nbrenf,i,epstf33,vecr,epsr0(i),&
+                 epsrf(i),eplr0(i),eplrf(i),yor(i),syr(i),sigr0(i),&
+                 sigrf(i),hplr(i),tor(i),ekr(i),skr(i),ATRR(i),khir(i),&
+                 gamr(i),sprec(i),teta1,teta2,dt,ppas,theta,eprm0(i),&
+                 eprmf(i),ttaref(i),rhor(i),mu_r0(i),fl3d,errr,xnr(i),&
+                 xmuthr(i),eprk0(i),eprkf(i),tokr(i),yksyr(i),&
+                 plast_seule,ann,xn,bn,ngf,ipzero,epspmf33,epspmf(i),&
+                 eps_nl(i),spre0(i),spref(i))
+                 if(errr) then
+                     print*,'erreur dans renfort3d'
+                     ierr1=1
+                     go to 999
+                 end if     
+                 varf(nvaribe+8*(i-1)+1)=epsrf(i)
+                 varf(nvaribe+8*(i-1)+2)=eps_nl(i)
+                 varf(nvaribe+8*(i-1)+3)=eplrf(i)
+                 varf(nvaribe+8*(i-1)+4)=sigrf(i)
+                 varf(nvaribe+8*(i-1)+5)=eprmf(i)
+                 varf(nvaribe+8*(i-1)+6)=mu_r0(i)
+                 varf(nvaribe+8*(i-1)+7)=eprkf(i)
+                 varf(nvaribe+8*(i-1)+8)=spref(i)                
+                 
+!                modification de la direction par effet goujon, calcul des
+!                vecteurs forces sur chaque fissure       
+                 rc_app=rc00
+
+!                vecteurs forces sur chaque fissure                         
+                 do j=1,3
+!                    on ne calcule l effet goujon que si la fissure
+!                    localisee existe
+                     if(dt3(j).gt.0.) then                 
+!                       cas du renfort i traversant la fissure j
+                         call goujon3d(end3d,nbrenf,i,j,vecr,deqr,rhor,&
+                         wpl3,vwpl33,vwpl33t,rc_app,sigrf(i),sigrfissp)
+                     else  
+                         do k=1,3
+                            sigrfissp(i,j,k)=0.d0
+                         end do
+                     end if                        
+!                         do k=1,3
+!                            print*,'sigfissp','i',i,'j',j,'=',sigrfissp(i,j,k)
+!                         end do
+!                        read*
+                 end do
+!                     end if                        
+!                 end do                 
+!                tenseur des contraintes dans la matrice dues au renfort
+                 do j=1,3
+                    do k=1,3
+                        sigrm33(j,k)=sigrm33(j,k)+rhor(i)*sigrf(i)* &
+                        vecr(i,j)*vecr(i,k)
+                    end do
+                 end do
+             end do            
+             if(end3d.and.(.not.plast_seule)) then
+!              calcul de la resultante sur chaque fissure en cas 
+!              d endommagement (on est en base principale des endommagements)
+               do numf=1,3
+                 do k=1,3
+                   sigrd33p(k,numf)=0.d0
+                   if (dt3(numf).gt.0.) then
+                       do numr=1,nrenf00
+                         sigrd33p(k,numf)=sigrd33p(k,numf) &
+                         +sigrfissp(numr,numf,k)*dt3(numf)
+                       end do
+                   end if
+                 end do
+               end do
+!              partie symetrique de la contribution des renforts 
+!              dans les fissures localisees
+               do k=1,3
+                 do l=k,3
+                   if(k.eq.l) then
+                     sigrf33p(k,l)=sigrd33p(k,l)
+                   else if(k.ne.l) then
+                     sigrf33p(k,l)=0.5d0*(sigrd33p(k,l)+sigrd33p(l,k))
+                     sigrf33p(l,k)=sigrf33p(k,l)
+                   end if
+                 end do
+               end do
+               call x33x6(sigrf33p,sigrf6p) 
+
+               call chrep3d(sigrf33,sigrf33p,vwpl33t)
+
+!               print*,'numf',numf,'numr',numr
+!               print*,'sigrf33',sigrf33
+
+  
+
+!              passage en base fixe pour verif             
+!              combinaison des contraintes dans les renforts et la matrice
+!              en presence d endommagement, reduction de la contribution des
+!              renforts dans la partie non endommagee
+!              on se place dans la base principale des endommagements de traction
+               call chrep3d(sigrm33p,sigrm33,vwpl33)
+               call x33x6(sigrm33p,sigrm6p)        
+               do i=1,6
+                 call indice0(i,k,l)
+                 dti=max(dt3(k),dt3(l))
+                 sigrh6p(i)=sigrm6p(i)*(1.d0-dti)+sigrf6p(i)
+               end do
+               call x6x33(sigrh6p,sigrh33p)
+               call chrep3d(sigrh33,sigrh33p,vwpl33t) 
+               call x33x6(sigrh33,sigrh6)
+!              combinaison avec les contraintes dans la matrice et les 
+!              contraintes dans les renforts traversant les fissures localisees
+               do i=1,6
+                 sigf6d(i)=(1.d0-rhov)*sigmf6(i)+sigrh6(i)
+               end do              
+             else
+!              combinaison des contraintes dans les renforts et la matrice
+!              en l abscence d endommagement
+               call x33x6(sigrm33,sigrm6)             
+               do i=1,6
+                 sigf6d(i)=(1.d0-rhov)*sigmf6(i)+sigrm6(i)
+               end do
+             end if  
+          else
+!            pas de renforts
+               do i=1,6
+                 sigf6d(i)=sigmf6(i)
+               end do        
+          end if    
+!tenseur des contrainte matrice seule et homogeneise  Sbei 
+          do i=1,6
+               varf(nvaribe+8*5+i)= sigmf6(i)
+          end do
+
+!***********************************************************************      
+!     indicateur de premier passage pour hydracomp3d
+      if (abs(var0(64)-1.d0).ge.r8prem()) then
+         ppas=.true.
+      else
+         ppas=.false.
+      end if         
+
+!***********************************************************************  
+!***********************************************************************        
 !       affectation dans le tableau de sortie des contraintes
         do i=1,nstrs
            sigf(i)=sigf6d(i)
         end do
-999    continue
+999    continue         
 end subroutine

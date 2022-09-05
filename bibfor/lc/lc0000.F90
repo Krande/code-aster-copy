@@ -117,6 +117,7 @@ implicit none
 #include "asterfort/lc0166.h"
 #include "asterfort/lc0167.h"
 #include "asterfort/lc0168.h"
+#include "asterfort/lc0169.h"
 #include "asterfort/lc1002.h"
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1037.h"
@@ -905,6 +906,13 @@ integer :: codret
     case (168)
 !     RGI_BETON
         call lc0168(fami  , kpg   , ksp   , ndim  , imate,&
+                    compor, carcri, instam, instap, epsm  ,&
+                    deps  , sigm  , vim   , option,&
+                    sigp  , vip   , typmod,&
+                    dsidep, codret)
+    case (169)
+!     RGI_BETON_BA
+        call lc0169(fami  , kpg   , ksp   , ndim  , imate,&
                     compor, carcri, instam, instap, epsm  ,&
                     deps  , sigm  , vim   , option,&
                     sigp  , vip   , typmod,&
