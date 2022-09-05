@@ -1720,7 +1720,7 @@ class FieldOnCellsReal(DataField):
     def __sub__(self, arg0):
         pass
     
-    def build(self):
+    def build(self, feds= []):
         pass
     
     def dot(self, other):
@@ -1900,7 +1900,7 @@ class FieldOnCellsComplex(DataField):
     def __sub__(self, arg0):
         pass
     
-    def build(self):
+    def build(self, feds= []):
         pass
     
     def duplicate(self):
@@ -2011,7 +2011,7 @@ class FieldOnCellsLong(DataField):
     def __sub__(self, arg0):
         pass
     
-    def build(self):
+    def build(self, feds= []):
         pass
     
     def duplicate(self):
@@ -2084,6 +2084,9 @@ class FieldOnCellsChar8(DataField):
         
         3. __init__(self: libaster.FieldOnCellsChar8, arg0: libaster.FieldOnCellsChar8) -> None
         """
+    
+    def build(self, feds= []):
+        pass
     
     def getDescription(self):
         """Return the description associated with the FieldOnCellsChar8 object
