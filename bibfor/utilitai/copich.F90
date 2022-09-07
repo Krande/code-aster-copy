@@ -126,7 +126,6 @@ subroutine copich(base, ch1z, ch2z)
         if (base .eq. 'G') then
             call getres(nomu, concep, cmd)
             call dismoi('NOM_LIGREL', ch2, 'CHAM_ELEM', repk=ligr)
-            print*, nomu, ligr
             if (ligr(1:8) .ne. nomu .and. ligr(9:15) .ne. '.MODELE') then
                 noojb = '12345678.LIGR000000'
                 call gnomsd(' ', noojb, 14, 19)
