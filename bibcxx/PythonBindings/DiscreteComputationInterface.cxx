@@ -156,11 +156,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   fourierMode (int): Fourier mode (default: -1)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
+                  with_dual (bool): compute dual terms or not (default: True)
             Returns:
                   ElementaryMatrix: elementary elastic Stiffness matrix
             )",
               py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = -1,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
 
         .def( "getFluidStructureStiffnessMatrix",
               &DiscreteComputation::getFluidStructureStiffnessMatrix,
@@ -228,15 +229,16 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option RIGI_THER.
 
             Arguments:
-                time (float): Current time
-                fourierMode (int): Fourier mode (default: -1)
-                groupOfCells (list[str]): compute matrices on given groups of cells.
+                  time (float): Current time
+                  fourierMode (int): Fourier mode (default: -1)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
+                  with_dual (bool): compute dual terms or not (default: True)
             Returns:
-                ElementaryMatrix: elementary linear thermal matrices
+                  ElementaryMatrix: elementary linear thermal matrices
         )",
               py::arg( "time" ), py::arg( "fourierMode" ) = 0,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
 
         .def( "getExchangeThermalMatrix", &DiscreteComputation::getExchangeThermalMatrix,
               R"(
@@ -256,10 +258,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 groupOfCells (list[str]): compute matrices on given groups of cells.
+                with_dual (bool): compute dual terms or not (default: True)
+
             Returns:
                 ElementaryMatrix: elementary linear acoustic matrices
         )",
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "with_dual" ) = true )
 
         .def( "getMechanicalMassMatrix", &DiscreteComputation::getMechanicalMassMatrix, R"(
             Return the elementary matrices for mechanical mass matrix

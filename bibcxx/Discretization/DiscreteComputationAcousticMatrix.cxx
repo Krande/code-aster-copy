@@ -58,7 +58,8 @@ void DiscreteComputation::baseDualAcousticMatrix(
 };
 
 ElementaryMatrixPressureComplexPtr
-DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells,
+                                              const bool &with_dual ) const {
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
     const std::string option( "RIGI_ACOU" );
@@ -71,7 +72,7 @@ DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells )
     auto currCodedMater = _phys_problem->getCodedMaterial();
 
     // Prepare computing
-    auto calcul = std::make_unique< Calcul >( option );
+    auto calcul = std::make_shared< Calcul >( option );
     if ( groupOfCells.empty() ) {
         calcul->setModel( currModel );
     } else {
@@ -89,6 +90,10 @@ DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells )
     calcul->compute();
     if ( calcul->hasOutputElementaryTerm( "PMATTTC" ) )
         elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATTTC" ) );
+
+    if ( with_dual ) {
+        DiscreteComputation::baseDualAcousticMatrix( calcul, elemMatr );
+    }
 
     elemMatr->build();
     return elemMatr;

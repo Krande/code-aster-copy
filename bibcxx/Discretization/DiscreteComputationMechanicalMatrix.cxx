@@ -35,10 +35,9 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::getElasticStiffnessMatrix( const ASTERDOUBLE &time,
-                                                const ASTERINTEGER &modeFourier,
-                                                const VectorString &groupOfCells ) const {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatrix(
+    const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
+    const bool &with_dual ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -100,6 +99,10 @@ DiscreteComputation::getElasticStiffnessMatrix( const ASTERDOUBLE &time,
         if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUNS" ) );
     };
+
+    if ( with_dual ) {
+        DiscreteComputation::baseDualElasticStiffnessMatrix( calcul, elemMatr );
+    }
 
     elemMatr->build();
     return elemMatr;

@@ -22,6 +22,7 @@ from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
 from .contact_manager import ContactManager
 
+
 class ResiState:
     """Container to store intermediate field."""
 
@@ -133,7 +134,8 @@ class IncrementalSolver:
 
             # Compute dualiazed BC (B^t.primal_curr - primal_impo)
             # Compute dualiazed BC (B^t.primal_curr)
-            dualizedBC_disp = disc_comp.getDualDisplacement(primal_curr, scaling)
+            dualizedBC_disp = disc_comp.getDualDisplacement(
+                primal_curr, scaling)
 
             # Imposed dualisez BC (primal_impo)
             time_curr = self.phys_state.time + self.phys_state.time_step
@@ -162,7 +164,7 @@ class IncrementalSolver:
 
         # Compute neuamnn forces
         neumann_forces = disc_comp.getNeumannForces(self.phys_state.time + self.phys_state.time_step,
-                                            0.0, 0.0)
+                                                    0.0, 0.0)
 
         return neumann_forces
 
@@ -241,7 +243,9 @@ class IncrementalSolver:
 
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
-            matr_elem_rigi = disc_comp.getElasticStiffnessMatrix()
+            time_curr = self.phys_state.time + self.phys_state.time_step
+            matr_elem_rigi = disc_comp.getElasticStiffnessMatrix(
+                time=time_curr, with_dual=False)
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
             _, codret, matr_elem_rigi = disc_comp.computeTangentPredictionMatrix(
@@ -377,7 +381,8 @@ class IncrementalSolver:
             # compute Dirichlet BC:
             disc_comp = DiscreteComputation(self.phys_pb)
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
-            diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
+            diriBCs = disc_comp.getIncrementalDirichletBC(
+                time_curr, primal_curr)
 
             # solve linear system
             if not stiffness.isFactorized():

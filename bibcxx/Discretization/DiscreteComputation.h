@@ -148,7 +148,8 @@ class DiscreteComputation {
      */
     ElementaryMatrixDisplacementRealPtr
     getElasticStiffnessMatrix( const ASTERDOUBLE &time = 0.0, const ASTERINTEGER &modeFourier = 0,
-                               const VectorString &groupOfCells = VectorString() ) const;
+                               const VectorString &groupOfCells = VectorString(),
+                               const bool &with_dual = true ) const;
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_FLUI_STRU)
@@ -189,13 +190,15 @@ class DiscreteComputation {
      */
     ElementaryMatrixTemperatureRealPtr
     getLinearConductivityMatrix( const ASTERDOUBLE time, const ASTERINTEGER &modeFourier = -1,
-                                 const VectorString &groupOfCells = VectorString() ) const;
+                                 const VectorString &groupOfCells = VectorString(),
+                                 const bool &with_dual = true ) const;
 
     /**
      * @brief Compute elementary matrices for acoustic model (RIGI_ACOU)
      */
     ElementaryMatrixPressureComplexPtr
-    getLinearMobilityMatrix( const VectorString &groupOfCells = VectorString() ) const;
+    getLinearMobilityMatrix( const VectorString &groupOfCells = VectorString(),
+                             const bool &with_dual = true ) const;
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)

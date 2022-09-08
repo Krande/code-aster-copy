@@ -35,10 +35,9 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryMatrixTemperatureRealPtr
-DiscreteComputation::getLinearConductivityMatrix( const ASTERDOUBLE time,
-                                                  const ASTERINTEGER &modeFourier,
-                                                  const VectorString &groupOfCells ) const {
+ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMatrix(
+    const ASTERDOUBLE time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
+    const bool &with_dual ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER" );
@@ -53,7 +52,7 @@ DiscreteComputation::getLinearConductivityMatrix( const ASTERDOUBLE time,
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
 
     // Prepare computing
-    CalculPtr calcul = std::make_unique< Calcul >( option );
+    CalculPtr calcul = std::make_shared< Calcul >( option );
     if ( groupOfCells.empty() ) {
         calcul->setModel( currModel );
     } else {
@@ -91,6 +90,11 @@ DiscreteComputation::getLinearConductivityMatrix( const ASTERDOUBLE time,
         if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
     };
+
+    if ( with_dual ) {
+        DiscreteComputation::baseDualLinearConductivityMatrix( calcul, elemMatr );
+        DiscreteComputation::baseExchangeThermalMatrix( calcul, elemMatr, time );
+    }
 
     elemMatr->build();
     return elemMatr;
