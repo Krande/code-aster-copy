@@ -93,7 +93,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Returns:
             FieldOnNodes: Neumann forces vector
         )",
-              py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ),
+              py::arg( "time" ) = 0.0, py::arg( "time_step" ) = 0.0, py::arg( "theta" ) = 1.0,
               py::arg( "previousPrimalField" ) = nullptr )
         .def( "getExternalStateVariablesForces",
               &DiscreteComputation::getExternalStateVariablesForces, R"(
@@ -152,7 +152,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option RIGI_MECA.
 
             Arguments:
-                  time (float): Current time for external state variavle evaluation (default: 0.0)
+                  time (float): Current time for external state variable evaluation (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
@@ -170,7 +170,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option RIGI_FLUI_STRUC.
 
             Arguments:
-                  time (float): Current time for external state variavle evaluation (default: 0.0)
+                  time (float): Current time for external state variable evaluation (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
@@ -186,7 +186,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Option MASS_FLUI_STRUC.
 
             Arguments:
-                  time (float): Current time for external state variavle evaluation (default: 0.0)
+                  time (float): Current time for external state variable evaluation (default: 0.0)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
             Returns:
@@ -271,7 +271,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 diagonal (bool) : True for diagonal mass matrix else False.
-                time (float): Current time for external state variavle evaluation (default: 0.0)
+                time (float): Current time for external state variable evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
@@ -312,7 +312,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Arguments:
                 getMechanicalMassMatrix : elementary mass matrix
                 stiffnessMatrix : elementary stiffness matrix
-                time (float): Current time for external state variavle evaluation (default: 0.0)
+                time (float): Current time for external state variable evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:
@@ -356,7 +356,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 stiffnessMatrix : elementary stiffness matrix
-                time (float): Current time for external state variavle evaluation (default: 0.0)
+                time (float): Current time for external state variable evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
             Returns:

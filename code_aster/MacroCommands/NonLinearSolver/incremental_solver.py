@@ -163,8 +163,9 @@ class IncrementalSolver:
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute neuamnn forces
-        neumann_forces = disc_comp.getNeumannForces(self.phys_state.time + self.phys_state.time_step,
-                                                    0.0, 0.0)
+        neumann_forces = disc_comp.getNeumannForces(self.phys_state.time,
+                                                    self.phys_state.time_step,
+                                                    )
 
         return neumann_forces
 
@@ -244,7 +245,7 @@ class IncrementalSolver:
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
             time_curr = self.phys_state.time + self.phys_state.time_step
-            matr_elem_rigi = disc_comp.getElasticStiffnessMatrix(
+            matr_elem_rigi = disc_comp.getLinearStiffnessMatrix(
                 time=time_curr, with_dual=False)
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
@@ -269,7 +270,7 @@ class IncrementalSolver:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
 
         # Compute dual matrix
-        matr_elem_dual = disc_comp.getDualElasticStiffnessMatrix()
+        matr_elem_dual = disc_comp.getDualStiffnessMatrix()
 
         return codret, matr_elem_rigi, matr_elem_dual
 

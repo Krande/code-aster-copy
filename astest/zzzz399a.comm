@@ -87,7 +87,6 @@ K_ELEM=CALC_MATR_ELEM(MODELE=MODE,
 MV_ELEM=CALC_MATR_ELEM(      MODELE=MODE,
                             CHAM_MATER=CHMAT_M,
                                OPTION='MASS_THER',
-                            INCR_INST= 1.0,
                                 )
 
 
@@ -95,7 +94,6 @@ M_ELEM=CALC_MATR_ELEM(
                       MODELE     = MODE,
                       CHAM_MATER = CHMAT_R,
                       OPTION     = 'MASS_THER',
-                      INCR_INST  = 1.0,
                       )
 
 NUM=NUME_DDL(MATR_RIGI=K_ELEM)

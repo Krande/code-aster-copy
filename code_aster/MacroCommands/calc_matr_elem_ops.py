@@ -62,25 +62,14 @@ def calc_matr_elem_ops(self, **args):
     else:
         group_ma = force_list(group_ma)
 
-    externVar = None
-    if phys_pb.getMaterialField() is not None:
-        if phys_pb.getMaterialField().hasExternalStateVariable():
-            externVar = disc_comp.createExternalStateVariablesField(
-                time)
-
     matr_elem = None
-    if myOption == "RIGI_MECA":
-        if args["CALC_ELEM_MODELE"] == "OUI":
-            matr_elem = disc_comp.getElasticStiffnessMatrix(
-                time, fourier, group_ma, externVarField=externVar
+    if myOption in ("RIGI_MECA", "RIGI_THER", "RIGI_ACOU"):
+        if "CALC_ELEM_MODELE" not in args or args["CALC_ELEM_MODELE"] == "OUI":
+            matr_elem = disc_comp.getLinearStiffnessMatrix(
+                time, fourier, group_ma
             )
-
-            matr_rigi_dual = disc_comp.getDualElasticStiffnessMatrix()
-            matr_elem.addElementaryTerm(
-                matr_rigi_dual.getElementaryTerms())
-            matr_elem.build()
         else:
-            matr_elem = disc_comp.getDualElasticStiffnessMatrix()
+            matr_elem = disc_comp.getDualStiffnessMatrix()
 
     elif myOption == "RIGI_GEOM":
         sief_elga = args.get("SIEF_ELGA")
@@ -99,74 +88,36 @@ def calc_matr_elem_ops(self, **args):
     elif myOption == "MECA_GYRO":
         matr_elem = disc_comp.getGyroscopicDampingMatrix(group_ma)
 
-    elif myOption == "MASS_MECA":
-        matr_elem = disc_comp.getMechanicalMassMatrix(False,
-                                         group_ma, externVarField=externVar)
+    elif myOption in ("MASS_MECA", "MASS_THER", "MASS_ACOU"):
+        matr_elem = disc_comp.getMassMatrix(time, group_ma)
 
     elif myOption == "MASS_MECA_DIAG":
-        matr_elem = disc_comp.getMechanicalMassMatrix(True,
-                                         group_ma, externVarField=externVar)
+        matr_elem = disc_comp.getMechanicalMassMatrix(True, time, group_ma)
 
     elif myOption == "AMOR_MECA":
         getMechanicalMassMatrix = args.get("MASS_MECA")
         stiffnessMatrix = args.get("RIGI_MECA")
         matr_elem = disc_comp.getMechanicalDampingMatrix(
-            getMechanicalMassMatrix, stiffnessMatrix, group_ma, externVarField=externVar)
+            getMechanicalMassMatrix, stiffnessMatrix, time, group_ma)
 
     elif myOption == "RIGI_MECA_HYST":
         stiffnessMatrix = args["RIGI_MECA"]
         matr_elem = disc_comp.getHystereticStiffnessMatrix(
-            stiffnessMatrix, group_ma, externVarField=externVar)
-        # This part is a remove because complex elem matr does not support real term
-        # remove code in getHystereticStiffnessMatrix and add this part later
-        # matr_rigi_dual = disc_comp.getDualElasticStiffnessMatrix()
-        # matr_elem.addElementaryTerm(
-        #     matr_rigi_dual.getElementaryTerms())
-        # matr_elem.build()
-
-    elif myOption == "MASS_THER":
-        matr_elem = disc_comp.getLinearCapacityMatrix(time, group_ma,
-                                                   externVarField=externVar)
-        matr_elem *= 1.0/args.get("INCR_INST")
-
-    elif myOption == "RIGI_THER":
-        matr_elem = disc_comp.getLinearConductivityMatrix(time, fourier,
-                                                       group_ma,
-                                                       externVarField=externVar)
-
-        matr_rigi_dual = disc_comp.getDualLinearConductivityMatrix()
-        matr_elem.addElementaryTerm(matr_rigi_dual.getElementaryTerms())
-
-        matr_rigi_exch = disc_comp.getExchangeThermalMatrix(time)
-        matr_elem.addElementaryTerm(matr_rigi_exch.getElementaryTerms())
-
-        matr_elem.build()
-    elif myOption == "MASS_ACOU":
-        matr_elem = disc_comp.getCompressibilityMatrix(group_ma)
+            stiffnessMatrix, time, group_ma)
 
     elif myOption == "AMOR_ACOU":
         matr_elem = disc_comp.getImpedanceMatrix()
 
-    elif myOption == "RIGI_ACOU":
-        matr_elem = disc_comp.getLinearMobilityMatrix(group_ma)
-
-        matr_rigi_dual = disc_comp.getDualLinearMobilityMatrix()
-        matr_elem.addElementaryTerm(
-            matr_rigi_dual.getElementaryTerms())
-        matr_elem.build()
-
     elif myOption == "RIGI_FLUI_STRU":
-        matr_elem = disc_comp.getFluidStructureStiffnessMatrix(groupOfCells=group_ma,
-                                                            externVarField=externVar)
+        matr_elem = disc_comp.getFluidStructureStiffnessMatrix(time, groupOfCells=group_ma)
 
-        matr_rigi_dual = disc_comp.getDualElasticStiffnessMatrix()
+        matr_rigi_dual = disc_comp.getDualStiffnessMatrix()
         matr_elem.addElementaryTerm(
             matr_rigi_dual.getElementaryTerms())
         matr_elem.build()
 
     elif myOption == "MASS_FLUI_STRU":
-        matr_elem = disc_comp.getFluidStructureMassMatrix(groupOfCells=group_ma,
-                                                       externVarField=externVar)
+        matr_elem = disc_comp.getFluidStructureMassMatrix(groupOfCells=group_ma)
 
     elif myOption == "IMPE_MECA":
         matr_elem = disc_comp.getImpedanceBoundaryMatrix(group_ma)

@@ -176,12 +176,13 @@ bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
 
     // Get external state variables
     std::string externVarName( " " );
+    FieldOnCellsRealPtr externVar = nullptr;
     if ( currMater->hasExternalStateVariable() ) {
-        auto externVar = _phys_problem->getExternalStateVariables( time );
+        externVar = _phys_problem->getExternalStateVariables( time );
         externVarName = externVar->getName();
     }
+    externVarName.resize( 19, ' ' );
 
-    externVarName.resize( 24, ' ' );
     CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time, &time_delta, &time_theta,
                        currElemCharaName, materName, currCodedMaterName, vectElemName,
                        externVarName );

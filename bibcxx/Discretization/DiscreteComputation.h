@@ -141,8 +141,10 @@ class DiscreteComputation {
      * @return Nodal field for Neumann loads
      */
     FieldOnNodesRealPtr
-    getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    getNeumannForces( const ASTERDOUBLE time = 0.0, const ASTERDOUBLE time_step = 0.0,
+                      const ASTERDOUBLE theta = 1.0,
                       const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
+
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
      */

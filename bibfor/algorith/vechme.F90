@@ -18,7 +18,7 @@
 
 subroutine vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
                   cara_elem, mate  , mateco     , vect_elemz , varc_currz , ligrel_calcz,&
-                  nharm)
+                  nharm, basez)
 !
 implicit none
 !
@@ -47,6 +47,7 @@ implicit none
     character(len=*), intent(inout) :: vect_elemz
     character(len=*), optional, intent(in) :: varc_currz
     character(len=*), optional, intent(in) :: ligrel_calcz
+    character(len=1), optional, intent(in) :: basez
     integer, optional, intent(in) :: nharm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -117,6 +118,9 @@ implicit none
     inst_curr   = inst(1)+inst(2)
     inst_theta  = inst(3)
     base        = 'V'
+    if(present(basez)) then
+        base = basez
+    end if
 !
 ! - Init fields
 !

@@ -62,7 +62,7 @@ CALC_MATR_ELEM=MACRO(nom="CALC_MATR_ELEM",
 
     MODELE          = SIMP(statut='o',typ=modele_sdaster ),
 
-    # Not in bloc beacuase of ASSEMBLAGE command
+    # Not in bloc because of ASSEMBLAGE command
     INST            = SIMP(statut='f',typ='R',defaut= 0.E+0 ),
 
     b_rigi_meca = BLOC(condition = """equal_to("OPTION", 'RIGI_MECA')""",
@@ -140,7 +140,6 @@ CALC_MATR_ELEM=MACRO(nom="CALC_MATR_ELEM",
     b_mass_ther = BLOC(condition = """equal_to("OPTION", 'MASS_THER')""",
         CHAM_MATER       = SIMP(statut='o',typ=cham_mater ),
         CARA_ELEM        = SIMP(statut='f',typ=cara_elem ),
-        INCR_INST       = SIMP(statut='o',typ='R',validators=NotEqualTo(0.)),
     ),
 
     b_rigi_acou = BLOC(condition = """equal_to("OPTION", 'RIGI_ACOU')""",

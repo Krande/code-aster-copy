@@ -108,10 +108,8 @@ def _computeMatrix(disr_comp, matrix, time):
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    matr_elem = profile(disr_comp.getElasticStiffnessMatrix)(time)
+    matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, with_dual=True)
     matrix.addElementaryMatrix(matr_elem)
-    matr_elem_dual = profile(disr_comp.getDualElasticStiffnessMatrix)()
-    matrix.addElementaryMatrix(matr_elem_dual)
 
     profile(matrix.assemble)(True)
 

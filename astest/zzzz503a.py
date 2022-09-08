@@ -98,7 +98,7 @@ study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
 retour = dComputation.getNeumannForces(1)
-matr_elem = dComputation.getElasticStiffnessMatrix()
+matr_elem = dComputation.getElasticStiffnessMatrix(with_dual=False)
 matr_elem_dual = dComputation.getDualElasticStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")

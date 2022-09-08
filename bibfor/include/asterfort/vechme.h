@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
                       cara_elem, mate  , mateco , vect_elemz , varc_currz , ligrel_calcz,&
-                      nharm)
+                      nharm, basez)
         character(len=1), intent(in) :: stop
         character(len=*), intent(in) :: modelz
         character(len=*), intent(in) :: lload_namez
@@ -33,5 +33,6 @@ interface
         character(len=*), optional, intent(in) :: varc_currz
         character(len=*), optional, intent(in) :: ligrel_calcz
         integer, optional, intent(in) :: nharm
+        character(len=1), optional, intent(in) :: basez
     end subroutine vechme
 end interface

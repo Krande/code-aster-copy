@@ -304,7 +304,7 @@ def _computeMatrix(disr_comp, matrix,
     phys_pb = disr_comp.getPhysicalProblem()
 
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
-    matr_elem_rigi = disr_comp.getLinearConductivityMatrix(time_value)
+    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_value, with_dual=False)
     matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
 
     matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_value)
@@ -436,6 +436,9 @@ def ther_lineaire_ops(self, **args):
     matrix = AssemblyMatrixTemperatureReal(phys_pb)
     # the matrix depends on times or external variables
     is_const = phys_pb.getCodedMaterial().constant()
+
+    # Detect external state variables
+    hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
 
     # Compute reference value vector for external state variables
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():

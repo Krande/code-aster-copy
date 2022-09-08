@@ -65,7 +65,7 @@ study.addLoad(CHT1)
 study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
-retour = dComputation.getNeumannForces(0)
+retour = dComputation.getNeumannForces()
 matr_elem = dComputation.getElasticStiffnessMatrix()
 
 monSolver = code_aster.MumpsSolver()

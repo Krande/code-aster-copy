@@ -66,6 +66,6 @@ implicit none
     inst(2) = time_delta
     inst(3) = time_theta
     call vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
-                cara_elem, mate  , mateco, vect_elemz , varc_currz = varc_currz)
+                cara_elem, mate  , mateco, vect_elemz , varc_currz = varc_currz, basez='G')
 !
 end subroutine

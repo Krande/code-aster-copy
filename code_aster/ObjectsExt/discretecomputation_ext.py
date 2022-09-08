@@ -25,7 +25,7 @@
 
 from libaster import DiscreteComputation
 
-from ..Utilities import injector
+from ..Utilities import injector, profile
 
 
 @injector(DiscreteComputation)
@@ -36,3 +36,74 @@ class ExtendedDiscreteComputation:
         object during unpickling.
         """
         return (self.getPhysicalProblem(), )
+
+    @profile
+    def getLinearStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True):
+        """Return the elementary matrices for stiffness matrix depending of the physic.
+            Option RIGI_MECA or RIGI_THER or RIGI_ACOU.
+
+            Arguments:
+                  time (float): Current time for external state variable evaluation.
+                    Only needed if material depends on time (default: 0.0)
+                  fourierMode (int): Fourier mode (default: -1)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                      If it is empty, the full model is used
+                  with_dual (bool): compute dual terms or not (default: True)
+            Returns:
+                  ElementaryMatrix: elementary stiffness matrix
+        """
+
+        model = self.getPhysicalProblem().getModel()
+
+        if model.isMechanical():
+            return self.getElasticStiffnessMatrix(time, fourierMode, groupOfCells, with_dual)
+        elif model.isThermal():
+            return self.getLinearConductivityMatrix(time, fourierMode, groupOfCells, with_dual)
+        elif model.isAcoustic():
+            return self.getLinearMobilityMatrix(groupOfCells, with_dual)
+        else:
+            raise RuntimeError("Unknown physic")
+
+    @profile
+    def getDualStiffnessMatrix(self):
+        """Return the elementary matrices for dual stiffness matrix depending of the physic.
+
+            Returns:
+                  ElementaryMatrix: elementary dual stiffness matrix
+        """
+
+        model = self.getPhysicalProblem().getModel()
+
+        if model.isMechanical():
+            return self.getDualElasticStiffnessMatrix()
+        elif model.isThermal():
+            return self.getDualLinearConductivityMatrix()
+        elif model.isAcoustic():
+            return self.getDualLinearMobilityMatrix()
+        else:
+            raise RuntimeError("Unknown physic")
+
+    @profile
+    def getMassMatrix(self, time=0.0, groupOfCells=[]):
+        """Return the elementary matrices formass matrix depending of the physic.
+            Option MASS_MECA or MASS_THER or MASS_ACOU.
+
+            Arguments:
+                  time (float): Current time for external state variable evaluation.
+                    Only needed if material depends on time (default: 0.0)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                      If it is empty, the full model is used
+            Returns:
+                  ElementaryMatrix: elementary mass matrix
+        """
+
+        model = self.getPhysicalProblem().getModel()
+
+        if model.isMechanical():
+            return self.getMechanicalMassMatrix(False, time, groupOfCells)
+        elif model.isThermal():
+            return self.getLinearCapacityMatrix(time, groupOfCells)
+        elif model.isAcoustic():
+            return self.getCompressibilityMatrix(groupOfCells)
+        else:
+            raise RuntimeError("Unknown physic")
