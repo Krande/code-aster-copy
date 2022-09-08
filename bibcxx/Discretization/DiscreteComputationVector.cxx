@@ -34,25 +34,25 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-FieldOnNodesRealPtr DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_value,
-                                                        const ASTERDOUBLE time_delta,
-                                                        const ASTERDOUBLE time_theta ) const {
+FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE time,
+                                                           const ASTERDOUBLE time_delta,
+                                                           const ASTERDOUBLE time_theta ) const {
 
     bool has_load = false;
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     if ( _phys_problem->getModel()->isThermal() ) {
-        has_load = this->addTherImposedTerms( elemVect, time_value, time_delta, time_theta );
+        has_load = this->addTherImposedTerms( elemVect, time, time_delta, time_theta );
     } else if ( _phys_problem->getModel()->isMechanical() ) {
-        has_load = this->addMecaImposedTerms( elemVect, time_value );
+        has_load = this->addMecaImposedTerms( elemVect, time );
     } else {
         AS_ASSERT( false );
     };
 
     if ( has_load ) {
         elemVect->build();
-        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time_value );
+        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time );
     } else {
         FieldOnNodesRealPtr vectAsse =
             std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -63,27 +63,25 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_v
 };
 
 FieldOnNodesRealPtr
-DiscreteComputation::neumann( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
-                              const ASTERDOUBLE time_theta,
-                              const FieldOnCellsRealPtr _externVarField,
-                              const FieldOnNodesRealPtr _previousPrimalField ) const {
+DiscreteComputation::getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE time_delta,
+                                 const ASTERDOUBLE time_theta,
+                                 const FieldOnNodesRealPtr _previousPrimalField ) const {
 
     bool has_load = false;
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
     if ( _phys_problem->getModel()->isThermal() ) {
-        has_load = this->addTherNeumannTerms( elemVect, time_value, time_delta, time_theta,
-                                              _externVarField, _previousPrimalField );
+        has_load = this->addTherNeumannTerms( elemVect, time, time_delta, time_theta,
+                                              _previousPrimalField );
     } else if ( _phys_problem->getModel()->isMechanical() ) {
-        has_load = this->addMecaNeumannTerms( elemVect, time_value, time_delta, time_theta,
-                                              _externVarField );
+        has_load = this->addMecaNeumannTerms( elemVect, time, time_delta, time_theta );
     } else {
         AS_ASSERT( false );
     };
     if ( has_load ) {
         elemVect->build();
-        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time_value );
+        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time );
     } else {
         FieldOnNodesRealPtr vectAsse =
             std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -93,7 +91,7 @@ DiscreteComputation::neumann( const ASTERDOUBLE time_value, const ASTERDOUBLE ti
     }
 };
 
-FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) const {
+FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr_curr ) const {
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
@@ -127,8 +125,8 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 };
 
-FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
-                                                           ASTERDOUBLE scaling ) const {
+FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPtr disp_curr,
+                                                              ASTERDOUBLE scaling ) const {
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
 
@@ -162,7 +160,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     return bume;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time_value ) const {
+FieldOnNodesRealPtr DiscreteComputation::getDirichletBC( const ASTERDOUBLE &time ) const {
 
     auto dofNume = _phys_problem->getDOFNumbering();
     FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
@@ -185,7 +183,7 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time_va
     std::string base( "G" );
 
     // Wrapper FORTRAN
-    CALLO_ASCAVC_WRAP( nameLcha, nameInfc, nameFcha, dofNumName, &time_value, vectAsseName, base );
+    CALLO_ASCAVC_WRAP( nameLcha, nameInfc, nameFcha, dofNumName, &time, vectAsseName, base );
 
     // Construct vect_asse object
     vectAsse->build();
@@ -195,12 +193,12 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time_va
 };
 
 FieldOnNodesRealPtr
-DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time_value,
-                                             const FieldOnNodesRealPtr disp_curr ) const {
+DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time,
+                                                const FieldOnNodesRealPtr disp_curr ) const {
     auto dofNume = _phys_problem->getDOFNumbering();
 
     if ( dofNume->hasDirichletBC() ) {
-        auto diri_curr = dirichletBC( time_value );
+        auto diri_curr = getDirichletBC( time );
         auto diri_impo = *( diri_curr ) - *( disp_curr );
         diri_impo.updateValuePointers();
 
@@ -224,15 +222,15 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time_value,
     return vectAsse;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
-    const ASTERDOUBLE time_value, const FieldOnCellsRealPtr _externVarField ) const {
+FieldOnNodesRealPtr
+DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    auto currExternVarRefe = _phys_problem->getExternalStateVariablesReference();
+    auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
 
     // Some checks
     AS_ASSERT( currMater );
@@ -274,8 +272,8 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
             if ( currElemChara ) {
                 calcul->addElementaryCharacteristicsField( currElemChara );
             }
-            calcul->addInputField( "PVARCPR", _externVarField );
-            calcul->addTimeField( "PTEMPSR", time_value );
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+            calcul->addTimeField( "PTEMPSR", time );
             if ( currExternVarRefe ) {
                 calcul->addInputField( "PVARCRR", currExternVarRefe );
             }

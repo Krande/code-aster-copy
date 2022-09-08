@@ -82,7 +82,7 @@ class ConvergenceManager:
             time_curr = self.phys_state.time + self.phys_state.time_step
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
             disc_comp = DiscreteComputation(self.phys_pb)
-            diriBCs = disc_comp.incrementalDirichletBC(time_curr, primal_curr)
+            diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
             eliminatedDofs = dofNume.getDirichletBCDOFs()
             nbElimination = len(eliminatedDofs)
             assert residual.size() == nbElimination

@@ -717,7 +717,25 @@ class DiscreteComputation:
     def __init__(self, arg0):
         pass
     
-    def compressibilityMatrix(self, groupOfCells= []):
+    def computeTangentPredictionMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
+        """Compute jacobian matrix for Newton algorithm, Euler prediction
+        
+        Arguments:
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+        
+        Returns:
+            tuple (tuple): return code error (FieldOnCellsLong),
+            error code flag (int),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal),
+        """
+    
+    def getCompressibilityMatrix(self, groupOfCells= []):
         """Return the elementary matrices for compressibility acoustic matrix.
         Option MASS_ACOU.
         
@@ -728,25 +746,266 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
     
-    def computeExternalStateVariablesLoad(self, time, externVarField):
+    def getContactForces(self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
+        """Compute contact and friction forces
+        
+        Arguments:
+            geom (MeshCoordinatesField): coordinates of mesh used to compute normal
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+            data (FieldOnCellsReal): contact data
+            coef_cont (FeildOnNodesReal) : contact coefficient
+            coef_frot (FeildOnNodesReal) : friction coefficient
+        
+        Returns:
+            FieldOnNodesReal: contact and friction forces
+        """
+    
+    def getContactMatrix(self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
+        """Compute contact matrix
+        
+        Arguments:
+            geom (MeshCoordinatesField): coordinates of mesh used to compute normal
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+            data (FieldOnCellsReal): contact data
+            coef_cont (FeildOnNodesReal) : contact coefficient
+            coef_frot (FeildOnNodesReal) : friction coefficient
+        
+        Returns:
+            ElementaryMatrixDisplacementReal: contact and friction elementary matrix
+        """
+    
+    def getDirichletBC(self, time):
+        """Return the imposed displacement vector used to remove imposed DDL
+        
+        Arguments:
+              time (float): Current time
+        
+        Returns:
+              FieldOnNodes: imposed displacement vector
+        """
+    
+    def getDualDisplacement(self, disp_curr, scaling= 1.0):
+        """Return the Dirichlet load vector
+        
+        Arguments:
+              disp_curr (FieldOnNodes): current displacement vector
+        
+        Returns:
+              FieldOnNodes: Dirichlet load vector
+        """
+    
+    def getDualElasticStiffnessMatrix(self):
+        """Return elementary matrices for dual mechanical BC
+        
+        Returns:
+            ElementaryMatrix: elementary matrices
+        """
+    
+    def getDualForces(self, disp_curr):
+        """Return the imposed displacement assembled vector
+        
+        Arguments:
+              disp_curr (FieldOnNodes): current displacement vector
+        
+        Returns:
+              FieldOnNodes: dual reaction vector (B^T*lambda)
+        """
+    
+    def getDualLinearConductivityMatrix(self):
+        """Return elementary matrices for dual thermal BC
+        
+        Returns:
+            ElementaryMatrix: elementary matrices
+        """
+    
+    def getDualLinearMobilityMatrix(self):
+        """Return elementary matrices for dual acoustic BC
+        
+        Returns:
+            ElementaryMatrix: elementary matrices
+        """
+    
+    def getElasticStiffnessMatrix(self, time= 0.0, fourierMode= -1, groupOfCells= []):
+        """Return the elementary matrices for elastic Stiffness matrix.
+        Option RIGI_MECA.
+        
+        Arguments:
+              time (float): Current time for external state variavle evaluation (default: 0.0)
+              fourierMode (int): Fourier mode (default: -1)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+        Returns:
+              ElementaryMatrix: elementary elastic Stiffness matrix
+        """
+    
+    def getExchangeThermalMatrix(self, time):
+        """Return the elementary matices for exhange thermal matrix.
+        
+        Arguments:
+            time (float): Current time
+        Returns:
+            ElementaryMatrix: elementary exchange thermal matrices
+        """
+    
+    def getExternalStateVariablesForces(self, time):
         """Compute load from external state variables
         
         Arguments:
               time (float): Current time
-              externVarField (fieldOnCellsReal): external state variable at current time
         
         Returns:
               FieldOnNodes: load from external state variables
         """
     
-    def computeExternalStateVariablesReference(self):
-        """Compute field for external state variables reference value
+    def getFluidStructureMassMatrix(self, time= 0.0, groupOfCells= []):
+        """Return the elementary matrices for fluid-structure mass matrix.
+        Option MASS_FLUI_STRUC.
         
+        Arguments:
+              time (float): Current time for external state variavle evaluation (default: 0.0)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
         Returns:
-              FieldOnCells: field for external state variables reference values
+              ElementaryMatrixReal: elementary fluid-structure mass matrix
         """
     
-    def computeInternalForces(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
+    def getFluidStructureStiffnessMatrix(self, time= 0.0, fourierMode= -1, groupOfCells= []):
+        """Return the elementary matrices for fluid-structure stiffness matrix.
+        Option RIGI_FLUI_STRUC.
+        
+        Arguments:
+              time (float): Current time for external state variavle evaluation (default: 0.0)
+              fourierMode (int): Fourier mode (default: -1)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+        Returns:
+              ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
+        """
+    
+    def getGeometricStiffnessMatrix(self, sief_elga, strx_elga= None, displ= None, modeFourier= -1, groupOfCells= []):
+        """Return the elementary matrices for geometric Stiffness matrix.
+        Option RIGI_MECA_HYST.
+        
+        Arguments:
+            sief_elga (FieldOnCellsReal) : stress at Gauss points
+            strx_elga (FieldOnCellsReal) : stress at Gauss points for structural element
+            displ (FieldOnNodesReal) : displacement field
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixComplex: elementary geometric rigidity matrix
+        """
+    
+    def getGyroscopicDampingMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for gyroscopic damping matrix.
+        Option MECA_GYRO.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixReal: elementary gyroscopic damping matrix
+        """
+    
+    def getGyroscopicStiffnessMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for gyroscopic Stiffness matrix.
+        Option RIGI_GYRO.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixReal: elementary gyroscopic rigidity matrix
+        """
+    
+    def getHystereticStiffnessMatrix(self, stiffnessMatrix, time= 0.0, groupOfCells= []):
+        """Return the elementary matrices for viscoelastic Stiffness matrix.
+        Option RIGI_MECA_HYST.
+        
+        Arguments:
+            stiffnessMatrix : elementary stiffness matrix
+            time (float): Current time for external state variavle evaluation (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
+        """
+    
+    def getImpedanceBoundaryMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for impedance (mechanical) matrix.
+        Option IMPE_MECA.
+        
+        Returns:
+            ElementaryMatrixReal: impedance mechanical matrix
+        """
+    
+    def getImpedanceMatrix(self):
+        """Return the elementary matrices for impedance (acoustic) damping matrix.
+        Option AMOR_ACOU.
+        
+        Returns:
+            ElementaryMatrixReal: elementary damping matrix
+        """
+    
+    def getImpedanceWaveMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for impedance (mechanical) matrix
+        from an harmonic wave.
+        Option ONDE_FLUI.
+        
+        Returns:
+            ElementaryMatrixReal: impedance wave matrix
+        """
+    
+    def getImposedDualBC(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. getImposedDualBC(self: libaster.DiscreteComputation, time: float, time_step: float, theta: float) -> FieldOnNodes<double>
+        
+        
+              Return the imposed nodal BC assembled vector
+        
+              Arguments:
+                    time (float): Current time
+                    time_step (float): Time increment
+                    theta (float): Theta parameter for integration
+        
+              Returns:
+                    FieldOnNodes: imposed dual field
+                
+        
+        2. getImposedDualBC(self: libaster.DiscreteComputation, time: float) -> FieldOnNodes<double>
+        
+        
+              Return the imposed nodal BC assembled vector
+        
+              Arguments:
+                    time (float): Current time
+        
+              Returns:
+                    FieldOnNodes: imposed dual field
+        """
+    
+    def getIncrementalDirichletBC(self, time, disp):
+        """Return the incremental imposed displacement vector used to remove imposed DDL
+        for incremental resolution.
+        
+        incr_disp = getDirichletBC(time) - disp, with 0.0 for DDL not imposed
+        
+        Arguments:
+              time (float): Current time
+              disp (FieldOnNodes): displacement field at current time
+        
+        Returns:
+              FieldOnNodes: incremental imposed displacement vector
+        """
+    
+    def getInternalForces(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
         """Compute internal forces (integration of behaviour)
         
         Arguments:
@@ -766,25 +1025,100 @@ class DiscreteComputation:
             field of internal forces (FieldOnNodesReal),
         """
     
-    def computeTangentPredictionMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
-        """Compute jacobian matrix for Newton algorithm, Euler prediction
+    def getLinearCapacityMatrix(self, time, groupOfCells= []):
+        """Return the elementary matrices for linear Capacity matrix in thermal computation.
+        Option MASS_THER.
         
         Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_step (FieldOnNodes): field of increment of displacement
-            stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
-            time_prev (float): time at begin of the step
-            time_curr (float): delta time between begin and end of the step
+            time (float): current time to evaluate rho_cp
             groupOfCells (list[str]): compute matrices on given groups of cells.
-        
+                If it empty, the full model is used
         Returns:
-            tuple (tuple): return code error (FieldOnCellsLong),
-            error code flag (int),
-            elementary tangent matrix (ElementaryMatrixDisplacementReal),
+            ElementaryMatrix: elementary mass matrix
         """
     
-    def computeTangentStiffnessMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
+    def getLinearConductivityMatrix(self, time, fourierMode= 0, groupOfCells= []):
+        """Return the elementary matices for linear thermal matrix.
+        Option RIGI_THER.
+        
+        Arguments:
+            time (float): Current time
+            fourierMode (int): Fourier mode (default: -1)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary linear thermal matrices
+        """
+    
+    def getLinearMobilityMatrix(self, groupOfCells= []):
+        """Return the elementary matices for linear mobility acoustic matrix
+        Option RIGI_ACOU.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+        Returns:
+            ElementaryMatrix: elementary linear acoustic matrices
+        """
+    
+    def getMechanicalDampingMatrix(self, getMechanicalMassMatrix= None, stiffnessMatrix= None, time= 0.0, groupOfCells= []):
+        """Return the elementary matrices for damping matrix.
+        Option AMOR_MECA.
+        
+        Arguments:
+            getMechanicalMassMatrix : elementary mass matrix
+            stiffnessMatrix : elementary stiffness matrix
+            time (float): Current time for external state variavle evaluation (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixReal: elementary damping matrix
+        """
+    
+    def getMechanicalMassMatrix(self, diagonal, time= 0.0, groupOfCells= []):
+        """Return the elementary matrices for mechanical mass matrix
+        Option MASS_MECA.
+        
+        Arguments:
+            diagonal (bool) : True for diagonal mass matrix else False.
+            time (float): Current time for external state variavle evaluation (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrix: elementary mass matrix
+        """
+    
+    def getNeumannForces(self, time, time_step, theta, previousPrimalField= None):
+        """Return the Neumann forces vector
+        
+        Arguments:
+              time (float): Current time
+              time_step (float): Time increment
+              theta (float): Theta parameter for time-integration
+              previousPrimalField (fieldOnNodesReal): solution field at previous time
+        
+        Returns:
+              FieldOnNodes: Neumann forces vector
+        """
+    
+    def getPhysicalProblem(self):
+        """Get physical probelm
+        
+        Returns:
+              PhysicalProblem: physical problem
+        """
+    
+    def getRotationalStiffnessMatrix(self, groupOfCells= []):
+        """Return the elementary matrices for rotational Stiffness matrix.
+        Option RIGI_ROTA.
+        
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+        Returns:
+            ElementaryMatrixReal: elementary rotational rigidity matrix
+        """
+    
+    def getTangentStiffnessMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
         """Compute jacobian matrix for Newton algorithm
         
         Arguments:
@@ -802,370 +1136,13 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
     
-    def contactForces(self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
-        """Compute contact and friction forces
-        
-        Arguments:
-            geom (MeshCoordinatesField): coordinates of mesh used to compute normal
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_step (FieldOnNodes): field of increment of displacement
-            time_prev (float): time at begin of the step
-            time_curr (float): delta time between begin and end of the step
-            data (FieldOnCellsReal): contact data
-            coef_cont (FeildOnNodesReal) : contact coefficient
-            coef_frot (FeildOnNodesReal) : friction coefficient
-        
-        Returns:
-            FieldOnNodesReal: contact and friction forces
-        """
-    
-    def contactMatrix(self, geom, displ, displ_step, time_prev, time_step, data, coef_cont, coef_frot):
-        """Compute contact matrix
-        
-        Arguments:
-            geom (MeshCoordinatesField): coordinates of mesh used to compute normal
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_step (FieldOnNodes): field of increment of displacement
-            time_prev (float): time at begin of the step
-            time_curr (float): delta time between begin and end of the step
-            data (FieldOnCellsReal): contact data
-            coef_cont (FeildOnNodesReal) : contact coefficient
-            coef_frot (FeildOnNodesReal) : friction coefficient
-        
-        Returns:
-            ElementaryMatrixDisplacementReal: contact and friction elementary matrix
-        """
-    
-    def createExternalStateVariablesField(self, time):
-        """Create external state variable field
-        
-        Arguments:
-              time (float): Current time
-        
-        Returns:
-              FieldOnCells: field of external state variables at current time
-        """
-    
-    def dampingMatrix(self, massMatrix= None, stiffnessMatrix= None, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for damping matrix.
-        Option AMOR_MECA.
-        
-        Arguments:
-            massMatrix : elementary mass matrix
-            stiffnessMatrix : elementary stiffness matrix
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-            ElementaryMatrixReal: elementary damping matrix
-        """
-    
-    def dirichletBC(self, time):
-        """Return the imposed displacement vector used to remove imposed DDL
-        
-        Arguments:
-              time (float): Current time
-        
-        Returns:
-              FieldOnNodes: imposed displacement vector
-        """
-    
-    def dualConductivityMatrix(self):
-        """Return elementary matrices for dual thermal BC
-        
-        Returns:
-            ElementaryMatrix: elementary matrices
-        """
-    
-    def dualDisplacement(self, disp_curr, scaling= 1.0):
-        """Return the Dirichlet load vector
-        
-        Arguments:
-              disp_curr (FieldOnNodes): current displacement vector
-        
-        Returns:
-              FieldOnNodes: Dirichlet load vector
-        """
-    
-    def dualMobilityMatrix(self):
-        """Return elementary matrices for dual acoustic BC
-        
-        Returns:
-            ElementaryMatrix: elementary matrices
-        """
-    
-    def dualReaction(self, disp_curr):
-        """Return the imposed displacement assembled vector
-        
-        Arguments:
-              disp_curr (FieldOnNodes): current displacement vector
-        
-        Returns:
-              FieldOnNodes: dual reaction vector (B^T*lambda)
-        """
-    
-    def dualStiffnessMatrix(self):
-        """Return elementary matrices for dual mechanical BC
-        
-        Returns:
-            ElementaryMatrix: elementary matrices
-        """
-    
-    def elasticStiffnessMatrix(self, time= 0.0, fourierMode= -1, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for elastic Stiffness matrix.
-        Option RIGI_MECA.
-        
-        Arguments:
-              time (float): Current time (default: 0.0)
-              fourierMode (int): Fourier mode (default: -1)
-              groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
-              externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-              ElementaryMatrix: elementary elastic Stiffness matrix
-        """
-    
-    def exchangeThermalMatrix(self, time):
-        """Return the elementary matices for exhange thermal matrix.
-        
-        Arguments:
-            time (float): Current time
-        Returns:
-            ElementaryMatrix: elementary exchange thermal matrices
-        """
-    
-    def fluidStrucutreMassMatrix(self, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for fluid-structure mass matrix.
-        Option MASS_FLUI_STRUC.
-        
-        Arguments:
-              groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
-              externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-              ElementaryMatrixReal: elementary fluid-structure mass matrix
-        """
-    
-    def fluidStrucutreStiffnessMatrix(self, fourierMode= -1, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for fluid-structure stiffness matrix.
-        Option RIGI_FLUI_STRUC.
-        
-        Arguments:
-              fourierMode (int): Fourier mode (default: -1)
-              groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
-              externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-              ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
-        """
-    
-    def geometricStiffnessMatrix(self, sief_elga, strx_elga= None, displ= None, modeFourier= -1, groupOfCells= []):
-        """Return the elementary matrices for geometric Stiffness matrix.
-        Option RIGI_MECA_HYST.
-        
-        Arguments:
-            sief_elga (FieldOnCellsReal) : stress at Gauss points
-            strx_elga (FieldOnCellsReal) : stress at Gauss points for structural element
-            displ (FieldOnNodesReal) : displacement field
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-        Returns:
-            ElementaryMatrixComplex: elementary geometric rigidity matrix
-        """
-    
-    def getPhysicalProblem(self):
-        """Get physical probelm
-        
-        Returns:
-              PhysicalProblem: physical problem
-        """
-    
-    def gyroscopicDampingMatrix(self, groupOfCells= []):
-        """Return the elementary matrices for gyroscopic damping matrix.
-        Option MECA_GYRO.
-        
-        Arguments:
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-        Returns:
-            ElementaryMatrixReal: elementary gyroscopic damping matrix
-        """
-    
-    def gyroscopicStiffnessMatrix(self, groupOfCells= []):
-        """Return the elementary matrices for gyroscopic Stiffness matrix.
-        Option RIGI_GYRO.
-        
-        Arguments:
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-        Returns:
-            ElementaryMatrixReal: elementary gyroscopic rigidity matrix
-        """
-    
-    def hystereticStiffnessMatrix(self, stiffnessMatrix, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for viscoelastic Stiffness matrix.
-        Option RIGI_MECA_HYST.
-        
-        Arguments:
-            stiffnessMatrix : elementary stiffness matrix
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-            ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
-        """
-    
-    def impedanceBoundaryMatrix(self, groupOfCells= []):
-        """Return the elementary matrices for impedance (mechanical) matrix.
-        Option IMPE_MECA.
-        
-        Returns:
-            ElementaryMatrixReal: impedance mechanical matrix
-        """
-    
-    def impedanceMatrix(self):
-        """Return the elementary matrices for impedance (acoustic) damping matrix.
-        Option AMOR_ACOU.
-        
-        Returns:
-            ElementaryMatrixReal: elementary damping matrix
-        """
-    
-    def impedanceWaveMatrix(self, groupOfCells= []):
-        """Return the elementary matrices for impedance (mechanical) matrix
-        from an harmonic wave.
-        Option ONDE_FLUI.
-        
-        Returns:
-            ElementaryMatrixReal: impedance wave matrix
-        """
-    
-    def imposedDualBC(self, *args, **kwargs):
-        """Overloaded function.
-        
-        1. imposedDualBC(self: libaster.DiscreteComputation, time: float, time_step: float, theta: float) -> FieldOnNodes<double>
-        
-        
-              Return the imposed nodal BC assembled vector
-        
-              Arguments:
-                    time (float): Current time
-                    time_step (float): Time increment
-                    theta (float): Theta parameter for integration
-        
-              Returns:
-                    FieldOnNodes: imposed dual field
-                
-        
-        2. imposedDualBC(self: libaster.DiscreteComputation, time: float) -> FieldOnNodes<double>
-        
-        
-              Return the imposed nodal BC assembled vector
-        
-              Arguments:
-                    time (float): Current time
-        
-              Returns:
-                    FieldOnNodes: imposed dual field
-        """
-    
-    def incrementalDirichletBC(self, time, disp):
-        """Return the incremental imposed displacement vector used to remove imposed DDL
-        for incremental resolution.
-        
-        incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
-        
-        Arguments:
-              time (float): Current time
-              disp (FieldOnNodes): displacement field at current time
-        
-        Returns:
-              FieldOnNodes: incremental imposed displacement vector
-        """
-    
-    def linearCapacityMatrix(self, time_, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for linear Capacity matrix in thermal computation.
-        Option MASS_THER.
-        
-        Arguments:
-            time (float): current time to evaluate rho_cp
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-            ElementaryMatrix: elementary mass matrix
-        """
-    
-    def linearConductivityMatrix(self, time, fourierMode= 0, groupOfCells= [], externVarField= None):
-        """Return the elementary matices for linear thermal matrix.
-        Option RIGI_THER.
-        
-        Arguments:
-            time (float): Current time
-            fourierMode (int): Fourier mode (default: -1)
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-            ElementaryMatrix: elementary linear thermal matrices
-        """
-    
-    def linearMobilityMatrix(self, groupOfCells= []):
-        """Return the elementary matices for linear mobility acoustic matrix
-        Option RIGI_ACOU.
-        
-        Arguments:
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-        Returns:
-            ElementaryMatrix: elementary linear acoustic matrices
-        """
-    
-    def massMatrix(self, diagonal, groupOfCells= [], externVarField= None):
-        """Return the elementary matrices for mechanical mass matrix
-        Option MASS_MECA.
-        
-        Arguments:
-            diagonal (bool) : True for diagonal mass matrix else False.
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-            externVarField (fieldOnCellsReal): external state variable at current time
-        Returns:
-            ElementaryMatrix: elementary mass matrix
-        """
-    
-    def neumann(self, time, time_step, theta, externVarField= None, previousPrimalField= None):
-        """Return the Neumann load vector
-        
-        Arguments:
-              time (float): Current time
-              time_step (float): Time increment
-              theta (float): Theta parameter for integration
-              externVarField (fieldOnCellsReal): external state variable at current time
-              previousPrimalField (fieldOnNodesReal): solution field at previous time
-        
-        Returns:
-              FieldOnNodes: Neumann load vector
-        """
-    
-    def rotationalStiffnessMatrix(self, groupOfCells= []):
-        """Return the elementary matrices for rotational Stiffness matrix.
-        Option RIGI_ROTA.
-        
-        Arguments:
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-                If it empty, the full model is used
-        Returns:
-            ElementaryMatrixReal: elementary rotational rigidity matrix
-        """
-    
-    def transientThermalLoad(self, time, time_step, theta, externVarField, previousPrimalField= None):
+    def getTransientThermalForces(self, time, time_step, theta, previousPrimalField= None):
         """Compute Transient Thermal Load
         
         Arguments:
               time (float): Current time
               time_step (float): Time increment
               theta (float): Theta parameter for integration
-              externVarField (fieldOnCellsReal): external state variable at current time
               previousPrimalField (fieldOnNodesReal): solution field at previous time
         
         Returns:
@@ -10155,6 +10132,13 @@ class PhysicalProblem:
             Bool: True if success
         """
     
+    def computeReferenceExternalStateVariables(self):
+        """Compute field for external state variables reference value
+        
+        Returns:
+            FieldOnCells: field for external state variables reference values
+        """
+    
     def getBehaviourProperty(self):
         """Return the behaviour properties
         
@@ -10183,11 +10167,14 @@ class PhysicalProblem:
             ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
         """
     
-    def getExternalStateVariablesReference(self):
-        """Get the field of reference values for external state variables
+    def getExternalStateVariables(self, time):
+        """Get the field for external state variables
+        
+        Arguments:
+            time [float] : time value to evaluate values
         
         Returns:
-            FieldOnCellsRealPtr : field of reference values
+            FieldOnCellsRealPtr : external values
         """
     
     def getListOfLoads(self):
@@ -10218,18 +10205,18 @@ class PhysicalProblem:
             ModelPtr: a pointer to the model
         """
     
+    def getReferenceExternalStateVariables(self):
+        """Get the field of reference values for external state variables
+        
+        Returns:
+            FieldOnCellsRealPtr : field of reference values
+        """
+    
     def setDOFNumbering(self, dofNume):
         """Set the DOF numbering
         
         Arguments:
             BaseDOFNumberingPtr: a pointer to the DOF numbering
-        """
-    
-    def setExternalStateVariablesReference(self, externVarRefe):
-        """Set the field of reference values for external state variables
-        
-        Arguments:
-            externVarRefe (FieldOnCell): field of reference values
         """
 
 # class Glossary in libaster

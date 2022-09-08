@@ -108,7 +108,7 @@ class IncrementalSolver:
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute internal forces (B^t.stress)
-        _, codret, internVar, stress, r_stress = disc_comp.computeInternalForces(
+        _, codret, internVar, stress, r_stress = disc_comp.getInternalForces(
             self.phys_state.primal,
             self.phys_state.primal_step,
             self.phys_state.stress,
@@ -128,16 +128,16 @@ class IncrementalSolver:
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
 
             # Compute kinematic forces (B^t.Lagr_curr)
-            dualizedBC_forces = disc_comp.dualReaction(primal_curr)
+            dualizedBC_forces = disc_comp.getDualForces(primal_curr)
             resi_state.resi_dual = dualizedBC_forces
 
             # Compute dualiazed BC (B^t.primal_curr - primal_impo)
             # Compute dualiazed BC (B^t.primal_curr)
-            dualizedBC_disp = disc_comp.dualDisplacement(primal_curr, scaling)
+            dualizedBC_disp = disc_comp.getDualDisplacement(primal_curr, scaling)
 
             # Imposed dualisez BC (primal_impo)
             time_curr = self.phys_state.time + self.phys_state.time_step
-            dualizedBC_impo = disc_comp.imposedDualBC(time_curr)
+            dualizedBC_impo = disc_comp.getImposedDualBC(time_curr)
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
@@ -161,7 +161,7 @@ class IncrementalSolver:
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute neuamnn forces
-        neumann_forces = disc_comp.neumann(self.phys_state.time + self.phys_state.time_step,
+        neumann_forces = disc_comp.getNeumannForces(self.phys_state.time + self.phys_state.time_step,
                                             0.0, 0.0)
 
         return neumann_forces
@@ -178,7 +178,7 @@ class IncrementalSolver:
             disc_comp = DiscreteComputation(self.phys_pb)
 
             # Compute contact forces
-            contact_forces = disc_comp.contactForces(
+            contact_forces = disc_comp.getContactForces(
                 self.contact_manager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
@@ -241,7 +241,7 @@ class IncrementalSolver:
 
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
-            matr_elem_rigi = disc_comp.elasticStiffnessMatrix()
+            matr_elem_rigi = disc_comp.getElasticStiffnessMatrix()
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
             _, codret, matr_elem_rigi = disc_comp.computeTangentPredictionMatrix(
@@ -253,7 +253,7 @@ class IncrementalSolver:
                 self.phys_state.time_step
             )
         elif matrix_type == "TANGENTE":
-            _, codret, matr_elem_rigi = disc_comp.computeTangentStiffnessMatrix(
+            _, codret, matr_elem_rigi = disc_comp.getTangentStiffnessMatrix(
                 self.phys_state.primal,
                 self.phys_state.primal_step,
                 self.phys_state.stress,
@@ -265,7 +265,7 @@ class IncrementalSolver:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
 
         # Compute dual matrix
-        matr_elem_dual = disc_comp.dualStiffnessMatrix()
+        matr_elem_dual = disc_comp.getDualElasticStiffnessMatrix()
 
         return codret, matr_elem_rigi, matr_elem_dual
 
@@ -281,7 +281,7 @@ class IncrementalSolver:
             # Main object for discrete computation
             disc_comp = DiscreteComputation(self.phys_pb)
 
-            matr_elem_cont = disc_comp.contactMatrix(
+            matr_elem_cont = disc_comp.getContactMatrix(
                 self.contact_manager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
@@ -377,7 +377,7 @@ class IncrementalSolver:
             # compute Dirichlet BC:
             disc_comp = DiscreteComputation(self.phys_pb)
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
-            diriBCs = disc_comp.incrementalDirichletBC(time_curr, primal_curr)
+            diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
 
             # solve linear system
             if not stiffness.isFactorized():

@@ -24,8 +24,8 @@
 
 #include "aster_pybind.h"
 
-#include "Numbering/ParallelDOFNumbering.h"
 #include "Numbering/DOFNumbering.h"
+#include "Numbering/ParallelDOFNumbering.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 
@@ -122,3 +122,49 @@ void PhysicalProblem::computeBehaviourProperty( py::object &keywords,
     // Build objects
     AS_ASSERT( _behavProp->build() );
 };
+
+FieldOnCellsRealPtr PhysicalProblem::getExternalStateVariables( const ASTERDOUBLE &time ) const {
+
+    // Create field
+    auto FEDesc = getModel()->getFiniteElementDescriptor();
+    auto field = std::make_shared< FieldOnCellsReal >( FEDesc );
+
+    // Get JEVEUX names of objects to call Fortran
+    std::string modelName = ljust( getModel()->getName(), 24 );
+    std::string materialFieldName = ljust( getMaterialField()->getName(), 24 );
+    auto currElemChara = getElementaryCharacteristics();
+    std::string elemCharaName( " " );
+    if ( currElemChara )
+        elemCharaName = currElemChara->getName();
+    elemCharaName.resize( 24, ' ' );
+    std::string fieldName = ljust( field->getName(), 19 );
+
+    // Output
+    std::string out( ' ', 2 );
+    std::string base( "G" );
+
+    // Call Fortran WRAPPER
+    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName, &time, fieldName, out, base );
+
+    return field;
+}
+
+void PhysicalProblem::computeReferenceExternalStateVariables() {
+
+    // Create field
+    auto FEDesc = getModel()->getFiniteElementDescriptor();
+    _externVarRefe = std::make_shared< FieldOnCellsReal >( FEDesc );
+
+    // Get JEVEUX names of objects to call Fortran
+    std::string modelName = ljust( getModel()->getName(), 8 );
+    std::string materialFieldName = ljust( getMaterialField()->getName(), 8 );
+    auto currElemChara = getElementaryCharacteristics();
+    std::string elemCharaName( " ", 8 );
+    if ( currElemChara )
+        elemCharaName = std::string( currElemChara->getName(), 0, 8 );
+    std::string fieldName = ljust( _externVarRefe->getName(), 19 );
+    std::string base( "G" );
+
+    // Call Fortran WRAPPER
+    CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName, base );
+}

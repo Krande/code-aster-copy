@@ -37,13 +37,12 @@
 /** @brief Compute internal forces, stress and internal state variables */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             FieldOnNodesRealPtr >
-DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
-                                            const FieldOnNodesRealPtr displ_step,
-                                            const FieldOnCellsRealPtr stress,
-                                            const FieldOnCellsRealPtr internVar,
-                                            const ASTERDOUBLE &time_prev,
-                                            const ASTERDOUBLE &time_step,
-                                            const VectorString &groupOfCells ) const {
+DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
+                                        const FieldOnNodesRealPtr displ_step,
+                                        const FieldOnCellsRealPtr stress,
+                                        const FieldOnCellsRealPtr internVar,
+                                        const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                        const VectorString &groupOfCells ) const {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -116,7 +115,7 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
 
 /** @brief Compute AFFE_CHAR_MECA DDL_IMPO */
 bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_value ) const {
+                                               const ASTERDOUBLE time ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -138,17 +137,15 @@ bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
     std::string modelName = ljust( currModel->getName(), 24 );
     std::string typres( "R" );
 
-    CALLO_VEDIME( modelName, nameLcha, nameInfc, &time_value, typres, vectElemName );
+    CALLO_VEDIME( modelName, nameLcha, nameInfc, &time, typres, vectElemName );
 
     return true;
 }
 
 /** @brief Compute CHAR_MECA */
 bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_value,
-                                               const ASTERDOUBLE time_delta,
-                                               const ASTERDOUBLE time_theta,
-                                               const FieldOnCellsRealPtr _externVarField ) const {
+                                               const ASTERDOUBLE time, const ASTERDOUBLE time_delta,
+                                               const ASTERDOUBLE time_theta ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -179,18 +176,20 @@ bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
 
     // Get external state variables
     std::string externVarName( " " );
-    if ( _externVarField ) {
-        externVarName = _externVarField->getName();
+    if ( currMater->hasExternalStateVariable() ) {
+        auto externVar = _phys_problem->getExternalStateVariables( time );
+        externVarName = externVar->getName();
     }
+
     externVarName.resize( 24, ' ' );
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time_value, &time_delta, &time_theta,
+    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time, &time_delta, &time_theta,
                        currElemCharaName, materName, currCodedMaterName, vectElemName,
                        externVarName );
 
     return true;
 }
 
-FieldOnNodesRealPtr DiscreteComputation::contactForces(
+FieldOnNodesRealPtr DiscreteComputation::getContactForces(
     const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
     const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,

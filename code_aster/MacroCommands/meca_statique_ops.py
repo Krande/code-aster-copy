@@ -96,22 +96,21 @@ def _createTimeStepper(args):
 
 
 @profile
-def _computeMatrix(disr_comp, matrix, time, externVar):
+def _computeMatrix(disr_comp, matrix, time):
     """Compute and assemble the elastic matrix
 
     Arguments:
         disr_comp (DiscreteComputation): to compute discrete quantities
         matrix (AssemblyMatrixDisplacementReal): matrix to compute and assemble inplace
         time (float): current time
-        externVar (field): current external state variables
 
     Returns:
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    matr_elem = profile(disr_comp.elasticStiffnessMatrix)(time, externVarField=externVar)
+    matr_elem = profile(disr_comp.getElasticStiffnessMatrix)(time)
     matrix.addElementaryMatrix(matr_elem)
-    matr_elem_dual = profile(disr_comp.dualStiffnessMatrix)()
+    matr_elem_dual = profile(disr_comp.getDualElasticStiffnessMatrix)()
     matrix.addElementaryMatrix(matr_elem_dual)
 
     profile(matrix.assemble)(True)
@@ -120,27 +119,26 @@ def _computeMatrix(disr_comp, matrix, time, externVar):
 
 
 @profile
-def _computeRhs(phys_pb, disr_comp, time, externVarField):
+def _computeRhs(phys_pb, disr_comp, time):
     """Compute and assemble the right hand side
 
     Arguments:
          phys_pb (PhysicalProblem): physical problem
          disr_comp (DiscreteComputation): to compute discrete quantities
          time (float): current time
-         externVarField (fieldOnCellsReal): external state variable at current time
 
      Returns:
          FieldOnNodesReal: vector of load
     """
 
     # compute imposed displacement with Lagrange
-    rhs = disr_comp.imposedDualBC(time)
+    rhs = disr_comp.getImposedDualBC(time)
 
     # compute neumann forces
-    rhs += disr_comp.neumann(time, 0, 0, externVarField=externVarField)
+    rhs += disr_comp.getNeumannForces(time)
 
     if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
-        rhs += disr_comp.computeExternalStateVariablesLoad(time, externVarField)
+        rhs += disr_comp.getExternalStateVariablesForces(time)
 
     return rhs
 
@@ -226,14 +224,9 @@ def meca_statique_ops(self, **args):
     isConst = phys_pb.getCodedMaterial().constant()
     isFirst = True
 
-    # Detect external state variables
-    hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
-
     # Compute reference value vector for external state variables
-    externVarRefe = None
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
-        externVarRefe = disc_comp.computeExternalStateVariablesReference()
-        phys_pb.setExternalStateVariablesReference(externVarRefe)
+        phys_pb.computeReferenceExternalStateVariables()
 
     # first rank to use
     rank = result.getNumberOfRanks() + 1
@@ -243,20 +236,16 @@ def meca_statique_ops(self, **args):
     while not timeStepper.hasFinished():
         phys_state.time = timeStepper.getNext()
 
-        # Update external state variable if required
-        if hasExternalStateVariable:
-            phys_state.externVar = disc_comp.createExternalStateVariablesField(phys_state.time)
-
         # compute matrix and factorize it
         if not isConst or isFirst:
-            matrix = _computeMatrix(disc_comp, matrix, phys_state.time, phys_state.externVar)
+            matrix = _computeMatrix(disc_comp, matrix, phys_state.time)
             profile(linear_solver.factorize)(matrix)
 
         # compute rhs
-        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time, phys_state.externVar)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time)
 
         # solve linear system
-        diriBCs = profile(disc_comp.dirichletBC)(phys_state.time)
+        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
         phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
 
         # store rank

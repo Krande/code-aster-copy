@@ -73,7 +73,7 @@ study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 dComputation = code_aster.DiscreteComputation(study)
 #vect_elem = dComputation.computeElementaryMechanicalLoadsVector()
-matr_elem = dComputation.elasticStiffnessMatrix()
+matr_elem = dComputation.getElasticStiffnessMatrix()
 
 monSolver = code_aster.PetscSolver( RENUM="SANS", PRE_COND="SANS" )
 
@@ -85,7 +85,7 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 # compute Neumman
 study.setDOFNumbering(numeDDL)
-retour = dComputation.neumann(0,0,0)
+retour = dComputation.getNeumannForces(0,0,0)
 
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()

@@ -22,10 +22,10 @@
  */
 
 #include "PythonBindings/PhysicalProblemInterface.h"
-#include "PythonBindings/BaseDOFNumberingInterface.h"
 
 #include "aster_pybind.h"
 
+#include "PythonBindings/BaseDOFNumberingInterface.h"
 #include "PythonBindings/LoadUtilities.h"
 
 void exportPhysicalProblemToPython( py::module_ &mod ) {
@@ -112,21 +112,30 @@ Return list of loads.
 Returns:
     ListOfLoadsPtr: a pointer to list of loads
         )" );
-    c1.def( "setExternalStateVariablesReference",
-            &PhysicalProblem::setExternalStateVariablesReference, R"(
-    Set the field of reference values for external state variables
+    c1.def( "getExternalStateVariables", &PhysicalProblem::getExternalStateVariables, R"(
+    Get the field for external state variables
 
     Arguments:
-        externVarRefe (FieldOnCell): field of reference values
+        time [float] : time value to evaluate values
+
+    Returns:
+        FieldOnCellsRealPtr : external values
           )",
-            py::arg( "externVarRefe" ) );
-    c1.def( "getExternalStateVariablesReference",
-            &PhysicalProblem::getExternalStateVariablesReference, R"(
+            py::arg( "time" ) );
+    c1.def( "getReferenceExternalStateVariables",
+            &PhysicalProblem::getReferenceExternalStateVariables, R"(
     Get the field of reference values for external state variables
 
     Returns:
         FieldOnCellsRealPtr : field of reference values
           )" );
+    c1.def( "computeReferenceExternalStateVariables",
+            &PhysicalProblem::computeReferenceExternalStateVariables, R"(
+    Compute field for external state variables reference value
+
+    Returns:
+        FieldOnCells: field for external state variables reference values
+            )" );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI

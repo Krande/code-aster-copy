@@ -97,9 +97,9 @@ listLoads = study.getListOfLoads()
 study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
-retour = dComputation.neumann(1,0,0)
-matr_elem = dComputation.elasticStiffnessMatrix()
-matr_elem_dual = dComputation.dualStiffnessMatrix()
+retour = dComputation.getNeumannForces(1)
+matr_elem = dComputation.getElasticStiffnessMatrix()
+matr_elem_dual = dComputation.getDualElasticStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
 
@@ -166,7 +166,7 @@ precond = monSolver.getPrecondMatrix()
 test.assertEqual(precond.getType(), "MATR_ASSE_DEPL_R")
 test.assertTrue(isinstance( precond, code_aster.AssemblyMatrixDisplacementReal))
 
-vcine = dComputation.dirichletBC(0.)
+vcine = dComputation.getDirichletBC(0.)
 resu = monSolver.solve(retour, vcine)
 
 y = resu.EXTR_COMP()

@@ -35,9 +35,10 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix(
-    const ASTERDOUBLE time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
-    const FieldOnCellsRealPtr _externVarField ) const {
+ElementaryMatrixTemperatureRealPtr
+DiscreteComputation::getLinearConductivityMatrix( const ASTERDOUBLE time,
+                                                  const ASTERINTEGER &modeFourier,
+                                                  const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER" );
@@ -51,13 +52,6 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
 
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
-
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
@@ -70,10 +64,12 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -101,8 +97,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
 };
 
 ElementaryMatrixTemperatureRealPtr
-DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE time, const VectorString &groupOfCells,
-                                           const FieldOnCellsRealPtr _externVarField ) const {
+DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time,
+                                              const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER" );
@@ -115,13 +111,6 @@ DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE time, const VectorS
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Prepare computing
     auto calcul = std::make_unique< Calcul >( option );
@@ -138,10 +127,12 @@ DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE time, const VectorS
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -165,7 +156,7 @@ DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE time, const VectorS
     return elemMatr;
 };
 
-void DiscreteComputation::baseDualConductivityMatrix(
+void DiscreteComputation::baseDualLinearConductivityMatrix(
     CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr ) const {
 
     // Prepare loads
@@ -202,7 +193,7 @@ void DiscreteComputation::baseDualConductivityMatrix(
 #endif
 };
 
-ElementaryMatrixTemperatureRealPtr DiscreteComputation::dualConductivityMatrix() const {
+ElementaryMatrixTemperatureRealPtr DiscreteComputation::getDualLinearConductivityMatrix() const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
     const std::string option( "THER_DDLM_R" );
@@ -214,14 +205,14 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::dualConductivityMatrix()
     CalculPtr calcul = std::make_unique< Calcul >( option );
 
     // Compute elementary matrices
-    DiscreteComputation::baseDualConductivityMatrix( calcul, elemMatr );
+    DiscreteComputation::baseDualLinearConductivityMatrix( calcul, elemMatr );
 
     elemMatr->build();
     return elemMatr;
 };
 
 ElementaryMatrixTemperatureRealPtr
-DiscreteComputation::exchangeThermalMatrix( const ASTERDOUBLE &time ) const {
+DiscreteComputation::getExchangeThermalMatrix( const ASTERDOUBLE &time ) const {
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
     const std::string option( "RIGI_THER" );

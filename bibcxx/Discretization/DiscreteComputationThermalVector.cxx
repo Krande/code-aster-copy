@@ -101,11 +101,9 @@ bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
 }
 
 /** @brief Compute CHAR_THER_EVOL */
-FieldOnNodesRealPtr
-DiscreteComputation::transientThermalLoad( const ASTERDOUBLE time, const ASTERDOUBLE time_step,
-                                           const ASTERDOUBLE theta,
-                                           const FieldOnCellsRealPtr _externVarField,
-                                           const FieldOnNodesRealPtr _previousNodalField ) const {
+FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
+    const ASTERDOUBLE time, const ASTERDOUBLE time_step, const ASTERDOUBLE theta,
+    const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
@@ -135,10 +133,12 @@ DiscreteComputation::transientThermalLoad( const ASTERDOUBLE time, const ASTERDO
 
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -161,8 +161,7 @@ DiscreteComputation::transientThermalLoad( const ASTERDOUBLE time, const ASTERDO
 
 bool DiscreteComputation::addTherNeumannTerms(
     ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time, const ASTERDOUBLE time_step,
-    const ASTERDOUBLE theta, const FieldOnCellsRealPtr _externVarField,
-    const FieldOnNodesRealPtr _previousNodalField ) const {
+    const ASTERDOUBLE theta, const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
@@ -185,6 +184,11 @@ bool DiscreteComputation::addTherNeumannTerms(
     auto model_FEDesc = currModel->getFiniteElementDescriptor();
     AS_ASSERT( model_FEDesc );
     auto isXfem = currModel->existsXfem();
+
+    FieldOnCellsRealPtr externVar = nullptr;
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        externVar = _phys_problem->getExternalStateVariables( time );
+    }
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
     calcul->setModel( currModel );
@@ -344,8 +348,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time, time_step, theta );
-            if ( _externVarField ) {
-                calcul->addInputField( "PVARCPR", _externVarField );
+            if ( externVar ) {
+                calcul->addInputField( "PVARCPR", externVar );
             }
             calcul->addInputField( "PSOURCR", source_field );
             calcul->clearOutputs();
@@ -365,8 +369,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time, time_step, theta );
-            if ( _externVarField ) {
-                calcul->addInputField( "PVARCPR", _externVarField );
+            if ( externVar ) {
+                calcul->addInputField( "PVARCPR", externVar );
             }
             calcul->addInputField( "PSOURCR", computed_source_field );
             calcul->clearOutputs();
@@ -414,11 +418,11 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            if ( _externVarField ) {
-                calcul->addInputField( "PVARCPR", _externVarField );
-            }
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+                if ( externVar ) {
+                    calcul->addInputField( "PVARCPR", externVar );
+                }
             }
             calcul->addInputField( "PGRAINR", pregrad_field );
             calcul->clearOutputs();
@@ -506,8 +510,8 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time, time_step, theta );
-            if ( _externVarField ) {
-                calcul->addInputField( "PVARCPR", _externVarField );
+            if ( externVar ) {
+                calcul->addInputField( "PVARCPR", externVar );
             }
             calcul->addInputField( "PSOURCF", source_field );
             calcul->clearOutputs();
@@ -556,11 +560,13 @@ bool DiscreteComputation::addTherNeumannTerms(
             calcul->clearInputs();
             calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time, time_step, theta );
-            if ( _externVarField ) {
-                calcul->addInputField( "PVARCPR", _externVarField );
-            }
+
             if ( currMater ) {
                 calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+
+                if ( externVar ) {
+                    calcul->addInputField( "PVARCPR", externVar );
+                }
             }
             calcul->addInputField( "PGRAINF", pregrad_field );
             calcul->clearOutputs();

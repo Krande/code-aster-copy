@@ -35,9 +35,10 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
-    const ASTERDOUBLE &time_value, const ASTERINTEGER &modeFourier,
-    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::getElasticStiffnessMatrix( const ASTERDOUBLE &time,
+                                                const ASTERINTEGER &modeFourier,
+                                                const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -51,13 +52,6 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -78,15 +72,17 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
     calcul->addFourierModeField( modeFourier );
-    calcul->addTimeField( "PTEMPSR", time_value );
+    calcul->addTimeField( "PTEMPSR", time );
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         calcul->addXFEMField( currXfemModel );
@@ -109,7 +105,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     return elemMatr;
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::geometricStiffnessMatrix(
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getGeometricStiffnessMatrix(
     const FieldOnCellsRealPtr sief_elga, const FieldOnCellsRealPtr strx_elga,
     const FieldOnNodesRealPtr displ, const ASTERINTEGER &modeFourier,
     const VectorString &groupOfCells ) const {
@@ -183,9 +179,10 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::geometricStiffnessMatri
     return elemMatr;
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::fluidStrucutreStiffnessMatrix(
-    const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
-    const FieldOnCellsRealPtr _externVarField ) const {
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::getFluidStructureStiffnessMatrix( const ASTERDOUBLE &time,
+                                                       const ASTERINTEGER &modeFourier,
+                                                       const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -199,13 +196,6 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::fluidStrucutreStiffness
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -226,10 +216,12 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::fluidStrucutreStiffness
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -250,8 +242,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::fluidStrucutreStiffness
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::massMatrix( const bool diagonal, const VectorString &groupOfCells,
-                                 const FieldOnCellsRealPtr _externVarField ) const {
+DiscreteComputation::getMechanicalMassMatrix( const bool diagonal, const ASTERDOUBLE &time,
+                                              const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -267,13 +259,6 @@ DiscreteComputation::massMatrix( const bool diagonal, const VectorString &groupO
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -294,10 +279,12 @@ DiscreteComputation::massMatrix( const bool diagonal, const VectorString &groupO
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -327,8 +314,8 @@ DiscreteComputation::massMatrix( const bool diagonal, const VectorString &groupO
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::fluidStrucutreMassMatrix( const VectorString &groupOfCells,
-                                               const FieldOnCellsRealPtr _externVarField ) const {
+DiscreteComputation::getFluidStructureMassMatrix( const ASTERDOUBLE &time,
+                                                  const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -342,13 +329,6 @@ DiscreteComputation::fluidStrucutreMassMatrix( const VectorString &groupOfCells,
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -370,10 +350,12 @@ DiscreteComputation::fluidStrucutreMassMatrix( const VectorString &groupOfCells,
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -392,11 +374,10 @@ DiscreteComputation::fluidStrucutreMassMatrix( const VectorString &groupOfCells,
     return elemMatr;
 };
 
-ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix,
-                                    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
-                                    const VectorString &groupOfCells,
-                                    const FieldOnCellsRealPtr _externVarField ) const {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalDampingMatrix(
+    const ElementaryMatrixDisplacementRealPtr &massMatrix,
+    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix, const ASTERDOUBLE &time,
+    const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -409,13 +390,6 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -436,10 +410,12 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -499,9 +475,9 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     return elemMatr;
 };
 
-ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessMatrix(
-    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix, const VectorString &groupOfCells,
-    const FieldOnCellsRealPtr _externVarField ) const {
+ElementaryMatrixDisplacementComplexPtr DiscreteComputation::getHystereticStiffnessMatrix(
+    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix, const ASTERDOUBLE &time,
+    const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -514,13 +490,6 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-
-    // Check external state variables
-    if ( currMater && currMater->hasExternalStateVariable() ) {
-        if ( !_externVarField ) {
-            AS_ABORT( "External state variables vector is missing" )
-        }
-    }
 
     // Check super-element
     if ( currModel->existsSuperElement() ) {
@@ -541,10 +510,12 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+
+        if ( currMater->hasExternalStateVariable() ) {
+            calcul->addInputField( "PVARCPR", _phys_problem->getExternalStateVariables( time ) );
+        }
     }
-    if ( _externVarField ) {
-        calcul->addInputField( "PVARCPR", _externVarField );
-    }
+
     if ( currElemChara ) {
         calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -624,7 +595,7 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::hystereticStiffnessM
     return elemMatr;
 };
 
-void DiscreteComputation::baseDualStiffnessMatrix(
+void DiscreteComputation::baseDualElasticStiffnessMatrix(
     CalculPtr &calcul, ElementaryMatrixDisplacementRealPtr &elemMatr ) const {
 
     // Prepare loads
@@ -665,7 +636,7 @@ void DiscreteComputation::baseDualStiffnessMatrix(
     impl( listOfLoads->getMechanicalLoadsComplex() );
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() const {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getDualElasticStiffnessMatrix() const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     const std::string option( "MECA_DDLM_R" );
@@ -677,7 +648,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() c
     CalculPtr calcul = std::make_unique< Calcul >( option );
 
     // Compute elementary matrices
-    DiscreteComputation::baseDualStiffnessMatrix( calcul, elemMatr );
+    DiscreteComputation::baseDualElasticStiffnessMatrix( calcul, elemMatr );
 
     elemMatr->build();
     return elemMatr;
@@ -685,13 +656,13 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() c
 
 /** @brief Compute tangent matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-DiscreteComputation::computeTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
-                                                    const FieldOnNodesRealPtr displ_step,
-                                                    const FieldOnCellsRealPtr stress,
-                                                    const FieldOnCellsRealPtr internVar,
-                                                    const ASTERDOUBLE &time_prev,
-                                                    const ASTERDOUBLE &time_step,
-                                                    const VectorString &groupOfCells ) const {
+DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
+                                                const FieldOnNodesRealPtr displ_step,
+                                                const FieldOnCellsRealPtr stress,
+                                                const FieldOnCellsRealPtr internVar,
+                                                const ASTERDOUBLE &time_prev,
+                                                const ASTERDOUBLE &time_step,
+                                                const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     FieldOnCellsRealPtr _externVarFieldPrev;
@@ -859,7 +830,7 @@ DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr d
     return std::make_tuple( exitField, exitCode, elemMatr );
 }
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
     const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
     const FieldOnNodesRealPtr displ_step, const ASTERDOUBLE &time_prev,
     const ASTERDOUBLE &time_step, const FieldOnCellsRealPtr data,
@@ -910,7 +881,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
 }
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::rotationalStiffnessMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getRotationalStiffnessMatrix( const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "RIGI_MECA_RO";
 
@@ -979,7 +950,7 @@ DiscreteComputation::rotationalStiffnessMatrix( const VectorString &groupOfCells
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getGyroscopicStiffnessMatrix( const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "RIGI_GYRO";
 
@@ -1048,7 +1019,7 @@ DiscreteComputation::gyroscopicStiffnessMatrix( const VectorString &groupOfCells
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getGyroscopicDampingMatrix( const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "MECA_GYRO";
 
@@ -1118,7 +1089,7 @@ DiscreteComputation::gyroscopicDampingMatrix( const VectorString &groupOfCells )
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::impedanceBoundaryMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getImpedanceBoundaryMatrix( const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "IMPE_MECA";
 
@@ -1177,7 +1148,7 @@ DiscreteComputation::impedanceBoundaryMatrix( const VectorString &groupOfCells )
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::impedanceWaveMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getImpedanceWaveMatrix( const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "ONDE_FLUI";
 

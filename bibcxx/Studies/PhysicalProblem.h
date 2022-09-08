@@ -34,7 +34,6 @@
 #include "Materials/MaterialField.h"
 //#include "Numbering/BaseDOFNumbering.h" not include because forward declaration
 
-
 // Forward declaration
 class BaseDOFNumbering;
 using BaseDOFNumberingPtr = std::shared_ptr< BaseDOFNumbering >;
@@ -126,13 +125,14 @@ class PhysicalProblem {
     /** @brief Create list of loads */
     bool computeListOfLoads() { return _listOfLoads->build( _model ); };
 
-    /** @brief Set external state variables reference field */
-    void setExternalStateVariablesReference( const FieldOnCellsRealPtr _field ) {
-        _externVarRefe = _field;
-    };
+    /** @brief Compute field for external state variables reference values */
+    void computeReferenceExternalStateVariables();
 
     /** @brief Get external state variables reference field */
-    FieldOnCellsRealPtr getExternalStateVariablesReference() { return _externVarRefe; };
+    FieldOnCellsRealPtr getReferenceExternalStateVariables() const { return _externVarRefe; };
+
+    /** @brief Get current external state variables reference field */
+    FieldOnCellsRealPtr getExternalStateVariables( const ASTERDOUBLE &time ) const;
 };
 
 using PhysicalProblemPtr = std::shared_ptr< PhysicalProblem >;

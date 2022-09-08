@@ -58,7 +58,7 @@ void DiscreteComputation::baseDualAcousticMatrix(
 };
 
 ElementaryMatrixPressureComplexPtr
-DiscreteComputation::linearMobilityMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
     const std::string option( "RIGI_ACOU" );
@@ -94,7 +94,7 @@ DiscreteComputation::linearMobilityMatrix( const VectorString &groupOfCells ) co
     return elemMatr;
 };
 
-ElementaryMatrixPressureComplexPtr DiscreteComputation::dualMobilityMatrix() const {
+ElementaryMatrixPressureComplexPtr DiscreteComputation::getDualLinearMobilityMatrix() const {
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
     const std::string option( "ACOU_DDLM_C" );
@@ -113,7 +113,7 @@ ElementaryMatrixPressureComplexPtr DiscreteComputation::dualMobilityMatrix() con
 };
 
 ElementaryMatrixPressureComplexPtr
-DiscreteComputation::compressibilityMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getCompressibilityMatrix( const VectorString &groupOfCells ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
@@ -150,7 +150,7 @@ DiscreteComputation::compressibilityMatrix( const VectorString &groupOfCells ) c
     return elemMatr;
 };
 
-ElementaryMatrixPressureComplexPtr DiscreteComputation::impedanceMatrix() const {
+ElementaryMatrixPressureComplexPtr DiscreteComputation::getImpedanceMatrix() const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 

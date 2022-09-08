@@ -64,56 +64,6 @@ DiscreteComputation::createTimeField( const ASTERDOUBLE time_value, const ASTERD
     return field;
 }
 
-FieldOnCellsRealPtr
-DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time_value ) const {
-
-    // Create field
-    auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
-    auto field = std::make_shared< FieldOnCellsReal >( FEDesc );
-
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
-    std::string materialFieldName = ljust( _phys_problem->getMaterialField()->getName(), 24 );
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    std::string elemCharaName( " " );
-    if ( currElemChara )
-        elemCharaName = currElemChara->getName();
-    elemCharaName.resize( 24, ' ' );
-    std::string fieldName = ljust( field->getName(), 19 );
-
-    // Output
-    std::string out( ' ', 2 );
-    std::string base( "G" );
-
-    // Call Fortran WRAPPER
-    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName, &time_value, fieldName, out,
-                       base );
-
-    return field;
-}
-
-FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference() const {
-
-    // Create field
-    auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
-    auto field = std::make_shared< FieldOnCellsReal >( FEDesc );
-
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _phys_problem->getModel()->getName(), 8 );
-    std::string materialFieldName = ljust( _phys_problem->getMaterialField()->getName(), 8 );
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    std::string elemCharaName( " ", 8 );
-    if ( currElemChara )
-        elemCharaName = std::string( currElemChara->getName(), 0, 8 );
-    std::string fieldName = ljust( field->getName(), 19 );
-    std::string base( "G" );
-
-    // Call Fortran WRAPPER
-    CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName, base );
-
-    return field;
-}
-
 CalculPtr DiscreteComputation::createCalculForNonLinear(
     const std::string option, const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr,
     const FieldOnCellsRealPtr _externVarFieldPrev, const FieldOnCellsRealPtr _externVarFieldCurr,
@@ -125,7 +75,7 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto currBehaviour = _phys_problem->getBehaviourProperty();
-    auto currExternVarRefe = _phys_problem->getExternalStateVariablesReference();
+    auto currExternVarRefe = _phys_problem->getReferenceExternalStateVariables();
     AS_ASSERT( currMater );
 
     // No !

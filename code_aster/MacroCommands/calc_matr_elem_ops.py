@@ -71,108 +71,108 @@ def calc_matr_elem_ops(self, **args):
     matr_elem = None
     if myOption == "RIGI_MECA":
         if args["CALC_ELEM_MODELE"] == "OUI":
-            matr_elem = disc_comp.elasticStiffnessMatrix(
+            matr_elem = disc_comp.getElasticStiffnessMatrix(
                 time, fourier, group_ma, externVarField=externVar
             )
 
-            matr_rigi_dual = disc_comp.dualStiffnessMatrix()
+            matr_rigi_dual = disc_comp.getDualElasticStiffnessMatrix()
             matr_elem.addElementaryTerm(
                 matr_rigi_dual.getElementaryTerms())
             matr_elem.build()
         else:
-            matr_elem = disc_comp.dualStiffnessMatrix()
+            matr_elem = disc_comp.getDualElasticStiffnessMatrix()
 
     elif myOption == "RIGI_GEOM":
         sief_elga = args.get("SIEF_ELGA")
         strx_elga = args.get("STRX_ELGA")
         displ = args.get("DEPL")
 
-        matr_elem = disc_comp.geometricStiffnessMatrix(
+        matr_elem = disc_comp.getGeometricStiffnessMatrix(
             sief_elga, strx_elga, displ, fourier, group_ma)
 
     elif myOption == "RIGI_ROTA":
-        matr_elem = disc_comp.rotationalStiffnessMatrix(group_ma)
+        matr_elem = disc_comp.getRotationalStiffnessMatrix(group_ma)
 
     elif myOption == "RIGI_GYRO":
-        matr_elem = disc_comp.gyroscopicStiffnessMatrix(group_ma)
+        matr_elem = disc_comp.getGyroscopicStiffnessMatrix(group_ma)
 
     elif myOption == "MECA_GYRO":
-        matr_elem = disc_comp.gyroscopicDampingMatrix(group_ma)
+        matr_elem = disc_comp.getGyroscopicDampingMatrix(group_ma)
 
     elif myOption == "MASS_MECA":
-        matr_elem = disc_comp.massMatrix(False,
+        matr_elem = disc_comp.getMechanicalMassMatrix(False,
                                          group_ma, externVarField=externVar)
 
     elif myOption == "MASS_MECA_DIAG":
-        matr_elem = disc_comp.massMatrix(True,
+        matr_elem = disc_comp.getMechanicalMassMatrix(True,
                                          group_ma, externVarField=externVar)
 
     elif myOption == "AMOR_MECA":
-        massMatrix = args.get("MASS_MECA")
+        getMechanicalMassMatrix = args.get("MASS_MECA")
         stiffnessMatrix = args.get("RIGI_MECA")
-        matr_elem = disc_comp.dampingMatrix(
-            massMatrix, stiffnessMatrix, group_ma, externVarField=externVar)
+        matr_elem = disc_comp.getMechanicalDampingMatrix(
+            getMechanicalMassMatrix, stiffnessMatrix, group_ma, externVarField=externVar)
 
     elif myOption == "RIGI_MECA_HYST":
         stiffnessMatrix = args["RIGI_MECA"]
-        matr_elem = disc_comp.hystereticStiffnessMatrix(
+        matr_elem = disc_comp.getHystereticStiffnessMatrix(
             stiffnessMatrix, group_ma, externVarField=externVar)
         # This part is a remove because complex elem matr does not support real term
-        # remove code in hystereticStiffnessMatrix and add this part later
-        # matr_rigi_dual = disc_comp.dualStiffnessMatrix()
+        # remove code in getHystereticStiffnessMatrix and add this part later
+        # matr_rigi_dual = disc_comp.getDualElasticStiffnessMatrix()
         # matr_elem.addElementaryTerm(
         #     matr_rigi_dual.getElementaryTerms())
         # matr_elem.build()
 
     elif myOption == "MASS_THER":
-        matr_elem = disc_comp.linearCapacityMatrix(time, group_ma,
+        matr_elem = disc_comp.getLinearCapacityMatrix(time, group_ma,
                                                    externVarField=externVar)
         matr_elem *= 1.0/args.get("INCR_INST")
 
     elif myOption == "RIGI_THER":
-        matr_elem = disc_comp.linearConductivityMatrix(time, fourier,
+        matr_elem = disc_comp.getLinearConductivityMatrix(time, fourier,
                                                        group_ma,
                                                        externVarField=externVar)
 
-        matr_rigi_dual = disc_comp.dualConductivityMatrix()
+        matr_rigi_dual = disc_comp.getDualLinearConductivityMatrix()
         matr_elem.addElementaryTerm(matr_rigi_dual.getElementaryTerms())
 
-        matr_rigi_exch = disc_comp.exchangeThermalMatrix(time)
+        matr_rigi_exch = disc_comp.getExchangeThermalMatrix(time)
         matr_elem.addElementaryTerm(matr_rigi_exch.getElementaryTerms())
 
         matr_elem.build()
     elif myOption == "MASS_ACOU":
-        matr_elem = disc_comp.compressibilityMatrix(group_ma)
+        matr_elem = disc_comp.getCompressibilityMatrix(group_ma)
 
     elif myOption == "AMOR_ACOU":
-        matr_elem = disc_comp.impedanceMatrix()
+        matr_elem = disc_comp.getImpedanceMatrix()
 
     elif myOption == "RIGI_ACOU":
-        matr_elem = disc_comp.linearMobilityMatrix(group_ma)
+        matr_elem = disc_comp.getLinearMobilityMatrix(group_ma)
 
-        matr_rigi_dual = disc_comp.dualMobilityMatrix()
+        matr_rigi_dual = disc_comp.getDualLinearMobilityMatrix()
         matr_elem.addElementaryTerm(
             matr_rigi_dual.getElementaryTerms())
         matr_elem.build()
 
     elif myOption == "RIGI_FLUI_STRU":
-        matr_elem = disc_comp.fluidStrucutreStiffnessMatrix(groupOfCells=group_ma,
+        matr_elem = disc_comp.getFluidStructureStiffnessMatrix(groupOfCells=group_ma,
                                                             externVarField=externVar)
 
-        matr_rigi_dual = disc_comp.dualStiffnessMatrix()
+        matr_rigi_dual = disc_comp.getDualElasticStiffnessMatrix()
         matr_elem.addElementaryTerm(
             matr_rigi_dual.getElementaryTerms())
         matr_elem.build()
 
     elif myOption == "MASS_FLUI_STRU":
-        matr_elem = disc_comp.fluidStrucutreMassMatrix(groupOfCells=group_ma,
+        matr_elem = disc_comp.getFluidStructureMassMatrix(groupOfCells=group_ma,
                                                        externVarField=externVar)
 
     elif myOption == "IMPE_MECA":
-        matr_elem = disc_comp.impedanceBoundaryMatrix(group_ma)
+        matr_elem = disc_comp.getImpedanceBoundaryMatrix(group_ma)
 
     elif myOption == "ONDE_FLUI":
-        matr_elem = disc_comp.impedanceWaveMatrix(group_ma)
+        matr_elem = disc_comp.getImpedanceWaveMatrix(group_ma)
 
     else:
         raise RuntimeError("Option %s not implemented" % (myOption))

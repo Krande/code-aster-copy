@@ -30,9 +30,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         mod, "DiscreteComputation" )
         .def( py::init( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
-        .def( "imposedDualBC",
+        .def( "getImposedDualBC",
               py::overload_cast< const ASTERDOUBLE, const ASTERDOUBLE, const ASTERDOUBLE >(
-                  &DiscreteComputation::imposedDualBC, py::const_ ),
+                  &DiscreteComputation::getImposedDualBC, py::const_ ),
               R"(
       Return the imposed nodal BC assembled vector
 
@@ -45,8 +45,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: imposed dual field
         )",
               py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ) )
-        .def( "imposedDualBC",
-              py::overload_cast< const ASTERDOUBLE >( &DiscreteComputation::imposedDualBC,
+        .def( "getImposedDualBC",
+              py::overload_cast< const ASTERDOUBLE >( &DiscreteComputation::getImposedDualBC,
                                                       py::const_ ),
               R"(
       Return the imposed nodal BC assembled vector
@@ -58,7 +58,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: imposed dual field
         )",
               py::arg( "time" ) )
-        .def( "dualReaction", &DiscreteComputation::dualReaction,
+        .def( "getDualForces", &DiscreteComputation::getDualForces,
               R"(
       Return the imposed displacement assembled vector
 
@@ -69,7 +69,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: dual reaction vector (B^T*lambda)
         )",
               py::arg( "disp_curr" ) )
-        .def( "dualDisplacement", &DiscreteComputation::dualDisplacement,
+        .def( "getDualDisplacement", &DiscreteComputation::getDualDisplacement,
               R"(
       Return the Dirichlet load vector
 
@@ -80,68 +80,48 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: Dirichlet load vector
               )",
               py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
-        .def( "neumann", &DiscreteComputation::neumann,
+        .def( "getNeumannForces", &DiscreteComputation::getNeumannForces,
               R"(
-      Return the Neumann load vector
+      Return the Neumann forces vector
 
       Arguments:
             time (float): Current time
             time_step (float): Time increment
-            theta (float): Theta parameter for integration
-            externVarField (fieldOnCellsReal): external state variable at current time
+            theta (float): Theta parameter for time-integration
             previousPrimalField (fieldOnNodesReal): solution field at previous time
 
       Returns:
-            FieldOnNodes: Neumann load vector
+            FieldOnNodes: Neumann forces vector
         )",
               py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ),
-              py::arg( "externVarField" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
-        .def( "createExternalStateVariablesField",
-              &DiscreteComputation::createExternalStateVariablesField, R"(
-            Create external state variable field
-
-            Arguments:
-                  time (float): Current time
-
-            Returns:
-                  FieldOnCells: field of external state variables at current time
-            )",
-              py::arg( "time" ) )
-        .def( "computeExternalStateVariablesLoad",
-              &DiscreteComputation::computeExternalStateVariablesLoad, R"(
+              py::arg( "previousPrimalField" ) = nullptr )
+        .def( "getExternalStateVariablesForces",
+              &DiscreteComputation::getExternalStateVariablesForces, R"(
             Compute load from external state variables
 
             Arguments:
                   time (float): Current time
-                  externVarField (fieldOnCellsReal): external state variable at current time
 
             Returns:
                   FieldOnNodes: load from external state variables
             )",
-              py::arg( "time" ), py::arg( "externVarField" ) )
-        .def( "transientThermalLoad", &DiscreteComputation::transientThermalLoad, R"(
+              py::arg( "time" ) )
+        .def( "getTransientThermalForces", &DiscreteComputation::getTransientThermalForces, R"(
             Compute Transient Thermal Load
 
             Arguments:
                   time (float): Current time
                   time_step (float): Time increment
                   theta (float): Theta parameter for integration
-                  externVarField (fieldOnCellsReal): external state variable at current time
                   previousPrimalField (fieldOnNodesReal): solution field at previous time
 
             Returns:
                   FieldOnNodes: load from external state variables
             )",
               py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ),
-              py::arg( "externVarField" ), py::arg( "previousPrimalField" ) = nullptr )
-        .def( "computeExternalStateVariablesReference",
-              &DiscreteComputation::computeExternalStateVariablesReference, R"(
-            Compute field for external state variables reference value
+              py::arg( "previousPrimalField" ) = nullptr )
 
-            Returns:
-                  FieldOnCells: field for external state variables reference values
-            )" )
-        .def( "dirichletBC", &DiscreteComputation::dirichletBC,
+        .def( "getDirichletBC", &DiscreteComputation::getDirichletBC,
               R"(
             Return the imposed displacement vector used to remove imposed DDL
 
@@ -152,12 +132,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodes: imposed displacement vector
         )",
               py::arg( "time" ) )
-        .def( "incrementalDirichletBC", &DiscreteComputation::incrementalDirichletBC,
+        .def( "getIncrementalDirichletBC", &DiscreteComputation::getIncrementalDirichletBC,
               R"(
             Return the incremental imposed displacement vector used to remove imposed DDL
             for incremental resolution.
 
-            incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
+            incr_disp = getDirichletBC(time) - disp, with 0.0 for DDL not imposed
 
             Arguments:
                   time (float): Current time
@@ -167,51 +147,51 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodes: incremental imposed displacement vector
         )",
               py::arg( "time" ), py::arg( "disp" ) )
-        .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix, R"(
+        .def( "getElasticStiffnessMatrix", &DiscreteComputation::getElasticStiffnessMatrix, R"(
             Return the elementary matrices for elastic Stiffness matrix.
             Option RIGI_MECA.
 
             Arguments:
-                  time (float): Current time (default: 0.0)
+                  time (float): Current time for external state variavle evaluation (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                   ElementaryMatrix: elementary elastic Stiffness matrix
             )",
               py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = -1,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "fluidStrucutreStiffnessMatrix", &DiscreteComputation::fluidStrucutreStiffnessMatrix,
+        .def( "getFluidStructureStiffnessMatrix",
+              &DiscreteComputation::getFluidStructureStiffnessMatrix,
               R"(
             Return the elementary matrices for fluid-structure stiffness matrix.
             Option RIGI_FLUI_STRUC.
 
             Arguments:
+                  time (float): Current time for external state variavle evaluation (default: 0.0)
                   fourierMode (int): Fourier mode (default: -1)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                   ElementaryMatrixReal: elementary fluid-structure Stiffness matrix
             )",
-              py::arg( "fourierMode" ) = -1, py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = -1,
+              py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "fluidStrucutreMassMatrix", &DiscreteComputation::fluidStrucutreMassMatrix,
+        .def( "getFluidStructureMassMatrix", &DiscreteComputation::getFluidStructureMassMatrix,
               R"(
             Return the elementary matrices for fluid-structure mass matrix.
             Option MASS_FLUI_STRUC.
 
             Arguments:
+                  time (float): Current time for external state variavle evaluation (default: 0.0)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
                       If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                   ElementaryMatrixReal: elementary fluid-structure mass matrix
             )",
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "time" ) = 0.0, py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem, R"(
             Get physical probelm
@@ -219,7 +199,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Returns:
                   PhysicalProblem: physical problem
             )" )
-        .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
+        .def( "getDualElasticStiffnessMatrix", &DiscreteComputation::getDualElasticStiffnessMatrix,
               R"(
             Return elementary matrices for dual mechanical BC
 
@@ -227,21 +207,22 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrix: elementary matrices
         )" )
 
-        .def( "dualMobilityMatrix", &DiscreteComputation::dualMobilityMatrix,
+        .def( "getDualLinearMobilityMatrix", &DiscreteComputation::getDualLinearMobilityMatrix,
               R"(
             Return elementary matrices for dual acoustic BC
 
             Returns:
                 ElementaryMatrix: elementary matrices
         )" )
-        .def( "dualConductivityMatrix", &DiscreteComputation::dualConductivityMatrix,
+        .def( "getDualLinearConductivityMatrix",
+              &DiscreteComputation::getDualLinearConductivityMatrix,
               R"(
             Return elementary matrices for dual thermal BC
 
             Returns:
                 ElementaryMatrix: elementary matrices
         )" )
-        .def( "linearConductivityMatrix", &DiscreteComputation::linearConductivityMatrix,
+        .def( "getLinearConductivityMatrix", &DiscreteComputation::getLinearConductivityMatrix,
               R"(
             Return the elementary matices for linear thermal matrix.
             Option RIGI_THER.
@@ -251,14 +232,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 fourierMode (int): Fourier mode (default: -1)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary linear thermal matrices
         )",
               py::arg( "time" ), py::arg( "fourierMode" ) = 0,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "exchangeThermalMatrix", &DiscreteComputation::exchangeThermalMatrix,
+        .def( "getExchangeThermalMatrix", &DiscreteComputation::getExchangeThermalMatrix,
               R"(
             Return the elementary matices for exhange thermal matrix.
 
@@ -269,7 +249,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time" ) )
 
-        .def( "linearMobilityMatrix", &DiscreteComputation::linearMobilityMatrix,
+        .def( "getLinearMobilityMatrix", &DiscreteComputation::getLinearMobilityMatrix,
               R"(
             Return the elementary matices for linear mobility acoustic matrix
             Option RIGI_ACOU.
@@ -281,22 +261,22 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
+        .def( "getMechanicalMassMatrix", &DiscreteComputation::getMechanicalMassMatrix, R"(
             Return the elementary matrices for mechanical mass matrix
             Option MASS_MECA.
 
             Arguments:
                 diagonal (bool) : True for diagonal mass matrix else False.
+                time (float): Current time for external state variavle evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "diagonal" ), py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "diagonal" ), py::arg( "time" ) = 0.0,
+              py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "compressibilityMatrix", &DiscreteComputation::compressibilityMatrix, R"(
+        .def( "getCompressibilityMatrix", &DiscreteComputation::getCompressibilityMatrix, R"(
             Return the elementary matrices for compressibility acoustic matrix.
             Option MASS_ACOU.
 
@@ -308,7 +288,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "linearCapacityMatrix", &DiscreteComputation::linearCapacityMatrix, R"(
+        .def( "getLinearCapacityMatrix", &DiscreteComputation::getLinearCapacityMatrix, R"(
             Return the elementary matrices for linear Capacity matrix in thermal computation.
             Option MASS_THER.
 
@@ -316,30 +296,29 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 time (float): current time to evaluate rho_cp
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrix: elementary mass matrix
             )",
-              py::arg( "time_" ), py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "time" ), py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(
+        .def( "getMechanicalDampingMatrix", &DiscreteComputation::getMechanicalDampingMatrix, R"(
             Return the elementary matrices for damping matrix.
             Option AMOR_MECA.
 
             Arguments:
-                massMatrix : elementary mass matrix
+                getMechanicalMassMatrix : elementary mass matrix
                 stiffnessMatrix : elementary stiffness matrix
+                time (float): Current time for external state variavle evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrixReal: elementary damping matrix
             )",
-              py::arg( "massMatrix" ) = nullptr, py::arg( "stiffnessMatrix" ) = nullptr,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
+              py::arg( "getMechanicalMassMatrix" ) = nullptr,
+              py::arg( "stiffnessMatrix" ) = nullptr, py::arg( "time" ) = 0.0,
+              py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "impedanceMatrix", &DiscreteComputation::impedanceMatrix, R"(
+        .def( "getImpedanceMatrix", &DiscreteComputation::getImpedanceMatrix, R"(
             Return the elementary matrices for impedance (acoustic) damping matrix.
             Option AMOR_ACOU.
 
@@ -347,7 +326,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrixReal: elementary damping matrix
             )" )
 
-        .def( "impedanceBoundaryMatrix", &DiscreteComputation::impedanceBoundaryMatrix, R"(
+        .def( "getImpedanceBoundaryMatrix", &DiscreteComputation::getImpedanceBoundaryMatrix, R"(
             Return the elementary matrices for impedance (mechanical) matrix.
             Option IMPE_MECA.
 
@@ -356,7 +335,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "impedanceWaveMatrix", &DiscreteComputation::impedanceWaveMatrix, R"(
+        .def( "getImpedanceWaveMatrix", &DiscreteComputation::getImpedanceWaveMatrix, R"(
             Return the elementary matrices for impedance (mechanical) matrix
             from an harmonic wave.
             Option ONDE_FLUI.
@@ -366,22 +345,23 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "hystereticStiffnessMatrix", &DiscreteComputation::hystereticStiffnessMatrix, R"(
+        .def( "getHystereticStiffnessMatrix", &DiscreteComputation::getHystereticStiffnessMatrix,
+              R"(
             Return the elementary matrices for viscoelastic Stiffness matrix.
             Option RIGI_MECA_HYST.
 
             Arguments:
                 stiffnessMatrix : elementary stiffness matrix
+                time (float): Current time for external state variavle evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
-                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                 ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
             )",
-              py::arg( "stiffnessMatrix" ), py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "stiffnessMatrix" ), py::arg( "time" ) = 0.0,
+              py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "geometricStiffnessMatrix", &DiscreteComputation::geometricStiffnessMatrix, R"(
+        .def( "getGeometricStiffnessMatrix", &DiscreteComputation::getGeometricStiffnessMatrix, R"(
             Return the elementary matrices for geometric Stiffness matrix.
             Option RIGI_MECA_HYST.
 
@@ -398,7 +378,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "displ" ) = nullptr, py::arg( "modeFourier" ) = -1,
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "rotationalStiffnessMatrix", &DiscreteComputation::rotationalStiffnessMatrix, R"(
+        .def( "getRotationalStiffnessMatrix", &DiscreteComputation::getRotationalStiffnessMatrix,
+              R"(
             Return the elementary matrices for rotational Stiffness matrix.
             Option RIGI_ROTA.
 
@@ -410,7 +391,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "gyroscopicStiffnessMatrix", &DiscreteComputation::gyroscopicStiffnessMatrix, R"(
+        .def( "getGyroscopicStiffnessMatrix", &DiscreteComputation::getGyroscopicStiffnessMatrix,
+              R"(
             Return the elementary matrices for gyroscopic Stiffness matrix.
             Option RIGI_GYRO.
 
@@ -422,7 +404,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "gyroscopicDampingMatrix", &DiscreteComputation::gyroscopicDampingMatrix, R"(
+        .def( "getGyroscopicDampingMatrix", &DiscreteComputation::getGyroscopicDampingMatrix, R"(
             Return the elementary matrices for gyroscopic damping matrix.
             Option MECA_GYRO.
 
@@ -434,7 +416,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
+        .def( "getInternalForces", &DiscreteComputation::getInternalForces,
               R"(
             Compute internal forces (integration of behaviour)
 
@@ -458,7 +440,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
+        .def( "getTangentStiffnessMatrix", &DiscreteComputation::getTangentStiffnessMatrix,
               R"(
             Compute jacobian matrix for Newton algorithm
 
@@ -501,7 +483,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "groupOfCells" ) = VectorString() )
-        .def( "contactForces", &DiscreteComputation::contactForces, R"(
+        .def( "getContactForces", &DiscreteComputation::getContactForces, R"(
             Compute contact and friction forces
 
             Arguments:
@@ -521,7 +503,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ),
               py::arg( "time_prev" ), py::arg( "time_step" ), py::arg( "data" ),
               py::arg( "coef_cont" ), py::arg( "coef_frot" ) )
-        .def( "contactMatrix", &DiscreteComputation::contactMatrix, R"(
+        .def( "getContactMatrix", &DiscreteComputation::getContactMatrix, R"(
             Compute contact matrix
 
             Arguments:
