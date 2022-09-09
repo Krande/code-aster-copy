@@ -58,7 +58,7 @@ class FieldOnCells : public DataField {
     /** @brief Vecteur Jeveux '.CELK' */
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.CELV' */
-    JeveuxVector< ValueType > _valuesList;
+    JeveuxVector< ValueType > _values;
     /** @brief Finite element description */
     FiniteElementDescriptorPtr _dofDescription;
     /** @brief Object for dynamic fields  (as VARI_ELGA) */
@@ -75,7 +75,7 @@ class FieldOnCells : public DataField {
         : DataField( name, "CHAM_ELEM" ),
           _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
+          _values( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
           _dofDescription( nullptr ){};
 
     /** @brief Constructor with automatic name */
@@ -116,7 +116,7 @@ class FieldOnCells : public DataField {
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
         *( _reference ) = *( toCopy._reference );
-        *( _valuesList ) = *( toCopy._valuesList );
+        *( _values ) = *( toCopy._values );
         *( _title ) = *( toCopy._title );
         // Pointers to be copied
         setDescription( toCopy._dofDescription );
@@ -127,7 +127,7 @@ class FieldOnCells : public DataField {
     FieldOnCells( FieldOnCells &&other ) : DataField{ std::move( other ) } {
         _descriptor = other._descriptor;
         _reference = other._reference;
-        _valuesList = other._valuesList;
+        _values = other._values;
         _title = other._title;
         setDescription( other._dofDescription );
         updateValuePointers();
@@ -151,7 +151,7 @@ class FieldOnCells : public DataField {
     void deallocate() {
         _descriptor->deallocate();
         _reference->deallocate();
-        _valuesList->deallocate();
+        _values->deallocate();
         _dofDescription = nullptr;
     };
 
@@ -176,7 +176,7 @@ class FieldOnCells : public DataField {
     ASTERBOOL isSimilarTo( const FieldOnCells< ValueType > &tmp2 ) const {
         bool similar = ( _descriptor->size() == tmp2._descriptor->size() );
         similar = ( similar && ( _reference->size() == tmp2._reference->size() ) );
-        similar = ( similar && ( _valuesList->size() == tmp2._valuesList->size() ) );
+        similar = ( similar && ( _values->size() == tmp2._values->size() ) );
         return similar;
     }
 
@@ -223,6 +223,8 @@ class FieldOnCells : public DataField {
      */
     FiniteElementDescriptorPtr getDescription() const { return _dofDescription; };
 
+    bool exists() const { return _descriptor->exists() && _values->exists(); };
+
     /**
      * @brief Update field and build FiniteElementDescriptor if necessary
      */
@@ -256,11 +258,11 @@ class FieldOnCells : public DataField {
     void updateValuePointers() const {
         _descriptor->updateValuePointer();
         _reference->updateValuePointer();
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
     };
 
     /**
-     * @brief Transormer les valeurs de _valuesList en appliquant
+     * @brief Transormer les valeurs de _values en appliquant
      *         la fonction "func" à chaque valeur
      * @return renvoie un nouveau objet de FieldOnCells
      *         avec les valeurs transformées
@@ -276,9 +278,9 @@ class FieldOnCells : public DataField {
         FieldOnCells< ValueType > tmp( *this );
         updateValuePointers();
 
-        ASTERINTEGER size = _valuesList->size();
+        ASTERINTEGER size = _values->size();
         for ( auto i = 0; i < size; i++ ) {
-            PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_valuesList )[i] );
+            PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_values )[i] );
             if ( PyFloat_Check( res ) ) {
                 tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
             } else {
@@ -301,14 +303,14 @@ class FieldOnCells : public DataField {
         method should be a callable Python object" );
 
         FieldOnCells< ValueType > tmp( *this );
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
 
-        ASTERINTEGER size = _valuesList->size();
+        ASTERINTEGER size = _values->size();
 
         Py_complex val;
         for ( auto i = 0; i < size; i++ ) {
-            val.real = ( *_valuesList )[i].real();
-            val.imag = ( *_valuesList )[i].imag();
+            val.real = ( *_values )[i].real();
+            val.imag = ( *_values )[i].imag();
             PyObject *res = PyObject_CallFunction( func.ptr(), "D", val );
             if ( PyComplex_Check( res ) ) {
                 ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
@@ -333,7 +335,7 @@ class FieldOnCells : public DataField {
      */
     FieldOnCells< ValueType > operator-() const {
         FieldOnCells< ValueType > tmp( *this );
-        ( *tmp._valuesList ) *= ValueType( -1 );
+        ( *tmp._values ) *= ValueType( -1 );
         return tmp;
     };
 
@@ -344,7 +346,7 @@ class FieldOnCells : public DataField {
     FieldOnCells< ValueType > &operator+=( const FieldOnCells< ValueType > &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        ( *_valuesList ) += ( *rhs._valuesList );
+        ( *_values ) += ( *rhs._values );
         return *this;
     };
 
@@ -355,7 +357,7 @@ class FieldOnCells : public DataField {
     FieldOnCells< ValueType > &operator-=( const FieldOnCells< ValueType > &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        ( *_valuesList ) -= ( *rhs._valuesList );
+        ( *_values ) -= ( *rhs._values );
         return *this;
     };
 
@@ -364,7 +366,7 @@ class FieldOnCells : public DataField {
      * @param i subscript
      * @return value at position i
      */
-    ValueType &operator[]( int i ) { return _valuesList->operator[]( i ); };
+    ValueType &operator[]( int i ) { return _values->operator[]( i ); };
 
     const ValueType &operator[]( int i ) const {
         return const_cast< ValueType & >(
@@ -402,7 +404,7 @@ class FieldOnCells : public DataField {
 
     friend FieldOnCells< ValueType > operator*( FieldOnCells< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
-        ( *lhs._valuesList ) *= scal;
+        ( *lhs._values ) *= scal;
         return lhs;
     };
 
@@ -422,7 +424,7 @@ class FieldOnCells : public DataField {
      * @brief Get values of the field
      *
      */
-    const JeveuxVector< ValueType > &getValues() const { return _valuesList; }
+    const JeveuxVector< ValueType > &getValues() const { return _values; }
 
     /**
      * @brief Get descriptor of the field
@@ -436,8 +438,8 @@ class FieldOnCells : public DataField {
      * @param value Value to affect
      */
     void setValues( const ValueType &value ) {
-        _valuesList->updateValuePointer();
-        _valuesList->assign( value );
+        _values->updateValuePointer();
+        _values->assign( value );
     };
 
     std::string getPhysicalQuantity() const {
@@ -543,7 +545,7 @@ class FieldOnCells : public DataField {
     /**
      * @brief Size of the FieldOnNodes
      */
-    const ASTERINTEGER size() const { return _valuesList->size(); }
+    const ASTERINTEGER size() const { return _values->size(); }
 
     // norm and dot methods
 
@@ -559,7 +561,7 @@ class FieldOnCells : public DataField {
 
         const int rank = getMPIRank();
 
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
         _descriptor->updateValuePointer();
 
         JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
@@ -643,8 +645,8 @@ class FieldOnCells : public DataField {
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     dot( const FieldOnCellsPtr &tmp ) const {
         tmp->updateValuePointers();
-        _valuesList->updateValuePointer();
-        ASTERINTEGER taille = _valuesList->size();
+        _values->updateValuePointer();
+        ASTERINTEGER taille = _values->size();
 
         if ( taille != tmp->size() )
             raiseAsterError( "Incompatible size" );

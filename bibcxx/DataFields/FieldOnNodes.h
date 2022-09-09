@@ -89,7 +89,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /** @brief Vecteur Jeveux '.REFE' */
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
-    JeveuxVector< ValueType > _valuesList;
+    JeveuxVector< ValueType > _values;
     /** @brief Dof description */
     FieldOnNodesDescriptionPtr _dofDescription;
     /** @brief Support mesh */
@@ -149,7 +149,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         : DataField( name, "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
+          _values( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
           _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
@@ -161,7 +161,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
         *( _reference ) = *( toCopy._reference );
-        *( _valuesList ) = *( toCopy._valuesList );
+        *( _values ) = *( toCopy._values );
         *( _title ) = *( toCopy._title );
         // Pointers to be copied
         _dofDescription = toCopy._dofDescription;
@@ -173,7 +173,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         // Pointers to be moved
         _descriptor = other._descriptor;
         _reference = other._reference;
-        _valuesList = other._valuesList;
+        _values = other._values;
         _title = other._title;
         _dofDescription = other._dofDescription;
         _mesh = other._mesh;
@@ -250,7 +250,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         : DataField( "CHAM_NO" ),
           _descriptor( toCopy->getDescriptor() ),
           _reference( toCopy->getReference() ),
-          _valuesList( toCopy->getValues() ),
+          _values( toCopy->getValues() ),
           _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
@@ -259,7 +259,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( ASTERINTEGER i ) { return _valuesList->operator[]( i ); };
+    ValueType &operator[]( ASTERINTEGER i ) { return _values->operator[]( i ); };
 
     /**
      * @brief Surcharge de l'operateur []
@@ -279,7 +279,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         CALL_JEMARQ();
         bool similar = ( ( *_descriptor ) == ( *tmp2._descriptor ) );
         similar = ( similar && ( this->_reference->size() == tmp2._reference->size() ) );
-        similar = ( similar && ( this->_valuesList->size() == tmp2._valuesList->size() ) );
+        similar = ( similar && ( this->_values->size() == tmp2._values->size() ) );
         similar = ( similar && ( _mesh == tmp2._mesh ) );
 
         if ( similar ) {
@@ -299,7 +299,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > &operator+=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        ( *_valuesList ) += ( *rhs._valuesList );
+        ( *_values ) += ( *rhs._values );
         return *this;
     };
 
@@ -311,7 +311,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > &operator-=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        ( *_valuesList ) -= ( *rhs._valuesList );
+        ( *_values ) -= ( *rhs._values );
         return *this;
     };
 
@@ -320,9 +320,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
-        // AsterBLAS::scal(scal, _valuesList);
+        // AsterBLAS::scal(scal, _values);
 
-        ( *_valuesList ) *= scal;
+        ( *_values ) *= scal;
 
         return *this;
     };
@@ -333,7 +333,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > operator-() const {
         FieldOnNodes< ValueType > tmp( *this );
-        ( *tmp._valuesList ) *= ValueType( -1 );
+        ( *tmp._values ) *= ValueType( -1 );
         return tmp;
     };
 
@@ -505,11 +505,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     bool allocateFrom( const FieldOnNodes< ValueType > &tmp ) {
         this->_descriptor->deallocate();
         this->_reference->deallocate();
-        this->_valuesList->deallocate();
+        this->_values->deallocate();
 
         this->_descriptor->allocate( tmp._descriptor->size() );
         this->_reference->allocate( tmp._reference->size() );
-        this->_valuesList->allocate( tmp._valuesList->size() );
+        this->_values->allocate( tmp._values->size() );
         return true;
     };
 
@@ -526,6 +526,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return toReturn;
     };
 
+    bool exists() const {
+        return _reference->exists() && _descriptor->exists() && _values->exists();
+    };
+
     /**
      * @brief Get mesh
      */
@@ -540,22 +544,22 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setValues( const ValueType &value ) {
         CALL_JEMARQ();
-        _valuesList->updateValuePointer();
-        _valuesList->assign( value );
+        _values->updateValuePointer();
+        _values->assign( value );
         CALL_JEDEMA();
     };
 
     void setValues( const std::vector< ValueType > &values ) {
         AS_ASSERT( values.size() == size() );
 
-        *_valuesList = values;
+        *_values = values;
     };
 
     /**
      * @brief Get values of the field
      *
      */
-    const JeveuxVector< ValueType > &getValues() const { return _valuesList; }
+    const JeveuxVector< ValueType > &getValues() const { return _values; }
 
     /**
      * @brief Set FieldOnNodes description
@@ -596,7 +600,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         }
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
         auto dofUsed = this->_getDOFsToUse( false, list_cmp );
 
         if ( normType == "NORM_1" ) {
@@ -637,8 +641,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     ValueType dot( const FieldOnNodesPtr &tmp ) const {
         CALL_JEMARQ();
         tmp->updateValuePointers();
-        _valuesList->updateValuePointer();
-        const auto taille = _valuesList->size();
+        _values->updateValuePointer();
+        const auto taille = _values->size();
 
         if ( taille != tmp->size() )
             raiseAsterError( "Incompatible size" );
@@ -697,7 +701,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Size of the FieldOnNodes
      */
-    ASTERINTEGER size( void ) const { return _valuesList->size(); }
+    ASTERINTEGER size( void ) const { return _values->size(); }
 
     /**
      * @brief Get FieldOnNodesDescription
@@ -728,7 +732,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     void updateValuePointers() {
         _descriptor->updateValuePointer();
         _reference->updateValuePointer();
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
     };
 
     friend class FieldBuilder;

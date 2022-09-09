@@ -141,7 +141,7 @@ class ConstantFieldOnCells : public DataField {
     /** @brief Collection  '.LIMA' */
     JeveuxCollectionLong _listOfMeshCells;
     /** @brief Vecteur Jeveux '.VALE' */
-    JeveuxVector< ValueType > _valuesList;
+    JeveuxVector< ValueType > _values;
     /** @brief Maillage sous-jacent */
     const BaseMeshPtr _mesh;
     /** @brief Ligrel */
@@ -149,7 +149,7 @@ class ConstantFieldOnCells : public DataField {
     /** @brief Objet temporaire '.NCMP' */
     JeveuxVectorChar8 _componentNames;
     /** @brief Objet temporaire '.VALV' */
-    JeveuxVector< ValueType > _valuesListTmp;
+    JeveuxVector< ValueType > _valuesTmp;
 
   private:
     void fortranAddValues( const ASTERINTEGER &code, const std::string &grp,
@@ -160,7 +160,7 @@ class ConstantFieldOnCells : public DataField {
             throw std::runtime_error(
                 "Build of ConstantFieldOnCells impossible, FiniteElementDescriptor is missing" );
         _componentNames->updateValuePointer();
-        _valuesListTmp->updateValuePointer();
+        _valuesTmp->updateValuePointer();
         const ASTERINTEGER taille = _componentNames->size();
 
         const ASTERINTEGER tVerif1 = component->size();
@@ -170,7 +170,7 @@ class ConstantFieldOnCells : public DataField {
 
         for ( int position = 0; position < tVerif1; ++position ) {
             ( *_componentNames )[position] = ( *component )[position];
-            ( *_valuesListTmp )[position] = ( *values )[position];
+            ( *_valuesTmp )[position] = ( *values )[position];
         }
 
         const std::string limano( " " );
@@ -187,7 +187,7 @@ class ConstantFieldOnCells : public DataField {
             throw std::runtime_error(
                 "Build of ConstantFieldOnCells impossible, FiniteElementDescriptor is missing" );
         _componentNames->updateValuePointer();
-        _valuesListTmp->updateValuePointer();
+        _valuesTmp->updateValuePointer();
         const ASTERINTEGER taille = _componentNames->size();
 
         const ASTERINTEGER tVerif1 = component.size();
@@ -197,7 +197,7 @@ class ConstantFieldOnCells : public DataField {
 
         for ( int position = 0; position < tVerif1; ++position ) {
             ( *_componentNames )[position] = component[position];
-            ( *_valuesListTmp )[position] = values[position];
+            ( *_valuesTmp )[position] = values[position];
         }
         std::string feDescName( " " );
         if ( _FEDesc != nullptr )
@@ -232,11 +232,11 @@ class ConstantFieldOnCells : public DataField {
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
+          _values( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
           _mesh( mesh ),
           _FEDesc( FiniteElementDescriptorPtr() ),
           _componentNames( getName() + ".NCMP" ),
-          _valuesListTmp( getName() + ".VALV" ){};
+          _valuesTmp( getName() + ".VALV" ){};
 
     /**
      * @brief Constructeur
@@ -273,11 +273,11 @@ class ConstantFieldOnCells : public DataField {
         : ConstantFieldOnCells( name, toCopy.getMesh() ) {
         *( _meshName ) = *( toCopy._meshName );
         *( _descriptor ) = *( toCopy._descriptor );
-        *( _valuesList ) = *( toCopy._valuesList );
+        *( _values ) = *( toCopy._values );
         *( _nameOfLigrels ) = *( toCopy._nameOfLigrels );
         *( _listOfMeshCells ) = *( toCopy._listOfMeshCells );
         *( _componentNames ) = *( toCopy._componentNames );
-        *( _valuesListTmp ) = *( toCopy._valuesListTmp );
+        *( _valuesTmp ) = *( toCopy._valuesTmp );
         _FEDesc = toCopy._FEDesc;
 
         updateValuePointers();
@@ -289,6 +289,10 @@ class ConstantFieldOnCells : public DataField {
      * @brief Destructeur
      */
     ~ConstantFieldOnCells(){};
+
+    bool exists() const {
+        return _meshName->exists() && _descriptor->exists() && _values->exists();
+    };
 
     /**
      * @brief Allocation de la carte
@@ -321,9 +325,9 @@ class ConstantFieldOnCells : public DataField {
         _descriptor->deallocate();
         _nameOfLigrels->deallocate();
         _listOfMeshCells->deallocate();
-        _valuesList->deallocate();
+        _values->deallocate();
         _componentNames->deallocate();
-        _valuesListTmp->deallocate();
+        _valuesTmp->deallocate();
     };
 
     /**
@@ -367,7 +371,7 @@ class ConstantFieldOnCells : public DataField {
                 if ( val == 1 ) {
                     cmpToReturn.push_back( ( *compNames )[pos + i * 30].toString() );
                     const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
-                    valToReturn.push_back( ( *_valuesList )[posInVale] );
+                    valToReturn.push_back( ( *_values )[posInVale] );
                 }
                 ++pos;
             }
@@ -379,7 +383,7 @@ class ConstantFieldOnCells : public DataField {
      * @brief Get values of all zones
      */
     std::vector< ConstantFieldValues< ValueType > > getValues() const {
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
         _descriptor->updateValuePointer();
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
         ASTERINTEGER gdeur = ( *_descriptor )[0];
@@ -406,7 +410,7 @@ class ConstantFieldOnCells : public DataField {
                     if ( val == 1 ) {
                         cmpToReturn.push_back( ( *compNames )[pos + i * 30].toString() );
                         const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
-                        valToReturn.push_back( ( *_valuesList )[posInVale] );
+                        valToReturn.push_back( ( *_values )[posInVale] );
                     }
                     ++pos;
                 }
@@ -585,7 +589,7 @@ class ConstantFieldOnCells : public DataField {
     void updateValuePointers() {
         _meshName->updateValuePointer();
         _descriptor->updateValuePointer();
-        _valuesList->updateValuePointer();
+        _values->updateValuePointer();
         // Les deux elements suivants sont facultatifs
         _listOfMeshCells->updateValuePointer();
         if ( _nameOfLigrels->exists() )

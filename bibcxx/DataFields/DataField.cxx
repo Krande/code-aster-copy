@@ -23,7 +23,6 @@
 
 #include "DataFields/DataField.h"
 
-#include "aster_fort_ds.h"
 #include "aster_fort_utils.h"
 
 std::string DataField::getFieldType() const {
@@ -36,15 +35,4 @@ std::string DataField::getFieldType() const {
     CALLO_DISMOI( questi1, getName(), typeco, &repi, repk, arret, &ier );
 
     return trim( repk.toString() );
-};
-
-bool DataField::exists() const {
-    ASTERINTEGER iret;
-    std::string champ = "CHAMP";
-    CALLO_EXISD( champ, getName(), &iret );
-
-    if ( iret == 1 )
-        return true;
-
-    return false;
 };

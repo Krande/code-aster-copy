@@ -41,7 +41,7 @@ class ElementaryTerm : public DataField {
     /** @brief Objet Jeveux '.NOLI' */
     JeveuxVectorChar24 _noli;
     /** @brief Objet Jeveux '.DESC' */
-    JeveuxVectorLong _desc;
+    JeveuxVectorLong _descriptor;
     /** @brief Objet Jeveux '.RESL' */
     JeveuxCollection< ValueType > _resl;
     /** @brief Ligel */
@@ -55,7 +55,7 @@ class ElementaryTerm : public DataField {
     ElementaryTerm( const std::string name )
         : DataField( name, "RESUELEM" ),
           _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
-          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
+          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ){};
 
     ElementaryTerm() : ElementaryTerm( DataStructureNaming::getNewName() ){};
@@ -65,6 +65,8 @@ class ElementaryTerm : public DataField {
     };
 
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
+
+    bool exists() const { return _noli->exists() && _descriptor->exists() && _resl->exists(); };
 
     std::string getOption() {
         _noli->updateValuePointer();
@@ -89,9 +91,9 @@ class ElementaryTerm : public DataField {
     }
 
     ASTERINTEGER getNumberOfGroupOfCells() const {
-        _desc->updateValuePointer();
+        _descriptor->updateValuePointer();
 
-        return ( *_desc )[1];
+        return ( *_descriptor )[1];
     }
 
     /**
@@ -99,13 +101,13 @@ class ElementaryTerm : public DataField {
      */
     std::string getLocalMode() const {
         const auto nbGrel = getNumberOfGroupOfCells();
-        _desc->updateValuePointer();
+        _descriptor->updateValuePointer();
         const std::string cata = "&CATA.TE.NOMMOLOC";
         JeveuxChar24 objName, charName;
 
         std::string modeName;
         for ( auto igr = 0; igr < nbGrel; igr++ ) {
-            auto mode = ( *_desc )[2 + igr];
+            auto mode = ( *_descriptor )[2 + igr];
             if ( mode > 0 ) {
                 CALLO_JEXNUM( objName, cata, &mode );
                 CALLO_JENUNO( objName, charName );
@@ -129,7 +131,7 @@ class ElementaryTerm : public DataField {
         return trim( ( *_noli )[2].toString() ) == "MPI_COMPLET";
     }
 
-    bool isEmpty() { return !( _noli->exists() && _desc->exists() ); }
+    bool isEmpty() { return !( _noli->exists() && _descriptor->exists() ); }
 
     bool build() { return _resl->build( true ); };
 

@@ -200,8 +200,8 @@ bool FiniteElementDescriptor::exists() const {
 };
 
 bool FiniteElementDescriptor::build() {
-    _delayedNumberedConstraintElementsDescriptor->build( true );
-    _listOfGroupOfCells->build( true );
+    _delayedNumberedConstraintElementsDescriptor->build();
+    _listOfGroupOfCells->build();
 
     return true;
 };
@@ -294,7 +294,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
             if ( numGrel > 0 ) {
                 auto &grel = ( *otherLiel )[numGrel];
                 grel->updateValuePointer();
-                auto typeFE = (*grel)[grel->size() - 1];
+                auto typeFE = ( *grel )[grel->size() - 1];
                 typeCellFE.push_back( typeFE );
             } else {
                 typeCellFE.push_back( 0 );

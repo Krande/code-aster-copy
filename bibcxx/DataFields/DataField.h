@@ -72,8 +72,6 @@ class DataField : public DataStructure {
     DataField() : DataStructure( 19, "CHAM_GD" ){};
 
     std::string getFieldType() const;
-
-    bool exists() const;
 };
 
 /**
