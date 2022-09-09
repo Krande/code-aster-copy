@@ -56,10 +56,9 @@ use petsc_data_module
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
 
-    integer:: k,ilig,neq,kec,nbec,nbnoma,nbddl
-    integer:: jprno,n1,ino,ino_model,ecmax(10),ec1,ec2,nnz
-    integer:: kbloc,i,ilig1,ilig2,k2,pos1_0,ieq,ieq1,ieq2
-    integer:: jnueq,kcmp,neq2,nbnomo,nbddlt,ico,vali(4)
+    integer:: neq,kec,nbec,nbnoma,nbddl
+    integer:: jprno,n1,ino,ino_model,ecmax(10),ec1,ec2
+    integer:: jnueq,kcmp,nbnomo,nbddlt,ieq
     aster_logical, parameter :: dbg=.false.
 !
 !----------------------------------------------------------------
@@ -77,7 +76,8 @@ use petsc_data_module
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     precon = slvk(2)
     if (dbg) write(6,*) 'apbloc precon=',precon
-    if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG')) then
+    if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG') &
+                         .and. (precon.ne.'HPDDM')) then
         if (dbg) write(6,*) "apbloc tbloc impose a 1 car PRE_COND ne l'utilise pas."
         tbloc = 1
         goto 999

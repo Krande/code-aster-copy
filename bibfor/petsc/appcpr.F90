@@ -33,7 +33,9 @@ implicit none
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/apmams.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -41,6 +43,9 @@ implicit none
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
 #include "asterfort/utmess.h"
+#include "asterfort/PCHPDDMDumpAuxiliaryMat.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: kptsc
 !----------------------------------------------------------------
 !
@@ -57,7 +62,7 @@ implicit none
     integer :: dimgeo, dimgeo_b, niremp, istat
     integer :: jnequ, jnequl
     integer :: nloc, neqg, ndprop, ieq, numno, icmp
-    integer :: iret
+    integer :: iret, i
     integer :: il, ix, iga_f, igp_f
     integer :: fill, reacpr
     integer, dimension(:), pointer :: slvi => null()
@@ -69,17 +74,19 @@ implicit none
     mpi_int :: mpicomm
 !
     character(len=24) :: precon
-    character(len=19) :: nomat, nosolv
-    character(len=14) :: nonu
-    character(len=8) :: nomail
+    character(len=19) :: nomat, nosolv, syme
+    character(len=14) :: nonu, factor
+    character(len=8) :: nomail, nbproc_str
     character(len=4) :: exilag
     character(len=3) :: matd
+    character(len=800) :: myopt
     character(len=24), dimension(:), pointer :: slvk => null()
 !
     real(kind=8) :: fillin, val
     real(kind=8), dimension(:), pointer :: coordo => null()
     real(kind=8), dimension(:), pointer :: slvr => null()
-!
+    integer(kind=4), pointer :: nulg_i4(:) => null()
+    !
     aster_logical :: lmd, lmhpc, lmp_is_active
 !
 !----------------------------------------------------------------
@@ -90,9 +97,10 @@ implicit none
     PetscScalar :: xx_v(1)
     PetscOffset :: xx_i
 
-    Mat :: a
+    Mat :: a, auxMat
     Vec :: coords
     KSP :: ksp
+    IS  :: auxIS
     PC  :: pc
     mpi_int :: mrank, msize
     MatNullSpace :: sp
@@ -424,7 +432,7 @@ implicit none
         ASSERT(ierr == 0)
 !        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, &
-             &   '-pc_hypre_boomeramg_coarsen_type', 'PMIS', ierr)
+             &   '-pc_hypre_boomeramg_coarsen_type', 'HMIS', ierr)
         ASSERT(ierr == 0)
 !        CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, &
@@ -461,6 +469,65 @@ implicit none
 !       It should be defined by the user
         ! call PCSetType(pc, PCNONE, ierr)
         call PCSetFromOptions(pc, ierr)
+
+!-----------------------------------------------------------------------
+    else if (precon == 'HPDDM') then
+!       HPDDM works only in hpc mode
+        if (.not.lmhpc) call utmess('F','PETSC_23')
+!       Set HPPDM pc
+        call PCSetType(pc, PCHPDDM, ierr)
+        ASSERT(ierr == 0)
+!       Create the auxiliary matrix usefull for the coarse problem
+        call MatCreate(PETSC_COMM_SELF, auxMat, ierr)
+        ASSERT(ierr == 0)
+!       Set the block size here because we have it easily
+        bs=tblocs(kptsc)
+        call MatSetBlockSize(auxMat, bs, ierr)
+        ASSERT(ierr == 0)
+!       Transfer the local code_aster matrix to the PETSc one
+        call apmams(nomat, auxMat)
+        ASSERT(ierr == 0)
+!       Get the local dof in the global numbering
+        call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
+        AS_ALLOCATE(size=size(nulg), vi4=nulg_i4)
+        nulg_i4(1:size(nulg)) = (/ (to_petsc_int(nulg(i)), i=1,size(nulg)) /)
+        call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_i4, PETSC_COPY_VALUES,&
+                             auxIS, ierr)
+
+        if (ASTER_FALSE) call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
+!       Set the Neumann matrix
+        call PCHPDDMSetAuxiliaryMat(pc,auxIS,auxMat,PETSC_NULL_FUNCTION,PETSC_NULL_INTEGER,ierr)
+        ASSERT(ierr == 0)
+!       Set the PC definition 
+        call dismoi('TYPE_MATRICE', nomat, 'MATR_ASSE', repk=syme)
+        factor = 'lu'
+        if (syme .eq. 'SYMETRI') factor = 'cholesky'
+    
+        call codent(int(nbproc/2), 'D', nbproc_str, 'F')
+        myopt = '-prefix_push pc_hpddm_ ' // &
+        '-prefix_push levels_1_ ' // &
+        '-pc_type asm ' // &
+        '-sub_mat_mumps_icntl_14 260 ' // &
+        '-eps_nev 30 ' // &
+        '-sub_pc_type ' // factor // ' ' //&
+        '-sub_pc_factor_mat_solver_type mumps ' // &
+        '-st_pc_factor_mat_solver_type mumps ' // &
+        '-st_share_sub_ksp ' // &
+        '-prefix_pop ' // &
+        '-prefix_push coarse_ ' // &
+        '-pc_factor_mat_solver_type mumps ' // &
+        '-sub_pc_type ' // factor // ' ' //&
+        '-mat_mumps_icntl_14 260 ' // &
+        '-p ' // trim(nbproc_str) // ' ' // &
+        '-prefix_pop ' // &
+        '-define_subdomains ' // &
+        '-has_neumann ' // &
+        '-prefix_pop ' 
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
+        ASSERT(ierr == 0)
+        call PCSetFromOptions(pc, ierr)
+        ASSERT(ierr == 0)
+        AS_DEALLOCATE(vi4=nulg_i4)
 
 !-----------------------------------------------------------------------
     else if (precon == 'SANS') then

@@ -25,11 +25,11 @@ from ..Language.Syntax import *
 
 def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
-    # --------------------------------------------------------------------
-    #
-    # VERIFICATIONS
-    #
-    # --------------------------------------------------------------------
+# --------------------------------------------------------------------
+#
+# VERIFICATIONS
+#
+# --------------------------------------------------------------------
     if BASE is not None:
         assert COMMAND == "DYNA_LINE_HARM"
         assert BASE in ("GENE", "PHYS")
@@ -169,6 +169,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _BlocPE_ML = {}
     _BlocPE_BOOMER = {}
     _BlocPE_GAMG = {}
+    _BlocPE_HPDDM = {}
     _BlocPE_LAGAUG = {}
     _BlocPE_FIELD = {}
     _BlocPE_UTIL = {}
@@ -360,6 +361,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
             "BLOC_LAGR",
             "FIELDSPLIT",
             "UTILISATEUR",
+            "HPDDM",
             "SANS",
         ),
     )
@@ -419,6 +421,9 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
     _BlocPE_GAMG["RENUM"] = SIMP(statut="f", typ="TXM", defaut="SANS", into=("SANS",))
 
+    # --------------------------------------------------------------------
+    _BlocPE_HPDDM['RENUM'] = SIMP(
+        statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
     # --------------------------------------------------------------------
 
     _BlocPE_LAGAUG["RENUM"] = SIMP(statut="f", typ="TXM", defaut="SANS", into=("SANS",))
@@ -506,6 +511,11 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
                 condition="""equal_to("PRE_COND", 'GAMG') """,
                 fr=tr("Paramètres du multigrille algébrique GAMG"),
                 **_BlocPE_GAMG
+            ),
+            b_hpddm=BLOC(
+                condition="""equal_to("PRE_COND", 'HPDDM') """,
+                fr=tr("Paramètres du Schwarz HPDDM"),
+                **_BlocPE_HPDDM
             ),
             b_lagaug=BLOC(
                 condition="""equal_to("PRE_COND", 'BLOC_LAGR') """,

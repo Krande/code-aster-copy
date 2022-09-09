@@ -109,7 +109,7 @@ RES = STAT_NON_LINE(CHAM_MATER=AFFE,
                               PREDICTION='ELASTIQUE',
                               REAC_INCR=1,
                               REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='PETSC', PRE_COND="GAMG", RESI_RELA=1e-10,
+                    SOLVEUR=_F(METHODE='PETSC', PRE_COND="HPDDM", RESI_RELA=1e-10, OPTION_PETSC='-ksp_monitor_true_residual -options_view',
                                ))
 
 RES_NEW = MECA_NON_LINE(CHAM_MATER=AFFE,
@@ -133,7 +133,7 @@ RES_NEW = MECA_NON_LINE(CHAM_MATER=AFFE,
                               PREDICTION='ELASTIQUE',
                               REAC_INCR=1,
                               REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='PETSC', PRE_COND="GAMG", RESI_RELA=1e-10,
+                    SOLVEUR=_F(METHODE='PETSC', PRE_COND="GAMG", RESI_RELA=1e-10, OPTION_PETSC='-ksp_monitor_true_residual -options_view ',
                                ))
 
 #=========================================================

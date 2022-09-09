@@ -64,7 +64,7 @@ myOptions=(
 """ -ksp_rtol 1e-3 """ +
 """ -ksp_max_it 20 """ +
 """ -ksp_type gmres """ +
-""" -pc_type hypre  -pc_hypre_boomeramg_coarsen_type HMIS """ +
+""" -pc_type hypre """ +
 """ -prefix_pop """ +
 # Global KSP
 """ -ksp_monitor """ +

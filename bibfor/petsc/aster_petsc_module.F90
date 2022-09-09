@@ -139,6 +139,17 @@ interface
     end subroutine MatConvert
 end interface
 interface
+    subroutine PCHPDDMSetAuxiliaryMat(pc,is,mat,func,ctx,ierr)
+        use petsckspdef
+        PC :: pc
+        Mat :: mat
+        IS :: is
+        external :: func
+        PetscInt :: ctx(*)
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine PCHPDDMSetAuxiliaryMat
+end interface
+interface
     subroutine MatCreateShell(comm, m, n, mg, ng, ctxt, a_mat, ierr)
         use petscmatdef
         PetscMPIInt, intent(in) :: comm

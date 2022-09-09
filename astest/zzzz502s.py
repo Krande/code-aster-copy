@@ -78,6 +78,7 @@ MASS=ASSE_MATRICE(MATR_ELEM=MEL, NUME_DDL=NUMEDDL)
 
 LISTINST=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=(_F(JUSQU_A=1,NOMBRE=10,),),)
 
+# Algebraic Multigrid Preconditioner
 DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         MODELE=MO,
                         MATR_MASS=MASS,
@@ -105,6 +106,49 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                  PAS_OBSE=1,
                                  PRECISION=1e-06),),
                         SOLVEUR=_F(METHODE='PETSC', PRE_COND='GAMG', RESI_RELA=1e-10,),
+                        INCREMENT=_F( LIST_INST = LISTINST),
+                        ARCHIVAGE=_F( LIST_INST = LISTINST),
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                        INFO=2,
+                        )
+
+DEPL = DYNA.getFieldOnNodesReal("DEPL", 2)
+DEPL.setMesh(MA)
+
+# sequantial comparaison
+seq_value = 15.652508028144187
+mpi_value = DEPL.norm("NORM_1")
+test.assertTrue( abs(seq_value - mpi_value)/abs(seq_value) < 1e-6)
+
+
+# Domain Decomposition Preconditioner
+DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                        MODELE=MO,
+                        MATR_MASS=MASS,
+                        MATR_RIGI=STIFFNESS,
+                        MATR_AMOR=DAMPING,
+                        EXCIT=(
+                          _F(  CHARGE = ONDE),
+                          ),
+                        OBSERVATION=(_F(CRITERE='RELATIF',
+                                 EVAL_CHAM='VALE',
+                                 EVAL_CMP='VALE',
+                                 GROUP_MA='COTE_H',
+                                 NOM_CHAM='DEPL',
+                                 NOM_CMP='DX',
+                                 OBSE_ETAT_INIT='OUI',
+                                 PAS_OBSE=1,
+                                 PRECISION=1e-06),
+                                 _F(CRITERE='RELATIF',
+                                 EVAL_CHAM='VALE',
+                                 EVAL_CMP='VALE',
+                                 GROUP_MA='COTE_B',
+                                 NOM_CHAM='DEPL',
+                                 NOM_CMP='DX',
+                                 OBSE_ETAT_INIT='OUI',
+                                 PAS_OBSE=1,
+                                 PRECISION=1e-06),),
+                        SOLVEUR=_F(METHODE='PETSC', PRE_COND='HPDDM', RESI_RELA=1e-10,),
                         INCREMENT=_F( LIST_INST = LISTINST),
                         ARCHIVAGE=_F( LIST_INST = LISTINST),
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),

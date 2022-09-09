@@ -150,7 +150,7 @@ Conseils :
 
 18 : _("""
 Solveur PETSc :
-  Les préconditionneurs 'ML', 'BOOMER' et 'GAMG' ne doivent pas être utilisés lorsque:
+  Les préconditionneurs 'ML', 'BOOMER', 'GAMG' et 'HPDDM' ne doivent pas être utilisés lorsque:
   - soit le modèle comporte des charges dualisées issues de AFFE_CHAR_MECA,
   - soit les noeuds du modèle ne portent pas tous les mêmes degrés de liberté.
 
@@ -166,7 +166,7 @@ Solveur PETSc :
   L'installation de PETSc dont vous disposez n'a vraisemblablement pas été compilée avec le support de ce préconditionneur.
 
   Conseils :
-  - reconstruisez une version de PETSc avec le support des préconditionneurs BOOMER, ML et GAMG
+  - reconstruisez une version de PETSc avec le support des préconditionneurs 'ML', 'BOOMER', 'GAMG' et 'HPDDM'
   - utilisez un autre préconditionneur (comme 'LDLT_SP' par exemple)
 """),
 
@@ -187,10 +187,17 @@ Solveur PETSc :
     ou augmenter LOW_RANK_SEUIL.
   - utiliser le solveur linéaire par défaut.
 """),
+
 22 : _("""
 Solveur PETSc :
-  Le solveur linéaire  a convergé en '%(i1)d' itérations sans avoir besoin de la procédure de correction.
+  Le solveur linéaire a convergé en '%(i1)d' itérations sans avoir besoin de la procédure de correction.
 """),
+
+23 : _("""
+Solveur PETSc :
+  Le préconditionneur 'HPDDM' ne fonctionne qu'en mode parallèle distribué.
+  """),
+
 24 : _("""
 Solveur PETSc :
   La résolution du système linéaire précédent s'est effectuée en %(i1)d itérations.
