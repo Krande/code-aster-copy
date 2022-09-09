@@ -46,6 +46,7 @@ subroutine te0041(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
@@ -84,6 +85,8 @@ subroutine te0041(option, nomte)
     real(kind=8)        :: valres(3)
     character(len=16)   :: nomres(3)
 ! --------------------------------------------------------------------------------------------------
+    character(len=8)    :: nomu
+    character(len=16)   :: concep,cmd
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
 !   Ce sont bien des éléments discrets
@@ -101,8 +104,10 @@ subroutine te0041(option, nomte)
 !
     assemble_amor = (option.eq.'AMOR_MECA')
     if ( assemble_amor ) then
+        call getres(nomu,concep,cmd)
         call tecach('ONO','PCOMPOR', 'L', iret, iad=ibid)
-        if( iret > 0 ) assemble_amor = ASTER_TRUE
+        ! Called from c++ probably
+        assemble_amor = cmd == ' ' .and. iret > 0
         if( .not. assemble_amor) then
             call jevech('PCOMPOR', 'L', icompo)
             assemble_amor = zk16(icompo).eq.'DIS_CHOC'
