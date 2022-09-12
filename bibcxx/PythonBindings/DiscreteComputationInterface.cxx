@@ -466,8 +466,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "groupOfCells" ) = VectorString() )
 
-        .def( "computeTangentPredictionMatrix",
-              &DiscreteComputation::computeTangentPredictionMatrix, R"(
+        .def( "getPredictionTangentStiffnessMatrix",
+              &DiscreteComputation::getPredictionTangentStiffnessMatrix, R"(
             Compute jacobian matrix for Newton algorithm, Euler prediction
 
             Arguments:

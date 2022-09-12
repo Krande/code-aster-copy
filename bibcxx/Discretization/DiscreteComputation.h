@@ -331,7 +331,7 @@ class DiscreteComputation {
      * elementary prediction matrix
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-    computeTangentPredictionMatrix( const FieldOnNodesRealPtr displ,
+    getPredictionTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
                                     const FieldOnNodesRealPtr displ_step,
                                     const FieldOnCellsRealPtr stress,
                                     const FieldOnCellsRealPtr internVar,

@@ -383,13 +383,4 @@ IMPR_GENE(UNITE=39,
                   TOUT_CHAM='OUI',),)
 
 
-TEST_FICHIER(FICHIER="fort.39",
-             NB_VALE_I=3511,
-             VALE_CALC_I=77059,
-             NB_VALE=2250,
-             VALE_CALC=1.88787191129,
-             VALE_CALC_K="9133ddc2ce50802d457b1a68843a6157",
-             EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
-)
-
 FIN()

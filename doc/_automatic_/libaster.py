@@ -717,24 +717,6 @@ class DiscreteComputation:
     def __init__(self, arg0):
         pass
     
-    def computeTangentPredictionMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
-        """Compute jacobian matrix for Newton algorithm, Euler prediction
-        
-        Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_step (FieldOnNodes): field of increment of displacement
-            stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
-            time_prev (float): time at begin of the step
-            time_curr (float): delta time between begin and end of the step
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-        
-        Returns:
-            tuple (tuple): return code error (FieldOnCellsLong),
-            error code flag (int),
-            elementary tangent matrix (ElementaryMatrixDisplacementReal),
-        """
-    
     def getCompressibilityMatrix(self, groupOfCells= []):
         """Return the elementary matrices for compressibility acoustic matrix.
         Option MASS_ACOU.
@@ -831,15 +813,16 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
     
-    def getElasticStiffnessMatrix(self, time= 0.0, fourierMode= -1, groupOfCells= []):
+    def getElasticStiffnessMatrix(self, time= 0.0, fourierMode= -1, groupOfCells= [], with_dual= True):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
         
         Arguments:
-              time (float): Current time for external state variavle evaluation (default: 0.0)
+              time (float): Current time for external state variable evaluation (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
+              with_dual (bool): compute dual terms or not (default: True)
         Returns:
               ElementaryMatrix: elementary elastic Stiffness matrix
         """
@@ -868,7 +851,7 @@ class DiscreteComputation:
         Option MASS_FLUI_STRUC.
         
         Arguments:
-              time (float): Current time for external state variavle evaluation (default: 0.0)
+              time (float): Current time for external state variable evaluation (default: 0.0)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
         Returns:
@@ -880,7 +863,7 @@ class DiscreteComputation:
         Option RIGI_FLUI_STRUC.
         
         Arguments:
-              time (float): Current time for external state variavle evaluation (default: 0.0)
+              time (float): Current time for external state variable evaluation (default: 0.0)
               fourierMode (int): Fourier mode (default: -1)
               groupOfCells (list[str]): compute matrices on given groups of cells.
                   If it empty, the full model is used
@@ -930,7 +913,7 @@ class DiscreteComputation:
         
         Arguments:
             stiffnessMatrix : elementary stiffness matrix
-            time (float): Current time for external state variavle evaluation (default: 0.0)
+            time (float): Current time for external state variable evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1037,25 +1020,28 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
     
-    def getLinearConductivityMatrix(self, time, fourierMode= 0, groupOfCells= []):
+    def getLinearConductivityMatrix(self, time, fourierMode= 0, groupOfCells= [], with_dual= True):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
         
         Arguments:
-            time (float): Current time
-            fourierMode (int): Fourier mode (default: -1)
-            groupOfCells (list[str]): compute matrices on given groups of cells.
+              time (float): Current time
+              fourierMode (int): Fourier mode (default: -1)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
+              with_dual (bool): compute dual terms or not (default: True)
         Returns:
-            ElementaryMatrix: elementary linear thermal matrices
+              ElementaryMatrix: elementary linear thermal matrices
         """
     
-    def getLinearMobilityMatrix(self, groupOfCells= []):
+    def getLinearMobilityMatrix(self, groupOfCells= [], with_dual= True):
         """Return the elementary matices for linear mobility acoustic matrix
         Option RIGI_ACOU.
         
         Arguments:
             groupOfCells (list[str]): compute matrices on given groups of cells.
+            with_dual (bool): compute dual terms or not (default: True)
+        
         Returns:
             ElementaryMatrix: elementary linear acoustic matrices
         """
@@ -1067,7 +1053,7 @@ class DiscreteComputation:
         Arguments:
             getMechanicalMassMatrix : elementary mass matrix
             stiffnessMatrix : elementary stiffness matrix
-            time (float): Current time for external state variavle evaluation (default: 0.0)
+            time (float): Current time for external state variable evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
@@ -1080,14 +1066,14 @@ class DiscreteComputation:
         
         Arguments:
             diagonal (bool) : True for diagonal mass matrix else False.
-            time (float): Current time for external state variavle evaluation (default: 0.0)
+            time (float): Current time for external state variable evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
         Returns:
             ElementaryMatrix: elementary mass matrix
         """
     
-    def getNeumannForces(self, time, time_step, theta, previousPrimalField= None):
+    def getNeumannForces(self, time= 0.0, time_step= 0.0, theta= 1.0, previousPrimalField= None):
         """Return the Neumann forces vector
         
         Arguments:
@@ -1105,6 +1091,24 @@ class DiscreteComputation:
         
         Returns:
               PhysicalProblem: physical problem
+        """
+    
+    def getPredictionTangentStiffnessMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
+        """Compute jacobian matrix for Newton algorithm, Euler prediction
+        
+        Arguments:
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+        
+        Returns:
+            tuple (tuple): return code error (FieldOnCellsLong),
+            error code flag (int),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal),
         """
     
     def getRotationalStiffnessMatrix(self, groupOfCells= []):

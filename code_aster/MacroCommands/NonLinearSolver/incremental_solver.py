@@ -163,9 +163,8 @@ class IncrementalSolver:
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute neuamnn forces
-        neumann_forces = disc_comp.getNeumannForces(self.phys_state.time,
-                                                    self.phys_state.time_step,
-                                                    )
+        neumann_forces = disc_comp.getNeumannForces(
+            self.phys_state.time + self.phys_state.time_step)
 
         return neumann_forces
 
@@ -249,7 +248,7 @@ class IncrementalSolver:
                 time=time_curr, with_dual=False)
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
-            _, codret, matr_elem_rigi = disc_comp.computeTangentPredictionMatrix(
+            _, codret, matr_elem_rigi = disc_comp.getPredictionTangentStiffnessMatrix(
                 self.phys_state.primal,
                 self.phys_state.primal_step,
                 self.phys_state.stress,

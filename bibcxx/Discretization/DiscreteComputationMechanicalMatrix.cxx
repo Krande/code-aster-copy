@@ -748,7 +748,7 @@ DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
 
 /** @brief Compute tangent prediction matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr displ,
+DiscreteComputation::getPredictionTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
                                                      const FieldOnNodesRealPtr displ_step,
                                                      const FieldOnCellsRealPtr stress,
                                                      const FieldOnCellsRealPtr internVar,
