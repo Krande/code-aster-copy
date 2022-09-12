@@ -85,6 +85,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {
+    _delayedNumberedConstraintElementsDescriptor->build();
     return _explorer;
 };
 
@@ -99,14 +100,17 @@ const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesNumbering() cons
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getListOfGroupOfElementsExplorer() const {
+    _listOfGroupOfCells->build();
     return _explorer2;
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfElements() const {
+    _listOfGroupOfCells->build();
     return _listOfGroupOfCells;
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
+    _delayedNumberedConstraintElementsDescriptor->build();
     return _delayedNumberedConstraintElementsDescriptor;
 };
 

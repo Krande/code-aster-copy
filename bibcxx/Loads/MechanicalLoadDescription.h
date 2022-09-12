@@ -230,7 +230,7 @@ class MechanicalLoadDescription : public DataStructure {
     };
 
     bool build() {
-        _FEDesc->build();
+        // _FEDesc->build();
         _cimpo->build();
         _cmult->build();
         _dpgen->build();
