@@ -23,7 +23,6 @@
 #
 # LOADING CASE : LCAS_1 /  (Operating weight)
 #
-#DEBUT(PAR_LOT='NON');
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
 #
 # MESH AND FE-MODEL DEFINITIONS ##########

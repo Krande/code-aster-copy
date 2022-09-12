@@ -21,7 +21,6 @@
 # NOUVEAU CAS TEST
 # INGENIEUR RECHERCHE thuong-anh.nguyen@edf.fr
 #####################################################################################
-#DEBUT(PAR_LOT='NON');
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
 #
 # MESH AND FE-MODEL DEFINITIONS ##########

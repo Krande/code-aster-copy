@@ -16,9 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: mathieu.courtois at edf.fr
-# person_in_charge: mathieu.courtois@edf.fr
-
 from ..Objects import Table, TableContainer, TableOfFunctions
 from ..Supervis import ExecuteCommand
 
@@ -36,7 +33,7 @@ class TableCreation(ExecuteCommand):
                 in place.
         """
         if keywords.get("RESU"):
-            fkwd = keywords["RESU"]
+            fkwd = keywords["RESU"][0]
             if fkwd.get("RESULTAT"):
                 name = fkwd["RESULTAT"].userName
             else:

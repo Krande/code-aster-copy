@@ -476,7 +476,7 @@ def check_material_def(test):
         test (TestCase): Tester object that reports the results.
     """
     print("\n>>> Checking for DEFI_MATERIAU rule...")
-    # in the case that there is several AtLeastOne rules (only one today),
+    # in the case that there are several AtLeastOne rules (only one today),
     # only keep those with a lot of keywords!
     atleastone = [
         rule
