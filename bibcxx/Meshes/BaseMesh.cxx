@@ -249,8 +249,8 @@ std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
 };
 
 bool BaseMesh::build() {
-    _groupsOfNodes->build( true );
-    _groupsOfCells->build( true );
+    _groupsOfNodes->build();
+    _groupsOfCells->build();
     _superElements->build();
     _patch->build();
     _connectivity->build();

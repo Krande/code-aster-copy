@@ -230,29 +230,7 @@ class MechanicalLoadDescription : public DataStructure {
     };
 
     bool build() {
-        // _FEDesc->build();
-        _cimpo->build();
-        _cmult->build();
-        _dpgen->build();
-        _epsin->build();
-        _f1d2d->build();
-        _f1d3d->build();
-        _f2d3d->build();
-        _fco2d->build();
-        _fco3d->build();
-        _felec->build();
-        _fl101->build();
-        _fl102->build();
-        _forno->build();
-        _imped->build();
-        _pesan->build();
-        _press->build();
-        _sigin->build();
-        _rotat->build();
-        _siint->build();
-        _vnor->build();
-        _ondpl->build();
-        _ondpr->build();
+        _FEDesc->build();
 
         return true;
     };

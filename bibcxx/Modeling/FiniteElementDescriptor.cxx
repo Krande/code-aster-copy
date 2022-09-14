@@ -105,12 +105,10 @@ FiniteElementDescriptor::getListOfGroupOfElementsExplorer() const {
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfElements() const {
-    _listOfGroupOfCells->build();
     return _listOfGroupOfCells;
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
-    _delayedNumberedConstraintElementsDescriptor->build();
     return _delayedNumberedConstraintElementsDescriptor;
 };
 

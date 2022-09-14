@@ -141,10 +141,6 @@ class AcousticLoadDescription : public DataStructure {
 
     bool build() {
         _FEDesc->build();
-        _imposedValues->build();
-        _multiplier->build();
-        _impedanceValues->build();
-        _speedValues->build();
 
         return true;
     };

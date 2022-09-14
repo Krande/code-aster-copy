@@ -597,7 +597,7 @@ class ConstantFieldOnCells : public DataField {
     };
 
     bool build() {
-        _listOfMeshCells->build( true );
+        _listOfMeshCells->build();
 
         return true;
     };

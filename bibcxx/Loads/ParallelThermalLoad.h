@@ -55,6 +55,7 @@ class ParallelThermalLoad : public DataStructure {
         const auto &toKeep = _FEDesc->getVirtualCellsToKeep();
 
         std::string savedName( "" );
+        fieldIn->build();
         fieldOut->allocate( fieldIn );
         const auto sizeFieldIn = ( *fieldIn ).size();
         const auto vect_resu = fieldIn->getValues();

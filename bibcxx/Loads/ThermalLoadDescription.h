@@ -178,16 +178,7 @@ class ThermalLoadDescription : public DataStructure {
 
     bool build() {
         _FEDesc->build();
-        _cimpo->build();
-        _cmult->build();
-        _coefh->build();
-        _flunl->build();
-        _flure->build();
-        _flur2->build();
-        _grain->build();
-        _hechp->build();
-        _soure->build();
-        _tExt->build();
+
         return true;
     };
 };
