@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,18 +20,33 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
 Fichier inexistant : '%(k1)s'
-"""),
-
-    2 : _("""
-La lecture du fichier a échoué.
-Soit le fichier '%(k1)s' n'existe pas, soit son contenu est invalide.
+"""
+    ),
+    2: _(
+        """
+L'exécution du fichier '%(k1)s' a échoué.
 
 Détails :
 
     %(k2)s
-"""),
+"""
+    ),
+    3: _(
+        """
+L'exécution du fichier '%(k1)s' a échoué.
 
+Risques & conseils :
+  Si l'erreur indique qu'une commande n'est pas trouvée, vérifiez que le fichier
+  à inclure importe les commandes avec :
+
+    %(k3)s
+
+Détails :
+
+    %(k2)s
+"""
+    ),
 }
