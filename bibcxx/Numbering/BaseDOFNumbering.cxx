@@ -33,9 +33,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
                                     const FieldOnNodesDescriptionPtr fdof )
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
       _dofDescription( fdof ),
-      _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
       _model( model ),
       _listOfLoads( loads ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
@@ -47,17 +45,12 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
-      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
-      _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
       _model( nullptr ),
       _listOfLoads( new ListOfLoads() ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
-      _isEmpty( true ){};
-
-BaseDOFNumbering::BaseDOFNumbering( const std::string &type )
-    : BaseDOFNumbering( ResultNaming::getNewResultName(), type ){};
+      _isEmpty( true ) {};
 
 bool BaseDOFNumbering::computeNumbering() {
     if ( _model ) {
@@ -126,12 +119,6 @@ bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMo
     _isEmpty = false;
 
     return true;
-};
-
-std::string BaseDOFNumbering::getPhysicalQuantity() const {
-    _globalNumbering->_informations->updateValuePointer();
-    JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
-    return physicalQuantity.rstrip();
 };
 
 VectorLong BaseDOFNumbering::getDirichletBCDOFs( void ) const {

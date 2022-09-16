@@ -59,6 +59,9 @@
 template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class ElementaryMatrix;
 
+class DOFNumbering;
+class ParallelDOFNumbering;
+
 using ElementaryMatrixDisplacementRealPtr =
     std::shared_ptr< ElementaryMatrix< ASTERDOUBLE, Displacement > >;
 using ElementaryMatrixDisplacementComplexPtr =
@@ -71,7 +74,6 @@ using ElementaryMatrixPressureComplexPtr =
 /**
  * @class BaseDOFNumbering
  * @brief Class definissant un nume_ddl
- *        Cette classe est volontairement succinte car on n'en connait pas encore l'usage
  * @author Nicolas Sellenet
  */
 class BaseDOFNumbering : public DataStructure {
@@ -185,7 +187,10 @@ class BaseDOFNumbering : public DataStructure {
     };
     typedef std::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
 
-    class GlobalEquationNumbering {
+  protected:
+
+    class GlobalEquationNumbering : public DataStructure {
+      protected:
         /** @brief Objet Jeveux '.NEQU' */
         JeveuxVectorLong _numberOfEquations;
         /** @brief Objet Jeveux '.REFN' */
@@ -193,10 +198,11 @@ class BaseDOFNumbering : public DataStructure {
         /** @brief Objet Jeveux '.DELG' */
         JeveuxVectorLong _lagrangianInformations;
 
-        GlobalEquationNumbering( const std::string &DOFNumName )
-            : _numberOfEquations( DOFNumName + ".NEQU" ),
-              _informations( DOFNumName + ".REFN" ),
-              _lagrangianInformations( DOFNumName + ".DELG" ){};
+        GlobalEquationNumbering( const std::string& baseName )
+            : DataStructure( baseName + ".NUME", 19, "NUME_EQUA" ),
+              _numberOfEquations( getName() + ".NEQU" ),
+              _informations( getName() + ".REFN" ),
+              _lagrangianInformations( getName() + ".DELG" ) {};
 
       public:
         /**
@@ -208,11 +214,22 @@ class BaseDOFNumbering : public DataStructure {
          */
         const JeveuxVectorLong getNumberOfEquations() const { return _numberOfEquations; }
 
+        /**
+         * @brief Returns the vector of local to global numbering
+         */
+        virtual const JeveuxVectorLong getLocalToGlobal() const {
+            throw std::runtime_error( "Vector LocalToGlobal doesn't exist in sequential" );
+            return JeveuxVectorLong( "RIEN" );
+        };
+
         friend class BaseDOFNumbering;
+        friend class DOFNumbering;
+        friend class ParallelDOFNumbering;
     };
     typedef std::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
 
-    class LocalEquationNumbering {
+    class LocalEquationNumbering : public DataStructure {
+      protected:
         /** @brief Objet Jeveux '.NEQU' */
         JeveuxVectorLong _numberOfEquations;
         /** @brief Objet Jeveux '.DELG' */
@@ -228,14 +245,15 @@ class BaseDOFNumbering : public DataStructure {
         /** @brief Objet Jeveux '.PDDL' */
         JeveuxVectorLong _localToRank;
 
-        LocalEquationNumbering( const std::string &DOFNumName )
-            : _numberOfEquations( DOFNumName + ".NEQU" ),
-              _lagrangianInformations( DOFNumName + ".DELG" ),
-              _componentsOnNodes( DOFNumName + ".PRNO" ),
-              _indexationVector( DOFNumName + ".NUEQ" ),
-              _localToGlobal( DOFNumName + ".NULG" ),
-              _globalToLocal( DOFNumName + ".NUGL" ),
-              _localToRank( DOFNumName + ".PDDL" ){};
+        LocalEquationNumbering( const std::string& baseName )
+            : DataStructure( baseName + ".NUML", 19, "NUML_EQUA" ),
+              _numberOfEquations( getName() + ".NEQU" ),
+              _lagrangianInformations( getName() + ".DELG" ),
+              _componentsOnNodes( getName() + ".PRNO" ),
+              _indexationVector( getName() + ".NUEQ" ),
+              _localToGlobal( getName() + ".NULG" ),
+              _globalToLocal( getName() + ".NUGL" ),
+              _localToRank( getName() + ".PDDL" ){};
 
       public:
         /**
@@ -246,19 +264,19 @@ class BaseDOFNumbering : public DataStructure {
          * @brief Returns the vector of global to local numbering
          */
         const JeveuxVectorLong getGlobalToLocal() const { return _globalToLocal; }
+
         friend class BaseDOFNumbering;
+        friend class DOFNumbering;
+        friend class ParallelDOFNumbering;
     };
     typedef std::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
 
-    // !!! Classe succinte car on ne sait pas comment elle sera utiliser !!!
+  private:
+
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
     /** @brief Objet prof_chno */
     FieldOnNodesDescriptionPtr _dofDescription;
-    /** @brief Objet '.NUME' */
-    GlobalEquationNumberingPtr _globalNumbering;
-    /** @brief Objet '.NUML' */
-    LocalEquationNumberingPtr _localNumbering;
     /** @brief Modele */
     ModelPtr _model;
     /** @brief Matrices elementaires */
@@ -287,11 +305,6 @@ class BaseDOFNumbering : public DataStructure {
                       const ListOfLoadsPtr loads, const FieldOnNodesDescriptionPtr fdof );
 
     BaseDOFNumbering( const std::string name, const std::string &type );
-
-    /**
-     * @brief Constructeur
-     */
-    BaseDOFNumbering( const std::string &type );
 
   public:
     /**
@@ -326,12 +339,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; }
-
-    /**
-     * @brief Returns the LocalEquationNumberingPtr
-     */
-    LocalEquationNumberingPtr getLocalNumbering() const { return _localNumbering; }
+    virtual GlobalEquationNumberingPtr getGlobalNumbering() const = 0;
 
     /**
      * @brief Build the Numbering of DOFs
@@ -351,7 +359,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get Physical Quantity
      */
-    std::string getPhysicalQuantity() const;
+    virtual std::string getPhysicalQuantity() const = 0;
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC

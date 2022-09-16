@@ -30,6 +30,32 @@
 
 #include <stdexcept>
 
+DOFNumbering::DOFNumbering() : BaseDOFNumbering( ResultNaming::getNewResultName(),
+                                                 "NUME_DDL" ),
+                               _globalNumbering( new GlobalEquationNumbering( getName() ) ),
+                               _localNumbering( new LocalEquationNumbering( getName() ) )
+{};
+
+DOFNumbering::DOFNumbering( const std::string name, const ModelPtr model,
+                            const ListOfLoadsPtr loads,
+                            const FieldOnNodesDescriptionPtr fdof )
+    : BaseDOFNumbering( name, "NUME_DDL", model, loads, fdof ),
+      _globalNumbering( new GlobalEquationNumbering( getName() ) ),
+      _localNumbering( new LocalEquationNumbering( getName() ) )
+{};
+
+DOFNumbering::DOFNumbering( const std::string name )
+    : BaseDOFNumbering( name, "NUME_DDL" ),
+      _globalNumbering( new GlobalEquationNumbering( getName() ) ),
+      _localNumbering( new LocalEquationNumbering( getName() ) )
+{};
+
+std::string DOFNumbering::getPhysicalQuantity() const {
+    _globalNumbering->_informations->updateValuePointer();
+    JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
+    return physicalQuantity.rstrip();
+};
+
 bool DOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;

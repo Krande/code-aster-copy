@@ -62,6 +62,12 @@
  * @author Nicolas Sellenet
  */
 class DOFNumbering : public BaseDOFNumbering {
+  private:
+    /** @brief Objet '.NUME' */
+    GlobalEquationNumberingPtr _globalNumbering;
+    /** @brief Objet '.NUML' */
+    LocalEquationNumberingPtr _localNumbering;
+
   public:
     /**
      * @typedef DOFNumberingPtr
@@ -72,17 +78,28 @@ class DOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Constructeur
      */
-    DOFNumbering() : BaseDOFNumbering( "NUME_DDL" ){};
+    DOFNumbering();
 
     DOFNumbering( const std::string name, const ModelPtr model, const ListOfLoadsPtr loads,
-                  const FieldOnNodesDescriptionPtr fdof )
-        : BaseDOFNumbering( name, "NUME_DDL", model, loads, fdof ){};
+                  const FieldOnNodesDescriptionPtr fdof );
 
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    DOFNumbering( const std::string name ) : BaseDOFNumbering( name, "NUME_DDL" ){};
+    DOFNumbering( const std::string name );
+
+    /**
+     * @brief Returns the GlobalEquationNumberingPtr
+     */
+    virtual GlobalEquationNumberingPtr getGlobalNumbering() const {
+        return _globalNumbering;
+    };
+
+    /**
+     * @brief Get Physical Quantity
+     */
+    std::string getPhysicalQuantity() const;
 
     /**
      * @brief Methode permettant de definir les matrices elementaires

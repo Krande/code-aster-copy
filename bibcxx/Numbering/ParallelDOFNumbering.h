@@ -35,11 +35,35 @@
 
 /**
  * @class ParallelDOFNumbering
- * @brief Cette classe decrit un maillage Aster parallèle
+ * @brief Class definissant un nume_ddl_p
  * @author Nicolas Sellenet
  */
 class ParallelDOFNumbering : public BaseDOFNumbering {
   private:
+
+    class ParallelGlobalEquationNumbering: public GlobalEquationNumbering {
+        /** @brief Objet Jeveux '.NULG' */
+        JeveuxVectorLong _localToGlobal;
+        /** @brief Objet Jeveux '.PDDL' */
+        JeveuxVectorLong _localToRank;
+
+        ParallelGlobalEquationNumbering( const std::string &DOFNumName )
+            : GlobalEquationNumbering( DOFNumName ),
+              _localToGlobal( JeveuxVectorLong( getName() + ".NULG" ) ),
+              _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ) {};
+
+      public:
+        /**
+         * @brief Returns the vector of local to global numbering
+         */
+        const JeveuxVectorLong getLocalToGlobal() const { return _localToGlobal; }
+
+        friend class ParallelDOFNumbering;
+    };
+
+    /** @brief Objet '.NUME' */
+    GlobalEquationNumberingPtr _globalNumbering;
+
   public:
     /**
      * @typedef ParallelDOFNumberingPtr
@@ -50,13 +74,25 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Constructeur
      */
-    ParallelDOFNumbering() : BaseDOFNumbering( "NUME_DDL_P" ){};
+    ParallelDOFNumbering();
 
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    ParallelDOFNumbering( const std::string name ) : BaseDOFNumbering( name, "NUME_DDL_P" ){};
+    ParallelDOFNumbering( const std::string& name );
+
+    /**
+     * @brief Returns the GlobalEquationNumberingPtr
+     */
+    virtual GlobalEquationNumberingPtr getGlobalNumbering() const {
+        return _globalNumbering;
+    };
+
+    /**
+     * @brief Get Physical Quantity
+     */
+    std::string getPhysicalQuantity() const;
 
     /**
      * @brief Methode permettant de savoir si l'objet est parallel

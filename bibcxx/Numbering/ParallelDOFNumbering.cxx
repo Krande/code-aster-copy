@@ -32,6 +32,20 @@
 
 #ifdef ASTER_HAVE_MPI
 
+ParallelDOFNumbering::ParallelDOFNumbering()
+    : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL_P" ),
+      _globalNumbering( new ParallelGlobalEquationNumbering( getName() ) ) {};
+
+ParallelDOFNumbering::ParallelDOFNumbering( const std::string& name )
+    : BaseDOFNumbering( name, "NUME_DDL_P" ),
+      _globalNumbering( new ParallelGlobalEquationNumbering( getName() ) ) {};
+
+std::string ParallelDOFNumbering::getPhysicalQuantity() const {
+    _globalNumbering->_informations->updateValuePointer();
+    JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
+    return physicalQuantity.rstrip();
+};
+
 bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
