@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface 
       subroutine rag3d(taar,nrjg,tref0,aar0,sr1,&
                srsrag,teta1,dt,vrag00,aar1,&
-               vrag1)
+               vrag1,alat)
         real(kind=8) :: taar
         real(kind=8) :: nrjg
         real(kind=8) :: tref0
@@ -33,5 +33,6 @@ interface
         real(kind=8) :: vrag00
         real(kind=8) :: aar1
         real(kind=8) :: vrag1
+        real(kind=8) :: alat
     end subroutine rag3d
 end interface 

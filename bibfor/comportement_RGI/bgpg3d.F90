@@ -18,14 +18,15 @@
 
 subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
                                           trepspg,epspt6,epspc6,phivg,&
-                                          pglim,brgi,dpg_depsa6,dpg_depspg6,&
+                                          pglim,dpg_depsa6,dpg_depspg6,&
                                           taar,nrjg,tref0,aar0,sr1,&
                                           srsrag,teta1,dt,vrag00,aar1,&
                                           tdef,nrjd,def0,srsdef,vdef00,&
                                           def1,cna,nrjp,ttrd,tfid,ttdd,&
                                           tdid,exmd,exnd,cnab,cnak,ssad,&
                                           at,st,m1,e1,m2,e2,atf,stf,&
-                                          m1f,e1f,m2f,e2f,phig0,ttkf,nrjf)
+                                          m1f,e1f,m2f,e2f,phig0,ttkf,nrjf,&
+                                          alat,young00,nu00,kgel,pgmax)
 
 
 ! person_in_charge: etienne.grimal@edf.fr
@@ -42,7 +43,7 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
       real(kind=8) :: bg,pg,mg,phig,treps,trepspg,phivg,pglim,trepsa
       real(kind=8) :: dpg_depsa6(6),dpg_depspg6(6)
       real(kind=8) :: epspt6(6),epspc6(6)
-      real(kind=8) :: brgi,coeff1,coeff2,dpg_depsa,dpg_depspg
+      real(kind=8) :: coeff1,coeff2,dpg_depsa,dpg_depspg
 
       real(kind=8) :: taar,nrjg,tref0,aar0,sr1,srsrag,teta1,dt,vrag00,aar1
       aster_logical ::  ppas
@@ -52,16 +53,19 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
       real(kind=8) :: nrjp,ttrd,tfid,ttdd
       real(kind=8) :: tdid,exmd,exnd,cnab,cnak,ssad,ttkf,nrjf
       real(kind=8) :: at,st,m1,e1,m2,e2,atf,stf,m1f,e1f,m2f,e2f,phig0
+      real(kind=8) :: alat,young00,nu00,kgel,kc,ksolid
+      real(kind=8) :: coeff0,pgmax
 
       coeff1=0.d0
       coeff2=0.d0
+      coeff0=0.d0
 
       if(dt.ne.0.) then
 !   calcul de l avancement de la reaction et du volume de gel phig
        if (abs(vrag00).ge.r8prem()) then
          call rag3d(taar,nrjg,tref0,aar0,sr1,&
                                    srsrag,teta1,dt,vrag00,aar1,&
-                                   phig)
+                                   phig,alat) 
        else
          phig=0.d0
          aar1=0.d0
@@ -116,14 +120,39 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
       end do
 
 !   calcul pression phase neoformee
-       bg=brgi
+      bg=(2.d0*phig)/(1.d0+phig)
+      kc=young00/(3.d0*(1.d0-2.d0*nu00))
+      ksolid=kc/(1.d0-bg)
+      if(bg.gt.0.) then 
+          mg=(((bg-phig)/ksolid)+phig/kgel)**(-1)
+      else
+          mg=kgel
+      endif
       coeff1=phig-(bg*(treps-trepsa)+(1.d0-bg)*trepspg)
       coeff2=1.d0+(mg*phivg/pglim)
+!     Cas avec PGMAX
       if((coeff1.gt.0.d0).and.(phig.gt.0.d0)) then
 !     cas non lineaire avec remplissage proportionnel à la la pression
-        pg=mg*coeff1/coeff2
-        dpg_depsa=0.d0
-        dpg_depspg=-mg/coeff2
+          pg=mg*coeff1/coeff2
+          dpg_depsa=0.d0
+          dpg_depspg=-mg/coeff2
+!         Pression maximale atteinte pgmax
+        if(pg.ge.pgmax) then 
+            pgmax=pg
+        else
+            coeff0=phivg*pgmax/pglim
+            coeff1=(phig-(bg*(treps-trepsa)+(1.d0-bg)*trepspg+coeff0))
+            if(coeff1.gt.0.d0) then
+                coeff2=1.d0  
+                pg=mg*coeff1/coeff2 
+                dpg_depsa=0.d0
+                dpg_depspg=-mg/coeff2
+            else
+                pg=0.d0
+                dpg_depsa=0.d0
+               dpg_depspg=0.d0 
+            endif
+        endif
       else
         pg=0.d0
         dpg_depspg=0.d0

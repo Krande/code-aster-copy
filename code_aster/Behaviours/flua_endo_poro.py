@@ -26,7 +26,7 @@ loi = LoiComportement(
     lc_type        = ('MECANIQUE',),
     doc            =   """lois de fluage et d'endommagement couplées pour le béton"""            ,
     num_lc         = 167,
-    nb_vari        = 109,
+    nb_vari        = 114,
     nom_vari=(
  #         deformations elastiques
            'EPE1',
@@ -176,6 +176,16 @@ loi = LoiComportement(
            'WID6',
  #       erreur commise sur la dissipation d'énergie de fissuration en traction
            'ERGF',
+ #         endommagement de traction global 
+           'DT0',
+ #         Ouverture de fissure maximale 
+           'WPL0',
+ #         Endommagement de traction de RGI global 
+           'DTG0',
+ #         Endommagement de compression de RGI global 
+           'DCG0',
+ #         Pression de gel maximal atteinte
+           'PGMAX',
 ),
     mc_mater = ('ELAS', 'ENDO3D'),
     modelisation   = ('3D','D_PLAN','AXIS'),

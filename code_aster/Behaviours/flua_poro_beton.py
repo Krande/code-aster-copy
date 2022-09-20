@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ loi = LoiComportement(
     lc_type        = ('MECANIQUE',),
     doc            =   """Loi Fluage pour le beton"""              ,
     num_lc         = 165,
-    nb_vari        = 108,
+    nb_vari        = 114,
     nom_vari=(
  #         deformations elastiques
            'EPE1',
@@ -174,6 +174,18 @@ loi = LoiComportement(
            'WID4',
            'WID5',
            'WID6',
+ #       erreur commise sur la dissipation d'énergie de fissuration en traction
+           'ERGF',
+ #         endommagement de traction global 
+           'DT0',
+ #         Ouverture de fissure maximale 
+           'WPL0',
+ #         Endommagement de traction de RGI global 
+           'DTG0',
+ #         Endommagement de compression de RGI global 
+           'DCG0',
+ #         Pression de gel maximal atteinte 
+           'PGMAX',
 ),
     mc_mater       = ('ELAS','FLUA3D',),
     modelisation   = ('3D','D_PLAN','AXIS',),

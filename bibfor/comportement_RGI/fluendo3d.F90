@@ -120,7 +120,7 @@ implicit none
 !            continuite pour as3d
              real(kind=8) ::  sig133(3,3),sig13(3),vsig133(3,3),vsig133t(3,3)
              real(kind=8) ::  sig16p(6)
-             real(kind=8) ::  rt,pglim,bg,phivg,mg,pg,ref,rc,poro
+             real(kind=8) ::  rt,pglim,bg,phivg,mg,pg,ref,rc,poro, alat, kgel
 !            deformation plastiques
              real(kind=8) ::  epspt6(6),epspt6p(6)
              real(kind=8) ::  epspg6(6),epspg6p(6)
@@ -213,8 +213,8 @@ implicit none
              aster_logical ::  referm3(3),testtpi
 !            facteur de concentration de contrainte pour le gel et module
 !            d ecrouissage de la pression avec la deformation permanente
-!            de rgi
-             real(kind=8) ::  krgi00,krgi,hplg
+!            de rgi et le facteur devolution de lecrouissage
+             real(kind=8) ::  krgi00,krgi,hplg,hpev
 !            degré de saturation
              real(kind=8) ::  srw
 !            table pour la gestion des multiplicateurs negatifs
@@ -264,6 +264,8 @@ implicit none
              real(kind=8) ::  wplx3(3),vwplx33(3,3),vwplx33t(3,3)
 !             taux de cisaillement
              real(kind=8) ::  tauc,depleqc3
+!             Pression gel max atteinte
+             real(kind=8) ::  pgmax
     real(kind=8), dimension(2) :: valr
     integer, dimension(3) :: vali
 
@@ -446,7 +448,9 @@ implicit none
      pglim=0.d0
      bg=0.d0
      phivg=0.d0
+     alat=0.d0
      mg=0.d0
+     kgel=0.d0
      pg=0.d0
      ref=0.d0
      rc=0.d0
@@ -519,6 +523,7 @@ implicit none
      krgi00=0.d0
      krgi=0.d0
      hplg=0.d0
+     hpev=0.d0
      srw=0.d0
      dpfa_dr(:)=0.d0
      dsw6(:)=0.d0
@@ -708,10 +713,16 @@ implicit none
 !         ierr1=1
 !         go to 999
 !      end if
+!     ratio pour levolution du module decrouissage
+      hpev=xmat(nbelas3d+57)     
 !     vide accesible au gel
       phivg=xmat(nbelas3d+10)
+!     parametre induisant periode de latence initiale 
+      alat=xmat(nbelas3d+31)
 !     module biot gel matrice
-      mg=xmat(nbelas3d+11)
+!      mg=xmat(nbelas3d+11)
+!     Rigidite gel matrice      
+      kgel=xmat(nbelas3d+11)
 !     energie de fissuration en traction directe
       gft00=xmat(nbelas3d+12)
 !     deformation caracteristique du potentiel de fluage
@@ -736,7 +747,7 @@ implicit none
       xnsat00=xmat(nbelas3d+21)
 !     porosite ou grandeur permettant de passer du champ sech au degrès de saturation
       poro2=xmat(nbelas3d+22)
-!     volume maximal de rgi
+!     volume maximal de rgi comprenant le volume non effectif
       vrag00=xmat(nbelas3d+23)
 !     volume d eau pour le non sature
 !      vw2=xmat(nbelas3d+24)
@@ -770,8 +781,6 @@ implicit none
       eprg00=xmat(nbelas3d+29)
 !     deformation caracteristique pour l endo de traction
       gfr=xmat(nbelas3d+30)
-!     coeff de biot pour les RGI
-      brgi00=xmat(nbelas3d+31)
 !     coeff de concentration de contrainte des RGI
       krgi00=xmat(nbelas3d+32)
 !     chargement des tailles si l endo est active
@@ -880,7 +889,7 @@ implicit none
 !     negligee car non utilise pour le tir visco elastique
       call hydramat3d(hyd0,hydr,hyds,young00,young,nu00,nu,rt1,rt,ref1,&
       ref,rc1,rc,delta00,delta,beta00,beta,gft00,gft,ept1,ept,pglim,&
-      epsm00,epsm11,xnsat00,xnsat,biotw00,biotw,brgi00,brgi,krgi00,&
+      epsm00,epsm11,xnsat00,xnsat,biotw00,biotw,krgi00,&
       krgi,iso,lambda,mu,rt33,rtg33,ref33,raideur66,souplesse66,xmt,&
       dtiso,err1)
 
@@ -1128,7 +1137,7 @@ implicit none
          call hydramat3d(hyd0,hydr,hyds,young00,young,nu00,nu,rt1,&
         rt,ref1,ref,rc1,rc,delta00,delta,beta00,beta,gft00,&
         gft,ept1,ept,pglim,epsm00,epsm11,xnsat00,xnsat,biotw00,biotw,&
-        brgi00,brgi,krgi00,krgi,iso,lambda,mu,rt33,rtg33,ref33,&
+        krgi00,krgi,iso,lambda,mu,rt33,rtg33,ref33,&
         raideur66,souplesse66,xmt,dtiso,err1)
 
 !        influence de la temperature sur les parametres du materiau
@@ -1279,7 +1288,7 @@ implicit none
           epspc6(j)=epspc60(j)
 !         chargement des ouvertures de fissures du pas precedent
           wplt6(j)=wplt06(j)
-!         caharegement des ouvertures maxi de fissure
+!         chargement des ouvertures maxi de fissure          
           wpltx6(j)=wpltx06(j)
 !         fin14mai2015:
         end do
@@ -1333,12 +1342,14 @@ implicit none
         At=var0(101)
         St=var0(102)
         vrgi0=var0(60)
+        pgmax=var0(114)
 !       l avancement est actualisee dans bgpg
         call bgpg3d(ppas,bg,pg,mg,vrgi,treps,trepspg,epspt6,epspc6,&
-        phivg,pglim,brgi,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
+        phivg,pglim,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
         srw,srsrag,teta,dt1,vrag00,aar1,tdef,nrjd,def0,srsdef,vdef00,&
         def1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,cnab,cnak,ssad,&
-        At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf)
+        At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf,alat,&
+        young00,nu00,kgel,pgmax)
 !       stockage avancement et pression
         varf(62)=aar1
         varf(63)=def1
@@ -1351,6 +1362,7 @@ implicit none
         varf(100)=M2f
         varf(101)=Atf
         varf(102)=Stf
+        varf(114)=pgmax 
 
 !       prise en compte de l'amplification des depressions capillaires
 !       sous charge (l effet du chargement sur la pression capillaire
@@ -1438,7 +1450,7 @@ implicit none
        epleqc,epspt6p,epspg6p,delta,beta,nc,ig,&
        fg,na,fa,dpfa_ds,dgfa_ds,dpfa_dpg,dra_dl,souplesse66p,err1,&
        depleqc_dl,irr,fglim,krgi,&
-       hpla,ekdc,hplg,dpfa_dr,tauc,epeqpc)
+       hpla,ekdc,hplg,dpfa_dr,tauc,epeqpc,hpev)   
 !       stockage taux de cisaillement
 !         varf(109)=tauc
 
@@ -1861,6 +1873,9 @@ implicit none
              varf(67+j)=wpltx6(j)
          end do
 
+!        Ouverture de fissure maximale
+         varf(111)=dmax1((varf(103)),(varf(104)),(varf(105)))
+         
 !        *** actualisation de la dissipation et de l energie elastique *
 !        pour calcul consolidation debut de pas suivant
          phi1=phi0
@@ -1941,17 +1956,20 @@ end if
 !          le sous programme de calcul de pression
 !          vrgi le volume effectif de gel pour le calcul de la pression
            vrgi0=vrgi
+           pgmax=var0(114)
 !          dt mis a zero pour forcer la reprise de vrgi0
            call bgpg3d(ppas,bg,pg,mg,vrgi,treps,trepspg,epspt6,epspc6,&
-           phivg,pglim,brgi,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
-           srw,srsrag,teta,0.d0,vrag00,aar1,tdef,nrjd,def0,srsdef,vdef00,&
+           phivg,pglim,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
+           srw,srsrag,teta,dt1,vrag00,aar1,tdef,nrjd,def0,srsdef,vdef00,&
            def1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,cnab,cnak,ssad,&
-           At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf)
+           At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf,alat,&
+           young00,nu00,kgel,pgmax)
 !          stockage avancement rag
         end if
 !       stockage de la pression RGI
         varf(61)=pg
         varf(65)=bg
+        varf(114)=pgmax
 
 !***********************************************************************
 !       endommagement de fluage
@@ -2010,6 +2028,12 @@ end if
 !               ouverture non visco elastique
                 varf(91+i)=wl3(i)
              end do
+!            endo de traction global
+             varf(110)=1.d0-((1.d0-(varf(80)))*(1.d0-(varf(81)))*(1.d0-(varf(82))))
+!            endo de traction de RGI global
+             varf(112)=1.d0-((1.d0-(varf(86)))*(1.d0-(varf(87)))*(1.d0-(varf(88))))
+!            endo de compression de RGI global
+             varf(113)=1.d0-((1.d0-(varf(89)))*(1.d0-(varf(90)))*(1.d0-(varf(91))))
 !            endommagement de compression
              varf(95)=dc
 !            erreur de dissipation d'énergie en traction          

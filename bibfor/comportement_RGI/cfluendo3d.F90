@@ -47,10 +47,16 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     real(kind=8), intent(in) :: carcri(*)
 !
 ! DECLARATIONS LOCALES
-    character(len=8) :: nomres(56), nomres1(4)
-    real(kind=8) :: valres(56), xmat(60), rbid, valres1(4)
+    integer :: nvarbe, nxmat
+!   Nombre de paramtre relatif au beton uniquement
+    parameter (nvarbe=57)
+!   Nombre parametre pour xmat = 4+ nvarbe
+    parameter (nxmat=4+nvarbe)
+!
+    character(len=8) :: nomres(nvarbe),nomres1(4)
+    real(kind=8) :: valres(nvarbe), xmat(nxmat), rbid,valres1(4)
     integer :: nvari, nstrs, mfr, i, j
-    integer :: retour(56), retour1(4), iteflumax
+    integer :: retour(nvarbe),retour1(4), iteflumax
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2, var0(6), sig0(6)
 !
@@ -64,10 +70,10 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
     integer :: nbelas3d
     parameter (nbelas3d=4)
-    parameter (NMATFLU=56)
+    parameter (NMATFLU=nvarbe)
     parameter (NMATAILX=0)
-    parameter (NVARFLU=109)
-!
+!   Nombre des variable totale du modele
+    parameter (NVARFLU=114)
 !   taille du pseudo vecteur des contraintes pour fluendo3d (tjrs 6
 !   en raison de son utilisation dans fludes3d qui la suppose à 6)
     parameter (nstrs3d=6)
@@ -90,7 +96,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi
     real(kind=8) :: dt3d, phig3d
 !
-    parameter       (nvari=109)
+    parameter       (nvari=NVARFLU)
     integer, dimension(2) :: vali
 !
 !
@@ -253,7 +259,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(8) = 'EPT'
     nomres(9) = 'HRGI'
     nomres(10)= 'VVRG'
-    nomres(11)= 'MRGI'
+    nomres(11)= 'KGEL'
     nomres(12)= 'GFT'
     nomres(13)= 'EKFL'
     nomres(14)= 'YKSY'
@@ -273,7 +279,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(28)= 'EKDC'
     nomres(29)= 'EKRG'
     nomres(30)= 'GFR'
-    nomres(31)= 'BRGI'
+    nomres(31)= 'ALAT'
     nomres(32)= 'KRGI'
     nomres(33)= 'TREF'
     nomres(34)= 'TSTH'
@@ -299,18 +305,19 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(54)= 'NRJD'
     nomres(55)= 'TTRD'
     nomres(56)= 'TTKF'
+    nomres(57)= 'HPEV'
 !
     rbid = 0.d0
 !
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', compor(1), 0, ' ', [rbid],&
-                56, nomres, valres, retour, 0,&
+                nmatflu, nomres, valres, retour, 0,&
                 nan='NON')
 !
 !
 ! --- ON REMPLIT XMAT DE nbelas+1 A nbelas+56
-    do i = (nbelas3d+1), (nbelas3d+56)
+    do i = (nbelas3d+1), (nbelas3d+nmatflu)
         xmat(i) = valres(i-nbelas3d)
     end do
 !

@@ -113,7 +113,7 @@ implicit none
             E2=0.d0
             M2=0.d0
             At=0.d0
-            St=SC-3*E1
+            St=SC-3.d0*E1
          else if (Sc.le.Ac) then
             E1=0.d0
             M1=Sc

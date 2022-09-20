@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,11 @@ interface
                 ref,rc00,rc,delta00,delta,&
                 beta00,beta,gft00,gft,ept00,&
                 ept,pglim,epsm00,epsm,xnsat00,&
-                xnsat,biotw00,biotw,brgi00,brgi,&
+                xnsat,biotw00,biotw,&
                 krgi00,krgi,iso,lambda,mu,&
                 rt33,rtg33,ref33,raideur66,souplesse66,&
                 xmt,dtiso,err1)
+
         real(kind=8) :: hyd0
         real(kind=8) :: hydr
         real(kind=8) :: hyds
@@ -56,8 +57,6 @@ interface
         real(kind=8) :: xnsat
         real(kind=8) :: biotw00
         real(kind=8) :: biotw
-        real(kind=8) :: brgi00
-        real(kind=8) :: brgi
         real(kind=8) :: krgi00
         real(kind=8) :: krgi
         aster_logical :: iso

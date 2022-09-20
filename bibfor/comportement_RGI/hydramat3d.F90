@@ -21,7 +21,7 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
                                               ref,rc00,rc,delta00,delta,&
                                               beta00,beta,gft00,gft,ept00,&
                                               ept,pglim,epsm00,epsm,xnsat00,&
-                                              xnsat,biotw00,biotw,brgi00,brgi,&
+                                              xnsat,biotw00,biotw,&
                                               krgi00,krgi,iso,lambda,mu,&
                                               rt33,rtg33,ref33,raideur66,souplesse66,&
                                               xmt,dtiso,err1)
@@ -41,13 +41,13 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
       real(kind=8) :: hyd0,hydr,hyds,young00,young,nu00,nu
       real(kind=8) :: rt00,rt,ref00,ref,rc00,rc,delta00,delta,beta00,beta
       real(kind=8) :: pglim,epsm00,epsm,xnsat00,xnsat,biotw00,biotw
-      real(kind=8) :: brgi00,brgi,gft00,gft,krgi00,krgi,xmt,ept00,ept,dpic
+      real(kind=8) :: gft00,gft,krgi00,krgi,xmt,ept00,ept,dpic
       aster_logical ::  iso,dtiso
-      real(kind=8) :: lambda,mu,rteff
+      real(kind=8) :: lambda,mu
       real(kind=8) :: rt33(3,3),rtg33(3,3),ref33(3,3)
       real(kind=8) :: raideur66(6,6),souplesse66(6,6)
       integer err1
-
+      real(kind=8) :: rteff
 
 !     declarations variables locales
       real(kind=8) :: umb00,umb,rtg,xrteff
@@ -85,8 +85,6 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
          call hydrxmat(xnsat00,xnsat,hydr,hyds,0.66d0,err1)
 !        energie de fissuration pour la traction
          call hydrxmat(gft00,gft,hydr,hyds,0.66d0,err1)
-!        coeff de biot des rgi
-         brgi=brgi00
 !        concentration de contraintes RGI
          krgi=krgi00
 !        deformation au pic de traction
@@ -106,7 +104,6 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
          biotw=biotw00
          xnsat=xnsat00
          gft=gft00
-         brgi=brgi00
          krgi=krgi00
 !        deformation au pic de traction
          ept=dmax1(ept00,rt/young)

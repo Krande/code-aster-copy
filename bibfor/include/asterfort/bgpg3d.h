@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,15 @@
 interface 
 subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
                                           trepspg,epspt6,epspc6,phivg,&
-                                          pglim,brgi,dpg_depsa6,dpg_depspg6,&
+                                          pglim,dpg_depsa6,dpg_depspg6,&
                                           taar,nrjg,tref0,aar0,sr1,&
                                           srsrag,teta1,dt,vrag00,aar1,&
                                           tdef,nrjd,def0,srsdef,vdef00,&
                                           def1,cna,nrjp,ttrd,tfid,ttdd,&
                                           tdid,exmd,exnd,cnab,cnak,ssad,&
                                           at,st,m1,e1,m2,e2,atf,stf,&
-                                          m1f,e1f,m2f,e2f,phig0,ttkf,nrjf)
+                                          m1f,e1f,m2f,e2f,phig0,ttkf,nrjf,&
+                                          alat,young00,nu00,kgel,pgmax)
         aster_logical :: ppas
         real(kind=8) :: bg
         real(kind=8) :: pg
@@ -41,7 +42,6 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
         real(kind=8) :: epspc6(6)
         real(kind=8) :: phivg
         real(kind=8) :: pglim
-        real(kind=8) :: brgi
         real(kind=8) :: dpg_depsa6(6)
         real(kind=8) :: dpg_depspg6(6)
         real(kind=8) :: taar
@@ -86,5 +86,10 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
         real(kind=8) :: phig0
         real(kind=8) :: ttkf
         real(kind=8) :: nrjf
+        real(kind=8) :: alat
+        real(kind=8) :: young00
+        real(kind=8) :: nu00
+        real(kind=8) :: kgel
+        real(kind=8) :: pgmax
     end subroutine bgpg3d
 end interface 

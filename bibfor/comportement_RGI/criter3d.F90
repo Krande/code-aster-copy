@@ -24,7 +24,7 @@ subroutine  criter3d(sig16p,bg,pg,bw,pw,&
                            dra_dl,souplesse66p,err1,depleq_dl,&
                            irr,fglim,&
                            kg,hpla,ekdc,&
-                           hplg,dpfa_dr,tauc,epeqpc)
+                           hplg,dpfa_dr,tauc,epeqpc,hpev)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 implicit none
@@ -48,7 +48,7 @@ implicit none
            real(kind=8) :: souplesse66p(6,6)
            real(kind=8) :: kg,hpla,ekdc,hplg,hplg1,hplg2
            integer err1,irr,ic,ia
-           real(kind=8) :: tauc,rpiceff
+           real(kind=8) :: tauc,rpiceff,hpev
 
 
 !          gestion des contraintes principales negative pour DP(critere 10)
@@ -191,11 +191,18 @@ implicit none
              drg_dep3(j)=(hplg1/souplesse66p(j,j))
              rtgeff3(j)=rtg33p(j,j)+(hplg1/souplesse66p(j,j))*dmax1(epspg6p(j),0.d0)
          else
-             hplg1=hplg/10.
+             hplg1=(hplg*hpev)
              drg_dep3(j)=(hplg1/souplesse66p(j,j))
              rtgeff3(j)=rtg33p(j,j)+(hplg/souplesse66p(j,j))*epsik+(hplg1/&
                         souplesse66p(j,j))*(epspg6p(j)-epsik)
          end if
+
+            
+!            hplg1=hplg
+!             drg_dep3(j)=(hplg1/souplesse66p(j,j))
+!             rtgeff3(j)=rtg33p(j,j)+(hplg1/souplesse66p(j,j))*dmax1(epspg6p(j),0.d0) 
+
+
 !        contraintes à considerer pour le critere
           if(sigmat3(j).ge. 0.d0) then
             sigmag3(j)=dmax1(kg,0.d0)*pg

@@ -25,6 +25,13 @@ from ..Utilities import _
 Un comportement ne doit/peut pas utiliser une variable internes dont le
 nom ne serait pas déclaré ici."""
 
+     
+    
+    
+    
+    
+
+
 DICT_NOM_VARI = {
     "AAAR": _("FLUA_ENDO_PORO avancement AAR"),
     "ACIXELS": _("Maximum absolu des déformations selon X normalisé par la déformation ELS"),
@@ -139,6 +146,7 @@ DICT_NOM_VARI = {
     "DB2": _("c_plan ou 1d algo Deborst, variable interne 2"),
     "DB3": _("c_plan ou 1d algo Deborst, variable interne 3"),
     "DB4": _("c_plan ou 1d algo Deborst, variable interne 4"),
+    "DCG0": _("RGI_BETON Endommagement max de compression de RGI"),
     "DCG1": _("FLUA_ENDO_PORO endommagements principaux de compression difffus RGI"),
     "DCG2": _("FLUA_ENDO_PORO endommagements principaux de compression difffus RGI"),
     "DCG3": _("FLUA_ENDO_PORO endommagements principaux de compression difffus RGI"),
@@ -194,6 +202,8 @@ DICT_NOM_VARI = {
     "DSW4": _("FLUA_ENDO_PORO Cumul des surpessions capillaires en dessiccation sous charge"),
     "DSW5": _("FLUA_ENDO_PORO Cumul des surpessions capillaires en dessiccation sous charge"),
     "DSW6": _("FLUA_ENDO_PORO Cumul des surpessions capillaires en dessiccation sous charge"),
+    "DT0" : _("RGI_BETON Endommagement de traction global"),
+    "DTG0": _("RGI_BETON Endommagement max de traction de RGI"),
     "DTG1": _("FLUA_ENDO_PORO endommagements principaux de traction diffus RGI"),
     "DTG2": _("FLUA_ENDO_PORO endommagements principaux de traction diffus RGI"),
     "DTG3": _("FLUA_ENDO_PORO endommagements principaux de traction diffus RGI"),
@@ -450,6 +460,7 @@ DICT_NOM_VARI = {
     "PDISS": _("puissance dissipée pour CRIT_RUPT"),
     "PERLITE": _("phase métallurgique acier variable (perlite)"),
     "PERM_LONG": _("perméabilité longitudinale de la fissure"),
+    "PGMAX": _("RGI_BETON Pression gel max atteinte"),
     "PHIG": _("FLUA_ENDO_PORO potentiel des phases neoformees"),
     "PHIM": _("FLUA_ENDO_PORO dissipation etage de Maxwell"),
     "PHI": _("Hayhurst : variable PHI"),
@@ -653,6 +664,7 @@ DICT_NOM_VARI = {
     "WL1": _("FLUA_ENDO_PORO partie plastique de l ouverture de fissure localisee"),
     "WL2": _("FLUA_ENDO_PORO partie plastique de l ouverture de fissure localisee"),
     "WL3": _("FLUA_ENDO_PORO partie plastique de l ouverture de fissure localisee"),
+    "WPL0": _("RGI_BETON Ouverture de fissure maximale"),
     "WSHR": _("FLUA_ENDO_PORO volume d eau capillaire (necessaire sous iteration fluage3d)"),
     "X1": _("coordonnée X de la pointe de fissure après rupture par propagation,"),
     "X2": _("coordonnée X de la pointe de fissure 2 lors de l'amorçage,"),

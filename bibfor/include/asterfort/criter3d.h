@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ interface
                irr,fglim,&
                kg,hpla,ekdc,&
                hplg,dpfa_dr,tauc,&
-               epeqpc)
+               epeqpc,hpev)
         real(kind=8) :: sig16p(6)
         real(kind=8) :: bg
         real(kind=8) :: pg
@@ -65,6 +65,7 @@ interface
         real(kind=8) :: hplg
         real(kind=8) :: dpfa_dr(nc)
         real(kind=8) :: tauc 
-        real(kind=8) :: epeqpc 
+        real(kind=8) :: epeqpc
+        real(kind=8) :: hpev 
     end subroutine criter3d
 end interface 
