@@ -226,7 +226,8 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano,&
                     do i = 1, ndim
                         do j = 1, ndim
                             do k = 1, ndim
-                                dkdgl_g(alp,i,j)=dkdgl_g(alp,i,j)+p_g(i,k)*fkpo_n(ino,alp,k)*dfdi(ino,j)
+                                dkdgl_g(alp,i,j)=dkdgl_g(alp,i,j)+&
+                                                 p_g(i,k)*fkpo_n(ino,alp,k)*dfdi(ino,j)
                             enddo
                         enddo
                     enddo
@@ -266,7 +267,8 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano,&
                 do j = 1, ndim
                     do k = 1, ndim
                         do l = 1, 2
-                            dkdgl(ino,alp,i,j)=dkdgl(ino,alp,i,j)+p_g(i,k)*dkdlo(alp,k,l)*invp_g(l,j)
+                            dkdgl(ino,alp,i,j)=dkdgl(ino,alp,i,j)+&
+                                               p_g(i,k)*dkdlo(alp,k,l)*invp_g(l,j)
                         enddo
                     enddo
                     dkdgl(ino,alp,i,j)=(dkdgl(ino,alp,i,j)-dkdgl_g(alp,i,j))*ff1(ino)+&

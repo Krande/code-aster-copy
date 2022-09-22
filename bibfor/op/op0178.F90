@@ -115,13 +115,9 @@ subroutine op0178()
 !
     else
 !
-        form1 = "(&
-                '_F(&
-                NOM=''', a24, ''', VALE_CALC=', " //formr// ", ',&
-                TOLE_MACHINE="//preci(1:lxlgut(preci)) //"&
-                ),'&
-                )"
-        902     format('_F(NOM=''',a24,''',VALE_CALC_I=',i15,',TOLE_MACHINE=0.,),')
+        form1 = "('_F(NOM=''', a24, ''', VALE_CALC=', " //formr//&
+            ", ',TOLE_MACHINE="//preci(1:lxlgut(preci)) //"),')"
+902     format('_F(NOM=''',a24,''',VALE_CALC_I=',i15,',TOLE_MACHINE=0.,),')
 !
 !     -- CAS : TOUT:'OUI'
 !    -----------------------------------------

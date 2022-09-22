@@ -451,7 +451,8 @@ subroutine rc32ac(lfat, lefat)
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+4)=snets
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+5)=instsns(3)
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+6)=instsns(4)
-                            zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+7)=max(sigmoypresp, sigmoypresq)
+                            zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+7)=&
+                            max(sigmoypresp, sigmoypresq)
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+8)=snthers
 !
                             snps = zr(jresus+121*(iocc1-1)+3)
@@ -461,15 +462,19 @@ subroutine rc32ac(lfat, lefat)
                             if (snps .ge. sns) then
                                 sns = snps
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+1)=sns
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+2)=zr(jresus+121*(iocc1-1)+4)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+3)=zr(jresus+121*(iocc1-1)+5)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+2)=&
+                                zr(jresus+121*(iocc1-1)+4)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+3)=&
+                                zr(jresus+121*(iocc1-1)+5)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+8)=sntherps
                             endif
                             if (snqs .ge. sns) then
                                 sns = snqs
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+1)=sns
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+2)=zr(jresus+121*(iocc2-1)+4)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+3)=zr(jresus+121*(iocc2-1)+5)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+2)=&
+                                zr(jresus+121*(iocc2-1)+4)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+3)=&
+                                zr(jresus+121*(iocc2-1)+5)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+8)=sntherqs
                             endif
                             snmax = max (snmax, sns)
@@ -480,14 +485,18 @@ subroutine rc32ac(lfat, lefat)
                             if (snetps .ge. snets) then
                                 snets = snetps
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+4)=snets
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+5)=zr(jresus+121*(iocc1-1)+7)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+6)=zr(jresus+121*(iocc1-1)+8)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+5)=&
+                                zr(jresus+121*(iocc1-1)+7)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+6)=&
+                                zr(jresus+121*(iocc1-1)+8)
                             endif
                             if (snetqs .ge. snets) then
                                 snets = snetqs
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+4)=snets
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+5)=zr(jresus+121*(iocc2-1)+7)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+6)=zr(jresus+121*(iocc2-1)+8)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+5)=&
+                                zr(jresus+121*(iocc2-1)+7)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+6)=&
+                                zr(jresus+121*(iocc2-1)+8)
                             endif
                             snetmax=max(snets, snetmax)
                         endif
@@ -525,15 +534,20 @@ subroutine rc32ac(lfat, lefat)
                             call rc32sa('COMB', sn, sp, spmeca, kemeca,&
                                         kether, salt, fu)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+9)=spp
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=zr(jresu+121*(iocc1-1)+12)
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=zr(jresu+121*(iocc1-1)+13)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=&
+                            zr(jresu+121*(iocc1-1)+12)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=&
+                            zr(jresu+121*(iocc1-1)+13)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+12)=salt(1)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+13)=spq
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=zr(jresu+121*(iocc2-1)+12)
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=zr(jresu+121*(iocc2-1)+13)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=&
+                            zr(jresu+121*(iocc2-1)+12)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=&
+                            zr(jresu+121*(iocc2-1)+13)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+16)=salt(2)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)=fu(1)+fu(2)
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=max(0.d0, sp(1)-spmeca(1))
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=&
+                            max(0.d0, sp(1)-spmeca(1))
                         endif
                         if (spq .ge. sp(1)) then
                             sp(1) = spq
@@ -543,15 +557,20 @@ subroutine rc32ac(lfat, lefat)
                             call rc32sa('COMB', sn, sp, spmeca, kemeca,&
                                         kether, salt, fu)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+9)=spq
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=zr(jresu+121*(iocc2-1)+12)
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=zr(jresu+121*(iocc2-1)+13)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=&
+                            zr(jresu+121*(iocc2-1)+12)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=&
+                            zr(jresu+121*(iocc2-1)+13)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+12)=salt(1)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+13)=spp
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=zr(jresu+121*(iocc1-1)+12)
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=zr(jresu+121*(iocc1-1)+13)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=&
+                            zr(jresu+121*(iocc1-1)+12)
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=&
+                            zr(jresu+121*(iocc1-1)+13)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+16)=salt(2)
                             zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)=fu(1)+fu(2)
-                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=max(0.d0, sp(1)-spmeca(1))
+                            zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=&
+                            max(0.d0, sp(1)-spmeca(1))
                         endif
 !
                         if (typeke .eq. 'KE_MECA') then
@@ -613,7 +632,8 @@ subroutine rc32ac(lfat, lefat)
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+12)=salts(1)
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+16)=salts(2)
                             zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)=fus(1)+fus(2)
-                            zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=max(0.d0, sps(1)-spmecas(1))
+                            zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=&
+                            max(0.d0, sps(1)-spmecas(1))
 !---------------- On prend le max de SP(P,Q), SP(P,P) et SP(Q,Q)
                             spp = zr(jresus+121*(iocc1-1)+11)
                             spq = zr(jresus+121*(iocc2-1)+11)
@@ -627,15 +647,20 @@ subroutine rc32ac(lfat, lefat)
                                 call rc32sa('COMB', sns, sps, spmecas, kemeca,&
                                             kether, salts, fus)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+9)=spp
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=zr(jresus+121*(iocc1-1)+12)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=zr(jresus+121*(iocc1-1)+13)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=&
+                                zr(jresus+121*(iocc1-1)+12)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=&
+                                zr(jresus+121*(iocc1-1)+13)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+12)=salts(1)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+13)=spq
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=zr(jresus+121*(iocc2-1)+12)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=zr(jresus+121*(iocc2-1)+13)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=&
+                                zr(jresus+121*(iocc2-1)+12)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=&
+                                zr(jresus+121*(iocc2-1)+13)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+16)=salts(2)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)=fus(1)+fus(2)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=max(0.d0, sps(1)-spmecas(1))
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=&
+                                max(0.d0, sps(1)-spmecas(1))
                             endif
                             if (spq .ge. sps(1)) then
                                 sps(1) = spq
@@ -645,15 +670,20 @@ subroutine rc32ac(lfat, lefat)
                                 call rc32sa('COMB', sns, sps, spmecas, kemeca,&
                                             kether, salts, fus)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+9)=spq
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=zr(jresus+121*(iocc2-1)+12)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=zr(jresus+121*(iocc2-1)+13)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+10)=&
+                                zr(jresus+121*(iocc2-1)+12)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+11)=&
+                                zr(jresus+121*(iocc2-1)+13)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+12)=salts(1)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+13)=spp
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=zr(jresus+121*(iocc1-1)+12)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=zr(jresus+121*(iocc1-1)+13)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)=&
+                                zr(jresus+121*(iocc1-1)+12)
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+15)=&
+                                zr(jresus+121*(iocc1-1)+13)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+16)=salts(2)
                                 zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)=fus(1)+fus(2)
-                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=max(0.d0, sps(1)-spmecas(1))
+                                zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+18)=&
+                                max(0.d0, sps(1)-spmecas(1))
                             endif
 !
                             if (typeke .eq. 'KE_MECA') then

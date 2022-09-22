@@ -265,7 +265,8 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                                     jlst-1+(zi(jcnset-1+ nnose*(i-1)+ar(j,k))-1&
                                     )*nfiss+ifiss&
                                     )) then
-                                    minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j,k))-1)*nfiss+ifiss)
+                                    minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j,k))-1)*&
+                                           nfiss+ifiss)
                                 endif
                             endif
                         end do
@@ -330,11 +331,13 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                         call vecini(ndim, 0.d0, newpt)
                         if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
                             do ii = 1, ndim
-                                newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-3001)+ii)
+                                newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                          ar(j,3))-3001)+ii)
                             end do
                         else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 2000) then
                             do ii = 1, ndim
-                                newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-2001)+ii)
+                                newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&
+                                          ar(j,3))-2001)+ii)
                             end do
                         else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .lt. 2000) then
                             if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+ar(j,3))) .ne. 0.d0) then
@@ -535,7 +538,8 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                                     zr(&
                                     jlst-1+(zi(jcnset-1+ nnose*(i-1)+f(j,k))-1)*nfiss+ifiss&
                                     )) then
-                                    minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j,k))-1)*nfiss+ifiss)
+                                    minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+&
+                                           f(j,k))-1)*nfiss+ifiss)
                                 endif
                             endif
                         end do

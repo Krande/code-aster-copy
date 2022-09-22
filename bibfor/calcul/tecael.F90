@@ -17,11 +17,13 @@
 ! --------------------------------------------------------------------
 !
 subroutine tecael(iadzi, iazk24, noms)
-!
-    use calcul_module, only : ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_, ca_icaelk_, ca_iel_, ca_igr_, ca_illiel_, ca_ilmaco_, ca_ilmsco_, ca_nomte_, ca_nomtm_, ca_option_
-!
-    implicit none
-!
+
+use calcul_module, only : ca_ialiel_, ca_iamaco_, ca_iamsco_, ca_icaeli_,&
+     ca_icaelk_, ca_iel_, ca_igr_, ca_illiel_,&
+     ca_ilmaco_, ca_ilmsco_, ca_nomte_, ca_nomtm_, ca_option_
+
+implicit none
+
 ! person_in_charge: jacques.pellet at edf.fr
 !
 #include "jeveux.h"

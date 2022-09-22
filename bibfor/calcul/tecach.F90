@@ -18,11 +18,13 @@
 !
 subroutine tecach(stopz, nmparz, louez, iret, nval,&
                   itab, iad, numa)
-!
-    use calcul_module, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_, ca_igr_, ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
-!
-    implicit none
-!
+
+use calcul_module, only : ca_iaoppa_,&
+     ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_,&
+     ca_igr_, ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
+
+implicit none
+
 ! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterf_types.h"

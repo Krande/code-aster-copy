@@ -17,11 +17,15 @@
 ! --------------------------------------------------------------------
 !
 subroutine extra1(nin, lchin, lpain)
-!
-    use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_, ca_iachlo_, ca_ianueq_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_igd_, ca_igr_, ca_iichin_, ca_ilchlo_, ca_itypgd_, ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_, ca_nute_, ca_nuop_, ca_iachid_
-!
+
+use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_,&
+     ca_iachlo_, ca_ianueq_, ca_iaoppa_, ca_iawlo2_,&
+     ca_iawloc_, ca_igd_, ca_igr_, ca_iichin_, ca_ilchlo_, ca_itypgd_,&
+     ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_,&
+     ca_nute_, ca_nuop_, ca_iachid_
+
     implicit none
-!
+
 ! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterf_types.h"
