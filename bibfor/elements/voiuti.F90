@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
                   iaddvo, iadvoi, nbvois, livois, tyvois,&
                   nbnovo, nbsoco, lisoco)
@@ -139,20 +139,20 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
     if (lcod .gt. 2*ntymax) then
         call utmess('F', 'VOLUFINI_7', sk=codvoi, si=lcod)
     endif
-    do 30 icode = 1, lcod/2
+    do icode = 1, lcod/2
         ideb=2*(icode-1)+1
         ifin=2*icode
-        do 10 jcode = 1, 9
+        do jcode = 1, 9
             if (codvoi(ideb:ifin) .eq. tybase(jcode)) then
                 ntyvo=ntyvo+1
                 lityvo(ntyvo)=jcode
                 goto 20
 !
             endif
-10      continue
+        end do
         call utmess('F', 'VOLUFINI_6', sk=codvoi(ideb:ifin))
-20      continue
-30  end do
+ 20     continue
+    end do
     if (ntyvo .eq. 0) then
         nbvois=0
         goto 80
@@ -162,7 +162,7 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !      REMPLISSAGE DES TABLEAUX
 !
     nbvois=0
-    do 70 iv = 1, zznbvo(numa)
+    do iv = 1, zznbvo(numa)
         numav=zzmavo(numa,iv)
         ielv=zi(iarepe-1+2*(numav-1)+2)
 !
@@ -176,25 +176,26 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !
 !  LE VOISIN EST IL D UN TYPE ATTENDU
 !
-        do 40 ityvo = 1, ntyvo
+        do ityvo = 1, ntyvo
             if (typev .eq. lityvo(ityvo)) then
                 goto 50
 !
             endif
-40      continue
+        end do
         goto 70
 !
-50      continue
+ 50     continue
         nbvois=nbvois+1
         livois(nbvois)=numav
         tyvois(nbvois)=typev
         nbnovo(nbvois)=zznbno(numa,iv)
         nbsoco(nbvois)=zznbsc(numa,iv)
-        do 60 is = 1, zznbsc(numa, iv)
+        do is = 1, zznbsc(numa, iv)
             lisoco(nbvois,is,1)=zzloc1(numa,iv,is)
             lisoco(nbvois,is,2)=zzloc2(numa,iv,is)
-60      continue
-70  end do
-80  continue
+        end do
+ 70     continue
+    end do
+ 80 continue
 !
 end subroutine

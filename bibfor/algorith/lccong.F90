@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lccong(nr, itmax, toler, iter, r,&
                   rini, yd, dy, irtet)
 !     CONTROLE DE LA CONVERGENCE DU NEWTON LOCAL DE LETK
@@ -48,10 +48,10 @@ subroutine lccong(nr, itmax, toler, iter, r,&
 !
     e1=0.d0
     e1ini=0.d0
-    do 101 i = 1, 6
+    do i = 1, 6
         e1 = max(e1, abs(r(i)))
         e1ini = max(e1ini, abs(rini(i)))
-101  end do
+    end do
 !     R8PREM CAR R HOMOGENE A DES DEFORMATIONS
     errr(1)=e1
     if (e1ini .gt. r8prem()) then
@@ -60,10 +60,10 @@ subroutine lccong(nr, itmax, toler, iter, r,&
 !
     e2=0.d0
     e2ini=0.d0
-    do 102 i = 7, nr
+    do i = 7, nr
         e2 = max(e2, abs(r(i)))
         e2ini = max(e2ini, abs(yd(i)+dy(i)))
-102  end do
+    end do
 !
     errr(2)=e2
     if (e2ini .gt. r8prem()) then
@@ -78,7 +78,7 @@ subroutine lccong(nr, itmax, toler, iter, r,&
 ! === =================================================================
     if (err .lt. toler) then
         irtet = 0
-        goto 9999
+        goto 999
     endif
 !
 ! === ==================================================================
@@ -90,6 +90,6 @@ subroutine lccong(nr, itmax, toler, iter, r,&
         irtet = 3
     endif
 !
-9999  continue
+999 continue
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
                   ndim, npi, dimcon, geom, ipoids,&
                   ipoid2, ivf, ivf2, idfde, idfde2,&
@@ -41,17 +41,17 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
     integer :: i, kpi, n
     real(kind=8) :: b(dimdef, dimuel), poids, poids2, defgem(dimdef), r(dimdef)
 ! ======================================================================
-    do 10 i = 1, dimuel
+    do i = 1, dimuel
         vectu(i)=0.0d0
- 10 end do
+    end do
 !
-    do 100 kpi = 1, npi
+    do kpi = 1, npi
 ! ======================================================================
 ! --- INITIALISATION DE R ----------------------------------------------
 ! ======================================================================
-        do 22 i = 1, dimdef
+        do i = 1, dimdef
             r(i) = 0.0d0
- 22     continue
+        end do
 ! ======================================================================
         call cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
                     idfde, idfde2, geom, dimdef, dimuel,&
@@ -61,12 +61,12 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
 ! ======================================================================
-        do 110 i = 1, dimdef
+        do i = 1, dimdef
             defgem(i)=0.0d0
-            do 120 n = 1, dimuel
+            do n = 1, dimuel
                 defgem(i)=defgem(i)+b(i,n)*deplm(n)
-120         continue
-110     continue
+            end do
+        end do
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES GENERALISEES FINALES ----------------------
 ! ======================================================================
@@ -76,6 +76,6 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
         call dilsga(dimdef, dimuel, poids, poids2, b,&
                     r, vectu)
 ! ======================================================================
-100 end do
+    end do
 ! ======================================================================
 end subroutine

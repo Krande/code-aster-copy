@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine abscur(ma)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/alcart.h"
 #include "asterfort/arcseg34.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/jecrec.h"
@@ -41,9 +44,6 @@ subroutine abscur(ma)
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma
 !-----------------------------------------------------------------------
@@ -233,11 +233,11 @@ subroutine abscur(ma)
 !
 !   -- 6. On verifie que les POI1 sont sur des segments :
 !   --------------------------------------------------------
-    do 15 ipoi1 = 1, nbpoi1
+    do ipoi1 = 1, nbpoi1
         numa=zi(jpoi+ipoi1-1)
         call jeveuo(jexnum(connex, numa), 'L', adrm)
         n = zi(adrm)
-        do 16 iseg = 1, nbseg
+        do iseg = 1, nbseg
             numa2=zi(jseg-1+iseg)
             call jeveuo(jexnum(connex, numa2), 'L', iadr2)
             n1 = zi(iadr2)
@@ -249,10 +249,11 @@ subroutine abscur(ma)
                 zi(icor2+ipoi1-1)=-iseg
                 goto 15
             endif
- 16     continue
+        end do
         call jenuno(jexnum(nommai, numa), noma)
         call utmess('F', 'MODELISA_3', sk=noma)
- 15 continue
+ 15     continue
+    end do
 !
 !
 !
@@ -280,7 +281,7 @@ subroutine abscur(ma)
         numa=zi(jseg-1+abs(mi))
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+numa-1)), typm)
         call jeveuo(jexnum(connex, numa), 'L', jtmp)
-
+!
 !       noeuds 1 et 2 (extremites) :
         icoo1 = 3*(zi(jtmp-1+1)-1)
         icoo2 = 3*(zi(jtmp-1+2)-1)
@@ -340,7 +341,7 @@ subroutine abscur(ma)
             if (nbnoseg .eq. 3) then
                 valv(3) = stot+s32
             else if (nbnoseg.eq.4) then
-                
+!
                 valv(4) = stot+s42
                 valv(3) = stot+s42+s34
             endif

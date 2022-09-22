@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asimpr(nbsup, tcosup, nomsup)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvis.h"
@@ -34,8 +36,6 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: nbsup, tcosup(nbsup, *)
     character(len=8) :: nomsup(nbsup, *)
@@ -52,12 +52,12 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 !-----------------------------------------------------------------------
     integer :: ia, ibid, ic, icas, id, idep
     integer :: ii, il, ino, iocc, iordr, iq, is
-    integer :: jcas, jdir, jkno, jno,  jnref
-    integer :: jord, jref,  lnod, nbno, nboc, ncas
+    integer :: jcas, jdir, jkno, jno, jnref
+    integer :: jord, jref, lnod, nbno, nboc, ncas
     integer :: ndep, nucas, nume
     real(kind=8) :: epsima, vale
-    character(len=3):: ki
-    character(len=24):: charcas
+    character(len=3) :: ki
+    character(len=24) :: charcas
     character(len=8), pointer :: noeuds(:) => null()
     integer, pointer :: type(:) => null()
 !-----------------------------------------------------------------------
@@ -90,37 +90,38 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     ia = 1
     AS_ALLOCATE(vk8=noeuds, size=3*nbsup)
     ino = 1
-    do 40 id = 1, 3
-        do 42 is = 1, nbsup
+    do id = 1, 3
+        do is = 1, nbsup
             if (tcosup(is,1) .eq. 1) then
-                do 44 ii = 1, ino
+                do ii = 1, ino
                     if (nomsup(is,id) .eq. noeuds(ii)) then
                         goto 42
                     endif
-44              continue
+                end do
                 noeuds(ino) = nomsup(is,id)
                 chainq(iq+5 : iq+12)= noeuds(ino)
                 ino = ino+1
                 iq = iq+9
             else if (tcosup(is,1).eq.2) then
-                do 46 ii = 1, ino
+                do ii = 1, ino
                     if (nomsup(is,id) .eq. noeuds(ino)) goto 42
-46              continue
+                end do
                 noeuds(ino)= nomsup(is,id)
                 chainl(il+5 : il+12)= nomsup(is,id)
                 ino = ino+1
                 il = il+9
             else if (tcosup(is,1).eq.3) then
-                do 48 ii = 1, ino
+                do ii = 1, ino
                     if (nomsup(is,id) .eq. noeuds(ino)) goto 42
-48              continue
+                end do
                 chaina(ia+5 : ia+12)= nomsup(is,id)
                 noeuds(ino)= nomsup(is,id)
                 ino = ino+1
                 ia = ia+9
             endif
-42      continue
-40  end do
+ 42         continue
+        end do
+    end do
 !
     if (iq .ne. 1) then
         call utmess('I', 'SEISME_67', sk=chainq)
@@ -141,12 +142,12 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     call jeveuo('&&ASENAP.TYPE', 'L', vi=type)
     noref = '-'
     call utmess('I', 'SEISME_68')
-    do 10 iocc = 1, nboc
+    do iocc = 1, nboc
         call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
-        do 20 icas = 1, ncas
+        do icas = 1, ncas
             nucas = zi(jcas+icas-1)
-            do 30 idep = 1, ndep
+            do idep = 1, ndep
                 call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=idep, scal=nume, nbret=ibid)
                 if (nume .eq. nucas) then
                     call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=idep, scal=nomcas, nbret=ibid)
@@ -160,31 +161,31 @@ subroutine asimpr(nbsup, tcosup, nomsup)
                     call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod)
                     call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'L', jdir)
                     if (zi(jref+icas-1) .eq. 1) noref = zk8(jnref+icas- 1)
-                    do 12 ino = 1, nbno
+                    do ino = 1, nbno
                         noeu =zk8(jno+ino-1)
                         if (zr(jdir+3*(ino-1)) .ne. epsima) then
                             cmp = 'DX'
                             vale = zr(jdir+3*(ino-1))
-                            call utmess('I', 'SEISME_69',si=nucas, sr=vale,&
-                                        nk=4, valk=[noeu,cmp, noref,nomcas])
+                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4,&
+                                        valk=[noeu, cmp, noref, nomcas])
                         endif
                         if (zr(jdir+3*(ino-1)+1) .ne. epsima) then
                             cmp = 'DY'
                             vale = zr(jdir+3*(ino-1)+1)
-                            call utmess('I', 'SEISME_69',si=nucas, sr=vale,&
-                                        nk=4, valk=[noeu,cmp, noref,nomcas])
+                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4,&
+                                        valk=[noeu, cmp, noref, nomcas])
                         endif
                         if (zr(jdir+3*(ino-1)+2) .ne. epsima) then
                             cmp = 'DZ'
                             vale = zr(jdir+3*(ino-1)+2)
-                            call utmess('I', 'SEISME_69',si=nucas, sr=vale,&
-                                        nk=4, valk=[noeu,cmp, noref,nomcas])
+                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4,&
+                                        valk=[noeu, cmp, noref, nomcas])
                         endif
-12                  continue
+                    end do
                 endif
-30          continue
-20      continue
-10  end do
+            end do
+        end do
+    end do
     do iocc = 1, nboc
         call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)

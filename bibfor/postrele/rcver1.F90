@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcver1(phenoz, tablz, tably)
     implicit none
 #include "asterf_types.h"
@@ -83,7 +83,7 @@ subroutine rcver1(phenoz, tablz, tably)
         goto 999
     endif
 !
-    do 10 j = 1, 3
+    do j = 1, 3
         call tbexve(tabref, valek(j), ordo1, 'V', nbno1,&
                     k8b)
         call jeveuo(ordo1, 'L', jordo1)
@@ -93,7 +93,7 @@ subroutine rcver1(phenoz, tablz, tably)
 !       ON COMPARE LES COORDONNEES DE TOUS LES NOEUDS
         if (phenom .eq. 'MECANIQUE') then
             ASSERT(nbno1.eq.nbno2)
-            do 20 i = 1, nbno1
+            do i = 1, nbno1
                 if (abs(zr(jordo1+i-1)-zr(jordo2+i-1)) .gt. eps) then
                     valk(1)=tabref(1:8)
                     valk(2)=tabcom(1:8)
@@ -103,11 +103,11 @@ subroutine rcver1(phenoz, tablz, tably)
                     call utmess('F', 'POSTRCCM_41', nk=3, valk=valk, nr=2,&
                                 valr=valr)
                 endif
- 20         continue
+            end do
 !       ON COMPARE LES COORDONNEES DES NOEUDS EXTREMITES
 !       (CAR ON N'A PAS FORCEMENT NBNO1 = NBNO2)
         else if (phenom.eq.'THERMIQUE') then
-            do 40 i = 1, 2
+            do i = 1, 2
                 v1=zr(jordo1+(nbno1-1)*(i-1))
                 v2=zr(jordo2+(nbno2-1)*(i-1))
                 if (abs(v1-v2) .gt. eps) then
@@ -119,11 +119,11 @@ subroutine rcver1(phenoz, tablz, tably)
                     call utmess('F', 'POSTRCCM_41', nk=3, valk=valk, nr=2,&
                                 valr=valr)
                 endif
- 40         continue
+            end do
         endif
         call jedetr(ordo1)
         call jedetr(ordo2)
- 10 end do
+    end do
 !
 ! --- VERIFICATION DU NOMBRE DE LIGAMENTS
 !     -----------------------------------
@@ -163,7 +163,7 @@ subroutine rcver1(phenoz, tablz, tably)
                     k8b)
         call jeveuo(inst2, 'L', jinst2)
         ASSERT(nbins1.eq.nbins2)
-        do 30 i = 1, nbins1
+        do i = 1, nbins1
             if (abs(zr(jinst1+i-1)-zr(jinst2+i-1)) .gt. eps) then
                 valk(1)=tabref(1:8)
                 valk(2)=tabcom(1:8)
@@ -172,7 +172,7 @@ subroutine rcver1(phenoz, tablz, tably)
                 call utmess('F', 'POSTRCCM_43', nk=2, valk=valk, nr=2,&
                             valr=valr)
             endif
- 30     continue
+        end do
         call jedetr(inst1)
         call jedetr(inst2)
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmolig(liel1, trav)
     implicit none
 !
@@ -89,7 +89,7 @@ subroutine xmolig(liel1, trav)
     integer :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
 !
     integer :: jtab, ngr1, igr1, j1, n1, nbelt, itypel, iel, ima, jj
-    integer ::  nfiss, i
+    integer :: nfiss, i
     character(len=16) :: notype
     integer, pointer :: nbsp(:) => null()
 !
@@ -110,8 +110,8 @@ subroutine xmolig(liel1, trav)
                 nhyst6, nhydq8, nhydt6, nphm, nhe20,&
                 npe15, npy13, nte10, nhem20, npem15,&
                 npym13, ntem10, nhes20, npes15, npys13,&
-                ntes10, nhed20,nped15, npyd13,&
-                nted10, nbhm, nchm)
+                ntes10, nhed20, nped15, npyd13, nted10,&
+                nbhm, nchm)
 !
 ! ----------------------------------------------------------------------
 !     ELEMENTS MECANIQUES
@@ -322,7 +322,7 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8M_XH' ), ihymq8(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8S_XH' ), ihysq8(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8D_XH' ), ihydq8(1))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH1' ), ihyq8(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH2' ), ihyq8(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH3' ), ihyq8(9))
@@ -331,7 +331,7 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6M_XH' ), ihymt6(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6S_XH' ), ihyst6(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6D_XH' ), ihydt6(1))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH1' ), ihyt6(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH2' ), ihyt6(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH3' ), ihyt6(9))
@@ -340,7 +340,7 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8M_XHC' ), ihymq8(4))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8S_XHC' ), ihysq8(4))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8D_XHC' ), ihydq8(4))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH2C' ), ihyq8(11))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH3C' ), ihyq8(12))
 !
@@ -348,25 +348,25 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6M_XHC' ), ihymt6(4))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6S_XHC' ), ihyst6(4))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6D_XHC' ), ihydt6(4))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH2C' ), ihyt6(11))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH3C' ), ihyt6(12))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XHC3' ), ihyq8(14))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XHC3' ), ihyt6(14))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH2C3' ), ihyq8(15))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH3C3' ), ihyq8(16))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH2C3' ), ihyt6(15))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH3C3' ), ihyt6(16))
-
+!
 ! ------------------------------------------------------------------
 ! AJOUT DES ELEMENTS HM-XFEM (3D)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH' ), ihe20(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20M_XH' ), ihem20(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20S_XH' ), ihes20(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20D_XH' ), ihed20(1))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH1' ), ihe20(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH2' ), ihe20(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH3' ), ihe20(9))
@@ -375,7 +375,7 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15M_XH' ), ipem15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15S_XH' ), ipes15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15D_XH' ), iped15(1))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH1' ), ipe15(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2' ), ipe15(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH3' ), ipe15(9))
@@ -384,7 +384,7 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13M_XH' ), ipym13(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13S_XH' ), ipys13(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13D_XH' ), ipyd13(1))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH1' ), ipy13(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH2' ), ipy13(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH3' ), ipy13(9))
@@ -393,51 +393,51 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10M_XH' ), item10(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10S_XH' ), ites10(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10D_XH' ), ited10(1))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH1' ), ite10(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH2' ), ite10(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH3' ), ite10(9))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XHC' ), ihe20(4))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XHC' ), ipe15(4))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XHC' ), ipy13(4))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XHC' ), ite10(4))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH2C' ), ihe20(11))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH3C' ), ihe20(12))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C' ), ipe15(11))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C' ), ipe15(12))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH2C' ), ipy13(11))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH3C' ), ipy13(12))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH2C' ), ite10(11))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH3C' ), ite10(12))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XHC3' ), ihe20(14))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XHC3' ), ipe15(14))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XHC3' ), ipy13(14))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XHC3' ), ite10(14))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH2C3' ), ihe20(15))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH3C3' ), ihe20(16))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C3' ), ipe15(15))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C3' ), ipe15(16))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH2C3' ), ipy13(15))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH3C3' ), ipy13(16))
-
+!
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH2C3' ), ite10(15))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH3C3' ), ite10(16))
-
+!
 ! ------------------------------------------------------------------
 !
 !     ELEMENT PRINCIPAUX AXIS QUADRATIQUES
@@ -591,13 +591,13 @@ subroutine xmolig(liel1, trav)
 !     REMPLISSAGE DE LA 5EME COLONNE DU TABLEAU AVEC LE TYPE D'ELEMENT
     call jelira(liel1, 'NMAXOC', ngr1)
 !
-    do 200 igr1 = 1, ngr1
+    do igr1 = 1, ngr1
         call jeveuo(jexnum(liel1, igr1), 'L', j1)
         call jelira(jexnum(liel1, igr1), 'LONMAX', n1)
         nbelt=n1-1
         itypel=zi(j1-1+n1)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
-        do 210 iel = 1, nbelt
+        do iel = 1, nbelt
             ima=zi(j1-1+iel)
 ! SI LE MAILLE TARDIVE QUAND AFFE_MODELE AVEC GROUP_NO
             if (ima .lt. 0) then
@@ -683,7 +683,7 @@ subroutine xmolig(liel1, trav)
                     call xmoajo(jj, nfiss, ihydt6, nhydt6)
                 else if (notype.eq.'HM_DPSE3') then
                     call xmoajo(jj, nfiss, iphm, nphm)
-
+!
                 else if (notype.eq.'HM_HEXA20') then
                     call xmoajo(jj, nfiss, ihe20, nhe20)
                 else if (notype.eq.'HM_HEXA20M') then
@@ -720,10 +720,10 @@ subroutine xmolig(liel1, trav)
                     call xmoajo(jj, nfiss, ibhm, nbhm)
                 else if (notype.eq.'HM_FACE6') then
                     call xmoajo(jj, nfiss, ichm, nchm)
-
-
-
-
+!
+!
+!
+!
 ! --- ELEMENTS X-FEM THERMIQUES
                 else if (notype.eq.'THER_HEXA8') then
                     call xmoajo(jj, nfiss, ith8, nth8)
@@ -764,7 +764,7 @@ subroutine xmolig(liel1, trav)
 !         REPART DU MODELE XFEM PRECEDENT PLUTOT QUE DU MODELE INITIAL.
 !         ON POURRAIT REPARTIR DU MODELE INITIAL DANS PROPA_FISS ET NE
 !         PAS AVOIR A FAIRE CETTE ÉTAPE.
-                    do 220 i = 1, 6
+                    do i = 1, 6
                         if (itypel .eq. ih8(i)) then
                             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_HEXA8'), itypel)
                         else if (itypel.eq.ip6(i)) then
@@ -774,9 +774,9 @@ subroutine xmolig(liel1, trav)
                         else if (itypel.eq.it4(i)) then
                             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_TETRA4'), itypel)
                         endif
-220                 continue
+                    end do
                 else if (notype(8:9).eq.'_X') then
-                    do 230 i = 1, 6
+                    do i = 1, 6
                         if (itypel .eq. icpq4(i)) then
                             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECPQU4'), itypel)
                         else if (itypel.eq.icpt3(i)) then
@@ -790,7 +790,7 @@ subroutine xmolig(liel1, trav)
                         else if (itypel.eq.iaxt3(i)) then
                             call jenonu(jexnom('&CATA.TE.NOMTE', 'MEAXTR3'), itypel)
                         endif
-230                 continue
+                    end do
                 endif
                 zi(jj+5)=itypel
             endif
@@ -803,8 +803,8 @@ subroutine xmolig(liel1, trav)
                 call utmess('F', 'XFEM_13')
             endif
 !
-210     continue
-200 continue
+        end do
+    end do
 !
 !     IMPRESSIONS
     call xmoimp(nh8, nh20, np6, np15, np5,&
@@ -819,8 +819,8 @@ subroutine xmolig(liel1, trav)
                 nhyst6, nhydq8, nhydt6, nphm, nhe20,&
                 npe15, npy13, nte10, nhem20, npem15,&
                 npym13, ntem10, nhes20, npes15, npys13,&
-                ntes10, nhed20,nped15, npyd13,&
-                nted10, nbhm, nchm)
+                ntes10, nhed20, nped15, npyd13, nted10,&
+                nbhm, nchm)
 !
     call jedema()
 end subroutine

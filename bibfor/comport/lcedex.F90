@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcedex(option, imate, npg, lgpg, s,&
                   q, vim, vip, alphap, dalfs)
 !
@@ -122,7 +122,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
         if (norma .le. seuil) then
 !
             elas=.true.
-            do 67 kpg = 1, npg
+            do kpg = 1, npg
                 vip(1,kpg) = alphap(1)
                 vip(2,kpg) = alphap(2)
                 vip(3,kpg) = vim(3,kpg)
@@ -130,12 +130,12 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
                 vip(5,kpg) = vim(5,kpg)
                 vip(6,kpg) = s(1) + q(1,1)*alphap(1) + q(1,2)*alphap( 2)
                 vip(7,kpg) = s(2) + q(2,1)*alphap(1) + q(2,2)*alphap( 2)
- 67         continue
+            end do
 !
         else
 !
             elas=.false.
-            do 68 kpg = 1, npg
+            do kpg = 1, npg
                 vip(1,kpg) = alphap(1)
                 vip(2,kpg) = alphap(2)
                 vip(3,kpg) = norma
@@ -143,7 +143,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
                 vip(5,kpg) = 1.d0 - exp(-norma/lc)
                 vip(6,kpg) = s(1) + q(1,1)*alphap(1) + q(1,2)*alphap( 2)
                 vip(7,kpg) = s(2) + q(2,1)*alphap(1) + q(2,2)*alphap( 2)
- 68         continue
+            end do
 !
         endif
 !
@@ -196,11 +196,11 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
             call r8inir(4, 0.d0, h, 1)
             call r8inir(4, 0.d0, dalfs, 1)
 !
-            do 71 i = 1, 2
-                do 72 j = 1, 2
+            do i = 1, 2
+                do j = 1, 2
                     h(i,j) = dsialf(i,j) - q(i,j)
- 72             continue
- 71         continue
+                end do
+            end do
 !
             det = h(1,1)*h(2,2) - h(1,2)**2
 !

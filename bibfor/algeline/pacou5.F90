@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacou5(r, qt, n, u, v)
     implicit none
 !
@@ -28,14 +28,14 @@ subroutine pacou5(r, qt, n, u, v)
     integer :: i, j, k
 ! ---------------------------------------------------------------------
 !
-    do 11 k = n, 1, -1
+    do k = n, 1, -1
         if (abs(u(k)) .gt. 1.0d-30) goto 1
-11  end do
+    end do
     k = 1
 !
- 1  continue
+  1 continue
 !
-    do 12 i = k-1, 1, -1
+    do i = k-1, 1, -1
 !
         call pacou6(r, qt, n, i, u(i),&
                     -u(i+1))
@@ -50,16 +50,16 @@ subroutine pacou5(r, qt, n, u, v)
             u(i) = abs(u(i+1)) * sqrt(1.0d0+(u(i)/u(i+1))**2)
 !
         endif
-12  end do
+    end do
 !
-    do 13 j = 1, n
+    do j = 1, n
         r(1,j) = r(1,j) + u(1)*v(j)
-13  end do
+    end do
 !
-    do 14 i = 1, k-1
+    do i = 1, k-1
 !
         call pacou6(r, qt, n, i, r(i, i),&
                     -r(i+1, i))
-14  end do
+    end do
 !
 end subroutine

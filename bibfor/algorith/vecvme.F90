@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vecvme(optio2, modelz, carelz, mate, mateco, compor,&
-                  complz, numedd, cnchtp)
+!
+subroutine vecvme(optio2, modelz, carelz, mate, mateco,&
+                  compor, complz, numedd, cnchtp)
     implicit none
 #include "jeveux.h"
 #include "asterfort/asasve.h"
@@ -63,14 +63,14 @@ subroutine vecvme(optio2, modelz, carelz, mate, mateco, compor,&
 !
     character(len=1) :: typres
     character(len=8) :: lpain(13), lpaout(1)
-    character(len=8) ::  newnom
+    character(len=8) :: newnom
     character(len=14) :: complu
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime
     character(len=24) :: ligrmo, lchin(13), lchout(1)
     character(len=24) :: vechvp, cnchvp, vrcplu, modele, carele
     character(len=19) :: vecel, chvref
-    integer :: i, ibid, iret, jlve,   jtp, jyp, lonch
+    integer :: i, ibid, iret, jlve, jtp, jyp, lonch
     real(kind=8), pointer :: chtp(:) => null()
     real(kind=8), pointer :: chvp(:) => null()
     data cnchvp/' '/
@@ -157,9 +157,9 @@ subroutine vecvme(optio2, modelz, carelz, mate, mateco, compor,&
         call jeveuo(zk24(jtp) (1:19)//'.VALE', 'E', vr=chtp)
         call jeveuo(cnchvp, 'L', jyp)
         call jeveuo(zk24(jyp) (1:19)//'.VALE', 'E', vr=chvp)
-        do 10 i = 1, lonch
+        do i = 1, lonch
             chtp(i) = chtp(i) + chvp(i)
-10      continue
+        end do
     endif
 !
     call jedema()

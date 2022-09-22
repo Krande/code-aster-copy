@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utpalg(nn, nc, p, sl, sg)
     implicit none
     real(kind=8) :: p(3, 3), sl(*), sg(*)
@@ -36,9 +36,9 @@ subroutine utpalg(nn, nc, p, sl, sg)
 !
     if (mod(nc,3) .eq. 0) then
         nb = nn * nc / 3
-        do 100 i = 1, nb
+        do i = 1, nb
             k = 3 * ( i - 1 )
-            do 110 j = 1, i
+            do j = 1, i
                 in(1) = k * (k+1) / 2 + 3*(j-1)
                 in(2) = (k+1) * (k+2) / 2 + 3*(j-1)
                 in(3) = (k+2) * (k+3) / 2 + 3*(j-1)
@@ -54,10 +54,10 @@ subroutine utpalg(nn, nc, p, sl, sg)
                     r(7) = sl(in(3)+1)
                     r(8) = sl(in(3)+2)
                     r(9) = sl(in(3)+3)
-                    do 120 m = 1, 3
-                        do 130 n = 1, m
+                    do m = 1, 3
+                        do n = 1, m
                             sg(in(m)+n) = zero
-                            do 140 l = 1, 3
+                            do l = 1, 3
                                 sg(in(m)+n) = sg(&
                                               in(m)+n) + p(l,&
                                               m) * (&
@@ -67,15 +67,15 @@ subroutine utpalg(nn, nc, p, sl, sg)
                                               )*p(3, n&
                                               )&
                                               )
-140                          continue
-130                      continue
-120                  continue
+                            end do
+                        end do
+                    end do
                 else
 !              --------- BLOC EXTRA - DIAGONAL
-                    do 150 m = 1, 3
-                        do 160 n = 1, 3
+                    do m = 1, 3
+                        do n = 1, 3
                             sg(in(m)+n) = zero
-                            do 170 l = 1, 3
+                            do l = 1, 3
                                 sg(in(m)+n) = sg(&
                                               in(m)+n) + p(l,&
                                               m) * (&
@@ -84,12 +84,12 @@ subroutine utpalg(nn, nc, p, sl, sg)
                                               )*p(3, n&
                                               )&
                                               )
-170                          continue
-160                      continue
-150                  continue
+                            end do
+                        end do
+                    end do
                 endif
-110          continue
-100      continue
+            end do
+        end do
 !
     endif
 !

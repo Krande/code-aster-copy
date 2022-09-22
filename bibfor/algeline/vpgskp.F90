@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
                   typeps, vaux, ddlexc, delta)
 !
@@ -108,74 +108,74 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
         call mrmult('ZERO', lmatb, vect(1, 1), vaux, 1,&
                     .false._1)
     else
-        do 5 i = 1, nbeq
+        do i = 1, nbeq
             vaux(i) = vect(i,1)
- 5      continue
+        end do
     endif
     raux = 0.d0
-    do 10 i = 1, nbeq
+    do i = 1, nbeq
         raux = raux + vect(i,1) * vaux(i) * ddlexc(i)
-10  end do
+    end do
     if (typeps .eq. 1) then
         delta(1) = sign(1.d0,raux)
     else
         delta(1) = 1.d0
     endif
     raux = delta(1) / max(eps,sqrt(abs(raux)))
-    do 15 i = 1, nbeq
+    do i = 1, nbeq
         vect(i,1) = vect(i,1) * raux * ddlexc(i)
-15  end do
+    end do
 !
 ! BOUCLE 1 SUR LES VECTEURS PROPRES
-    do 70 i = 2, nconv
+    do i = 2, nconv
 !
 ! BOUCLE 2 SUR LES VECTEURS PROPRES
-        do 65 j = 1, i-1
+        do j = 1, i-1
 !
 ! CALCUL (VJ,VI) ET ||VI|| (STEP 1)/ (VJ,VI+) (STEP 2 SI NECESSAIRE)
             step = 0
-20          continue
+ 20         continue
             step = step + 1
 !
             if (typeps .ne. 0) then
                 call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
                             .false._1)
             else
-                do 25 k = 1, nbeq
+                do k = 1, nbeq
                     vaux(k) = vect(k,i)
-25              continue
+                end do
             endif
             raux = 0.d0
-            do 30 k = 1, nbeq
+            do k = 1, nbeq
                 raux = raux + vect(k,j) * vaux(k) * ddlexc(k)
-30          continue
+            end do
             if (step .eq. 1) then
                 rauold = 0.d0
-                do 35 k = 1, nbeq
+                do k = 1, nbeq
                     rauold = rauold + vect(k,i) * vaux(k) * ddlexc(k)
-35              continue
+                end do
             endif
 !
 ! CALCUL VI+ <- VI - (VJ,VI)VJ (STEP 1)
 ! CALCUL VI++ <- VI+ - (VJ,VI+)VJ (STEP 2)
             delta1 = raux * delta(j)
-            do 40 k = 1, nbeq
+            do k = 1, nbeq
                 vect(k,i) = (vect(k,i) - delta1 * vect(k,j)) * ddlexc( k)
-40          continue
+            end do
 !
 ! CALCUL DE ||VI+|| (STEP 1) ET ||VI++|| (STEP 2)
             if (typeps .ne. 0) then
                 call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
                             .false._1)
             else if (typeps.eq.0) then
-                do 45 k = 1, nbeq
+                do k = 1, nbeq
                     vaux(k) = vect(k,i)
-45              continue
+                end do
             endif
             raux = 0.d0
-            do 50 k = 1, nbeq
+            do k = 1, nbeq
                 raux = raux + vect(k,i) * vaux(k) * ddlexc(k)
-50          continue
+            end do
 !
 ! PREMIER TEST
             if ((sqrt(abs(raux)).gt.(alpha*sqrt(abs(rauold)) -eps)) .and. (step.le.2)) then
@@ -184,23 +184,24 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
                 rauold = raux
                 goto 20
             else if (step.eq.2) then
-                do 55 k = 1, nbeq
+                do k = 1, nbeq
                     vect(k,i) = 0.d0
-55              continue
+                end do
             endif
 !
-60          continue
+ 60         continue
             if (typeps .eq. 1) then
                 delta(i) = sign(1.d0,raux)
             else
                 delta(i) = 1.d0
             endif
             raux = delta(i)/max(eps,sqrt(abs(raux)))
-            do 65 k = 1, nbeq
+            do k = 1, nbeq
                 vect(k,i) = vect(k,i) * ddlexc(k) * raux
-65          continue
+            end do
+        end do
 !
-70  continue
+    end do
 !
 ! FIN ROUTINE VPGSKP
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,25 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine pj3dap(ino2, geom2, geom1, tetr4,&
-                  cobary, itr3, nbtrou, btdi, btvr,&
-                  btnb, btlc, btco,&
-                  l_dmax, dmax, dala, loin, dmin)
+!
+subroutine pj3dap(ino2, geom2, geom1, tetr4, cobary,&
+                  itr3, nbtrou, btdi, btvr, btnb,&
+                  btlc, btco, l_dmax, dmax, dala,&
+                  loin, dmin)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/pj3da1.h"
 #include "asterfort/pj3da2.h"
 #include "asterfort/pj3dgb.h"
+!
     real(kind=8) :: cobary(4), geom1(*), geom2(*), btvr(*)
     integer :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), tetr4(*)
 !  but :
 !    trouver le tetr4 qui servira a interpoler le noeud ino2
 !    ainsi que les coordonnees barycentriques de ino2 dans ce tetr4
-
+!
 !  in   ino2       i  : numero du noeud de m2 cherche
 !  in   geom2(*)   r  : coordonnees des noeuds du maillage m2
 !  in   geom1(*)   r  : coordonnees des noeuds du maillage m1
@@ -56,25 +56,25 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
 !  out  dmin       r  : distance de ino2 au bord de itr3 si ino2 est
 !                       exterieur a itr3.
 !  out  loin       l  : .true. si dmin > 10% diametre(itr3) ou si dmin < dala
-
+!
 !  remarque :
 !    si nbtrou=0, ino2 ne sera pas projete car il est au dela de dmax
 !    alors : dmin=0, loin=.false.
 ! ----------------------------------------------------------------------
-
-
+!
+!
     real(kind=8) :: cobar2(4), dmin, d2, dx, dy, dz, xmin, ymin, zmin, volu
     real(kind=8) :: rtr3
     integer :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
     aster_logical :: ok
-
+!
     aster_logical :: l_dmax, loin
     real(kind=8) :: dmax, dala
 ! DEB ------------------------------------------------------------------
     nbtrou=0
     loin=.false.
     dmin=0.d0
-
+!
     nx=btdi(1)
     ny=btdi(2)
     dx=btvr(7)
@@ -83,8 +83,8 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
     xmin=btvr(1)
     ymin=btvr(3)
     zmin=btvr(5)
-
-
+!
+!
 !   -- 1. : on cherche un tetr4 itr3 qui contienne ino2 :
 !   -------------------------------------------------------
     p=int((geom2(3*(ino2-1)+1)-xmin)/dx)+1
@@ -92,7 +92,7 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
     r=int((geom2(3*(ino2-1)+3)-zmin)/dz)+1
     ntrbt=btnb((r-1)*nx*ny+(q-1)*nx+p)
     iposi=btlc((r-1)*nx*ny+(q-1)*nx+p)
-    do 10 k = 1, ntrbt
+    do k = 1, ntrbt
         i=btco(iposi+k)
         call pj3da1(ino2, geom2, i, geom1, tetr4,&
                     cobar2, ok)
@@ -103,12 +103,12 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
             cobary(2)=cobar2(2)
             cobary(3)=cobar2(3)
             cobary(4)=cobar2(4)
-            goto 9999
-
+            goto 999
+!
         endif
- 10 end do
-
-
+    end do
+!
+!
 !   -- 2. : si echec de la recherche precedente, on
 !        cherche le tetr4 itr3 le plus proche de ino2 :
 !  -------------------------------------------------------
@@ -117,18 +117,18 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
     else
         dmin=r8maem()
     endif
-
+!
 !   -- on recherche la grosse boite candidate :
     call pj3dgb(ino2, geom2, geom1, tetr4, 6,&
                 btdi, btvr, btnb, btlc, btco,&
                 p1, q1, r1, p2, q2,&
                 r2)
-    do 60 p = p1, p2
-        do 50 q = q1, q2
-            do 40 r = r1, r2
+    do p = p1, p2
+        do q = q1, q2
+            do r = r1, r2
                 ntrbt=btnb((r-1)*nx*ny+(q-1)*nx+p)
                 iposi=btlc((r-1)*nx*ny+(q-1)*nx+p)
-                do 30 k = 1, ntrbt
+                do k = 1, ntrbt
                     i=btco(iposi+k)
                     call pj3da2(ino2, geom2, i, geom1, tetr4,&
                                 cobar2, d2, volu)
@@ -142,16 +142,16 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
                         cobary(3)=cobar2(3)
                         cobary(4)=cobar2(4)
                     endif
- 30             continue
- 40         continue
- 50     continue
- 60 end do
-
-
+                end do
+            end do
+        end do
+    end do
+!
+!
 !   -- calcul de loin :
     if (nbtrou .eq. 1) then
-        if (dala.ge.0.d0) then
-            if (dmin.lt.dala) loin=.false.
+        if (dala .ge. 0.d0) then
+            if (dmin .lt. dala) loin=.false.
         else
             if (rtr3 .eq. 0) then
                 loin=.true.
@@ -163,7 +163,7 @@ subroutine pj3dap(ino2, geom2, geom1, tetr4,&
     else
         dmin=0.d0
     endif
-
-9999 continue
-
+!
+999 continue
+!
 end subroutine

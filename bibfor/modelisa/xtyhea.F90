@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
                   jconx2, jstnl, jstnv, nbheav)
 ! person_in_charge: patrick.massin at edf.fr
@@ -48,24 +48,24 @@ subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
 !
 ! --- INITIALISATION
     nbheav = 0
-    do 10 ino = 1, nno
+    do ino = 1, nno
         stno(ino) = 0
-10  end do
+    end do
 !
 ! --- BOUCLE SUR LES NOEUDS DE LA MAILLE
 !
-    do 20 ino = 1, nno
+    do ino = 1, nno
         nngl=zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
 !
 ! --- BOUCLE SUR LES FISSURES PRECEDENTES
 !
-        do 30 ifis = 1, ifiss
+        do ifis = 1, ifiss
 ! --- RECUPERATION DES STATUTS DES NOEUDS
             if (zl(jstnl(ifis)-1+nngl) .and. zi(jstnv(ifis)-1+nngl) .gt. 0) then
                 stno(ino) = stno(ino)+1
             endif
             nbheav = max(nbheav,stno(ino))
-30      continue
-20  end do
+        end do
+    end do
     call jedema()
 end subroutine

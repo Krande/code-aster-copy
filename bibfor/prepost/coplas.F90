@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
-                  lrev, deklag, prodef, oridef, profil, &
-                  kal, kbl, kcl, dkma, dkmb, &
+!
+subroutine coplas(tempa, k1a, k1b, k1c, matrev,&
+                  lrev, deklag, prodef, oridef, profil,&
+                  kal, kbl, kcl, dkma, dkmb,&
                   dkmc, k1acp, k1bcp, k1ccp)
 !
     implicit none
@@ -84,9 +84,9 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
     pi = r8pi()
     call jeveuo(nomcmp, 'L', iadr)
     call jelira(nomcmp, 'LONUTI', long)
-    do 3 i = 0, long-1
+    do i = 0, long-1
         phenom = zk32(iadr+i)
-        call codent(i+1,'D0',k6) 
+        call codent(i+1, 'D0', k6)
         if (phenom .eq. 'ECRO_LINE') then
             valnom = matrev//'.CPT.'//k6
             typnom = valnom//'.VALR'
@@ -95,15 +95,15 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
             if (lreel .gt. 0) then
                 call jeveuo(typnom, 'L', ineut1)
                 call jeveuo(ty2nom, 'L', ineut2)
-                do 5 j = 0, lreel-1
+                do j = 0, lreel-1
                     if (zk16(ineut2+j) .eq. 'SY') then
                         sigma = zr(ineut1+j)
                         goto 30
                     endif
- 5              continue
+                end do
             else
                 call jeveuo(ty2nom, 'L', ineut2)
-                do 110 j = 0, long-1
+                do j = 0, long-1
                     if (zk16(ineut2+j) .eq. 'SY') then
                         fonct = zk16(ineut2+j+long)
                         autnom = fonct//'.PROL'
@@ -143,7 +143,7 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
                                 sigma = pent*tempa + rest
                             endif
                         else
-                            do 50 k = 1, ldim-1
+                            do k = 1, ldim-1
                                 if (tempa .lt. zr(ineut3+k)) then
                                     sigma1 = zr(ineut3+ldim+k-1)
                                     sigma2 = zr(ineut3+ldim+k )
@@ -155,10 +155,10 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
                                             )/tempdi&
                                             ) * sigma2
                                 endif
-50                          continue
+                            end do
                         endif
                     endif
-110              continue
+                end do
                 goto 30
             endif
         else if (phenom.eq.'TRACTION') then
@@ -175,13 +175,13 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
             natnom = tranom//'.VALE'
             call jelira(natnom, 'NUTIOC', nvale)
             valp = 0
-            do 20 j = 1, npara
+            do j = 1, npara
                 if (tempa .lt. zr(ineut5-1+j)) then
                     valp = j
                     goto 21
                 endif
-20          continue
-21          continue
+            end do
+ 21         continue
             if (valp .eq. 1) then
                 if (proln(1:1) .eq. 'E') then
                     call utmess('F', 'PREPOST_8')
@@ -238,9 +238,9 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
             endif
             goto 30
         endif
- 3  continue
+    end do
     call utmess('F', 'PREPOST_10')
-30  continue
+ 30 continue
 !
     rya = (k1a * k1a)/(6 * pi * sigma * sigma)
     if (oridef .eq. 'LONGI') then
@@ -288,20 +288,20 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
 !
 ! --- correction plastique point C
 !
-    if(profil(1:12).eq.'SEMI_ELLIPSE') then
-       if (k1c .lt. kcl) then
-          k1ccp = k1c + dkmc
-       else
-          val1 = betaa*k1c
-          val2 = k1c + dkmc
-          if (val1 .gt. val2) then
-             k1ccp = val1
-             dkmc = k1ccp - k1c
-          else
-             k1ccp = k1c + dkmc
-          endif
-       endif
-       kcl = k1c
+    if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
+        if (k1c .lt. kcl) then
+            k1ccp = k1c + dkmc
+        else
+            val1 = betaa*k1c
+            val2 = k1c + dkmc
+            if (val1 .gt. val2) then
+                k1ccp = val1
+                dkmc = k1ccp - k1c
+            else
+                k1ccp = k1c + dkmc
+            endif
+        endif
+        kcl = k1c
     endif
 ! ======================================================================
     call jedema()

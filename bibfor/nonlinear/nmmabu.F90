@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
                   b)
 !
@@ -59,15 +59,15 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
     ASSERT((ndim.eq.2).or.(ndim.eq.3))
 !
     if (ndim .eq. 2) then
-        do 10 n = 1, nno
+        do n = 1, nno
             b(1,1,n) = dfdi(n,1)
             b(2,2,n) = dfdi(n,2)
             b(4,1,n) = r2*dfdi(n,2)
             b(4,2,n) = r2*dfdi(n,1)
- 10     continue
+        end do
 !
     else if (ndim.eq.3) then
-        do 20 n = 1, nno
+        do n = 1, nno
             b(1,1,n) = dfdi(n,1)
             b(2,2,n) = dfdi(n,2)
             b(3,3,n) = dfdi(n,3)
@@ -77,7 +77,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
             b(5,3,n) = r2*dfdi(n,1)
             b(6,2,n) = r2*dfdi(n,3)
             b(6,3,n) = r2*dfdi(n,2)
- 20     continue
+        end do
 !
     endif
 !

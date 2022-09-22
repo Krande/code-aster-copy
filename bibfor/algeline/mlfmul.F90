@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mlfmul(b, f, y, ldb, n,&
                   p, l, opta, optb, nb)
 !
@@ -43,29 +43,29 @@ subroutine mlfmul(b, f, y, ldb, n,&
     restm = m - (nb*nmb)
     restl= l - (nb*nlb)
 !
-    do 600 i = 1, nmb
+    do i = 1, nmb
         ib= nb*(i-1)+1
-        do 500 j = 1, nlb
+        do j = 1, nlb
             jb= nb*(j-1)+1
             call dgemm(tra, trb, nb, nb, p,&
                        alpha, f(ib, 1), n, y(1, jb), ldb,&
                        beta, b(ib, jb), ldb)
-500      continue
+        end do
         if (restl .gt. 0) then
             jb=nb*nlb+1
             call dgemm(tra, trb, nb, restl, p,&
                        alpha, f(ib, 1), n, y(1, jb), ldb,&
                        beta, b(ib, jb), ldb)
         endif
-600  end do
+    end do
     if (restm .gt. 0) then
         ib=nb*nmb+1
-        do 1000 j = 1, nlb
+        do j = 1, nlb
             jb= nb*(j-1)+1
             call dgemm(tra, trb, restm, nb, p,&
                        alpha, f(ib, 1), n, y(1, jb), ldb,&
                        beta, b(ib, jb), ldb)
-1000      continue
+        end do
         if (restl .gt. 0) then
             jb=nb*nlb+1
             call dgemm(tra, trb, restm, restl, p,&

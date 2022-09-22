@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine moinsr(j, n, idil, idiich, idsuiv,&
                   nosuiv, idip, noip, iilib, iimax)
     implicit none
@@ -76,11 +76,11 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
             call juveca(nosuiv, iimax)
             call jeveuo(nosuiv, 'E', idsuiv)
         endif
-        do 10 k = 1, n
+        do k = 1, n
             zi(idsuiv-1+iilib) = iilib + 1
             zi(idip-1+iilib) = zi(idil-1+k)
             iilib = iilib + 1
-10      continue
+        end do
 !        MARQUAGE FIN DE CHAINE
         zi(idsuiv-1+iilib-1) = -j
 !
@@ -123,11 +123,11 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
 !        INSERTION DU RESTE DE IL
         kip = zi(idsuiv-1+ii1)
 !
-20      continue
+ 20     continue
         if (kil .le. n) then
 !
 !           TOUS LES ELEMENTS DE IL N'ONT PAS ETE TRAITES
-30          continue
+ 30         continue
             if (kip .gt. 0) then
 !
 !              LA CHAINE J N A PAS ETE ENTIEREMENT PARCOURUE.
@@ -186,11 +186,11 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
                     call juveca(nosuiv, iimax)
                     call jeveuo(nosuiv, 'E', idsuiv)
                 endif
-                do 40 k = kil, n
+                do k = kil, n
                     zi(idsuiv-1+iilib) = iilib + 1
                     zi(idip-1+iilib) = zi(idil-1+k)
                     iilib = iilib + 1
-40              continue
+                end do
 !              MARQUAGE FIN DE CHAINE
                 zi(idsuiv-1+iilib-1) = -j
 !

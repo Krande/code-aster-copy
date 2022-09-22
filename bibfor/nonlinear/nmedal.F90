@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmedal(alphap, sigmc, gc, s, q,&
                   seuil)
 !
@@ -199,11 +199,11 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
 !     S EXPRIME DANS LA BASE PROPRE P DE Q :
     call r8inir(2, 0.d0, sp, 1)
-    do 10 i = 1, 2
-        do 20 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             sp(i) = sp(i) + p(j,i)*s(j)
- 20     continue
- 10 end do
+        end do
+    end do
 !
 !     CALCUL DE ALPHAP(1) ET ALPHAP(2) PAR NEWTON :
 !
@@ -240,11 +240,11 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !    ON REMET LA SOLUTION DS LA BONNE BASE ET ON LA STOCKE DANS TEMPAL
 !
     call r8inir(2, 0.d0, tempal, 1)
-    do 30 i = 1, 2
-        do 40 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             tempal(i) = tempal(i) + p(i,j)*pa(j)
- 40     continue
- 30 end do
+        end do
+    end do
 !
     norma = sqrt( tempal(1)**2 + tempal(2)**2 )
 !

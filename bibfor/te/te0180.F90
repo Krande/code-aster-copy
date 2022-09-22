@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0180(option, nomte)
 !.......................................................................
 !
@@ -46,32 +46,32 @@ subroutine te0180(option, nomte)
 !-----------------------------------------------------------------------
     integer :: ij, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     ndi = nno* (nno+1)/2
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATTTC', 'E', imattt)
 !
-    do 20 i = 1, ndi
+    do i = 1, ndi
         zc(imattt+i-1) = (0.0d0,0.0d0)
-20  end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 50 kp = 1, npg1
+    do kp = 1, npg1
 !
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy, dfdz)
 !
-        do 40 i = 1, nno
-            do 30 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 ij = (i-1)*i/2 + j
                 zc(imattt+ij-1) = zc(imattt+ij-1) + poids* (dfdx(i)* dfdx(j)+dfdy(i)*dfdy(j)+ dfd&
                                   &z(i)*dfdz(j))
-30          continue
-40      continue
+            end do
+        end do
 !
-50  end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                   iter, intg, typess, essai, icomp,&
                   irteti)
@@ -103,7 +103,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
             call codree(abs(dp), 'E', cdp)
             call utmess('A', 'ALGORITH2_54', sk=cdp)
             irteti = 0
-            goto 9999
+            goto 999
         endif
 !
 ! -     SI ITER > 3 ,ON ESSAYE AVEC UNE SOLUTION DE DEPART ELASTIQUE
@@ -113,7 +113,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
             if (intg .eq. 1) then
                 typess = 1
                 irteti = 2
-                goto 9999
+                goto 999
 !
 ! -     SI ITER > 3 ,ON ESSAYE AVEC DIFFERENTES VALEURS POUR ESSAI
 !
@@ -121,32 +121,32 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                 essai = 1.d-25
                 typess = 3
                 irteti = 2
-                goto 9999
+                goto 999
             else if (intg .eq. 3) then
                 essai = 1.d-2
                 typess = 3
                 irteti = 2
-                goto 9999
+                goto 999
             else if (intg .eq. 4) then
                 essai = 1.d-10
                 typess = 3
                 irteti = 2
-                goto 9999
+                goto 999
             else if (intg .eq. 5) then
                 essai = 1.d-5
                 typess = 3
                 irteti = 2
-                goto 9999
+                goto 999
             else if (intg .eq. 6) then
                 essai = 1.d-20
                 typess = 3
                 irteti = 2
-                goto 9999
+                goto 999
             else if (intg .eq. 7) then
                 essai = 1.d-15
                 typess = 3
                 irteti = 2
-                goto 9999
+                goto 999
             else if (intg .eq. 8) then
 !
                 if (icomp .eq. 0 .or. icomp .eq. 1) then
@@ -156,7 +156,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                     valk(2) = cdp
                     call utmess('I', 'ALGORITH2_55', nk=2, valk=valk)
                     irteti = 3
-                    goto 9999
+                    goto 999
                 else
                     vali = intg
                     valr = dp
@@ -169,7 +169,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !
         else
             irteti = 1
-            goto 9999
+            goto 999
         endif
 !
 ! -     CAS DE DP POSITIF
@@ -186,13 +186,13 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !
             if (err(1) .le. toler) then
                 irteti = 0
-                goto 9999
+                goto 999
             else
 !
 ! -             NON CONVERGENCE ITERATION SUIVANTE
 !
                 irteti = 1
-                goto 9999
+                goto 999
             endif
 !
 ! -         ITER >= ITMAX
@@ -208,9 +208,9 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !
                 if (iter .ge. 6) then
 !
-                    do 20 i = 1, 5
+                    do i = 1, 5
                         der(i) = abs(ter(iter-i-1) - ter(iter-i))
-20                  continue
+                    end do
 !
 ! -                 CONVERGENCE REGULIERE SUR LES 5 DERNIERES ITERATIONS
 !
@@ -231,13 +231,13 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !
                         if (err(1) .lt. tolim .and. dp .lt. dplim) then
                             irteti = 0
-                            goto 9999
+                            goto 999
 !
 ! -                     SINON ON ESSAIE ENCORE 10 ITERATIONS ..
 !
                         else if (itsup .lt. 10) then
                             irteti = 1
-                            goto 9999
+                            goto 999
 !
 ! -                     SINON STOP
 !
@@ -249,10 +249,10 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                                 valk(2) = ctol
                                 call utmess('I', 'ALGORITH2_56', nk=2, valk=valk)
                                 irteti = 3
-                                goto 9999
+                                goto 999
                             else
                                 irteti = 3
-                                goto 9999
+                                goto 999
                             endif
                         endif
                     else
@@ -263,10 +263,10 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                             valk(2) = ctol
                             call utmess('I', 'ALGORITH2_57', nk=2, valk=valk)
                             irteti = 3
-                            goto 9999
+                            goto 999
                         else
                             irteti = 3
-                            goto 9999
+                            goto 999
                         endif
                     endif
 !
@@ -280,10 +280,10 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                         valk(2) = ctol
                         call utmess('I', 'ALGORITH2_58', nk=2, valk=valk)
                         irteti = 3
-                        goto 9999
+                        goto 999
                     else
                         irteti = 3
-                        goto 9999
+                        goto 999
                     endif
                 endif
 !
@@ -292,10 +292,10 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
             else
                 itsup = 0
                 irteti = 0
-                goto 9999
+                goto 999
             endif
         endif
     endif
 !
-9999  continue
+999 continue
 end subroutine

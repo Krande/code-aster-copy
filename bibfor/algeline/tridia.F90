@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tridia(n, a, lda, d, e,&
                   tau, w)
     implicit none
@@ -50,14 +50,15 @@ subroutine tridia(n, a, lda, d, e,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     tol = 0.0d0
-    do 10 i = 1, n
-        do 10 j = 1, i
+    do i = 1, n
+        do j = 1, i
             tol = max(abs(dble(a(i,j))),abs(dimag(a(i,j))),tol)
-10      continue
+        end do
+    end do
     dgamma = r8prem()**2
 !
 !  --- REALISATION DE N-2 TRANSFORMATIONS SIMILAIRES ---
-    do 30 k = 2, n - 1
+    do k = 2, n - 1
         tau(k) = 0.0d0
         vc = zdotc(n-k+1,a(k,k-1),1,a(k,k-1),1)
         vr=max(abs(dble(vc)),abs(dimag(vc)))
@@ -75,9 +76,9 @@ subroutine tridia(n, a, lda, d, e,&
         endif
 !
 !   --- TRANSFORMATIONS ---
-        do 20 j = k, n
+        do j = k, n
             tau(j) = a(j,k-1)/delta
-20      continue
+        end do
 !
         call zmvpy('LOWER', n-k+1, (1.0d0, 0.0d0), a(k, k), lda,&
                    a(k, k-1), 1, (0.0d0, 0.0d0), w(k), 1)
@@ -89,20 +90,21 @@ subroutine tridia(n, a, lda, d, e,&
         call zadder('LOWER', n-k+1, rho*delta, tau(k), 1,&
                     a(k, k), lda)
         tau(k) = tau(1)
-30  end do
+ 30     continue
+    end do
 !
 !  --- LA MATRICE A ETE REDUITE EN UNE MATRICE HERMITIENNE
 !      TRIDIAGONALE. LA DIAGONALE SUPERIEURE EST TEMPORAIREMENT
 !      STOCKEE DANS LE VECTEUR TAU. LA DIAGONALE EST STOCKEE DANS D
-    do 40 i = 1, n
+    do i = 1, n
         d(i) = dble(a(i,i))
-40  end do
+    end do
 !
     tau(1) = 1.0d0
     if (n .gt. 1) tau(n) = dconjg(a(n,n-1))
     e(1) = 0.0d0
 !
-    do 50 i = 2, n
+    do i = 2, n
         bb = abs(tau(i))
         e(i) = bb
         a(i,i) = dcmplx(dble(a(i,i)),bb)
@@ -111,6 +113,6 @@ subroutine tridia(n, a, lda, d, e,&
             bb = 1.0d0
         endif
         tau(i) = tau(i)*tau(i-1)/bb
-50  end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cagrai(char, ligrmo, noma, fonree)
     implicit none
 #include "jeveux.h"
@@ -44,7 +44,7 @@ subroutine cagrai(char, ligrmo, noma, fonree)
 !      NOMA   : NOM DU MAILLAGE
 !      FONREE : FONC OU REEL
 !-----------------------------------------------------------------------
-    integer :: nchgi, jvalv,  nx, ny, nz, i, iocc, nbtou, nbma, jma
+    integer :: nchgi, jvalv, nx, ny, nz, i, iocc, nbtou, nbma, jma
     real(kind=8) :: grx, gry, grz
     character(len=8) :: k8b, typmcl(2), grxf, gryf, grzf
     character(len=16) :: motclf, motcle(2)
@@ -74,13 +74,13 @@ subroutine cagrai(char, ligrmo, noma, fonree)
     ncmp(2) = 'FLUY'
     ncmp(3) = 'FLUZ'
     if (fonree .eq. 'REEL') then
-        do 10 i = 1, 3
+        do i = 1, 3
             zr(jvalv-1+i) = 0.d0
-10      continue
+        end do
     else if (fonree.eq.'FONC') then
-        do 12 i = 1, 3
+        do i = 1, 3
             zk8(jvalv-1+i) = '&FOZERO'
-12      continue
+        end do
     endif
     call nocart(carte, 1, 3)
 !
@@ -90,15 +90,15 @@ subroutine cagrai(char, ligrmo, noma, fonree)
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
 !
-    do 20 iocc = 1, nchgi
+    do iocc = 1, nchgi
 !
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'FLUX_X', iocc=iocc, scal=grx, nbret=nx)
             call getvr8(motclf, 'FLUX_Y', iocc=iocc, scal=gry, nbret=ny)
             call getvr8(motclf, 'FLUX_Z', iocc=iocc, scal=grz, nbret=nz)
-            do 22 i = 1, 3
+            do i = 1, 3
                 zr(jvalv-1+i) = 0.d0
-22          continue
+            end do
             if (nx .ne. 0) zr(jvalv-1+1) = grx
             if (ny .ne. 0) zr(jvalv-1+2) = gry
             if (nz .ne. 0) zr(jvalv-1+3) = grz
@@ -106,9 +106,9 @@ subroutine cagrai(char, ligrmo, noma, fonree)
             call getvid(motclf, 'FLUX_X', iocc=iocc, scal=grxf, nbret=nx)
             call getvid(motclf, 'FLUX_Y', iocc=iocc, scal=gryf, nbret=ny)
             call getvid(motclf, 'FLUX_Z', iocc=iocc, scal=grzf, nbret=nz)
-            do 24 i = 1, 3
+            do i = 1, 3
                 zk8(jvalv-1+i) = '&FOZERO'
-24          continue
+            end do
             if (nx .ne. 0) zk8(jvalv-1+1) = grxf
             if (ny .ne. 0) zk8(jvalv-1+2) = gryf
             if (nz .ne. 0) zk8(jvalv-1+3) = grzf
@@ -128,7 +128,8 @@ subroutine cagrai(char, ligrmo, noma, fonree)
             call jedetr(mesmai)
         endif
 !
-20  end do
+ 20     continue
+    end do
 !
     call jedema()
 end subroutine

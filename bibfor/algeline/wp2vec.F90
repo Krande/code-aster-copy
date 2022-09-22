@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
                   shift, yh, yb, vr, nlivr,&
                   vpr, vpi, vecp, mxresf, resufi,&
@@ -110,10 +110,10 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
     seuilc=1.d-4
 !
     call wkvect('&&WP2VEC.INDIC.PART.VP', 'V V I', nbvect, iadind)
-    do 1 j = 1, nbvect
+    do j = 1, nbvect
         zi(iadind + j-1) = -2
-  1 end do
-    do 2 j = 1, nbvect
+    end do
+    do j = 1, nbvect
         auxrj=vpr(j)
         auxij=vpi(j)
         if (zi(iadind + j-1) .eq. -2) then
@@ -157,7 +157,7 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
                 endif
             endif
         endif
-  2 end do
+    end do
 !
 !
     if (zi(iadind + nbvect-1) .eq. -2) then
@@ -184,19 +184,19 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
 !
 ! --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
     k = 1
-    do 4 j = 1, nbvect
+    do j = 1, nbvect
         if (zi(iadind + j-1) .gt. 0) then
             if (k .ne. j) then
                 vpr(k) = vpr(j)
                 vpi(k) = vpi(j)
                 zi(iadind + k-1) = zi(iadind + j-1)
-                do 5 i = 1, nlivr, 1
+                do i = 1, nlivr, 1
                     vr(i,k) = vr(i,j)
-  5             continue
+                end do
             endif
             k = k + 1
         endif
-  4 end do
+    end do
     nbfrga=k-1
 ! NBRE DE VP RECOMPACTEES
     nbfr=k-1
@@ -210,7 +210,7 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
         call wkvect('&&WP2VEC.VEC.AUX.C2', 'V V C', neq, av2)
         call wkvect('&&WP2VEC.VEC.AUX.C ', 'V V C', neq, av)
     endif
-    do 10 j = 1, nbfr
+    do j = 1, nbfr
         if (zi(iadind + j-1) .gt. 0) then
             a = vpr(j)
             b = vpi(j)
@@ -263,34 +263,34 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
             vpr(j) = a
             vpi(j) = b
         endif
- 10 end do
+    end do
 !
 ! --- 1.3. ELIMINATION DES VALEURS FAUSSES -- RECOMPACTAGE --
     k = 1
-    do 44 j = 1, nbfr
+    do j = 1, nbfr
         if (zi(iadind + j-1) .gt. 0) then
             if (k .ne. j) then
                 vpr(k) = vpr(j)
                 vpi(k) = vpi(j)
                 zi(iadind + k-1) = zi(iadind + j-1)
-                do 55 i = 1, nlivr, 1
+                do i = 1, nlivr, 1
                     vr(i,k) = vr(i,j)
- 55             continue
+                end do
             endif
             k = k + 1
         endif
- 44 end do
+    end do
     nbfrga=k-1
 !
 ! --- 3. SELECTION DES VALEURS PROPRES (PB QUADRATIQUE)
-    do 20 j = 1, nbfrga, 1
+    do j = 1, nbfrga, 1
         if ((zi(iadind + j-1).eq.1 ) .and. ( vpi(j).lt.0.d0)) then
             vpi(j) = -vpi(j)
-            do 21 i = 1, neq
+            do i = 1, neq
                 vecp(i,j) = dconjg(vecp(i,j))
- 21         continue
+            end do
         endif
- 20 end do
+    end do
 !
 ! --- 4. PREPARATION DE RESUFR
     if (nbfreq .gt. nbfrga) then
@@ -318,13 +318,13 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq,&
     call wpordo(0, shift, vpr, vpi, vecp,&
                 nbfreq, neq)
 !
-    do 30 j = 1, nbfreq
+    do j = 1, nbfreq
         am = vpr(j)*vpr(j)
         om = vpi(j)*vpi(j)
         resufi(j,1) = j
         resufr(j,2) = om
         resufr(j,3) = -vpr(j)/sqrt(om + am)
- 30 end do
+    end do
 !
 ! --- 6. DESTRUCTION DES OJB TEMPORAIRES
     if (opt .eq. 'CENTRE') then

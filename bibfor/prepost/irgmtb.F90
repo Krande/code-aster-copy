@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine irgmtb(tdec, typd, vers)
-    implicit   none
-#include "jeveux.h"
 !
+subroutine irgmtb(tdec, typd, vers)
+    implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
     integer :: ntyele, maxel, maxno
     parameter (ntyele = 28)
     parameter (maxel  = 48)
@@ -78,15 +78,16 @@ subroutine irgmtb(tdec, typd, vers)
     if (vers .ne. 1 .and. vers .ne. 2) goto 999
 !
 ! --- INITIALISATIONS
-    do 10 i = 1, ntyele
-        do 11 j = 1, maxel
-            do 11 k = 1, maxno
+    do i = 1, ntyele
+        do j = 1, maxel
+            do k = 1, maxno
                 tdec(i,j,k)=0
-11          continue
+            end do
+        end do
         typd(i,1)=0
         typd(i,2)=0
         typd(i,3)=0
-10  end do
+    end do
 !
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2' ), typseg)
@@ -870,20 +871,20 @@ subroutine irgmtb(tdec, typd, vers)
 !     ------------------------------------------------------------------
 ! --- ON STOCKE LE NOMBRE DE NOEUDS POUR EVITER D'AVOIR A LE REFAIRE
 !
-    do 101 ind = 1, ntyele
+    do ind = 1, ntyele
         if (typd(ind,1) .ne. 0) then
             call jeveuo(jexnum('&CATA.TM.NBNO', typd(ind, 1)), 'L', ino)
             typd(ind,3)=zi(ino)
         endif
-101  end do
+    end do
 !
 !     ------------------------------------------------------------------
 !
     goto 9000
 !     VERIFICATION EMMELAGE DE PINCEAUX DU PROGRAMMEUR...
-999  continue
+999 continue
     ASSERT(.false.)
 !     ------------------------------------------------------------------
 !
-9000  continue
+9000 continue
 end subroutine

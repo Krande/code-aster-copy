@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function padist(ndim, coor1, coor2)
     implicit none
     real(kind=8) :: padist
@@ -29,10 +29,10 @@ function padist(ndim, coor1, coor2)
 ! OUT  PADIST : DISTANCE ENTRE LES 2 NOEUDS
 !---------------------------------------------------------------------
     d = 0.d0
-    do 10 i = 1, ndim
+    do i = 1, ndim
         x = coor1(i) - coor2(i)
         d = d + x*x
-10  end do
+    end do
     if (d .ne. 0.d0) d = sqrt( d )
     padist = d
 end function

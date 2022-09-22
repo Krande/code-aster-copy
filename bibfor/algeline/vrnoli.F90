@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vrnoli(objet1, objet2, ier)
     implicit none
 #include "jeveux.h"
@@ -64,9 +64,9 @@ subroutine vrnoli(objet1, objet2, ier)
     call jeveuo(celk2, 'L', icelk2)
 !
 !     --- CONTROLE DES REFERENCES ---
-    do 10 ival = 0, nbval-1
+    do ival = 0, nbval-1
         if (zk24(icelk1+ival) .ne. zk24(icelk2+ival)) ier = ier + 1
-10  end do
+    end do
 !
 !     --- LIBERATION (AVEC I/O EN DIFFERE) ---
 !

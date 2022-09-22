@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
                   nmat, xhi, dxhids)
     implicit none
@@ -83,13 +83,13 @@ subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
     xhi=sedvp1*grj0+sedvp2*grj1+(1-sedvp1-sedvp2)*grj2
 !
 !-- DERIVEE DE LA CONTRAINTE EQUIVALENTE DE FLUAGE / CONTRAINTE
-    do 10 ivec = 1, 3
+    do ivec = 1, 3
         if (valp(ivec) .eq. grj0) dj0ds(ivec) = 1.d0
-10  end do
+    end do
 !
-    do 20 itens = 1, nb
+    do itens = 1, nb
         dj1ds(itens) = kron(itens)
         dxhids(itens)=sedvp1*dj0ds(itens)+sedvp2*dj1ds(itens)+&
         (1-sedvp1-sedvp2)*dj2ds(itens)
-20  end do
+    end do
 end subroutine

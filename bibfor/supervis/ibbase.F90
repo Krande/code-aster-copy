@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ibbase(ier)
     implicit none
 #include "asterc/getfac.h"
@@ -157,7 +157,7 @@ subroutine ibbase(ier)
 !        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
         balgbl(indbas) = lgblca(indbas,indcas)
         call getvis(motfac, 'LONG_ENRE', iocc=ibase, scal=balgbl(indbas), nbret=nb)
-
+!
 !       valeur par defaut issue du common
         call getvis(motfac, 'TAILLE', iocc=ibase, scal=lfic(indbas), nbret=nb)
 !
@@ -176,7 +176,7 @@ subroutine ibbase(ier)
 !        --- MOT CLE "TITRE" -------------------------------------------
         call getvtx(motfac, 'TITRE', iocc=ibase, scal=titrba(indbas), nbret=nb)
 !
-     end do
+    end do
 !
 !
 !     --- QUELQUES CONTROLES SUPPLEMENTAIRES SUR LA GLOBALE EN POURSUITE
@@ -200,10 +200,10 @@ subroutine ibbase(ier)
 !
 !        --- INITIALISATION DE CHAQUE BASE ---
         ideb = 1
-        do 300 ibase = ideb, mxbase
+        do ibase = ideb, mxbase
             call jeinif(stin(ibase), stout(ibase), nomba(ibase)(1:8), nomba(ibase)(1:1),&
                         balgre(ibase), banbbl(ibase), balgbl( ibase))
-300      continue
+        end do
     else
 !
         call utmess('E', 'SUPERVIS_15')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diago2(tens, vecp, valp)
 !
     implicit none
@@ -54,7 +54,7 @@ subroutine diago2(tens, vecp, valp)
 ! -- VECP DE LA 1ERE VALEUR PROPRE
 ! -- ON MULTIPLIE LES 2 VECT DE BASE PAR (A-LAMBDA_2.ID)
 !      ON PRENDRA CELUI DONT LA NORME EST LA PLUS GRANDE
-    do 10 ind = 1, 2
+    do ind = 1, 2
         if (ind .eq. 1) then
             vecp(1,ind)= dev(1)-valp(2)
             vecp(2,ind)= dev(3)
@@ -63,7 +63,7 @@ subroutine diago2(tens, vecp, valp)
             vecp(2,ind)= dev(2)-valp(2)
         endif
         y(ind)=vecp(1,ind)**2+vecp(2,ind)**2
-10  end do
+    end do
     ind=1
     if (y(2) .gt. y(1)) then
         ind=2
@@ -75,17 +75,17 @@ subroutine diago2(tens, vecp, valp)
         vecp(1,1)=1.d0
         vecp(2,2)=1.d0
     else
-        do 20 i = 1, 2
+        do i = 1, 2
             vecp(i,1)=vecp(i,ind)/a
-20      continue
+        end do
 !
         vecp(1,2)=-vecp(2,1)
         vecp(2,2)=vecp(1,1)
 !
     endif
 !
-    do 30 i = 1, 2
+    do i = 1, 2
         valp(i)=valp(i)+trace
-30  end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0554(nomopt, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dffno.h"
 #include "asterfort/elref1.h"
@@ -29,6 +28,7 @@ subroutine te0554(nomopt, nomte)
 #include "asterfort/pmat.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
+!
     character(len=16) :: nomopt, nomte
 !
 !                 CALCUL DE ROSETTE, OPTION : SIRO_ELEM
@@ -51,10 +51,10 @@ subroutine te0554(nomopt, nomte)
 ! ----------------------------------------------------------------------
 !
 !    call tecael(iadzi, iazk24, noms=0)
-    call tecael(iadzi, iazk24 )
+    call tecael(iadzi, iazk24)
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PSIG3D', 'L', isig)
     call jevech('PGEOMER', 'L', igeom)
@@ -69,31 +69,31 @@ subroutine te0554(nomopt, nomte)
 !        VNO = VECTEUR NORMAL A L'ELEMENT
 !
 !     INITIALISATION
-    do 9 i = 1, 3
+    do i = 1, 3
         vt1(i) = 0.d0
         vt2(i) = 0.d0
         vno(i) = 0.d0
-        do 8 j = i, 3
+        do j = i, 3
             sigg(i,j)=0.d0
- 8      continue
- 9  end do
+        end do
+    end do
 !
 ! --- ------------------------------------------------------------------
 ! --- BOUCLE SUR LES NOEUDS DE L'ELEMENT
-    do 10 ino = 1, nnop
+    do ino = 1, nnop
 !
-        do 12 i = 1, 3
+        do i = 1, 3
             vtan1(i) = 0.d0
             vtan2(i) = 0.d0
-12      continue
+        end do
 !
-        do 20 ifonc = 1, nnop
+        do ifonc = 1, nnop
             iaux1 = igeom-1+2*(ifonc-1)
             iaux2 = (ino-1)*nnop*2 + ifonc
             vtan1(1) = vtan1(1) + zr(iaux1+1)*dff(iaux2)
             vtan1(2) = vtan1(2) + zr(iaux1+2)*dff(iaux2)
             vtan2(3) = 1.d0
-20      continue
+        end do
 !
         vt1(1)=vt1(1)+vtan1(1)
         vt1(2)=vt1(2)+vtan1(2)
@@ -107,7 +107,7 @@ subroutine te0554(nomopt, nomte)
         sigg(3,3)=sigg(3,3)+zr(isig+4*(ino-1)+2)
         sigg(1,2)=sigg(1,2)+zr(isig+4*(ino-1)+3)
 !
-10  end do
+    end do
 ! --- ------------------------------------------------------------------
 ! --- VECTEURS TANGENTS PAR MOYENNE DE CHAQUE COMPOSANTE
     vt1(1)=vt1(1)/nnop
@@ -138,7 +138,7 @@ subroutine te0554(nomopt, nomte)
      &   -vno(1)*vt2(2)*vt1(3)-vt1(1)*vno(2)*vt2(3)-vt2(1)*vt1(2)*vno(3)
     ASSERT(abs(det).gt.prec)
 !
-    
+!
     mgl(1,1) = vno(1)
     mgl(2,1) = vt1(1)
     mgl(3,1) = vt2(1)
@@ -161,10 +161,10 @@ subroutine te0554(nomopt, nomte)
 !
     call pmat(3, sigg, mlg, mtmp)
     call pmat(3, mgl, mtmp, sigl)
-
+!
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DES OPTIONS : SIRO_ELEM_SIT1 & SIRO_ELEM_SIT2
-
+!
     zr(isigm-1+8) = sigg(1,1)*vt1(1)+sigg(1,2)*vt1(2)
     zr(isigm-1+9) = sigg(2,1)*vt1(1)+sigg(2,2)*vt1(2)
     zr(isigm-1+10)= sigg(3,3)*vt1(3)
@@ -184,7 +184,7 @@ subroutine te0554(nomopt, nomte)
     zr(isigm-1+6)= sigg(2,1)*vt1(1)+sigg(2,2)*vt1(2)
     zr(isigm-1+7)= sigg(3,3)*vt1(3)
     zr(isigm-1+16)= sigl(2,1)
-
+!
 !
 !
 end subroutine

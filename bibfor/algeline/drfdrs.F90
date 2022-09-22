@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine drfdrs(q, parame, h0, sigc, rgdev,&
                   duds, dfds)
 !
-    implicit    none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     real(kind=8) :: q(6), parame(5), h0, sigc, rgdev, duds(6), dfds(6)
@@ -61,9 +61,9 @@ subroutine drfdrs(q, parame, h0, sigc, rgdev,&
 ! ======================================================================
 ! --- CALCUL FINAL -----------------------------------------------------
 ! ======================================================================
-    do 10 ii = 1, ndt
+    do ii = 1, ndt
         dfds(ii) = fact1*q(ii)-duds(ii)
-10  end do
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

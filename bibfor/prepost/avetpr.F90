@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
                   tspaq, i, jvetpr, jvsitn)
 !
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp)
-    integer ::jvetpr, jvsitn
+    integer :: jvetpr, jvsitn
 !  , vetpr(nbordr), vsitn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE PRINCIPALE ET DEFORMATION NOMRMALE ASSOCIE
@@ -64,13 +64,13 @@ subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
     call jemarq()
 !
     decal = 18
-    do 10 iordr = 1, nbordr
+    do iordr = 1, nbordr
         adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
 !
-        do 35 j = 1, 6
+        do j = 1, 6
             sig(j) = vwork(adrs + j )
             eps(j) = vwork(adrs + j + 6)
-35      continue
+        end do
 !
         nvp = 3
         nperm = 12
@@ -109,7 +109,7 @@ subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
 !
         zr(jvsitn+iordr) = abs(exm*nm1x + eym*nm1y + ezm*nm1z)
 !
-10  end do
+    end do
 !
     call jedema()
 !

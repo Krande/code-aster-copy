@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                   br, vecpro, valpro, valaux, nitjac,&
                   type, iordre)
@@ -75,23 +75,23 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !
 !-----------------------------------------------------------------------
     ii = 1
-    do 10 i = 1, nbvec
+    do i = 1, nbvec
         if (br(ii) .eq. 0.0d0) then
             call utmess('F', 'ALGELINE4_19')
         endif
         valaux(i) = ar(ii) / br(ii)
         valpro(i) = valaux(i)
         ii = ii + nbvec + 1 - i
- 10 end do
+    end do
 !
 !     --- INITIALISATION DES VECTEURS PROPRES (MATRICE IDENTITE) ---
 !
 !
     call matini(nbvec, nbvec, 0.d0, vecpro)
 !
-    do 20 i = 1, nbvec
+    do i = 1, nbvec
         vecpro(i,i) = 1.0d0
- 20 end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     ------------------- ALGORITHME DE JACOBI -------------------------
@@ -106,13 +106,13 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
     eps = (toldyn**niter)**2
 !
 !     --- BOUCLE SUR LES LIGNES ---
-    do 40 j = 1, nbvec - 1
+    do j = 1, nbvec - 1
         jp1 = j + 1
         jm1 = j - 1
         ljk = jm1 * nbvec - jm1 * j / 2
         jj = ljk + j
 !        ---- BOUCLE SUR LES COLONNES ---
-        do 41 k = jp1, nbvec
+        do k = jp1, nbvec
             kp1 = k + 1
             km1 = k - 1
             jk = ljk + k
@@ -147,7 +147,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !           --- TRANSFORMATION DES MATRICES DE RAIDEUR ET DE MASSE ---
             if (nbvec-2 .ne. 0) then
                 if (jm1-1 .ge. 0) then
-                    do 51 i = 1, jm1
+                    do i = 1, jm1
                         im1 = i - 1
                         ij = im1 * nbvec - im1 * i / 2 + j
                         ik = im1 * nbvec - im1 * i / 2 + k
@@ -159,12 +159,12 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                         br(ij) = bj + cg * bk
                         ar(ik) = ak + ca * aj
                         br(ik) = bk + ca * bj
- 51                 continue
+                    end do
                 endif
                 if (kp1-nbvec .le. 0) then
                     lji = jm1 * nbvec - jm1 * j / 2
                     lki = km1 * nbvec - km1 * k / 2
-                    do 52 i = kp1, nbvec
+                    do i = kp1, nbvec
                         ji = lji + i
                         ki = lki + i
                         aj = ar(ji)
@@ -175,11 +175,11 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                         br(ji) = bj + cg * bk
                         ar(ki) = ak + ca * aj
                         br(ki) = bk + ca * bj
- 52                 continue
+                    end do
                 endif
                 if (jp1-km1 .le. 0) then
                     lji = jm1 * nbvec - jm1 * j /2
-                    do 53 i = jp1, km1
+                    do i = jp1, km1
                         ji = lji + i
                         im1 = i - 1
                         ik = im1 * nbvec - im1 * i / 2 + k
@@ -191,7 +191,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                         br(ji) = bj + cg * bk
                         ar(ik) = ak + ca * aj
                         br(ik) = bk + ca * bj
- 53                 continue
+                    end do
                 endif
             endif
             ak = ar(kk)
@@ -203,49 +203,50 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
             ar(jk) = 0.0d0
             br(jk) = 0.0d0
 !           --- TRANSFORMATION DES VECTEURS PROPRES ---
-            do 54 i = 1, nbvec
+            do i = 1, nbvec
                 xj = vecpro(i,j)
                 xk = vecpro(i,k)
                 vecpro(i,j) = xj + cg * xk
                 vecpro(i,k) = xk + ca * xj
- 54         continue
+            end do
 !
- 41     continue
- 40 end do
+ 41         continue
+        end do
+    end do
 !
 !     --- CALCUL DES NOUVELLES VALEURS PROPRES ---
 !
     ii = 1
-    do 60 i = 1, nbvec
+    do i = 1, nbvec
         if (br(ii) .eq. 0.0d0) then
             call utmess('F', 'ALGELINE4_19')
         endif
         valpro(i) = ar(ii) / br(ii)
         ii = ii + nbvec + 1 - i
- 60 end do
+    end do
 !
 !     --- TEST DE CONVERGENCE SUR LES VALEURS PROPRES ---
 !
     iconv = .true.
-    do 70 i = 1, nbvec
+    do i = 1, nbvec
         rtol = tol * valaux(i)
         dif = abs(valpro(i) - valaux(i))
         if (dif .gt. abs(rtol)) then
             iconv = .false.
             goto 9998
         endif
- 70 end do
+    end do
 !
 !     ---    CALCUL DES FACTEURS DE COUPLAGE   ---
 !     --- TEST DE CONVERGENCE SUR CES FACTEURS ---
 !
     eps = tol**2
-    do 80 j = 1, nbvec - 1
+    do j = 1, nbvec - 1
         jm1 = j - 1
         jp1 = j + 1
         ljk = jm1 * nbvec - jm1 * j /2
         jj = ljk + j
-        do 81 k = jp1, nbvec
+        do k = jp1, nbvec
             km1 = k - 1
             jk = ljk + k
             kk = km1 * nbvec - km1 * k /2 + k
@@ -257,8 +258,8 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                 iconv = .false.
                 goto 9998
             endif
- 81     continue
- 80 end do
+        end do
+    end do
 !
 9998 continue
 !
@@ -268,9 +269,9 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !
 !        --- TRANSLATION DES VALEURS PROPRES ---
 !
-        do 82 i = 1, nbvec
+        do i = 1, nbvec
             valaux(i) = valpro(i)
- 82     continue
+        end do
 !
 !        --- TEST SUR LE NOMBRE D'ITERATIONS ---
 !
@@ -282,17 +283,17 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !     ---         MISE A JOUR DES VECTEURS PROPRES          ---
 !
     ii = 1
-    do 90 i = 1, nbvec
+    do i = 1, nbvec
         if (br(ii) .ge. 0.0d0) then
             bb = sqrt(br(ii))
         else
             bb = - sqrt(abs(br(ii)))
         endif
-        do 91 k = 1, nbvec
+        do k = 1, nbvec
             vecpro(k,i) = vecpro(k,i) / bb
- 91     continue
+        end do
         ii = ii + nbvec + 1 - i
- 90 end do
+    end do
 !
     nitjac = niter
 !

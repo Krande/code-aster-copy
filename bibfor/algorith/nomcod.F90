@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nomcod(nom, num, ic, nc)
 !    G. JAQUART     DATE 26/05/93
 !-----------------------------------------------------------------------
@@ -44,20 +44,20 @@ subroutine nomcod(nom, num, ic, nc)
     integer :: i
 !-----------------------------------------------------------------------
     format='(IX)'
-    do 10 i = ic, nc
+    do i = ic, nc
         nom(i:i)=' '
-10  end do
+    end do
 !
-    do 20 i = 1, nc-ic+1
+    do i = 1, nc-ic+1
         if (num .ge. 10**(i-1) .and. num .lt. 10**i) then
             write (format(3:3),'(I1)') i
             goto 21
         endif
-20  end do
+    end do
 !
     ASSERT(.false.)
 !
-21  continue
+ 21 continue
     write (nom(ic:ic+i-1),format) num
 !
 end subroutine

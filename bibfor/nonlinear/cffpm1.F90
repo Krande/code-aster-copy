@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
@@ -30,6 +29,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 #include "asterfort/jexnum.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
+!
     character(len=24) :: resoco
     integer :: nbliai, ndim, nesmax
 !
@@ -84,7 +84,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 !
 ! --- CALCUL DE LA MATRICE E_T*AaT
 !
-    do 100 iliai = 1, nbliai
+    do iliai = 1, nbliai
 !
 ! ----- INITIALISATION DES COLONNES
 !
@@ -117,7 +117,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
         if (ndim .eq. 3) then
             call jelibe(jexnum(fro1, iliai+nbliai))
         endif
-100  end do
+    end do
 !
     call jedema()
 !

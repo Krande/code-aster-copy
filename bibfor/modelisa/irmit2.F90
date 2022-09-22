@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irmit2(nbmode, ifmis, freq, tabrig)
 ! aslint: disable=
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: tabrig, tabfrq, tabri2, tabri0
     real(kind=8) :: a(3), nins2
 !      INTEGER*8    LONG1,LONG2,LONG3
@@ -59,11 +59,11 @@ subroutine irmit2(nbmode, ifmis, freq, tabrig)
 !      N1=LONG3
     ic=1
     call jeveuo(tabrig, 'E', jrig)
-    do 1 i = 1, nfreq
+    do i = 1, nfreq
         zr(jfrq+i-1) = (i-1)*pas
- 1  end do
+    end do
 !      READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
-    do 3 i = 1, nfreq
+    do i = 1, nfreq
         a(1) = zr(jfrq+i-1)
         if (freq .le. (a(1) + r8prem( ))) then
             ifreq = i
@@ -78,23 +78,23 @@ subroutine irmit2(nbmode, ifmis, freq, tabrig)
             endif
             goto 7
         endif
- 3  end do
+    end do
     ifreq = nfreq
     ic = 0
- 7  continue
-    do 5 i = 1, ifreq-1
+  7 continue
+    do i = 1, ifreq-1
         read(ifmis,*) a(1)
         read(ifmis,1000) (zr(jri0+i1-1),i1=1,nbmode)
- 5  end do
+    end do
     read(ifmis,*) a(1)
     read(ifmis,1000) (zr(jrig+i1-1),i1=1,nbmode)
     if (ic .ge. 1) then
         read(ifmis,*) a(1)
         read(ifmis,1000) (zr(jri2+i1-1),i1=1,nbmode)
-        do 8 i1 = 1, nbmode
+        do i1 = 1, nbmode
             zr(jrig+i1-1) = zr(jrig+i1-1) + (freq-zr(jfrq+ifreq-1))/( zr(jfrq+ifreq)-zr(jfrq+ifre&
                             &q-1)) * (zr(jri2+i1-1)-zr(jrig+ i1-1))
- 8      continue
+        end do
     endif
 !
     call jedetr(tabri0)

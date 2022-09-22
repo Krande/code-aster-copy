@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine encadr(func, x1, x2, f1, f2,&
                   niter, xmult, iret)
     implicit none
@@ -49,14 +49,14 @@ subroutine encadr(func, x1, x2, f1, f2,&
 !
     iret = 1
 !
-    if (x1 .eq. x2) goto 9999
+    if (x1 .eq. x2) goto 999
 !
     f1 = func(x1)
     f2 = func(x2)
-    do 10 i = 1, niter
+    do i = 1, niter
         if (f1*f2 .lt. 0.d0) then
             iret = 0
-            goto 9999
+            goto 999
         endif
         if (abs(f1) .lt. abs(f2)) then
             x1 = x1 + xmult*(x1-x2)
@@ -65,9 +65,9 @@ subroutine encadr(func, x1, x2, f1, f2,&
             x2 = x2 + xmult*(x2-x1)
             f2 = func(x2)
         endif
-10  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 !
-9999  continue
+999 continue
 end subroutine

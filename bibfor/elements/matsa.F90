@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matsa(dudx, sa1, sa2)
 !
 !
@@ -128,15 +128,15 @@ subroutine matsa(dudx, sa1, sa2)
 ! --- POUR LA DEFORMATION TOTALE           S + 0.5 A
 ! --- POUR LA DEFORMATION DIFFERENTIELLE   S +     A
 !
-    do 100 j = 1, 9
-        do 110 i = 1, 6
+    do j = 1, 9
+        do i = 1, 6
 !
             sa1 ( i , j ) = s ( i , j ) + 0.5d0 * a ( i , j )
 !
             sa2 ( i , j ) = s ( i , j ) + a ( i , j )
 !
-110      continue
-100  end do
+        end do
+    end do
 !
 !FIN
 !

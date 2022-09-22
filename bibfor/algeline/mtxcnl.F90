@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                   typres, lres, neq)
     implicit none
@@ -49,13 +49,13 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
     else
         rcum = zero
         if (typres .eq. 'R') then
-            do 10 ival = 0, neq-1
+            do ival = 0, neq-1
                 zr(lres+ival) = un
-10          continue
+            end do
         else if (typres .eq. 'C') then
-            do 20 ival = 0, neq-1
+            do ival = 0, neq-1
                 zc(lres+ival) = cun
-20          continue
+            end do
         endif
     endif
 !
@@ -64,11 +64,11 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
     if (typres .eq. 'R') then
         if (typmat .eq. 'R') then
             if (typcst(1:1) .eq. 'R') then
-                do 100 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zr(lmat+ival) .ne. un) then
                         zr(lres+ival) = rcum*zr(lres+ival) + const(1)* zr(lmat+ival)
                     endif
-100              continue
+                end do
             else
                 valk (1) = typres
                 valk (2) = typmat
@@ -77,18 +77,18 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
             endif
         else if (typmat .eq. 'C') then
             if (typcst(1:1) .eq. 'R') then
-                do 110 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
                         zr(lres+ival) = rcum*zr(lres+ival) + const(1)* dble(zc(lmat+ival))
                     endif
-110              continue
+                end do
             else if (typcst(1:1) .eq. 'C') then
                 c8cst = dcmplx(const(1),const(2))
-                do 120 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
                         zr(lres+ival) = rcum*zr(lres+ival) + dble( c8cst*zc(lmat+ival))
                     endif
-120              continue
+                end do
             else
                 valk (1) = typres
                 valk (2) = typmat
@@ -106,18 +106,18 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
     else if (typres .eq. 'C') then
         if (typmat .eq. 'C') then
             if (typcst(1:1) .eq. 'R') then
-                do 200 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
                         zc(lres+ival) = rcum*zc(lres+ival) + const(1)* zc(lmat+ival)
                     endif
-200              continue
+                end do
             else if (typcst(1:1) .eq. 'C') then
                 c8cst = dcmplx(const(1),const(2))
-                do 210 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
                         zc(lres+ival) = rcum*zc(lres+ival) + c8cst*zc( lmat+ival)
                     endif
-210              continue
+                end do
             else
                 valk (1) = typres
                 valk (2) = typmat
@@ -126,18 +126,18 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
             endif
         else if (typmat .eq. 'R') then
             if (typcst(1:1) .eq. 'R') then
-                do 220 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zr(lmat+ival) .ne. un) then
                         zc(lres+ival) = rcum*zc(lres+ival) + const(1)* zr(lmat+ival)
                     endif
-220              continue
+                end do
             else if (typcst(1:1) .eq. 'C') then
                 c8cst = dcmplx(const(1),const(2))
-                do 240 ival = 0, neq-1
+                do ival = 0, neq-1
                     if (zr(lmat+ival) .ne. un) then
                         zc(lres+ival) = rcum*zc(lres+ival) + c8cst*zr( lmat+ival)
                     endif
-240              continue
+                end do
             else
                 valk (1) = typres
                 valk (2) = typmat

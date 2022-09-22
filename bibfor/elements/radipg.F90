@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                   cosang, ind, compor, imate, nvi,&
                   vari1, vari2)
@@ -80,29 +80,29 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
 ! ----    CALCUL DE DSIGMA = SIG2 - SIG1 :
 !         ----------------------------------
         k = 0
-        do 10 igau = 1, npg
-            do 20 i = 1, nbsig
+        do igau = 1, npg
+            do i = 1, nbsig
                 k = k + 1
                 dsigma(k) = sig2(k) - sig1(k)
 !
-20          continue
-10      continue
+            end do
+        end do
 !
 ! ----    CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE
 ! ----    AUX POINTS D'INTEGRATION :
 !         ------------------------
-        do 50 igau = 1, npg
+        do igau = 1, npg
 !
 ! ----       CALCUL DU PRODUIT SIG1:(SIG2-SIG1) :
 !            ----------------------------------------
             s1dsig = zero
-            do 30 i = 1, 3
+            do i = 1, 3
                 s1dsig = s1dsig + sig1( i+ (igau-1)*nbsig)* dsigma(i+ ( igau-1)*nbsig)
-30          continue
+            end do
 !
-            do 40 i = 4, nbsig
+            do i = 4, nbsig
                 s1dsig = s1dsig + deux*sig1( i+ (igau-1)*nbsig)* dsigma(i+ (igau-1)*nbsig)
-40          continue
+            end do
 !
 ! ----       CALCUL DU SECOND INVARIANT DES TENSEURS DES CONTRAINTES :
 !            -------------------------------------------------------
@@ -122,11 +122,11 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                 radia(igau) = 1.d0 - abs(s1dsig)/norm/dnorm
                 cosang(igau) = s1dsig/norm/dnorm
             endif
-50      continue
+        end do
 !
     else if (ind.eq.1) then
 !
-        do 51 igau = 1, npg
+        do igau = 1, npg
 !
             iradi=0
             call dcopy(nbsig, sig1(1+(igau-1)*nbsig), 1, tensm, 1)
@@ -208,7 +208,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                 cosang(igau)=0.d0
             endif
 !
-51      continue
+        end do
 !
     endif
 end subroutine

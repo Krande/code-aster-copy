@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                   mxfreq, nfreq, valp, ieme, det,&
                   idet, nbpas, typres, nblagr, solveu)
@@ -67,7 +67,7 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
     integer :: iencor, ier, interv, ip, ipas, iplace, jdec
     integer :: mxdich
 !-----------------------------------------------------------------------
-    do 10 i = 2, nfreq-1
+    do i = 2, nfreq-1
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
         call vpstur(lraide, valp(i), lmasse, ldynam, det(i),&
                     idet(i), ieme(i), ier, solveu, .true._1,&
@@ -78,14 +78,14 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                 ieme(i) = - ieme(i)
             endif
         endif
-10  end do
+    end do
 !
-    do 100 ipas = 2, mxdich
+    do ipas = 2, mxdich
         ieme0 = - 1
         iencor = 0
         interv = nfreq -1
         iborn1 = 0
-        do 110 ip = 1, interv
+        do ip = 1, interv
             iborn1 = iborn1 + 1
             iborn2 = iborn1 + 1
             ieme0 = ieme(max(iborn1-1,1))
@@ -122,13 +122,13 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
 !                       --- INSERER ENTRE LES DEUX BORNES ---
                             nfreq = nfreq + 1
                             iborn1 = iborn1 + 1
-                            do 120 jdec = nfreq, iborn2, -1
+                            do jdec = nfreq, iborn2, -1
                                 det( jdec) = det (jdec-1)
                                 idet( jdec) = idet (jdec-1)
                                 valp( jdec) = valp (jdec-1)
                                 ieme( jdec) = ieme (jdec-1)
                                 nbpas(jdec) = nbpas(jdec-1)
-120                          continue
+                            end do
                             iplace = iborn2
                         endif
 !
@@ -145,10 +145,11 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                 goto 100
             endif
 !
-110      continue
-        if (iencor .eq. 0) goto 9999
-100  end do
+        end do
+        if (iencor .eq. 0) goto 999
+100     continue
+    end do
 !
-9999  continue
+999 continue
 !
 end subroutine

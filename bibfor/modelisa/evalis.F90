@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine evalis(isz, pg, phi, sphi, freq,&
                   iff, nomres)
     implicit none
@@ -38,7 +38,6 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/evali2.h"
@@ -49,10 +48,11 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    integer :: ima, nma, nbpg, nbsp,  ivpg, ipg, posma, lvale
+!
+    integer :: ima, nma, nbpg, nbsp, ivpg, ipg, posma, lvale
     integer :: im1, im2, ivfi, ivsfi, nbval, iphi, isphi, nbm, icmp, idfi, ilfi
     integer :: iret, nbcmp, ival, ind, iff
-    integer ::  posmai, nbpoin
+    integer :: posmai, nbpoin
     integer :: lnumi, lnumj, nbabs
     real(kind=8) :: valpar(7), freq, pdgi
     complex(kind=8) :: val
@@ -93,13 +93,13 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 !
 ! CALCUL DE LA MATRICE S.PHI
 ! BOUCLE SUR LES MAILLES ET POINTS DE GAUSS I
-    do 4 ima = 1, nma
+    do ima = 1, nma
 !  NOMBRE DE PDG ET DE SOUS PDG DE LA MAILLE IMA
         nbpg=vpg(5+4*(ima-1)+1)
         nbsp=vpg(5+4*(ima-1)+2)
         posma=vpg(5+4*(ima-1)+4)
         ASSERT(nbsp.eq.1)
-        do 5 ipg = 1, nbpg
+        do ipg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS IPG X1,Y1,Z1 ET POIDS DE GAUSS
             valpar(1)=zr(ivpg+posma+4*(ipg-1))
             valpar(2)=zr(ivpg+posma+4*(ipg-1)+1)
@@ -107,7 +107,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
             pdgi=zr(ivpg+posma+4*(ipg-1)+3)
             nbcmp=zi(idfi-1+5+4*(ima-1)+3)
             posmai=zi(idfi-1+5+4*(ima-1)+4)
-            do 6 icmp = 1, nbcmp
+            do icmp = 1, nbcmp
                 nocmpi=cesc(icmp)
                 call cesexi('S', idfi, ilfi, ima, ipg,&
                             1, icmp, iret)
@@ -118,10 +118,10 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
                             posmai, ipg, pdgi, icmp, nocmpi,&
                             sphi)
 !
- 7              continue
- 6          continue
- 5      continue
- 4  end do
+  7             continue
+            end do
+        end do
+    end do
 !
 !
 ! A CE NIVEAU, ON A DEUX BASES DE MODES PROPRES DEFINIS AUX POINTS
@@ -146,8 +146,8 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 !
 ! PRODUIT PHI^T.S.PHI (UNIQUEMENT LA PARTIE TRIANGULAIRE SUPERIEURE)
     ind=1
-    do 11 im1 = 1, nbm
-        do 12 im2 = im1, nbm
+    do im1 = 1, nbm
+        do im2 = im1, nbm
             if (iff .eq. 0) then
                 zi(lnumi-1+ind) = im1
                 zi(lnumj-1+ind) = im2
@@ -167,9 +167,9 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
             sphii=zk24(isphi-1+im2)(1:19)
             call jeveuo(phii//'.CESV', 'L', ivfi)
             call jeveuo(sphii//'.CESV', 'L', ivsfi)
-            do 13 ival = 1, nbval
+            do ival = 1, nbval
                 val=val+dcmplx(zr(ivfi-1+ival),0.0d0)*zc(ivsfi-1+ival)
-13          continue
+            end do
             if (im1 .eq. im2) then
                 zr(lvale+iff)=dble(val)
             else
@@ -178,17 +178,17 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
             endif
 !
             ind=ind+1
-12      continue
-11  end do
+        end do
+    end do
 !
 ! REMISE A 0 DES CHAM_ELEM_S DE SPHI
-    do 14 im1 = 1, nbm
+    do im1 = 1, nbm
         sphii=zk24(isphi-1+im1)(1:19)
         call jeveuo(sphii//'.CESV', 'E', ivsfi)
-        do 15 ival = 1, nbval
+        do ival = 1, nbval
             zc(ivsfi-1+ival)=(0.0d0,0.0d0)
-15      continue
-14  end do
+        end do
+    end do
 !
 !-----------------------------------------------------------------------
 !

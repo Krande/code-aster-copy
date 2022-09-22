@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine utpnlg(nno, nnc, pgl, matl,mate)
+!
+subroutine utpnlg(nno, nnc, pgl, matl, mate)
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 !
-    integer      :: nno, nnc
-    real(kind=8) :: mate(1), pgl(3, 3), matl(nno*nnc,nno*nnc)
+    integer :: nno, nnc
+    real(kind=8) :: mate(1), pgl(3, 3), matl(nno*nnc, nno*nnc)
 ! .....................................................................C
 ! .....................................................................C
 !    - FONCTION REALISEE:  TRANSFORMATION DES MATRICES ELEMENTAIRES    C
@@ -36,41 +36,41 @@ subroutine utpnlg(nno, nnc, pgl, matl,mate)
 !        SORTIE :      MATE    -->  MATRICE ELEMENTAIRE GLOBALE        C
 ! .....................................................................C
 ! .....................................................................
-    integer :: i, j, k, ii,nj
+    integer :: i, j, k, ii, nj
     real(kind=8) :: mt(nno*nnc, nno*nnc), matg(nno*nnc, nno*nnc)
 ! .....................................................................
     ASSERT( nnc.eq.3 )
     nj=nno*nnc
 ! --- MATRICE DE TRANSFERT
-    call r8inir(nno*nno*nnc*nnc,0.d0,mt,1)
-    do 10 i = 1, 3
-        do 20 j = 1, 3
-           do 30 k = 0, nno-1
-             mt(i ,j )       = pgl(i,j)
-             mt(i+k*3,j+k*3) = pgl(i,j)
-30         continue
-20      continue
-10  continue
+    call r8inir(nno*nno*nnc*nnc, 0.d0, mt, 1)
+    do i = 1, 3
+        do j = 1, 3
+            do k = 0, nno-1
+                mt(i ,j ) = pgl(i,j)
+                mt(i+k*3,j+k*3) = pgl(i,j)
+            end do
+        end do
+    end do
 !
 ! --- ON EFFECTUE : MATG() = MATE() * MT()
-    do 40 k = 1, nno*nnc
-        do 50 i = 1, nno*nnc
+    do k = 1, nno*nnc
+        do i = 1, nno*nnc
             matg(i,k) = 0.d0
-            do 60 j = 1, nj
+            do j = 1, nj
                 matg(i,k) = matg(i,k) + matl(i,j) * mt(j,k)
-60          continue
-50      continue
-40  continue
+            end do
+        end do
+    end do
 ! --- MULTIPLICATION PAR LA MATRICE TRANSPOSEE DE "MT" LORSQUE
 !           "MATE" EST RECTANGULAIRE DE DIMENSIONS 7X7
-      do 70 i = 1, nno*nnc
-          ii = nj * (i-1)
-          do 80 k = 1, nno*nnc
-              mate(ii+k) = 0.d0
-              do 90 j = 1, nj
-                  mate(ii+k) = mate(ii+k) + mt(j,i)*matg(j,k)
-90            continue
-80        continue
-70    continue
+    do i = 1, nno*nnc
+        ii = nj * (i-1)
+        do k = 1, nno*nnc
+            mate(ii+k) = 0.d0
+            do j = 1, nj
+                mate(ii+k) = mate(ii+k) + mt(j,i)*matg(j,k)
+            end do
+        end do
+    end do
 ! .....................................................................
 end subroutine

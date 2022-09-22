@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                   resuk, nbpari, nbparr, nbpark, mxresf,&
                   vectr, nconv, neq, typres)
@@ -153,11 +153,11 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
             call wkvect(k24buf, 'V V R', nconvm*neq, jlbuff)
             call wkvect(k24bus, 'V V R', nconvm*neq, jlbufs)
             call dcopy(nconvl*neq, vectr, 1, zr(jlbufs), 1)
-            do 115 i = 1, icom2
+            do i = 1, icom2
                 idecal=0
-                do 114 j = 1, i-1
+                do j = 1, i-1
                     idecal=idecal+zi(jlcom+j-1)
-114             continue
+                end do
                 if (idecal .lt. 0) then
                     ASSERT(.false.)
                 endif
@@ -165,7 +165,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                 if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
                 call asmpi_comm_vect('BCAST', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
                 call dcopy(i8, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
-115         continue
+            end do
             call jedetr(k24bus)
             call jedetr(k24buf)
 !
@@ -204,9 +204,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- ON COMMUNIQUE LES VECTEURS PROPRES EN SOUS-PAQUETS DE REELS
 !       --- DE TAILLE =< SIZBMPI POUR EVITER LES PBS DE CONTENTIONS
 !       --- MEMOIRE ET LES LIMITES DES ENTIERS COURTS MPI.
-        do 116 i = 1, nconvg
+        do i = 1, nconvg
             call asmpi_comm_vect('BCAST', 'R', nbval=neq, bcrank=0, vr=vectr(1+(i-1)*neq))
-116     continue
+        end do
 !       --- ON COMMUNIQUE LES PETITS OBJETS SUIVANTS
         call asmpi_comm_vect('BCAST', 'R', nbval=nbparr*mxresf, bcrank=0, vr=resur)
         call asmpi_comm_vect('BCAST', 'I', nbval=nbpari*mxresf, bcrank=0, vi=resui)
@@ -230,15 +230,15 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- STEP 5: INIT DIVERSES.
 !       ----------------------------------------------------------------
         if (typres(1:9) .ne. 'DYNAMIQUE') then
-            do 121 i = 1, nconvg
+            do i = 1, nconvg
                 resui(i)=i
-121         continue
+            end do
         endif
-        do 125 i = 1, nbpark
+        do i = 1, nbpark
             j=1+(i-1)*mxresf
             k24b=resuk(j)
             call vecink(nconvg, k24b, resuk(j))
-125     continue
+        end do
 !       ----------------------------------------------------------------
 !       --- STEP 6: MENAGE.
 !       ----------------------------------------------------------------

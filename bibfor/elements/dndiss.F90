@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
                   nmprox, deps, newnbn, newpla, newdpl,&
                   newddp, newzfg, despit, ddisit, dc1,&
                   dc2, dtg, normm, normn)
 !
-    implicit  none
+    implicit none
 !
 !     CALCUL DES EFFORTS
 !     CALCUL DES COURBURES PLASTIQUES
@@ -84,12 +84,12 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     newief = ipara(3)
     ier = ipara(4)
 !
-    do 20, j = 1,6
-    cdeps(j) = deps(j)
-    do 10, i = 1,6
-    cdtg(i,j) = dtg(i,j)
-10  continue
-    20 end do
+    do j = 1, 6
+        cdeps(j) = deps(j)
+        do i = 1, 6
+            cdtg(i,j) = dtg(i,j)
+        end do
+    end do
 !
     if (ncrit .eq. -1) then
 !     PREDICTEUR ELASTIQUE HORS CHAMP
@@ -101,9 +101,9 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
         call matmul(dtg, deps, 6, 6, 1,&
                     nmp)
 !
-        do 30, j = 1,6
-        newnbn(j) = nmnbn(j) + nmp(j)
-30      continue
+        do j = 1, 6
+            newnbn(j) = nmnbn(j) + nmp(j)
+        end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
 !     ET DES ZEROS DES CRITERES
@@ -167,23 +167,23 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
             normm = rpara(3)
         endif
 !
-        do 40, j = 1,6
-        newnbn(j) = cnbn(j)
-40      continue
+        do j = 1, 6
+            newnbn(j) = cnbn(j)
+        end do
 !
-        do 60, j = 1,3
-        do 50, i = 1,2
-        newpla(i,j) = cplas(i,j)
-50      continue
-60      continue
+        do j = 1, 3
+            do i = 1, 2
+                newpla(i,j) = cplas(i,j)
+            end do
+        end do
 !
         newzef = czef
         newzeg = czeg
         newief = cief
 !
-        do 100, j = 1,6
-        despit(j) = cdepsp(j)
-100      continue
+        do j = 1, 6
+            despit(j) = cdepsp(j)
+        end do
 !
         ier = cier
 !
@@ -237,23 +237,23 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
             normm = rpara(3)
         endif
 !
-        do 110, j = 1,6
-        newnbn(j) = cnbn(j)
-110      continue
+        do j = 1, 6
+            newnbn(j) = cnbn(j)
+        end do
 !
-        do 130, j = 1,3
-        do 120, i = 1,2
-        newpla(i,j) = cplas(i,j)
-120      continue
-130      continue
+        do j = 1, 3
+            do i = 1, 2
+                newpla(i,j) = cplas(i,j)
+            end do
+        end do
 !
         newzef = czef
         newzeg = czeg
         newief = cief
 !
-        do 180, j = 1,6
-        despit(j) = cdepsp(j)
-180      continue
+        do j = 1, 6
+            despit(j) = cdepsp(j)
+        end do
 !
         ier = cier
 !
@@ -330,23 +330,23 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
             endif
         endif
 !
-        do 200, j = 1,6
-        newnbn(j) = cnbn(j)
-200      continue
+        do j = 1, 6
+            newnbn(j) = cnbn(j)
+        end do
 !
-        do 220, j = 1,3
-        do 210, i = 1,2
-        newpla(i,j) = cplas(i,j)
-210      continue
-220      continue
+        do j = 1, 3
+            do i = 1, 2
+                newpla(i,j) = cplas(i,j)
+            end do
+        end do
 !
         newzef = czef
         newzeg = czeg
         newief = cief
 !
-        do 260, j = 1,6
-        despit(j) = cdepsp(j)
-260      continue
+        do j = 1, 6
+            despit(j) = cdepsp(j)
+        end do
 !
         ier = cier
 !
@@ -363,13 +363,13 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     endif
 !
 !     CALCUL DE LA DISSIPATION
-    do 265, j = 1,6
-    tdespi(1,j) = despit(j)
-    265 end do
+    do j = 1, 6
+        tdespi(1,j) = despit(j)
+    end do
 !
-    do 270, j = 1,6
-    nmp(j) = 0.5d0*(nmnbn(j) + newnbn(j))
-    270 end do
+    do j = 1, 6
+        nmp(j) = 0.5d0*(nmnbn(j) + newnbn(j))
+    end do
 !
     call matmul(tdespi, nmp, 1, 6, 1,&
                 aux)

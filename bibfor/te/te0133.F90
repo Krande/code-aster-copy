@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0133(option, nomte)
 !
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matrot.h"
 #include "asterfort/rcangm.h"
+!
     character(len=16) :: option, nomte
 !----------------------------------------------------------------------
 !
@@ -46,13 +46,13 @@ subroutine te0133(option, nomte)
     aster_logical :: interf
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     ASSERT(nnos.le.8)
 !
     interf = lteatt('INTERFACE','OUI')
     if (interf) ndim = ndim + 1
-    
+!
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PREPLO1', 'E', jrepl1)
     call jevech('PREPLO2', 'E', jrepl2)
@@ -63,12 +63,12 @@ subroutine te0133(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nnos
-        do 140 j = 1, ndim
+    do i = 1, nnos
+        do j = 1, ndim
             bary(j) = bary(j)+zr(jgeom+j+ndim*(i-1)-1)/nnos
-140      continue
-150  end do
-
+        end do
+    end do
+!
 !
 !     CALCUL DES ANGLES NAUTIQUES
     call rcangm(ndim, bary, ang)
@@ -92,17 +92,17 @@ subroutine te0133(option, nomte)
     uz(2) = pgl(3,2)
     uz(3) = pgl(3,3)
 !
-    do 12 i = 1, 2
+    do i = 1, 2
         zr(jrepl1-1+i)=ux(i)
         zr(jrepl2-1+i)=uy(i)
-12  end do
+    end do
 !
     if (ndim .eq. 3) then
         zr(jrepl1-1+3)=ux(3)
         zr(jrepl2-1+3)=uy(3)
-        do 13 i = 1, 3
+        do i = 1, 3
             zr(jrepl3-1+i)=uz(i)
-13      continue
+        end do
     endif
 !
 end subroutine

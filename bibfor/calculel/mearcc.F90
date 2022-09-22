@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mearcc(option, mo, chin, chout)
     implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -38,8 +40,6 @@ subroutine mearcc(option, mo, chin, chout)
 #include "asterfort/srlima.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mo
     character(len=16) :: option
@@ -58,9 +58,9 @@ subroutine mearcc(option, mo, chin, chout)
     parameter   (nbcmp=6,nbnomx=9)
 !
     integer :: nbma, ibid, jma2d, jma3d, ndim
-    integer ::  jcesd3, jcesk3, jcesl3,   jcesd2, ima
+    integer :: jcesd3, jcesk3, jcesl3, jcesd2, ima
     integer :: jcesk2, jcesl2, jcesc2, jlcnx, jcnx, ipt, icp, ino2, ino3
-    integer :: jco3, jco2, npt3, npt2, ipt2, ipt3,  k, npt
+    integer :: jco3, jco2, npt3, npt2, ipt2, ipt3, k, npt
     integer :: iad3, iad2, nucmp, numasu, numavo, nbcmp2
 !
     character(len=8) :: ma, comp(nbcmp), k8b, nomasu, nomavo, valk(2)
@@ -75,7 +75,7 @@ subroutine mearcc(option, mo, chin, chout)
 !--------------------------------------------------------------------------
 !
     call jemarq()
-
+!
     mail2d='&&MEARCC.MAILLE_FACE'
     mail3d='&&MEARCC.MAILLE_3D_SUPP'
     mailto='&&MEARCC.MAILLE_2D_3D'
@@ -83,7 +83,7 @@ subroutine mearcc(option, mo, chin, chout)
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
     nbcmp2 = nbcmp
-    if (ndim.eq.2) nbcmp2 = 4
+    if (ndim .eq. 2) nbcmp2 = 4
 !    ASSERT(ndim.eq.3)
 !
 !     RECUPERATION DES MAILLES DE FACES ET DES MAILLES 3D SUPPORT
@@ -115,8 +115,8 @@ subroutine mearcc(option, mo, chin, chout)
     call jeveuo(chous//'.CESK', 'E', jcesk2)
     call jeveuo(chous//'.CESL', 'E', jcesl2)
     call jeveuo(chous//'.CESC', 'E', jcesc2)
-
-
+!
+!
 !   -- correspondance maille 2d / maille 3d: zi(jpt3d)
 !      pour chaque point de la maille 2d, on cherche le
 !      point de la maille 3d correspondant
@@ -124,9 +124,9 @@ subroutine mearcc(option, mo, chin, chout)
     AS_ALLOCATE(vi=pt3d, size=nbma*nbnomx)
     call jeveuo(ma//'.CONNEX', 'L', jcnx)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
-    do 2, ima = 1, nbma
-        if (zi(jma3d+ima-1).eq.0) goto 2
-
+    do ima = 1, nbma
+        if (zi(jma3d+ima-1) .eq. 0) goto 2
+!
         jco3=jcnx+zi(jlcnx-1+zi(jma3d+ima-1))-1
         jco2=jcnx+zi(jlcnx-1+zi(jma2d+ima-1))-1
         npt3=zi(jcesd3-1+5+4*(zi(jma3d+ima-1)-1)+1)
@@ -144,14 +144,15 @@ subroutine mearcc(option, mo, chin, chout)
             end do
 110         continue
         end do
-2   continue
-
-
+  2     continue
+    end do
+!
+!
 !   -- remplissage du champ simple 3d
 !   ----------------------------------
-    do 1, ima = 1, nbma
-        if (zi(jma3d+ima-1).eq.0) goto 1
-
+    do ima = 1, nbma
+        if (zi(jma3d+ima-1) .eq. 0) goto 1
+!
         npt=zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma2d+ima-1)), k8b)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma3d+ima-1)), k8b)
@@ -177,8 +178,9 @@ subroutine mearcc(option, mo, chin, chout)
                 zl(jcesl2-iad2-1)=.true.
             end do
         end do
-1   continue
-
+  1     continue
+    end do
+!
     call cesred(chous, nbma, zi(jma2d), 0, [k8b],&
                 'V', chous)
 !

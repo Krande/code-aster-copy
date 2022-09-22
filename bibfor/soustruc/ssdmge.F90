@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssdmge(geo1, geo2, para, dimgeo)
     implicit none
 !     ARGUMENTS:
@@ -52,24 +52,24 @@ subroutine ssdmge(geo1, geo2, para, dimgeo)
 !     ------------
 !
 !     -- ON RETRANCHE LE VECTEUR OP (CENTRE DE LA ROTATION):
-    do 1, i=1,dimgeo
-    geo2(i)=geo1(i)-para(6+i)
-    1 end do
+    do i = 1, dimgeo
+        geo2(i)=geo1(i)-para(6+i)
+    end do
 !
 !     -- ON TOURNE LE VECTEUR PM AUTOUR DE P :
     call matrot(para(4), lambda)
-    do 2, i=1,dimgeo
-    geop(i)=0.0d0
-    do 3, j=1,dimgeo
-    geop(i)=geop(i)+lambda(j,i)*geo2(j)
- 3  continue
-    2 end do
+    do i = 1, dimgeo
+        geop(i)=0.0d0
+        do j = 1, dimgeo
+            geop(i)=geop(i)+lambda(j,i)*geo2(j)
+        end do
+    end do
 !
 !
 !     -- TRANSLATION PAR LE VECTEUR T (ET LE VECTEUR OP QUE L'ON A OTE):
 !     -----------------------------------------------------------------
-    do 5, i=1,dimgeo
-    geo2(i)=geop(i)+para(i)+para(6+i)
-    5 end do
+    do i = 1, dimgeo
+        geo2(i)=geop(i)+para(i)+para(6+i)
+    end do
 !
 end subroutine

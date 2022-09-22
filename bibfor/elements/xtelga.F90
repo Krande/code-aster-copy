@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                   lonch, cnset, jpintt, lsn, lst,&
-                  heavn, basloc, heavt, nfh, nfe, temppg)
+                  heavn, basloc, heavt, nfh, nfe,&
+                  temppg)
 ! person_in_charge: sam.cuvilliez at edf.fr
 ! aslint: disable=W1306
     implicit none
@@ -27,14 +28,14 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-#include "asterfort/xcalc_heav.h"
-#include "asterfort/xcalc_code.h"
-
+!
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27,5)
+    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
     real(kind=8) :: tempno(nnop*(1+nfh+nfe)), lsn(nnop), lst(nnop)
     real(kind=8) :: basloc(*), temppg(*)
 !
@@ -74,7 +75,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
     real(kind=8) :: dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: he
-    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop,ndim)
+    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop, ndim)
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl, hea_se
     integer :: mxstac
@@ -94,27 +95,26 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     nbddl = 1+nfh+nfe
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IVF
-    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
-  npg=npg,jvf=ivf)
+    call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, npg=npg, jvf=ivf)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
-
+!
 !
 ! ----------------------------------------------------------------------
 ! --- BOUCLE SUR LES NSE SOUS-ELEMENTS
 ! ----------------------------------------------------------------------
 !
-    do 1000 ise = 1, nse
+    do ise = 1, nse
 !
 !       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
         he = 1.d0*heavt(ise)
         hea_se=xcalc_code(1, he_real=[he])
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
-        do 1100 in = 1, nno
+        do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
-            do 1110 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -123,26 +123,27 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 else
                     ASSERT(.false.)
                 endif
-1110          continue
-1100      continue
+            end do
+        end do
 !
 ! ----------------------------------------------------------------------
 ! ----- BOUCLE SUR LES POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-        do 1200 kpg = 1, npg
+        do kpg = 1, npg
 !
 !         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
             call vecini(ndim, 0.d0, xg)
-            do 1210 j = 1, ndim
-                do 1211 in = 1, nno
+            do j = 1, ndim
+                do in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
                     in-1)+j)
-1211              continue
-1210          continue
+                end do
+            end do
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                        xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then
@@ -150,13 +151,13 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 call vecini(3*ndim, 0.d0, baslog)
                 lsng = 0.d0
                 lstg = 0.d0
-                do 1220 inp = 1, nnop
+                do inp = 1, nnop
                     lsng = lsng + lsn(inp) * ff(inp)
                     lstg = lstg + lst(inp) * ff(inp)
-                    do 1221 j = 1, 3*ndim
+                    do j = 1, 3*ndim
                         baslog(j) = baslog(j) + basloc(3*ndim*(inp-1)+ j) * ff(inp)
-1221                  continue
-1220              continue
+                    end do
+                end do
 !           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
                 if (ndim .eq. 2) then
                     call xcalf2(he, lsng, lstg, baslog, femec,&
@@ -177,7 +178,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 ! ------- FIN SI ENRICHISSEMENT SINGULIER
 !
 !         FFENR : TABLEAU DES FF ENRICHIES
-            do 1250 inp = 1, nnop
+            do inp = 1, nnop
 !           DDL CLASSIQUE (TEMP)
                 ffenr(inp,1) = ff(inp)
                 do j = 1, ndim
@@ -187,8 +188,8 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 if (nfh .eq. 1) then
                     ffenr(inp,1+nfh) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*ff(inp)
                     do j = 1, ndim
-                        dffenr(inp,1+nfh,j) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*&
-                                              dfdi(inp,j)
+                        dffenr(inp,1+nfh,j) = xcalc_heav(&
+                                              heavn(inp,1),hea_se,heavn(inp,5))* dfdi(inp,j)
                     end do
                 endif
 !           DDL CRACK-TIP (E1)
@@ -198,33 +199,33 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                         dffenr(inp,1+nfh+nfe,j) = feth*dfdi(inp,j) + ff(inp)*dgdth(j)
                     end do
                 endif
-1250          continue
+            end do
 !
 !         CALCUL DE TEMP AU PG ET DE SES DERIVEES
             tem = 0.d0
             dtem= 0.d0
-            do 1270 inp = 1, nnop
-                do 1271 kddl = 1, nbddl
+            do inp = 1, nnop
+                do kddl = 1, nbddl
                     tem = tem + tempno(nbddl*(inp-1)+kddl)*ffenr(inp, kddl)
                     do j = 1, ndim
                         dtem(j) = dtem(j) + tempno(nbddl*(inp-1)+kddl)*dffenr(inp,kddl,j)
                     end do
-1271            continue
-1270        continue
+                end do
+            end do
 !
 !         ECRITURE DE TEMP ET DE SES DERIVEES AU PG
             temppg(npg * (ndim+1) * (ise-1)+(kpg-1) * ndim + kpg) = tem
-            do 1280 j = 1, ndim
+            do j = 1, ndim
                 temppg (npg * (ndim+1) * (ise-1)+(kpg-1) * ndim + kpg + j) = dtem(j)
-1280        continue
+            end do
 !
-1200    continue
+        end do
 !
 ! ----------------------------------------------------------------------
 ! ----- FIN BOUCLE SUR LES POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-1000  continue
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- FIN BOUCLE SUR LES SOUS-ELEMENTS

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit none
@@ -50,7 +50,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !
 !
     integer :: irang, i, j, k, jtach, iadin, iadou, ire1
-    integer ::  iundf, iordr
+    integer :: iundf, iordr
     real(kind=8) :: rundf
     character(len=3) :: type
     character(len=16) :: nomsym
@@ -69,25 +69,26 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !
 !     1. -- ON COMPACTE LES CHAMPS ARCHIVES :
 !     -------------------------------------------------------
-    do 50 i = 1, nbnosy
+    do i = 1, nbnosy
         call jenuno(jexnum(nomsdr//'.DESC', i), nomsym)
         call jeveuo(jexnum(nomsdr//'.TACH', i), 'E', jtach)
-        do 20 j = 1, nbexcl
+        do j = 1, nbexcl
             if (chexcl(j) .eq. nomsym) then
-                do 10 k = 1, nbrang
+                do k = 1, nbrang
                     if (zk24(jtach+k-1)(1:1) .eq. ' ') goto 10
                     call rsexch('F', nomsdr, nomsym, nuordr(k), chamin,&
                                 ire1)
                     call detrsd('CHAMP_GD', chamin)
                     zk24(jtach+k-1)=' '
-10              continue
+ 10                 continue
+                end do
                 goto 50
 !
             endif
-20      continue
+        end do
 !
         irang=0
-        do 30 j = 1, nbrang
+        do j = 1, nbrang
             if (zk24(jtach+j-1)(1:1) .eq. ' ') goto 30
             call rsexch('F', nomsdr, nomsym, nuordr(j), chamin,&
                         ire1)
@@ -97,21 +98,23 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
                 irang=irang+1
                 zk24(jtach+irang-1)=chamin
             endif
-30      continue
+ 30         continue
+        end do
 !
-        do 40 k = irang+1, nbrang
+        do k = irang+1, nbrang
             zk24(jtach+k-1)=' '
-40      continue
-50  end do
+        end do
+ 50     continue
+    end do
 !
 !
 !     2. -- ON COMPACTE LES PARAMETRES ARCHIVES :
 !     -------------------------------------------
     irang=0
-    do 70 i = 1, nbrang
+    do i = 1, nbrang
         if (nuarch(i) .eq. 0) goto 70
         irang=irang+1
-        do 60 j = 1, nbpara
+        do j = 1, nbpara
             nopara=nompar(j)
             call rsadpa(nomsdr, 'L', 1, nopara, nuordr(i),&
                         1, sjv=iadin, styp=type, istop=0)
@@ -134,8 +137,9 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
             else if (type(1:2).eq.'K8') then
                 zk8(iadou)=zk8(iadin)
             endif
-60      continue
-70  end do
+        end do
+ 70     continue
+    end do
     ASSERT(irang.eq.nbarch)
 !
 !
@@ -144,19 +148,20 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
     call jeecra(nomsdr//'.ORDR', 'LONUTI', nbarch)
     call jeveuo(nomsdr//'.ORDR', 'E', vi=ordr)
     irang=0
-    do 80 i = 1, nbrang
+    do i = 1, nbrang
         if (nuarch(i) .eq. 0) goto 80
         irang=irang+1
         ordr(irang)=nuordr(i)
-80  end do
+ 80     continue
+    end do
     ASSERT(irang.eq.nbarch)
 !
 !
 !     4. -- ON MET A "ZERO" LES IRANG INUTILISES :
 !     -------------------------------------------------
-    do 100 irang = nbarch+1, nbrang
+    do irang = nbarch+1, nbrang
         ordr(irang)=iundf
-        do 90 j = 1, nbpara
+        do j = 1, nbpara
             nopara=nompar(j)
             call extrs3(nomsdr, nopara, irang, 'E', 1,&
                         type, iadou)
@@ -177,17 +182,17 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
             else if (type(1:2).eq.'K8') then
                 zk8(iadou)=' '
             endif
-90      continue
-100  end do
+        end do
+    end do
 !
 !
 !     5. -- IL FAUT RENOMMER LES CHAMPS POUR QU'ILS RESPECTENT
 !           LA REGLE DE NOMMAGE DE RSUTCH.F :
 !     ---------------------------------------------------------
-    do 51 i = 1, nbnosy
+    do i = 1, nbnosy
         call jenuno(jexnum(nomsdr//'.DESC', i), nomsym)
         call jeveuo(jexnum(nomsdr//'.TACH', i), 'E', jtach)
-        do 41 j = 1, nbarch
+        do j = 1, nbarch
             iordr=ordr(j)
             nomch1=zk24(jtach-1+j)
             if (nomch1 .eq. ' ') goto 41
@@ -197,8 +202,9 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
                 call detrsd('CHAMP', nomch1)
                 zk24(jtach-1+j)=nomch2
             endif
-41      continue
-51  end do
+ 41         continue
+        end do
+    end do
 !
 !
 !     6. -- IL FAUT ENCORE DETRUIRE LES SCORIES INUTILES :

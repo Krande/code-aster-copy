@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                   nvpro, vpinf, vpmax, precdc, method,&
                   omecor)
@@ -62,20 +62,20 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
     call infniv(ifm, niv)
 !     -------------------------------------------
 !
-    do 5 i = 1, nbvect
+    do i = 1, nbvect
         valpro(i) = valpro(i) + omeshi
-  5 end do
+    end do
 !
     vpinf = dble(valpro(1))
     vpmax = dble(valpro(1))
-    do 10 i = 2, nbmode
+    do i = 2, nbmode
         if (dble(valpro(i)) .lt. vpinf) then
             vpinf = dble(valpro(i))
         endif
         if (dble(valpro(i)) .gt. vpmax) then
             vpmax = dble(valpro(i))
         endif
- 10 end do
+    end do
     if (niv .ge. 1) then
         write(ifm,1600)
         if (typres .eq. 'DYNAMIQUE') then
@@ -105,7 +105,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
     loginf = .false.
     logmax = .false.
     if (method .ne. 'SORENSEN') then
-        do 20 i = nbmode+1, nbvect
+        do i = nbmode+1, nbvect
             if (dble(valpro(i)) .le. vpinf) then
                 if (.not.loginf) then
                     loginf = .true.
@@ -118,7 +118,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                     vpmax2 = dble(valpro(i))
                 endif
             endif
- 20     end do
+        end do
 !
 !     ----ON REGARDE L'ECART QU'IL Y A ENTRE FREQMIN ET LA
 !         FREQUENCE PRECEDENTE, PUIS ON RECALCULE FREQMIN-----

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
                   ctccvg)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -261,7 +261,7 @@ implicit none
 ! --- ON VERIFIE SI L'ETAT DE CONTACT A CHANGE (ON NE CONJUGUE PAS)
 !
     conjug = .true.
-    do 90 iliai = 1, nbliai
+    do iliai = 1, nbliai
         if (((zr(jmum-1+iliai).le.tole).and. (zr(jmu -1+iliai) .gt.tole)) .or.&
             ((zr(jmum-1+iliai).gt.tole).and. (zr(jmu -1+ iliai).le.tole))) then
             conjug = .false.
@@ -271,7 +271,7 @@ implicit none
             endif
             goto 100
         endif
- 90 end do
+    end do
 100 continue
 !
 ! --- MISE A JOUR DES GRADIENTS ET DES DIRECTIONS DE RECHERCHE

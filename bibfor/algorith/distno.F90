@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                   dist2, dnorm, cost, sint)
     implicit none
@@ -147,7 +147,7 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
         endif
         tetano = atan2(sintno,costno)
         if (tetano .lt. zero) tetano = tetano + depi
-        do 10 i = 1, nbpair-1
+        do i = 1, nbpair-1
             r1 = zr(lfon+i-1)
             r2 = zr(lfon+i)
             t1 = zr(lval+i-1)
@@ -170,9 +170,9 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                 dnorm = (xlocal(2)-y1)*cost+(xlocal(3)-z1)*sint
                 goto 99
             endif
-10      continue
+        end do
     endif
 !
-99  continue
+ 99 continue
     call jedema()
 end subroutine

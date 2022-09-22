@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zmvpy(uplo, n, alpha, a, lda,&
                  x, incx, beta, y, incy)
     implicit none
@@ -69,34 +69,34 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
     if (alpha .eq. (0.0d0,0.0d0)) goto 999
 !
     if (uplo(1:1) .eq. 'U' .or. uplo(1:1) .eq. 'u') then
-        do 20 j = 1, n
+        do j = 1, n
             temp = alpha*x(ix)
             ky = iy + (j-2)*min(incy,0)
             call zaxpy(j-1, temp, a(1, j), 1, y(ky),&
                        incy)
             ky = iy + (j-1)*incy
             y(ky) = y(ky) + temp*dble(a(j,j))
-            do 10 i = j + 1, n
+            do i = j + 1, n
                 ky = ky + incy
                 y(ky) = y(ky) + temp*dconjg(a(j,i))
-10          continue
+            end do
             ix = ix + incx
-20      continue
+        end do
     else
-        do 40 j = 1, n
+        do j = 1, n
             temp = alpha*x(ix)
             ky = iy
-            do 30 i = 1, j - 1
+            do i = 1, j - 1
                 y(ky) = y(ky) + temp*dconjg(a(j,i))
                 ky = ky + incy
-30          continue
+            end do
             y(ky) = y(ky) + temp*dble(a(j,j))
             ky = ky + incy + (n-j-1)*min(incy,0)
             call zaxpy(n-j, temp, a(j+1, j), 1, y(ky),&
                        incy)
             ix = ix + incx
-40      continue
+        end do
     endif
 !
-999   continue
+999 continue
 end subroutine

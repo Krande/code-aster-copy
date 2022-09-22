@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine routhc(hr, hi, pr, a0, dr,&
                   ior)
     implicit none
@@ -32,10 +32,10 @@ subroutine routhc(hr, hi, pr, a0, dr,&
     integer :: i
 !-----------------------------------------------------------------------
     h = dcmplx ( 1.0d0, 0.0d0 )
-    do 1 i = 1, ior
+    do i = 1, ior
         z = a0(i)/(pr+dr(i))
         h = h - pr*z
- 1  end do
+    end do
     hr = dble(h)
     hi = dimag(h)
 !

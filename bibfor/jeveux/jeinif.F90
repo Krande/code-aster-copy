@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeinif(sti, sto, nomf, clas, nrep,&
                   nbloc, lbloc)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -181,7 +181,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         ldyn = 2
     endif
 !
-    if (kstin .eq. 'DEBUT   ' ) then
+    if (kstin .eq. 'DEBUT   ') then
         nremax(ic) = nrep
         nreuti(ic) = 0
         nrhcod(ic) = jjprem(nremax(ic),irt)
@@ -231,9 +231,9 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         jindir(ic) = iadrs - 1
         call jjecrs(kat(17), ic, 17, 0, 'E',&
                     imarq(jmarq(ic)+2*17-1))
-        do 345 ind = 1, nremax(ic)
+        do ind = 1, nremax(ic)
             indir(jindir(ic)+ind) = ind
-345     continue
+        end do
 !
         lgbl = 1024*longbl(ic)*lois
         call jjalls(lgbl, ic, 'V', 'I', lois,&
@@ -312,9 +312,9 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         jrnom(ic) = iadrs - 1
         call jjecrs(kat(7), ic, 7, 0, 'E',&
                     imarq(jmarq(ic)+2*7-1))
-        do 30 ind = 1, nremax(ic)
+        do ind = 1, nremax(ic)
             rnom(jrnom(ic) + ind ) = '?'
- 30     continue
+        end do
         lon = nremax(ic) * lois
         call jjalls(lon, ic, 'V', 'I', lois,&
                     z, ltyp, iadrs, kat(8), kdy(8))
@@ -350,11 +350,11 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         lon = 3*nblmax(ic)*lois
         call jjalls(lon, ic, 'V', 'I', lois,&
                     z, iusadi, iadrs, kat(14), kdy( 14))
-        do 123 l = 1, nblmax(ic)
+        do l = 1, nblmax(ic)
             iusadi( iadrs + (3*l-2) - 1 ) = -1
             iusadi( iadrs + (3*l-1) - 1 ) = -1
             iusadi( iadrs + (3*l ) - 1 ) = 0
-123     continue
+        end do
         jusadi(ic) = iadrs - 1
         call jjecrs(kat(14), ic, 14, 0, 'E',&
                     imarq(jmarq(ic)+2*14-1))
@@ -364,7 +364,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         ltyp(jltyp(ic)+5 ) = len(docu(1))
         ltyp(jltyp(ic)+6 ) = len(orig(1))
         ltyp(jltyp(ic)+7 ) = len(rnom(1))
-        do 5 i = 1, lidbas
+        do i = 1, lidbas
             nomuti = '________'//nombas(ic)//'________'//cidbas(i)
             call jjcren(nomuti, icre, iret)
             genr(jgenr(ic)+i) = 'V'
@@ -412,14 +412,14 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             endif
             iadm(jiadm(ic)+2*i-1) = kat(i)
             iadm(jiadm(ic)+2*i ) = kdy(i)
-  5     continue
+        end do
 !
-        do 10 i = 2, lideff
+        do i = 2, lideff
             iadd (jiadd(ic)+2*i-1) = 0
             iadd (jiadd(ic)+2*i ) = 0
             call jxecro(ic, kat(i), iadd(jiadd(ic)+2*i-1), lso(i), 0,&
                         i)
- 10     continue
+        end do
         cara(jcara(ic)+6) = iadd(jiadd(ic) + 2*2-1 )
         cara(jcara(ic)+7) = iadd(jiadd(ic) + 2*2 )
     else
@@ -513,11 +513,11 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 !
 ! ----- NOUVEL OPEN DE LA BASE
         iesup=1
-        if ( mod(nbluti(ic),nbenrg(ic)) .eq. 0 ) iesup=0
+        if (mod(nbluti(ic),nbenrg(ic)) .eq. 0) iesup=0
         nbext = (nbluti(ic)/nbenrg(ic))+iesup
-        do 100 k = 0, nbext-1
+        do k = 0, nbext-1
             call jxouvr(ic, k+1)
-100     continue
+        end do
         iext(ic) = nbext
 !
         lgbl = nremax(ic)*lois
@@ -526,9 +526,9 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         jindir(ic) = iadrs - 1
         call jjecrs(kat(17), ic, 17, 0, 'E',&
                     imarq(jmarq(ic)+2*17-1))
-        do 567 ind = 1, nremax(ic)
+        do ind = 1, nremax(ic)
             indir(jindir(ic)+ind) = ind
-567     continue
+        end do
 !
         lgbl = 1024*longbl(ic)*lois
         call jjalls(lgbl, ic, 'V', 'I', lois,&
@@ -569,11 +569,11 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         lon2 = 3*nblma2 * lois
         call jjalls(lon2, ic, 'V', 'I', lois,&
                     z, iusadi, iadrs, kat(14), kdy( 14))
-        do 231 l = 1, nblma2
+        do l = 1, nblma2
             iusadi( iadrs + (3*l-2) - 1 ) = -1
             iusadi( iadrs + (3*l-1) - 1 ) = -1
             iusadi( iadrs + (3*l ) - 1 ) = 0
-231     continue
+        end do
         jusadi(ic) = iadrs - 1
         call jjecrs(kat(14), ic, 14, 0, 'E',&
                     imarq(jmarq(ic)+2*14-1))
@@ -671,10 +671,10 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         call jjecrs(kat(13), ic, 13, 0, 'E',&
                     imarq(jmarq(ic)+2*13-1))
         call jxliro(ic, kat(13), iadd(jiadd(ic)+2*13-1), lon)
-        do 20 i = 1, lidbas
+        do i = 1, lidbas
             iadm(jiadm(ic) + 2*i-1 ) = kat(i)
             iadm(jiadm(ic) + 2*i ) = kdy(i)
- 20     continue
+        end do
         if (lenrg) then
             long(jlong(ic)+15) = nblma2
             lono(jlono(ic)+15) = nblma2

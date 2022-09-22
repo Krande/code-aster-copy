@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rslmat(fami, kpg, ksp, mod, imat,&
                   nmat, materd, materf, matcst, ndt,&
                   ndi, nr, nvi, vind)
@@ -105,12 +105,15 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tempd, iret)
-    call rctype(imat, 1, 'TEMP', [tempd], para_vale, para_type)
+    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+                ksp, tempd, iret)
+    call rctype(imat, 1, 'TEMP', [tempd], para_vale,&
+                para_type)
     if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', para_vale, jprol, jvale, nbvale, materd(1, 1))
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
+                jvale, nbvale, materd(1, 1))
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
@@ -128,32 +131,35 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tempf, iret)
-    call rctype(imat, 1, 'TEMP', [tempf], para_vale, para_type)
+    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+                ksp, tempf, iret)
+    call rctype(imat, 1, 'TEMP', [tempf], para_vale,&
+                para_type)
     if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', para_vale, jprol, jvale, nbvale, materf(1, 1))
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
+                jvale, nbvale, materf(1, 1))
 !
 ! -     MATERIAU CONSTANT ? ------------------------------------------
 !
 !       PRINT * ,'MATERD = ',MATERD,'MATERF = ',MATERF
     matcst = 'OUI'
-    do 30 i = 1, 5
+    do i = 1, 5
         if (abs ( materd(i,1) - materf(i,1) ) .gt. epsi) then
             matcst = 'NON'
             goto 50
         endif
-30  continue
-    do 40 i = 1, 8
+    end do
+    do i = 1, 8
         if (abs ( materd(i,2) - materf(i,2) ) .gt. epsi) then
             matcst = 'NON'
             goto 50
         endif
-40  continue
+    end do
 !
 ! ---- INITIALISATION DE LA POROSITE INITIALE -------------------------
-50  continue
+ 50 continue
     if (vind(2) .eq. 0.d0) then
         f0 = materf(3,2)
         vind(2) = f0

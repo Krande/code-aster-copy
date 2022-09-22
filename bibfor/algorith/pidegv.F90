@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pidegv(neps, tau, epsm, epsp, epsd,&
                   copilo)
 !
@@ -66,10 +66,10 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd,&
         p0=ddot(ndimsi,epsp,1,epsp,1)
         call zerop2(p1/p2, (p0-tau**2)/p2, rac, nrac)
 !
-        do 10 i = 1, nrac
+        do i = 1, nrac
             copilo(2,i) = 0.5d0*(2*p2*rac(i)+p1)/tau
             copilo(1,i) = tau**2-rac(i)*copilo(2,i)
-10      continue
+        end do
 !
     endif
 end subroutine

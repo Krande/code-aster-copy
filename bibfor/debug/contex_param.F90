@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine contex_param(nomop, nompar)
     implicit none
 !
@@ -87,9 +87,9 @@ subroutine contex_param(nomop, nompar)
         nblig=zi(jdesop-1+4+nbin+nbou+1)
         indic=zi(jdesop-1+4+nbin+nbou+2)
         if (nblig .gt. 0) then
-            do 10 k = indic, indic-1+nblig
+            do k = indic, indic-1+nblig
                 call utmess('I', 'ELEMENT_17', sk=comlibr(k))
- 10         continue
+            end do
         endif
     endif
 !
@@ -116,9 +116,9 @@ subroutine contex_param(nomop, nompar)
             igd=zi(jdesop-1+4+nbin+itrou)
         endif
         if (nblig .gt. 0) then
-            do 20 k = indic, indic-1+nblig
+            do k = indic, indic-1+nblig
                 call utmess('I', 'ELEMENT_17', sk=comlibr(k))
- 20         continue
+            end do
         endif
     endif
 !
@@ -136,9 +136,9 @@ subroutine contex_param(nomop, nompar)
             nblig=zi(jdsgd-1+6)
             indic=zi(jdsgd-1+7)
             if (nblig .gt. 0) then
-                do 30 k = indic, indic-1+nblig
+                do k = indic, indic-1+nblig
                     call utmess('I', 'ELEMENT_17', sk=comlibr(k))
- 30             continue
+                end do
             endif
         endif
 !

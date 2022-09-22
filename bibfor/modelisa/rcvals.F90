@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcvals(iarret, icodre, nbres, nomres)
     implicit none
 #include "jeveux.h"
@@ -33,7 +33,7 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
 !
     if (iarret .ge. 1) then
         ier = 0
-        do 200 ires = 1, nbres
+        do ires = 1, nbres
             if (icodre(ires) .eq. 1) then
                 ier = ier + 1
                 para = nomres(ires)
@@ -47,8 +47,8 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
                 endif
                 call utmess('E', 'VIDE_1')
             endif
-200      continue
-        if (ier .ne. 0) then 
+        end do
+        if (ier .ne. 0) then
             call utmess('F', 'MODELISA6_4')
         endif
     endif

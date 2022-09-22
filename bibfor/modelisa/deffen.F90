@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine deffen(base, nuor, imodi, nbmr, nbm,&
                   iaxe, long, nbnfen, nofe, discfe,&
                   nbp1, nbp2, discff, defm)
@@ -127,9 +127,9 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 ! ---     EXCITEE, UTILE POUR L'INTERPOLATION SUR L,2L
 !
     call wkvect('&&DEFFEN.TEMP.FEN2', 'V V R', nbnfen, ifen2)
-    do 10 j = 1, nbnfen
+    do j = 1, nbnfen
         zr(ifen2+j-1) = discfe(j) + long
-10  end do
+    end do
 !
 ! --- 3.EXTRACTION DES COMPOSANTES DES DEFORMEES SUR LA DISCRETISATION
 ! ---   DE LA FENETRE EXCITEE ET INTERPOLATION SUR LA DISCRETISATION DES
@@ -138,7 +138,7 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
     call wkvect('&&DEFFEN.TEMP.VALE1', 'V V R', nbnfen, ivale1)
     call wkvect('&&DEFFEN.TEMP.VALE2', 'V V R', nbnfen, ivale2)
 !
-    do 20 imod = imodi, imodf
+    do imod = imodi, imodf
 !
         write(chvale,'(A8,A5,2I3.3,A5)') base(1:8),'.C01.',nuor(imod),&
         iv,'.VALE'
@@ -146,11 +146,11 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 !
 !-------EXTRACTION
 !
-        do 40 j = 1, nbnfen
+        do j = 1, nbnfen
             numnoe = nofe(j)
             zr(ivale1+j-1) = zr(ivale+6*(numnoe-1)+idir1-1)
             zr(ivale2+j-1) = zr(ivale+6*(numnoe-1)+idir2-1)
-40      continue
+        end do
         call jelibe(chvale)
 !
 !-------INTERPOLATION
@@ -164,7 +164,7 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
             call utmess('F', 'MODELISA4_39')
         endif
 !
-20  end do
+    end do
 !
     call jedetr('&&DEFFEN.TEMP.PROL')
     call jedetr('&&DEFFEN.TEMP.FEN2')

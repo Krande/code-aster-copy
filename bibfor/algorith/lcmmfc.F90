@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
                   itmax, toler, alpham, dgamma, dalpha,&
                   iret)
@@ -92,7 +92,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
 !               F0 < 0 , ON CHERCHE X TEL QUE FMAX > 0 :
                 x1 =(dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
                 if (abs(x1) .le. r8miem()) x1=1.d-10
-                do 10 iter = 1, itmax
+                do iter = 1, itmax
                     fmax=lcine2(d,gm,pm,c,dgamma,alpham,x1)
                     if (fmax .ge. 0.d0) then
                         x(2) = x1
@@ -101,7 +101,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
                     else
                         x1 = x1*2.d0
                     endif
-10              continue
+                end do
                 goto 60
             else
                 x(2) = 0.d0
@@ -109,7 +109,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
 !               F0 > 0 , ON CHERCHE X TEL QUE FMAX < 0 :
                 x1 =(dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
                 if (abs(x1) .le. r8miem()) x1=-1.d-10
-                do 30 iter = 1, itmax
+                do iter = 1, itmax
                     fmax=lcine2(d,gm,pm,c,dgamma,alpham,x1)
                     if (fmax .le. 0.d0) then
                         x(1) = x1
@@ -118,27 +118,27 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
                     else
                         x1 = x1*2.d0
                     endif
-30              continue
+                end do
                 goto 60
             endif
-20          continue
+ 20         continue
 !             CALCUL DE X(4) SOLUTION DE L'EQUATION F = 0 :
             x(3) = x(1)
             y(3) = y(1)
             x(4) = x(2)
             y(4) = y(2)
-            do 40 iter = 1, itmax
+            do iter = 1, itmax
                 if (abs(y(4)) .lt. toler) goto 50
                 call zeroco(x, y)
                 dalpha = x(4)
                 y(4)=lcine2(d,gm,pm,c,dgamma,alpham,dalpha)
-40          continue
-60          continue
+            end do
+ 60         continue
 !               CALL INFNIV(IFM,NIV)
 !               WRITE (IFM,*) 'ECRO_CIN2 : NON CONVERGENCE'
 !               WRITE (IFM,*) 'VALEURS DE X ET Y ',X,Y
             iret = 1
-50          continue
+ 50         continue
         endif
     else
         call utmess('F', 'COMPOR1_19')

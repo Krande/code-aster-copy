@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0426(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -57,8 +57,8 @@ subroutine te0426(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
@@ -70,14 +70,14 @@ subroutine te0426(option, nomte)
     instan = r8vide()
     nharm = zero
 !
-    do 10 i = 1, nbsig*npg1
+    do i = 1, nbsig*npg1
         epsi(i) = zero
         sigi(i) = zero
-10  end do
+    end do
 !
-    do 20 i = 1, ndim*nno
+    do i = 1, ndim*nno
         bsigma(i) = zero
-20  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -94,11 +94,11 @@ subroutine te0426(option, nomte)
     xyz(1) = 0.d0
     xyz(2) = 0.d0
     xyz(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(ndim, xyz, repere)
 !
 ! ---- RECUPERATION DE L'INSTANT
@@ -112,7 +112,7 @@ subroutine te0426(option, nomte)
 ! ---- + MISE AU FORMAT DES TERMES EXTRA-DIAGONAUX (COHERENT AVEC DMATMC)
 !      --------------------------------------------------------------
 !
-    do 30 igau = 1, npg1
+    do igau = 1, npg1
         call rcvarc(' ', 'EPSAXX', '+', 'RIGI', igau,&
                     1, epsi(nbsig*(igau- 1)+1), iret)
         if (iret .eq. 1) epsi(nbsig*(igau-1)+1)=0.d0
@@ -139,7 +139,7 @@ subroutine te0426(option, nomte)
                     1, epsi(nbsig*(igau- 1)+6), iret)
         if (iret .eq. 1) epsi(nbsig*(igau-1)+6)=0.d0
         epsi(nbsig*(igau- 1)+6) = 2.0*epsi(nbsig*(igau- 1)+6)
-30  end do
+    end do
 !
 ! ---- CALCUL DU VECTEUR DES CONTRAINTES ANELASTIQUES AUX POINTS
 ! ---- D'INTEGRATION
@@ -160,9 +160,9 @@ subroutine te0426(option, nomte)
 !      -------------------------------------------------
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 40 i = 1, ndim*nno
+    do i = 1, ndim*nno
         zr(ivectu+i-1) = bsigma(i)
-40  end do
+    end do
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

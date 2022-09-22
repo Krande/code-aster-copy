@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmdd(taus, coeft, ifa, nmat, nbcomm,&
                   is, nbsys, nfs, nsg, hsr,&
                   vind, dy, dt, rp, nuecou,&
@@ -77,24 +77,24 @@ subroutine lcmmdd(taus, coeft, ifa, nmat, nbcomm,&
                 dgamma=dp*sgns
             else
                 iret=1
-                goto 9999
+                goto 999
             endif
         else
-            goto 9999
+            goto 999
         endif
     endif
 !
 ! CALCUL DE RHO_POINT=DALPHA
 !
-    do 55 ir = 1, nbsys
+    do ir = 1, nbsys
         alpham(ir)=vind(3*(ir-1)+1)
         alphar(ir)=alpham(ir)+dy(ir)
-55  end do
+    end do
 !
     call lcmmdh(coeft, ifa, nmat, nbcomm, alphar,&
                 nfs, nsg, hsr, nbsys, is,&
                 nuecou, hs, soms1, soms2, soms3)
 !
     dalpha=hs*dp
-9999  continue
+999 continue
 end subroutine

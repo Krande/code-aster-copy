@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ut2mlg(nn, nc, p, sl, sg)
     implicit none
 #include "asterfort/mavec.h"
@@ -48,9 +48,9 @@ subroutine ut2mlg(nn, nc, p, sl, sg)
 !
     if (mod(nc,2) .eq. 0) then
         nb = nn * nc / 2
-        do 10 i = 1, nb
+        do i = 1, nb
             k = 2 * ( i - 1 )
-            do 20 j = 1, i
+            do j = 1, i
                 in(1) = k * (k+1) / 2 + 2*(j-1)
                 in(2) = (k+1) * (k+2) / 2 + 2*(j-1)
                 if (i .eq. j) then
@@ -60,41 +60,42 @@ subroutine ut2mlg(nn, nc, p, sl, sg)
                     r(3) = sl(in(2)+1)
                     r(4) = sl(in(2)+2)
 !
-                    do 30 m = 1, 2
-                        do 40 n = 1, m
+                    do m = 1, 2
+                        do n = 1, m
                             sg(in(m)+n) = zero
-                            do 50 l = 1, 2
+                            do l = 1, 2
                                 sg(in(m)+n) = sg(&
                                               in(m)+n) + p(l,&
                                               m) * (r( 2*(l-1)+1)*p(1, n) + r(2*(l-1)+2 )*p( 2, n&
                                               )&
                                               )
-50                          continue
-40                      continue
-30                  continue
+                            end do
+                        end do
+                    end do
                 else
 !              --------- BLOC EXTRA - DIAGONAL
-                    do 60 m = 1, 2
-                        do 70 n = 1, 2
+                    do m = 1, 2
+                        do n = 1, 2
                             sg(in(m)+n) = zero
-                            do 80 l = 1, 2
+                            do l = 1, 2
                                 sg(in(m)+n) = sg(&
                                               in(m)+n) + p(l,&
                                               m) * ( sl(in(l)+1)*p(1, n) + sl(in(l)+2 )*p(2, n )&
                                               )
-80                          continue
-70                      continue
-60                  continue
+                            end do
+                        end do
+                    end do
                 endif
-20          continue
-10      continue
+            end do
+        end do
 !
     else if (mod(nc,2) .eq. 1) then
         if (nc*nn .eq. 3) then
-            do 90 i = 1, 3
-                do 90 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     mr3(i,j) = zero
-90              continue
+                end do
+            end do
 !
             mr3(1,1) = p(1,1)
             mr3(1,2) = p(1,2)
@@ -109,10 +110,11 @@ subroutine ut2mlg(nn, nc, p, sl, sg)
             call mavec(mtr3, 3, sg, 6)
 !
         else if (nc*nn.eq.6) then
-            do 100 i = 1, 6
-                do 100 j = 1, 6
+            do i = 1, 6
+                do j = 1, 6
                     mr6(i,j) = zero
-100              continue
+                end do
+            end do
 !
             mr6(1,1) = p(1,1)
             mr6(1,2) = p(1,2)

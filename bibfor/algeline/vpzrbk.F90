@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpzrbk(z, h, d, mm, izh,&
                   k, l)
     implicit none
@@ -33,25 +33,25 @@ subroutine vpzrbk(z, h, d, mm, izh,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     zero = 0.d0
-    do 30 m = l-2, k, -1
+    do m = l-2, k, -1
         ma=m+1
         if (h(ma,m) .ne. zero) then
-            do 5 i = m+2, l
+            do i = m+2, l
                 d(i)=h(i,m)
- 5          continue
+            end do
             if (ma .le. l) then
-                do 25 j = 1, mm
+                do j = 1, mm
                     g=zero
-                    do 15 i = ma, l
+                    do i = ma, l
                         g=g+d(i)*z(i,j)
-15                  continue
+                    end do
 !
                     g = (g/d(ma))/h(ma,m)
-                    do 20 i = ma, l
+                    do i = ma, l
                         z(i,j)=z(i,j)+g*d(i)
-20                  continue
-25              continue
+                    end do
+                end do
             endif
         endif
-30  end do
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
                   ires, bornck, nborck, coefck, ipas1,&
                   ires1)
@@ -82,10 +82,10 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
     do i = 1, nbomax
         bock1 (i) = zero
         bornck(i) = zero
-        do 20 j = 1, nckmax
+        do j = 1, nckmax
             coef1 (i,j) = zero
             coefck(i,j) = zero
-20      continue
+        end do
     end do
 !
     do kk = 1, nbloc
@@ -103,36 +103,36 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
             zi(jborne-1+2) = ires1
             zi(jborne-1+3) = nb1
             read (unit,*) (bock1(i),i = 1,nb1),vrmin,vrmax
-            do 40 i = 1, nb1
+            do i = 1, nb1
                 zr( jcoeff+i-1 ) = bock1(i)
-40          continue
+            end do
 !
             zr(jvired-1+1) = vrmin
             zr(jvired-1+2) = vrmax
 !
             k = 1
-            do 50 i = 1, nb1
+            do i = 1, nb1
                 read (unit,*) (coef1(i,j),j = 1,nckmax)
-                do 60 j = 1, nckmax
+                do j = 1, nckmax
                     zr(jcoeff+nb1+k-1) = coef1(i,j)
                     k = k + 1
-60              continue
-50          continue
+                end do
+            end do
 !
             nborck = nb1
 !
-            do 70 i = 1, nb1
+            do i = 1, nb1
                 bornck(i) = bock1(i)
-                do 80 j = 1, nckmax
+                do j = 1, nckmax
                     coefck(i,j) = coef1(i,j)
-80              continue
-70          continue
+                end do
+            end do
             goto 120
         else
             read (unit,*) (bock1(i),i = 1,nb1),vrmin,vrmax
-            do 90 i = 1, nb1
+            do i = 1, nb1
                 read (unit,*) (coef1(i,j),j = 1,nckmax)
-90          continue
+            end do
             read (unit,*)
         endif
     end do
@@ -140,7 +140,7 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
         call utmess('F', 'MODELISA4_33')
     endif
 !
-120  continue
+120 continue
     call ulopen(-unit, ' ', ' ', ' ', ' ')
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
                   dgamv, im, sm, vinm, de,&
                   ucrip, seuilp, gp, devgii, paraep,&
                   varpl, dfdsp, dlam)
 !
-    implicit   none
+    implicit none
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lkdepp.h"
@@ -73,9 +73,9 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 !
     call lcprmv(de, depsv, sigv)
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         sigint(i) = sigt(i) - sigv(i)
-20  end do
+    end do
 !
 ! =================================================================
 ! --- RECUPERATION DE DF/DXIP -------------------------------------

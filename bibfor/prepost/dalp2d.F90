@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
                   nelcom, numeli, xy, erreur, energi,&
                   aire, alpha, nalpha)
@@ -107,21 +107,21 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! 2 - INITIALISATION DES ALPHA = DEGRE D INTERPOLATION
 !
-    do 10 inno = 1, nnoem
+    do inno = 1, nnoem
         alphan(inno)= dtyp
-10  end do
-    do 20 inel = 1, nelem
+    end do
+    do inel = 1, nelem
         alpha(inel) = dtyp
-20  end do
+    end do
 !
 ! 3 - CALCUL DES PRECISIONS MOYENNE ET DE REFERENCE
 !
     precmo = 0.d+0
     airtot = 0.d+0
-    do 30 inel = 1, nelem
+    do inel = 1, nelem
         precmo = precmo + erreur(inel)**2
         airtot = airtot + aire(inel)
-30  end do
+    end do
     precmo = sqrt( precmo / airtot )
     precre = precmo * factpm
 !
@@ -129,7 +129,7 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !     SI LE NOEUD CONSIDERE EST SINGULIER OU PAS
 !     RQ : ICNC(2,INNO)=0 NOEUD MILIEU
 !
-    do 40 inno = 1, nnoem
+    do inno = 1, nnoem
         if (numeli(2,inno) .eq. 0) goto 40
 !
 ! 4.1 - ERREUR LOCALE SUR LA COUCHE 1 (=EF CONNECTES A INNO)
@@ -137,11 +137,11 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
         prec1 = 0.d+0
         airtot = 0.d+0
 !
-        do 50 inel = 1, numeli(1, inno)
+        do inel = 1, numeli(1, inno)
             nuef = numeli(2+inel,inno)
             prec1 = prec1 + erreur(nuef)**2
             airtot = airtot + aire(nuef)
-50      continue
+        end do
         if (prec1 .ne. 0.d+0 .and. airtot .ne. 0.d+0) then
             prec1 = sqrt(prec1/airtot)
         else
@@ -161,11 +161,11 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !
             prec2 = 0.d+0
             airtot = 0.d+0
-            do 60 inel = nbelzo(1)+1, nbelzo(2)
+            do inel = nbelzo(1)+1, nbelzo(2)
                 nuef = tbelzo(inel)
                 prec2 = prec2 + erreur(nuef)**2
                 airtot = airtot + aire(nuef)
-60          continue
+            end do
             if (prec2 .ne. 0.d+0 .and. airtot .ne. 0.d+0) then
                 prec2 = sqrt(prec2/airtot)
             else
@@ -180,11 +180,11 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !
                 prec3 = 0.d+0
                 airtot = 0.d+0
-                do 70 inel = nbelzo(2)+1, nbelzo(3)
+                do inel = nbelzo(2)+1, nbelzo(3)
                     nuef = tbelzo(inel)
                     prec3 = prec3 + erreur(nuef)**2
                     airtot = airtot + aire(nuef)
-70              continue
+                end do
                 if (prec3 .ne. 0.d+0 .and. airtot .ne. 0.d+0) then
                     prec3 = sqrt(prec3/airtot)
                 else
@@ -218,19 +218,21 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 ! 4.2 - FIN DU TEST1 PREC1>PRECREF
         endif
 ! 4 - FIN DE LA BOUCLE SUR LES NOEUDS
-40  end do
+ 40     continue
+    end do
 !
 ! 5 - ON REMPLIT LE TABLEAU ALPHA = DEGRE DE LA SINGULARITE PAR EF
 !
     nalpha=1
-    do 100 inel = 1, nelem
+    do inel = 1, nelem
         if (icnc(2,inel) .lt. 1) goto 100
-        do 110 inno = 1, icnc(1, inel)
+        do inno = 1, icnc(1, inel)
             alpha(inel) = min(alpha(inel),alphan(icnc(inno+2,inel)))
-110      continue
+        end do
         if (alpha(inel) .lt. dtyp) then
             nalpha = nalpha + 1
         endif
-100  end do
+100     continue
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine iscoqu(nomo, numail, lcoque)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -23,7 +23,6 @@ subroutine iscoqu(nomo, numail, lcoque)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -32,6 +31,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     character(len=8) :: nomo
     integer :: numail
     aster_logical :: lcoque
@@ -80,7 +80,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 !
 ! --- BOUCLE SUR LES GREL
 !
-    do 40 igrel = 1, nbgrel
+    do igrel = 1, nbgrel
 !
 ! --- TYPE DU GREL COURANT
 !
@@ -95,15 +95,16 @@ subroutine iscoqu(nomo, numail, lcoque)
 !
 ! --- BOUCLE DANS LE GREL
 !
-            do 30 iel = 1, nel - 1
+            do iel = 1, nel - 1
                 numai2 = zi(ialiel-1+iel)
                 if (numai2 .eq. numail) then
                     lcoque = .true.
                     goto 40
                 endif
- 30         continue
+            end do
         endif
- 40 end do
+ 40     continue
+    end do
 !
     call jedema()
 end subroutine

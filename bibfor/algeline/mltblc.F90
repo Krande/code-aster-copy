@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
                   decal, lgbloc, ncbloc)
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -43,7 +43,7 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
     lr=lor8em()
     nbloc = 1
     i0 = 1
-110  continue
+110 continue
     i = i0
     decal(seq(i)) = 1
     long = debfsn(seq(i)+1) - debfsn(seq(i))
@@ -54,7 +54,7 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
         call utmess('F', 'ALGELINE4_21', ni=3, vali=vali)
     endif
 !      DO WHILE (LONG.LE.MXBLOC)
-120  continue
+120 continue
     if (long .le. mxbloc) then
         if (i .eq. nbsn) goto 130
         i = i + 1
@@ -77,11 +77,11 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
     i0 = i
     goto 110
 !
-130  continue
+130 continue
     ncbloc(nbloc) = nbsn - i0 + 1
     lgbloc(nbloc) = long
 !
-    do 140 ib = 1, nbloc
+    do ib = 1, nbloc
         if (lgbloc(ib) .gt. lm/lr) then
             ni=3
             vali(1)=ib
@@ -90,5 +90,5 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
             call utmess('A', 'ALGELINE3_52', ni=ni, vali=vali)
 !
         endif
-140  end do
+    end do
 end subroutine

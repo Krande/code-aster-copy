@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine arlcos(numa, connex, loncum, coord, dime,&
                   cnoeud)
 !
@@ -59,11 +59,11 @@ subroutine arlcos(numa, connex, loncum, coord, dime,&
         ASSERT( .false. )
     endif
 !
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         nuno = connex(jdec-1+ino)
-        do 11 idim = 1, dime
+        do idim = 1, dime
             cnoeud(idim,ino) = coord(idim,nuno)
- 11     end do
- 10 end do
+        end do
+    end do
 !
 end subroutine

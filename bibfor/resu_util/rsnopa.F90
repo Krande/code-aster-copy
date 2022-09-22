@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -31,8 +33,6 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: icode, nbacc, nbpara
     character(len=*) :: nomsd, nomjv
@@ -72,7 +72,7 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
     if (nbpar .ne. 0) then
         AS_ALLOCATE(vk16=nom_acce, size=nbpar)
         AS_ALLOCATE(vk16=nom_para, size=nbpar)
-        do 30 ipar = 1, nbpar
+        do ipar = 1, nbpar
             call jenuno(jexnum(nomd2//'.NOVA', ipar), nompar)
             call jenonu(jexnom(nomd2//'.NOVA', nompar), ibid)
             call jeveuo(jexnum(nomd2//'.TAVA', ibid), 'L', iatava)
@@ -83,7 +83,7 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
                 nbacc = nbacc + 1
                 nom_acce(nbacc) = nompar
             endif
-30      continue
+        end do
         if (icode .eq. 0) nbpara = 0
         if (icode .eq. 1) nbacc = 0
         call jeexin(nomjv, iret)
@@ -97,14 +97,14 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
         if ((nbacc+nbpara) .ne. 0) then
             call wkvect(nomjv, 'V V K16', (nbacc+nbpara), jpara)
             if (nbacc .ne. 0) then
-                do 40 iacc = 1, nbacc
+                do iacc = 1, nbacc
                     zk16(jpara-1+iacc) = nom_acce(iacc)
-40              continue
+                end do
             endif
             if (nbpara .ne. 0) then
-                do 50 ipar = 1, nbpara
+                do ipar = 1, nbpara
                     zk16(jpara-1+ipar+nbacc) = nom_para(ipar)
-50              continue
+                end do
             endif
         endif
         AS_DEALLOCATE(vk16=nom_acce)

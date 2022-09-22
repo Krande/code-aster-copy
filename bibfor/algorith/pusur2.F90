@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pusur2(jdg, nbpt, ang, fn, vt1,&
                   vt2, angle, t, puse, noccur)
 !
@@ -37,14 +37,14 @@ subroutine pusur2(jdg, nbpt, ang, fn, vt1,&
     puse=0.00d00
     noccur=0
 !
-    do 10 i = 1, nbpt-1
+    do i = 1, nbpt-1
         if ((angle(i).le.ang(jdg+1)) .and. ((angle(i).gt.ang(jdg)))) then
             puse=puse+ (abs(fn(i+1)*sqrt(vt1(i+1)**2+vt2(i+1)**2))+&
             abs(fn(i)*sqrt(vt1(i)**2+vt2(i)**2)))*(t(i+1)-t(i))
             tmp=tmp+t(i+1)-t(i)
             noccur=noccur+1
         endif
-10  continue
+    end do
 !
     puse = puse / 2.d0
     if (tmp .eq. zero) then

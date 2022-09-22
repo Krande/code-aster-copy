@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine renuno(nu, renum)
     implicit none
 !
@@ -111,11 +111,11 @@ subroutine renuno(nu, renum)
     integer :: nm, nl, nbnom, nbntt
     character(len=8) :: ma, mo
 !-----------------------------------------------------------------------
-    integer :: i,  ianewn, iaoldn, ico, nlili
+    integer :: i, ianewn, iaoldn, ico, nlili
     integer, pointer :: exi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-
+!
 !   -- calcul de .exi1 :
     call reexi1(nu, mo, ma, nlili, nm,&
                 nl, nbntt)
@@ -137,16 +137,16 @@ subroutine renuno(nu, renum)
 !     -- 'REVERSE-CUTHIL-MAC-KEE':
         call rercmk(nu, mo, ma, nlili, nm,&
                     nl, nbntt)
-        else if (renum(1:4).eq.'SANS') then
+    else if (renum(1:4).eq.'SANS') then
 !     -- 'SANS RENUMEROTATION CUTHIL-MAC-KEE':
         ico = 0
-        do 10,i = 1,nm
-        if (exi1(1+i) .gt. 0) then
-            ico = ico + 1
-            zi(ianewn-1+i) = ico
-            zi(iaoldn-1+ico) = i
-        endif
-10      continue
+        do i = 1, nm
+            if (exi1(1+i) .gt. 0) then
+                ico = ico + 1
+                zi(ianewn-1+i) = ico
+                zi(iaoldn-1+ico) = i
+            endif
+        end do
     else
         call utmess('F', 'ASSEMBLA_37', sk=renum(1:4))
     endif
@@ -164,14 +164,14 @@ subroutine renuno(nu, renum)
 !     -- ON MET A JOUR 'LONUTI' DE .OLDN : NOMBRE DE NOEUDS DU MAILLAGE
 !     (RENUMEROTES OU NON) PARTICIPANT AU NUME_DDL:
 !
-    do 20,i = 1,nbnom
-    if (zi(iaoldn-1+i) .eq. 0) then
-        call jeecra(nu//'.OLDN', 'LONUTI', i-1)
-        goto 30
-    endif
-    20 end do
+    do i = 1, nbnom
+        if (zi(iaoldn-1+i) .eq. 0) then
+            call jeecra(nu//'.OLDN', 'LONUTI', i-1)
+            goto 30
+        endif
+    end do
 !
 !
-30  continue
+ 30 continue
     call jedema()
 end subroutine

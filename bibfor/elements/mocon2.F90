@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mocon2(dir, sigb, siga, hh, nlit,&
                   om, rr, nufsup, nufinf, nufsd1,&
                   nufid1, nufsd2, nufid2, prec)
@@ -23,11 +23,11 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "jeveux.h"
-!
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lsqpol.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2
     character(len=1) :: dir
     integer :: nlit
@@ -50,25 +50,25 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 !
     call wkvect(nufsd1//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 74 i = 0, npt-1
+    do i = 0, npt-1
         xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 75, j = 1,ordok
-        zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
-75      continue
-74  end do
+        do j = 1, ordok
+            zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
+        end do
+    end do
 !
     call wkvect(nufsd2//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 76 i = 0, npt-1
+    do i = 0, npt-1
         xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 77, j = 2,ordok-1
-        zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
-77      continue
-76  end do
+        do j = 2, ordok-1
+            zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
+        end do
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
     call jeveuo(nufsup//'           .PROL', 'L', jprol)
@@ -104,25 +104,25 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 !
     call wkvect(nufid1//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 104 i = 0, npt-1
+    do i = 0, npt-1
         xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 105, j = 1,ordok
-        zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
-105      continue
-104  end do
+        do j = 1, ordok
+            zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
+        end do
+    end do
 !
     call wkvect(nufid2//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 106 i = 0, npt-1
+    do i = 0, npt-1
         xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 107, j = 2,ordok-1
-        zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
-107      continue
-106  end do
+        do j = 2, ordok-1
+            zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
+        end do
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
     call jeveuo(nufinf//'           .PROL', 'L', jprol)

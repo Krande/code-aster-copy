@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine exchno(imodat, iparg)
-
-use calcul_module, only : ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_,&
-     ca_iamloc_, ca_iamsco_, ca_iawlo2_, ca_igr_,&
-     ca_iichin_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, &
-     ca_nbelgr_, ca_nbgr_, ca_nec_, ca_typegd_, ca_lparal_, ca_paral_, ca_iel_, ca_iachid_
-
-implicit none
-
+!
+    use calcul_module, only : ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_, ca_iamloc_, ca_iamsco_, ca_iawlo2_, ca_igr_, ca_iichin_, ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, ca_nbelgr_, ca_nbgr_, ca_nec_, ca_typegd_, ca_lparal_, ca_paral_, ca_iel_, ca_iachid_
+!
+    implicit none
+!
 ! person_in_charge: jacques.pellet at edf.fr
-
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/trigd.h"
 #include "asterfort/utmess.h"
-
+!
     integer :: imodat, iparg
 !----------------------------------------------------------------------
 !     entrees:
@@ -68,14 +65,14 @@ implicit none
     ityplo=zi(modloc-1+1)
     debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
     lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
-
+!
     ASSERT(ityplo.lt.4)
-
+!
 !   1-  cas: chno -> elga :
 !   -----------------------
 !   le cas ityplo=3 n est pas prevu : developpement a faire ...
     ASSERT(ityplo.ne.3)
-
+!
 !   2-  cas: chno -> elno :
 !       cas: chno -> elem (moyenne)
 !   --------------------------------
@@ -153,7 +150,7 @@ implicit none
         if (num .lt. 0) then
             long=-num
             deb2=debugr
-            do 90 ca_iel_ = 1, ca_nbelgr_
+            do ca_iel_ = 1, ca_nbelgr_
                 if (ca_lparal_) then
                     if (.not.ca_paral_(ca_iel_)) then
                         deb2=deb2+lgcata
@@ -170,9 +167,10 @@ implicit none
                         nugl=numgls((-ima),ino)
                     endif
                     deb1=(nugl-1)*long+1
-
+!
                     if (nugl .gt. 0) then
-                        call trigd(zi(desc-1+3), deb1, zi(modloc-1+idg2), deb2, moyenn, ino, nno)
+                        call trigd(zi(desc-1+3), deb1, zi(modloc-1+idg2), deb2, moyenn,&
+                                   ino, nno)
                     else
 !                       on verifie que le modloc affirme ncmp=0:
                         do iec = 1, ca_nec_
@@ -182,14 +180,15 @@ implicit none
                         enddo
                     endif
                 enddo
- 90         continue
+ 90             continue
+            end do
         else
 !           -- c'est 1 champ avec profil_noeud:
 !           ------------------------------------
             prno1=zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+8)
             prno2=zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+9)
             deb2=debugr
-            do 110 ca_iel_ = 1, ca_nbelgr_
+            do ca_iel_ = 1, ca_nbelgr_
                 if (ca_lparal_) then
                     if (.not.ca_paral_(ca_iel_)) then
                         deb2=deb2+lgcata
@@ -207,7 +206,7 @@ implicit none
                     endif
                     deb1=(abs(nugl)-1)*(ca_nec_+2)+1
                     idg1=(abs(nugl)-1)*(ca_nec_+2)+3
-
+!
                     if (nugl .gt. 0) then
                         call trigd(zi(prno1-1+idg1), zi(prno1-1+deb1), zi(modloc-1+idg2), deb2,&
                                    moyenn, ino, nno)
@@ -216,7 +215,8 @@ implicit none
                                    moyenn, ino, nno)
                     endif
                 enddo
-110         continue
+110             continue
+            end do
         endif
 !
         if (moyenn) then
@@ -255,8 +255,8 @@ implicit none
                 ASSERT(.false.)
             endif
         endif
-
+!
     endif
-
-
+!
+!
 end subroutine

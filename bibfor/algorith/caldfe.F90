@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caldfe(df, nr, nvi, vind, dfpds,&
                   fe, dfpdbs, msdgdt, drdy)
 !
@@ -61,71 +61,94 @@ subroutine caldfe(df, nr, nvi, vind, dfpds,&
 !
 !     on calcule dFe/dS
     call r8inir(81, 0.d0, dfeds, 1)
-    do 1004 i = 1, 3
-        do 1004 j = 1, 3
-            do 1004 k = 1, 3
-                do 1004 l = 1, 3
-                    do 1004 m = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
                         dfeds(i,j,k,l)=dfeds(i,j,k,l)+dffe(i,m)*dfpds(&
                         m,j,k,l)
-1004                  continue
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
     call r8inir(81, 0.d0, dfefds, 1)
-    do 1005 i = 1, 3
-        do 1005 j = 1, 3
-            do 1005 k = 1, 3
-                do 1005 l = 1, 3
-                    do 1005 m = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
                         dfefds(i,j,k,l)=dfefds(i,j,k,l)+dfeds(m,i,k,l)&
                         *fe(m,j)
-1005                  continue
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
     call r8inir(81, 0.d0, dfefdt, 1)
-    do 1006 i = 1, 3
-        do 1006 j = 1, 3
-            do 1006 k = 1, 3
-                do 1006 l = 1, 3
-                    do 1006 m = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
                         dfefdt(i,j,k,l)=dfefdt(i,j,k,l)+dfeds(m,j,k,l)&
                         *fe(m,i)
-1006                  continue
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
     call daxpy(81, 1.d0, dfefds, 1, dfefdt,&
                1)
     call dscal(81, -0.5d0, dfefdt, 1)
 !
-    do 1007 i = 1, 3
-        do 1007 j = 1, 3
-            do 1007 k = 1, 3
-                do 1007 l = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     msdgdt(ind(i,j),ind(k,l))=dfefdt(i,j,k,l)
-1007              continue
+                end do
+            end do
+        end do
+    end do
 !
 !
 !     on calcule dFe/dbetas
     call r8inir(3*3*ns, 0.d0, dfedbs, 1)
-    do 1014 i = 1, 3
-        do 1014 j = 1, 3
-            do 1014 k = 1, ns
-                do 1014 m = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, ns
+                do m = 1, 3
                     dfedbs(i,j,k)=dfedbs(i,j,k)+dffe(i,m)*dfpdbs(m,j,&
                     k)
-1014              continue
+                end do
+            end do
+        end do
+    end do
 !
     call r8inir(3*3*ns, 0.d0, dfefdb, 1)
-    do 1015 i = 1, 3
-        do 1015 j = 1, 3
-            do 1015 k = 1, ns
-                do 1015 m = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, ns
+                do m = 1, 3
                     dfefdb(i,j,k)=dfefdb(i,j,k)+dfedbs(m,i,k)*fe(m,j)&
                     +dfedbs(m,j,k)*fe(m,i)
-1015              continue
+                end do
+            end do
+        end do
+    end do
 !
     call dscal(3*3*ns, -0.5d0, dfefdb, 1)
 !
-    do 1018 i = 1, 3
-        do 1018 j = 1, 3
-            do 1018 k = 1, ns
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, ns
                 drdy(ind(i,j),6+k)=dfefdb(i,j,k)
-1018          continue
+            end do
+        end do
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0328(option, nomte)
 !.......................................................................
     implicit none
@@ -53,17 +53,17 @@ subroutine te0328(option, nomte)
 !
     posi=.false.
     nega=.false.
-    do 1 kp = 1, npg
+    do kp = 1, npg
         if (ndim .eq. 3) then
             call dfdm3j(nno, kp, idfde, zr(igeom), poids)
         else if (ndim.eq.2) then
             call dfdm2j(nno, kp, idfde, zr(igeom), poids)
         else
-            goto 9999
+            goto 999
         endif
         if (poids .lt. 0.d0) nega=.true.
         if (poids .gt. 0.d0) posi=.true.
-  1 end do
+    end do
 !
 !
     if (posi .and. nega) then
@@ -75,7 +75,7 @@ subroutine te0328(option, nomte)
         codret=1
     endif
 !
-9999 continue
+999 continue
     zi(icodr-1+1)=codret
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine usunew(type, para, crit, epsi, x1,&
                   x2, resu, iret)
     implicit none
@@ -44,7 +44,7 @@ subroutine usunew(type, para, crit, epsi, x1,&
     dxold = abs( x2 - x1 )
     dx = dxold
     call usufon(type, para, resu, fr, dfr)
-    do 10 i = 1, maxit
+    do i = 1, maxit
         dxold = dx
         if (((resu-xh)*dfr-fr)*((resu-xl)*dfr-fr) .ge. zero .or. abs( fr*2.d0) .gt.&
             abs(dxold*dfr)) then
@@ -52,9 +52,9 @@ subroutine usunew(type, para, crit, epsi, x1,&
             resu = dx * xl
 !            IF ( XL .EQ. RESU ) GOTO 9999
             if (crit(1:4) .eq. 'RELA') then
-                if (abs(xl-resu) .le. epsi * abs(resu)) goto 9999
+                if (abs(xl-resu) .le. epsi * abs(resu)) goto 999
             else
-                if (abs(xl - resu) .le. epsi) goto 9999
+                if (abs(xl - resu) .le. epsi) goto 999
             endif
         else
             dx = fr / dfr
@@ -62,12 +62,12 @@ subroutine usunew(type, para, crit, epsi, x1,&
             resu = resu - dx
 !            IF ( TEMP .EQ. RESU ) GOTO 9999
             if (crit(1:4) .eq. 'RELA') then
-                if (abs(temp-resu) .le. epsi * abs(resu)) goto 9999
+                if (abs(temp-resu) .le. epsi * abs(resu)) goto 999
             else
-                if (abs(temp - resu) .le. epsi) goto 9999
+                if (abs(temp - resu) .le. epsi) goto 999
             endif
         endif
-        if (abs(dx) .lt. epsi) goto 9999
+        if (abs(dx) .lt. epsi) goto 999
         if (type(1:8) .eq. 'TUBE_BAV') then
             if (( resu - dl*da ) .lt. 0.d0) then
 !            WRITE(8,*)'--->> USUNEW, NOMBRE NEGATIF ',( RESU - DL*DA )
@@ -81,9 +81,9 @@ subroutine usunew(type, para, crit, epsi, x1,&
         else
             xh = resu
         endif
-10  end do
+    end do
     iret = 10
-    goto 9999
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

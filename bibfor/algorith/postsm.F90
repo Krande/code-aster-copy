@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine postsm(option, fm, df, sigm, sigp,&
                   dsidep)
 !
@@ -43,7 +43,7 @@ subroutine postsm(option, fm, df, sigm, sigp,&
     data    id   /1.d0, 0.d0, 0.d0,&
      &              0.d0, 1.d0, 0.d0,&
      &              0.d0, 0.d0, 1.d0/
-!   
+!
     real(kind=8) :: rac2
     parameter    (rac2 = sqrt(2.d0))
     data    rc /1.d0, 1.d0, 1.d0, rac2, rac2, rac2/
@@ -76,19 +76,19 @@ subroutine postsm(option, fm, df, sigm, sigp,&
     if (rigi) then
         call dcopy(54, dsidep, 1, mat, 1)
         call dscal(54, j, mat, 1)
-        do 100 kl = 1, 6
-            do 200 p = 1, 3
-                do 300 q = 1, 3
+        do kl = 1, 6
+            do p = 1, 3
+                do q = 1, 3
                     dsidep(kl,p,q) = tau(kl)*id(p,q)
-                    do 400 i = 1, 3
+                    do i = 1, 3
                         dsidep(kl,p,q) = dsidep(kl,p,q) + mat(kl,p,i)* df(q,i)
-400                 continue
+                    end do
 !
-                        dsidep(kl,p,q) = dsidep(kl,p,q)*rc(kl)
+                    dsidep(kl,p,q) = dsidep(kl,p,q)*rc(kl)
 !
-300             continue
-200         continue
-100     continue
+                end do
+            end do
+        end do
     endif
 !
     call dscal(3, rac2, sigp(4), 1)

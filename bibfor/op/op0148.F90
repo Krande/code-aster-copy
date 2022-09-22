@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0148()
     implicit none
 !   RESTITUTION D'UN INTERSPECTRE DE REPONSE MODALE DANS LA BASE
@@ -58,7 +58,7 @@ subroutine op0148()
     integer :: ioptch, nbmcl, nbcmp
     aster_logical :: intmod, intphy
     character(len=8) :: nomu, table, nommai, nomcmp, cmp1, depla(3)
-    ! character(len=8) :: veccmp(1)
+! character(len=8) :: veccmp(1)
     character(len=8) :: limocl(2), typem, maillage, modmec
     character(len=16) :: concep, cmd, optcal, optcha
     character(len=19) :: base, typflu, nomcha
@@ -89,7 +89,7 @@ subroutine op0148()
     call getvid(' ', 'BASE_ELAS_FLUI', scal=base, nbret=ibid)
     if (ibid .eq. 0) then
         call speph0(nomu, table)
-        goto 9999
+        goto 999
     endif
 !C
 !
@@ -106,9 +106,9 @@ subroutine op0148()
     endif
 !
     if (ioptch .le. 3) then
-        do 10 idep = 1, 3
+        do idep = 1, 3
             if (nomcmp .eq. depla(idep)) goto 11
- 10     continue
+        end do
  11     continue
     else
         if (nomcmp(1:4) .eq. 'SMFY') then
@@ -227,7 +227,7 @@ subroutine op0148()
     limocl(2) = 'NOEUD'
     call reliem(' ', maillage, typem, ' ', 1,&
                 nbmcl, limocl, limocl, '&&OP0148.TEMP.NOEN', nbn)
-    call jeveuo('&&OP0148.TEMP.NOEN','L',inoen)
+    call jeveuo('&&OP0148.TEMP.NOEN', 'L', inoen)
     call wkvect('&&OP0148.TEMP.NOEI', 'V V I ', nbn, inoei)
     do in = 0, nbn-1
         call jenonu(jexnom(nomnoe, zk8(inoen+in)), zi(inoei+in))
@@ -246,29 +246,29 @@ subroutine op0148()
 !
     if (ioptch .ne. 4) then
 !
-        do 50 imr = 1, nbmr
+        do imr = 1, nbmr
             write(nomcha,'(A8,A5,2I3.3)') base(1:8),'.C01.', zi(inuor+&
             imr-1),iv
             chvale = nomcha//'.VALE'
             call jeveuo(chvale, 'L', ivale)
-            do 60 in = 1, nbn
+            do in = 1, nbn
                 nplace = zi(inoei+in-1)
                 icham1 = icham + nbn*(imr-1) + in - 1
                 ivale1 = ivale + 6*(nplace-1) + idep - 1
                 zr(icham1) = zr(ivale1)
- 60         continue
+            end do
             call jelibe(chvale)
- 50     continue
+        end do
 !
     else
 !
-        do 70 imr = 1, nbmr
+        do imr = 1, nbmr
             numod = zi(inuor + imr - 1)
             call rsexch('F', modmec, 'SIPO_ELNO', numod, sipo,&
                         icode)
             sipo = sipo(1:19)//'.CELV'
             call jeveuo(sipo, 'L', isip)
-            do 80 in = 1, nbn
+            do in = 1, nbn
                 nplace = zi(inoei+in-1)
                 icham1 = icham + nbn*(imr-1) + in - 1
                 if (nplace .eq. 1) then
@@ -281,8 +281,8 @@ subroutine op0148()
                     isip2 = isip1 + 6
                     zr(icham1) = (zr(isip1)+zr(isip2))/2.d0
                 endif
- 80         continue
- 70     continue
+            end do
+        end do
 !
     endif
 !
@@ -299,9 +299,9 @@ subroutine op0148()
     zk16(lrefes+1) = optcal
     zk16(lrefes+2) = 'FREQ'
 !
-    do 380 il = 1, nbpf
+    do il = 1, nbpf
         zr(idis+il-1) = zr(lfreq+il-1)
-380 continue
+    end do
 !
 ! --- 7.REALISATION DU CALCUL ---
 !
@@ -313,6 +313,6 @@ subroutine op0148()
     call titre()
 !
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

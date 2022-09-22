@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
                   coeffp, coefcr, coeffr, elc, fpg,&
                   ifiss, ivff, jcface, jdonco, jlonch,&
@@ -23,8 +23,12 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
                   ninter, nnof, nomte, npgf, nptf,&
                   rela)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/teattr.h"
+#include "asterfort/xminte.h"
 ! RECUPERATION DIVERSES INFOS LIEES AU CONTACT XFEM DANS UN TE
 !
 ! OUT ALGOCR : ALGO DE CONTACT (1:LAG, 2:PENA, 3:COHESIF)
@@ -58,10 +62,6 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 ! IN  NOMTE  : TYPE ELEMENT
 ! OUT NPGF   : NOMBRE DE POINTS DE GAUSS PAR FACETTE
 ! OUT SEUIL  : TABLEAU DES SEUILS DE FROTTEMENT
-#include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/teattr.h"
-#include "asterfort/xminte.h"
     integer :: algocr, algofr, cface(30, 6), contac
     integer :: i, ibid, idfdef, ifiss
     integer :: ipoidf, ivff, j, jcface
@@ -101,8 +101,8 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
             elc='SE3'
         endif
     endif
-    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                     jvf=ivff, jdfde=idfdef)
 !
 ! --- RECUPERATIONS DONNEES ET COEFFS DU CONTACT
 !
@@ -141,14 +141,14 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 !
     nface=zi(jlonch+3*(ifiss-1)-1+2)
     nptf=zi(jlonch+3*(ifiss-1)-1+3)
-    do 11 i = 1, nface
-        do 12 j = 1, nptf
+    do i = 1, nface
+        do j = 1, nptf
             cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
-12      continue
-11  continue
+        end do
+    end do
 !
     nspfis = npgf*nface
 !
-99  continue
+ 99 continue
 !
 end subroutine

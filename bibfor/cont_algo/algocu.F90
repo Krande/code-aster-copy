@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine algocu(ds_contact, solver, lmat, ldscon, cncine,&
-                  disp_iter , ctccvg)
+                  disp_iter, ctccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -279,8 +279,9 @@ implicit none
                 write(ifm,*)'<LIA_UNIL> <> FACTORISATION MATRICE'
             endif
 !
-            call tldlg3('LDLT', ' ', 2, ldscon, indfac, nbliac, 0,&
-                        ndeci, isingu, npvneg, ier, ' ')
+            call tldlg3('LDLT', ' ', 2, ldscon, indfac,&
+                        nbliac, 0, ndeci, isingu, npvneg,&
+                        ier, ' ')
 !
             indfac = nbliac + 1
 !
@@ -341,7 +342,7 @@ implicit none
 ! ======================================================================
 ! -- S'IL Y A DES LIAISONS NON ACTIVES : CALCUL DE RHO
 ! ======================================================================
-        do 112 ii = 1, nbliai
+        do ii = 1, nbliai
             trouac = .false.
 ! ======================================================================
 ! -- LA LIAISON II EST-ELLE ACTIVE ? (-> TROUAC)
@@ -384,7 +385,8 @@ implicit none
                     endif
                 endif
             endif
-112     continue
+112         continue
+        end do
 ! ======================================================================
 ! -- SI TOUS LES (A.DELTA)II SONT NEGATIFS : RHO = 1
 ! ======================================================================
@@ -519,11 +521,11 @@ implicit none
 !
     call jedema()
 !
-100 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS POSSIBLES: ',i6)
-101 format (' <LIA_UNIL> <> DEBUT DES ITERATIONS (MAX: ',i6,')')
-102 format (' <LIA_UNIL> <> FIN DES ITERATIONS (NBR: ',i6,')')
-103 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS FINALES:', i6,')')
-104 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS INITIALES:', i6,')')
+    100 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS POSSIBLES: ',i6)
+    101 format (' <LIA_UNIL> <> DEBUT DES ITERATIONS (MAX: ',i6,')')
+    102 format (' <LIA_UNIL> <> FIN DES ITERATIONS (NBR: ',i6,')')
+    103 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS FINALES:', i6,')')
+    104 format (' <LIA_UNIL> <> NOMBRE DE LIAISONS INITIALES:', i6,')')
 ! ======================================================================
 !
 end subroutine

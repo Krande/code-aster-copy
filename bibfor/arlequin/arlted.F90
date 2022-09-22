@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,43 +15,40 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine arlted(ndim  , &
-                  nns   ,jcoors, &
-                  npgs  ,ivfs  ,idfdes,ipoids, &
-                  elref1,ndml1   ,jcoor1, &
-                  fcpig1    ,poijcs, &
-                  dfdx1 ,dfdy1 ,dfdz1 )
-
-
-
-
+!
+subroutine arlted(ndim, nns, jcoors, npgs, ivfs,&
+                  idfdes, ipoids, elref1, ndml1, jcoor1,&
+                  fcpig1, poijcs, dfdx1, dfdy1, dfdz1)
+!
+!
+!
+!
     implicit none
-
+!
 #include "jeveux.h"
 #include "asterfort/arltds.h"
 #include "asterfort/arltep.h"
-
+!
     integer :: ndim
-    integer :: nns,npgs
-    integer :: ivfs,ipoids,idfdes
+    integer :: nns, npgs
+    integer :: ivfs, ipoids, idfdes
     character(len=8) :: elref1
-    integer :: ndml1,jcoor1,jcoors
-    real(kind=8) ::  poijcs(npgs)
-    real(kind=8) ::  fcpig1(npgs*ndim*ndim*ndml1)
-    real(kind=8) ::  dfdx1(npgs*ndim*ndim*ndml1)
-    real(kind=8) ::  dfdy1(npgs*ndim*ndim*ndml1)
-    real(kind=8) ::  dfdz1(npgs*ndim*ndim*ndml1)
-
+    integer :: ndml1, jcoor1, jcoors
+    real(kind=8) :: poijcs(npgs)
+    real(kind=8) :: fcpig1(npgs*ndim*ndim*ndml1)
+    real(kind=8) :: dfdx1(npgs*ndim*ndim*ndml1)
+    real(kind=8) :: dfdy1(npgs*ndim*ndim*ndml1)
+    real(kind=8) :: dfdz1(npgs*ndim*ndim*ndml1)
+!
 ! ----------------------------------------------------------------------
-
+!
 ! CALCUL DES MATRICES DE COUPLAGE ARLEQUIN
 ! OPTION ARLQ_MATR
 ! CALCUL DES FF ET DES DERIVEES DES FF DES MAILLES COUPLEES
-
+!
 ! ----------------------------------------------------------------------
-
-
+!
+!
 ! IN  NDIM   : DIMENSION DU PROBLEME
 ! IN  NNS    : NOMBRE DE NOEUDS DE LA MAILLE SUPPORT S
 ! IN  NPGS   : NOMBRE DE POINTS DE GAUSS DE LA MAILLE SUPPORT S
@@ -70,31 +67,29 @@ subroutine arlted(ndim  , &
 ! OUT DFDXm  : DERIVEE FCT. FORME/X EN CHAQUE PT DE GAUSS DE LA MAILLE m
 ! OUT DFDYm  : DERIVEE FCT. FORME/Y EN CHAQUE PT DE GAUSS DE LA MAILLE m
 ! OUT DFDZm  : DERIVEE FCT. FORME/Z EN CHAQUE PT DE GAUSS DE LA MAILLE m
-
-
+!
+!
     integer :: kpgs
     integer :: mtl1
-    real(kind=8) ::  fctfs(npgs*nns)
-    real(kind=8) ::  dfdzs(npgs*nns),dfdxs(npgs*nns),dfdys(npgs*nns)
-
+    real(kind=8) :: fctfs(npgs*nns)
+    real(kind=8) :: dfdzs(npgs*nns), dfdxs(npgs*nns), dfdys(npgs*nns)
+!
 ! ----------------------------------------------------------------------
-
+!
 ! --- CALCUL DES DERIVEES DE FCT FORMES DES MAILLES COURANTES
-
-    call arltds(nns   ,npgs  , &
-                ipoids,jcoor1,ivfs  ,idfdes, &
-                poijcs,fctfs    ,dfdxs ,dfdys ,dfdzs )
-
-    do 12 kpgs = 1,npgs
-
+!
+    call arltds(nns, npgs, ipoids, jcoor1, ivfs,&
+                idfdes, poijcs, fctfs, dfdxs, dfdys,&
+                dfdzs)
+!
+    do kpgs = 1, npgs
+!
         mtl1 = ndim*ndim*ndml1*(kpgs-1)+1
-        call arltep(ndim  ,zr(jcoor1) ,npgs     ,kpgs      , &
-                    nns   ,zr(ivfs)   , &
-                    elref1,ndml1      ,zr(jcoor1), &
-                    fcpig1(mtl1),dfdx1(mtl1) ,dfdy1(mtl1) , &
-                    dfdz1(mtl1))
-
-    12 end do
-
-
+        call arltep(ndim, zr(jcoor1), npgs, kpgs, nns,&
+                    zr(ivfs), elref1, ndml1, zr(jcoor1), fcpig1(mtl1),&
+                    dfdx1(mtl1), dfdy1(mtl1), dfdz1(mtl1))
+!
+    end do
+!
+!
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine corich(action, champ, ichin, ichout)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -124,10 +124,10 @@ subroutine corich(action, champ, ichin, ichout)
         call jedetr(repert)
         call jecreo(repert, 'V N K24')
         call jeecra(repert, 'NOMMAX', 2*longmx)
-        do 10,k = 1,long
-        call jenuno(jexnum(reptmp, k), nomch)
-        call jecroc(jexnom(repert, nomch))
-10      continue
+        do k = 1, long
+            call jenuno(jexnum(reptmp, k), nomch)
+            call jecroc(jexnom(repert, nomch))
+        end do
         call jedetr(reptmp)
 !
     endif
@@ -191,11 +191,11 @@ subroutine corich(action, champ, ichin, ichout)
         call jelira(repert, 'NOMMAX', longmx)
         call jeveuo(numich, 'L', jnumic)
         write (6,*) 'CORICH FIN ETAT DU REP.: ',longmx,' ',long
-        do 20,k = 1,long
-        call jenuno(jexnum(repert, k), nomch2)
-        write (6,*) 'CORICH FIN ETAT DU REP.: ',k,' ',nomch2,' ',&
+        do k = 1, long
+            call jenuno(jexnum(repert, k), nomch2)
+            write (6,*) 'CORICH FIN ETAT DU REP.: ',k,' ',nomch2,' ',&
             zi(jnumic-1+k)
-20      continue
+        end do
     endif
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !.======================================================================
     implicit none
@@ -84,7 +84,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
     if (lgreen) then
         call tecach('OOO', 'PDEPLAR', 'L', iret, iad=idepl)
     else
-        goto 9999
+        goto 999
     endif
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DANS LA GEOMETRIE
@@ -105,15 +105,15 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !
 ! --- AFFECTATION DES VECTEURS DE TRANSLATION ET DE ROTATION :
 !     ------------------------------------------------------
-    do 10 in = 1, nb1
-        do 20 ii = 1, 3
+    do in = 1, nb1
+        do ii = 1, 3
             vecthe(in,ii) = zr(idepl+6*(in-1)+ii+3-1)
- 20     continue
- 10 end do
+        end do
+    end do
 !
-    do 30 ii = 1, 3
+    do ii = 1, 3
         vecthe(nb2,ii) = zr(idepl+6*nb1+ii-1)
- 30 end do
+    end do
 !
 ! --- DETERMINATION DES REPERES LOCAUX AUX NOEUDS DANS LA
 ! --- CONFIGURATION INITIALE
@@ -129,7 +129,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! ---   MISE DU VECTEUR DES CONTRAINTES DANS LE REPERE UTILISATEUR
 ! ---   SOUS LA FORME D'UN TENSEUR 3X3 :
 !       ------------------------------
-    do 40 i = 1, nb2
+    do i = 1, nb2
 !
         tetag(1) = vecthe(i,1)
         tetag(2) = vecthe(i,2)
@@ -166,8 +166,8 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
             sigrtg(6,i) = sigmad(2,3)
         endif
 !
- 40 end do
+    end do
 !
-9999 continue
+999 continue
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

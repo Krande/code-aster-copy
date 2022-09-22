@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0155()
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -111,21 +111,23 @@ subroutine op0155()
     call jeveuo(nomr19//'.ORDR', 'L', jordr)
     call jelira(nomr19//'.ORDR', 'LONUTI', nbordr)
 !
-    do 20 i = 1, nbordr
+    do i = 1, nbordr
         nuordr=zi(jordr-1+i)
 !            COPIE DE LA CARTE DE COMPORTEMENT 
 !            --UTILE SI ON RÉCUPÈRE LES NOMS DES VARIABLES INTERNES
 !     --------------------------------------------------
-
-        call rsexch(' ', resu19, 'COMPORTEMENT', nuordr, comporToCopy,iret)
+!
+        call rsexch(' ', resu19, 'COMPORTEMENT', nuordr, comporToCopy,&
+                    iret)
         if (iret .eq. 0) then
-            call rsexch(' ', nomr19, 'COMPORTEMENT', nuordr, comporToSave,iret)
+            call rsexch(' ', nomr19, 'COMPORTEMENT', nuordr, comporToSave,&
+                        iret)
             call copisd('CHAMP_GD', 'G', comporToCopy, comporToSave)
         endif
 !            COPIE DES PARAMÈTRES
 !     --------------------------------------------------
-
-        do 10 j = 1, nbpara
+!
+        do j = 1, nbpara
             nopara=zk16(jnompa-1+j)
             call rsadpa(resu, 'L', 1, nopara, nuordr,&
                         1, sjv=iadin, styp=type, istop=0)
@@ -152,8 +154,8 @@ subroutine op0155()
             else if (type(1:2).eq.'K8') then
                 zk8(iadou)=zk8(iadin)
             endif
-10      continue
-20  continue
+        end do
+    end do
     call jedetr(nompar)
 !
 !

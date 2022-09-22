@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trirap(clef, tab, ntab, n, g,&
                   d, m)
 !
@@ -67,23 +67,23 @@ subroutine trirap(clef, tab, ntab, n, g,&
     clef(m) = clef(g)
     clef(g) = pivot
 !
-    do 10 i = 1, ntab
+    do i = 1, ntab
         tmp = tab(m,i)
         tab(m,i) = tab(g,i)
         tab(g,i) = tmp
-10  end do
+    end do
 !
 ! --- EXPLORATION
 !
     gp = g
     dp = d + 1
 !
-20  continue
+ 20 continue
 !
     gp = gp + 1
     if (clef(gp) .lt. pivot) goto 20
 !
-30  continue
+ 30 continue
 !
     dp = dp - 1
     if (clef(dp) .gt. pivot) goto 30
@@ -94,11 +94,11 @@ subroutine trirap(clef, tab, ntab, n, g,&
         clef(gp) = clef(dp)
         clef(dp) = tmp
 !
-        do 40 i = 1, ntab
+        do i = 1, ntab
             tmp = tab(gp,i)
             tab(gp,i) = tab(dp,i)
             tab(dp,i) = tmp
-40      continue
+        end do
 !
         goto 20
 !
@@ -111,10 +111,10 @@ subroutine trirap(clef, tab, ntab, n, g,&
     clef(g) = clef(m)
     clef(m) = pivot
 !
-    do 50 i = 1, ntab
+    do i = 1, ntab
         tmp = tab(g,i)
         tab(g,i) = tab(m,i)
         tab(m,i) = tmp
-50  end do
+    end do
 !
 end subroutine

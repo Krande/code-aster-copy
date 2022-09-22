@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
                   kwork, sommw, vwork, tdisp, tspaq,&
                   i, nomcri, nomfor, fordef, fatsoc,&
@@ -130,7 +130,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 !
     decal = 18
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
         nx = vectn((ivect-1)*3 + 1)
         ny = vectn((ivect-1)*3 + 2)
         nz = vectn((ivect-1)*3 + 3)
@@ -143,7 +143,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
         vy = vectv((ivect-1)*3 + 2)
         vz = vectv((ivect-1)*3 + 3)
 !
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
 !
 ! ON PROJETTE LA DEFORMATION SI FORDEF = OUI
 !             IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
@@ -186,8 +186,8 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
             zr(jvectr+n*2 - 1) = fatsoc*cucis
             zr(jvectr+n*2) = fatsoc*cvcis
 !
- 20     continue
- 10 end do
+        end do
+    end do
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cmphii(ck, cm, ndim, nbmod, niter,&
                   xcrit, ceigen, cmod, ndimax, cmat1,&
                   cmat2, cvec, ific)
@@ -91,24 +91,24 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !
 !
 !   CALCUL DE L'INVERSE DE LA MATRICE DE MASSE
-    do 40 iv = 1, ndim
+    do iv = 1, ndim
         ivdiag = iv*(iv-1)/2+1
-        do 20 i = 1, ndim
+        do i = 1, ndim
             if (i .le. iv) then
                 cmat2(i,iv)=cm(ivdiag+iv-i)
             else
                 idiag = i*(i-1)/2+1
                 cmat2(i,iv)=dconjg(cm(idiag+i-iv))
             endif
- 20     continue
- 40 end do
+        end do
+    end do
     call rrldc(cmat1, ndim, cmat2, ndim)
 !
-    do 66 iv = 1, ndim
+    do iv = 1, ndim
         cvec(iv)=dcmplx(0.d0,0.d0)
         cvec0(iv)=dcmplx(0.d0,0.d0)
         cmod0(iv)=dcmplx(0.d0,0.d0)
- 66 end do
+    end do
 !
 !
 !   INITIALISATION ALEATOIRE DES VECTEURS PROPRES DE DEPART
@@ -117,7 +117,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !
 !     DEBUT DE LA BOUCLE D'ITERATION SUR LES MODES
 !
-    do 50 j = 1, nbmod
+    do j = 1, nbmod
 !
 !       INITIALISATION DES CRITERES D'ARRET
         k=0
@@ -166,7 +166,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
                     valr=valr)
 !
- 50 end do
+    end do
 !
     write(ific,*)'     '
     write(ific,*)'     '

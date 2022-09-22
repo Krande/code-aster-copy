@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                   nbordr, coord, connx, point, nobj,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
@@ -23,6 +23,8 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/codent.h"
 #include "asterfort/irgmor.h"
@@ -36,8 +38,6 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ifi, nbordr, nbcmpi, versio
     integer :: ordr(*), connx(*), point(*)
     real(kind=8) :: coord(*), para(*)
@@ -100,7 +100,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     call wkvect('&&IRGMCN.TYPE', 'V V K8', nbord2, jtype)
 !
 !
-    do 100 ior = 1, nbord2
+    do ior = 1, nbord2
         if (lresu) then
             call rsexch(' ', nomcon, chamsy, ordr(ior), noch19,&
                         iret)
@@ -119,7 +119,8 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
         call jelira(champs//'.CNSV', 'TYPE', cval=zk8(jtype+ior-1))
 !
 !
-100 end do
+100     continue
+    end do
 !
 ! --- RECUPERATION DES COMPOSANTES POUR L'IMPRESSION
 !     D'UN CHAMP SCALAIRE PAR COMPOSANTE
@@ -128,16 +129,16 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     ncmpu = 0
     AS_ALLOCATE(vk8=vnocmp, size=ncmp)
     if (nbcmpi .eq. 0) then
-        do 180 k = 1, ncmp
+        do k = 1, ncmp
             nocmp = zk8(cnsc(1)-1+k)
             ncmpu = ncmpu + 1
             vnocmp(ncmpu) = nocmp
-180     continue
+        end do
     else
-        do 190 k = 1, nbcmpi
+        do k = 1, nbcmpi
             ncmpu = ncmpu + 1
             vnocmp(ncmpu) = nomcmp(k)
-190     continue
+        end do
     endif
 !
 ! -- VERSION GMSH = 1.0 :
@@ -159,14 +160,14 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     if (versio .eq. 1) then
         ncmp = zi(cnsd(1)-1+2)
         if (nbcmpi .eq. 0) then
-            do 200 k = 1, ncmp
+            do k = 1, ncmp
                 nocmp = zk8(cnsc(1)-1+k)
                 if (nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ') then
                     vect = .true.
                 else
                     scal = .true.
                 endif
-200         continue
+            end do
         else
             scal = .true.
         endif
@@ -194,14 +195,14 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !
 ! ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
 !        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
-        do 101 ine = 1, neletr
+        do ine = 1, neletr
             i=tord(ine)
             if (nbel(i) .ne. 0) then
                 call irgnte(ifi, nbord2, coord, connx, point,&
                             nobj(i), nbel(i), cnsv, partie, jtype,&
                             cnsd)
             endif
-101     continue
+        end do
 !
 !        FIN D'ECRITURE DE View
 !        **********************
@@ -230,14 +231,14 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
             tbcmp(3)='DZ      '
         else if (versio.eq.2) then
             tbcmp(3)='        '
-            do 104 i = 1, nbcmpi
+            do i = 1, nbcmpi
                 tbcmp(i)=vnocmp(i)
-104         continue
+            end do
         endif
 !
 ! ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
 !        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
-        do 102 ine = 1, neletr
+        do ine = 1, neletr
             i=tord(ine)
             if (nbel(i) .ne. 0) then
                 call irgnal(ifi, nbord2, coord, connx, point,&
@@ -245,7 +246,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                             cnsc, cnsl, cnsv, partie, jtype,&
                             cnsd)
             endif
-102     continue
+        end do
 !
 !        FIN D'ECRITURE DE View
 !        **********************
@@ -259,7 +260,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 ! ----------------------------------------------------------------------
 !
     if (scal) then
-        do 300 k = 1, ncmpu
+        do k = 1, ncmpu
             nocmp = vnocmp(k)
 !
 !        ECRITURE DE L'ENTETE DE View
@@ -274,7 +275,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !
 ! ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
 !        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
-            do 103 ine = 1, neletr
+            do ine = 1, neletr
                 i=tord(ine)
                 if (nbel(i) .ne. 0) then
                     call irgnal(ifi, nbord2, coord, connx, point,&
@@ -282,14 +283,14 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                                 cnsc, cnsl, cnsv, partie, jtype,&
                                 cnsd)
                 endif
-103         continue
+            end do
 !
 !        FIN D'ECRITURE DE View
 !        **********************
 !
             write(ifi,1000) '$EndView'
 !
-300     continue
+        end do
     endif
 !
     AS_DEALLOCATE(vi=cnsd)

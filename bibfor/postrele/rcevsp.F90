@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                   cspo, cspe, cspto, cspte, cspmo,&
                   cspme)
@@ -66,9 +66,9 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
     endif
     ind = 0
 !
-    do 100 i1 = 1, nbinst
+    do i1 = 1, nbinst
 !
-        do 102 icmp = 1, ncmp
+        do icmp = 1, ncmp
             l1 = ncmp*(i1-1) + icmp
             l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
             sp1o(icmp) = zr(jsioe-1+l1)
@@ -79,7 +79,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                 spm1o(icmp) = zr(jsmoe-1+l1)
                 spm1e(icmp) = zr(jsmoe-1+l2)
             endif
-102     continue
+        end do
         ind = ind + 1
 !
         zr(jspo+ind-1) = 0.d0
@@ -91,9 +91,9 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
             zr(jspme+ind-1) = 0.d0
         endif
 !
-        do 110 i2 = i1+1, nbinst
+        do i2 = i1+1, nbinst
 !
-            do 112 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 l1 = ncmp*(i2-1) + icmp
                 l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
                 sp2o(icmp) = zr(jsioe-1+l1)
@@ -104,12 +104,12 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                     spm2o(icmp) = zr(jsmoe-1+l1)
                     spm2e(icmp) = zr(jsmoe-1+l2)
                 endif
-112         continue
+            end do
             ind = ind + 1
 ! ======================================================================
 ! ---       COMBINAISON DES CONTRAINTES AUX 2 INSTANTS TEMP1 ET TEMP2 :
 ! ======================================================================
-            do 114 icmp = 1, ncmp
+            do icmp = 1, ncmp
                 sp12o(icmp) = sp1o(icmp) - sp2o(icmp)
                 sp12e(icmp) = sp1e(icmp) - sp2e(icmp)
                 if (kemixt) then
@@ -118,7 +118,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                     spm12o(icmp) = spm1o(icmp) - spm2o(icmp)
                     spm12e(icmp) = spm1e(icmp) - spm2e(icmp)
                 endif
-114         continue
+            end do
 ! ======================================================================
 ! ---       CALCUL DE LA NORME DE TRESCA DE LA DIFFERENCE DES TENSEURS
 ! ---       DE CONTRAINTES TOTALES
@@ -152,9 +152,9 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
 !
             endif
 !
-110     continue
+        end do
 !
-100 end do
+    end do
 !
     call jedema()
 end subroutine

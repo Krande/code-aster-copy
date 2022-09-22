@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
                   dfdx, dfdy, dfdz, dsx, dsy,&
                   dsz, norme)
@@ -86,7 +86,7 @@ subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
     spg13=0.d0
     spg23=0.d0
 !
-    do 10 i = 1, nno
+    do i = 1, nno
         k=(ipg-1)*nno
         sig11=zr(isig-1+nbcmp*(i-1)+1)
         sig22=zr(isig-1+nbcmp*(i-1)+2)
@@ -112,7 +112,7 @@ subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
         spg13=spg13+sig13*zr(ivf+k+i-1)
         spg23=spg23+sig23*zr(ivf+k+i-1)
 !
-10  end do
+    end do
 !
     dsx=dsig11+dsig12+dsig13
     dsy=dsig21+dsig22+dsig23

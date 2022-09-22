@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                   nvv, crit, deps, dsidep, ndim,&
                   sigp, vip, iret)
@@ -68,7 +68,7 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 !           PRECISION RELATIVE
             sigpeq=0.d0
             do k = 1, ndimsi
-               sigpeq = sigpeq + sigp(k)**2
+                sigpeq = sigpeq + sigp(k)**2
             enddo
             sigpeq = sqrt(sigpeq)
             if (sigpeq .lt. signul) then
@@ -77,12 +77,12 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                 precr=prec*sigpeq
             endif
         else
-    !       PRECISION ABSOLUE
+!       PRECISION ABSOLUE
             precr=abs(prec)
         endif
-     endif      
-
- !
+    endif 
+!
+    !
     if (cp .eq. 2) then
 !
 !       ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
@@ -91,8 +91,8 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
         typmod(1)='C_PLAN'
         option=optio2
 !
-        if ((vecteu).and.(abs(dsidep(3,3)).gt.precr)) then
-
+        if ((vecteu) .and. (abs(dsidep(3,3)).gt.precr)) then
+!
             depzz=deps(3)
             d22=dsidep(3,3)
             d21eps=dsidep(3,1)*deps(1)+dsidep(3,2)*deps(2) +dsidep(3,&
@@ -107,9 +107,9 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
             scm(3)=0.d0
             scm(4)=-dsidep(4,3)*sigp(3)/d22*rac2
 !
-            do 130 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigp(k)=sigp(k)+scm(k)
-130         continue
+            end do
 !
 !
             if (abs(sigp(3)) .gt. precr) then
@@ -120,19 +120,21 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 !
 !         IF (MATRIC) THEN
         if (option .eq. 'FULL_MECA') then
-            do 136 k = 1, ndimsi
+            do k = 1, ndimsi
 !
                 if (k .eq. 3) goto 136
 !
-                do 137 l = 1, ndimsi
+                do l = 1, ndimsi
 !
                     if (l .eq. 3) goto 137
-                    if (abs(dsidep(3,3)).gt.precr) then
+                    if (abs(dsidep(3,3)) .gt. precr) then
                         dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
                     endif
 !
-137             continue
-136         continue
+137                 continue
+                end do
+136             continue
+            end do
 !
         endif
 !
@@ -157,8 +159,8 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
         d31=dsidep(3,1)
         d32=dsidep(3,2)
         d33=dsidep(3,3)
-
-        if ((vecteu).and.(abs(d22*d33-d32*d23).gt.precr)) then
+!
+        if ((vecteu) .and. (abs(d22*d33-d32*d23).gt.precr)) then
 !
             delta=d22*d33-d32*d23
             dy=d23*d31-d21*d33
@@ -182,16 +184,16 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
             scm(3)=0.d0
             scm(4)=0.d0
 !
-            do 140 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigp(k)=sigp(k)+scm(k)
-140         continue
+            end do
 !
             if (abs(sigp(2)) .gt. precr) iret=3
             if (abs(sigp(3)) .gt. precr) iret=3
 !
         endif
 !
-        if ((option .eq. 'FULL_MECA').and.(abs(delta).gt.precr)) then
+        if ((option .eq. 'FULL_MECA') .and. (abs(delta).gt.precr)) then
             dsidep(1,1)=d11+(d12*dy+d13*dz)/delta
         endif
 !

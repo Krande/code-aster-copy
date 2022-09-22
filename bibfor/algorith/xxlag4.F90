@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xxlag4(ffc, idepl, idepm, lact, ndim,&
                   nnol, pla, lamb, nvec, champ)
     implicit none
-#include "asterfort/vecini.h"
-#include "asterfort/assert.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/vecini.h"
 !
 !
 ! Routine utilitaire de calcul d'un champ
@@ -45,26 +45,27 @@ subroutine xxlag4(ffc, idepl, idepm, lact, ndim,&
 ! --- RÉACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
 ! --- RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 ! --- (DEPDEL+DEPMOI)
-    if(champ.eq.'LAMBDA') then
+    if (champ .eq. 'LAMBDA') then
         indcha = 0
-    else if(champ.eq.'W') then
+    else if (champ.eq.'W') then
         indcha = 1
-    else if(champ.eq.'MU') then
+    else if (champ.eq.'MU') then
         indcha = 2
     else
         ASSERT(.false.)
     endif
     call vecini(3, 0.d0, lamb)
-    do 1 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
         if (nli .eq. 0) goto 1
-        do 2 j = 1, ndim
+        do j = 1, ndim
             lamb(j) = lamb(j) + ffi * zr(idepl-1+indcha*ndim+pli-1+j)
             if (nvec .eq. 2) then
                 lamb(j) = lamb(j) + ffi * zr(idepm-1+indcha*ndim+pli-1+j)
             endif
- 2      continue
- 1  end do
+        end do
+  1     continue
+    end do
 end subroutine

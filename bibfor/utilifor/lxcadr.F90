@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lxcadr(chaine)
     implicit none
     character(len=*) :: chaine
@@ -37,20 +37,20 @@ subroutine lxcadr(chaine)
     integer :: ilong, ldec, long
 !-----------------------------------------------------------------------
     long = len(chaine)
-    do 10 ilong = 1, long
+    do ilong = 1, long
         if (chaine(ilong:ilong) .ne. ' ') then
             ldec = ilong-1
             goto 11
         endif
-10  end do
+    end do
 !     --- CAS DE LA CHAINE BLANCHE ---
     ldec = 0
 !     --- CAS STANDARD ---
-11  continue
+ 11 continue
     if (ilong .gt. 0) then
-        do 20 ilong = 1, long-ldec
+        do ilong = 1, long-ldec
             chaine(ilong:ilong) = chaine(ilong+ldec:ilong+ldec)
-20      continue
+        end do
         chaine(long-ldec+1:) = ' '
     endif
 end subroutine

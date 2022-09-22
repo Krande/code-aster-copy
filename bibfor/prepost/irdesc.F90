@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                   dg, ncmpmx, vale, nomcmp, titr,&
                   nomnoe, nomsd, nomsym, ir, numnoe,&
@@ -24,6 +24,8 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/ecrtes.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/irgags.h"
@@ -35,8 +37,6 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ifi, nbno, nueq(*), prno(*), nec, dg(*), ncmpmx
     integer :: ir, numnoe(*)
     complex(kind=8) :: vale(*)
@@ -98,9 +98,9 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     nomst= '&&IRECRI.SOUS_TITRE.TITR'
     call jeveuo(nomst, 'L', jtitr)
     titre = zk80(jtitr)
-    do 1 i = 1, ncmpmx
+    do i = 1, ncmpmx
         ltabl(i)=.false.
-  1 end do
+    end do
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL ----
 !
@@ -116,12 +116,12 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                 nbcmps, nomgds, ipcmps)
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
-    do 10 ichs = 1, nbchs
+    do ichs = 1, nbchs
         if (ichs .gt. 1) then
             afaire=.false.
-            do 2 icp = 1, nbcmps(ichs)
+            do icp = 1, nbcmps(ichs)
                 afaire = ( afaire .or. ltabl(ipcmps((ichs-1)* ncmpmx+icp)) )
-  2         continue
+            end do
             if (.not. afaire) goto 10
         endif
         iente = 1
@@ -132,22 +132,22 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
         idebu=1
         entete(4) = ' '
         texte = ' '
-        do 5 icp = 1, nbcmps(ichs)
+        do icp = 1, nbcmps(ichs)
             nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp))
             iutil = lxlgut(nocmp)
             ifin = idebu+iutil
             texte(idebu:ifin) = nocmp(1:iutil)//' '
             idebu = ifin+1
-  5     continue
+        end do
         iutil = lxlgut(texte)
         jmax = lxlgut(titre)
         jmax = min(jmax,(80-iutil-2))
         entete(4)= titre(1:jmax)//' - '//texte(1:iutil)
-        do 11 inno = 1, nbno
+        do inno = 1, nbno
             ino = numnoe(inno)
-            do 17 iec = 1, nec
+            do iec = 1, nec
                 dg(iec)=prno((ino-1)*(nec+2)+2+iec)
- 17         continue
+            end do
 !
 !              NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !              IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
@@ -155,16 +155,16 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
             ncmp = prno((ino-1)* (nec+2)+2)
             if (ncmp .eq. 0) goto 11
 !
-            do 25 ic = 1, nbcmps(ichs)
+            do ic = 1, nbcmps(ichs)
                 zr(irval-1+ic) = 0.0d0
                 zr(icval-1+ic) = 0.0d0
- 25         continue
+            end do
             icompt = 0
-            do 12 icmp = 1, ncmpmx
+            do icmp = 1, ncmpmx
                 if (exisdg(dg,icmp)) then
                     if (ichs .eq. 1) ltabl(icmp)= .true.
                     icompt = icompt + 1
-                    do 13 icms = 1, nbcmps(ichs)
+                    do icms = 1, nbcmps(ichs)
                         icmsup = ipcmps((ichs-1)*ncmpmx+icms)
                         if (icmp .eq. icmsup) then
                             impre = 1
@@ -174,9 +174,10 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                             icompt)))
                             goto 12
                         endif
- 13                 continue
+                    end do
                 endif
- 12         continue
+ 12             continue
+            end do
 !
             if (impre .eq. 1) then
                 if (iente .eq. 1) then
@@ -191,9 +192,11 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                 i),i=1,nbcmps(ichs))
                 impre=0
             endif
- 11     end do
+ 11         continue
+        end do
         if (iente .eq. 0) write (ifi,'(A)') '    -1'
- 10 end do
+ 10     continue
+    end do
     call jedetr('&&IRDESC.VALR')
     call jedetr('&&IRDESC.VALC')
     AS_DEALLOCATE(vk8=nomgds)

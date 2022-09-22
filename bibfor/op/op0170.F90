@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0170()
     implicit none
 !
@@ -95,11 +95,11 @@ subroutine op0170()
         call jeveuo(nomob3, 'L', inbl4)
         nbmom = nbl0
         call wkvect('&&OP0170.MOMENT', 'V V R', 3*nbmom, ivmom)
-        do 10 i = 1, nbl0
+        do i = 1, nbl0
             zr(ivmom+(i-1)*3 ) = zr(inbl0+i-1)
             zr(ivmom+(i-1)*3+1) = zr(inbl2+i-1)
             zr(ivmom+(i-1)*3+2) = zr(inbl4+i-1)
-10      continue
+        end do
 !
     else
 !
@@ -122,7 +122,7 @@ subroutine op0170()
     call tbajpa(nomres, nbpfat, nopfat, typfat)
 !
     ilign = 0
-    do 20 i = 1, nbmom
+    do i = 1, nbmom
         xm0 = zr(ivmom+(i-1)*3 )
         xm2 = zr(ivmom+(i-1)*3+1)
         xm4 = zr(ivmom+(i-1)*3+2)
@@ -144,7 +144,7 @@ subroutine op0170()
             call tbajli(nomres, nbpfat, nopfat, [ibid], valer,&
                         [c16b], k8b, ilign)
         endif
-20  end do
+    end do
 !
     call titre()
 !

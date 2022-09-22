@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
+!
+subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff,&
+                   typm)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgnoor.h"
 #include "asterfort/getvtx.h"
@@ -38,8 +41,6 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbnoff
     character(len=8) :: resu, nomail, typfon
@@ -137,9 +138,9 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
                 call utmess('F', 'RUPTURE0_43')
             endif
             trouv = 0
-            do 545 im = 1, nbma
+            do im = 1, nbma
                 if (numma .eq. zi(jcour2-1 + im)) trouv = im
-545          continue
+            end do
             if (trouv .eq. 0) then
                 call utmess('F', 'RUPTURE0_44', sk=nomma)
             else
@@ -147,15 +148,15 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
 !     ON REMONTE LA MAILLE_ORIG EN TETE DE LISTE
 !
                 AS_ALLOCATE(vi=maillestriees, size=3*nbma)
-                do 546 im = trouv, nbma
+                do im = trouv, nbma
                     maillestriees(im+1-trouv) = zi(jcour2-1 + im)
-546              continue
-                do 547 im = 1, trouv-1
+                end do
+                do im = 1, trouv-1
                     maillestriees(im+1+nbma-trouv) = zi(jcour2-1 + im)
-547              continue
-                do 548 im = 1, nbma
+                end do
+                do im = 1, nbma
                     zi(jcour2-1 + im)=maillestriees(im)
-548              continue
+                end do
                 AS_DEALLOCATE(vi=maillestriees)
             endif
         endif
@@ -172,10 +173,10 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
     call jeveuo(mesnoe, 'L', idnono)
 !
     call wkvect(noeord, 'G V K8', nbnoff, idlino)
-    do 90 i = 1, nbnoff
+    do i = 1, nbnoff
         call jenuno(jexnum(nomail//'.NOMNOE', zi(idnono-1 + i)), noeud)
         zk8(idlino-1 + i) = noeud
-90  continue
+    end do
 !
 !     ------------------------------------------------------------------
     call jedetr(mesnoe)

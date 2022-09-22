@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -90,14 +90,14 @@ subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
 !
 ! --- REPERAGE SI LE NOEUD EST UN NOEUD DE LA LISTE
 !
-    do 30 k = 1, nsans
+    do k = 1, nsans
         numsan = zi(jsans+zi(jpsans+izone-1)+k-1)
         if (numnoe .eq. numsan) then
             suppok = 1
             goto 40
         endif
-30  end do
-40  continue
+    end do
+ 40 continue
 !
     call jedema()
 end subroutine

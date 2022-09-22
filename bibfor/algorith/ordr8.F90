@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ordr8(tab, nb, iord)
 !    P. RICHARD     DATE //
 !-----------------------------------------------------------------------
@@ -42,22 +42,22 @@ subroutine ordr8(tab, nb, iord)
     integer :: i, iormin, itemp, j, nb
     real(kind=8) :: vmin
 !-----------------------------------------------------------------------
-    do 10 i = 1, nb
+    do i = 1, nb
         iord(i)=i
-10  end do
+    end do
 !
-    do 20 i = 1, nb-1
+    do i = 1, nb-1
         vmin=tab(iord(i))
         iormin=i
-        do 30 j = i+1, nb
+        do j = i+1, nb
             if (tab(iord(j)) .lt. vmin) then
                 vmin=tab(iord(j))
                 iormin=j
             endif
-30      continue
+        end do
         itemp=iord(i)
         iord(i)=iord(iormin)
         iord(iormin)=itemp
-20  end do
+    end do
 !
 end subroutine

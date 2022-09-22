@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                   ndir, comdir, typcdi, glob, prim,&
                   iordInit)
@@ -25,8 +25,8 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -84,13 +84,13 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
     call rsexis(resu, ier)
     if (ier .eq. 0) then
         call getfac('DEPL_MULT_APPUI', nbmode)
-        do  i = 1, 3
+        do i = 1, 3
             if (ndir(i) .eq. 1) nbmode = nbmode + 3
         enddo
         if (comdir) nbmode = nbmode + 3
         call rscrsd('G', resu, concep, nbmode)
     endif
-    
+!
     noms2 = nomsy
     if (nomsy(1:4) .eq. 'VITE') noms2 = 'DEPL'
     if (nomsy(1:4) .eq. 'ACCE') noms2 = 'DEPL'
@@ -108,7 +108,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
     else if (prim) then
         def = 'PRIMAIRE'
     endif
-    do 20 id = 1, 3
+    do id = 1, 3
         if (ndir(id) .eq. 1) then
             iordr = iordr + 1
 !
@@ -132,9 +132,9 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
             endif
             call jeveuo(vale, 'E', jval)
 !
-            do 30 in = 1, neq
+            do in = 1, neq
                 zr(jval+in-1) = sqrt( abs ( repdir(in,id) ) )
- 30         continue
+            end do
             call jelibe(vale)
             call rsnoch(resu, nomsy, iordr)
 !
@@ -146,7 +146,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
             else if (iordInit .eq. 21) then
                 combi = 'DIR_QS '
             endif
-            
+!
             call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
                         0, sjv=jdir, styp=k8b)
             zk16(jdir) = combi//comp(id)
@@ -160,22 +160,22 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                         0, sjv=jdor, styp=k8b)
             zi(jdor) = iordr
             call rsadpa(mome, 'L', 1, 'MODELE', 1,&
-                       0, sjv=jval, styp=k8b, istop=0)
+                        0, sjv=jval, styp=k8b, istop=0)
             call rsadpa(resu, 'E', 1, 'MODELE', iordr,&
-                       0, sjv=jmod, styp=k8b)
+                        0, sjv=jmod, styp=k8b)
             zk8(jmod) = zk8(jval)
             call rsadpa(mome, 'L', 1, 'CARAELEM', 1,&
-                       0, sjv=jval, styp=k8b, istop=0)
+                        0, sjv=jval, styp=k8b, istop=0)
             call rsadpa(resu, 'E', 1, 'CARAELEM', iordr,&
-                       0, sjv=jcar, styp=k8b)
+                        0, sjv=jcar, styp=k8b)
             zk8(jcar) = zk8(jval)
             call rsadpa(mome, 'L', 1, 'CHAMPMAT', 1,&
-                       0, sjv=jval, styp=k8b, istop=0)
+                        0, sjv=jval, styp=k8b, istop=0)
             call rsadpa(resu, 'E', 1, 'CHAMPMAT', iordr,&
-                       0, sjv=jchm, styp=k8b)
+                        0, sjv=jchm, styp=k8b)
             zk8(jchm) = zk8(jval)
         endif
- 20 continue
+    end do
 !
     if (comdir) then
         iordr = iordr + 1
@@ -201,12 +201,12 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
         call jeveuo(vale, 'E', lvale)
 !
         if (typcdi(1:4) .eq. 'QUAD') then
-            do 40 ieq = 1, neq
+            do ieq = 1, neq
                 xxx = abs ( repdir(ieq,1) ) + abs ( repdir(ieq,2) ) + abs ( repdir(ieq,3) )
                 zr(lvale+ieq-1) = sqrt( xxx )
- 40         continue
+            end do
         else if (typcdi(1:4).eq.'NEWM') then
-            do 42 ieq = 1, neq
+            do ieq = 1, neq
                 rx = sqrt( abs ( repdir(ieq,1) ) )
                 ry = sqrt( abs ( repdir(ieq,2) ) )
                 rz = sqrt( abs ( repdir(ieq,3) ) )
@@ -237,7 +237,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                 xxx = max(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13, r14)
                 xxx = max(xxx,r15,r16,r17,r18,r19,r20,r21,r22,r23,r24)
                 zr(lvale+ieq-1) = xxx
- 42         continue
+            end do
         endif
         call jelibe(vale)
         call rsnoch(resu, nomsy, iordr)
@@ -245,7 +245,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !        --- PARAMETRE ---
         call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
                     0, sjv=jdir, styp=k8b)
-        
+!
         if (iordInit .eq. 1) then
             combi = 'COMBI   '
         else if (iordInit .eq. 11) then
@@ -253,13 +253,13 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
         else if (iordInit .eq. 21) then
             combi = 'COMBIQS '
         endif
-        
+!
         if (typcdi(1:4) .eq. 'QUAD') then
             zk16(jdir) = combi//comp(4)
         else if (typcdi(1:4).eq.'NEWM') then
             zk16(jdir) = combi//comp(5)
         endif
-        
+!
         call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
                     0, sjv=jdef, styp=k8b)
         zk16(jdef) = def
@@ -288,10 +288,11 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
     resu19 = resu(1:8)
     call jeveuo(jexnum(mome(1:8)//'           .REFD', 1), 'L', icole)
     numedd = zk24(icole+1)
-    do 50 i = 1, 3
-       matric(i) = zk24(icole+i+1)
- 50 continue
-    call refdaj('F', resu19, iordr, numedd, 'DYNAMIQUE', matric, ier)
+    do i = 1, 3
+        matric(i) = zk24(icole+i+1)
+    end do
+    call refdaj('F', resu19, iordr, numedd, 'DYNAMIQUE',&
+                matric, ier)
 !
     call jedema()
 end subroutine

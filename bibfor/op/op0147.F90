@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0147()
     implicit none
 !   CALCUL DES INTERSPECTRES DE REPONSE MODALE (DYNA_SPEC_MODAL)
@@ -75,12 +75,12 @@ subroutine op0147()
     call getvr8(' ', 'PRECISION', scal=epsi)
 !
     ivitef = 0
-    do 300 i3 = 1, npv
+    do i3 = 1, npv
         val = zr(ivite-1+i3)-vitef
         if (abs(val) .lt. epsi) then
             ivitef = i3
         endif
-300 end do
+    end do
     if (ivitef .eq. 0) then
         call utmess('F', 'ALGELINE3_25', sr=vitef)
     endif
@@ -103,25 +103,26 @@ subroutine op0147()
 !
     nomobj = '&&OP0147.TEMP.NUOR'
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
-    do 150 i1 = 1, nbmr
+    do i1 = 1, nbmr
         zi(jnuor-1+i1) = zi(lnumi-1+i1)
-150 end do
+    end do
     call ordis(zi(jnuor), nbmr)
     call wkvect('&&OP0147.MODE', 'V V I', nbmr, inuor)
     nnn = 1
     zi(inuor) = zi(jnuor)
-    do 20 i = 2, nbmr
+    do i = 2, nbmr
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 20
         nnn = nnn + 1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
- 20 end do
+ 20     continue
+    end do
     nbmr = nnn
-    do 30 im = 1, nbm
+    do im = 1, nbm
         if (zi(inumo+im-1) .eq. zi(inuor)) then
             imod1 = im
             goto 31
         endif
- 30 end do
+    end do
     call utmess('F', 'MODELISA5_78')
  31 continue
 !

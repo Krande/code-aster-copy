@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipeei(ndim, axi, nno1, nno2, npg,&
                   wref, vff1, vff2, dffr2, geom,&
                   ang, mat, compor, lgpg, ddlm,&
@@ -29,8 +29,8 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/eicine.h"
-#include "asterfort/pipeou.h"
 #include "asterfort/pipeex.h"
+#include "asterfort/pipeou.h"
 #include "asterfort/pipetc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -60,7 +60,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
     call r8inir(3, 0.d0, mud, 1)
     call r8inir(5*npg, 0.d0, copilo, 1)
 !
-    do 10 g = 1, npg
+    do g = 1, npg
 !
 ! -- INITIALISATION DES ELEMENTS CINEMATIQUES
 !
@@ -68,27 +68,27 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
                     vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang,&
                     wg, b)
 !
-        do 150 i = 1, ndim
+        do i = 1, ndim
             sup(i) = 0.d0
             sud(i) = 0.d0
-            do 160 j = 1, ndim
-                do 161 n = 1, 2*nno1
+            do j = 1, ndim
+                do n = 1, 2*nno1
                     kk = iu(j,n)
                     sup(i) = sup(i) + b(i,j,n) * (ddlm(kk)+ddld(kk)+ ddl0(kk))
                     sud(i) = sud(i) + b(i,j,n) * ddl1(kk)
-161             continue
-160         continue
-150     continue
+                end do
+            end do
+        end do
 !
-        do 170 i = 1, ndim
+        do i = 1, ndim
             mup(i) = 0.d0
             mud(i) = 0.d0
-            do 180 n = 1, nno2
+            do n = 1, nno2
                 kk = im(i,n)
                 mup(i) = mup(i) + vff2(n,g) * (ddlm(kk)+ddld(kk)+ddl0( kk))
                 mud(i) = mud(i) + vff2(n,g) * ddl1(kk)
-180         continue
-170     continue
+            end do
+        end do
 !
 !
 ! -- APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE A LA LOI DE COMPORTEMENT
@@ -107,6 +107,6 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
             call utmess('F', 'MECANONLINE_59')
         endif
 !
- 10 end do
+    end do
 !
 end subroutine

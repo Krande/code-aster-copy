@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xrigel(nnop, ddlh, nfe, ddlc,&
-                  igeom, jpintt, cnset, heavt, lonch,&
-                  basloc, lsn, lst, sig, matuu,&
-                  jpmilt, heavn, jstno, imate)
+!
+subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom,&
+                  jpintt, cnset, heavt, lonch, basloc,&
+                  lsn, lst, sig, matuu, jpmilt,&
+                  heavn, jstno, imate)
 !
     implicit none
 #include "jeveux.h"
@@ -32,7 +32,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 #include "asterfort/xrige3.h"
     integer :: nnop, igeom
     integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
-    integer :: jpintt, jpmilt, heavn(27,5), jstno, imate
+    integer :: jpintt, jpmilt, heavn(27, 5), jstno, imate
     real(kind=8) :: lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
 !
@@ -67,7 +67,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 !
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs
-    integer ::  idecpg, nbsig, ndim
+    integer :: idecpg, nbsig, ndim
     integer :: irese, nno
 !
     real(kind=8) :: he, coorse(81)
@@ -86,7 +86,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
     call elref1(elrefp)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elrefe_info(fami='RIGI',ndim=ndim)
+    call elrefe_info(fami='RIGI', ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
     if (.not.iselli(elrefp) .and. ndim .le. 2) then
@@ -94,8 +94,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
@@ -104,12 +103,12 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
     nse=lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -122,8 +121,8 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
 !
 !       FONCTION HEAVYSIDE CSTE SUR LE SS-ELT
@@ -149,6 +148,6 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 !
         endif
 !
-110  end do
+    end do
 !
 end subroutine

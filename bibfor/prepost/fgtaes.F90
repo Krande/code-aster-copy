@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                   dom)
     implicit none
@@ -100,7 +100,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
         mode = 'ZONE'
     endif
 !
-    do 10 i = 1, nbcycl
+    do i = 1, nbcycl
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
         if (delta .gt. epmax-zero) then
             epmax = delta
@@ -146,7 +146,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                 endif
             endif
         endif
- 10 end do
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcrel(sderro, nomevt, vall)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -23,12 +23,12 @@ subroutine nmcrel(sderro, nomevt, vall)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmeceb.h"
+!
     character(len=24) :: sderro
     character(len=9) :: nomevt
     aster_logical :: vall
@@ -83,7 +83,7 @@ subroutine nmcrel(sderro, nomevt, vall)
 !
 ! --- RECHERCHE DE L'EVENEMENT
 !
-    do 15 ieven = 1, zeven
+    do ieven = 1, zeven
 !
 ! ----- NOM DE L'EVENEMENT
 !
@@ -99,7 +99,7 @@ subroutine nmcrel(sderro, nomevt, vall)
             ievact = ieven
             goto 66
         endif
- 15 end do
+    end do
 !
  66 continue
 !

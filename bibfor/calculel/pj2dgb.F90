@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
                   btvr, btnb, btlc, btco, p1,&
                   q1, p2, q2)
@@ -27,7 +27,7 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 !     BUT :
 !       TROUVER LA "GROSSE BOITE" (P1,Q1,P2,Q2) DANS LA QUELLE
 !       ON EST SUR DE TROUVER LE TRIA3 LE PLUS PROCHE DE INO2
-
+!
 !  IN   INO2       I  : NUMERO DU NOEUD DE M2 CHERCHE
 !  IN   GEOM2(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M2
 !  IN   GEOM1(*)   R  : COORDONNEES DES NOEUDS DU MAILLAGE M1
@@ -44,41 +44,41 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: d, x1, y1, x2, y2, xmin, ymin, dx, dy
     integer :: p0, q0, nx, ny, k, p, q, itr, ntrbt, iposi, ino1
-
+!
 ! DEB ------------------------------------------------------------------
-
+!
     nx = btdi(1)
     ny = btdi(2)
     dx = btvr(5)
     dy = btvr(6)
     xmin = btvr(1)
     ymin = btvr(3)
-
-
+!
+!
 !      1. ON CHERCHE UNE BOITE NON VIDE AUTOUR DE INO2
 !     -------------------------------------------------------
     p0 = int((geom2(3* (ino2-1)+1)-xmin)/dx) + 1
     q0 = int((geom2(3* (ino2-1)+2)-ymin)/dy) + 1
-
-    do 30,k = 0,max(nx,ny) - 1
-    do 20,p = max(p0-k,1),min(p0+k,nx)
-    do 10,q = max(q0-k,1),min(q0+k,ny)
-    ntrbt = btnb((q-1)*nx+p)
+!
+    do k = 0, max(nx, ny) - 1
+        do p = max(p0-k, 1), min(p0+k, nx)
+            do q = max(q0-k, 1), min(q0+k, ny)
+                ntrbt = btnb((q-1)*nx+p)
 !           -- SI LA BOITE EST NON VIDE :
-    if (ntrbt .gt. 0) then
+                if (ntrbt .gt. 0) then
 !             -- ON CHOISIT LE 1ER NOEUD DU 1ER TRIA3 DE LA BOITE:INO1
-        iposi = btlc((q-1)*nx+p)
-        itr = btco(iposi+1)
-        ino1 = tria3(1+4* (itr-1)+1)
-        goto 40
-    endif
-10  continue
-20  continue
-    30 end do
+                    iposi = btlc((q-1)*nx+p)
+                    itr = btco(iposi+1)
+                    ino1 = tria3(1+4* (itr-1)+1)
+                    goto 40
+                endif
+            end do
+        end do
+    end do
     ASSERT(.false.)
-
-
-40  continue
+!
+!
+ 40 continue
 !     2. ON CALCULE LA DISTANCE ENTRE INO2 ET INO1
 !     -------------------------------------------------------
     x1 = geom1(3* (ino1-1)+1)
@@ -86,8 +86,8 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
     x2 = geom2(3* (ino2-1)+1)
     y2 = geom2(3* (ino2-1)+2)
     d = sqrt((x2-x1)**2+ (y2-y1)**2)
-
-
+!
+!
 !     3. ON DETERMINE LA GROSSE BOITE CONTENANT :
 !        INO2 - D*VECTEUR_I - D*VECTEUR_J
 !     ET INO2 + D*VECTEUR_I + D*VECTEUR_J
@@ -96,10 +96,10 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
     q1 = int((y2-d-ymin)/dy) + 1
     p1 = max(1,p1)
     q1 = max(1,q1)
-
+!
     p2 = int((x2+d-xmin)/dx) + 1
     q2 = int((y2+d-ymin)/dy) + 1
     p2 = min(nx,p2)
     q2 = min(ny,q2)
-
+!
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dlarch(result, neq, istoc, iarchi, texte,&
                   alarm, temps, nbtyar, typear, masse,&
                   depl, vite, acce, fexte, famor,&
@@ -123,27 +123,27 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
         if (typear(itype) .eq. 'DEPL') then
             do 211 , iaux = 1, neq
             zr(jaux+iaux-1) = depl(iaux)
-211          continue
+211         continue
         else if (typear(itype).eq.'VITE') then
             do 212 , iaux = 1, neq
             zr(jaux+iaux-1) = vite(iaux)
-212          continue
+212         continue
         else if (typear(itype).eq.'ACCE') then
             do 213 , iaux = 1, neq
             zr(jaux+iaux-1) = acce(iaux)
-213          continue
+213         continue
         else if (typear(itype).eq.'FORC_EXTE') then
             do 214 , iaux = 1, neq
             zr(jaux+iaux-1) = fexte(iaux)
-214          continue
+214         continue
         else if (typear(itype).eq.'FORC_AMOR') then
             do 215 , iaux = 1, neq
             zr(jaux+iaux-1) = famor(iaux)
-215          continue
+215         continue
         else if (typear(itype).eq.'FORC_LIAI') then
             do 216 , iaux = 1, neq
             zr(jaux+iaux-1) = fliai(iaux)
-216          continue
+216         continue
         endif
 !
         call jelibe(chamno)
@@ -151,7 +151,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
 !
     endif
 !
-    21 continue
+ 21 continue
 !
     istoc = 1
 !

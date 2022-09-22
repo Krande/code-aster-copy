@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine q4gedg(xyzl, option, pgl, depl, edgl)
     implicit none
 #include "asterf_types.h"
@@ -75,16 +75,16 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
                 dci, dmc, dfc, nno, pgl,&
                 multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
-    do 20 j = 1, nno
-        do 10 i = 1, 2
+    do j = 1, nno
+        do i = 1, 2
             depm(i+2* (j-1)) = depl(i+6* (j-1))
- 10     continue
+        end do
         depf(1+3* (j-1)) = depl(1+2+6* (j-1))
         depf(2+3* (j-1)) = depl(3+2+6* (j-1))
         depf(3+3* (j-1)) = -depl(2+2+6* (j-1))
- 20 end do
+    end do
     if (option(1:4) .eq. 'DEGE') then
-        do 90 ie = 1, ne
+        do ie = 1, ne
 !
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
             eta = zr(icoopg-1+ndim*(ie-1)+2)
@@ -100,26 +100,26 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
 !           ------ BCDF = BC.DEPF -------------------------------------
             bcdf(1) = 0.d0
             bcdf(2) = 0.d0
-            do 30 j = 1, 12
+            do j = 1, 12
                 bcdf(1) = bcdf(1) + bc(1,j)*depf(j)
                 bcdf(2) = bcdf(2) + bc(2,j)*depf(j)
- 30         continue
-            do 40 k = 1, 3
+            end do
+            do k = 1, 3
                 bdf(k) = 0.d0
                 bdm(k) = 0.d0
- 40         continue
-            do 70 i = 1, 3
-                do 50 j = 1, 12
+            end do
+            do i = 1, 3
+                do j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
- 50             continue
-                do 60 j = 1, 8
+                end do
+                do j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
- 60             continue
- 70         continue
-            do 80 i = 1, 3
+                end do
+            end do
+            do i = 1, 3
                 edgl(i+8* (ie-1)) = bdm(i)
                 edgl(i+3+8* (ie-1)) = bdf(i)
- 80         continue
+            end do
             edgl(7+8* (ie-1)) = bcdf(1)
             edgl(8+8* (ie-1)) = bcdf(2)
 !           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
@@ -127,9 +127,9 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             edgl(6+8* (ie-1)) = edgl(6+8* (ie-1))/2.d0
             edgl(7+8* (ie-1)) = bcdf(1)/2.d0
             edgl(8+8* (ie-1)) = bcdf(2)/2.d0
- 90     continue
+        end do
     else
-        do 180 ie = 1, ne
+        do ie = 1, ne
 !
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
             eta = zr(icoopg-1+ndim*(ie-1)+2)
@@ -147,13 +147,13 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             vt(2) = 0.d0
             bcdf(1) = 0.d0
             bcdf(2) = 0.d0
-            do 100 j = 1, 12
+            do j = 1, 12
                 bcdf(1) = bcdf(1) + bc(1,j)*depf(j)
                 bcdf(2) = bcdf(2) + bc(2,j)*depf(j)
-100         continue
+            end do
             vt(1) = dc(1,1)*bcdf(1) + dc(1,2)*bcdf(2)
             vt(2) = dc(2,1)*bcdf(1) + dc(2,2)*bcdf(2)
-            do 110 k = 1, 3
+            do k = 1, 3
                 bdf(k) = 0.d0
                 bdm(k) = 0.d0
                 vf(k) = 0.d0
@@ -162,29 +162,29 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
                 vmf(k) = 0.d0
                 vmc(k) = 0.0d0
                 vfc(k) = 0.0d0
-110         continue
+            end do
             vcm(1) = 0.0d0
             vcm(2) = 0.0d0
             vcf(1) = 0.0d0
             vcf(2) = 0.0d0
 !           ------ VF = DF.BF.DEPF , VFM = DMF.BM.DEPM ----------------
 !           ------ VM = DM.BM.DEPM , VMF = DMF.BF.DEPF ----------------
-            do 140 i = 1, 3
-                do 120 j = 1, 12
+            do i = 1, 3
+                do j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-120             continue
-                do 130 j = 1, 8
+                end do
+                do j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
-130             continue
-140         continue
-            do 160 i = 1, 3
-                do 150 j = 1, 3
+                end do
+            end do
+            do i = 1, 3
+                do j = 1, 3
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
                     vm(i) = vm(i) + dm(i,j)*bdm(j)
                     vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
-150             continue
-160         continue
+                end do
+            end do
 !
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
             dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
@@ -203,13 +203,13 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             vcf(1) = dfc(1,1)*vf(1) + dfc(2,1)*vf(2) + dfc(3,1)*vf(3)
             vcf(2) = dfc(1,2)*vf(1) + dfc(2,2)*vf(2) + dfc(3,2)*vf(3)
 !
-            do 170 i = 1, 3
+            do i = 1, 3
                 edgl(i+8* (ie-1)) = vm(i) + vmf(i) + vmc(i)
                 edgl(i+3+8* (ie-1)) = vf(i) + vfm(i) + vfc(i)
-170         continue
+            end do
             edgl(7+8* (ie-1)) = vt(1) + vcm(1) + vcf(1)
             edgl(8+8* (ie-1)) = vt(2) + vcm(2) + vcf(2)
-180     continue
+        end do
     endif
 !
 end subroutine

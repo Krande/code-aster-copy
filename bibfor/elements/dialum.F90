@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dialum(nno, nddl, ldim, wgt, masco,&
                   masdi)
     implicit none
@@ -49,12 +49,12 @@ subroutine dialum(nno, nddl, ldim, wgt, masco,&
 !-- BOUCLE DE CALCUL DE LA SOMME DES TERMES DIAGONAUX SUIVANT CHAQUE
 !   DIRECTION DE TRANSLATION
     ndim = ldim * (ldim+1) / 2
-    do 130 i = 1, ndim
+    do i = 1, ndim
         masdi(i)=0.d0
-130  end do
-    do 145 i = 1, ldim
+    end do
+    do i = 1, ldim
         idiag = (i*(i+1)/2)
-        do 140 k = 1, nno
+        do k = 1, nno
             idec = (k-1)*nddl+1
             idirx = idec*(idec+1)/2
             idiry = (idec+1)*(idec+2)/2
@@ -66,8 +66,8 @@ subroutine dialum(nno, nddl, ldim, wgt, masco,&
             else if (idiag.eq.idirz) then
                 sommez = sommez + masco(idiag)
             endif
-140      continue
-145  end do
+        end do
+    end do
     xinf = masco(1)
 !-- CALCUL DU COEFFICIENT MULTIPLICATEUR
     alfax = wgt / sommex
@@ -75,14 +75,14 @@ subroutine dialum(nno, nddl, ldim, wgt, masco,&
     alfaz = wgt / sommez
 !-- BOUCLE DE CALCUL DES TERMES DIAGONNAUX AVEC PROTECTION CONTRE
 !-- TERMES DE ROTATION NULS ---> MATRICE SINGULIERE
-    do 160 i = 1, ldim
+    do i = 1, ldim
         idiag = (i*(i+1)/2)
         if (masco(idiag) .eq. 0.d0) then
             ip=ip+1
             itab(ip) = idiag
         else
             if (xinf .gt. masco(idiag)) xinf= masco(idiag)
-            do 150 k = 1, nno
+            do k = 1, nno
                 idec = (k-1)*nddl+1
                 idirx = idec*(idec+1)/2
                 idiry = (idec+1)*(idec+2)/2
@@ -103,13 +103,13 @@ subroutine dialum(nno, nddl, ldim, wgt, masco,&
                 else if (idiag.eq.idirrz) then
                     masdi(idiag) = alfaz * masco(idiag)
                 endif
-150          continue
+            end do
         endif
-160  end do
+    end do
     if (ip .ne. 0) then
-        do 170 i = 1, ip
+        do i = 1, ip
             idec = itab(i)
             masdi(idec) = xnul * alfax * xinf
-170      continue
+        end do
     endif
 end subroutine

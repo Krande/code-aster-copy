@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine meobl2(eps, b, d, deltab, deltad,&
                   mult, lambda, mu, ecrob, ecrod,&
                   alpha, k1, k2, bdim, dsidep)
@@ -110,11 +110,11 @@ subroutine meobl2(eps, b, d, deltab, deltad,&
     sdfbdb(3,2)=tdfbdb(4,2)
     sdfbdb(3,3)=tdfbdb(4,4)
 !
-    do 381 i = 1, 6
+    do i = 1, 6
         sdfbde(1,i)=tdfbde(1,i)
         sdfbde(2,i)=tdfbde(2,i)
         sdfbde(3,i)=tdfbde(4,i)
-381  end do
+    end do
 !
     fbsm(3)=rac2*fbsm(3)
     deltas(3)=deltas(3)*rac2
@@ -141,52 +141,52 @@ subroutine meobl2(eps, b, d, deltab, deltad,&
         call r8inir(18, 0.d0, psi, 1)
         call r8inir(9, 0.d0, ksi, 1)
 !
-        do 110 i = 1, 6
+        do i = 1, 6
             intert(i)=(un-alpha)*fd*tdfdde(i)-coupl*dcrit(i)
-            do 111 j = 1, 3
-                do 112 k = 1, 3
+            do j = 1, 3
+                do k = 1, 3
                     intert(i)=intert(i)+alpha*fbsm(k)*dfmf(k,j)*&
                     sdfbde(j,i)
-112              continue
-111          continue
-110      end do
+                end do
+            end do
+        end do
 !
-        do 310 i = 1, 3
+        do i = 1, 3
             interg(i)=deltas(i)/fd-alpha*fbsm(i)/(un-alpha)/fd/tdfddd
-            do 311 j = 1, 3
-                do 312 k = 1, 3
+            do j = 1, 3
+                do k = 1, 3
                     ksi(i,j)=ksi(i,j)+alpha*deltad*dfmf(i,k)*sdfbdb(k,&
                     j)
                     interd(i)=interd(i)+alpha*fbsm(k)*dfmf(k,j)*&
                     sdfbdb(j,i)
-312              continue
-311          continue
-            do 313 j = 1, 6
-                do 314 k = 1, 3
+                end do
+            end do
+            do j = 1, 6
+                do k = 1, 3
                     psi(i,j)=psi(i,j)-alpha*deltad*dfmf(i,k)*sdfbde(k,&
                     j)
-314              continue
-313          continue
-310      end do
+                end do
+            end do
+        end do
 !
-        do 120 i = 1, 3
+        do i = 1, 3
             ksi(i,i)=ksi(i,i)-(un-alpha)*fd
-120      end do
+        end do
 !
-        do 130 i = 1, 3
-            do 131 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 ksi(i,j)=ksi(i,j)+interg(i)*interd(j)
-131          continue
-            do 331 j = 1, 6
+            end do
+            do j = 1, 6
                 psi(i,j)=psi(i,j)-interg(i)*intert(j) +(un-alpha)*&
                 deltas(i)*tdfdde(j)
-331          continue
-130      end do
+            end do
+        end do
 !
         call r8inir(9, 0.d0, iksi, 1)
-        do 140 i = 1, 3
+        do i = 1, 3
             iksi(i,i)=1.d0
-140      end do
+        end do
 !
         call mgauss('NFVP', ksi, iksi, 3, 3,&
                     3, det, iret)
@@ -196,86 +196,86 @@ subroutine meobl2(eps, b, d, deltab, deltad,&
         call r8inir(18, 0.d0, matb, 1)
         call r8inir(6, 0.d0, matd, 1)
 !
-        do 150 i = 1, 6
+        do i = 1, 6
             matd(i)=-intert(i)/(un-alpha)/fd/tdfddd
-            do 151 j = 1, 3
-                do 152 k = 1, 3
+            do j = 1, 3
+                do k = 1, 3
                     matb(j,i)=matb(j,i)+iksi(j,k)*psi(k,i)
                     matd(i)=matd(i)-interd(j)*iksi(j,k)*psi(k,i)&
                     /(un-alpha)/fd/tdfddd
-152              continue
+                end do
 !            WRITE(6,*) 'MB(',J,',',I,')=',MATB(J,I),';'
-151          continue
-150      continue
+            end do
+        end do
 !
-        do 201 i = 1, 6
-            do 202 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=-tdfdde(i)*matd(j)
 !         WRITE(6,*) 'DID(',I,',',J,')=', DSIDEP(I,J),';'
-                do 203 k = 1, 3
+                do k = 1, 3
                     dsidep(i,j)=dsidep(i,j)-sdfbde(k,i)*matb(k,j)
-203              continue
-202          continue
-201      continue
+                end do
+            end do
+        end do
 !
     else if ((fd.eq.0.d0).and.(nofbm.ne.0.d0)) then
 !
         call r8inir(9, 0.d0, ksi, 1)
         call r8inir(18, 0.d0, psi, 1)
 !
-        do 500 i = 1, 3
-            do 501 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 ksi(i,j)=-fbsm(i)*fbsm(j)/nofbm
-                do 502 k = 1, 3
+                do k = 1, 3
                     ksi(i,j)=ksi(i,j)-alpha*mult*dfmf(i,k)*sdfbdb(k,j)
-502              continue
-501          continue
-            do 581 j = 1, 6
+                end do
+            end do
+            do j = 1, 6
                 psi(i,j)=psi(i,j)-fbsm(i)*alpha*mult/coupl*dcrit(j)
-                do 582 k = 1, 3
+                do k = 1, 3
                     psi(i,j)=psi(i,j)+alpha*mult*dfmf(i,k)*sdfbde(k,j)
-582              continue
-581          continue
-500      continue
+                end do
+            end do
+        end do
 !
-        do 504 i = 1, 3
+        do i = 1, 3
             ksi(i,i)=ksi(i,i)+1
-504      continue
+        end do
 !
         call r8inir(9, 0.d0, iksi, 1)
-        do 505 i = 1, 3
+        do i = 1, 3
             iksi(i,i)=1.d0
-505      continue
+        end do
 !
         call mgauss('NFVP', ksi, iksi, 3, 3,&
                     3, det, iret)
 !
         call r8inir(18, 0.d0, matb, 1)
 !
-        do 550 i = 1, 3
-            do 551 j = 1, 6
-                do 552 k = 1, 3
+        do i = 1, 3
+            do j = 1, 6
+                do k = 1, 3
                     matb(i,j)=matb(i,j)+iksi(i,k)*psi(k,j)
-552              continue
-551          continue
-550      continue
+                end do
+            end do
+        end do
 !
-        do 561 i = 1, 6
-            do 562 j = 1, 6
-                do 563 k = 1, 3
+        do i = 1, 6
+            do j = 1, 6
+                do k = 1, 3
                     dsidep(i,j)=dsidep(i,j)-sdfbde(k,i)*matb(k,j)
-563              continue
-562          continue
-561      continue
+                end do
+            end do
+        end do
 !
     else if ((fd.ne.0.d0).and.(nofbm.eq.0.d0)) then
 !
-        do 661 i = 1, 6
-            do 662 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)= -tdfdde(i)*(-tdfdde(j)+coupl/(un-alpha)&
                 *dcrit(j)/fd)/tdfddd
-662          continue
-661      continue
+            end do
+        end do
 !
     endif
 !

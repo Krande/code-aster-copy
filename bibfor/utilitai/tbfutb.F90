@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                   typpar, vi, vr, vc, vk)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,8 +33,6 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: ntab, vi(*)
     real(kind=8) :: vr(*)
@@ -55,7 +55,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
     integer :: iret, nbpara, nblign, jtbnp, nbpu, nbpart, ipar
     integer :: jtblp, i, j, k, jvale
     integer :: ki, kr, kc, kk, jvall
-
+!
     character(len=1) :: base
     character(len=4) :: type, ktype
     character(len=19) :: nomtab
@@ -82,7 +82,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
     inpar = para
     nbpart = 0
     nbpu = 0
-    do 10 i = 1, ntab
+    do i = 1, ntab
         nomtab = ltabin(i)
         call jeexin(nomtab//'.TBBA', iret)
         if (iret .eq. 0) then
@@ -102,16 +102,16 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
         endif
 !
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-        do 12 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = zk24(jtblp+4*(j-1))
             if (inpar .eq. jnpar) then
                 valk (1) = jnpar
                 valk (2) = nomtab
                 call utmess('F', 'UTILITAI8_20', nk=2, valk=valk)
             endif
-12      continue
+        end do
 !
-10  end do
+    end do
 !
 !     --- ON ELIMINE LES PARAMETRES DOUBLONS ---
 !
@@ -126,15 +126,15 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
         para_r(1) = zk24(jtblp)
         type_r(1) = zk24(jtblp+1)
     endif
-    do 20 i = 1, ntab
+    do i = 1, ntab
         nomtab = ltabin(i)
         call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
         nbpara = zi(jtbnp )
-        do 22 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = zk24(jtblp+4*(j-1))
             type = zk24(jtblp+4*(j-1)+1)
-            do 24 k = 1, ipar
+            do k = 1, ipar
                 knpar = para_r(k)
                 ktype = type_r(k)
                 if (knpar .eq. jnpar) then
@@ -146,29 +146,30 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                     endif
                     goto 22
                 endif
-24          continue
+            end do
             ipar = ipar + 1
             para_r(ipar) = jnpar
             type_r(ipar) = type
-22      continue
-20  end do
+ 22         continue
+        end do
+    end do
     nbpart = ipar
 !
 !     --- CREATION DE LA TABLE ---
 !
     call tbcrsd(tabout, basout)
-    call tbajpa(tabout, nbpart, para_r,type_r)
+    call tbajpa(tabout, nbpart, para_r, type_r)
     AS_ALLOCATE(vi=vale_i, size=nbpu)
     AS_ALLOCATE(vr=vale_r, size=nbpu)
     AS_ALLOCATE(vc=vale_c, size=nbpu)
     AS_ALLOCATE(vk80=vale_k, size=nbpu)
-    do 30 i = 1, ntab
+    do i = 1, ntab
         nomtab = ltabin(i)
         call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
         nbpara = zi(jtbnp )
         nblign = zi(jtbnp+1)
-        do 40 k = 1, nblign
+        do k = 1, nblign
             ki = 0
             kr = 0
             kc = 0
@@ -204,7 +205,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                 kk = kk + 1
                 vale_k(kk) = vk(i)
             endif
-            do 42 j = 1, nbpara
+            do j = 1, nbpara
                 jnpar = zk24(jtblp+4*(j-1))
                 type = zk24(jtblp+4*(j-1)+1)
                 nomjv = zk24(jtblp+4*(j-1)+2)
@@ -239,11 +240,12 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                     kk = kk + 1
                     vale_k(kk) = zk8(jvale+k-1)
                 endif
-42          continue
+ 42             continue
+            end do
             call tbajli(tabout, ipar, para_r, vale_i, vale_r,&
                         vale_c, vale_k, 0)
-40      continue
-30  end do
+        end do
+    end do
 !
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmchat(matel, mat, nbvar, memo, visc,&
                   plast, sigmdv, depsdv, pm, dp,&
                   ndimsi, dt, rpvp, qp, vim,&
@@ -77,29 +77,29 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
     delta1 = mat(17)
     delta2 = mat(18)
 !
-    do 140 i = 1, ndimsi
+    do i = 1, ndimsi
         sigedv(i) = sigmdv(i) + deuxmu * depsdv(i)
-140 end do
+    end do
 !
 ! --- MISE AU FORMAT DES CONTRAINTES DE RAPPEL :
 !     ========================================
-    do 10 i = 1, 3
+    do i = 1, 3
         alfam(i) = vim(i+2)
         if (nbvar .eq. 2) then
             alfa2m(i) = vim(i+8)
         else
             alfa2m(i)=0.d0
         endif
- 10 end do
+    end do
 !
-    do 20 i = 4, ndimsi
+    do i = 4, ndimsi
         alfam(i) = vim(i+2)*rac2
         if (nbvar .eq. 2) then
             alfa2m(i) = vim(i+8)*rac2
         else
             alfa2m(i)=0.d0
         endif
- 20 end do
+    end do
     if (memo .eq. 0) then
         rpm = rinf + (r0-rinf)*exp(-b*pm)
     else if (memo.eq.1) then
@@ -116,15 +116,15 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
 !
 ! --- PARTIE ELASTIQUE DE LA MATRICE TANGENTE :
 !     ---------------------------------------
-    do 170 i = 1, ndimsi
+    do i = 1, ndimsi
         dsidep(i,i) = deuxmu
-170 end do
+    end do
 !
-    do 180 i = 1, 3
-        do 190 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             dsidep(i,j) = dsidep(i,j) + troisk/3.d0 - deuxmu/3.d0
-190     continue
-180 end do
+        end do
+    end do
 !
 ! --- PARTIE PLASTIQUE DE LA MATRICE TANGENTE :
 !        =======================================
@@ -186,19 +186,19 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
         b2p = - 2.d0/3.d0*m2p*(rp+vp)/denomi
 !
         seq = 0.d0
-        do 200 i = 1, ndimsi
+        do i = 1, ndimsi
             s(i) = ap*sigedv(i)+bp*alfam(i)+b2p*alfa2m(i)
             seq = seq + s(i)*s(i)
             sigma(i) = sigedv(i)-(mp*alfam(i)+m2p*alfa2m(i))/1.5d0
             dsigma(i) = -(dmp*alfam(i)+dm2p*alfa2m(i))/1.5d0
-200     continue
+        end do
         seq = sqrt(1.5d0*seq)
 !
         if (idelta .gt. 0) then
             sigdsi=ddot(ndimsi,sigma,1,dsigma,1)
-            do 201 i = 1, ndimsi
+            do i = 1, ndimsi
                 vbeta(i)=(dsigma(i)-1.5d0*sigdsi*sigma(i)/denomi**2)
-201         continue
+            end do
             vbeta(i)=vbeta(i)/denomi
             dbeta1=ddot(ndimsi,alfam,1,vbeta,1)
             dbeta2=ddot(ndimsi,alfa2m,1,vbeta,1)
@@ -227,9 +227,9 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
         l2p = ap*bp/seq
         l22p = ap*b2p/seq
         l3p = 0.d0
-        do 210 i = 1, ndimsi
+        do i = 1, ndimsi
             l3p=l3p+(dap*sigedv(i)+dbp*alfam(i)+db2p*alfa2m(i))*s(i)
-210     continue
+        end do
         l3p = 1.5d0/seq*l3p
         l3p = l3p - drp - dvp
         hp = dep*dp/denomi + ep*ip
@@ -244,17 +244,17 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
         h2a1 = -1.5d0*h2p*l2p/l3p
         h2a2 = -1.5d0*h2p*l22p/l3p
 !
-        do 220 i = 1, ndimsi
+        do i = 1, ndimsi
             dside(i,i) = -6.d0*mu*mu*dp/denomi
-            do 230 j = 1, ndimsi
+            do j = 1, ndimsi
                 dside(i,j) = dside(i,j) - 6.d0*mu*mu*isp * sigedv(i)* sigedv(j) - 4.d0*mu*mu*h1a1&
                              &* alfam(i)*alfam(j) - 4.d0*mu*mu*h1a2* alfa2m(i)*alfam(j) - 4.d0*mu&
                              &*mu* h2a1* alfam(i)*alfa2m(j) - 4.d0*mu*mu*h2a2* alfa2m(i)* alfa2m(&
                              &j) - 6.d0*mu*mu*iap * alfam(i)*sigedv(j) - 6.d0*mu*mu*ia2p * alfa2m&
                              &(i)*sigedv(j) - 4.d0*mu*mu* h1s * sigedv(i)*alfam(j) - 4.d0*mu*mu*h&
                              &2s * sigedv(i)* alfa2m(j)
-230         continue
-220     continue
+            end do
+        end do
 !
 ! ---   MATRICE DE PROJECTION DEVIATORIQUE :
 !       ----------------------------------
@@ -272,13 +272,13 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
         pdev(2,1) = -1.d0/3.d0
         pdev(3,1) = -1.d0/3.d0
         pdev(3,2) = -1.d0/3.d0
-        do 250 i = 1, ndimsi
-            do 260 j = 1, ndimsi
-                do 270 l = 1, ndimsi
+        do i = 1, ndimsi
+            do j = 1, ndimsi
+                do l = 1, ndimsi
                     dsidep(i,j) = dsidep(i,j) + dside(i,l)*pdev(l,j)
-270             continue
-260         continue
-250     continue
+                end do
+            end do
+        end do
 !
     endif
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tfveri(nommcf, nbocc, itypfl)
     implicit none
 !-----------------------------------------------------------------------
@@ -63,22 +63,22 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! ---    VERIFICATION DE LA PRESENCE D AU MOINS UNE OCCURENCE DU
 !        MOT-CLE COUPLAGE
         ncoup = 0
-        do 10 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvtx(nommcf, 'COUPLAGE', iocc=iocc, nbval=0, nbret=icoup)
             if (icoup .ne. 0) then
                 ncoup = ncoup + 1
                 jcoup = iocc
             endif
-10      continue
+        end do
         if (ncoup .eq. 0) then
             call utmess('E', 'MODELISA7_19')
-            goto 9999
+            goto 999
         endif
         ncara = 0
         nrhoi = 0
         nrhoe = 0
         ncmp = 0
-        do 20 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvid(nommcf, 'CARA_ELEM', iocc=iocc, nbval=0, nbret=icara)
             if (icara .ne. 0) ncara = ncara + 1
             call getvid(nommcf, 'PROF_RHO_F_INT', iocc=iocc, nbval=0, nbret=irhoi)
@@ -87,7 +87,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             if (irhoe .ne. 0) nrhoe = nrhoe + 1
             call getvtx(nommcf, 'NOM_CMP       ', iocc=iocc, nbval=0, nbret=icmp)
             if (icmp .ne. 0) ncmp = ncmp + 1
-20      continue
+        end do
 !
         call getvtx(nommcf, 'COUPLAGE', iocc=jcoup, scal=ouinon, nbret=ibid)
 !
@@ -98,7 +98,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             ntres = 0
             npas = 0
             ncm = 0
-            do 30 iocc = 1, nbocc
+            do iocc = 1, nbocc
                 call getvtx(nommcf, 'TYPE_PAS', iocc=iocc, nbval=0, nbret=itpas)
                 if (itpas .ne. 0) then
                     ntpas = ntpas + 1
@@ -112,7 +112,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !                  JPAS = IOCC
                     npas = npas + 1
                 endif
-30          continue
+            end do
             if (ntpas .eq. 0 .or. ntres .ne. nbocc .or. npas .eq. 0) then
                 call utmess('E', 'MODELISA7_20')
             endif
@@ -121,12 +121,12 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !
         else
             ncm = 0
-            do 50 iocc = 1, nbocc
+            do iocc = 1, nbocc
                 call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=iocc, nbval=0, nbret=icm)
                 if (icm .ne. 0) then
                     ncm = ncm + 1
                 endif
-50          continue
+            end do
             if (ncm .eq. 0) then
                 call utmess('E', 'MODELISA7_21')
             endif
@@ -174,7 +174,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
         count5 = 0
         ocgril = 0
 !
-        do 80 iocc = 1, nbocc
+        do iocc = 1, nbocc
 !
 ! --------3.1.SI PLUSIEURS OCCURENCES <RAYON_TUBE> ET <COOR_TUBE>
 ! --------    OBLIGATOIRES A CHAQUE OCCURENCE
@@ -268,21 +268,21 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                         nbhy = 0
                         nbhz = 0
                         if (icapa .eq. 3) then
-                            do 60 icara = 1, icapa
+                            do icara = 1, icapa
                                 if (carapa(icara) .eq. 'YC') nbyc = nbyc + 1
                                 if (carapa(icara) .eq. 'ZC') nbzc = nbzc + 1
                                 if (carapa(icara)(1:1) .eq. 'R') then
                                     nbr = nbr + 1
                                     ir = icara
                                 endif
-60                          continue
+                            end do
                             if (nbyc .ne. 1 .or. nbzc .ne. 1 .or. nbr .ne. 1) then
                                 call utmess('E', 'MODELISA7_34')
                             else if (valepa(ir).le.0.d0) then
                                 call utmess('E', 'MODELISA7_35')
                             endif
                         else
-                            do 70 icara = 1, icapa
+                            do icara = 1, icapa
                                 if (carapa(icara) .eq. 'YC') nbyc = nbyc + 1
                                 if (carapa(icara) .eq. 'ZC') nbzc = nbzc + 1
                                 if (carapa(icara) .eq. 'HY') then
@@ -293,7 +293,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                                     nbhz = nbhz + 1
                                     ihz = icara
                                 endif
-70                          continue
+                            end do
                             if (nbyc .ne. 1 .or. nbzc .ne. 1 .or. nbhy .ne. 1 .or. nbhz&
                                 .ne. 1) then
                                 call utmess('E', 'MODELISA7_36')
@@ -320,7 +320,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                 ocgril = iocc
             endif
 !
-80      continue
+        end do
 !
 ! ------3.7.VERIFICATION DES COMPTEURS
 !
@@ -371,6 +371,6 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !
     endif
 !
-9999  continue
+999 continue
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine resrot(rota, coor, ff, rho, nno,&
                   npg, frx, fry)
     implicit none
@@ -50,21 +50,21 @@ subroutine resrot(rota, coor, ff, rho, nno,&
     omm = rota(1) ** 2
     om1 = rota(1) * rota(2)
     om2 = rota(1) * rota(3)
-    do 100 i = 1, nno
+    do i = 1, nno
         omo = om1 * coor(2*i-1) + om2 * coor(2*i)
         fx(i) = omm * coor(2*i-1) - omo * om1
         fy(i) = omm * coor(2*i) - omo * om2
-100  end do
+    end do
 !
-    do 200 kp = 1, npg
+    do kp = 1, npg
         k=(kp-1)*nno
         frx(kp) = 0.d0
         fry(kp) = 0.d0
-        do 150 i = 1, nno
+        do i = 1, nno
             frx(kp) = frx(kp) + fx(i) * ff(k+i)
             fry(kp) = fry(kp) + fy(i) * ff(k+i)
-150      continue
+        end do
         frx(kp) = rho * frx(kp)
         fry(kp) = rho * fry(kp)
-200  end do
+    end do
 end subroutine

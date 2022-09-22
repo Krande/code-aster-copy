@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
                   is, nbsys, nfs, nsg, hsr,&
                   vind, dy, dt, rp, nuecou,&
@@ -37,7 +37,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     real(kind=8) :: yat, mu, lc, rhotot, dg, deltag, t1, t2, t3, t4, t5, t7
     real(kind=8) :: t8, t9
     real(kind=8) :: rs, d1, lambda, alphat, ls, tauslt, tauslr, gamnuc
-    real(kind=8) ::  airr, rhoirr, depdt, tauc, t10
+    real(kind=8) :: airr, rhoirr, depdt, tauc, t10
     common /deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef
@@ -100,14 +100,14 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 !
     lc=500.d0*b*(temp/300.d0)**2
 !
-    do 55 ir = 1, nbsys
+    do ir = 1, nbsys
         rhom(ir)=vind(decal+3*(ir-1)+1)
         rhop(ir)=rhom(ir)+dy(ir)
- 55 end do
+    end do
 !
     if (rhop(is) .lt. rmin) then
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !     on resout en alpha=rho
@@ -115,14 +115,15 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 1.  CALCUL de DeltaG approximatif
     rhotot=0.d0
 ! rho tot represente rho_f (foret)
-    do 11 ir = 1, 12
+    do ir = 1, 12
         if (ir .eq. is) goto 11
         rhotot=rhotot+rhop(ir)
- 11 continue
+ 11     continue
+    end do
 !
     if (rhotot .lt. rmin) then
         iret=1
-        goto 9999
+        goto 999
     endif
     if (irr .gt. 0) then
         rhoirr=vind(decirr+is)
@@ -159,14 +160,15 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 4.  calcul de Alpha-s_AT et Ls
 !
     alphat=0.d0
-    do 21 ir = 1, 12
+    do ir = 1, 12
         if (ir .eq. is) goto 21
         alphat=alphat+rhop(ir)*hsr(is,ir)
- 21 continue
+ 21     continue
+    end do
 !
     if (alphat .lt. rmin) then
         iret=1
-        goto 9999
+        goto 999
     endif
     if (irr .eq. 1) then
         if (abs(airr) .gt. rmin) then
@@ -199,7 +201,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 8.  calcul de gamma_nuc
     if (taueff .gt. tau0) then
         iret=1
-        goto 9999
+        goto 999
     else if (taueff.lt.rmin) then
         t5=0.d0
     else
@@ -253,6 +255,6 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     hs=1.d0/dlat+t7/kself+t8/kf-ys*rhop(is)
     dalpha=hs*dp/b
 !
-9999 continue
+999 continue
 ! 12. irradiation mise ajout dans LCDPEC / LCDPEQ
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trfmot(mot, field, ifield)
-    implicit  none
+    implicit none
     character(len=*) :: mot, field
     integer :: ifield
 !
@@ -33,9 +33,9 @@ subroutine trfmot(mot, field, ifield)
 !
 !- INITIALISATION
 !
-    do 10 i = 1, 80
+    do i = 1, 80
         field(i:i) = ' '
-10  end do
+    end do
 !
     nbmot = 0
     nbcar = 0
@@ -43,7 +43,7 @@ subroutine trfmot(mot, field, ifield)
 !
 !- RECHERCHE DU MOT A TRAITER
 !
-    do 20 i = 1, 80
+    do i = 1, 80
         if (mot(i:i) .ne. ' ') then
             nbcar = nbcar + 1
             if (nbcar .eq. 1) ideb = i
@@ -54,19 +54,19 @@ subroutine trfmot(mot, field, ifield)
                 nbcar = 0
             endif
         endif
-20  end do
+    end do
 !
 !-TRANSFERT DU CHAMP IFIELD A TRAITER
 !
-30  continue
-    do 40 i = 1, nbcar
+ 30 continue
+    do i = 1, nbcar
         j = ideb - 1 + i
         if (mot(j:j) .ne. ' ') then
             field(i:i) = mot(j:j)
         else
             goto 50
         endif
-40  end do
-50  continue
+    end do
+ 50 continue
 !
 end subroutine

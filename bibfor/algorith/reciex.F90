@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                   nvasex, graexc, excmod, napexc)
 !    C. DUVAL
@@ -38,6 +38,8 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -48,8 +50,6 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, ibid1, iderex, ij2, ilcmpi
@@ -57,7 +57,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     integer :: ilvaex, ivite, napexc, ncmpex
     integer :: ndim, nindex, nnoeex, nvasex
     integer :: vali(2)
-
+!
 !-----------------------------------------------------------------------
     integer :: ibid, iret
     character(len=4) :: excmod
@@ -113,29 +113,33 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
         call jeveuo(chnumi, 'L', lnumi)
         call jeveuo(chnumj, 'L', lnumj)
         call jelira(chnumi, 'LONMAX', mxval)
-        do 103 i1 = 1, nindex
-            do 108 i2 = i1, nindex
+        do i1 = 1, nindex
+            do i2 = i1, nindex
                 ij2 = (i2*(i2-1))/2+i1
-    exiind = .false.
-                do 111 num = 1, mxval
-                    if (((zi(lnumi-1+num) .eq. zi(ilindi-1+i1)) .and.&
-                        (zi(lnumj-1+num) .eq. zi(ilindi-1+i2))) .or.&
-                    ((zi(lnumi-1+num) .eq. zi(ilindi-1+i2)) .and.&
-                        (zi(lnumj-1+num) .eq. zi(ilindi-1+i1)))&
-                     ) then
+                exiind = .false.
+                do num = 1, mxval
+                    if ((&
+                        (zi(lnumi-1+num) .eq. zi(ilindi-1+i1)) .and.&
+                        (zi(lnumj-1+num) .eq. zi(ilindi-1+i2))&
+                        )&
+                        .or.&
+                        (&
+                        (zi(lnumi-1+num) .eq. zi(ilindi-1+i2)) .and.&
+                        (zi(lnumj-1+num) .eq. zi(ilindi-1+i1))&
+                        )) then
                         exiind = .true.
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
                         call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
                     endif
-111             continue
-    if (.not. exiind) then
-            valk (1) = intexc
-            vali (1) = zi(ilindi-1+i1)
-            vali (2) = zi(ilindi-1+i2)
-        call utmess('F', 'PREPOST3_84',sk=valk(1),ni=2,vali=vali)
-    endif
-108         continue
-103     continue
+                end do
+                if (.not. exiind) then
+                    valk (1) = intexc
+                    vali (1) = zi(ilindi-1+i1)
+                    vali (2) = zi(ilindi-1+i2)
+                    call utmess('F', 'PREPOST3_84', sk=valk(1), ni=2, vali=vali)
+                endif
+            end do
+        end do
     else
         chnoei = intexc//'.NOEI'
         chnoej = intexc//'.NOEJ'
@@ -146,34 +150,39 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
         call jeveuo(chcmpi, 'L', lcmpi)
         call jeveuo(chcmpj, 'L', lcmpj)
         call jelira(chnoei, 'LONMAX', mxval)
-        do 120 i1 = 1, nindex
-            do 122 i2 = i1, nindex
+        do i1 = 1, nindex
+            do i2 = i1, nindex
                 ij2 = (i2*(i2-1))/2+i1
-    exiind = .false.
-                do 121 num = 1, mxval
-                    if(((zk8(lnumi-1+num) .eq. zk8(ilindi-1+i1)) .and.&
+                exiind = .false.
+                do num = 1, mxval
+                    if ((&
+                        (zk8(lnumi-1+num) .eq. zk8(ilindi-1+i1)) .and.&
                         (zk8(lnumj-1+num) .eq. zk8(ilindi-1+i2)) .and.&
                         (zk8(lcmpi-1+num) .eq. zk8(ilcmpi-1+i1)) .and.&
-                        (zk8(lcmpj-1+num) .eq. zk8(ilcmpi-1+i2))) .or.&
-                       ((zk8(lnumi-1+num) .eq. zk8(ilindi-1+i2)) .and.&
+                        (zk8(lcmpj-1+num) .eq. zk8(ilcmpi-1+i2))&
+                        )&
+                        .or.&
+                        (&
+                        (zk8(lnumi-1+num) .eq. zk8(ilindi-1+i2)) .and.&
                         (zk8(lnumj-1+num) .eq. zk8(ilindi-1+i1)) .and.&
                         (zk8(lcmpi-1+num) .eq. zk8(ilcmpi-1+i2)) .and.&
-                        (zk8(lcmpj-1+num) .eq. zk8(ilcmpi-1+i1))))then
+                        (zk8(lcmpj-1+num) .eq. zk8(ilcmpi-1+i1))&
+                        )) then
                         exiind = .true.
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
                         call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
                     endif
-121             continue
-    if (.not. exiind) then
-            valk (1) = zk8(ilindi-1+i1)
-            valk (2) = zk8(ilcmpi-1+i1)
-            valk (3) = zk8(ilindi-1+i2)
-            valk (4) = zk8(ilcmpi-1+i2)
-            valk (5) = intexc
-        call utmess('F', 'PREPOST3_85',nk=5,valk=valk)
-    endif
-122         continue
-120     continue
+                end do
+                if (.not. exiind) then
+                    valk (1) = zk8(ilindi-1+i1)
+                    valk (2) = zk8(ilcmpi-1+i1)
+                    valk (3) = zk8(ilindi-1+i2)
+                    valk (4) = zk8(ilcmpi-1+i2)
+                    valk (5) = intexc
+                    call utmess('F', 'PREPOST3_85', nk=5, valk=valk)
+                endif
+            end do
+        end do
     endif
 !
 !----TYPE MODAL ('NON' PAR DEFAUT)

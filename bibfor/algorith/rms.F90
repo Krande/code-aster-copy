@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rms(imatr, vect1, long1, vect2, long2,&
                nbpts, nfcod, df, nfonc)
     implicit none
@@ -38,44 +38,44 @@ subroutine rms(imatr, vect1, long1, vect2, long2,&
     nmatr = long2 / nfcod
     kb = 0
     nbpts2 = nbpts/2
-    do 10 kf = 1, nfonc
+    do kf = 1, nfonc
         var1= 0.d0
         var2= 0.d0
         kb = kb + kf
         lauto = (kb-1)*nbpts
-        do 20 kk = 1, nbpts2
+        do kk = 1, nbpts2
             var1= var1+(vect1(lauto+kk)/dble(imatr))*df
             var2= var2+(vect1(lauto+nbpts2+kk)/dble(imatr))*df
-20      continue
+        end do
         lautor = imatr+(kb-1)*nmatr
         vect2(lautor) = var1 + var2
-10  end do
+    end do
     kfonc = 1
-    do 30 j = 1, nfonc
-        do 40 i = 1, j
+    do j = 1, nfonc
+        do i = 1, j
             if (i .eq. j) then
             else
                 varij1 = 0.d0
                 varij2 = 0.d0
-                do 50 k = 1, nbpts2
+                do k = 1, nbpts2
                     lint1 = (kfonc-1)*nbpts + k
                     lint2 = lint1 + nbpts2
                     varij1 = varij1 + (vect1(lint1)/dble(imatr))*df
                     varij2 = varij2 + (vect1(lint2)/dble(imatr))*df
-50              continue
+                end do
                 ii = 0
                 jj = 0
-                do 60 i1 = 1, i
+                do i1 = 1, i
                     ii = ii + i1
-60              continue
-                do 70 j1 = 1, j
+                end do
+                do j1 = 1, j
                     jj = jj + j1
-70              continue
+                end do
                 lintr = imatr + ( kfonc-1) * nmatr
                 varmod = (sqrt(varij1**2+varij2**2))
                 vect2(lintr) = varmod
             endif
             kfonc = kfonc + 1
-40      continue
-30  end do
+        end do
+    end do
 end subroutine

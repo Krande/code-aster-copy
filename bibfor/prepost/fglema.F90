@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
                   nommat, dom)
     implicit none
@@ -87,7 +87,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 !
     dom(1) = null
 !
-    do 10 i = 1, nbpoin-1
+    do i = 1, nbpoin-1
 !
 ! --- RECUPERATION DE P,SIG,TEMP AUX INSTANTS TI ET TI+1
 !
@@ -190,7 +190,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
         if (dom(i+1) .gt. un) then
             dom(i+1) = un
         endif
-10  end do
+    end do
 !
 ! --- MENAGE
     call jedetr('&&FGLEMA.DEVIAT')

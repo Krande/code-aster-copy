@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lceob3(intmax, tole, eps, bm, dm,&
                   lambda, mu, alpha, ecrob, ecrod,&
                   seuil, bdim, b, d, mult,&
@@ -86,9 +86,9 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
     compte=0
     mult=0.d0
 !
-    do 100 i = 1, 6
+    do i = 1, 6
         b(i)=bm(i)
-100 end do
+    end do
 !
     d=dm
 !
@@ -123,18 +123,18 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
 !
     else
 !
-        do 32 i = 1, 6
+        do i = 1, 6
             resb(i)=-b(i)+bm(i)+alpha*mult*fbm(i)
- 32     continue
+        end do
         resd=-d+dm+(1-alpha)*mult*fd
-        do 33 i = 4, 6
+        do i = 4, 6
             resb(i)=rac2*resb(i)
- 33     continue
+        end do
 !
         tata=0.d0
-        do 37 i = 1, 6
+        do i = 1, 6
             tata=tata+resb(i)*resb(i)
- 37     continue
+        end do
 !
         normrb=sqrt(tata)
 !
@@ -162,53 +162,53 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                 endif
 !
                 call r8inir(36, 0.d0, ksi, 1)
-                do 40 i = 1, 6
-                    do 41 j = 1, 6
-                        do 42 k = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
+                        do k = 1, 6
                             ksi(i,j)=ksi(i,j)-mult*alpha*mte1(i,k)*&
                             mte2(k,j)
- 42                     continue
- 41                 continue
- 40             continue
+                        end do
+                    end do
+                end do
 !
-                do 43 i = 1, 6
+                do i = 1, 6
                     ksi(i,i)=ksi(i,i)+1
- 43             continue
+                end do
 !
-                do 44 i = 1, 6
-                    do 45 j = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
                         toti(i,j)=ksi(i,j)
- 45                 continue
- 44             continue
-                do 46 i = 1, 6
-                    do 47 j = 1, 6
+                    end do
+                end do
+                do i = 1, 6
+                    do j = 1, 6
                         if (i .eq. j) then
                             ide(i,j)=1.d0
                         else
                             ide(i,j)=0.d0
                         endif
- 47                 continue
- 46             continue
+                    end do
+                end do
                 call r8inir(36, 0.d0, teme, 1)
-                do 48 i = 1, 6
-                    do 49 j = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
                         teme(i,j)=ide(i,j)
- 49                 continue
- 48             continue
+                    end do
+                end do
                 call mgauss('NFVP', toti, teme, 6, 6,&
                             6, det, iret1)
                 call r8inir(36, 0.d0, iksi, 1)
-                do 51 i = 1, 6
-                    do 52 j = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
                         iksi(i,j)=teme(i,j)
- 52                 continue
- 51             continue
+                    end do
+                end do
 !
                 psi=1-mult*(1-alpha)*dfddd
 !
                 call r8inir(6, 0.d0, delta1, 1)
-                do 53 i = 1, 6
-                    do 54 j = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
                         if (j .ge. 4) then
                             rtemp2=rac2
                         else
@@ -216,15 +216,15 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                         endif
                         delta1(i)=delta1(i)+alpha/coupl*rtemp2*fbm(j)*&
                         mte2(j,i)
- 54                 continue
- 53             continue
+                    end do
+                end do
 !
                 delta2=(1-alpha)/coupl*fd*dfddd
 !
                 inter1=0.d0
                 inter3=0.d0
-                do 55 i = 1, 6
-                    do 56 j = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
                         if (j .ge. 4) then
                             rtemp2=rac2
                         else
@@ -233,8 +233,8 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                         inter1=inter1+delta1(i)*iksi(i,j)*resb(j)
                         inter3=inter3+alpha*rtemp2*delta1(i) *iksi(i,&
                         j)*fbm(j)
- 56                 continue
- 55             continue
+                    end do
+                end do
 !
                 inter2=delta2/psi*resd
                 inter4=delta2/psi*(1-alpha)*fd
@@ -244,8 +244,8 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                 call r8inir(6, 0.d0, db, 1)
 !
                 dd=resd/psi+ddg*(1-alpha)*fd/psi
-                do 57 i = 1, 6
-                    do 58 j = 1, 6
+                do i = 1, 6
+                    do j = 1, 6
                         if (i .ge. 4) then
                             rtemp2=1/rac2
                         else
@@ -258,12 +258,12 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                         endif
                         db(i)=db(i)+rtemp2*iksi(i,j)* (resb(j)+ddg*&
                         alpha*fbm(j)*rtemp3)
- 58                 continue
- 57             continue
+                    end do
+                end do
 !
-                do 59 i = 1, 6
+                do i = 1, 6
                     b(i)=b(i)+db(i)
- 59             continue
+                end do
                 d=d+dd
 !
                 compte=compte+1
@@ -286,18 +286,18 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
                 coupl=sqrt(alpha*rtemp+(1-alpha)*fd**2)
                 crit=coupl-seuil
 !
-                do 132 i = 1, 6
+                do i = 1, 6
                     resb(i)=-b(i)+bm(i)+alpha*mult*fbm(i)
-132             continue
+                end do
                 resd=-d+dm+(1-alpha)*mult*fd
-                do 133 i = 4, 6
+                do i = 4, 6
                     resb(i)=rac2*resb(i)
-133             continue
+                end do
 !
                 tata=0.d0
-                do 137 i = 1, 6
+                do i = 1, 6
                     tata=tata+resb(i)*resb(i)
-137             continue
+                end do
 !
                 normrb=sqrt(tata)
 !

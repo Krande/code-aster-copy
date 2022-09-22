@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcejli(fami, kpg, ksp, ndim, mate,&
                   option, am, da, sigma, dsidep,&
                   vim, vip)
@@ -95,9 +95,9 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
     ka = max(k0,vim(1))
     rtan = 0.d0
-    do 10 i = 2, ndim
+    do i = 2, ndim
         rtan=rtan+a(i)**2
- 10 end do
+    end do
     na = sqrt( max(zero,a(1))**2 + rtan )
 !
     rk = sc*(1.d0-ka/lc)/ka
@@ -143,9 +143,9 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
                 cass = 0
             endif
             sigma(1) = sigma(1) + rk*max(zero,a(1))
-            do 20 i = 2, ndim
+            do i = 2, ndim
                 sigma(i) = sigma(i) + rk*a(i)
- 20         continue
+            end do
 !
         else
 !
@@ -153,9 +153,9 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
             cass = 1
             ra = sc*(1.d0 - na/lc)/na
             sigma(1) = sigma(1) + ra*max(zero,a(1))
-            do 30 i = 2, ndim
+            do i = 2, ndim
                 sigma(i) = sigma(i) + ra*a(i)
- 30         continue
+            end do
 !
         endif
 !
@@ -195,7 +195,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! -- MATRICE TANGENTE
 !
 5000 continue
-    if (.not. rigi) goto 9999
+    if (.not. rigi) goto 999
 !
     call r8inir(36, 0.d0, dsidep, 1)
 !
@@ -208,10 +208,10 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
     if (cass .eq. 2) then
         if (a(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) - 1.d-8*sc/lc
-        do 39 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i) = dsidep(i,i) - 1.d-8*sc/lc
- 39     continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
 !    MATRICE TANGENTE DE FISSURATION
@@ -219,9 +219,9 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
         if (a(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) + rk
 !
-        do 40 i = 2, ndim
+        do i = 2, ndim
             dsidep(i,i) = dsidep(i,i) + rk
- 40     continue
+        end do
 !
     else
 !
@@ -230,9 +230,9 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
         if (a(1) .le. 0.d0) then
 !
-            do 42 i = 2, ndim
+            do i = 2, ndim
                 dsidep(i,i) = dsidep(i,i) + coef + coef2*a(i)*a(i)
- 42         continue
+            end do
 !
             if (ndim .eq. 3) then
                 dsidep(2,3) = dsidep(2,3) + coef2*a(2)*a(3)
@@ -241,22 +241,22 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 !
         else
 !
-            do 44 i = 1, ndim
+            do i = 1, ndim
                 dsidep(i,i) = dsidep(i,i) + coef + coef2*a(i)*a(i)
- 44         continue
+            end do
 !
-            do 46 j = 1, ndim-1
-                do 47 i = j+1, ndim
+            do j = 1, ndim-1
+                do i = j+1, ndim
                     dsidep(j,i) = dsidep(j,i) + coef2*a(j)*a(i)
                     dsidep(i,j) = dsidep(i,j) + coef2*a(i)*a(j)
- 47             continue
- 46         continue
+                end do
+            end do
 !
 !
         endif
 !
     endif
-9999 continue
+999 continue
 !
 !
 end subroutine

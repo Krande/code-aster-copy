@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
                   idos)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -85,7 +85,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
     nblent = lso / lgbl
     lrab = ( mod ( lso , lgbl ) .ne. 0 )
 !     ------------------------------------------------------------------
-    do 10 i = 1, nblent
+    do i = 1, nblent
         numext = (iaddi+i-2)/nbenrg(ic)
         iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
         call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
@@ -100,7 +100,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
         nbacce(2*ic) = nbacce(2*ic) + 1
         iusadi(jusadi(ic)+3*(iaddi+i-1)-2) = idco
         iusadi(jusadi(ic)+3*(iaddi+i-1)-1) = idos
- 10 continue
+    end do
     iacce (jiacce(ic)+iaddi) = iacce (jiacce(ic)+iaddi) + 1
     if (lrab) then
         numext = (iaddi+nblent-1)/nbenrg(ic)

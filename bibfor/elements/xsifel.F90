@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
                   puls, basloc, nnop, idepl, lsn,&
@@ -30,11 +30,13 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/chauxi.h"
+#include "asterfort/coor_cyl.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gbil3d.h"
 #include "asterfort/gbilin.h"
+#include "asterfort/indent.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -48,14 +50,12 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcinem.h"
-#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xcinem.h"
 #include "asterfort/xkamat.h"
-#include "asterfort/indent.h"
 #include "asterfort/xnbddl.h"
-#include "asterfort/coor_cyl.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: elrefp
@@ -104,16 +104,16 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: eps(6), e1(3), e2(3), e3(3), p(3, 3)
     real(kind=8) :: invp(3, 3), rg, tg
     real(kind=8) :: courb(3, 3, 3), du1dm(3, 3)
-    real(kind=8) :: du2dm(3, 3), sigin(6), dsigin(6,3),epsref(6)
+    real(kind=8) :: du2dm(3, 3), sigin(6), dsigin(6, 3), epsref(6)
     real(kind=8) :: du3dm(3, 3), grad(ndim, ndim), dudm(3, 3), poids
     real(kind=8) :: dtdm(3, 3), tzero(3), dzero(3, 4), th
     real(kind=8) :: dudme(3, 4), dtdme(3, 4), du1dme(3, 4), du2dme(3, 4)
-    real(kind=8) :: du3dme(3, 4),sigse(6*27), dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: du3dme(3, 4), sigse(6*27), dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3), r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref, tempg
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho, rac2
     real(kind=8) :: dtx, dty, dtz
-    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3)
+    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3)
     integer :: icodre(4)
     character(len=16) :: nomres(4)
     character(len=8) :: elrese(6), fami(6), fami_se
@@ -132,14 +132,15 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     ASSERT((3*ndim*nnop).le.mxstac)
 !
     grdepl=.false.
-
+!
     rac2 = sqrt(2.d0)
 !
 !   ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
 !   QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
 !
 !   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
-    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld,&
+                ddls, singu)
 !
 !   NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
@@ -150,7 +151,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
-
+!
 !   NOMBRE DE COMPOSANTES DES TENSEURS
     ncmp = 2*ndim
 !
@@ -163,7 +164,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     call jevech('PTHETAR', 'L', ithet)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icomp)
-
+!
 !   Verification du cadre theorique du calcul
     if (zk16(icomp-1+1) .ne. 'ELAS' .or. zk16(icomp-1+3) .ne. 'PETIT') then
         call utmess('F', 'RUPTURE1_24')
@@ -171,41 +172,30 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !   Sous-element de reference
     fami_se=fami(ndim+irese)
-    if (nfe.gt.0) then
-      if (ndim.eq.3 .and. &
-        count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2).eq.0) fami_se='XGEO'
+    if (nfe .gt. 0) then
+        if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2) .eq. 0) fami_se='XGEO'
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),&
-                     fami=fami_se,&
-                     ndim=ndimb,&
-                     nno=nno,&
-                     nnos=nnos,&
-                     npg=npgbis,&
-                     jpoids=ipoids,&
-                     jcoopg=jcoopg,&
-                     jvf=ivf,&
-                     jdfde=idfde,&
-                     jdfd2=jdfd2,&
-                     jgano=jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim.eq.ndimb)
-
+!
 !   Recuperation de la contrainte initiale aux noeuds des sous-elts
     call tecach('ONO', 'PSIGISE', 'L', iret, iad=jsigse)
-    
+!
 !   Indicateur de contrainte initiale
     isigi=0
-    if (jsigse.ne.0) isigi=1
-    
-    if (isigi.ne.0) then
+    if (jsigse .ne. 0) isigi=1
+!
+    if (isigi .ne. 0) then
 !       Passage de la contrainte initiale aux noeuds des sous-elts
 !       dans un tableau local au sous-elt
-        do 20 i = 1, nno
-            do 21 j = 1, ncmp
-                sigse(ncmp*(i-1)+j) = &
-                        zr(jsigse-1 + ncmp*nno*(ise-1) + ncmp*(i-1) + j)
-21          continue
-20      continue
-
+        do i = 1, nno
+            do j = 1, ncmp
+                sigse(ncmp*(i-1)+j) = zr(jsigse-1 + ncmp*nno*(ise-1) + ncmp*(i-1) + j)
+            end do
+        end do
+!
     endif
 !
 !   TEMPERATURE DE REF
@@ -228,16 +218,16 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     end do
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDE
-    if (nfh.gt.0) then
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+    if (nfh .gt. 0) then
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn.eq.5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            enddo
         enddo
-      enddo
     endif
 !
 ! CALCUL DE L IDENTIFIANT DU SS ELEMENT
@@ -247,17 +237,17 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TETRA
 !     ------------------------------------------------------------------
 !
-    do 10 kpg = 1, npgbis
+    do kpg = 1, npgbis
 !
 !       INITIALISATIONS
         call vecini(3*3, 0.d0, dtdm)
         call vecini(3*3, 0.d0, du1dm)
         call vecini(3*3, 0.d0, du2dm)
         call vecini(3*3, 0.d0, du3dm)
-        call vecini(  6, 0.d0, sigin)
-        call vecini(  6, 0.d0, epsref)
+        call vecini(6, 0.d0, sigin)
+        call vecini(6, 0.d0, epsref)
         call vecini(6*3, 0.d0, dsigin)
-
+!
 !
 !       RECUPERATION DES DONNEES MATERIAUX
         ipg = idecpg + kpg
@@ -306,22 +296,23 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 101 i = 1, ndim
-            do 102 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
-102         continue
-101     continue
+            end do
+        end do
 !
 !       CALCUL DES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+                    xe, ff, dfdi=dfdi)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       AINSI QUE LES DERIVEES DES FONCTIONS DE FORMES DU SS-ELT
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) &
-            call dfdm3d(nno, kpg, ipoids, idfde, coorse,poids, dfdx, dfdy, dfdz)
-        if (ndim .eq. 2) &
-            call dfdm2d(nno, kpg, ipoids, idfde, coorse,poids, dfdx, dfdy)
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+                                     poids, dfdx, dfdy, dfdz)
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+                                     poids, dfdx, dfdy)
 !
 !       --------------------------------------
 !       1) COORDONNÉES POLAIRES ET BASE LOCALE
@@ -330,17 +321,18 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
         if (singu .gt. 0) then
             call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
-                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl,&
-                         elref=elrefp, kstop='C')
+                              lsn, lst, zr(igeom), ka, mu,&
+                              ff, fk, dfdi, dkdgl, elref=elrefp,&
+                              kstop='C')
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
 !       ET DU DEPL. RADIAL
         if (axi) then
             r = 0.d0
-            do 114 ino = 1, nnop
+            do ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-114         continue
+            end do
 !
             if (axi) then
                 poids= poids * r
@@ -356,17 +348,16 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         p(:,:)=0.d0
         invp(:,:)=0.d0
         call coor_cyl(ndim, nnop, basloc, zr(igeom), ff,&
-                      p, invp, rg, tg,&
-                      l_not_zero)
+                      p, invp, rg, tg, l_not_zero)
 ! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
-        if (ndim.eq.2) then
-          e1(:)=0.d0
-          e1(1:ndim)=p(1:ndim,1)
-          e2(:)=0.d0
-          e2(1:ndim)=p(1:ndim,2)
-          call provec(e1, e2, e3)
-          p(3,3)=e3(3)
-          invp(3,3)=e3(3)
+        if (ndim .eq. 2) then
+            e1(:)=0.d0
+            e1(1:ndim)=p(1:ndim,1)
+            e2(:)=0.d0
+            e2(1:ndim)=p(1:ndim,2)
+            call provec(e1, e2, e3)
+            p(3,3)=e3(3)
+            invp(3,3)=e3(3)
         endif
 !
 !       ---------------------------------------------
@@ -376,66 +367,68 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(ndim, 0.d0, depla)
 !
 !       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
-        do 200 in = 1, nnop
+        do in = 1, nnop
 !
             call indent(in, ddls, ddlm, nnops, indenn)
             cpt=0
 !           DDLS CLASSIQUES
-            do 201 i = 1, ndim
+            do i = 1, ndim
                 cpt=cpt+1
                 depla(i) = depla(i) + ff(in) * zr(idepl-1+indenn+cpt)
-201         continue
+            end do
 !           DDLS HEAVISIDE
-            do 202 ig = 1, nfh
-                do 203 i = 1, ndim
+            do ig = 1, nfh
+                do i = 1, ndim
                     cpt=cpt+1
-                    depla(i) = depla(i) + xcalc_heav(heavn(in,ig),hea_se,heavn(in,5))&
-                           * ff(in) * zr(idepl-1+indenn+cpt)
-203              continue
-202         continue
+                    depla(i) = depla(i) + xcalc_heav(heavn(in,ig),hea_se,heavn(in,5)) * ff(in) * &
+                               &zr(idepl-1+indenn+cpt)
+                end do
+            end do
 !           DDL ENRICHIS EN FOND DE FISSURE
-            do 204 ig = 1, singu
-                do 205 alp = 1, ndim
+            do ig = 1, singu
+                do alp = 1, ndim
                     cpt=cpt+1
                     do i = 1, ndim
-                      depla(i) = depla(i) + fk(in,alp,i) * zr(idepl- 1+indenn+cpt)
+                        depla(i) = depla(i) + fk(in,alp,i) * zr(idepl- 1+indenn+cpt)
                     enddo
-205             continue
-204         continue
+                end do
+            end do
 !
-200     continue
+        end do
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
-        call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he,&
-                    nfiss, nfh, singu, ddls, ddlm,&
-                    fk, dkdgl, ff, dfdi, f, eps, grad, heavn)
+        call xcinem(axi, igeom, nnop, nnops, idepl,&
+                    grdepl, ndim, he, nfiss, nfh,&
+                    singu, ddls, ddlm, fk, dkdgl,&
+                    ff, dfdi, f, eps, grad,&
+                    heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         call vecini(9, 0.d0, dudm)
-        do 230 i = 1, ndim
-            do 231 j = 1, ndim
+        do i = 1, ndim
+            do j = 1, ndim
                 dudm(i,j)=grad(i,j)
-231         continue
-230     continue
+            end do
+        end do
 !
 !       ------------------------------------------------
 !       3) CALCUL DU CHAMP THETA ET DE SA DERIVEE (DTDM)
 !       ------------------------------------------------
 !
-        do 300 i = 1, ndim
+        do i = 1, ndim
 !
             theta(i)=0.d0
-            do 301 ino = 1, nnop
+            do ino = 1, nnop
                 theta(i) = theta(i) + ff(ino) * zr(ithet-1+ndim*(ino- 1)+i)
-301         continue
+            end do
 !
-            do 310 j = 1, ndim
-                do 311 ino = 1, nnop
+            do j = 1, ndim
+                do ino = 1, nnop
                     dtdm(i,j) = dtdm(i,j) + zr(ithet-1+ndim*(ino-1)+i) * dfdi(ino,j)
-311             continue
-310         continue
-300     continue
+                end do
+            end do
+        end do
 !
 !       --------------------------------------------------
 !       4) CALCUL DU CHAMP DE TEMPERATURE ET DE SA DERIVEE
@@ -462,17 +455,20 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       cas des varc DTX DTY DTZ, derivees partielles de la temperature
 !       "discontinue". Ces varc sont donnees aux pg xfem
-        call rcvarc(' ', 'DTX', '+', 'XFEM', ipg, 1, dtx, iret1)
+        call rcvarc(' ', 'DTX', '+', 'XFEM', ipg,&
+                    1, dtx, iret1)
         if (iret1 .eq. 0) then
 !           economisons les appels a rcvarc... si DTX est absent, pas
 !           besoin de recuperer les autres composantes
             ASSERT(.not.l_temp_noeu)
-            call rcvarc(' ', 'DTY', '+', 'XFEM', ipg, 1, dty, iret2)
+            call rcvarc(' ', 'DTY', '+', 'XFEM', ipg,&
+                        1, dty, iret2)
             ASSERT(iret2 .eq. 0)
             tgudm(1) = dtx
             tgudm(2) = dty
             if (ndim .eq. 3) then
-                call rcvarc(' ', 'DTZ', '+', 'XFEM', ipg, 1, dtz, iret3)
+                call rcvarc(' ', 'DTZ', '+', 'XFEM', ipg,&
+                            1, dtz, iret3)
                 ASSERT(iret3 .eq. 0)
                 tgudm(3) = dtz
             endif
@@ -490,13 +486,13 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             lcour=.true.
 !           RECUPERATION DU TENSEUR DE COURBURE
             call jevech('PCOURB', 'L', icour)
-            do 500 i = 1, ndim
-                do 501 j = 1, ndim
+            do i = 1, ndim
+                do j = 1, ndim
                     courb(i,1,j)=zr(icour-1+ndim*(i-1)+j)
                     courb(i,2,j)=zr(icour-1+ndim*(i+3-1)+j)
                     courb(i,3,j)=zr(icour-1+ndim*(i+6-1)+j)
-501             continue
-500         continue
+                end do
+            end do
         endif
 !
         call chauxi(ndim, mu, ka, rg, tg,&
@@ -507,45 +503,43 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(ndim, 0.d0, u1)
         call vecini(ndim, 0.d0, u2)
         call vecini(ndim, 0.d0, u3)
-        do 510 i = 1, ndim
-            do 511 j = 1, ndim
+        do i = 1, ndim
+            do j = 1, ndim
                 u1(i) = u1(i) + p(i,j) * u1l(j)
                 u2(i) = u2(i) + p(i,j) * u2l(j)
                 if (ndim .eq. 3) u3(i) = u3(i) + p(i,j) * u3l(j)
-511         continue
-510     continue
+            end do
+        end do
 !
 !       --------------------------------------------------
 !       6) CALCUL DES TERMES LIEES A LA CONTRAINTE INITIALE 
 !       --------------------------------------------------
 !
-        if (isigi.ne.0) then
-            
+        if (isigi .ne. 0) then
+!
 !           Calcul de la contrainte initiale (somme sur les noeuds du ss-elt)
-            do 430 i = 1, nno
-                do 440 j = 1, ncmp
-                    sigin(j) = sigin(j) + &
-                         sigse(ncmp*(i-1)+j) * zr(ivf-1+nno*(kpg-1)+i)
-440             continue
-430         continue
-                        
+            do i = 1, nno
+                do j = 1, ncmp
+                    sigin(j) = sigin(j) + sigse(ncmp*(i-1)+j) * zr(ivf-1+nno*(kpg-1)+i)
+                end do
+            end do
+!
 !           Calcul du gradient de sigma initial (somme sur les noeuds du ss-elt)
-            do 460 i = 1, nno
-                do 455 j = 1, ncmp
+            do i = 1, nno
+                do j = 1, ncmp
                     dsigin(j,1) = dsigin(j,1) + sigse(ncmp*(i-1)+j) * dfdx(i)
                     dsigin(j,2) = dsigin(j,2) + sigse(ncmp*(i-1)+j) * dfdy(i)
-                    if (ndim .eq. 3) &
-                      dsigin(j,3) = dsigin(j,3) + sigse(ncmp*(i-1)+j) * dfdz(i)
-455             continue
-460         continue
-
+                    if (ndim .eq. 3) dsigin(j,3) = dsigin(j,3) + sigse(ncmp*(i-1)+j) * dfdz(i)
+                end do
+            end do
+!
 !           Traitements particuliers des termes croises
-            do 463 i = 4, ncmp
+            do i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
-                do 462 j = 1, ndim
+                do j = 1, ndim
                     dsigin(i,j) = dsigin(i,j)*rac2
-462             continue
-463         continue
+                end do
+            end do
 !
             epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
             epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
@@ -557,21 +551,21 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             endif
 !
         endif
-
+!
 !       -----------------------------------------------------------
 !       7) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
 !       -----------------------------------------------------------
 !
         call vecini(12, 0.d0, dfdm)
-        do 600 ino = 1, nnop
-            do 610 j = 1, ndim
-                do 620 k = 1, ndim
+        do ino = 1, nnop
+            do j = 1, ndim
+                do k = 1, ndim
                     dfdm(j,k) = dfdm(j,k) + fno(ndim*(ino-1)+j)*dfdi( ino,k)
-620             continue
+                end do
 !               VALEUR DE LA FORCE DANS LA QUATRIEME COLONNE :
                 dfdm(j,4) = dfdm(j,4) + fno(ndim*(ino-1)+j)*ff(ino)
-610         continue
-600     continue
+            end do
+        end do
 !
         if (axi) then
             dfdm(3,3)= dfdm(1,4)/r
@@ -593,20 +587,20 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call vecini(12, 0.d0, du1dme)
         call vecini(12, 0.d0, du2dme)
         call vecini(12, 0.d0, du3dme)
-        do 700 i = 1, ndim
-            do 701 j = 1, ndim
+        do i = 1, ndim
+            do j = 1, ndim
                 dudme(i,j) = dudm(i,j)
                 dtdme(i,j) = dtdm(i,j)
                 du1dme(i,j) = du1dm(i,j)
                 du2dme(i,j) = du2dm(i,j)
                 du3dme(i,j) = du3dm(i,j)
-701         continue
+            end do
             dudme(i,4) = depla(i)
             dtdme(i,4) = theta(i)
             du1dme(i,4) = u1(i)
             du2dme(i,4) = u2(i)
             du3dme(i,4) = u3(i)
-700     continue
+        end do
 !
         if (axi) then
             dudme(3,3) = dudme(1,4)/r
@@ -620,36 +614,36 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
             coef = 2.d0
             call gbil3d(dudme, dudme, dtdme, dfdm, dfdm,&
-                        tgudm, tgudm, ttrgu, ttrgu, poids,sigin,&
-                        dsigin,epsref,&
-                        c1, c2, c3, k3a, alpha,&
-                        coef, rho, puls, g)
+                        tgudm, tgudm, ttrgu, ttrgu, poids,&
+                        sigin, dsigin, epsref, c1, c2,&
+                        c3, k3a, alpha, coef, rho,&
+                        puls, g)
             zr(igthet )= zr(igthet) + g
 !
             coef = 1.d0
             call gbil3d(dudme, du1dme, dtdme, dfdm, dzero,&
-                        tgudm, tzero, ttrgu, ttrgv, poids,sigin,&
-                        dsigin,epsref,&
-                        c1, c2, c3, k3a, alpha,&
-                        coef, rho, puls, k1)
+                        tgudm, tzero, ttrgu, ttrgv, poids,&
+                        sigin, dsigin, epsref, c1, c2,&
+                        c3, k3a, alpha, coef, rho,&
+                        puls, k1)
             zr(igthet+4 )= zr(igthet+4) + k1 * coefk
             zr(igthet+1 )= zr(igthet+1) + k1 * sqrt(coefk)
 !
             coef = 1.d0
             call gbil3d(dudme, du2dme, dtdme, dfdm, dzero,&
-                        tgudm, tzero, ttrgu, ttrgv, poids,sigin,&
-                        dsigin,epsref,&
-                        c1, c2, c3, k3a, alpha,&
-                        coef, rho, puls, k2)
+                        tgudm, tzero, ttrgu, ttrgv, poids,&
+                        sigin, dsigin, epsref, c1, c2,&
+                        c3, k3a, alpha, coef, rho,&
+                        puls, k2)
             zr(igthet+5) = zr(igthet+5) + k2 * coefk
             zr(igthet+2) = zr(igthet+2) + k2 * sqrt(coefk)
 !
             coef = 1.d0
             call gbil3d(dudme, du3dme, dtdme, dfdm, dzero,&
-                        tgudm, tzero, ttrgu, ttrgv, poids,sigin,&
-                        dsigin,epsref,&
-                        c1, c2, c3, k3a, alpha,&
-                        coef, rho, puls, k3)
+                        tgudm, tzero, ttrgu, ttrgv, poids,&
+                        sigin, dsigin, epsref, c1, c2,&
+                        c3, k3a, alpha, coef, rho,&
+                        puls, k3)
             zr(igthet+6) = zr(igthet+6) + k3 * coeff3
             zr(igthet+3) = zr(igthet+3) + k3 * sqrt(coeff3)
 !
@@ -659,29 +653,29 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             coef = 2.d0
             cs = 1.d0
             call gbilin('XFEM', ipg, zi(imate), dudme, dudme,&
-                        dtdme, dfdm, tgudm, poids,sigin,&
-                        dsigin, epsref, c1,&
-                        c2, c3, cs, th, coef,&
-                        rho, puls, axi, g)
+                        dtdme, dfdm, tgudm, poids, sigin,&
+                        dsigin, epsref, c1, c2, c3,&
+                        cs, th, coef, rho, puls,&
+                        axi, g)
 !
 !           POUR K1, COEF = 1
             coef = 1.d0
             cs = 0.5d0
             call gbilin('XFEM', ipg, zi(imate), dudme, du1dme,&
-                        dtdme, dfdm, tgudm, poids,sigin,&
-                        dsigin, epsref, c1,&
-                        c2, c3, cs, th, coef,&
-                        rho, puls, axi, k1)
+                        dtdme, dfdm, tgudm, poids, sigin,&
+                        dsigin, epsref, c1, c2, c3,&
+                        cs, th, coef, rho, puls,&
+                        axi, k1)
             k1 = k1*coefk
 !
 !           POUR K2, COEF = 1
             coef = 1.d0
             cs = 0.5d0
             call gbilin('XFEM', ipg, zi(imate), dudme, du2dme,&
-                        dtdme, dfdm, tgudm, poids,sigin,&
-                        dsigin, epsref, c1,&
-                        c2, c3, cs, th, coef,&
-                        rho, puls, axi, k2)
+                        dtdme, dfdm, tgudm, poids, sigin,&
+                        dsigin, epsref, c1, c2, c3,&
+                        cs, th, coef, rho, puls,&
+                        axi, k2)
             k2 = k2*coefk
             if (e3(3) .lt. 0) k2=-k2
 !
@@ -693,7 +687,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
         endif
 !
-10  continue
+    end do
 !
 !     ------------------------------------------------------------------
 !     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TETRA

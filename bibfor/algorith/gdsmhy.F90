@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdsmhy(je, e)
 !
     implicit none
@@ -48,21 +48,21 @@ subroutine gdsmhy(je, e)
     p1 = - 4.d0/3.d0*eqe2
     p2 = 0
     call zerop3(p2, p1, p0, rac, nrac)
-    do 10 i = 1, nrac
+    do i = 1, nrac
         rac(i) = (rac(i)+1)/2
-10  end do
+    end do
 !
     dismin = r8maem()
-    do 20 i = 1, nrac
+    do i = 1, nrac
         if (abs(rac(i)-eh) .lt. dismin) then
             iopt = i
             dismin = abs(rac(i)-eh)
         endif
-20  end do
+    end do
     eh = rac(iopt)
 !
-    do 30 i = 1, 3
+    do i = 1, 3
         e(i) = eh + dve(i)
-30  end do
+    end do
 !
 end subroutine

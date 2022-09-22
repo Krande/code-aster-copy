@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc32env(lieu, futotenv)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 #include "asterc/getfac.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/rc32env2.h"
-
+#include "asterfort/wkvect.h"
+!
     character(len=4) :: lieu
     real(kind=8) :: futotenv
-
+!
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     AFFICHAGE DES RESULTATS DANS LA TABLE DE SORTIE
 !
@@ -47,10 +47,10 @@ subroutine rc32env(lieu, futotenv)
 ! --- CREATION D'UN VECTEUR QUI CONTIENT LES DONNEES ENVIRONNEMENTALES
 !     ----------------------------------------------------------------
     ndim = 2*200
-    call wkvect('&&RC3200.FACTENV.'//lieu, 'V V R', ndim, jfactenv) 
-    do 10 i = 1, ndim
+    call wkvect('&&RC3200.FACTENV.'//lieu, 'V V R', ndim, jfactenv)
+    do i = 1, ndim
         zr(jfactenv+i-1) = 0.d0
-10 continue
+    end do
 !
 !     ----------------------------------------------------------------
 ! --- BALAYAGE DES COMBINAISONS DE SITUATIONS QUI INTERVIENNENT DANS FU_TOTAL
@@ -63,7 +63,7 @@ subroutine rc32env(lieu, futotenv)
     k=0
     futotenv = 0.d0
 !
-555   continue
+555 continue
 !
     num1 = zi(jfact+6*k)
     num2 = zi(jfact+6*k+1)
@@ -71,22 +71,22 @@ subroutine rc32env(lieu, futotenv)
     if (num1 .eq. 0) goto 666
     noccpris = zi(jfact+6*k+4)
 !
-    if(zi(jfact+6*k+5) .eq. 2) then
+    if (zi(jfact+6*k+5) .eq. 2) then
 !-------- le séisme intervient dans cette combinaison 
         call jeveuo('&&RC3200.SITUS_RESU.'//lieu, 'L', ind1)
         call jeveuo('&&RC3200.COMBS_RESU.'//lieu, 'L', ind2)
-
+!
         fuseism = zr(jmax+11)
     endif
-    if(zi(jfact+6*k+5) .eq. 1) then
+    if (zi(jfact+6*k+5) .eq. 1) then
 !-------- le séisme n'intervient pas dans cette combinaison 
         call jeveuo('&&RC3200.SITU_RESU.'//lieu, 'L', ind1)
         call jeveuo('&&RC3200.COMB_RESU.'//lieu, 'L', ind2)
         fuseism = 0.d0
     endif
-! 
+!
 !---- une situation seule a le plus grand fu unitaire
-    if(num1 .eq. num2) then
+    if (num1 .eq. num2) then
         fuunit = zr(ind1+121*(num1-1)+15)+fuseism
         ke = zr(ind1+121*(num1-1)+18)
         call rc32env2(num1, num2, ke, lieu, fen)

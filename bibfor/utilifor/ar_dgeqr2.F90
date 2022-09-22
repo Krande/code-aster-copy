@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED  
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -26,7 +26,7 @@
 ! WHICH STICKS TO LAPACK 2.0 VERSION 
 ! ==============================================================
 subroutine ar_dgeqr2(m, n, a, lda, tau,&
-                  work, info)
+                     work, info)
 !
 !     SUBROUTINE LAPACK CALCULANT UNE FACTORISATION QR.
 !-----------------------------------------------------------------------
@@ -136,7 +136,7 @@ subroutine ar_dgeqr2(m, n, a, lda, tau,&
 !
     k = min( m, n )
 !
-    do 10 i = 1, k
+    do i = 1, k
 !
 !        GENERATE ELEMENTARY REFLECTOR H(I) TO ANNIHILATE A(I+1:M,I)
 !
@@ -151,8 +151,8 @@ subroutine ar_dgeqr2(m, n, a, lda, tau,&
                        tau( i ), a( i, i+1 ), lda, work)
             a( i, i ) = aii
         endif
-10  end do
-1000  continue
+    end do
+1000 continue
 !
     call matfpe(1)
 !

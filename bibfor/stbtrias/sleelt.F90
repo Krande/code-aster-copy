@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
                   nbmail, mint, mant, datset, inum)
 ! aslint: disable=
@@ -131,11 +131,11 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
     if (ire1 .ne. 0) call jedetr('&&PRESUP.CONN.MAILLE')
     call wkvect('&&PRESUP.CONN.MAILLE', 'V V I', nsizec, jconn)
 !
- 1  continue
+  1 continue
     it=it+1
     nndec=0
 !
-    do 10 i = 1, niter
+    do i = 1, niter
 !
         read (iunv,fmt='(A)') cbuf
         read (unit=cbuf,fmt='(I6)') ind
@@ -201,11 +201,11 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
         if ((datset.eq.82) .or. (datset.eq.2431)) then
 !
             nn=0
-            do 220 ino = 1, 2*(jnum-1)
+            do ino = 1, 2*(jnum-1)
                 if (nod82(ino) .ne. 0) then
                     nn=nn+1
                 endif
-220          continue
+            end do
 !
             if ((2*nn) .gt. nsizec) then
                 nsizec=4*nn
@@ -220,7 +220,7 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
             endif
 !
             icp=0
-            do 22 ino = 1, 2*(jnum-1)
+            do ino = 1, 2*(jnum-1)
                 if (nod82(ino) .ne. 0) then
                     zi(jconn-1+ino) = nod82(ino)
                     zi(jconn-1+ino+1) = nod82(ino+1)
@@ -230,7 +230,7 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
                     zi(jinfo-1+ndeca+(icp)*4+4) = icol
                     icp=icp+1
                 endif
-22          continue
+            end do
             nbmail(codgra) = jnum + nbmail(codgra)-2
             ipos= ipos+nbnode
             mint(codgra)=1
@@ -256,20 +256,20 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
             zi(jinfo-1+ndeca+(i-1)*4+2) = codgra
             zi(jinfo-1+ndeca+(i-1)*4+3) = nbnode
             zi(jinfo-1+ndeca+(i-1)*4+4) = icol
-            do 21 ino = 1, nbnode
+            do ino = 1, nbnode
                 zi(jconn-1+ipos+ino) = node(ino)
-21          continue
+            end do
             ipos= ipos+nbnode
             nndec=nndec+4
         endif
 !
 !
 !
-10  end do
+    end do
     ndeca= ndeca+nndec
 !
     goto 1
-99  continue
+ 99 continue
     imes = iunifi('MESSAGE')
     write (imes,*) 'NOMBRE DE MAILLES :',inum
     call jedema()

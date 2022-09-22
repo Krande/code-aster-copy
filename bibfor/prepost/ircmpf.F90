@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -179,7 +179,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
         if (profil(jaux) .ne. zi(adprof+jaux-1)) then
             goto 423
         endif
-422      continue
+422     continue
 !
         nrprty = iaux
 !
@@ -192,7 +192,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !
 ! 4.2.3. ==> MENAGE AVANT D'EXAMINER UN NOUVEAU PROFIL
 !
-423      continue
+423     continue
 !
         call jedetr(ntprof)
 !
@@ -204,7 +204,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 ! 5. FERMETURE DU FICHIER
 !====
 !
-51  continue
+ 51 continue
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
@@ -249,11 +249,11 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
         if (noprof .eq. zk80(adnopf+jaux)(1:64)) then
             goto 62
         endif
-621      continue
+621     continue
         goto 622
-62      continue
+ 62     continue
 !
-622      continue
+622     continue
 !
 ! 6.3. ==> ECRITURE DU PROFIL
 !

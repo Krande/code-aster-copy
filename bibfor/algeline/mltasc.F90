@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
                   factol, factou, typsym)
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -26,7 +26,6 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
 ! aslint: disable=C1513
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -38,11 +37,12 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: nbloc, lgbloc(*), lonmat, adinit(lonmat), typsym
     character(len=24) :: factol, factou, valm
     character(len=*) :: nommat
     integer :: fin, deb, mati, mats, adprov
-    integer ::  ip, irefac, lgblib
+    integer :: ip, irefac, lgblib
 !===============================================================
 !     ASSEMBLAGE DE LA MATRICE INITIALE DANS LA MATRICE FACTOR
 !     VERSION ASTER
@@ -59,9 +59,9 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
     if (typsym .eq. 1) then
         ip = 1
         call jeveuo(jexnum(valm, ip), 'L', mati)
-        do 10 i = 1, lonmat
+        do i = 1, lonmat
             if (adinit(i) .le. 0) adinit(i) = - adinit(i)
-10      continue
+        end do
     else
         ip = 1
         call jeveuo(jexnum(valm, ip), 'L', mats)
@@ -81,11 +81,11 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
     call jelira(jexnum(valm, ip), 'CLAS', cval=base)
     call jecrec(factol, base(1:1)//' V C ', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbloc)
-    do 50 ib = 1, nbloc
+    do ib = 1, nbloc
         call jecroc(jexnum(factol, ib))
         lgblib = lgbloc(ib)
         call jeecra(jexnum(factol, ib), 'LONMAX', lgblib)
-50  end do
+    end do
     fin = 0
     if (typsym .eq. 0) then
 !        CAS NON-SYMETRIQUE
@@ -96,26 +96,26 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
         call jelira(jexnum(valm, ip), 'CLAS', cval=base)
         call jecrec(factou, base(1:1)//' V C ', 'NU', 'DISPERSE', 'VARIABLE',&
                     nbloc)
-        do 51 ib = 1, nbloc
+        do ib = 1, nbloc
             call jecroc(jexnum(factou, ib))
             lgblib = lgbloc(ib)
             call jeecra(jexnum(factou, ib), 'LONMAX', lgblib)
-51      continue
+        end do
 !
-        do 130 ib = 1, nbloc
+        do ib = 1, nbloc
             call jeveuo(jexnum(factol, ib), 'E', ifacl)
             call jeveuo(jexnum(factou, ib), 'E', ifacu)
-            do 110 i = 1, lgbloc(ib)
+            do i = 1, lgbloc(ib)
                 zc(ifacl+i-1) = 0.d0
                 zc(ifacu+i-1) = 0.d0
-110          continue
+            end do
             deb = fin
             fin = deb + lgbloc(ib)
             deb = deb + 1
 !MIC$ DO ALL SHARED (ADINIT, DEB, FIN, IFACL, LONMAT, ZC)
 !MIC$*        SHARED (MATI,IFACU,MATS) VECTOR
 !MIC$*        PRIVATE (I1,CODE,ADPROV)
-            do 120 i1 = 1, lonmat
+            do i1 = 1, lonmat
                 if (adinit(i1) .le. 0) then
                     code =-1
                     adprov = - adinit(i1)
@@ -132,34 +132,36 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
                     zc(ifacl+adprov-deb) = zc(mats+i1-1)
                     zc(ifacu+adprov-deb) = zc(mati+i1-1)
                 endif
-120          continue
+120             continue
+            end do
             call jelibe(jexnum(factol, ib))
             call jelibe(jexnum(factou, ib))
-130      continue
-        do 140 ip = 1, 2
+        end do
+        do ip = 1, 2
             call jelibe(jexnum(valm, ip))
-140      continue
+        end do
     else
 !     CAS SYMETRIQUE
         fin = 0
-        do 135 ib = 1, nbloc
+        do ib = 1, nbloc
             call jeveuo(jexnum(factol, ib), 'E', ifacl)
-            do 115 i = 1, lgbloc(ib)
+            do i = 1, lgbloc(ib)
                 zc(ifacl+i-1) = 0.d0
-115          continue
+            end do
 !
             deb = fin
             fin = deb + lgbloc(ib)
             deb = deb + 1
 !MIC$ DO ALL SHARED (ADINIT, DEB, FIN, IFACL, LONMAT, ZC)
 !MIC$*       PRIVATE (I1) SHARED (MATI) VECTOR
-            do 125 i1 = 1, lonmat
+            do i1 = 1, lonmat
                 if (adinit(i1) .gt. fin) goto 125
                 if (adinit(i1) .lt. deb) goto 125
                 zc(ifacl+adinit(i1)-deb) = zc(mati+i1-1)
-125          continue
+125             continue
+            end do
             call jelibe(jexnum(factol, ib))
-135      continue
+        end do
         ip = 1
         call jelibe(jexnum(valm, ip))
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trinsr(clef, tab, ntab, n)
 ! A_UTIL
 ! ----------------------------------------------------------------------
@@ -42,14 +42,14 @@ subroutine trinsr(clef, tab, ntab, n)
 !
 ! --- TRI PAR INSERTION
 !
-    do 10 d = 2, n
+    do d = 2, n
 !
         inser = clef(d)
         g = d
 !
 ! ----- INSERTION DE INSER
 !
-20      continue
+ 20     continue
 !
         g = g - 1
 !
@@ -68,16 +68,16 @@ subroutine trinsr(clef, tab, ntab, n)
 !
 ! ------- DEPLACEMENT TABLEAU
 !
-            do 30 i = 1, ntab
+            do i = 1, ntab
                 tmpr = tab(d,i)
-                do 40 j = d-1, g, -1
+                do j = d-1, g, -1
                     tab(j+1,i) = tab(j,i)
-40              continue
+                end do
                 tab(g,i) = tmpr
-30          continue
+            end do
 !
         endif
 !
-10  end do
+    end do
 !
 end subroutine

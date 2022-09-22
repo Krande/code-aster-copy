@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -81,7 +81,7 @@ subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
 !
 ! --- ON LIT LES NOEUDS DES ZONES
 !
-    do 10 izone = 1, nzocu
+    do izone = 1, nzocu
         tymocl(1) = 'GROUP_MA'
         tymocl(2) = 'MAILLE'
         limocl(1) = 'GROUP_MA'
@@ -90,10 +90,10 @@ subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
                     nbmocl, limocl, tymocl, listmn, nbmano)
         if (nbmano .ne. 0) then
             call jeveuo(listmn, 'L', jlist)
-            do 60 ino = 1, nbmano
+            do ino = 1, nbmano
                 zi(jnl+jdecal-1) = zi(jlist+ino-1)
                 jdecal = jdecal +1
-60          continue
+            end do
         endif
         call jedetr(listmn)
 !
@@ -106,14 +106,14 @@ subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
 !
         if (nbnono .ne. 0) then
             call jeveuo(listnn, 'L', jlist)
-            do 61 ino = 1, nbnono
+            do ino = 1, nbnono
                 zi(jnl+jdecal-1) = zi(jlist+ino-1)
                 jdecal = jdecal +1
-61          continue
+            end do
         endif
         call jedetr(listnn)
 !
-10  end do
+    end do
 !
     call jedema()
 !

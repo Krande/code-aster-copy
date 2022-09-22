@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine copcvn(nb, vec1, vec2, indir, fact)
     implicit none
 !
@@ -42,15 +42,15 @@ subroutine copcvn(nb, vec1, vec2, indir, fact)
     real(kind=8) :: fact
 !-----------------------------------------------------------------------
 !
-    if (nb .eq. 0) goto 9999
+    if (nb .eq. 0) goto 999
 !
-    do 10 i = 1, nb
+    do i = 1, nb
         if (indir(i) .gt. 0) then
             vec2(i)=vec1(indir(i))*fact
         else
             vec2(i)=0.d0
         endif
-10  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

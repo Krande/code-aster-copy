@@ -18,7 +18,7 @@
 !
 subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-integer :: repi, ierd
-character(len=*) :: questi, nomobz, repkz
+    integer :: repi, ierd
+    character(len=*) :: questi, nomobz, repkz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ character(len=*) :: questi, nomobz, repkz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ialiel,  ico, igrel
+    integer :: ialiel, ico, igrel
     integer :: iret, itypel, nbgrel, nel
     character(len=4) :: tytm
     character(len=8) :: ma, nomob
@@ -85,7 +85,7 @@ character(len=*) :: questi, nomobz, repkz
         call dismzc(questi, nolig, repi, repk, ierd)
 !
 !     -----------------------------------
-    elseif ((questi.eq.'DIM_GEOM') .or. (questi.eq.'NB_SM_MAILLA')&
+        elseif ((questi.eq.'DIM_GEOM') .or. (questi.eq.'NB_SM_MAILLA')&
             .or. (questi.eq.'NB_SS_ACTI') .or. (questi.eq.'NB_NL_MAILLA')&
             .or. (questi.eq.'AXIS') .or. (questi.eq.'EXI_AXIS')&
             .or. (questi.eq.'CALC_RIGI') .or. (questi.eq.'PHENOMENE')&
@@ -122,24 +122,24 @@ character(len=*) :: questi, nomobz, repkz
         ico=0
         nomodl=' '
 !
-        do 10,igrel=1,nbgrel
-        call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-        itypel=zi(ialiel-1+nel)
-        call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-        call dismte('MODELISATION', nomte, repi, repk, ierd)
-        nomod2=repk(1:16)
+        do igrel = 1, nbgrel
+            call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
+            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
+            itypel=zi(ialiel-1+nel)
+            call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
+            call dismte('MODELISATION', nomte, repi, repk, ierd)
+            nomod2=repk(1:16)
 !
 !           -- ON ESPERE QUE LES NOMTE '#PLUSIEURS' SONT DES ELEMENTS
 !              DE BORD ET QUE L'ON PEUT LES IGNORER ET QU'IL EN RESTE
 !              D'AUTRES PLUS SIGNIFICATIFS :
-        if (nomod2 .ne. '#PLUSIEURS') then
-            if (nomodl .ne. nomod2) then
-                ico=ico+1
-                nomodl=nomod2
+            if (nomod2 .ne. '#PLUSIEURS') then
+                if (nomodl .ne. nomod2) then
+                    ico=ico+1
+                    nomodl=nomod2
+                endif
             endif
-        endif
-10      continue
+        end do
         ASSERT(ico.ge.1)
 !
         if (ico .eq. 1) then
@@ -149,13 +149,13 @@ character(len=*) :: questi, nomobz, repkz
         endif
         goto 30
 !
-20      continue
+ 20     continue
         repk='#AUCUNE'
 !
-30      continue
+ 30     continue
 !
 !     ------------------------------------------
-    elseif ((questi.eq.'NB_NO_MAILLA') .or. (questi.eq.'NB_MA_MAILLA')&
+        elseif ((questi.eq.'NB_NO_MAILLA') .or. (questi.eq.'NB_MA_MAILLA')&
             .or. (questi.eq.'NB_NO_SS_MAX')) then
 !     ------------------------------------------
         call dismma(questi, ma, repi, repk, ierd)
@@ -196,44 +196,44 @@ character(len=*) :: questi, nomobz, repkz
         if (iret .gt. 0) then
             call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
-            do 40,igrel=1,nbgrel
-            call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-            itypel=zi(ialiel-1+nel)
-            call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            call dismte('MODELISATION', nomte, repi, repk, ierd)
-            nomodl=repk(1:16)
-            if ((nomodl(1:4) .ne. 'DIS_') .and. (nomodl(1:4) .ne. '2D_DIS_')) then
-                repk='OUI'
-                goto 70
+            do igrel = 1, nbgrel
+                call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
+                call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
+                itypel=zi(ialiel-1+nel)
+                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
+                call dismte('MODELISATION', nomte, repi, repk, ierd)
+                nomodl=repk(1:16)
+                if ((nomodl(1:4) .ne. 'DIS_') .and. (nomodl(1:4) .ne. '2D_DIS_')) then
+                    repk='OUI'
+                    goto 70
 !
-            endif
-40          continue
+                endif
+            end do
         else
             repk='NON'
         endif
-
+!
     else if (questi.eq.'SI_CABLE') then
-        !     ----------------------------------------
+!     ----------------------------------------
         call jeexin(nolig//'.LIEL', iret)
         if (iret .gt. 0) then
             call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
-            do 90,igrel=1,nbgrel
-            call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-            itypel=zi(ialiel-1+nel)
-            call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-
-            if (nomte(1:7) .eq. 'MECABL2') then
-                repk='OUI'
-                goto 70
-        !
-            endif
-90          continue
+            do igrel = 1, nbgrel
+                call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
+                call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
+                itypel=zi(ialiel-1+nel)
+                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
+!
+                if (nomte(1:7) .eq. 'MECABL2') then
+                    repk='OUI'
+                    goto 70
+                    !
+                endif
+            end do
         else
             repk='NON'
-        endif        
+        endif 
 !
 !     --------------------------------------
     else if (questi.eq.'EXI_ELTVOL') then
@@ -244,18 +244,18 @@ character(len=*) :: questi, nomobz, repkz
         if (iret .gt. 0) then
             call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
-            do 50,igrel=1,nbgrel
-            call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-            itypel=zi(ialiel-1+nel)
-            call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            call dismte('TYPE_TYPMAIL', nomte, repi, tytm, ierd)
-            if (tytm .eq. 'VOLU') then
-                repk='OUI'
-                goto 70
+            do igrel = 1, nbgrel
+                call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
+                call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
+                itypel=zi(ialiel-1+nel)
+                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
+                call dismte('TYPE_TYPMAIL', nomte, repi, tytm, ierd)
+                if (tytm .eq. 'VOLU') then
+                    repk='OUI'
+                    goto 70
 !
-            endif
-50          continue
+                endif
+            end do
         else
             repk='NON'
         endif
@@ -271,17 +271,17 @@ character(len=*) :: questi, nomobz, repkz
 !
 !     -- SORTIE ERREUR :
 !     ------------------
-60  continue
+ 60 continue
     ierd=1
     goto 80
 !
 !     -- SORTIE NORMALE :
 !     ------------------
-70  continue
+ 70 continue
     ierd=0
     repkz=repk
 !
 !
-80  continue
+ 80 continue
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jelstc(clas, souch, ipos, maxval, klst,&
                   nbval)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -78,8 +78,8 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
         ncla2 = ncla1
     endif
     nbl = 0
-    do 100 ic = ncla1, ncla2
-        do 150 j = 1, nremax(ic)
+    do ic = ncla1, ncla2
+        do j = 1, nremax(ic)
             crnom = rnom(jrnom(ic)+j)
             if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '        ') goto 150
             if (ipos .eq. 0) then
@@ -95,8 +95,9 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
                     klst(nbl) = crnom(1:24)
                 endif
             endif
-150     continue
-100 end do
+150         continue
+        end do
+    end do
     if (nbl .gt. maxval) then
         nbval = -nbl
     else

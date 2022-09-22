@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
     implicit none
 #include "asterc/r8nnem.h"
@@ -92,10 +92,10 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 ! --- RESOLUTION DU POLYNOME DE DEGRE 3 -------------------------------
 ! =====================================================================
     call zerop3(lamba, lambb, lambc, rac3, nbrac3)
-    do 10 ii = 1, nbrac3
+    do ii = 1, nbrac3
         valeur = signe * fbifur(a0,a1,a2,a3,a4,rac3(ii))
         if (valeur .lt. -r8prem()) vbifur = un
-10  continue
+    end do
 ! =====================================================================
 ! --- RECHERCHE DES RACINES DU POLYNOME -------------------------------
 ! =====================================================================
@@ -110,16 +110,16 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 ! --- ON RECUPERE LES RACINES REELLES ---------------------------------
 ! =====================================================================
         compt = 0
-        do 20 ii = 1, 4
+        do ii = 1, 4
             if (abs(rac4((ii-1)*2+2)) .lt. r8prem()) then
                 compt = compt + 1
                 racine(compt) = atan2(rac4((ii-1)*2+1),1.0d0)
                 racine(compt) = racine(compt)*r8rddg()
             endif
-20      continue
+        end do
         nbrac4 = compt
     endif
 ! =====================================================================
-9998  continue
+9998 continue
 ! =====================================================================
 end subroutine

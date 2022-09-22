@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ptmtfv(m, rho, e, rof, ce,&
                   a1, a2, ai1, ai2, xl,&
                   xiy1, xiy2, xiz1, xiz2, g,&
@@ -127,9 +127,9 @@ subroutine ptmtfv(m, rho, e, rof, ce,&
     c140 = 140.d0
     c210 = 210.d0
     c420 = 420.d0
-    do 1,i=1,136
-    m(i) =zero
-    1 end do
+    do i = 1, 136
+        m(i) =zero
+    end do
 !
 !     -- SI G  ET E SONT NULS : ON FAIT G=1.
     if (abs(g) .lt. 1.d0/r8gaem()) then

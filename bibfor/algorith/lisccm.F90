@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lisccm(nomcmd, codarr, lischa)
 !
 !
@@ -65,7 +65,7 @@ subroutine lisccm(nomcmd, codarr, lischa)
     call lisnnb(lischa, nbchar)
     if (nbchar .eq. 0) goto 999
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- NOM DE LA CHARGE
 !
@@ -85,9 +85,9 @@ subroutine lisccm(nomcmd, codarr, lischa)
             call utmess(codarr, 'CHARGES5_3', nk=2, valk=valk)
         endif
 !
-10  continue
+    end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

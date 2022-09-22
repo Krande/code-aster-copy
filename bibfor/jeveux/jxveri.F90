@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxveri()
     implicit none
 #include "jeveux_private.h"
-! ----------------------------------------------------------------------
-! VERIFIE L'INTEGRITE DU CHAINAGE AVANT DES SEGMENTS DE VALEURS ET DE LA
-! ZONE MEMOIRE UTILISEE
-! ----------------------------------------------------------------------
 #include "asterfort/assert.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
+! ----------------------------------------------------------------------
+! VERIFIE L'INTEGRITE DU CHAINAGE AVANT DES SEGMENTS DE VALEURS ET DE LA
+! ZONE MEMOIRE UTILISEE
+! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 ! ----------------------------------------------------------------------
@@ -70,8 +70,8 @@ subroutine jxveri()
     ncla1 = 1
     ncla2 = index ( classe , '$' ) - 1
     if (ncla2 .lt. 0) ncla2 = n
-    do 200 ic = ncla2, ncla1, - 1
-        do 205 j = 1, nremax(ic)
+    do ic = ncla2, ncla1, - 1
+        do j = 1, nremax(ic)
             iadmi = iadm(jiadm(ic)+2*j-1)
             iadyn = iadm(jiadm(ic)+2*j )
             if (iadmi .eq. 0 .or. iadyn .eq. 0) goto 205
@@ -87,7 +87,7 @@ subroutine jxveri()
                 nmax = iszon ( jiszon + ibacol + ivnmax )
                 if (ixiadm .gt. 0) then
                     ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
-                    do 210 k = 1, nmax
+                    do k = 1, nmax
                         iadmoc = iszon(jiszon + ibiadm - 1 +2*k-1)
                         iadyoc = iszon(jiszon + ibiadm - 1 +2*k )
                         if (iadyoc .ne. 0) then
@@ -99,7 +99,7 @@ subroutine jxveri()
                             il = iszon(jiszon+idm) - 8 - idm
                             ASSERT(il .gt. 0)
                         endif
-210                  continue
+                    end do
                 endif
                 call jjlide('JEIMPO', nom32(1:24), 2)
                 goto 205
@@ -112,9 +112,10 @@ subroutine jxveri()
                 il = iszon(jiszon+idm) - 8 - idm
                 ASSERT(il .gt. 0)
             endif
-205      continue
-200  end do
+205         continue
+        end do
+    end do
 !
-300  continue
+300 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

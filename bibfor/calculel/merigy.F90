@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine merigy(modele, mate, mateco, cara, compor, matel,&
-                  nchar, lchar)
+!
+subroutine merigy(modele, mate, mateco, cara, compor,&
+                  matel, nchar, lchar)
     implicit none
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/exisd.h"
 #include "asterfort/exlima.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -33,7 +34,6 @@ subroutine merigy(modele, mate, mateco, cara, compor, matel,&
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-#include "asterfort/exisd.h"
     character(len=8) :: modele, cara, lchar(*)
     character(len=19) :: matel
     character(len=24) :: mate, mateco
@@ -77,13 +77,13 @@ subroutine merigy(modele, mate, mateco, cara, compor, matel,&
     ASSERT(chgeom.ne.' ')
 !
     nbro = 0
-    do 10 icha = 1,nchar
-        call exisd('CHAMP_GD',lchar(icha)//'.CHME.ROTAT',iret)
-        if (iret.ne.0) then
-          chrota = lchar(icha)//'.CHME.ROTAT.DESC'
-          nbro = nbro + 1
+    do icha = 1, nchar
+        call exisd('CHAMP_GD', lchar(icha)//'.CHME.ROTAT', iret)
+        if (iret .ne. 0) then
+            chrota = lchar(icha)//'.CHME.ROTAT.DESC'
+            nbro = nbro + 1
         end if
- 10 continue
+    end do
 !
 !    CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(cara, chcara)

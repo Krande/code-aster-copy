@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0199()
     implicit none
 ! OPERATEUR CALCULANT LA FORCE AJOUTEE : CALC_FORC_AJOU
@@ -124,7 +124,8 @@ subroutine op0199()
 !--------------------------------------------------------------
 !
     call rigflu(moflui, time, nomcmp, tps, n2,&
-                char, materi, mateco, solveu, ma, nu)
+                char, materi, mateco, solveu, ma,&
+                nu)
 !
 !--------------------------------------------------------------
 ! CALCUL DES MATR_ELEM AX ET AY DANS L'OPTION FLUX_FLUI_X ET _Y
@@ -145,8 +146,8 @@ subroutine op0199()
 ! SUR LA STRUCTURE
 !================================================================
 !
-    call phi199(model, materi, mateco, ma, nu, num,&
-                nbmo, solveu, indice, tabad)
+    call phi199(model, materi, mateco, ma, nu,&
+                num, nbmo, solveu, indice, tabad)
 !
 !--------------------------------------------------------------
 ! VERIFICATION D EXISTENCE DE VECTEUR DE CHAMPS AUX NOEUDS CREES
@@ -208,7 +209,7 @@ subroutine op0199()
         zi(iadesc) = 1
         zi(iadesc+1) = nbmo
 !
-        do 10 i = 1, nbmo
+        do i = 1, nbmo
 !
             blanc = ' '
             call cal152('MASS_AJOU', max, may, maz, model,&
@@ -218,7 +219,7 @@ subroutine op0199()
 !
             zr(ivale+i-1) = mij
 !
- 10     continue
+        end do
     endif
 !
 !

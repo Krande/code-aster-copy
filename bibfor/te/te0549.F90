@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0549(option, nomte)
-    implicit     none
-#include "jeveux.h"
 !
+subroutine te0549(option, nomte)
+    implicit none
+#include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/posvar.h"
+!
     character(len=16) :: option, nomte
 !    - FONCTION REALISEE:  EXTRACTION DES VARIABLES INTERNES EN THM
 !    - ARGUMENTS:
@@ -36,8 +36,8 @@ subroutine te0549(option, nomte)
 ! ======================================================================
 ! --- SELECTION DU TYPE D'INTEGRATION ----------------------------------
 ! ======================================================================
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PNOVARI', 'L', inova)
     call jevech('PCOMPOR', 'L', icompo)
@@ -52,13 +52,13 @@ subroutine te0549(option, nomte)
         read (zk16(icompo+1),'(I16)') ncmp
 !
         if (nume .gt. 0) then
-            do 30 i = 1, npg
+            do i = 1, npg
                 zr(ichgs-1+i)=zr(ichg-1+(i-1)*ncmp+nume)
-30          continue
+            end do
         else
-            do 40 i = 1, npg
+            do i = 1, npg
                 zr(ichgs-1+i)=r8vide()
-40          continue
+            end do
         endif
 !
     else if (option.eq.'VAEX_ELNO') then
@@ -71,13 +71,13 @@ subroutine te0549(option, nomte)
         read (zk16(icompo+1),'(I16)') ncmp
 !
         if (nume .gt. 0) then
-            do 50 i = 1, nno
+            do i = 1, nno
                 zr(ichgs-1+i)=zr(ichg-1+(i-1)*ncmp+nume)
-50          continue
+            end do
         else
-            do 60 i = 1, nno
+            do i = 1, nno
                 zr(ichgs-1+i)=r8vide()
-60          continue
+            end do
         endif
 !
     endif

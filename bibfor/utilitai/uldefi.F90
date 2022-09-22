@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
                   autor)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
@@ -105,7 +105,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
             call ulopen(unit, namell, name16, acces, k1aut)
         else
             ilibre = 0
-            do 20 ifile = 1, nbfile
+            do ifile = 1, nbfile
                 if (ddname(ifile) .eq. name16 .and. name16 .ne. ' ') then
 !
 ! --- ASSOCIATION DEJA EFFECTUEE, ON AUTORISE LA REDEFINITION POUR
@@ -124,7 +124,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
 !           --- RECHERCHE DE LA DERNIERE PLACE LIBRE ---
                     ilibre = ifile
                 endif
-20          continue
+            end do
             if (ilibre .eq. 0) then
                 nbfile = nbfile + 1
                 if (nbfile .gt. mxf) then
@@ -134,7 +134,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
                 ilibre = nbfile
             endif
 !
-21          continue
+ 21         continue
             if (ficnom(1:1) .eq. ' ') then
                 call codent(unit, 'G', k8b)
                 namell = 'fort.'//k8b

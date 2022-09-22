@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjstis(mod, mater, sig, vin, dsde)
     implicit none
 #include "asterfort/utmess.h"
@@ -51,9 +51,9 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
     qinit = mater(13,2)
     pa = mater(12,2)
     i1 = zero
-    do 10 i = 1, ndi
+    do i = 1, ndi
         i1 = i1 + sig(i)
-10  continue
+    end do
 !
     if ((i1+qinit) .eq. 0.d0) then
         i1 = -qinit+1.d-12 * pa
@@ -82,15 +82,17 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 20 i = 1, ndi
-            do 20 j = 1, ndi
+        do i = 1, ndi
+            do j = 1, ndi
                 if (i .eq. j) dsde(i,j) = al
                 if (i .ne. j) dsde(i,j) = la
-20          continue
-        do 30 i = ndi+1, ndt
-            do 30 j = ndi+1, ndt
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
                 if (i .eq. j) dsde(i,j) = deux* mu
-30          continue
+            end do
+        end do
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsmid(mod, crit, mater, nvi, epsd,&
                   deps, sigd, sigf, vind, vinf,&
                   noconv, aredec, stopnc, niter, epscon)
@@ -105,17 +105,17 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 ! -> MISE A ZERO DES DATAS
 !
-    do 10 i = 1, nr
+    do i = 1, nr
         ddy(i) = 0.d0
         dy(i) = 0.d0
         yd(i) = 0.d0
         yf(i) = 0.d0
- 10 continue
+    end do
 !
 !
-    do 15 i = 1, ndt
+    do i = 1, ndt
         gd(i) = 0.d0
- 15 continue
+    end do
 !
 !
 ! -> INITIALISATION DE YD PAR LES CHAMPS (SIGD, VIND, ZERO)
@@ -124,9 +124,9 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     yd(ndt+1) = vind(1)
     yd(ndt+2) = vind(2)
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         yd(ndt+2+i) = vind(i+2)
- 20 continue
+    end do
     yd(2*ndt+3) = 0.d0
     yd(2*ndt+4) = 0.d0
 !
@@ -166,15 +166,15 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 !
     if ((yf(1)+yf(2)+yf(3)) .ge. -qinit) then
-        do 31 i = 1, ndi
+        do i = 1, ndi
             sigf(i) = -qinit/3.d0+pa/100.0d0
- 31     continue
-        do 32 i = ndi+1, ndt
+        end do
+        do i = ndi+1, ndt
             sigf(i) = 0.d0
- 32     continue
+        end do
         call lceqvn(nvi-1, vind, vinf)
         vinf(nvi) = 0.d0
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -182,12 +182,12 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !    CALCUL DE SIGNE(S:DEPSDP)
 ! ET CALCUL DU JACOBIEN DU SYSTEME A T+DT :  DRDY(DY)
 !
-    do 50 i = 1, nr
+    do i = 1, nr
         r(i) = 0.d0
-        do 60 j = 1, nr
+        do j = 1, nr
             drdy(i,j) = 0.d0
- 60     continue
- 50 continue
+        end do
+    end do
 !
     call cjsjid(mod, mater, epsd, deps, yd,&
                 yf, gd, r, signe, drdy)
@@ -203,10 +203,10 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 !   ESTIMATION NORMALE AU POINT YD + DY
 !
-    do 24 i = 1, ndt
+    do i = 1, ndt
         sigf(i) = yd(i)+dy(i)
         xf(i) = yd(ndt+2+i)+dy(ndt+2+i)
- 24 continue
+    end do
     call cjsnor(mater, sigf, xf, nor1, devnu1,&
                 tra1)
 !
@@ -228,17 +228,17 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 !   ESTIMATION NORMALE AU POINT YD + RELAX*DY
 !
-        do 25 i = 1, ndt
+        do i = 1, ndt
             sigf(i) = yd(i)+dy(i)+relax(essai)*ddy(i)
             xf(i) = yd(ndt+2+i)+dy(ndt+2+i)+ relax(essai)*ddy(ndt+2+i)
- 25     continue
+        end do
         call cjsnor(mater, sigf, xf, nor2, devnu2,&
                     tra2)
 !
         rotagd(essai) = 0.d0
-        do 26 i = 1, ndt
+        do i = 1, ndt
             rotagd(essai) = rotagd(essai)+nor1(i)*nor2(i)
- 26     continue
+        end do
         rotagd(essai) = rotagd(essai)/(nor1(ndt+1)*nor2(ndt+1))
 !
         if (abs(rotagd(essai)) .lt. tolrot .and. (.not.devnu2) .and. ( .not.tra2)) then
@@ -252,10 +252,10 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !  LA RELAXATION SUR LES NORMALES
 !
 !
-    do 42 i = 1, nr
+    do i = 1, nr
         dy(i) = dy(i)+relax(essai)*ddy(i)
         yf(i) = yd(i)+dy(i)
- 42 continue
+    end do
 !
 !
 !
@@ -311,12 +311,12 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
     call lceqvn(ndt, yf(1), sigf)
     vinf(1) = yf(ndt+1)
     vinf(2) = yf(ndt+2)
-    do 250 i = 1, ndt
+    do i = 1, ndt
         vinf(2+i) = yf(ndt+2+i)
-250 continue
+    end do
     vinf(nvi-1) = signe
 !
 !
-9999 continue
+999 continue
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pemica(champ, long, vr, nbmail, nummai,&
                   orig, iorig, icage)
     implicit none
@@ -72,7 +72,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    
+!
     champ2 = champ
     rddg = r8rddg()
     epsi = 1.d-12
@@ -98,7 +98,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     ASSERT(long.ge.16)
     first = .true.
     nbgr = nbgrel(ligrel)
-    do 10 j = 1, nbgr
+    do j = 1, nbgr
         mode=celd(celd(4+j) +2)
         if (mode .ne. 0) then
 !           --- NOMBRE D'ELEMENTS DANS LE MODE LOCAL ---
@@ -112,7 +112,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
             endif
             first = .false.
         endif
- 10 end do
+    end do
     ASSERT(longt.le.long)
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
@@ -124,12 +124,12 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 !
     call jeveuo(champ2//'.CELV', 'L', vr=celv)
     if (nbmail .le. 0) then
-        do 102 j = 1, nbgr
+        do j = 1, nbgr
             mode=celd(celd(4+j) +2)
             if (mode .eq. 0) goto 102
             nel = nbelem(ligrel,j)
             idecgr=celd(celd(4+j)+8)
-            do 104 k = 1, nel
+            do k = 1, nel
 !
 !              -- MASSE DE LA STRUCTURE ----
                 i = 1
@@ -137,22 +137,23 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                 vr(1) = vr(1)+ masse
 !
 !              -- CENTRE DE GRAVITE DE LA STRUCTURE ----
-                do 106 i = 2, 4
+                do i = 2, 4
                     vr(i)=vr(i)+celv(idecgr+(k-1)*longt+i-1)*&
                     masse
-106             continue
-104         continue
-102     continue
+                end do
+            end do
+102         continue
+        end do
     else
         call jeveuo(ligrel//'.LIEL', 'L', jligr)
-        do 110 im = 1, nbmail
-            do 112 j = 1, nbgr
+        do im = 1, nbmail
+            do j = 1, nbgr
                 mode=celd(celd(4+j) +2)
                 if (mode .eq. 0) goto 112
                 call jeveuo(jexnum(ligrel//'.LIEL', j), 'L', jgr)
                 nel = nbelem(ligrel,j)
                 idecgr=celd(celd(4+j)+8)
-                do 114 k = 1, nel
+                do k = 1, nel
                     iel = zi(jgr+k-1)
                     if (iel .ne. nummai(im)) goto 114
 !
@@ -162,14 +163,17 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                     vr(1) = vr(1)+ masse
 !
 !                 -- CENTRE DE GRAVITE DE LA STRUCTURE ----
-                    do 116 i = 2, 4
+                    do i = 2, 4
                         vr(i)=vr(i)+celv(idecgr+(k-1)*longt+i-1)&
                         *masse
-116                 continue
+                    end do
                     goto 110
-114             continue
-112         continue
-110     continue
+114                 continue
+                end do
+112             continue
+            end do
+110         continue
+        end do
     endif
 !
 !     --- CENTRE DE GRAVITE ---
@@ -202,26 +206,26 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 !           Iyz = celv(idecgr+(k-1)*longt+9)
 !
     if (nbmail .le. 0) then
-        do 202 j = 1, nbgr
+        do j = 1, nbgr
             mode=celd(celd(4+j) +2)
             if (mode .eq. 0) goto 202
             nel = nbelem(ligrel,j)
             idecgr=celd(celd(4+j)+8)
-            do 204 k = 1, nel
+            do k = 1, nel
 !
                 masse = celv(idecgr+(k-1)*longt)
 !
                 dx = celv(idecgr+(k-1)*longt+1) - vr(2)
                 dy = celv(idecgr+(k-1)*longt+2) - vr(3)
                 dz = celv(idecgr+(k-1)*longt+3) - vr(4)
-!                
-                vr(5) = vr(5)   + celv(idecgr+(k-1)*longt+4) + masse*(dy*dy + dz*dz)
-                vr(6) = vr(6)   + celv(idecgr+(k-1)*longt+5) + masse*(dx*dx + dz*dz)
-                vr(7) = vr(7)   + celv(idecgr+(k-1)*longt+6) + masse*(dx*dx + dy*dy)
-                vr(8) = vr(8)   + celv(idecgr+(k-1)*longt+7) + masse*dx*dy
-                vr(9) = vr(9)   + celv(idecgr+(k-1)*longt+8) + masse*dx*dz
+!
+                vr(5) = vr(5) + celv(idecgr+(k-1)*longt+4) + masse*(dy*dy + dz*dz)
+                vr(6) = vr(6) + celv(idecgr+(k-1)*longt+5) + masse*(dx*dx + dz*dz)
+                vr(7) = vr(7) + celv(idecgr+(k-1)*longt+6) + masse*(dx*dx + dy*dy)
+                vr(8) = vr(8) + celv(idecgr+(k-1)*longt+7) + masse*dx*dy
+                vr(9) = vr(9) + celv(idecgr+(k-1)*longt+8) + masse*dx*dz
                 vr(10) = vr(10) + celv(idecgr+(k-1)*longt+9) + masse*dy*dz
-                
+!
                 if (icage .ne. 0) then
                     ixpr2 = celv(idecgr+(k-1)*longt+10)
                     iypr2 = celv(idecgr+(k-1)*longt+11)
@@ -232,24 +236,25 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                     ixz = celv(idecgr+(k-1)*longt+8)
                     iyz = celv(idecgr+(k-1)*longt+9)
                     ASSERT(long.ge.27)
-                    vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) &
-                                    + 2.0d0*dx*ixy
-                    vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) &
-                                    + 2.0d0*dy*ixy
+                    vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) + 2.0d0&
+                             &*dx*ixy
+                    vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) + 2.0d0&
+                             &*dy*ixy
                 endif
 !
-204         continue
-202     continue
+            end do
+202         continue
+        end do
     else
         call jeveuo(ligrel//'.LIEL', 'L', jligr)
-        do 210 im = 1, nbmail
-            do 212 j = 1, nbgr
+        do im = 1, nbmail
+            do j = 1, nbgr
                 mode=celd(celd(4+j) +2)
                 if (mode .eq. 0) goto 212
                 call jeveuo(jexnum(ligrel//'.LIEL', j), 'L', jgr)
                 nel = nbelem(ligrel,j)
                 idecgr=celd(celd(4+j)+8)
-                do 214 k = 1, nel
+                do k = 1, nel
                     iel = zi(jgr+k-1)
                     if (iel .ne. nummai(im)) goto 214
 !
@@ -259,11 +264,11 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                     dy = celv(idecgr+(k-1)*longt+2) - vr(3)
                     dz = celv(idecgr+(k-1)*longt+3) - vr(4)
 !
-                    vr(5)  = vr(5)  + celv(idecgr+(k-1)*longt+4) + masse*(dy*dy + dz*dz)
-                    vr(6)  = vr(6)  + celv(idecgr+(k-1)*longt+5) + masse*(dx*dx + dz*dz)
-                    vr(7)  = vr(7)  + celv(idecgr+(k-1)*longt+6) + masse*(dx*dx + dy*dy)
-                    vr(8)  = vr(8)  + celv(idecgr+(k-1)*longt+7) + masse*dx*dy
-                    vr(9)  = vr(9)  + celv(idecgr+(k-1)*longt+8) + masse*dx*dz
+                    vr(5) = vr(5) + celv(idecgr+(k-1)*longt+4) + masse*(dy*dy + dz*dz)
+                    vr(6) = vr(6) + celv(idecgr+(k-1)*longt+5) + masse*(dx*dx + dz*dz)
+                    vr(7) = vr(7) + celv(idecgr+(k-1)*longt+6) + masse*(dx*dx + dy*dy)
+                    vr(8) = vr(8) + celv(idecgr+(k-1)*longt+7) + masse*dx*dy
+                    vr(9) = vr(9) + celv(idecgr+(k-1)*longt+8) + masse*dx*dz
                     vr(10) = vr(10) + celv(idecgr+(k-1)*longt+9) + masse*dy*dz
                     if (icage .ne. 0) then
                         ixpr2 = celv(idecgr+(k-1)*longt+10)
@@ -275,15 +280,18 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                         ixz = celv(idecgr+(k-1)*longt+8)
                         iyz = celv(idecgr+(k-1)*longt+9)
                         ASSERT(long.ge.27)
-                        vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) &
-                                        + 2.0d0*dx*ixy
-                        vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) &
-                                        + 2.0d0*dy*ixy
+                        vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) + 2&
+                                 &.0d0*dx*ixy
+                        vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) + 2&
+                                 &.0d0*dy*ixy
                     endif
                     goto 210
-214             continue
-212         continue
-210     continue
+214                 continue
+                end do
+212             continue
+            end do
+210         continue
+        end do
     endif
 !
     if (iorig .eq. 1) then
@@ -346,7 +354,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         v3(1) = vecpro(1,2)
         v3(2) = vecpro(2,2)
         v3(3) = vecpro(3,2)
-         call orien2(v1, v2, v3, angl)
+        call orien2(v1, v2, v3, angl)
         vr(11) = valpro(1)
         vr(12) = valpro(2)
         vr(13) = valpro(3)

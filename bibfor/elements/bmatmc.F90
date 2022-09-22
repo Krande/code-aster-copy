@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
                   idfde, nno, nharm, jacob, b)
 !.======================================================================
@@ -42,7 +42,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !                                   D'INTEGRATION IGAU.
 !
 !.========================= DEBUT DES DECLARATIONS ====================
-
+!
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -78,7 +78,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !
 ! ----    AFFECTATION DE LA MATRICE (B)
 !         -----------------------------
-        do 20 i = 1, nno
+        do i = 1, nno
 !
             j= 3*(i-1) + 1
 !
@@ -92,7 +92,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
             b(6,j+1) = dfdz(i)
             b(6,j+2) = dfdy(i)
 !
-20      continue
+        end do
 !
 !       -------------------------------------------------------
 ! ----  CAS MASSIF 2D CONTRAINTES PLANES ET DEFORMATIONS PLANES
@@ -110,7 +110,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !
 ! ----    AFFECTATION DE LA MATRICE (B)
 !         -----------------------------
-        do 30 i = 1, nno
+        do i = 1, nno
 !
             j= 2*(i-1) + 1
 !
@@ -119,7 +119,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
             b(4,j) = dfdy(i)
             b(4,j+1) = dfdx(i)
 !
-30      continue
+        end do
 !
 !       ------------------------
 ! ----  CAS MASSIF AXISYMETRIQUE
@@ -130,10 +130,10 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
         k = (igau-1)*nno
         rayon = zero
 !
-        do 40 i = 1, nno
+        do i = 1, nno
             idecno = 2*(i-1)
             rayon = rayon + zr(ivf+i+k-1)*xyz(1+idecno)
-40      continue
+        end do
 !
 ! ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
@@ -144,18 +144,18 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
         jacob = jacob*rayon
 !
         if (rayon .eq. zero) then
-            do 50 i = 1, nno
+            do i = 1, nno
                 b3j(i) = dfdx(i)
-50          continue
+            end do
         else
-            do 60 i = 1, nno
+            do i = 1, nno
                 b3j(i) = zr(ivf+i+k-1)/rayon
-60          continue
+            end do
         endif
 !
 ! ----    AFFECTATION DE LA MATRICE (B)
 !         -----------------------------
-        do 70 i = 1, nno
+        do i = 1, nno
 !
             j= 2*(i-1) + 1
 !
@@ -165,7 +165,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
             b(4,j) = dfdy(i)
             b(4,j+1) = dfdx(i)
 !
-70      continue
+        end do
 !
 !       ------------------
 ! ----  CAS MASSIF FOURIER
@@ -175,10 +175,10 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
         k = (igau-1)*nno
         rayon = zero
 !
-        do 80 i = 1, nno
+        do i = 1, nno
             idecno = 2*(i-1)
             rayon = rayon + zr(ivf+i+k-1)*xyz(1+idecno)
-80      continue
+        end do
 !
 ! ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
@@ -191,7 +191,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !
 ! ----    AFFECTATION DE LA MATRICE (B)
 !         -----------------------------
-        do 90 i = 1, nno
+        do i = 1, nno
 !
             j= 3*(i-1) + 1
 !
@@ -206,7 +206,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
             b(6,j+1) = zr(ivf+i+k-1)*nharay
             b(6,j+2) = dfdy(i)
 !
-90      continue
+        end do
     else
         call utmess('F', 'ELEMENTS_11')
     endif

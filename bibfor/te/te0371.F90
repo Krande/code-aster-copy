@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0371(option, nomte)
 !.......................................................................
     implicit none
@@ -47,8 +47,8 @@ subroutine te0371(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfrde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfrde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -64,16 +64,19 @@ subroutine te0371(option, nomte)
 !
 !     INITIALISATION DE LA MATRICE
 !
-    do 112 k = 1, 2
-        do 112 l = 1, 2
-            do 112 i = 1, nno
-                do 112 j = 1, i
+    do k = 1, 2
+        do l = 1, 2
+            do i = 1, nno
+                do j = 1, i
                     a(k,l,i,j) = 0.d0
-112              continue
+                end do
+            end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 113 ipg = 1, npg2
+    do ipg = 1, npg2
 !
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
@@ -82,12 +85,12 @@ subroutine te0371(option, nomte)
         dxdk=0.d0
         dyde=0.d0
         dydk=0.d0
-        do 100 i = 1, nno
+        do i = 1, nno
             dxde=dxde+zr(igeom+3*(i-1))*zr(idfrde+kdec+(i-1)*ndim)
             dxdk=dxdk+zr(igeom+3*(i-1))*zr(idfrde+kdec+(i-1)*ndim+1)
             dyde=dyde+zr(igeom+3*(i-1)+1)*zr(idfrde+kdec+(i-1)*ndim)
             dydk=dydk+zr(igeom+3*(i-1)+1)*zr(idfrde+kdec+(i-1)*ndim+1)
-100      continue
+        end do
         jac = dxde*dydk-dxdk*dyde
         poids = abs(jac)*zr(ipoids+ipg-1)
 !
@@ -95,31 +98,34 @@ subroutine te0371(option, nomte)
 !       CALCUL DU TERME RHO * PHI * Z      C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !
-        do 130 ino = 1, nno
-            do 140 jno = 1, ino
-                a(1,2,ino,jno) = a(1,2,ino,jno) + poids * rho(1) * zr(ivf+ldec+ino-1) * &
-                                 zr(ivf+ldec+jno-1)
-140          continue
-130      continue
-113  continue
+        do ino = 1, nno
+            do jno = 1, ino
+                a(1,2,ino,jno) = a(1,2,ino,jno) + poids * rho(1) * zr(ivf+ldec+ino-1) * zr(ivf+ld&
+                                 &ec+jno-1)
+            end do
+        end do
+    end do
 !
-    do 151 ino = 1, nno
-        do 152 jno = 1, ino
+    do ino = 1, nno
+        do jno = 1, ino
             a(2,1,ino,jno) = a(1,2,ino,jno)
-152      continue
-151  end do
+        end do
+    end do
 !
 ! PASSAGE DU STOCKAGE RECTANGULAIRE AU STOCKAGE TRIANGULAIRE
 !
     ijkl = 0
     ik = 0
-    do 160 k = 1, 2
-        do 160 l = 1, 2
-            do 160 i = 1, nno
+    do k = 1, 2
+        do l = 1, 2
+            do i = 1, nno
                 ik = ((2*i+k-3) * (2*i+k-2)) / 2
-                do 160 j = 1, i
+                do j = 1, i
                     ijkl = ik + 2 * (j-1) + l
                     zr(imatuu+ijkl-1) = a(k,l,i,j)
-160              continue
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

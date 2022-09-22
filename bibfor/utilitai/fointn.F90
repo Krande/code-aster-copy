@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fointn(ipif, nomf, rvar, inume, epsi,&
                   resu, ier)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/focoli.h"
 #include "asterfort/folocx.h"
 #include "asterfort/fopro1.h"
@@ -29,6 +28,7 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: ipif, inume, ier
     real(kind=8) :: rvar, epsi, resu
     character(len=*) :: nomf
@@ -44,7 +44,7 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: lprol, lvar, nbpt, jpro, nbpcum, i, ipt, lfon
-    character(len=1) ::  coli
+    character(len=1) :: coli
     character(len=16) :: prolgd
     character(len=19) :: nomfon
     character(len=24) :: interp, chprol, chvale
@@ -63,9 +63,9 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
         prolgd = zk24(jpro+6+ (2*inume))
         interp = zk24(jpro+6+ (2*inume-1))
         nbpcum = 0
-        do 10 i = 1, inume - 1
+        do i = 1, inume - 1
             nbpcum = nbpcum + zi(zi(ipif+3)+i) - zi(zi(ipif+3)+i-1)
-10      continue
+        end do
         nbpt = zi(zi(ipif+3)+inume) - zi(zi(ipif+3)+inume-1)
         lvar = zi(ipif+2) + nbpcum
     endif
@@ -75,12 +75,12 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
 !
     call folocx(zr(lvar), nbpt, rvar, prolgd, ipt,&
                 epsi, coli, ier)
-    if (ier .ne. 0) goto 9999
+    if (ier .ne. 0) goto 999
     call focoli(ipt, coli, interp, zr(lvar), zr(lfon),&
                 rvar, resu, ier)
-    if (ier .ne. 0) goto 9999
+    if (ier .ne. 0) goto 999
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

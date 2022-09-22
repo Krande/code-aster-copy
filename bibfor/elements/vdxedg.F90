@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
                   edgpg, effgt)
     implicit none
@@ -76,7 +76,7 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
     nb2  =zi(lzi-1+2)
     npgsr=zi(lzi-1+3)
     npgsn=zi(lzi-1+4)
-
+!
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
     call jevech('PCACOQU', 'L', jcara)
@@ -94,7 +94,7 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
 !
 !  ---- MEMBRANE ET CISAILLEMENT
 !
-    do 150 intsr = 1, npgsr
+    do intsr = 1, npgsr
         call mahsms(0, nb1, xi, un, intsr,&
                     zr(lzr), epais, vectn, vectg, vectt,&
                     hsfm, hss)
@@ -105,11 +105,11 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
         call btdmsr(nb1, nb2, un, intsr, zr(lzr),&
                     epais, vectpt, hsj1m, hsj1s, btdm,&
                     btds)
-150  continue
+    end do
 !
 !  ---- FLEXION
 !
-    do 200 intsn = 1, npgsn
+    do intsn = 1, npgsn
 !
         call mahsf(1, nb1, xi, un, intsn,&
                    zr(lzr), epais, vectn, vectg, vectt,&
@@ -129,19 +129,19 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
         call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
                     btdm1, btdf, btds, btild)
 !
-        do 10 i = 1, 5
+        do i = 1, 5
             epsim(i)=zero
-            do 20 k = 1, 5*nb1+2
+            do k = 1, 5*nb1+2
                 epsim(i)=epsim(i)+btild1(i,k)*depl(k)
-20          continue
-10      continue
+            end do
+        end do
 !
-        do 30 i = 1, 5
+        do i = 1, 5
             epsif(i)=zero
-            do 40 k = 1, 5*nb1+2
+            do k = 1, 5*nb1+2
                 epsif(i)=epsif(i)+btild(i,k)*depl(k)
-40          continue
-30      continue
+            end do
+        end do
         epsif(1)=epsif(1)/epais
         epsif(2)=epsif(2)/epais
         epsif(3)=epsif(3)/epais
@@ -163,7 +163,7 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
         edgpg((intsn-1)*8+7)=epsif(4)
         edgpg((intsn-1)*8+8)=epsif(5)
 !
-200  continue
+    end do
     if (option(1:9) .eq. 'DEGE_ELNO') then
         call vddege(nomte, nb2, npgsn, zr(lzr), edgpg,&
                     effgt)
@@ -173,16 +173,16 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR :
 !     --------------------------------------------------------------
     k = 0
-    do 110 intsr = 1, npgsr
+    do intsr = 1, npgsr
         call vectgt(0, nb1, xi, zero, intsr,&
                     zr(lzr), epais, vectn, vectg, vectt)
 !
-        do 120 j = 1, 3
-            do 130 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k = k + 1
                 zr(lzr+2000+k-1) = vectt(i,j)
-130          continue
-120      continue
-110  continue
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
                   mater, seuil, vinf)
     implicit none
@@ -56,18 +56,18 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
 ! --------------------------------------------------------------------
 ! --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
 ! --------------------------------------------------------------------
-    do 10 i = 1, ndt
+    do i = 1, ndt
         sigt(i) = -sigf(i)
         sigu(i) = -sigd(i)
-10  continue
+    end do
 !
 ! --------------------------------------------------------------------
 ! --- VERIFICATION D'UN ETAT INITIAL PLASTIQUEMENT ADMISSIBLE -----
 ! --------------------------------------------------------------------
     somme = zero
-    do 20 i = 1, nvi
+    do i = 1, nvi
         somme = somme + vind(i)
-20  end do
+    end do
     if (abs(somme) .lt. r8prem()) then
         i1 = sigu(1)+sigu(2)+sigu(3)
         call lcdevi(sigu, devsig)

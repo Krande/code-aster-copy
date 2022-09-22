@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zerof2(func, x0, xap, epsi, nitmax,&
                   solu, iret, n)
     implicit none
@@ -82,7 +82,7 @@ subroutine zerof2(func, x0, xap, epsi, nitmax,&
 !
 !     DEBUT DES ITERATIONS
 !
-10  continue
+ 10 continue
     if (fy .gt. 0.d0) then
         a = x
         b = y
@@ -90,7 +90,7 @@ subroutine zerof2(func, x0, xap, epsi, nitmax,&
         fb = fy
 !       ND = INT(SQRT(DBLE(NITMAX)))
         nd = 3
-20      continue
+ 20     continue
         if ((n-(n/nd)*nd) .eq. 0) then
             z = (a+b)*0.5d0
         else
@@ -142,46 +142,46 @@ subroutine zerof2(func, x0, xap, epsi, nitmax,&
     endif
     goto 10
 !
-90  continue
+ 90 continue
     solu=z
-    goto 9999
+    goto 999
 !
-98  continue
+ 98 continue
     iret = 1
-    goto 9999
+    goto 999
 !
-99  continue
-    do 21 k = 1, 20
+ 99 continue
+    do k = 1, 20
         xdbg(k) = xap/(21-k)
         fdbg(k) = func((xap)/(21-k))
-21  end do
+    end do
     vali = n
     valr (1) = x
     valr (2) = fx
     valr (3) = y
     valr (4) = fy
-    do 30 k = 1, 20
+    do k = 1, 20
         valr (4+k) = xdbg(k)
         valr (24+k) = fdbg(k)
-30  end do
+    end do
 !
     call utmess('F', 'ELEMENTS5_39', si=vali, nr=44, valr=valr)
 !
-100  continue
-    do 22 k = 1, 20
+100 continue
+    do k = 1, 20
         xdbg(k) = xap/(21-k)
         fdbg(k) = func((xap)/(21-k))
-22  end do
+    end do
     vali = n
     valr (1) = x
     valr (2) = fx
     valr (3) = y
     valr (4) = fy
-    do 31 k = 1, 20
+    do k = 1, 20
         valr (4+k) = xdbg(k)
         valr (24+k) = fdbg(k)
-31  end do
+    end do
     call utmess('F', 'ELEMENTS5_40', si=vali, nr=44, valr=valr)
 !
-9999  continue
+999 continue
 end subroutine

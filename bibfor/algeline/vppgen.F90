@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
                   raideg, vect, neq, nbvect, iddl)
     implicit none
@@ -62,21 +62,21 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
 !     ----------------- CALCUL DE LA MASSE GENERALISEE -----------------
 !     ------------------------------------------------------------------
     if (lmasse .ne. 0) then
-        do 100 ivect = 1, nbvect
+        do ivect = 1, nbvect
             call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1,&
                         .false._1)
             masseg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
-100      continue
+        end do
     endif
 !     ------------------------------------------------------------------
 !     --------------- CALCUL DE L'AMORTISSEMENT GENERALISE -------------
 !     ------------------------------------------------------------------
     if (lamor .ne. 0) then
-        do 200 ivect = 1, nbvect
+        do ivect = 1, nbvect
             call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1,&
                         .false._1)
             amorg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
-200      continue
+        end do
     else
         call vecini(nbvect, rzero, amorg)
     endif
@@ -84,14 +84,14 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
 !     ---------------- CALCUL DE LA RAIDEUR GENERALISEE ----------------
 !     ------------------------------------------------------------------
     if (lraide .ne. 0) then
-        do 300 ivect = 1, nbvect
-            do 310 ieq = 1, neq
+        do ivect = 1, nbvect
+            do ieq = 1, neq
                 zr(laux1+ieq)= vect(ieq,ivect)*iddl(ieq)
-310          continue
+            end do
             call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1,&
                         .false._1)
             raideg(ivect) = ddot(neq,zr(laux+1),1,zr(laux1+1),1)
-300      continue
+        end do
     endif
 !     ------------------------------------------------------------------
     call jedetr(vecaux)

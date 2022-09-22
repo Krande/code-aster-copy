@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
-                  ncmp, nomcmp,  si, sr, sc, sk, &
-                        lnomcmp, vi, vr, vc, vk         )
+                  ncmp, nomcmp, si, sr, sc,&
+                  sk, lnomcmp, vi, vr, vc,&
+                  vk)
 ! aslint: disable=W1306
 !-----------------------------------------------------------------------
     implicit none
@@ -42,11 +43,11 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     character(len=8) :: nomgd
     character(len=6) :: mocle
     integer, intent(in) :: ncmp
-    character(len=*), intent(in), optional :: nomcmp, sk, lnomcmp(ncmp), vk(ncmp)   
-    integer, intent(in), optional :: si, vi(ncmp) 
-    real(kind=8), intent(in), optional :: sr, vr(ncmp) 
-    complex(kind=8), intent(in), optional :: sc, vc(ncmp)   
-!     
+    character(len=*), intent(in), optional :: nomcmp, sk, lnomcmp(ncmp), vk(ncmp)
+    integer, intent(in), optional :: si, vi(ncmp)
+    real(kind=8), intent(in), optional :: sr, vr(ncmp)
+    complex(kind=8), intent(in), optional :: sc, vc(ncmp)
+!
 !   Liste des variables locales utilisées pour récuperer les arguments 
     character(len=24) :: licmp(ncmp), kcmp(ncmp)
     integer :: icmp(ncmp)
@@ -88,7 +89,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
 !
 !-----------------------------------------------------------------------
     call jemarq()
-! 
+!
 !   DETERMINATION DU TYPE DE CARTE A AFFECTER 
     ASSERT(EXCLUS2(si,vi))
     ASSERT(EXCLUS2(sr,vr))
@@ -98,53 +99,53 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
         j=1
     else if (UN_PARMI2(sr,vr)) then
         j=2
-    else if (UN_PARMI2(sc,vc)) then   
+    else if (UN_PARMI2(sc,vc)) then
         j=3
     else
         ASSERT(UN_PARMI2(sk,vk))
         j=4
-    endif    
+    endif 
 !
 !   AFFECTATION DES VARIABLES LOCALES EN FONCTION DES ARGUMENTS  
-    if ( ncmp .gt. 1 ) then
+    if (ncmp .gt. 1) then
         ASSERT(UN_PARMI4(vi,vr,vc,vk))
-        do i=1,ncmp 
+        do i = 1, ncmp
             licmp(i)=lnomcmp(i)
-        end do       
-        select case (j) 
+        end do 
+        select case (j)
         case (1)
-             do i=1,ncmp
-                 icmp(i)=vi(i)
-             end do    
+            do i = 1, ncmp
+                icmp(i)=vi(i)
+            end do 
         case (2)
-             do i=1,ncmp
-                 rcmp(i)=vr(i)
-             end do               
+            do i = 1, ncmp
+                rcmp(i)=vr(i)
+            end do 
         case (3)
-             do i=1,ncmp
-                 ccmp(i)=vc(i)
-             end do               
+            do i = 1, ncmp
+                ccmp(i)=vc(i)
+            end do 
         case (4)
-             do i=1,ncmp
-                 kcmp(i)=vk(i)
-             end do               
-        end select       
+            do i = 1, ncmp
+                kcmp(i)=vk(i)
+            end do 
+        end select 
     else
         ASSERT(UN_PARMI4(si,sr,sc,sk))
         licmp(1) = nomcmp
-        select case (j) 
+        select case (j)
         case (1)
-             icmp(1)=si
+            icmp(1)=si
         case (2)
-             rcmp(1)=sr
+            rcmp(1)=sr
         case (3)
-             ccmp(1)=sc
+            ccmp(1)=sc
         case (4)
-             kcmp(1)=sk               
+            kcmp(1)=sk               
         end select
     endif
-!   
-!   
+!
+!
     mocle = moclez
     nomgd = nomgdz
 !
@@ -189,29 +190,29 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     call jeveuo(nomca2(1:19)//'.VALV', 'E', jvalv)
     call jelira(nomca2(1:19)//'.VALV', 'TYPE', cval=type)
     call jelira(nomca2(1:19)//'.VALV', 'LTYP', ltyp)
-    do 1,i = 1,ncmp
-    zk8(jncmp-1+i) = licmp(i)
-    if (type(1:1) .eq. 'R') then
-        zr(jvalv-1+i) = rcmp(i)
-    endif
-    if (type(1:1) .eq. 'C') then
-        zc(jvalv-1+i) = ccmp(i)
-    endif
-    if (type(1:1) .eq. 'I') then
-        zi(jvalv-1+i) = icmp(i)
-    endif
-    if (type(1:1) .eq. 'K') then
-        if (ltyp .eq. 8) then
-            zk8(jvalv-1+i) = kcmp(i)
-        else if (ltyp.eq.16) then
-            zk16(jvalv-1+i) = kcmp(i)
-        else if (ltyp.eq.24) then
-            zk24(jvalv-1+i) = kcmp(i)
-        else
-            ASSERT(.false.)
+    do i = 1, ncmp
+        zk8(jncmp-1+i) = licmp(i)
+        if (type(1:1) .eq. 'R') then
+            zr(jvalv-1+i) = rcmp(i)
         endif
-    endif
-    1 end do
+        if (type(1:1) .eq. 'C') then
+            zc(jvalv-1+i) = ccmp(i)
+        endif
+        if (type(1:1) .eq. 'I') then
+            zi(jvalv-1+i) = icmp(i)
+        endif
+        if (type(1:1) .eq. 'K') then
+            if (ltyp .eq. 8) then
+                zk8(jvalv-1+i) = kcmp(i)
+            else if (ltyp.eq.16) then
+                zk16(jvalv-1+i) = kcmp(i)
+            else if (ltyp.eq.24) then
+                zk24(jvalv-1+i) = kcmp(i)
+            else
+                ASSERT(.false.)
+            endif
+        endif
+    end do
 !
 !     -- ON NOTE DANS LA CARTE LES VALEURS VOULUES :
 !

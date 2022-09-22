@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0288(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -26,18 +26,18 @@ subroutine te0288(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
-#include "asterfort/ltequa.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/teattr.h"
+#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xcgfvo.h"
 #include "asterfort/xgelem.h"
 #include "asterfort/xsifle.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/tecael.h"
     character(len=16) :: option, nomte
 !
 !
@@ -70,7 +70,7 @@ subroutine te0288(option, nomte)
     character(len=16) :: compor(4), nomres(3)
     aster_logical :: grand, incr
 !
-
+!
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
@@ -84,13 +84,13 @@ subroutine te0288(option, nomte)
 !
 !     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
-    do 10 i = 1, nnop
+    do i = 1, nnop
         thet = 0.d0
-        do 11 j = 1, ndim
+        do j = 1, ndim
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
- 11     continue
+        end do
         if (thet .lt. r8prem()) compt = compt + 1
- 10  continue
+    end do
     if (compt .eq. nnop) goto 999
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
@@ -105,9 +105,9 @@ subroutine te0288(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PGTHETA', 'E', igthet)
 !
-    do 50 i = 1, 4
+    do i = 1, 4
         compor(i) = zk16(icomp+i-1)
- 50  continue
+    end do
 !
     incr = compor(4).eq.'COMP_INCR'
     grand = compor(3).eq.'GROT_GDEP'
@@ -131,15 +131,14 @@ subroutine te0288(option, nomte)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PBASLOR', 'L', jbaslo)
-    if(nfe.gt.0) call jevech('PSTANO', 'L', jstno)
+    if (nfe .gt. 0) call jevech('PSTANO', 'L', jstno)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
+    if (enr(1:2) .eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if (ibid .eq. 0  .and. ltequa(elrefp,enr)) &
-    call jevech('PPMILTO', 'L', jpmilt)
+    if (ibid .eq. 0 .and. ltequa(elrefp,enr)) call jevech('PPMILTO', 'L', jpmilt)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
     if (.not.iselli(elrefp)) then
@@ -148,9 +147,8 @@ subroutine te0288(option, nomte)
         irese=0
     endif
     fami_se=fami(ndim+irese)
-    if (nfe.gt.0) then
-      if (ndim.eq.3 .and. &
-        count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2).eq.0) fami_se='XGEO'
+    if (nfe .gt. 0) then
+        if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2) .eq. 0) fami_se='XGEO'
     endif
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, nno=nno, npg=npg)
 !
@@ -161,12 +159,12 @@ subroutine te0288(option, nomte)
     nse=zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -179,16 +177,17 @@ subroutine te0288(option, nomte)
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112         continue
-111     continue
+            end do
+        end do
 !
         call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
                     zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst),&
-                    igthet, fno, nfiss, jheavn, jstno, incr)
+                    igthet, fno, nfiss, jheavn, jstno,&
+                    incr)
 !
 !
-110  continue
+    end do
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G SUR LES LEVRES
@@ -207,23 +206,23 @@ subroutine te0288(option, nomte)
         if (ndim .eq. 3) nompar(3)='Z'
         if (ndim .eq. 3) nompar(4)='INST'
         if (ndim .eq. 2) nompar(3)='INST'
-        do 70 i = 1, nnop
-            do 80 j = 1, ndim
+        do i = 1, nnop
+            do j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
- 80         continue
+            end do
             valpar(ndim+1)= zr(itemps)
             call fointe('FM', zk8(ipref), 4, nompar, valpar,&
                         presn(i), icode)
- 70     continue
+        end do
     endif
 !
 !     SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
-    do 90 i = 1, nnop
+    do i = 1, nnop
         if (option .eq. 'CALC_G_XFEM') pres = abs(zr(ipres-1+i))
         if (option .eq. 'CALC_G_XFEM_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
- 90  continue
+    end do
     if (compt .eq. nnop) goto 999
 !
 !     PARAMETRES PROPRES A X-FEM
@@ -238,11 +237,11 @@ subroutine te0288(option, nomte)
     nptf=zi(jlongc-1+3)
     if (ninter .lt. ndim) goto 999
 !
-    do 20 i = 1, nface
-        do 21 j = 1, nptf
+    do i = 1, nface
+        do j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
- 21      continue
- 20  continue
+        end do
+    end do
 !
 !     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS !!
 !     LE MATÉRIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
@@ -259,14 +258,14 @@ subroutine te0288(option, nomte)
 !
 !     BOUCLE SUR LES FACETTES
 !
-    do 200 ifa = 1, nface
-        call xsifle(ndim, ifa, jptint, cface,&
-                    igeom, nfh, jheavn, singu, nfe, ddlc,&
-                    ddlm, jlsn, jlst, jstno, ipres, ipref, itemps,&
-                    idepl, nnop, valres, zr( jbaslo), ithet,&
-                    nompar, option, igthet, jbasec,&
-                    contac)
-200  continue
+    do ifa = 1, nface
+        call xsifle(ndim, ifa, jptint, cface, igeom,&
+                    nfh, jheavn, singu, nfe, ddlc,&
+                    ddlm, jlsn, jlst, jstno, ipres,&
+                    ipref, itemps, idepl, nnop, valres,&
+                    zr( jbaslo), ithet, nompar, option, igthet,&
+                    jbasec, contac)
+    end do
 !
 !
 999 continue

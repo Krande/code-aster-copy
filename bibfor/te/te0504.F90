@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0504(option, nomte)
 !
 !
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -60,28 +60,28 @@ subroutine te0504(option, nomte)
 !
     if (zk8(iflux) (1:7) .eq. '&FOZERO') goto 50
 !
-    do 40 kp = 1, npg
+    do kp = 1, npg
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         tpgi = 0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             l = (kp-1)*nno + i
             r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
             tpgi = tpgi + zr(itemp+i-1)*zr(ivf+l-1)
- 10     continue
+        end do
         if (laxi) poids = poids*r
         call foderi(zk8(iflux), tpgi, alpha, alpha0)
         ij = imattt - 1
-        do 30 i = 1, nno
+        do i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
 !
-            do 20 j = 1, i
+            do j = 1, i
                 lj = ivf + (kp-1)*nno + j - 1
                 ij = ij + 1
                 zr(ij) = zr(ij) - poids*alpha0*zr(li)*zr(lj)
- 20         continue
- 30     continue
- 40 end do
+            end do
+        end do
+    end do
  50 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkgamp(val, varv, im, sm, ucrip,&
                   seuilp, vinm, nbmat, mater, de,&
                   deps, depsv, dgamv, depsp, dgamp,&
                   retcom)
 !
-    implicit    none
+    implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
@@ -108,9 +108,9 @@ subroutine lkgamp(val, varv, im, sm, ucrip,&
 ! --- CALCUL DE DEDEV --------DEVIATEUR DU TENSEUR DES DEFORMATIONS
 ! =================================================================
 !
-    do 10 i = 1, ndt
+    do i = 1, ndt
         depsp(i) = dlam*gp(i)
-10  end do
+    end do
     call lcdevi(depsp, ddepsp)
 ! =================================================================
 ! --- CALCUL DE DGAMP ------------------------------------
@@ -118,9 +118,9 @@ subroutine lkgamp(val, varv, im, sm, ucrip,&
 !
     dgamp = 0.d0
 !
-    do 20 i = 1, ndt
+    do i = 1, ndt
         dgamp = dgamp + ddepsp(i)**2
-20  end do
+    end do
     dgamp = sqrt(deux/trois * dgamp)
 ! =================================================================
 end subroutine

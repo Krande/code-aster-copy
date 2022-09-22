@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0587(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -61,9 +61,9 @@ subroutine te0587(option, nomte)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'R1','EP1'/
 !----------------------------------------------------------------------- 
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
 !
     pi=r8pi()
@@ -115,7 +115,7 @@ subroutine te0587(option, nomte)
 !       -- A= RMOY, H = EPAISSEUR
         call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
         r1 = vale_cara1(1)
-        h  = vale_cara1(2)
+        h = vale_cara1(2)
         a=r1-h/2.d0
 !
 !       -- ORIENTATION :
@@ -131,14 +131,14 @@ subroutine te0587(option, nomte)
 !
         kpgs=0
 !       -- CALCUL DES EFFORTS SUR LES POINTS DE GAUSS (VFNO)
-        do 180 igau = 1, npg
+        do igau = 1, npg
 !
-            do i=1,6
+            do i = 1, 6
                 efg(i)=0.d0
             enddo
 !
 !         -- BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-            do 160 icou = 1, 2*nbcou+1
+            do icou = 1, 2*nbcou+1
                 if (mmt .eq. 0) then
                     r=a
                 else
@@ -146,7 +146,7 @@ subroutine te0587(option, nomte)
                 endif
 !
 !           -- BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-                do 150 isect = 1, 2*nbsec+1
+                do isect = 1, 2*nbsec+1
 !
                     kpgs=kpgs+1
                     fi=(isect-1)*deuxpi/(2.d0*nbsec)
@@ -170,20 +170,20 @@ subroutine te0587(option, nomte)
                     efg(4)=efg(4)-poids*sig(3)*r
                     efg(5)=efg(5)-poids*sig(1)*r*cosfi
                     efg(6)=efg(6)+poids*sig(1)*r*sinfi
-150              continue
-160          continue
+                end do
+            end do
 !
-            do i=1,6
+            do i = 1, 6
                 fno(igau,i)=efg(i)
             enddo
-180      continue
+        end do
 !
 !
-        do 200 ic = 1, 6
-            do 190 kp = 1, npg
+        do ic = 1, 6
+            do kp = 1, npg
                 zr(jout+6*(kp-1)+ic-1)=fno(kp,ic)
-190          continue
-200      continue
+            end do
+        end do
     else
         call utmess('F', 'ELEMENTS4_49', sk=option)
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
                   npoin, jvalpo, jvalor)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -69,7 +69,7 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
 !
     call jemarq()
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
 !
         if (iflag(ivect) .eq. 3) then
             goto 10
@@ -87,7 +87,7 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
 !
 ! ----- RECHERCHE DES PICS INTERMEDIAIRES -----
 !
-        do 20 iordr = 2, nbordr
+        do iordr = 2, nbordr
             valeur = zr(jvalax + (ivect-1)*nbordr + iordr)
             if (vmax .lt. valeur) then
                 vmax = valeur
@@ -123,7 +123,7 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
                 ordmax = iordr
                 sortie = 1
             endif
-20      continue
+        end do
 !
         if (sortie .eq. 0) then
             npoin(ivect) = npoin(ivect) + 1
@@ -135,8 +135,9 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
             zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmax
             zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmax
         endif
-10  end do
+ 10     continue
+    end do
 !
-
+!
     call jedema()
 end subroutine

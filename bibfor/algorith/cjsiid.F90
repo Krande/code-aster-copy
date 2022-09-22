@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsiid(mod, mater, epsd, deps, yd,&
                   gd, dy)
     implicit none
@@ -116,9 +116,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
     endif
     qiso = yd(ndt+1)
     rd = yd(ndt+2)
-    do 15 i = 1, ndt
+    do i = 1, ndt
         xd(i)= yd(ndt+2+i)
-15  continue
+    end do
     ke = koe * ( (i1d+qinit)/trois/pa )**n
     kp = kop * ( qiso/pa )**n
 ! ======================================================================
@@ -137,15 +137,17 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! --- 3D/DP/AX ---------------------------------------------------------
 ! ======================================================================
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 20 i = 1, ndi
-            do 20 j = 1, ndi
+        do i = 1, ndi
+            do j = 1, ndi
                 if (i .eq. j) hooknl(i,j) = al
                 if (i .ne. j) hooknl(i,j) = la
-20          continue
-        do 25 i = ndi+1, ndt
-            do 25 j = ndi+1, ndt
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
                 if (i .eq. j) hooknl(i,j) = deux* mu
-25          continue
+            end do
+        end do
 ! ======================================================================
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================
@@ -166,9 +168,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- ECROUISSAGE CINEMATIQUE DU MECANISME DEVIATOIRE ------------------
 ! ======================================================================
-    do 30 i = 1, ndt
+    do i = 1, ndt
         sigd(i) = yd(i)
-30  continue
+    end do
 ! ======================================================================
 ! --- ON CALCULE DE TOUTES FACONS UNE PREDICTION -----------------------
 ! --- ELASTIQUE EN TANT QUE DE BESOIN ----------------------------------
@@ -214,9 +216,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
     xii = sqrt(xii)
 !
     epsv = zero
-    do 50 i = 1, ndi
+    do i = 1, ndi
         epsv = epsv + epsd(i)+ deps(i)
-50  continue
+    end do
 !
     pc = pco*exp(-c*epsv)
 !
@@ -242,9 +244,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
         phi = phio * hts * qqii
     endif
 !
-    do 60 i = 1, ndt
+    do i = 1, ndt
         gx(i) = (i1d+qinit)/b*( qq(i) + phi*xd(i) ) * coef1
-60  continue
+    end do
 ! ======================================================================
 ! --- LOIS D ECOULEMENTS : ---------------------------------------------
 ! ======================================================================
@@ -256,9 +258,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
     call lcprsc(qq, xd, truc)
     truc = truc - rd
 !
-    do 70 i = 1, ndt
+    do i = 1, ndt
         dfdds(i) = qq(i) - truc*kron(i)
-70  continue
+    end do
 ! ======================================================================
 ! --- HYPOTHESE : SIGNE(S,DEPS) = SIGNE(S,DEPSDP) ----------------------
 ! ======================================================================
@@ -275,21 +277,21 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
         coef3 = betapr / sii
         coef4 = un / sqrt( betapr*betapr + trois )
 !
-        do 80 i = 1, ndt
+        do i = 1, ndt
             norm(i) = coef4 * ( coef3 * s(i) + kron(i) )
-80      continue
+        end do
     else
         coef3 = betapr / siie
         coef4 = un / sqrt( betapr*betapr + trois )
-        do 81 i = 1, ndt
+        do i = 1, ndt
             norm(i) = coef4 * ( coef3 * se(i) + kron(i) )
-81      continue
+        end do
     endif
 !
     call lcprsc(dfdds, norm, prod1)
-    do 90 i = 1, ndt
+    do i = 1, ndt
         gd(i) = dfdds(i) - prod1 * norm(i)
-90  continue
+    end do
 !
     trgd = trace(ndi, gd)
     trdeps = trace(ndi, deps)
@@ -322,21 +324,21 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 !
     call lcprmv(hooknl, kron, dqdli)
     call lcprmv(hooknl, gd, dqdld)
-    do 210 i = 1, ndt
+    do i = 1, ndt
         dqdli(i) = dqdli(i)/trois - ke*( kron(i) + trois*xd(i) )
         dqdld(i) = - dqdld(i) + ke*trgd*( kron(i) + trois*xd(i) ) - gx(i)*( i1d + trois*ke*trdeps&
                    & )
-210  continue
+    end do
 ! ======================================================================
 ! ---   SI QII EST QUASI-NULL, IL N'Y A PAS DE DEVIATEUR. --------------
 ! ======================================================================
     if (qiirel .le. epssig) then
         dq2dli = zero
         dq2dld = zero
-        do 225 i = 1, ndt
+        do i = 1, ndt
             dq2dli = dq2dli + qe(i)/qiie * dqdli(i)
             dq2dld = dq2dld + qe(i)/qiie * dqdld(i)
-225      continue
+        end do
 !
         rcos3t = cos3t(qe, pref, epssig)
         call cjst(qe, dqe)
@@ -345,10 +347,10 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 !
         dhdli = zero
         dhdld = zero
-        do 235 i = 1, ndt
+        do i = 1, ndt
             dhdli = dhdli + (coef5*dqe(i) + coef6*qe(i)) * dqdli(i)
             dhdld = dhdld + (coef5*dqe(i) + coef6*qe(i)) * dqdld(i)
-235      continue
+        end do
 !
         dfidli = - di1dli/trois + gqiso
         dfidld = - di1dld/trois
@@ -360,10 +362,10 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
         dq2dli = zero
         dq2dld = zero
-        do 220 i = 1, ndt
+        do i = 1, ndt
             dq2dli = dq2dli + q(i)/qii * dqdli(i)
             dq2dld = dq2dld + q(i)/qii * dqdld(i)
-220      continue
+        end do
 !
         rcos3t = cos3t(q, pref, epssig)
         call cjst(q, dq)
@@ -372,10 +374,10 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 !
         dhdli = zero
         dhdld = zero
-        do 230 i = 1, ndt
+        do i = 1, ndt
             dhdli = dhdli + ( coef5*dq(i) + coef6*q(i) ) * dqdli(i)
             dhdld = dhdld + ( coef5*dq(i) + coef6*q(i) ) * dqdld(i)
-230      continue
+        end do
 !
         dfidli = - di1dli/trois + gqiso
         dfidld = - di1dld/trois
@@ -389,9 +391,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- CALCUL DES INCREMENTS DE DEFORMATIONS ELASTIQUE ------------------
 ! ======================================================================
-    do 240 i = 1, ndt
+    do i = 1, ndt
         depse(i) = deps(i) + dlambi/trois*kron(i) - dlambd*gd(i)
-240  continue
+    end do
 ! ======================================================================
 ! --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL.DEPSE -------------
 ! ======================================================================
@@ -407,22 +409,22 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- CALCUL INCREMENT DE LA VARIABLE INTERNE X ------------------------
 ! ======================================================================
-    do 250 i = 1, ndt
+    do i = 1, ndt
         dx(i) = dlambd*gx(i)
-250  continue
+    end do
 ! ======================================================================
 ! --- SOLUTION D ESSAI -------------------------------------------------
 ! ======================================================================
-    do 260 i = 1, ndt
+    do i = 1, ndt
         dy(i) = dsig(i)
-260  continue
+    end do
 !
     dy(ndt+1) = dqiso
     dy(ndt+2) = dr
 !
-    do 270 i = 1, ndt
+    do i = 1, ndt
         dy(ndt+2+i) = dx(i)
-270  continue
+    end do
 !
     dy(2*ndt+3) = dlambi
     dy(2*ndt+4) = dlambd

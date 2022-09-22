@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
                   nbcmps, nomgds, ipcmps)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ncmpmx, nbchs, nbcmps(*), ipcmps(*)
     character(len=*) :: nomcmp(*), nomsym, nomchs(*), nomgds(*)
 !
@@ -42,8 +42,8 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 !         IPCMPS: POSITION DES COMPOSANTES SUPERTAB DANS LA COMPOSANTE
 !                 ASTER
 !-----------------------------------------------------------------------
-    integer :: nbdepl, nbtemp, nbvari, nbsigm , nbepsm,  nbflu, nbpres
-    integer :: i, icmas,  ient, ires, iva, ivar,j
+    integer :: nbdepl, nbtemp, nbvari, nbsigm, nbepsm, nbflu, nbpres
+    integer :: i, icmas, ient, ires, iva, ivar, j
     integer, pointer :: videpl(:) => null()
     integer, pointer :: viepsm(:) => null()
     integer, pointer :: vitemp(:) => null()
@@ -68,13 +68,13 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
     nbsigm = 0
     nbpres = 0
     nbvari = 0
-
+!
     iva = 0
     nbchs = 0
 !
 !  --- RECHERCHE DES GRANDEURS SUPERTAB ASSOCIEES A LA GRANDEUR ASTER---
 !
-    do 1 icmas = 1, ncmpmx
+    do icmas = 1, ncmpmx
         if (nomcmp(icmas) .eq. 'DX') then
             nbdepl= nbdepl+1
             videpl(1)=icmas
@@ -93,7 +93,7 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
         else if (nomcmp(icmas).eq.'DRZ') then
             nbdepl= nbdepl+1
             videpl(6)=icmas
-
+!
         else if (nomcmp(icmas).eq.'FLUX') then
             nbflu= nbflu+1
             viflu(1)=icmas
@@ -103,15 +103,15 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
         else if (nomcmp(icmas).eq.'FLUZ') then
             nbflu= nbflu+1
             viflu(3)=icmas
-
+!
         else if (nomcmp(icmas).eq.'TEMP') then
             nbtemp= nbtemp+1
             vitemp(1)=icmas
-
+!
         else if (nomcmp(icmas).eq.'PRES') then
             nbpres= nbpres+1
             vipres(1)=icmas
-
+!
         else if (nomcmp(icmas).eq.'SIXX') then
             nbsigm= nbsigm+1
             visigm(1) = icmas
@@ -130,8 +130,8 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
         else if (nomcmp(icmas).eq.'SIZZ') then
             nbsigm= nbsigm+1
             visigm(6) = icmas
-
-
+!
+!
         else if (nomcmp(icmas).eq.'EPXX') then
             nbepsm= nbepsm+1
             viepsm(1) = icmas
@@ -150,12 +150,12 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
         else if (nomcmp(icmas).eq.'EPZZ') then
             nbepsm= nbepsm+1
             viepsm(6) = icmas
-
+!
         else
             nbvari= nbvari+1
             vivari(nbvari)= icmas
         endif
- 1  end do
+    end do
 !
 !  --- RECHERCHE DES GRANDEURS SUPERTAB ASSOCIEES A LA GRANDEUR ASTER---
 !
@@ -204,11 +204,11 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
         ient =nbvari/6
         ires =nbvari-(ient*6)
         if (ient .ne. 0) then
-            do 50 ivar = 1, ient
+            do ivar = 1, ient
                 nomchs(nbchs+ivar)= 'VARI'
                 nbcmps(nbchs+ivar)= 6
                 nomgds(nbchs+ivar)= 'VARI'
-50          continue
+            end do
         endif
         if (ires .ne. 0) then
             nomchs(nbchs+ient+1)= 'VARI'
@@ -230,7 +230,7 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 !      => nbchs=1
 !      Puis, on verifie que ipcmps(k) > 0 (c'est un indice dans des tableaux)
     nbchs=1
-    do 8 i = 1, nbchs
+    do i = 1, nbchs
         if (nomchs(i) .eq. 'DEPL') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = videpl(j)
@@ -261,12 +261,12 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
                 ipcmps((i-1)*ncmpmx+j) = vivari((iva-1)*6+j)
             enddo
         endif
-
+!
         do j = 1, nbcmps(i)
             ASSERT (ipcmps((i-1)*ncmpmx+j).gt.0)
         enddo
-
- 8  end do
+!
+    end do
 !
     AS_DEALLOCATE(vi=videpl)
     AS_DEALLOCATE(vi=visigm)

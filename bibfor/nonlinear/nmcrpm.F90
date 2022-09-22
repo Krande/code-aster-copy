@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcrpm(list, nbinst, dtmin)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
     real(kind=8) :: list(*), dtmin
     integer :: nbinst
 !
@@ -54,10 +54,10 @@ subroutine nmcrpm(list, nbinst, dtmin)
 ! --- DELTA MINIMUM
 !
     dtmin = list(2)-list(1)
-    do 10 i = 2, nbinst-1
+    do i = 2, nbinst-1
         deltat = list(i+1-1) - list(i-1)
         dtmin = min(deltat,dtmin )
-10  end do
-99  continue
+    end do
+ 99 continue
 !
 end subroutine

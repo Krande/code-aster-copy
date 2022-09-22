@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmsta1(sigm, sigp, deps, vim, vip,&
                   nbvari, nbvita, iforta, nbpar, nompar,&
                   vr, igrad, typpar, nomvi, sddisc,&
@@ -27,7 +27,6 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !-----------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/detrsd.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/jedema.h"
@@ -41,6 +40,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+!
     integer :: nbpar, i, nbvari, igrad, ncmp, nbvita, iforta, liccvg(5)
     integer :: actite, jvari
     aster_logical :: itemax, conver
@@ -116,7 +116,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !
         vr(1)=0.d0
         vk8(1)='EPSI'
-        do 551 i = 1, ncmp
+        do i = 1, ncmp
             vr(2)=depst(i)
             if (igrad .eq. 0) then
                 vk8(2)=nomeps(i)
@@ -126,15 +126,15 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
             call tbajli(tabinc, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-551     continue
+        end do
         vk8(1)='SIGM'
-        do 552 i = 1, 6
+        do i = 1, 6
             vr(2)=dsig(i)
             vk8(2)=nomsig(i)
             call tbajli(tabinc, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 !
-552     continue
+        end do
         vk8(1)='SIEQ'
         vr(2)=equi(1)
         vk8(2)='VMIS'
@@ -147,12 +147,12 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
                     [cbid], vk8, 0)
 !
         vk8(1)='VARI'
-        do 553 i = 1, nbvita
+        do i = 1, nbvita
             vr(2)=zr(jvari-1+i)
             vk8(2)=nomvi(i)
             call tbajli(tabinc, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
-553     continue
+        end do
 !
     endif
 !

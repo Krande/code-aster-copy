@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vp2tru(method, ty, alpha, beta, signes,&
                   a, nbvect, w, z, wk,&
                   mxiter, ier, nitqr)
@@ -58,11 +58,11 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
         call matini(nbvect, nbvect, 0.d0, a)
         a(1,1) = signes(1) * alpha(1)
         a(1,2) = signes(1) * beta(2)
-        do 20 i = 2, nbvect - 1
+        do i = 2, nbvect - 1
             a(i,i-1) = signes(i) * beta(i)
             a(i,i) = signes(i) * alpha(i)
             a(i,i+1) = signes(i) * beta(i+1)
-20      continue
+        end do
         a(nbvect,nbvect-1) = signes(nbvect) * beta(nbvect)
         a(nbvect,nbvect) = signes(nbvect) * alpha(nbvect)
     endif
@@ -77,7 +77,7 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
     endif
 !
     if (ty .eq. 'G') then
-        do 30 i = 1, nbvect
+        do i = 1, nbvect
             alpha(i) = w(2*i-1)
             if (abs(w(2*i)) .gt. 1.d-75) then
                 ww = w(2*i)/w(2*i-1)
@@ -87,14 +87,15 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
                 call utmess('I', 'ALGELINE4_65', si=vali, nr=2, valr=valr)
             endif
             beta(i) = 0.d0
-            do 30 j = 1, nbvect
+            do j = 1, nbvect
                 a(i,j) = z(2*nbvect* (j-1)+2*i-1)
-30          continue
+            end do
+        end do
     else
-        do 40 i = 1, nbvect
+        do i = 1, nbvect
             alpha(i) = w(2*i)
             beta (i) = w(2*i-1)
-40      continue
+        end do
     endif
 !
 end subroutine

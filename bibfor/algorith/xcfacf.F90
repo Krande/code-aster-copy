@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                   lst, igeom, nno, ndim, typma,&
                   noma, nmaabs)
@@ -78,12 +78,12 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     minlst=r8maem()
 !
 !     RECHERCHE DU MIN ET MAX DES LEVEL SETS SUR LES NOEUDS
-    do 100 i = 1, nno
+    do i = 1, nno
         maxlsn=max(lsn(i),maxlsn)
         maxlst=max(lst(i),maxlst)
         minlsn=min(lsn(i),minlsn)
         minlst=min(lst(i),minlst)
-100 continue
+    end do
 !
 !     SI CE N'EST PAS UN ELEMENT EN FOND DE FISSURE, ON SORT
 !     EN FAIT, CE TEST NE PERMET PAS DE DETECTER TOUS LES CAS
@@ -95,7 +95,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
 !
 !     BOUCLE SUR LES FACES
     rbid = 0.d0
-    do 200 ifq = 1, nbf
+    do ifq = 1, nbf
 !
 !       RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
         call intfac(noma, nmaabs, ifq, fa, nno,&
@@ -106,17 +106,17 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
 !
 !       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX
 !       DETECTES DANS XCFACE LORSQUE LE PT EST EXACT SUR UNE ARETE
-        do 250 j = 1, ipt
+        do j = 1, ipt
             dst=padist(ndim,m,ptint(ndim*(j-1)+1))
             if (dst .le. r8prem()) goto 200
-250     continue
+        end do
 !
 !       LONGUEUR CARACTERISTIQUE
-        do 260 i = 1, ndim
+        do i = 1, ndim
             a(i) = zr(igeom-1+ndim*(fa(ifq,1)-1)+i)
             b(i) = zr(igeom-1+ndim*(fa(ifq,2)-1)+i)
             c(i) = zr(igeom-1+ndim*(fa(ifq,3)-1)+i)
-260     continue
+        end do
         loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
 !
 !       ON AJOUTE A LA LISTE LE POINT M
@@ -125,7 +125,8 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                     m, loncar, ainter, 0, 0,&
                     0.d0, ajout)
 !
-200 continue
+200     continue
+    end do
 !
 999 continue
 end subroutine

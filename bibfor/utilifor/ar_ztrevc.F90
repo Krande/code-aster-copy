@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED  
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -26,8 +26,8 @@
 ! WHICH STICKS TO LAPACK 2.0 VERSION 
 ! ==============================================================
 subroutine ar_ztrevc(side, howmny, select, n, t,&
-                  ldt, vl, ldvl, vr, ldvr,&
-                  mm, m, work, rwork, info)
+                     ldt, vl, ldvl, vr, ldvr,&
+                     mm, m, work, rwork, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
 !     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
@@ -220,9 +220,9 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
     if (somev) then
         m = 0
-        do 10 j = 1, n
+        do j = 1, n
             if (select( j )) m = m + 1
- 10     continue
+        end do
     else
         m = n
     endif
@@ -262,24 +262,24 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
 !     STORE THE DIAGONAL ELEMENTS OF T IN WORKING ARRAY WORK.
 !
-    do 20 i = 1, n
+    do i = 1, n
         work( i+n ) = t( i, i )
- 20 end do
+    end do
 !
 !     COMPUTE 1-NORM OF EACH COLUMN OF STRICTLY UPPER TRIANGULAR
 !     PART OF T TO CONTROL OVERFLOW IN TRIANGULAR SOLVER.
 !
     rwork( 1 ) = zero
-    do 30 j = 2, n
+    do j = 2, n
         rwork( j ) = dzasum( j-1, t( 1, j ), 1 )
- 30 end do
+    end do
 !
     if (rightv) then
 !
 !        COMPUTE RIGHT EIGENVECTORS.
 !
         is = m
-        do 80 ki = n, 1, -1
+        do ki = n, 1, -1
 !
             if (somev) then
                 if (.not.select( ki )) goto 80
@@ -290,17 +290,17 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
 !           FORM RIGHT-HAND SIDE.
 !
-            do 40 k = 1, ki - 1
+            do k = 1, ki - 1
                 work( k ) = -t( k, ki )
- 40         continue
+            end do
 !
 !           SOLVE THE TRIANGULAR SYSTEM:
 !              (T(1:KI-1,1:KI-1) - T(KI,KI))*X = SCALE*WORK.
 !
-            do 50 k = 1, ki - 1
+            do k = 1, ki - 1
                 t( k, k ) = t( k, k ) - t( ki, ki )
                 if (cabs1( t( k, k ) ) .lt. smin) t( k, k ) = smin
- 50         continue
+            end do
 !
             if (ki .gt. 1) then
                 call zlatrs('U', 'N', 'N', 'Y', ki-1,&
@@ -318,9 +318,9 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
                 remax = one / cabs1( vr( ii, is ) )
                 call zdscal(ki, remax, vr( 1, is ), 1)
 !
-                do 60 k = ki + 1, n
+                do k = ki + 1, n
                     vr( k, is ) = cmzero
- 60             continue
+                end do
             else
                 if (ki .gt. 1) call zgemv('N', n, ki-1, cmone, vr,&
                                           ldvr, work( 1 ), 1, dcmplx( scale ), vr( 1, ki ),&
@@ -333,12 +333,13 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
 !           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.
 !
-            do 70 k = 1, ki - 1
+            do k = 1, ki - 1
                 t( k, k ) = work( k+n )
- 70         continue
+            end do
 !
             is = is - 1
- 80     continue
+ 80         continue
+        end do
     endif
 !
     if (leftv) then
@@ -346,7 +347,7 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !        COMPUTE LEFT EIGENVECTORS.
 !
         is = 1
-        do 130 ki = 1, n
+        do ki = 1, n
 !
             if (somev) then
                 if (.not.select( ki )) goto 130
@@ -357,17 +358,17 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
 !           FORM RIGHT-HAND SIDE.
 !
-            do 90 k = ki + 1, n
+            do k = ki + 1, n
                 work( k ) = -dconjg( t( ki, k ) )
- 90         continue
+            end do
 !
 !           SOLVE THE TRIANGULAR SYSTEM:
 !              (T(KI+1:N,KI+1:N) - T(KI,KI))'*X = SCALE*WORK.
 !
-            do 100 k = ki + 1, n
+            do k = ki + 1, n
                 t( k, k ) = t( k, k ) - t( ki, ki )
                 if (cabs1( t( k, k ) ) .lt. smin) t( k, k ) = smin
-100         continue
+            end do
 !
             if (ki .lt. n) then
                 call zlatrs('U', 'C', 'N', 'Y', n-ki,&
@@ -385,9 +386,9 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
                 remax = one / cabs1( vl( ii, is ) )
                 call zdscal(n-ki+1, remax, vl( ki, is ), 1)
 !
-                do 110 k = 1, ki - 1
+                do k = 1, ki - 1
                     vl( k, is ) = cmzero
-110             continue
+                end do
             else
                 if (ki .lt. n) call zgemv('N', n, n-ki, cmone, vl( 1, ki+1 ),&
                                           ldvl, work( ki+1 ), 1, dcmplx( scale ), vl( 1, ki ),&
@@ -400,12 +401,13 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
 !           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.
 !
-            do 120 k = ki + 1, n
+            do k = ki + 1, n
                 t( k, k ) = work( k+n )
-120         continue
+            end do
 !
             is = is + 1
-130     continue
+130         continue
+        end do
     endif
 !
 1000 continue

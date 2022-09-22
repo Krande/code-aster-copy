@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine limend(nommaz, salt, nomres, forvie, limit)
     implicit none
 #include "asterf_types.h"
@@ -90,7 +90,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
         nbf = (nbk-nbr-nbc)/2
 !
-        do 10 ik = 1, nbf
+        do ik = 1, nbf
             if (nomres .eq. zk16(ivalk-1+nbr+nbc+ik)) then
 !         NOM DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
                 nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
@@ -107,7 +107,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 endif
                 goto 20
             endif
- 10     continue
+        end do
         call utmess('F', 'MODELISA4_89')
  20     continue
 !
@@ -130,7 +130,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
         nbf = (nbk-nbr-nbc)/2
 !
-        do 30 ik = 1, nbf
+        do ik = 1, nbf
             if (nomres .eq. zk16(ivalk-1+nbr+nbc+ik)) then
 !        NOM DE LA FONCTION REPRESENTANT LA COURBE DE MANSON_COFFIN
                 nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
@@ -149,7 +149,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 endif
                 goto 40
             endif
- 30     continue
+        end do
         call utmess('F', 'MODELISA4_91')
  40     continue
 !
@@ -174,7 +174,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
             nbf = nbr/2
 !
-            do 50 ik = 1, nbf
+            do ik = 1, nbf
                 chnom(20:24) = '.VALE'
                 chnom(1:19) = forvie
                 call jeveuo(chnom, 'L', ivalf)
@@ -186,7 +186,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                     endif
                 endif
                 goto 60
- 50         continue
+            end do
             call utmess('F', 'MODELISA4_91')
  60         continue
 !

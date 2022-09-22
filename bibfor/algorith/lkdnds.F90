@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
                   nvi, vint, val, para, dndsig)
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE DE N PAR RAPPORT A SIGMA
 !     IN  NMAT   : DIMENSION TABLE DES PARAMETRES MATERIAU
@@ -70,21 +70,21 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 ! --- CONSTRUCTION DE KRONECKER
     call lcinve(zero, kron)
-    do 10 i = 1, ndi
+    do i = 1, ndi
         kron(i) = un
-10  end do
+    end do
 !
 ! --- CONSTRUCTION DE MATRICE IDENTITE
     call lcinma(zero, mident)
-    do 20 i = 1, ndt
+    do i = 1, ndt
         mident(i,i) = un
-20  end do
+    end do
 !
 ! --- CONSTRUCTION DE DI1/DSIGMA
     call lcinve(zero, di1dsi)
-    do 30 i = 1, ndi
+    do i = 1, ndi
         di1dsi(i) = un
-30  end do
+    end do
 !
 ! --- CONSTRUCTION DE DS/DSIGMA
     unstro = un / trois
@@ -101,13 +101,13 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
                 vint, para, val, dbetds, dbetdi)
 !
 ! --- CONSTRUCTION DE D(BPRIME)/DSIGMA
-    do 40 i = 1, ndt
+    do i = 1, ndt
         dbdsig(i) = zero
-        do 50 j = 1, ndt
+        do j = 1, ndt
             dbdsig(i) = dbdsig(i)+dbetds(j)*dsdsig(j,i)
-50      continue
+        end do
         dbdsig(i) = dbdsig(i)+dbetdi*di1dsi(i)
-40  end do
+    end do
 !
 ! --- PRODUIT TENSORIEL DE DEVSIG*D(BPRIME)/DSIGMA
     call lcprte(devsig, dbdsig, devbds)
@@ -122,8 +122,8 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 ! ------------------------------
 ! --- 2) ASSEMBLAGE DE DN/DSIGMA
 ! ------------------------------
-    do 60 i = 1, ndt
-        do 70 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             dndsig(i,j) = (&
                           (&
                           devbds(i,j)/sii+bprimp/sii*dsdsig(i,j)- bprimp/sii**2*sdsids(i,j))* sqr&
@@ -131,7 +131,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
                           &,j)-didbds(i,j) )&
                           )/(bprimp**2+trois&
                           )
-70      continue
-60  end do
+        end do
+    end do
 !
 end subroutine

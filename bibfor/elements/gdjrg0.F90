@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdjrg0(kp, nno, enprim, x00, y0,&
                   ajacob, rot0)
 !
@@ -46,12 +46,12 @@ subroutine gdjrg0(kp, nno, enprim, x00, y0,&
     real(kind=8) :: ajacob, zero
 !-----------------------------------------------------------------------
     zero = 0.d0
-    do 2 ic = 1, 3
+    do ic = 1, 3
         e1(ic) = zero
-        do 1 ne = 1, nno
+        do ne = 1, nno
             e1(ic) = e1(ic) + enprim(ne,kp)*x00(ic,ne)
- 1      end do
- 2  end do
+        end do
+    end do
 !
     ajacob=ddot(3,e1,1,e1,1)
     ajacob = sqrt(ajacob)

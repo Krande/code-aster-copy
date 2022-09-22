@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
     implicit none
@@ -97,14 +97,14 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
         call fointe('F', nomfor, np, [nompfi], [lnf(20)],&
                     grdmax, icodre)
 !
-
+!
         if (valgrd .gt. grdmax) then
             call utmess('F', 'FATIGUE1_94')
         endif
 !
         call fointe('F', nomfor, np, [nompfi], [lnf(1)],&
-                        grd(1), icodre)
-        do 10 i = 2, ndat
+                    grd(1), icodre)
+        do i = 2, ndat
             call fointe('F', nomfor, np, [nompfi], [lnf(i)],&
                         grd(i), icodre)
             if (grd(i) .gt. valgrd) then
@@ -120,10 +120,10 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
                 goto 20
 !
             endif
-10      continue
+        end do
     endif
 !
-20  continue
+ 20 continue
 !
     call jedema()
 end subroutine

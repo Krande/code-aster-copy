@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rstran(interp, resu, motcle, iocc, kdisc,&
                   krang, nbdisc, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -36,8 +38,6 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 #include "asterfort/rslipa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=*) :: interp, motcle
     character(len=*) :: resu, kdisc, krang
 ! person_in_charge: jacques.pellet at edf.fr
@@ -74,18 +74,18 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ier1, iocc, iord, iret
-    integer :: ival,  jdisc, jordr, jrang, l, laccr
+    integer :: ival, jdisc, jordr, jrang, l, laccr
     integer :: ldisc, lli, lt, n, nbi, nbi2, nbdisc
     integer :: nbtrou, nno, nto, nutrou(1)
     real(kind=8) :: epsi, tusr
     integer, pointer :: nume(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-
+!
     resu_ = resu
     kdisc_ = kdisc
     krang_ = krang
-
+!
     ier = 0
     nbdisc = 0
     type = 'R8  '
@@ -128,18 +128,19 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         AS_ALLOCATE(vi=nume, size=nbdisc)
         call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=nume,&
                     nbret=nno)
-        do 40 i = 0, nbdisc - 1
-            do 20 iord = 0, nbi - 1
+        do i = 0, nbdisc - 1
+            do iord = 0, nbi - 1
                 if (nume(1+i) .eq. zi(jordr+iord)) goto 30
-20          continue
+            end do
             ier = ier + 110
             vali = nume(1+i)
             call utmess('A', 'UTILITAI8_17', si=vali)
             goto 40
-30          continue
+ 30         continue
             zi(jrang+i) = iord + 1
             zr(jdisc+i) = zr(ldisc+iord)
-40      continue
+ 40         continue
+        end do
         goto 100
     endif
 !
@@ -162,7 +163,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     endif
     call wkvect(krang_, 'V V I', nbdisc, jrang)
     call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-    do 70 i = 0, nbdisc - 1
+    do i = 0, nbdisc - 1
         tusr = zr(laccr+i)
         if (interp(1:3) .ne. 'NON') then
             zi(jrang+i) = i + 1
@@ -184,16 +185,17 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
             call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
             goto 70
         endif
-        do 50 iord = 0, nbi - 1
+        do iord = 0, nbi - 1
             if (nutrou(1) .eq. zi(jordr+iord)) goto 60
-50      continue
-60      continue
+        end do
+ 60     continue
         zi(jrang+i) = iord + 1
         zr(jdisc+i) = zr(ldisc+iord)
-70  end do
+ 70     continue
+    end do
     goto 100
 !
-80  continue
+ 80 continue
 !
 !     --- RECHERCHE A PARTIR D'UNE FREQUENCE ---
 !
@@ -216,7 +218,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         endif
         call wkvect(krang_, 'V V I', nbdisc, jrang)
         call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-        do 71 i = 0, nbdisc - 1
+        do i = 0, nbdisc - 1
             tusr = zr(laccr+i)
             call rsindi(type, ldisc, 1, jordr, ival,&
                         tusr, kval, cval, epsi, crit,&
@@ -233,31 +235,32 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
                 call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
                 goto 71
             endif
-            do 51 iord = 0, nbi - 1
+            do iord = 0, nbi - 1
                 if (nutrou(1) .eq. zi(jordr+iord)) goto 61
-51          continue
-61          continue
+            end do
+ 61         continue
             zi(jrang+i) = iord + 1
             zr(jdisc+i) = zr(ldisc+iord)
-71      continue
+ 71         continue
+        end do
         goto 100
     endif
 !
 !  --- PAR DEFAUT, TOUT ORDRE
 !
-81  continue
+ 81 continue
 !
     call getvtx(motcle, 'TOUT_INST', iocc=iocc, scal=k8b, nbret=nto)
     call getvtx(motcle, 'TOUT_ORDRE', iocc=iocc, scal=k8b, nbret=nto)
     nbdisc = nbi
     call wkvect(krang_, 'V V I', nbdisc, jrang)
     call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-    do 90 iord = 0, nbdisc - 1
+    do iord = 0, nbdisc - 1
         zi(jrang+iord) = iord + 1
         zr(jdisc+iord) = zr(ldisc+iord)
-90  end do
+    end do
 !
-100  continue
+100 continue
     call jedetr('&&RSTRAN.ORDR')
     AS_DEALLOCATE(vi=nume)
     call jedetr('&&RSTRAN.INSTANTS')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbajco(nomta, para, type, nbval, vi,&
                   vr, vc, vk, action, llign)
     implicit none
@@ -53,7 +53,7 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 !                 SI PREMIERE VALEUR =-1, ON AJOUTE SANS DECALAGE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, iret,   nbpara, jvale, jlogq, nblign, iind
+    integer :: i, iret, nbpara, jvale, jlogq, nblign, iind
     character(len=1) :: actioz
     character(len=3) :: typez, typev
     character(len=19) :: nomtab
@@ -100,7 +100,7 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
     endif
 !
     if (llign(1) .ne. -1) then
-        do 10 i = 1, nbval
+        do i = 1, nbval
             zi(iind+i-1)=llign(i)
             if (llign(i) .le. 0) then
                 call utmess('F', 'UTILITAI4_70')
@@ -108,11 +108,11 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
             if (llign(i) .gt. nblign) then
                 call utmess('F', 'UTILITAI4_71')
             endif
-10      continue
+        end do
     else
-        do 20 i = 1, nbval
+        do i = 1, nbval
             zi(iind+i-1)=i
-20      continue
+        end do
     endif
 !
 !  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE
@@ -136,7 +136,7 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
     endif
 !
     call jeecra(nomjv, 'LONUTI', nblign)
-     call jeecra(nomjvl, 'LONUTI', nblign)
+    call jeecra(nomjvl, 'LONUTI', nblign)
     call jeveuo(nomjv, 'E', jvale)
     call jeveuo(nomjvl, 'E', jlogq)
 !
@@ -170,7 +170,7 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
             zi( jlogq+zi(iind+i-1)-1) = 1
         endif
     end do
-    
+!
     call jedetr(indic)
     call jedema()
 end subroutine

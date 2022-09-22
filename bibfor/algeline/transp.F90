@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine transp(a, nlamax, dimal, dimac, b,&
                   nlbmax)
 !
@@ -39,9 +39,9 @@ subroutine transp(a, nlamax, dimal, dimac, b,&
     if (dimac .gt. nlbmax) then
         call utmess('F', 'ALGELINE3_51')
     endif
-    do 10 ilig = 1, dimal
-        do 5 icol = 1, dimac
+    do ilig = 1, dimal
+        do icol = 1, dimac
             b(icol,ilig) = a(ilig,icol)
- 5      continue
-10  continue
+        end do
+    end do
 end subroutine

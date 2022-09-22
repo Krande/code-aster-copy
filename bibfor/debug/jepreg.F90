@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jepreg(cunit, clas, numerg, cmess, info)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -77,7 +77,7 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
 ! DEB ------------------------------------------------------------------
     kclas = clas ( 1: min(1,len(clas)))
     julist = iunifi ( cunit )
-    if (julist .eq. 0) goto 9999
+    if (julist .eq. 0) goto 999
     if (kclas .eq. ' ') then
         ncla1 = 1
         ncla2 = index ( classe , '$' ) - 1
@@ -86,7 +86,7 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
         ncla1 = index ( classe , kclas )
         ncla2 = ncla1
     endif
-    do 10 ic = ncla1, ncla2
+    do ic = ncla1, ncla2
         lgbl=1024*longbl(ic)*lois
         write (julist,'(    1X,4A)' ) ('--------------------',k=1,4)
         write (julist,*)' '
@@ -165,7 +165,7 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
      &                     numerg
                 idec = 0
                 icomp = 0
-300              continue
+300             continue
                 icomp = icomp + 1
                 idcol = iszon(jiszon+iaditp+idec )
                 idosl = iszon(jiszon+iaditp+idec+1)
@@ -187,21 +187,21 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
      &                    ' OBJET DE COLLECTION DE NOM : ',&
      &                   rnom(jrnom(ic)+idcol),' ET DE NUMERO : ',idosl
                 endif
-320              continue
+320             continue
                 idec = idec+lgl+3
                 goto 300
-350              continue
+350             continue
             endif
         else
             write(julist,*)'NUMERO D''ENREGISTREMENT INEXISTANT ',&
             numerg
-            goto 9999
+            goto 999
         endif
         write (julist,'(    1X,4A)' ) ('--------------------',k=1,4)
 !
         if (iadyn .ne. 0) call jjlidy(iadyn, iaditp)
-10  end do
-9999  continue
+    end do
+999 continue
 !
     1001 format((i7,' - ',10(i12,1x)))
     1002 format(i8,1x,'ID COLLECTION:',i8,' ID OBJET:',i8,' LONGUEUR:',&

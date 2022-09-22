@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
                   nopara)
     implicit none
@@ -51,7 +51,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
 !
     call wkvect(nomfon//'.VALE', 'G V R', nbval2, lvale)
     lfon = lvale + nbval
-    do 10 ival = 0, nbval-1
+    do ival = 0, nbval-1
         zr(lvale+ival) = vale(ival+1)
         if (compl) then
             call fointc('F', nomfin, 1, nopara, zr(lvale+ival),&
@@ -60,7 +60,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
             call fointe('F', nomfin, 1, nopara, zr(lvale+ival),&
                         zr( lfon+ival), ier)
         endif
- 10 end do
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !

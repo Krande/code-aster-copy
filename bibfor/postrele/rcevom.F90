@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                   lpmpb, lsn, csno, csne, flexio,&
                   csneo, csnee, cfao, cfae, cspo,&
@@ -113,50 +113,50 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 !
     if (it .eq. 1 .and. jt .eq. 1) then
         npara = nparen
-        do 10 i = 1, nparen
+        do i = 1, nparen
             nopara(i) = nopaen(i)
             typara(i) = typaen(i)
- 10     continue
+        end do
         if (lrocht) then
-            do 11 i = 1, nparrt
+            do i = 1, nparrt
                 nopara(npara+i) = nopart(i)
                 typara(npara+i) = typart(i)
- 11         continue
+            end do
             npara = npara + nparrt
         endif
         if (lpmpb) then
-            do 12 i = 1, nparpm
+            do i = 1, nparpm
                 nopara(npara+i) = nopapm(i)
                 typara(npara+i) = typapm(i)
- 12         continue
+            end do
             npara = npara + nparpm
         endif
         if (lsn) then
-            do 14 i = 1, nparsn
+            do i = 1, nparsn
                 nopara(npara+i) = nopasn(i)
                 typara(npara+i) = typasn(i)
- 14         continue
+            end do
             npara = npara + nparsn
         endif
         if (flexio .and. lsn) then
-            do 16 i = 1, nparse
+            do i = 1, nparse
                 nopara(npara+i) = nopase(i)
                 typara(npara+i) = typase(i)
- 16         continue
+            end do
             npara = npara + nparse
         endif
         if (lfatig) then
             if (.not. kemixt) then
-                do 18 i = 1, nparf1
+                do i = 1, nparf1
                     nopara(npara+i) = nopaf1(i)
                     typara(npara+i) = typaf1(i)
- 18             continue
+                end do
                 npara = npara + nparf1
             else
-                do 19 i = 1, nparf2
+                do i = 1, nparf2
                     nopara(npara+i) = nopaf2(i)
                     typara(npara+i) = typaf2(i)
- 19             continue
+                end do
                 npara = npara + nparf2
             endif
         endif
@@ -169,9 +169,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 !
     ik = 0
     npara = nparen
-    do 30 i = 1, nparen
+    do i = 1, nparen
         nopara(i) = nopaen(i)
- 30 end do
+    end do
     ik = ik + 1
     vako(ik) = kinti
     vake(ik) = kinti
@@ -192,18 +192,18 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         call jeveuo(cpres, 'L', jresp)
 ! RECHERCHE DU MAXIMUM DE LA CONTRAINTE DE MEMBRANE DUE A LA PRESSION
         pm = 0.d0
-        do 400 i = 1, nbinst
-            do 402 icmp = 1, ncmp
-                if (lsymm) then 
+        do i = 1, nbinst
+            do icmp = 1, ncmp
+                if (lsymm) then
                     l3 = 6*ncmp*nbinst + ncmp*(i-1) + icmp
                 else
                     l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
                 endif
                 tpm(icmp) = zr(jsigm-1+l3)
-402         continue
+            end do
             call rctres(tpm, tresca)
             if (tresca .gt. pm) pm = tresca
-400     continue
+        end do
         call rcmcrt(symax, pm, stlin, stpar)
 !
         npar1 = npara + 1
@@ -265,9 +265,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         ipbe = zr(jinst)
         ipmpbo = zr(jinst)
         ipmpbe = zr(jinst)
-        do 100 i = 1, nbinst
-            do 102 icmp = 1, ncmp
-                if (lsymm) then 
+        do i = 1, nbinst
+            do icmp = 1, ncmp
+                if (lsymm) then
                     l1 = ncmp*(i-1) + icmp
                     l2 = ncmp*nbinst + ncmp*(i-1) + icmp
                     l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
@@ -286,19 +286,19 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) -&
-                    ( zr(jsigm-1+l3) - zr(jsigm-1+l4) )
-                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) -&
-                    ( zr(jsigm-1+l3) + zr(jsigm-1+l4) )
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - ( zr(jsigm-1+l3) - zr(jsigm-&
+                                   &1+l4) )
+                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - ( zr(jsigm-1+l3) + zr(jsigm-&
+                                   &1+l4) )
                 endif
-102         continue
+            end do
             call rctres(tpm, tresca)
             if (tresca .gt. pm) then
                 pm = tresca
                 ipm = zr(jinst+i-1)
                 rpm = zk8(jresu+i-1)
             endif
-            if (lsymm) then 
+            if (lsymm) then
                 call rctres(tpbo, tresca)
                 if (tresca .gt. pbo) then
                     pbo = tresca
@@ -331,7 +331,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 ipmpbe = zr(jinst+i-1)
                 rpmpbe = zk8(jresu+i-1)
             endif
-100     continue
+        end do
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU'
@@ -352,7 +352,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         call tbajli(nomres, npar1, nopara, vaie, vale,&
                     [c16b], vake, 0)
 !
-        if (lsymm) then 
+        if (lsymm) then
             npar1 = npara + 1
             nopara(npar1) = 'TABL_RESU'
             vako(ik+1) = rpbo
@@ -424,7 +424,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         i2sno = zr(jinst)
         i1sne = zr(jinst)
         i2sne = zr(jinst)
-        do 200 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
             if (zr(jsno+ind-1) .gt. sno) then
                 sno = zr(jsno+ind-1)
@@ -440,7 +440,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 r1sne = zk8(jresu+i1-1)
                 r2sne = zk8(jresu+i1-1)
             endif
-            do 202 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 if (zr(jsno+ind-1) .gt. sno) then
                     sno = zr(jsno+ind-1)
@@ -456,8 +456,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     r1sne = zk8(jresu+i1-1)
                     r2sne = zk8(jresu+i2-1)
                 endif
-202         continue
-200     continue
+            end do
+        end do
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU_1'
@@ -506,7 +506,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         i2sno = zr(jinst)
         i1sne = zr(jinst)
         i2sne = zr(jinst)
-        do 210 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
             if (zr(jsno+ind-1) .gt. sno) then
                 sno = zr(jsno+ind-1)
@@ -522,7 +522,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 r1sne = zk8(jresu+i1-1)
                 r2sne = zk8(jresu+i1-1)
             endif
-            do 212 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 if (zr(jsno+ind-1) .gt. sno) then
                     sno = zr(jsno+ind-1)
@@ -538,8 +538,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     r1sne = zk8(jresu+i1-1)
                     r2sne = zk8(jresu+i2-1)
                 endif
-212         continue
-210     continue
+            end do
+        end do
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU_1'
@@ -611,7 +611,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
             ketho = 0.d0
             kethe = 0.d0
         endif
-        do 300 i = 1, nbordr
+        do i = 1, nbordr
             spo = max ( spo , zr(jspo-1+i) )
             keo = max ( keo , zr(jfao-1+5*(i-1)+1) )
             nao = max ( nao , zr(jfao-1+5*(i-1)+3) )
@@ -628,9 +628,9 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 ketho = max ( ketho , zr(jfao-1+5*(i-1)+5) )
                 kethe = max ( kethe , zr(jfae-1+5*(i-1)+5) )
             endif
-300     continue
+        end do
         ind = 0
-        do 310 i1 = 1, nbinst
+        do i1 = 1, nbinst
             ind = ind + 1
             if (zr(jfao-1+5*(ind-1)+2) .gt. sao) then
                 sao = zr(jfao-1+5*(ind-1)+2)
@@ -650,7 +650,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 i1sne = zr(jinst+i1-1)
                 i2sne = zr(jinst+i1-1)
             endif
-            do 312 i2 = i1+1, nbinst
+            do i2 = i1+1, nbinst
                 ind = ind + 1
                 if (zr(jfao-1+5*(ind-1)+2) .gt. sao) then
                     sao = zr(jfao-1+5*(ind-1)+2)
@@ -670,8 +670,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     i1sne = zr(jinst+i1-1)
                     i2sne = zr(jinst+i2-1)
                 endif
-312         continue
-310     continue
+            end do
+        end do
 !
         npar1 = npara + 1
         nopara(npar1) = 'TABL_RESU_1'

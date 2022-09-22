@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
                   ilig2)
     implicit none
@@ -41,7 +41,7 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
 ! VAR ILIG(.)   TABLE DES ELEMENTS CHAINES
 !     ------------------------------------------------------------------
     ii2 = 1
-    do 120 j = 1, nch
+    do j = 1, nch
         ii1 = iich(j)
         if (ii1 .le. 0) then
 !            PREMIER MAILLON DE LA CHAINE VIDE
@@ -54,7 +54,7 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
 !
 !             MAILLONS SUIVANTS DE LA CHAINE
 !             TANT QUE II1 > 0 FAIRE :
-110          continue
+110         continue
             if (ii1 .le. 0) then
 !                 FIN DE LA CHAINE J
                 iich(j) = ii2 - 1
@@ -67,6 +67,7 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
             endif
         endif
 !
-120  end do
+120     continue
+    end do
     ncoef = iich(nch)
 end subroutine

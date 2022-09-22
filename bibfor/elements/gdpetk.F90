@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gdpetk(tetag, tetapg, petikm, petik)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LE
@@ -58,18 +58,18 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
     prosca=ddot(3,tetag,1,tetapg,1)
     coef2 = (un-coef1) * prosca / teta2
     coef3 = demi * (sin(demi*teta1)/(demi*teta1))**2
-    do 2 i = 1, 3
+    do i = 1, 3
         petik1(i) = coef1*tetapg(i) + coef2*tetag(i) + coef3*v1(i)
- 2  end do
+    end do
     goto 20
 !
 !*** TETAG EST TRES PETIT ET BETA VAUT PRATIQUEMENT TETAPRIM
-11  continue
-    do 12 i = 1, 3
+ 11 continue
+    do i = 1, 3
         petik1(i) = tetapg(i)
-12  end do
+    end do
 !
-20  continue
+ 20 continue
 !
 !
     call marota(tetag, amat1)
@@ -82,7 +82,7 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
                 3, 3, 3, amat1)
     call axial(amat1, petik2)
 !
-    do 32 i = 1, 3
+    do i = 1, 3
         petik(i) = petik1(i) + petik2(i)
-32  end do
+    end do
 end subroutine

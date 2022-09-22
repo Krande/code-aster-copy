@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dgmode(mode, imodel, ilong, nec, dg)
     implicit none
 !          TROUVER LE DESCRIPTEUR-GRANDEUR ASSOCIE A UN MODE LOCAL
@@ -43,9 +43,9 @@ subroutine dgmode(mode, imodel, ilong, nec, dg)
     if (zi(jmod) .le. 3) then
         nbpt = zi(jmod-1+4)
         if (abs(nbpt) .lt. 10000) then
-            do 1 i = 1, nec
+            do i = 1, nec
                 dg(i) = zi(jmod-1+4+i)
- 1          continue
+            end do
         endif
     endif
     call jedema()

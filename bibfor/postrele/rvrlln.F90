@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvrlln(xy, tn, n, repere, v1,&
                   v2)
     implicit none
@@ -62,77 +62,77 @@ subroutine rvrlln(xy, tn, n, repere, v1,&
     yc = xy(3*(tn(1)-1)+2)
     zzc = xy(3*(tn(1)-1)+3)
 !
-    do 10, i = 1, n, 1
-!
-    if (i .ne. n) then
-!
-        xs = xy(3*(tn(i+1)-1)+1)
-        ys = xy(3*(tn(i+1)-1)+2)
-        zzs = xy(3*(tn(i+1)-1)+3)
-!
-    endif
-!
-    if (repere(1:5) .eq. 'LOCAL') then
-!
-        xaux = xs - xc
-        yaux = ys - yc
-        zaux = zzs - zzc
+    do i = 1, n, 1
 !
         if (i .ne. n) then
 !
-            l = sqrt(xaux*xaux + yaux*yaux + zaux*zaux)
-            l = 1.0d0/l
+            xs = xy(3*(tn(i+1)-1)+1)
+            ys = xy(3*(tn(i+1)-1)+2)
+            zzs = xy(3*(tn(i+1)-1)+3)
 !
         endif
 !
-        t1s = xaux*l
-        t2s = yaux*l
-        n1s = -t2s
-        n2s = t1s
+        if (repere(1:5) .eq. 'LOCAL') then
 !
-        if (i .eq. 1) then
+            xaux = xs - xc
+            yaux = ys - yc
+            zaux = zzs - zzc
 !
-            v1(2*i-1) = t1s
-            v1(2*i ) = t2s
-            v2(2*i-1) = n1s
-            v2(2*i ) = n2s
+            if (i .ne. n) then
 !
-        else if (i .ne. n) then
+                l = sqrt(xaux*xaux + yaux*yaux + zaux*zaux)
+                l = 1.0d0/l
 !
-            v1(2*i-1) = 0.5d0*(t1s + t1p)
-            v1(2*i ) = 0.5d0*(t2s + t2p)
-            v2(2*i-1) = 0.5d0*(n1s + n1p)
-            v2(2*i ) = 0.5d0*(n2s + n2p)
+            endif
+!
+            t1s = xaux*l
+            t2s = yaux*l
+            n1s = -t2s
+            n2s = t1s
+!
+            if (i .eq. 1) then
+!
+                v1(2*i-1) = t1s
+                v1(2*i ) = t2s
+                v2(2*i-1) = n1s
+                v2(2*i ) = n2s
+!
+            else if (i .ne. n) then
+!
+                v1(2*i-1) = 0.5d0*(t1s + t1p)
+                v1(2*i ) = 0.5d0*(t2s + t2p)
+                v2(2*i-1) = 0.5d0*(n1s + n1p)
+                v2(2*i ) = 0.5d0*(n2s + n2p)
+!
+            else
+!
+                v1(2*i-1) = t1p
+                v1(2*i ) = t2p
+                v2(2*i-1) = n1p
+                v2(2*i ) = n2p
+!
+            endif
+!
+            if (i .ne. n) then
+!
+                t1p = t1s
+                t2p = t2s
+                n1p = n1s
+                n2p = n2s
+!
+            endif
 !
         else
 !
-            v1(2*i-1) = t1p
-            v1(2*i ) = t2p
-            v2(2*i-1) = n1p
-            v2(2*i ) = n2p
+            call rvrthe(xc, yc, v1(2*i-1), v1(2*i), v2(2*i-1),&
+                        v2(2*i))
 !
         endif
 !
-        if (i .ne. n) then
+        xc = xs
+        yc = ys
+        zzc = zzs
 !
-            t1p = t1s
-            t2p = t2s
-            n1p = n1s
-            n2p = n2s
-!
-        endif
-!
-    else
-!
-        call rvrthe(xc, yc, v1(2*i-1), v1(2*i), v2(2*i-1),&
-                    v2(2*i))
-!
-    endif
-!
-    xc = xs
-    yc = ys
-    zzc = zzs
-!
-    10 end do
+    end do
 !
 end subroutine

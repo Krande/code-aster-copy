@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
                   nvi, vini, coeft, x, dtime,&
                   nmat, sigi, dvin)
@@ -94,11 +94,11 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
     grj1= trsig
 !----- CALCUL DE GRJ2(SIGI) : SECOND INVARIANT (SIGEQ DE VON MISES)
     grj2v=0.0d0
-    do 10 itens = 1, 6
+    do itens = 1, 6
         smx(itens)=sigi(itens)
         if (itens .le. 3) smx(itens)=smx(itens)-grj1/3.d0
         grj2v=grj2v+smx(itens)**2
-10  end do
+    end do
     grj2v=sqrt(1.5d0*grj2v)
 !----- CALCUL DE SEDVP : CONTRAINTE EQUIVALENTE DE FLUAGE
     sedvp=alphad*grj0+betad*grj1+(1-alphad-betad)*grj2v
@@ -141,9 +141,9 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
         devcum=0.0d0
         decrou=0.0d0
         ddmg=0.0d0
-        do 11 itens = 1, 6
+        do itens = 1, 6
             devi(itens)=0.0d0
-11      continue
+        end do
     else
 !
 !------ EQUATION DONNANT LA DERIVEE DE L ENDOMMAGEMENT
@@ -165,9 +165,9 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
 !
 !------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !
-        do 12 itens = 1, 6
+        do itens = 1, 6
             devi(itens)=td*devcum*smx(itens)/grj2v
-12      continue
+        end do
     endif
 !------ NE SERT A RIEN
     detat=ze
@@ -175,9 +175,9 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
 !
 ! --    DERIVEES DES VARIABLES INTERNES
 !
-    do 30 itens = 1, 6
+    do itens = 1, 6
         dvin(itens) = devi(itens)
-30  end do
+    end do
     dvin(7) = devcum
     dvin(8) = decrou
     dvin(9) = ddmg

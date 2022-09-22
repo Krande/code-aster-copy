@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
                   coorse, tvolse)
     implicit none
@@ -69,9 +69,9 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(elrefe='TR3',fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe='TR3', fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+                     jdfd2=jdfd2, jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
     tvolse=0.d0
@@ -79,18 +79,18 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
 ! --- ECRITURE POUR LE SOUS-ELEMENT COURANT D'UN TABLEAU DE CONTRAINTES
 ! --- AUX NOEUDS UTILISABLE PAR LA ROUTINE ERMEV2
 !
-    do 100 n = 1, nno
-        do 110 icmp = 1, nbcmp
+    do n = 1, nno
+        do icmp = 1, nbcmp
             signse(nbcmp*(n-1)+icmp)= zr(jsigse-1+nbcmp*nno*(cpt-1)+&
             nbcmp*(n-1)+icmp)
-110      continue
-100  end do
+        end do
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --------- BOUCLE SUR LES POINTS DE GAUSS DU SOUS ELEMENT -------------
 ! ----------------------------------------------------------------------
 !
-    do 200 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! --- CALCUL DES DERIVEES DES FONCTIONS DE FORME DU SOUS-ELEMENT -------
 ! --- AU POINT DE GAUSS COURANT DANS LE REPERE REEL -------------------
@@ -110,6 +110,6 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
 !
         tvolse=tvolse+(dsx**2+dsy**2)*poijac
 !
-200  end do
+    end do
 !
 end subroutine

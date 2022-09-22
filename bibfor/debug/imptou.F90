@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine imptou(base, tous, mess)
     implicit none
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -32,8 +33,7 @@ subroutine imptou(base, tous, mess)
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     character(len=*) :: base, tous, mess
 ! BUT : IMPRIMER LA SIGNATURE DE TOUS LES OBJETS PRESENTS SUR UNE BASE.
 !
@@ -81,7 +81,7 @@ subroutine imptou(base, tous, mess)
 !
 !     3. IMPRESSION DE LA SIGNATURE DES OBJETS :
 !     --------------------------------------------------------------
-    do 10 i = 1, nbobj
+    do i = 1, nbobj
         obj = liste(i)
         call jenonu(jexnom(dejavu, obj), nuobj)
         if (nuobj .eq. 0) call jecroc(jexnom(dejavu, obj))
@@ -89,7 +89,8 @@ subroutine imptou(base, tous, mess)
         if ((nuobj.gt.0) .and. (tous.eq.'NEW')) goto 10
 !
         call dbgobj(obj, 'OUI', 6, mess)
-10  end do
+ 10     continue
+    end do
 !
 !
 !     4. MENAGE

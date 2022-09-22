@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0101(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -70,8 +70,8 @@ subroutine te0101(option, nomte)
     integer :: ndim2, nno2, nnos2
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     ---------------
@@ -104,11 +104,11 @@ subroutine te0101(option, nomte)
     matele(2) = zero
     matele(3) = zero
 !
-    do 20 i = 1, ndimax
-        do 10 j = 1, ndimax
+    do i = 1, ndimax
+        do j = 1, ndimax
             rigith(i,j) = zero
-10      continue
-20  end do
+        end do
+    end do
 !
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
@@ -163,10 +163,10 @@ subroutine te0101(option, nomte)
 !
 ! ---   NOM DES COMPOSANTES DU TENSEUR DE CONDUCTIVITE HOMOGENEISE :
 !       ----------------------------------------------------------
-        do 30 i = 1, nbres
+        do i = 1, nbres
             call codent(i, 'G', num)
             nomres(i) = 'HOM_'//num
-30      continue
+        end do
 !
 ! ---   INTERPOLATION DES TERMES DU TENSEUR DE CONDUCTIVITE
 ! ---   EN FONCTION DU TEMPS ET DE LA TEMPERATURE
@@ -181,9 +181,9 @@ subroutine te0101(option, nomte)
 ! ---   DE L'ELEMENT ( PARCE QUE C'EST DANS CE REPERE QUE LE
 ! ---   FLUX THERMIQUE EST LE PLUS SIMPLE A ECRIRE) :
 !       -------------------------------------------
-        do 40 i = 1, 6
+        do i = 1, 6
             call reflth(ang, valres(3* (i-1)+1), hom(3* (i-1)+1))
-40      continue
+        end do
 !
 ! ---   TENSEUR DE CONDUCTIVITE MEMBRANAIRE :
 !       -----------------------------------
@@ -240,15 +240,15 @@ subroutine te0101(option, nomte)
 !
 ! ---   TENSEUR DE CONDUCTIVITE MEMBRANAIRE :
 !       -----------------------------------
-        do 80 l = 1, 2
-            do 70 k = 1, l
-                do 60 i = 1, 3
-                    do 50 j = 1, i
+        do l = 1, 2
+            do k = 1, l
+                do i = 1, 3
+                    do j = 1, i
                         a(i,j,k,l) = zero
-50                  continue
-60              continue
-70          continue
-80      continue
+                    end do
+                end do
+            end do
+        end do
 !
         a(1,1,1,1) = seize*conduc*h/quinze
         a(1,1,2,2) = a(1,1,1,1)
@@ -457,14 +457,14 @@ subroutine te0101(option, nomte)
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 !      -----------------------------------
-        do 130 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
-            do 120 gi = 1, nno
-                do 110 gj = 1, gi
-                    do 100 pi = 1, 3
-                        do 90 pj = 1, pi
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = a(pi,pj,1,1)*dfdx(gi)*dfdx(gj) + a(pi,pj,2,2)*dfdy(gi)*dfdy(gj) &
                                  &+ a(pi,pj, 1,2)*dfdx(gi)*dfdy(gj) + a(pi,pj,1,2)* dfdy(gi)*dfdx&
                                  &(gj)
@@ -485,11 +485,11 @@ subroutine te0101(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + pk
-90                      continue
-100                  continue
-110              continue
-120          continue
-130      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
 ! ---  CALCUL DE LA RIGIDITE THERMIQUE TRANSVERSE :
 !      ------------------------------------------
@@ -498,19 +498,19 @@ subroutine te0101(option, nomte)
 ! ---  SUPERIEUR OU EGAL AU NOMBRE DE POINTS UTILISES POUR LA
 ! ---  RIGIDITE MEMBRANAIRE :
 !      --------------------
-        call elrefe_info(fami='MASS',ndim=ndim2,nno=nno2,nnos=nnos2,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano2)
+        call elrefe_info(fami='MASS', ndim=ndim2, nno=nno2, nnos=nnos2, npg=npg2,&
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano2)
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 !      -----------------------------------
-        do 180 kp = 1, npg2
+        do kp = 1, npg2
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
                         poids, dfdx, dfdy)
-            do 170 gi = 1, nno
-                do 160 gj = 1, gi
-                    do 150 pi = 1, 3
-                        do 140 pj = 1, pi
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)* poids*theta
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
@@ -528,11 +528,11 @@ subroutine te0101(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + pk
-140                      continue
-150                  continue
-160              continue
-170          continue
-180      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
 ! --- CAS DES COQUES LINEIQUES :
 !     ------------------------
@@ -543,23 +543,23 @@ subroutine te0101(option, nomte)
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 !      -----------------------------------
-        do 240 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
             call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
                         cour, poids, cosa, sina)
 !
             if (nomte .eq. 'THCASE3') then
                 r = zero
-                do 190 i = 1, nno
+                do i = 1, nno
                     r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-190              continue
+                end do
                 poids = poids*r
             endif
 !
-            do 230 gi = 1, nno
-                do 220 gj = 1, gi
-                    do 210 pi = 1, 3
-                        do 200 pj = 1, pi
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = a(pi,pj,1,1)*dfdx(gi)*dfdx(gj)
                             pk = pk*poids*theta
 !
@@ -578,25 +578,25 @@ subroutine te0101(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + pk
-200                      continue
-210                  continue
-220              continue
-230          continue
-240      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
 ! ---  CALCUL DE LA RIGIDITE THERMIQUE TRANSVERSE :
 !      ------------------------------------------
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 !      -----------------------------------
-        do 290 kp = 1, npg1
+        do kp = 1, npg1
             k = (kp-1)*nno
             call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
                         cour, poids, cosa, sina)
-            do 280 gi = 1, nno
-                do 270 gj = 1, gi
-                    do 260 pi = 1, 3
-                        do 250 pj = 1, pi
+            do gi = 1, nno
+                do gj = 1, gi
+                    do pi = 1, 3
+                        do pj = 1, pi
                             pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids* theta
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
@@ -614,11 +614,11 @@ subroutine te0101(option, nomte)
                             i = 3* (gi-1) + pi
                             j = 3* (gj-1) + pj
                             rigith(i,j) = rigith(i,j) + pk
-250                      continue
-260                  continue
-270              continue
-280          continue
-290      continue
+                        end do
+                    end do
+                end do
+            end do
+        end do
 !
     endif
 !
@@ -630,11 +630,11 @@ subroutine te0101(option, nomte)
 !     ---------------------------------------------------------------
     nbddl = 3*nno
     ind = 0
-    do 310 i = 1, nbddl
-        do 300 j = 1, i
+    do i = 1, nbddl
+        do j = 1, i
             ind = ind + 1
             zr(imattt+ind-1) = rigith(i,j)
-300      continue
-310  end do
+        end do
+    end do
 !
 end subroutine

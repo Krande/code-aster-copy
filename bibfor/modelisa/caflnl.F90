@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caflnl(char, ligrmo, noma)
     implicit none
 #include "jeveux.h"
@@ -44,7 +44,7 @@ subroutine caflnl(char, ligrmo, noma)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: nflux, jvalv,  nf, iocc, nbtou, nbma, jma, ncmp, lprol
+    integer :: nflux, jvalv, nf, iocc, nbtou, nbma, jma, ncmp, lprol
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
@@ -80,14 +80,14 @@ subroutine caflnl(char, ligrmo, noma)
 !
 ! --- STOCKAGE DANS LES CARTES
 !
-    do 10 iocc = 1, nflux
+    do iocc = 1, nflux
 !
         call getvid(motclf, 'FLUN', iocc=iocc, scal=zk8(jvalv), nbret=nf)
-        
+!
         prol = zk8(jvalv)//'           .PROL'
         call jeveuo(prol, 'L', lprol)
         nompar = zk24(lprol+2)
-        if (nompar(1:4) .ne.'TEMP') call utmess('F','CHARGES2_3',sk=zk8(jvalv))
+        if (nompar(1:4) .ne. 'TEMP') call utmess('F', 'CHARGES2_3', sk=zk8(jvalv))
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
@@ -103,7 +103,8 @@ subroutine caflnl(char, ligrmo, noma)
             call jedetr(mesmai)
         endif
 !
-10  end do
+ 10     continue
+    end do
 !
     call jedema()
 !

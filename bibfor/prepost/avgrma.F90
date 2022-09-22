@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
                   nmaini, nbmap, numpaq, tspaq, nomcri,&
                   nomfor, grdvie, forvie, fordef, proaxe,&
@@ -28,6 +28,8 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
 #include "asterc/r8pi.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/avplcr.h"
 #include "asterfort/carces.h"
@@ -43,8 +45,6 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
     integer :: numpaq, tspaq
     real(kind=8) :: vwork(tdisp)
@@ -179,7 +179,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     k = 1
     ideb = 1
     dim = 627
-    do 300 j = 1, 18
+    do j = 1, 18
         gamma=(j-1)*dgam*(pi/180.0d0)
         dphi=tab1(j)*(pi/180.0d0)
         ngam=tab2(j)
@@ -190,7 +190,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
                     n, k, dim, vect_norma, vect_tangu,&
                     vect_tangv)
 !
-300 end do
+    end do
 !
 ! CONSTRUCTION DU VECTEUR : CISAILLEMENT = F(NUMERO D'ORDRE) EN CHAQUE
 ! POINT DE GAUSS DU PAQUET DE MAILLES.
@@ -200,7 +200,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     kwork = 0
     sompgw = 0
 !
-    do 400 imap = nmaini, nmaini+(nbmap-1)
+    do imap = nmaini, nmaini+(nbmap-1)
         if (imap .gt. nmaini) then
             kwork = 1
             sompgw = sompgw + vnbpg(imap-1)
@@ -232,7 +232,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
         post = .false.
 !
-        do 420 ipg = 1, nbpg
+        do ipg = 1, nbpg
 !
 !
 ! REMPLACER PAR AVPLCR
@@ -244,9 +244,9 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
                         nzm)
 !
 ! RECUPERER LES RESULTATS
-            do 600 icmp = 1, 24
+            do icmp = 1, 24
                 vresu(icmp) = 0.0d0
-600         continue
+            end do
 !
             vresu(2) = nxm(1)
             vresu(3) = nym(1)
@@ -258,7 +258,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
 ! 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
-            do 610 icmp = 1, 24
+            do icmp = 1, 24
                 call cesexi('C', jcerd, jcerl, imap, ipg,&
                             1, icmp, jad)
 !
@@ -267,10 +267,11 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
                 zl(jcerl - 1 + jad) = .true.
                 cerv(jad) = vresu(icmp)
 !
-610         continue
+            end do
 !
-420     continue
-400 end do
+        end do
+400     continue
+    end do
 !
 ! MENAGE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
                   nomnoe)
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -117,11 +117,11 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
             do 221 , iaux = 0 , nbnoeu-1
             zr(jcoord+2*iaux) = coordo(3*iaux+1)
             zr(jcoord+2*iaux+1) = coordo(3*iaux+2)
-221          continue
+221         continue
         else
             do 222 , iaux = 0 , nbnoeu-1
             zr(jcoord+iaux) = coordo(3*iaux+1)
-222          continue
+222         continue
         endif
 !
         call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu,&
@@ -142,10 +142,10 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     call wkvect('&&'//nompro//'NOMNOE', 'V V K16', nbnoeu, adnomn)
 !
-    do 3 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         zk16(adnomn+ino-1) = nomnoe(ino)//'        '
 !                                          12345678
- 3  end do
+    end do
 !
     call as_mmheaw(idfimd, nomamd, zk16(adnomn), nbnoeu, ednoeu,&
                    tygeno, codret)

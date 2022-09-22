@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
                   dpdkf, dsdeef, dsdnnf, dsdkkf, dsdenf,&
                   dsdekf, dsdnkf, coor, dpdeg, dpdng,&
@@ -72,17 +72,17 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
 !
 !     --- CALCUL DE LA MATRICE JACOBIENNE (TRANSFORMATION GEOMETRIQUE)
 !
-    do 100 i = 1, nno
+    do i = 1, nno
         ii = 3*(i-1)
         de = dpdeg(i)
         dn = dpdng(i)
         dk = dpdkg(i)
-        do 110 j = 1, 3
+        do j = 1, 3
             g(1,j) = g(1,j) + coor(ii+j) * de
             g(2,j) = g(2,j) + coor(ii+j) * dn
             g(3,j) = g(3,j) + coor(ii+j) * dk
-110      continue
-100  end do
+        end do
+    end do
 !
 !     --- CALCUL DE L'INVERSE DE LA MATRICE JACOBIENNE
 !                  (AU DETERMINANT PRES)
@@ -153,7 +153,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
 !
     call matini(6, 3, 0.d0, c2)
 !
-    do 400 i = 1, nno
+    do i = 1, nno
         ii = 3 * (i-1)
         c2(1,1) = c2(1,1) + coor(ii+1) * dsdeeg(i)
         c2(1,2) = c2(1,2) + coor(ii+2) * dsdeeg(i)
@@ -173,35 +173,36 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
         c2(6,1) = c2(6,1) + coor(ii+1) * dsdekg(i)
         c2(6,2) = c2(6,2) + coor(ii+2) * dsdekg(i)
         c2(6,3) = c2(6,3) + coor(ii+3) * dsdekg(i)
-400  end do
+    end do
 !
 !     --- CALCUL DE LA MATRICE T1
 !
-    do 500 i = 1, 6
+    do i = 1, 6
         cj(i,1) = c2(i,1) * j11 + c2(i,2) * j21 + c2(i,3) * j31
         cj(i,2) = c2(i,1) * j12 + c2(i,2) * j22 + c2(i,3) * j32
         cj(i,3) = c2(i,1) * j13 + c2(i,2) * j23 + c2(i,3) * j33
-500  end do
+    end do
 !
-    do 510 i = 1, 6
-        do 510 j = 1, 3
+    do i = 1, 6
+        do j = 1, 3
             cj(i,j) = cj(i,j) / jac
-510      continue
+        end do
+    end do
 !
-    do 520 i = 1, 6
-        do 530 j = 1, 3
+    do i = 1, 6
+        do j = 1, 3
             t1(i,j) = 0.d0
-            do 540 k = 1, 6
+            do k = 1, 6
                 t1(i,j) = t1(i,j) + t2(i,k) * cj(k,j)
-540          continue
+            end do
             t1(i,j) = - t1(i,j)
-530      continue
-520  end do
+        end do
+    end do
 !
 !     --- CALCUL DES DERIVEES EN ESPACE DES FONCTIONS DE FORME
 !         DES VARIABLES
 !
-    do 600 i = 1, nnf
+    do i = 1, nnf
 !
         dsdxxf(i) = t1(1,1)*dpdef(i)+t1(1,2)*dpdnf(i)+t1(1,3)*dpdkf(i) + t2(1,1)*dsdeef(i)+t2(1,2&
                     &)*dsdnnf(i)+t2(1,3)*dsdkkf(i) + t2(1,4)*dsdenf(i)+t2(1,5)*dsdnkf(i)+t2(1,6)*&
@@ -227,7 +228,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
                     &)*dsdnnf(i)+t2(6,3)*dsdkkf(i) + t2(6,4)*dsdenf(i)+t2(6,5)*dsdnkf(i)+t2(6,6)*&
                     &dsdekf(i)
 !
-600  end do
+    end do
 !
     jac = abs(jac) * poids
 !

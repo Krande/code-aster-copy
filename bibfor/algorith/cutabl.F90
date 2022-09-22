@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cutabl(indic, nbliac, ajliai, spliai, resocu,&
                   typope, posit, liaiso)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -90,9 +90,9 @@ subroutine cutabl(indic, nbliac, ajliai, spliai, resocu,&
 ! --- ON SUPPRIME UNE LIAISON
 !
         indic = -1
-        do 30 ii = posit, nbliac - 1
+        do ii = posit, nbliac - 1
             zi(jliac-1+ii) = zi(jliac-1+ii+1)
-30      continue
+        end do
         nbliac = nbliac - 1
         ajliai = ajliai - 1
     endif

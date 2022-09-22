@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
                   cninv)
     implicit none
@@ -57,11 +57,11 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
 !
 ! ------------------- BOUCLE SUR LES NSE SOUS-ÉLÉMENTS  ----------------
 !
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 ! ------------- BOUCLE SUR LES SOMMETS DU SOUS-ÉLÉMENTS  ---------------
 !
-        do 111 in = 1, nno
+        do in = 1, nno
 !
             ino=zi(jcnset-1+nno*(ise-1)+in)
 ! ------- NUMÉROTATION PROPRE A LA CONNECTIVITÉ INVERSE
@@ -75,8 +75,8 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
             ASSERT(cninv(jno, 1).le.nse)
             cninv(jno,cninv(jno,1)+1)=ise
 !
-111      continue
+        end do
 !
-110  end do
+    end do
 !
 end subroutine

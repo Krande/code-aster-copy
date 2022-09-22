@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
                   fsvr, icoq, imod, nbm, tcoef,&
                   s1, s2, lambda, kcalcu, condit,&
@@ -99,24 +99,24 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
                &+ dcmplx(w)
     gamma(3) = -1.d0*v*pbflkz(1,long,long,ln,kcalcu) - pbflkz(3,long,long,ln,kcalcu)/(rhof*umoy) &
                &+ dcmplx(x)
-    do 10 i = 1, 3
+    do i = 1, 3
         reeli = dble(lambda(i))
         if (reeli .gt. 0.d0) then
             condit(i) = 1.d0
         else
             condit(i) = 0.d0
         endif
-10  end do
+    end do
 !
     call wkvect('&&PBFLGA.TEMP.MATA', 'V V C', 3*3, imata)
-    do 20 j = 1, 3
+    do j = 1, 3
         ei = dcmplx(exp(-1.d0*condit(j)*lambda(j)*long))
         zc(imata+3*(j-1)) = lambda(j)*ei
         t = lambda(j)*(r-lambda(j))*rmoy*rmoy
         zc(imata+3*(j-1)+1) = (t+dcmplx(u))*ei
         ei = dcmplx(exp((1.d0-condit(j))*lambda(j)*long))
         zc(imata+3*(j-1)+2) = (t+dcmplx(v))*ei
-20  end do
+    end do
 !
     call lcsolz(zc(imata), gamma, 3, 3, 1,&
                 iret)

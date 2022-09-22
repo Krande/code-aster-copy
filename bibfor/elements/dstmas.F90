@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstmas(xyzl, option, pgl, mas, ener)
     implicit none
 #include "asterf_types.h"
@@ -148,7 +148,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
 !
-    do  int = 1, npg
+    do int = 1, npg
         qsi = zr(icoopg-1+ndim*(int-1)+1)
         eta = zr(icoopg-1+ndim*(int-1)+2)
 !
@@ -178,11 +178,11 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 ! ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 ! ---   DUE AUX SEULS TERMES DE LA FLECHE W :
 !       -----------------------------------
-        do 50 i = 1, 9
-            do 60 j = 1, 9
+        do i = 1, 9
+            do j = 1, 9
                 flex(i,j) = flex(i,j) + wst(i)*wst(j)*wgt
- 60         continue
- 50     continue
+            end do
+        end do
 !
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 ! ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
@@ -191,11 +191,11 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !
 ! ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 !       -------------------------------------------------------
-        do 70 i = 1, 9
-            do 80 j = 1, 9
+        do i = 1, 9
+            do j = 1, 9
                 flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
- 80         continue
- 70     continue
+            end do
+        end do
 !==============================================================
 ! ---   CAS D'UN ELEMENT EXCENTRE : IL APPARAIT DE TERMES DE  =
 ! ---   COUPLAGE MEMBRANE-FLEXION ET DE NOUVEAUX TERMES POUR  =
@@ -227,22 +227,22 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !
 ! ---      1) TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA :
 !             ------------------------------------------
-            do 90 k = 1, 3
-                do 100 j = 1, 9
+            do k = 1, 3
+                do j = 1, 9
                     i1 = 2*(k-1)+1
                     i2 = i1 +1
                     mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
                     mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
-100             continue
- 90         continue
+                end do
+            end do
 ! ---      2) TERMES DE COUPLAGE MEMBRANE-FLEXION W*W ET BETA*BETA :
 !             ----------------------------------------------------
-            do 110 i = 1, 6
-                do 120 j = 1, 9
+            do i = 1, 6
+                do j = 1, 9
                     mefl(i,j) = mefl(i,j) + wmest(i)*wst(j)*wgtm + (nmx(i)*nfx(j) + nmy(i)*nfy(j)&
                                 &)*wgtf
-120             continue
-110         continue
+                end do
+            end do
 !
 !===========================================================
 ! ---  AJOUT DE NOUVEAUX TERMES A LA PARTIE MEMBRANE       =
@@ -258,31 +258,31 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !
 ! ---      1) TERMES DE MEMBRANE U*BETA :
 !             -------------------------
-            do 130 k = 1, 3
+            do k = 1, 3
                 i1 = 2*(k-1)+1
                 i2 = i1 +1
-                do 140 p = 1, 3
+                do p = 1, 3
                     j1 = 2*(p-1)+1
                     j2 = j1 +1
                     memb(i1,j1) = memb(i1,j1)+ (nmi(k)*nmx(j1)+nmi(p)* nmx(i1))*wgtmf
                     memb(i1,j2) = memb(i1,j2)+ (nmi(k)*nmx(j2)+nmi(p)* nmy(i1))*wgtmf
                     memb(i2,j1) = memb(i2,j1)+ (nmi(k)*nmy(j1)+nmi(p)* nmx(i2))*wgtmf
                     memb(i2,j2) = memb(i2,j2)+ (nmi(k)*nmy(j2)+nmi(p)* nmy(i2))*wgtmf
-140             continue
-130         continue
+                end do
+            end do
 ! ---      2) TERMES DE MEMBRANE WMEST*WMEST ET BETA*BETA :
 !             -------------------------------------------
-            do 150 i = 1, 6
-                do 160 j = 1, 6
+            do i = 1, 6
+                do j = 1, 6
                     memb(i,j) = memb(i,j) + wmest(i)*wmest(j)*wgtm + (nmx(i)*nmx(j) + nmy(i)*nmy(&
                                 &j))*wgtf
-160             continue
-150         continue
+                end do
+            end do
 !
         endif
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
-     end do
+    end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !

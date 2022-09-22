@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
                   ndim)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cacono.h"
 #include "asterfort/jecroc.h"
@@ -34,6 +33,7 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
 #include "asterfort/normev.h"
 #include "asterfort/palima.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: coniz, motfaz, nomaz, conrz
     character(len=8) :: noma
     character(len=16) :: motfac
@@ -125,15 +125,15 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
     call wkvect('&&PACOJE.ANGL', 'V V R', nbcoup, idangl)
 !
 !
-    do 10 i = 1, nbcoup
+    do i = 1, nbcoup
 !
         no1 = zi(idconi+2*(i-1)+1)
         no2 = zi(idconi+2*(i-1)+2)
 !
-        do 20 j = 1, 3
+        do j = 1, 3
             norm1(j) = 0.0d0
             norm2(j) = 0.0d0
-20      continue
+        end do
 !
 ! ----- CONSTRUCTION DE LA LISTE DE MAILLES LLIST1 SPECIFIEE APRES
 ! ----- LES MOTS-CLES GROUP_MA_1 OU MAILLE_1
@@ -157,10 +157,10 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
         call cacono(noma, ndim, llist1, llist2, no1,&
                     no2, nor1, nor2, inoma)
 !
-        do 40 j = 1, ndim
+        do j = 1, ndim
             norm1(j) = norm1(j) + nor1(j)
             norm2(j) = norm2(j) + nor2(j)
-40      continue
+        end do
 !
 !       SI INOMA = -1 => NORM1 = 0 CAR MAILLE POI1
 !       SI INOMA = -2 => NORM2 = 0 CAR MAILLE POI1
@@ -177,17 +177,17 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
 !
         if ((inoma.ne.-1) .and. (inoma.ne.-2)) then
 !
-            do 50 j = 1, ndim
+            do j = 1, ndim
                 norm1(j) = (norm1(j) - norm2(j))/2.0d0
-50          continue
+            end do
 !
         else if (inoma.eq.-1) then
 !
 !          NO1 APPARTIENT A UNE MAILLE POI1 : LA NORMALE EST NORM2
 !
-            do 51 j = 1, ndim
+            do j = 1, ndim
                 norm1(j) = - norm2(j)
-51          continue
+            end do
 !
         else if (inoma.eq.-2) then
 !
@@ -196,18 +196,18 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
         endif
 !
 !
-        do 70 j = 1, ndim
+        do j = 1, ndim
             zr(idrad-1+(2*ndim+1)*(i-1)+j) = norm1(j)
             zr(idrad-1+(2*ndim+1)*(i-1)+j+ndim) = norm2(j)
 !
             jeu = jeu - zr(&
                   ivale-1+nbcmp*(no1-1)+j) * norm1(j) + zr(ivale-1+nbcmp*(no2-1)+j) * norm1(j)
-70      continue
+        end do
 !
         zr(idrad- 1+(2*ndim+1)*i) = jeu
 !
 !
-10  end do
+    end do
 !
     call jedetr(llist1)
     call jedetr(llist2)

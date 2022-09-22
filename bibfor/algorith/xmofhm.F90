@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmofhm(lact, nlact, nno, ffe, ffc)
 ! person_in_charge: daniele.colombo at ifpen.fr
     implicit none
@@ -50,16 +50,16 @@ subroutine xmofhm(lact, nlact, nno, ffe, ffc)
         ffc(i)=ffe(i)
     end do
     if (nlact(1) .lt. nno) then
-        do 20 i = 1, nno
+        do i = 1, nno
             if (lact(i) .eq. 0) then
-                do 30 j = 1, nno
+                do j = 1, nno
                     if (i .ne. j .and. lact(j) .ne. 0) then
                         ffc(j)=ffc(j)+ffc(i)/nlact(1)
                     endif
-30              continue
+                end do
                 ffc(i)= 0.d0
             endif
-20      continue
+        end do
     endif
 !
     if (nno .gt. 8) then

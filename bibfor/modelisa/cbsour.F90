@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cbsour(char, noma, ligrmo, ndim, fonree)
     implicit none
 #include "asterc/getfac.h"
@@ -42,10 +42,10 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
 !
     nbcalc = 0
     if (fonree .eq. 'REEL') then
-        do 10 iocc = 1, nbfac
+        do iocc = 1, nbfac
             call getvid(motfac, 'SOUR_CALCULEE', iocc=iocc, scal=chsour, nbret=icalc)
             nbcalc = nbcalc + icalc
-10      continue
+        end do
         if (nbcalc .gt. 1) then
             call utmess('F', 'MODELISA3_64')
         else if (nbcalc.eq.1) then

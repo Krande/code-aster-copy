@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacou6(r, qt, n, i, a,&
                   b)
     implicit none
@@ -47,18 +47,18 @@ subroutine pacou6(r, qt, n, i, a,&
 !
     endif
 !
-    do 11 j = 1, n
+    do j = 1, n
         y = r(i,j)
         w = r(i+1,j)
         r(i,j) = c*y - s*w
         r(i+1,j) = s*y + c*w
-11  end do
+    end do
 !
-    do 12 j = 1, n
+    do j = 1, n
         y = qt(i,j)
         w = qt(i+1,j)
         qt(i,j) = c*y - s*w
         qt(i+1,j) = s*y + c*w
-12  end do
+    end do
 !
 end subroutine

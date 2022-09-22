@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hayres(mod, nmat, materd, materf, timed,&
                   timef, yd, yf, deps, dy,&
                   res, crit, iret)
@@ -68,9 +68,9 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
     dh1=  dy(8)
     dh2=  dy(9)
     dddmg=dy(10)
-    do 11 itens = 1, ndt
+    do itens = 1, ndt
         epsef(itens)=yd(itens)+theta*dy(itens)
-11  end do
+    end do
     dt=timef-timed
     if (ndt .eq. 6) then
         ndim=3
@@ -126,9 +126,9 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
         sequi=grj1
     endif
 !------------ CALCUL DU TENSEUR DEPSPATORIQUE DES CONTRAINTES ---
-    do 10 itens = 1, ndt
+    do itens = 1, ndt
         if (itens .le. 3) sigf(itens)=sigf(itens)-grj1/3.d0
-10  end do
+    end do
 !
 !----- EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !----- CUMULEE
@@ -140,7 +140,7 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
         devcum=eps0*(sinh(terme1))*dt
     else
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !----- EQUATION DONNANT LA DERIVEE DE GH
@@ -155,7 +155,7 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
             decrou(2)=(ph2/grj2v)*(h2st-(delta2*(gh2+theta*dh2)))*dp
         else
             iret=1
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -170,19 +170,19 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
         ddmg=biga*sinh(sinn/sig0)*dt
     else
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !
     if (grj2v .le. epsi) then
-        do 33 itens = 1, ndt
+        do itens = 1, ndt
             depsp(itens)=ze
-33      continue
+        end do
     else
-        do 12 itens = 1, ndt
+        do itens = 1, ndt
             depsp(itens)=td*dp*sigf(itens)/grj2v
-12      continue
+        end do
     endif
     call lcdive(deps, depsp, depsel)
     call lcdive(depsel, dy, res(1))
@@ -190,5 +190,5 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
     res(ndt+2) = decrou(1)-dh1
     res(ndt+3) = decrou(2)-dh2
     res(ndt+4) = ddmg-dddmg
-9999  continue
+999 continue
 end subroutine

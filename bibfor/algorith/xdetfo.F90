@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
-                  nmafon, noma, nomfis, resuco)
+!
+subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
+                  noma, nomfis, resuco)
 !
 ! person_in_charge: patrick.massin at edf.fr
     implicit none
 #include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"
@@ -30,7 +32,6 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 #include "asterfort/codent.h"
 #include "asterfort/conare.h"
 #include "asterfort/copisd.h"
-#include "blas/ddot.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -39,16 +40,15 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterc/r8maem.h"
-#include "asterc/r8prem.h"
+#include "asterfort/rs_getfirst.h"
+#include "asterfort/rs_getlast.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmafis.h"
-#include "asterfort/rs_getfirst.h"
-#include "asterfort/rs_getlast.h"
+#include "blas/ddot.h"
 !
 ! Propagation de fissures cohésives avec XFEM
 ! Calculer la fonction pour détecter le nouveau front
@@ -132,9 +132,9 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !   POUR L INSTANT LA DETECTION SE FAIT A PARTIR DU DERNIER NUMERO D ORDRE
 !
     call rs_getlast(resuco, nume_last)
-! 
+!
 ! --- RECUP CHAMP VARIABLES INTERNES COHESIVES
-! 
+!
     call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee,&
                 iret)
 !
@@ -167,14 +167,14 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !
     call jeveuo(nommat//'.MATERIAU.NOMRC', 'L', ianorc)
     call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
-    do irc = 1,nbrc
+    do irc = 1, nbrc
         nomrc=zk32(ianorc-1+irc)
-        if(nomrc.eq.'RUPT_FRAG') then
-            call codent(irc,'D0',k6)
+        if (nomrc .eq. 'RUPT_FRAG') then
+            call codent(irc, 'D0', k6)
         else
             goto 1
         endif
-1   continue
+  1     continue
     end do
     call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', jvalk)
     call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONMAX', ncmpa)
@@ -190,7 +190,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !   REDUCTION CHAMP VARIABLES INTERNES
     call cnsred(cnsco, 0, [0], 1, 'X1',&
                 'V', cnsco)
-!   
+!
 !   ON ENLEVE LES NOEUDS QUI N ONT PAS DE VARIABLE INTERNE
     call jeveuo(cnsco(1:19)//'.CNSD', 'L', jcnsd)
     call jeveuo(cnsco(1:19)//'.CNSL', 'L', jcnsl)
@@ -253,7 +253,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !
 !       BOUCLE SUR LES ARÊTES : MIN ET MAX DES LST
 !       COPIE XSTANO
-        do 153 ia = 1, nbar
+        do ia = 1, nbar
 !
             na=ar(ia,1)
             nb=ar(ia,2)
@@ -327,7 +327,8 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !               VERIF STANO A REPORTER?
             endif
 !
-153     continue
+153         continue
+        end do
 !
         if (mindet*maxdet .le. r8prem()) then
 !           ALARME UTILISATEUR SI MAILLE DE FOND

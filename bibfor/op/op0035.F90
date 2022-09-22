@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0035()
     implicit none
 !
@@ -66,7 +66,7 @@ subroutine op0035()
     call wkvect('&&TYPE_INFO', 'V V K8', nbval, jtval)
 !
     call getvtx(' ', 'LISTE_INFO', nbval=nbval, vect=zk16(jkval), nbret=ibid)
-    do 20 k = 1, nbval
+    do k = 1, nbval
         if (zk16(jkval+k-1) .eq. 'TEMPS_RESTANT') then
             zk8(jtval+k-1) = 'R'
         else if (zk16(jkval+k-1) .eq. 'UNITE_LIBRE') then
@@ -74,12 +74,12 @@ subroutine op0035()
         else if (zk16(jkval+k-1) .eq. 'ETAT_UNITE') then
             zk8(jtval+k-1) = 'K8'
         endif
-20  end do
+    end do
 !
     call tbcrsd(result, 'G')
     call tbajpa(result, nbval, zk16(jkval), zk8(jtval))
 !
-    do 100 k = 1, nbval
+    do k = 1, nbval
         if (zk16(jkval+k-1) .eq. 'TEMPS_RESTANT') then
 !         -- TEMPS CPU RESTANT :
             call uttrst(rval)
@@ -121,7 +121,7 @@ subroutine op0035()
                             [rbid], [cbid], kfic(241:255), 'A', [k])
             endif
         endif
-100  end do
+    end do
 !
     call titre()
 !

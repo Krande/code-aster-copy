@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jedetr(nomlu)
     implicit none
 #include "asterf_config.h"
@@ -112,7 +112,7 @@ subroutine jedetr(nomlu)
                 ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
                 ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
                 nmax = iszon(jiszon+ibacol+ivnmax)
-                do 10 k = 1, nmax
+                do k = 1, nmax
                     iadmar = iszon( jiszon + ibmarq - 1 + 2*k )
                     if (iadmar .ne. 0) then
                         iszon(jiszon+kdesma(1)+iadmar-1) = 0
@@ -133,9 +133,9 @@ subroutine jedetr(nomlu)
                         endif
                         call jxlibd(idatco, k, ic, iaddi, lonoi)
                     endif
-10              continue
+                end do
             endif
-            do 1 k = 1, idnum
+            do k = 1, idnum
                 id (k) = iszon ( jiszon + ibacol + k )
                 if (id(k) .gt. 0) then
                     nom32 = rnom ( jrnom(ic) + id(k) )
@@ -153,8 +153,8 @@ subroutine jedetr(nomlu)
                         id(k) = 0
                     endif
                 endif
- 1          continue
-            do 2 k = 1, idnum
+            end do
+            do k = 1, idnum
                 if (id(k) .gt. 0) then
                     nom32 = rnom ( jrnom(ic) + id(k) )
                     if (nivo .ge. 2) then
@@ -163,7 +163,7 @@ subroutine jedetr(nomlu)
                     call jjcren(nom32, -2, iret)
                     call jjmzat(ic, id(k))
                 endif
- 2          continue
+            end do
             iadyn = iadm(jiadm(ic)+2*idatco)
             call jjlidy(iadyn, ibacol)
             iaddi(1) = iadd (jiadd(ic) + 2*idatco-1)
@@ -228,6 +228,6 @@ subroutine jedetr(nomlu)
             nomoc = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
         endif
     endif
-999  continue
+999 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

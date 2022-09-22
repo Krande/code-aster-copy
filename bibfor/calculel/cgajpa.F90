@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
+!
+subroutine cgajpa(para, notype, nbpara, linopa, litypa,&
+                  nxpara)
 !
     implicit none
 !
@@ -24,7 +25,7 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
 #include "asterfort/assert.h"
     integer :: nbpara, nxpara
     character(len=*) :: para, notype, litypa(nxpara), linopa(nxpara)
-
+!
 !
 ! person_in_charge: emricka.julan at edf.fr
 !
@@ -46,26 +47,26 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
     integer :: i
 !
 ! ----------------------------------------------------------------------
-!     
-
+!
+!
     ASSERT(para .ne. ' ')
-      
+!
 !   1. RECHERCHE SI LE PARAMETRE EXISTE DEJA :
 !   ------------------------------------------
-
-    if (nbpara.ne.0) then 
-        do 10 i = 1, nbpara
-            if (linopa(i) .eq. para) goto 9999
-10      enddo
+!
+    if (nbpara .ne. 0) then
+        do i = 1, nbpara
+            if (linopa(i) .eq. para) goto 999
+        end do
     endif
-
+!
 !    2. IL S'AGIT D'UN NOUVEAU PARAMETRE ON L'AJOUTE :
 !    -------------------------------------------------
-     nbpara = nbpara+1  
-     ASSERT(nbpara .le. nxpara)
-     linopa(nbpara) = para
-     litypa(nbpara) = notype
-
-9999 continue
+    nbpara = nbpara+1
+    ASSERT(nbpara .le. nxpara)
+    linopa(nbpara) = para
+    litypa(nbpara) = notype
+!
+999 continue
 !
 end subroutine

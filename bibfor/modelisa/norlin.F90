@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine norlin(typma, l, knumai, coor, dfonc,&
                   in, prec, a, b, c)
 !
@@ -70,7 +70,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
             eet1x=0.d0
             eet1y=0.d0
             eet1z=0.d0
-            do 10 ifonc = 1, nn
+            do ifonc = 1, nn
                 eks1x=eks1x+coor(1,ifonc)*dfonc((in-1)*nn*2+ifonc)
                 eks1y=eks1y+coor(2,ifonc)*dfonc((in-1)*nn*2+ifonc)
                 eks1z=eks1z+coor(3,ifonc)*dfonc((in-1)*nn*2+ifonc)
@@ -78,7 +78,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                 eet1x=eet1x+coor(1,ifonc)*dfonc((in-1)*nn*2+nn+ifonc)
                 eet1y=eet1y+coor(2,ifonc)*dfonc((in-1)*nn*2+nn+ifonc)
                 eet1z=eet1z+coor(3,ifonc)*dfonc((in-1)*nn*2+nn+ifonc)
-10          continue
+            end do
 !         CALCUL DU VECTEUR NORMAL ET NORMALISATION
             a=eks1y*eet1z-eks1z*eet1y
             b=eks1z*eet1x-eks1x*eet1z
@@ -106,7 +106,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
             eet2x=0.d0
             eet2y=0.d0
             eet2z=0.d0
-            do 20 ifonc = 1, nn
+            do ifonc = 1, nn
                 eks1x=eks1x+coor(1,ifonc)*dfonc((in-1-nn)*nn*2+ifonc)
                 eks1y=eks1y+coor(2,ifonc)*dfonc((in-1-nn)*nn*2+ifonc)
                 eks1z=eks1z+coor(3,ifonc)*dfonc((in-1-nn)*nn*2+ifonc)
@@ -120,7 +120,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                 eet2x=eet2x+coor(1,ifonc)*dfonc((in-nn)*nn*2+nn+ifonc)
                 eet2y=eet2y+coor(2,ifonc)*dfonc((in-nn)*nn*2+nn+ifonc)
                 eet2z=eet2z+coor(3,ifonc)*dfonc((in-nn)*nn*2+nn+ifonc)
-20          continue
+            end do
             a=(eks1y*eet1z-eks1z*eet1y+eks2y*eet2z-eks2z*eet2y)/2.d0
             b=(eks1z*eet1x-eks1x*eet1z+eks2z*eet2x-eks2x*eet2z)/2.d0
             c=(eks1x*eet1y-eks1y*eet1x+eks2x*eet2y-eks2y*eet2x)/2.d0
@@ -139,10 +139,10 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
         if (in .le. nn) then
             eks1x=0.d0
             eks1y=0.d0
-            do 30 ifonc = 1, nn
+            do ifonc = 1, nn
                 eks1x=eks1x+coor(1,ifonc)*dfonc((in-1)*nn+ifonc)
                 eks1y=eks1y+coor(2,ifonc)*dfonc((in-1)*nn+ifonc)
-30          continue
+            end do
 !         ON S INTERESSE AU VECTEUR TANGENT
             if (l .eq. 2) then
                 norme=sqrt(eks1x**2+eks1y**2)
@@ -169,12 +169,12 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
             eks1y=0.d0
             eks2x=0.d0
             eks2y=0.d0
-            do 40 ifonc = 1, nn
+            do ifonc = 1, nn
                 eks1x=eks1x+coor(1,ifonc)*dfonc((in-1-nn)*nn+ifonc)
                 eks1y=eks1y+coor(2,ifonc)*dfonc((in-1-nn)*nn+ifonc)
                 eks2x=eks2x+coor(1,ifonc)*dfonc((in-nn)*nn+ifonc)
                 eks2y=eks2y+coor(2,ifonc)*dfonc((in-nn)*nn+ifonc)
-40          continue
+            end do
             eks1x=(eks1x+eks2x)/2
             eks1y=(eks1y+eks2y)/2
 !         ON S INTERESSE AU VECTEUR TANGENT

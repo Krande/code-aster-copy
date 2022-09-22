@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0547(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
@@ -30,7 +30,6 @@ subroutine te0547(option, nomte)
 #include "asterfort/pipel2.h"
 #include "asterfort/pipeou.h"
 #include "asterfort/pipetc.h"
-#include "asterc/r8vide.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -44,6 +43,7 @@ subroutine te0547(option, nomte)
 #include "asterfort/xteini.h"
 #include "asterfort/xxlag3.h"
 #include "asterfort/xxlan5.h"
+!
     character(len=16) :: option, nomte
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -142,8 +142,8 @@ subroutine te0547(option, nomte)
         call jevech('PCOHES', 'L', jcohes)
         call tecach('OOO', 'PCOHES', 'L', iret, nval=3,&
                     itab=jta2)
-        if(contac.eq.2) ncompv = jta2(2)/jta2(3)
-        if(contac.eq.1.or.contac.eq.3) ncompv = jta2(2)
+        if (contac .eq. 2) ncompv = jta2(2)/jta2(3)
+        if (contac .eq. 1 .or. contac .eq. 3) ncompv = jta2(2)
     endif
     mate = zi(imate)
 !
@@ -181,9 +181,9 @@ subroutine te0547(option, nomte)
 !
 ! LISTE DES LAMBDAS ACTIFS
 !
-    call xmulco(contac, ddls, ddlc, ddlm, jaint, 1,&
-                ibid, vstnc, lact, .false._1, lbid,&
-                ndim, nfh, 1, ninter,&
+    call xmulco(contac, ddls, ddlc, ddlm, jaint,&
+                1, ibid, vstnc, lact, .false._1,&
+                lbid, ndim, nfh, 1, ninter,&
                 nlact, nno, nnol, nnom, nnos,&
                 pla, typma)
 !
@@ -193,7 +193,7 @@ subroutine te0547(option, nomte)
 !
 ! SI COHESIF TYPE "MORTAR"
 !
-    if(contac.eq.2) then
+    if (contac .eq. 2) then
 !
         ASSERT(rela.eq.5.d0)
         call xmprep(cface, contac, elref, elrefc, elc,&
@@ -203,7 +203,7 @@ subroutine te0547(option, nomte)
                     nlact, nno, nnos, nptf, ibid,&
                     rr, singu, tau1, tau2)
 !
-        do 120 ino = 1, nnol
+        do ino = 1, nnol
 !         INDICE DE CE POINT DE GAUSS DANS INDCO
             cohes = zr(jcohes+ncompv*(ino-1))
 !
@@ -240,18 +240,18 @@ subroutine te0547(option, nomte)
             champ = 'LAMBDA'
             call xxlan5(ino, idepl1, ibid, ib, lact,&
                         ndim, pla, lud, nvec, champ)
-            call pipel2(mate, sup, sud, lup, lud, cohes,&
-                        dtau, copilo)
+            call pipel2(mate, sup, sud, lup, lud,&
+                        cohes, dtau, copilo)
 !
-            do 130 i = 1, 5
+            do i = 1, 5
                 zr(icopil-1+5*(ino-1)+i) = copilo(i)
-130         continue
+            end do
 !
-120      continue
+        end do
 !
 !   SI COHESIF CLASSIQUE
 !
-    else if(contac.eq.1.or.contac.eq.3) then
+    else if (contac.eq.1.or.contac.eq.3) then
 !
         do ifa = 1, nface
 !
@@ -357,7 +357,7 @@ subroutine te0547(option, nomte)
                     zr(icopil-1+5*(isspg-1)+i) = copilo(i)
                 end do
 !
-             end do
+            end do
         end do
     endif
 !

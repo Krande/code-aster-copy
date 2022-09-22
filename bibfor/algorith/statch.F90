@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
                   vgli, iadh, wk1, wk2, wk3,&
                   iwk4, tdebut, tfin, nbloc, offset,&
@@ -116,10 +116,10 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
         write (ifires,1000)
         write (ifires,1010) nbloc,nbval
         write (ifires,1000)
-        do 10 i = 1, nbloc
+        do i = 1, nbloc
             write (ifires,1020) i,temps(idebut+nbval* (i-1)), temps(&
             idebut+nbval*i-1)
-10      continue
+        end do
     endif
 !
     call tbcrsd(nomres, 'G')
@@ -127,7 +127,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
 !
 !     BOUCLE SUR LES NOEUDS DE CHOC
 !
-    do 120 i = 1, nbobst
+    do i = 1, nbobst
         noeud = noecho(i)
         valek(1) = intitu(i)
         valek(2) = noeud
@@ -142,7 +142,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             write (ifires,1030)
         endif
 !
-        do 30 j = 1, 3
+        do j = 1, 3
 !
             valek(3) = tvar(j)
             dxmoyt = zero
@@ -154,7 +154,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             idec = 3* (i-1) + j
             call dcopy(nbpt, dloc(idec), 3*nbobst, wk1(1), 1)
 !
-            do 20 ibl = 1, nbloc
+            do ibl = 1, nbloc
                 dxmoy = zero
                 dxetyp = zero
                 dxrms = zero
@@ -169,7 +169,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
                 dxmint = min(dxmint,dxmin)
                 if (impr .eq. 2) call impdep(ifires, j, ibl, dxmoy, dxetyp,&
                                              dxrms, dxmax, dxmin)
-20          continue
+            end do
             dxmoyt = dxmoyt/nbloc
             dxrmst = sqrt(dxrmst/nbloc)
             dxetyt = sqrt(dxetyt/nbloc)
@@ -187,7 +187,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             call tbajli(nomres, ndepl, tdepl, [ibid], para,&
                         [c16b], valek, 0)
 !
-30      continue
+        end do
 !
 !       --------------------------------------------------------
 !       --- ANALYSE DES DEPLACEMENTS EN COORDONNEES POLAIRES ---
@@ -195,16 +195,16 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
 !
         call dcopy(nbpt, dloc(3* (i-1)+2), 3*nbobst, wk1, 1)
         call dcopy(nbpt, dloc(3* (i-1)+3), 3*nbobst, wk2, 1)
-        do 40 in = 1, nbpt
+        do in = 1, nbpt
             wk3(in) = sqrt(wk1(in)*wk1(in)+wk2(in)*wk2(in))
-40      continue
+        end do
 !
         dxmoyt = zero
         dxetyt = zero
         dxrmst = zero
         dxmaxt = -1.d30
         dxmint = -dxmaxt
-        do 50 ibl = 1, nbloc
+        do ibl = 1, nbloc
             dxmoy = zero
             dxetyp = zero
             dxrms = zero
@@ -219,7 +219,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             dxmint = min(dxmint,dxmin)
             if (impr .eq. 2) call impdep(ifires, 4, ibl, dxmoy, dxetyp,&
                                          dxrms, dxmax, dxmin)
-50      continue
+        end do
         dxmoyt = dxmoyt/nbloc
         dxrmst = sqrt(dxrmst/nbloc)
         dxetyt = sqrt(dxetyt/nbloc)
@@ -241,20 +241,20 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
 !       --- ANALYSE DE L ANGLE POLAIRE ---
 !       ----------------------------------
 !
-        do 60 in = 1, nbpt
+        do in = 1, nbpt
             if ((wk1(in).ne.zero) .or. (wk2(in).ne.zero)) then
                 wk3(in) = rad*atan2(wk2(in),wk1(in))
             else
                 wk3(in) = zero
             endif
-60      continue
+        end do
 !
         dxmoyt = zero
         dxetyt = zero
         dxrmst = zero
         dxmaxt = -1.d30
         dxmint = -dxmaxt
-        do 70 ibl = 1, nbloc
+        do ibl = 1, nbloc
             dxmoy = zero
             dxetyp = zero
             dxrms = zero
@@ -269,7 +269,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             dxmint = min(dxmint,dxmin)
             if (impr .eq. 2) call impdep(ifires, 5, ibl, dxmoy, dxetyp,&
                                          dxrms, dxmax, dxmin)
-70      continue
+        end do
         dxmoyt = dxmoyt/nbloc
         dxrmst = sqrt(dxrmst/nbloc)
         dxetyt = sqrt(dxetyt/nbloc)
@@ -298,7 +298,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
         fxmaxt = zero
         fxmint = zero
         call dcopy(nbpt, fcho(3* (i-1)+1), 3*nbobst, wk1, 1)
-        do 80 ibl = 1, nbloc
+        do ibl = 1, nbloc
             fnmoyt = zero
             fnmoyc = zero
             fnrmst = zero
@@ -320,7 +320,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             fxmint = min(fxmint,fnmin)
             if (impr .eq. 2) call impfn0(ifires, ibl, fnmoyt, fnmoyc, fnrmst,&
                                          fnrmsc, fnmax)
-80      continue
+        end do
         fxmoyt = fxmoyt/nbloc
         fxmoyc = fxmoyc/nbloc
         fxrmst = sqrt(fxrmst/nbloc)
@@ -340,14 +340,14 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
 !       CALCUL DE LA MOYENNE,ECART TYPE,RMS,MAX DE LA FORCE TANGENTIELLE
 !       ----------------------------------------------------------------
 !
-        do 100 j = 2, 3
+        do j = 2, 3
             fymoyt = zero
             fyetyt = zero
             fyrmst = zero
             fymaxt = zero
             fymint = zero
             call dcopy(nbpt, fcho(3* (i-1)+j), 3*nbobst, wk1, 1)
-            do 90 ibl = 1, nbloc
+            do ibl = 1, nbloc
                 ftmoye = zero
                 ftetyp = zero
                 ftrms = zero
@@ -363,7 +363,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
                 indic = j - 1
                 if (impr .eq. 2) call impft0(ifires, indic, ibl, ftmoye, ftetyp,&
                                              ftrms, ftmax, ftmin)
-90          continue
+            end do
             fymoyt = fymoyt/nbloc
             fyetyt = sqrt(fyetyt/nbloc)
             fyrmst = sqrt(fyrmst/nbloc)
@@ -377,7 +377,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             para(5) = fymint
             call tbajli(nomres, ndepl, tdepl, [ibid], para,&
                         [c16b], valek, 0)
-100      continue
+        end do
 !
 !       -------------------------------------------------------
 !       --- CALCUL DU NB DE CHOC, DUREE MOYENNE DE CHOC,... ---
@@ -391,7 +391,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
         tchoma = zero
         tchomy = zero
         call dcopy(nbpt, fcho(3* (i-1)+1), 3*nbobst, wk1, 1)
-        do 110 ibl = 1, nbloc
+        do ibl = 1, nbloc
             nbchoc = 0
             tchocm = zero
             tchmax = zero
@@ -411,7 +411,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
             if (impr .eq. 2) call impc0(ifires, ibl, nbchoc, tchocm, tchmax,&
                                         tchmin, nbrebo, trebom, tchoct, temps,&
                                         nbval)
-110      continue
+        end do
         if (nbchot .ne. 0) then
             tchomy = tchocg/nbchot
         else
@@ -456,7 +456,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
         call tbajli(nomres, nusur, tusur, [ibid], [pusurn],&
                     [c16b], valek, 0)
 !
-120  end do
+    end do
 !
     1000 format (7x,'---------------------------------------------------')
     1010 format (9x,'STATISTIQUES SUR ',i3,' BLOC(S) DE ',i7,' VALEURS')

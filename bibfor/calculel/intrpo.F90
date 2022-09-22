@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine intrpo(r, s, t, nno, vh)
 !
 !
@@ -77,13 +77,15 @@ subroutine intrpo(r, s, t, nno, vh)
         ht(3)=t*(t+un)/de
 !
         i1=0
-        do 131 i = 1, 3
-            do 131 j = 1, 3
-                do 131 k = 1, 3
+        do i = 1, 3
+            do j = 1, 3
+                do k = 1, 3
                     i1=i1+1
                     ih=n27(i1)
                     vh(ih)=hr(i)*hs(j)*ht(k)
-131              continue
+                end do
+            end do
+        end do
     endif
 !
 end subroutine

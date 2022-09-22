@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ajchca(para, cham, lpara, lcham, nbent,&
                   maxent, surch)
     implicit none
@@ -50,13 +50,13 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
 !
 !     1. RECHERCHE SI LE PARAMETRE EXISTE DEJA
     indice=0
-    do 10 i = 1, nbent
+    do i = 1, nbent
         if (lpara(i) .eq. para) then
             indice=i
             goto 20
         endif
-10  end do
-20  continue
+    end do
+ 20 continue
 !
 !
 !     2. IL S'AGIT D'UN NOUVEAU PARAMETRE ON L'AJOUTE :
@@ -66,7 +66,7 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
         nbent=nbent+1
         lpara(nbent)=para
         lcham(nbent)=cham
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -82,19 +82,19 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
 !     3.1 L'ANCIEN CHAMP ETAIT "BLANC" : ON STOCKE LE NOUVEAU:
     if (lcham(indice) .eq. ' ') then
         lcham(indice)=cham
-        goto 9999
+        goto 999
     endif
 !
 !
 !     3.2 LE NOUVEAU CHAMP EST "BLANC" : ON NE LE STOCKE PAS
     if (cham .eq. ' ') then
-        goto 9999
+        goto 999
     endif
 !
 !
 !     3.3 LE NOUVEAU NOM EST LE MEME QUE L'ANCIEN :
     if (lcham(indice) .eq. cham) then
-        goto 9999
+        goto 999
     endif
 !
 !
@@ -108,5 +108,5 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

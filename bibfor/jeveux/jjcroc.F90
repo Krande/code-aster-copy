@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjcroc(knat, icre)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -99,12 +99,12 @@ subroutine jjcroc(knat, icre)
                 iszon(jitab + ilmax ) = nmax
                 iszon(jitab + iluti ) = nuti
                 iszon(jitab + idehc ) = idehc
-                do 5 i = 1, nhcod
+                do i = 1, nhcod
                     iszon( jitab + i + idehc ) = 0
- 5              continue
-                do 6 i = 1, nmax*ltypi
+                end do
+                do i = 1, nmax*ltypi
                     k1zon( kitab + iszon(jitab+ideno) + i ) = '?'
- 6              continue
+                end do
             endif
         endif
         idoc = jjcodn ( icre, nom, nomec(1:ltypi), iszon(jitab+1), k1zon(kitab+1), nmax, nuti )
@@ -183,13 +183,13 @@ subroutine jjcroc(knat, icre)
                         iszon(jitab + ilmax ) = nmax
                         iszon(jitab + iluti ) = nuti
                         iszon(jitab + idehc ) = idehc
-                        do 15 i = 1, nhcod
+                        do i = 1, nhcod
                             iszon( jitab + i + idehc ) = 0
-15                      continue
-                        do 16 i = 1, nmax * longno
+                        end do
+                        do i = 1, nmax * longno
                             k1zon( kitab + iszon(jitab+ideno) + i) =&
                             '?'
-16                      continue
+                        end do
                     endif
                     idoc = jjcodn (&
                            icre, nom, nomec(1:longno), iszon(jitab+1), k1zon(kitab+1), nmax, nuti&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function distfo(zimat, kfonc, xx, yy, normx,&
                 normy)
 !
@@ -72,36 +72,36 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     xi = xi/ normx
     dyi = dyi * normx / normy
 !
-    do 20, i = 1,itmax
-    xm2 = xm1
-    ym2 = ym1
-    xm1 = xi
-    ym1 = yi
-    dym1 = dyi
+    do i = 1, itmax
+        xm2 = xm1
+        ym2 = ym1
+        xm1 = xi
+        ym1 = yi
+        dym1 = dyi
 !
-    rp = (xm2 - xm1)*(xm2 - xm1) + (ym2 - ym1)*(ym2 - ym1)
-    res = sqrt(rp*rp)
+        rp = (xm2 - xm1)*(xm2 - xm1) + (ym2 - ym1)*(ym2 - ym1)
+        res = sqrt(rp*rp)
 !
-    if (res .lt. tol) goto 30
+        if (res .lt. tol) goto 30
 !
-    rp = dym1/(dym1*dym1 + 1.0d0)
-    xi = rp*(y0 - ym1 + dym1*xm1) + x0/(dym1*dym1 + 1.0d0)
-    xi = xi* normx
+        rp = dym1/(dym1*dym1 + 1.0d0)
+        xi = rp*(y0 - ym1 + dym1*xm1) + x0/(dym1*dym1 + 1.0d0)
+        xi = xi* normx
 !
-    call rcvalb(fami, kpg, spt, poum, zimat,&
-                ' ', phenom, 1, 'X ', [xi],&
-                1, kfonc, val, codres, 1)
-    yi=val(1)                 
-    call cdnfon(zimat, kfonc, xi, 1, dyi,&
-                ier)
+        call rcvalb(fami, kpg, spt, poum, zimat,&
+                    ' ', phenom, 1, 'X ', [xi],&
+                    1, kfonc, val, codres, 1)
+        yi=val(1)                 
+        call cdnfon(zimat, kfonc, xi, 1, dyi,&
+                    ier)
 !
-    yi = yi/ normy
-    xi = xi/ normx
-    dyi = dyi * normx / normy
+        yi = yi/ normy
+        xi = xi/ normx
+        dyi = dyi * normx / normy
 !
-    20 end do
+    end do
 !
-30  continue
+ 30 continue
 !
     rp = (xm1 - x0)*(xm1 - x0)
     rp = rp + (ym1 - y0)*(ym1 - y0)

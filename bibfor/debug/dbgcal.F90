@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
                   nbout, lpaouz, lchouz)
 !
@@ -66,7 +66,7 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
     write(ifm,*) ' ** NBRE CHAMPS OUT: ',nbout
 !
     write(ifm,*) '***** <CHAMPS_IN>'
-    do 100 ich = 1, nbin
+    do ich = 1, nbin
         write(ifm,*) ' * CHAMP IN  <',ich,'>'
         write(ifm,*) ' * PARAMETRE <',lpaiz(ich),'>'
         write(ifm,*) ' * CHAMP     <',lchiz(ich),'>'
@@ -96,10 +96,10 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
             call utimsd(ifm, -1, .true._1, .true._1, lchiz(ich)(1:19),&
                         1, ' ', perm='OUI')
         endif
-100  end do
+    end do
 !
     write(ifm,*) '***** <CHAMPS_OUT>'
-    do 200 ich = 1, nbout
+    do ich = 1, nbout
         write(ifm,*) ' * CHAMP OUT <',ich,'>'
         write(ifm,*) ' * PARAMETRE <',lpaouz(ich),'>'
         write(ifm,*) ' * CHAMP     <',lchouz(ich),'>'
@@ -129,5 +129,5 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
             call utimsd(ifm, -1, .true._1, .true._1, lchouz(ich)(1:19),&
                         1, ' ', perm='OUI')
         endif
-200  end do
+    end do
 end subroutine

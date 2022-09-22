@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0187(option, nomte)
 !.......................................................................
 !
@@ -55,8 +55,8 @@ subroutine te0187(option, nomte)
     integer :: ipoids, ivf, mater, ndim, nnos, npg
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PPRESSC', 'L', ipres)
@@ -79,7 +79,7 @@ subroutine te0187(option, nomte)
 !
 !
 !    BOUCLE SUR LES NOEUDS
-    do 30 ino = 1, nno
+    do ino = 1, nno
 !
         idino=iinte+(ino-1)*6-1
         ipino=ipres+ino-1
@@ -90,12 +90,12 @@ subroutine te0187(option, nomte)
         vity(ino)=(0.0d0,0.0d0)
         vitz(ino)=(0.0d0,0.0d0)
 !
-        do 20 i = 1, nno
+        do i = 1, nno
 !
             vitx(ino)=vitx(ino)+dfdx(i)*zc(ipres+i-1)
             vity(ino)=vity(ino)+dfdy(i)*zc(ipres+i-1)
             vitz(ino)=vitz(ino)+dfdz(i)*zc(ipres+i-1)
-20      continue
+        end do
 !
         vitx(ino)=vitx(ino)*(0.d0,1.d0)/omerho
         vity(ino)=vity(ino)*(0.d0,1.d0)/omerho
@@ -107,6 +107,6 @@ subroutine te0187(option, nomte)
         zr(idino+4)=0.5d0*dimag(zc(ipino)*dconjg(vitx(ino)))
         zr(idino+5)=0.5d0*dimag(zc(ipino)*dconjg(vity(ino)))
         zr(idino+6)=0.5d0*dimag(zc(ipino)*dconjg(vitz(ino)))
-30  end do
+    end do
 !
 end subroutine

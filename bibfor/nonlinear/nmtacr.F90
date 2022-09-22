@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
                   epm, dp, sp, xi, f,&
                   g, fds, gds, fdp, gdp,&
@@ -84,53 +84,53 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
     tmp = exp(- mat(8) * p * (1.d0 - sp / mat(11) ))
     c = mat(10) + mat(9) * tmp
     d = 1.d0 - mat(6) * tmp
-    do 10 n = 1, ndimsi
+    do n = 1, ndimsi
         epndx(n) = vim(2+n) - epm(n)
         b(n) = - xi * epndx(n)
         epn(n) = epm(n) - b(n)
         a(n) = (mat(11)-sp)*epm(n) + sp*b(n)
         se(n) = sigel(n) - c*a(n)
-10  end do
+    end do
     seeq = sqrt(1.5d0*ddot(ndimsi,se,1,se,1))
 !
 !
 ! -- CALCUL D'UNE BORNE POUR DP
 !
     if (mode .eq. 0) then
-        do 15 n = 1, ndimsi
+        do n = 1, ndimsi
             v(n) = sigel(n) - mat(10) * a(n)
-15      continue
+        end do
         semax = sqrt(1.5d0*ddot(ndimsi,v,1,v,1))
         if (seeq .gt. semax) semax=seeq
         dpmax = (semax - d*mat(4)) / 1.5d0 / (mat(2)+mat(11)*mat(10))
-        goto 9999
+        goto 999
     endif
 !
 !
 ! -- CALCUL DE SIGMA ET DES CRITERES F ET G
 !
     if (seeq .ne. 0.d0) then
-        do 20 n = 1, ndimsi
+        do n = 1, ndimsi
             s0(n) = se(n)/seeq
-20      continue
+        end do
     else
-        do 21 n = 1, ndimsi
+        do n = 1, ndimsi
             s0(n) = 0.d0
-21      continue
+        end do
         s0(4) = 1.d0 / sqrt(1.5d0)
     endif
 !
     if (mode .eq. 4) then
-        do 23 n = 1, ndimsi
+        do n = 1, ndimsi
             sig(n) = 1.5d0*mat(2) * dp * s0(n)
-23      continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
-    do 25 n = 1, ndimsi
+    do n = 1, ndimsi
         m(n) = b(n) + 1.5d0*dp*s0(n)
         l(n) = a(n) + 1.5d0 * mat(11) * dp * s0(n)
-25  end do
+    end do
 !
     seq = seeq - 1.5d0 * (mat(2) + mat(11)*c) * dp
     meq = sqrt(1.5d0*ddot(ndimsi,m,1,m,1))
@@ -144,7 +144,7 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
     f = seq - d*q
     if (dp .ne. 0.d0) f = f - mat(13) * dp**mat(12) * p**mat(14)
     g = c*leq + d*q - sp
-    if (mode .eq. 1) goto 9999
+    if (mode .eq. 1) goto 999
 !
 !
 ! -- DERIVEES DES CRITERES PAR RAPPORT A SIGMA PIC
@@ -153,18 +153,18 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
     cds = mat(9)*tmp
     dds = - mat(6)*tmp
 !
-    do 30 n = 1, ndimsi
+    do n = 1, ndimsi
         ads(n) = - epn(n)
         seds(n) = - cds*a(n) - c*ads(n)
-30  end do
+    end do
     seeqds = 1.5d0*ddot(ndimsi,se,1,seds,1)/seeq
     seqds = seeqds - 1.5d0*mat(11)*cds*dp
 !
-    do 40 n = 1, ndimsi
+    do n = 1, ndimsi
         s0ds(n) = (seds(n)*seq - seeqds*se(n)) / seeq**2
         mds(n) = 1.5d0 * dp * s0ds(n)
         lds(n) = ads(n) + 1.5d0*mat(11)*dp*s0ds(n)
-40  end do
+    end do
     meqds = 1.5d0 * ddot(ndimsi,m,1,mds,1) / meq
     leqds = 1.5d0 * ddot(ndimsi,l,1,lds,1) / leq
     qds = mat(7) * mat(5) * meq**(mat(5)-1) * meqds
@@ -180,17 +180,17 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
         cdp = mat(9)*tmp
         ddp = - mat(6)*tmp
 !
-        do 50 n = 1, ndimsi
+        do n = 1, ndimsi
             sedp(n) = - cdp*a(n)
-50      continue
+        end do
         seeqdp = 1.5d0*ddot(ndimsi,se,1,sedp,1)/seeq
         seqdp = seeqdp - 1.5d0 * (mat(2) + mat(11)*c + mat(11)*cdp*dp)
 !
-        do 60 n = 1, ndimsi
+        do n = 1, ndimsi
             s0dp(n) = (sedp(n)*seeq - se(n)*seeqdp) / seeq**2
             mdp(n) = 1.5d0 * (s0(n)+dp*s0dp(n))
             ldp(n) = mat(11) * mdp(n)
-60      continue
+        end do
         meqdp = 1.5d0 * ddot(ndimsi,m,1,mdp,1)/meq
         leqdp = 1.5d0 * ddot(ndimsi,l,1,ldp,1)/leq
         qdp = mat(7) * mat(5) * meq**(mat(5)-1) * meqdp
@@ -199,7 +199,7 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
               &t(12)-1)
         gdp = cdp*leq + c*leqdp + ddp*q + d*qdp
 !
-        if (mode .eq. 2) goto 9999
+        if (mode .eq. 2) goto 999
     endif
 !
 !
@@ -207,69 +207,69 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
     if (mode .eq. 5 .or. mode .eq. 6) then
         tmp = 1.5d0/meq * 1.5d0*dp/seeq
         pbs0 = 1.5d0 * ddot(ndimsi,b,1,s0,1)
-        do 62 n = 1, ndimsi
+        do n = 1, ndimsi
             seqde(n) = 1.5d0*s0(n)
             meqde(n) = tmp * (b(n) - pbs0*s0(n))
             qde(n) = mat(7) * mat(5) * meq**(mat(5)-1) * meqde(n)
             fde(n) = seqde(n) - d*qde(n)
-62      continue
+        end do
 !
         if (mode .eq. 6) then
             tmp = 1.5d0/leq * 1.5d0*mat(11)*dp/seeq
             pas0 = 1.5d0 * ddot(ndimsi,a,1,s0,1)
-            do 64 n = 1, ndimsi
+            do n = 1, ndimsi
                 leqde(n) = tmp * (a(n) - pas0*s0(n))
                 gde(n) = c*leqde(n) + d*qde(n)
-64          continue
+            end do
         endif
 !
         if (mode .eq. 5) then
-            do 66 n = 1, ndimsi
+            do n = 1, ndimsi
                 pde(n) = - fde(n)/fdp
-66          continue
+            end do
         else
             det = fdp*gds - gdp*fds
-            do 68 n = 1, ndimsi
+            do n = 1, ndimsi
                 pde(n) = (fds*gde(n) - gds*fde(n)) / det
-68          continue
+            end do
         endif
 !
         tmp = 1.5d0*dp/seeq
-        do 70 i = 1, ndimsi
-            do 71 j = 1, ndimsi
+        do i = 1, ndimsi
+            do j = 1, ndimsi
                 tang(i,j) = 1.5d0*(s0(i)*pde(j) - tmp*s0(i)*s0(j))
-71          continue
-70      continue
-        do 72 n = 1, ndimsi
+            end do
+        end do
+        do n = 1, ndimsi
             tang(n,n) = tang(n,n) + tmp
-72      continue
-        do 73 i = 1, 3
-            do 74 j = 1, 3
+        end do
+        do i = 1, 3
+            do j = 1, 3
                 tang(i,j) = tang(i,j) - tmp/3.d0
-74          continue
-73      continue
+            end do
+        end do
 !
-        goto 9999
+        goto 999
     endif
 !
 !
 ! -- DERIVEES DES CRITERES PAR RAPPORT A XI
 !
     if (mode .eq. 3) then
-        do 80 n = 1, ndimsi
+        do n = 1, ndimsi
             adx(n) = - sp * epndx(n)
             bdx(n) = - epndx(n)
             sedx(n) = - c * adx(n)
-80      continue
+        end do
 !
         seeqdx = 1.5d0*ddot(ndimsi,se,1,sedx,1)/seeq
         seqdx = seeqdx
 !
-        do 90 n = 1, ndimsi
+        do n = 1, ndimsi
             s0dx(n) = (sedx(n)*seq - seeqdx*se(n)) / seeq**2
             mdx(n) = bdx(n) + 1.5d0 * dp * s0dx(n)
             ldx(n) = adx(n) + 1.5d0 * mat(11) * dp * s0dx(n)
-90      continue
+        end do
         meqdx = 1.5d0 * ddot(ndimsi,m,1,mdx,1) / meq
         leqdx = 1.5d0 * ddot(ndimsi,l,1,ldx,1) / leq
         qdx = mat(7) * mat(5) * meq**(mat(5)-1) * meqdx
@@ -277,9 +277,9 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
         fdx = seqdx - d*qdx
         gdx = c*leqdx + d*qdx
 !
-        goto 9999
+        goto 999
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

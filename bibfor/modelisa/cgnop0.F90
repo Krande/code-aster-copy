@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgnop0(nbnoe, coor, x0, vecnor, prec,&
                   nbno, lisnoe)
-    implicit   none
+    implicit none
 !.=====================================================================
 !
 !.========================= DEBUT DES DECLARATIONS ====================
@@ -35,7 +35,7 @@ subroutine cgnop0(nbnoe, coor, x0, vecnor, prec,&
 ! --- PARCOURS DES NOEUDS DU MAILLAGE :
 !     --------------------------------
     nbno = 0
-    do 10 ino = 1, nbnoe
+    do ino = 1, nbnoe
 !
 ! ---     COORDONNEES DU NOEUD :
 !         --------------------
@@ -61,6 +61,6 @@ subroutine cgnop0(nbnoe, coor, x0, vecnor, prec,&
             lisnoe(nbno) = ino
         endif
 !
-10  end do
+    end do
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine scalff(nbfonc, nbp, disc, vale, a)
     implicit none
 !     CALCUL DES PRODUITS SCALAIRES ENTRE LES FONCTIONS DE FORME
@@ -40,33 +40,33 @@ subroutine scalff(nbfonc, nbp, disc, vale, a)
 !
 !-----1.CALCUL DES TERMES DU TRIANGLE INFERIEUR
 !
-    do 10 ifo2 = 1, nbfonc
+    do ifo2 = 1, nbfonc
 !
-        do 11 ifo1 = ifo2, nbfonc
+        do ifo1 = ifo2, nbfonc
 !
             a(ifo1,ifo2) = 0.d0
-            do 12 ip = 1, nbp-1
+            do ip = 1, nbp-1
                 dx = disc(ip+1) - disc(ip)
                 y1 = vale(ip,ifo1)*vale(ip,ifo2)
                 y2 = vale(ip+1,ifo1)*vale(ip+1,ifo2)
                 yy = y1 + y2
                 a(ifo1,ifo2) = a(ifo1,ifo2) + yy * dx
-12          continue
+            end do
             a(ifo1,ifo2) = a(ifo1,ifo2)/2.d0
 !
-11      continue
+        end do
 !
-10  end do
+    end do
 !
 !-----2.DEDUCTION DES TERMES DU TRIANGLE SUPERIEUR PAR SYMETRIE
 !
     if (nbfonc .gt. 1) then
 !
-        do 20 ifo2 = 2, nbfonc
-            do 21 ifo1 = 1, ifo2-1
+        do ifo2 = 2, nbfonc
+            do ifo1 = 1, ifo2-1
                 a(ifo1,ifo2) = a(ifo2,ifo1)
-21          continue
-20      continue
+            end do
+        end do
 !
     endif
 !

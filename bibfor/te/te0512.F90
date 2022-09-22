@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0512(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -124,8 +124,8 @@ subroutine te0512(option, nomte)
     trdemi = 3.0d0 / 2.0d0
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     nbsig = nbsigm()
 !
 ! ---    CARACTERISTIQUES MATERIAUX
@@ -163,17 +163,17 @@ subroutine te0512(option, nomte)
 ! --- 1.1 AFFECTATION DE SIGMA
 !
     k = 0
-    do 20 igau = 1, npg
-        do 10 i = 1, nbsig
+    do igau = 1, npg
+        do i = 1, nbsig
             k = k+1
             sigma(i+(igau-1)*nbsig) = zr(iconpg+k-1)
-10      continue
-20  end do
+        end do
+    end do
 !
 ! --- 1.2 CALCUL DU DEVIATEUR DES CONTRAINTES SIGD ET
 !       DE LA TRACE DE SIGMA TRSIG
 !
-    do 30 igau = 1, npg
+    do igau = 1, npg
         indic = (igau-1)*nbsig
         trsig(igau) = untier * (sigma(indic+1)+ sigma(indic+2) + sigma(indic+3) )
         sigd(indic+1) = sigma(indic+1) - trsig(igau)
@@ -182,33 +182,33 @@ subroutine te0512(option, nomte)
         sigd(indic+4) = sigma(indic+4)
         sigd(indic+5) = sigma(indic+5)
         sigd(indic+6) = sigma(indic+6)
-30  end do
+    end do
 !
 ! --- 1.3 CALCUL DE LA CONTRAINTE EQUIVALENTE SIGEQ
 !
-    do 40 igau = 1, npg
+    do igau = 1, npg
         indic = (igau-1)*nbsig
         sigeq(igau) = sigd(indic+1) * sigd(indic+1) + sigd(indic+2) * sigd(indic+2) + sigd(indic+&
                       &3) * sigd(indic+3) + sigd(indic+4) * sigd(indic+4) * deux
         if (ndim .eq. 3) sigeq(igau) = sigeq(igau) + sigd(indic+5) * sigd(indic+5) * deux + sigd(&
                                        &indic+6) * sigd(indic+6) * deux
         sigeq(igau) = (sigeq(igau) * trdemi) ** undemi
-40  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- 2. CALCUL DU TAUX DE TRIAXIALITE DES CONTRAINTES TRIAX
 ! ----------------------------------------------------------------------
 !
-    do 50 igau = 1, npg
+    do igau = 1, npg
         triax(igau) = trsig(igau) / sigeq(igau)
-50  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- 3. CALCUL DE LA CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT (SENDO)
 ! ---    ET DU CARRE DE LA CONTRAINTES EQUIVALENTE D'ENDOMMAGEMENT
 ! ---    NORMALISEE (CENDO)
 ! ----------------------------------------------------------------------
-    do 60 igau = 1, npg
+    do igau = 1, npg
         call rcvalb(fami, igau, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', [0.d0],&
                     nbres, nomres, valres, codres, 1)
@@ -229,7 +229,7 @@ subroutine te0512(option, nomte)
 !
         sendo(igau) = (coe1*sigeq(igau)**deux +coe2*trsig(igau)*trsig( igau) )**undemi
         cendo(igau) = (coe1*sigeq(igau)**deux +coe2*trsig(igau)*trsig( igau) )/xes
-60  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- 3. CALCUL DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE DOMLE
@@ -252,19 +252,19 @@ subroutine te0512(option, nomte)
 !         DE LEMAITRE-SERMAGE @T- ET L'ENDOMMAGEMENT CUMULE @T-
 !
     k = 0
-    do 80 igau = 1, npg
-        do 70 i = 1, nbsig
+    do igau = 1, npg
+        do i = 1, nbsig
             k = k+1
             xvari1(i+(igau-1)*nbsig) = zr(ivarmr+k-1)
             xvari2(i+(igau-1)*nbsig) = zr(ivarpr+k-1)
-70      continue
+        end do
         cendom(igau) = zr(iendmg-1+4*(igau-1)+3)
         dommoi(igau) = zr(iendmg-1+4*(igau-1)+4)
-80  end do
+    end do
 !
 ! --- 3.3 RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE
 !         STOCKEE DANS LA PREMIERE COMPOSANTE DE VARI_[1,2] (IEPSP = 1)
-    do 90 igau = 1, npg
+    do igau = 1, npg
 !
         pplus = xvari2(iepsp+(igau-1)*nbsig)
         if (pplus .gt. pseuil(igau)-zero) then
@@ -295,7 +295,7 @@ subroutine te0512(option, nomte)
         endif
 !
 !
-90  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- 5. RANGEMENT DE :
@@ -307,11 +307,11 @@ subroutine te0512(option, nomte)
 !
     call jevech('PTRIAPG', 'E', idtrgp)
 !
-    do 100 igau = 1, npg
+    do igau = 1, npg
         zr(idtrgp-1+4*(igau-1)+1) = triax(igau)
         zr(idtrgp-1+4*(igau-1)+2) = sendo(igau)
         zr(idtrgp-1+4*(igau-1)+3) = cendo(igau)
         zr(idtrgp-1+4*(igau-1)+4) = domle(igau)
-100  end do
+    end do
 !
 end subroutine

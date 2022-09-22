@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foderi(nomfon, temp, f, df)
     implicit none
 #include "asterf_types.h"
@@ -56,7 +56,7 @@ subroutine foderi(nomfon, temp, f, df)
 !
     call jemarq()
 !
-    do 100 kk = 1, mxsave
+    do kk = 1, mxsave
         if (nomfon(1:8) .eq. svnomf(kk)) then
             isave = kk
             jpro = iaprol(isave)
@@ -64,7 +64,7 @@ subroutine foderi(nomfon, temp, f, df)
             nbvf = luvale(isave)
             goto 101
         endif
-100 end do
+    end do
 !
     ch19 = nomfon(1:8)
     chpro = ch19//'.PROL'
@@ -130,14 +130,14 @@ subroutine foderi(nomfon, temp, f, df)
         endif
 !
     else
-        do 8 jp = jvalf+1, jvalf+nbvf-1
+        do jp = jvalf+1, jvalf+nbvf-1
             jv = jp + nbvf
             if (zr(jp) .ge. temp) then
                 df = (zr(jv)-zr(jv-1))/(zr(jp)-zr(jp-1))
                 f = df*(temp-zr(jp-1))+zr(jv-1)
                 goto 5
             endif
-  8     continue
+        end do
         call utmess('F', 'MODELISA4_67')
   5     continue
 !

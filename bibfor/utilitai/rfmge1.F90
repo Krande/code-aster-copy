@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rfmge1(modgen)
     implicit none
 #include "jeveux.h"
@@ -41,7 +41,7 @@ subroutine rfmge1(modgen)
 !                                CONCEPT MODE_GENE
 !     ------------------------------------------------------------------
     integer :: n1, ncmp, iret, jordr, lpro, lvar, lfon, nbordr, im, iord, iad
-    integer ::     nbmode, i, istru
+    integer :: nbmode, i, istru
     real(kind=8) :: epsi
     character(len=4) :: interp(2)
     character(len=8) :: k8b, crit, mode
@@ -90,15 +90,15 @@ subroutine rfmge1(modgen)
     call getvtx(' ', 'NOM_PARA_RESU', scal=npara, nbret=n1)
     if (n1 .ne. 0) then
         zk24(lpro+3) = npara
-        do 200 iord = 1, nbordr
+        do iord = 1, nbordr
             call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1),&
                         0, sjv=iad, styp=k8b)
             zr(lvar-1+iord) = zr(iad)
             call rsadpa(modgen, 'L', 1, npara, zi(jordr+iord-1),&
                         0, sjv=iad, styp=k8b)
             zr(lfon-1+iord) = zr(iad)
-200      continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
     call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n1)
@@ -106,7 +106,7 @@ subroutine rfmge1(modgen)
 !
     zk24(lpro+3) = nomcha
 !
-    do 100 iord = 1, nbordr
+    do iord = 1, nbordr
 !
         call rsexch('F', modgen, nomcha, zi(jordr+iord-1), noch19,&
                     iret)
@@ -128,14 +128,15 @@ subroutine rfmge1(modgen)
             call jeveuo(nugene//'.NUME.NEQU', 'L', vi=nequ)
             nbmode = nequ(1)
             im = 0
-            do 110 i = 1, nbmode
+            do i = 1, nbmode
                 istru = deeq(1+2*(i-1)+2-1)
                 if (istru .lt. 0) goto 110
                 im = im + 1
                 if (im .eq. ncmp) goto 114
-110          continue
+110             continue
+            end do
             call utmess('F', 'UTILITAI4_14')
-114          continue
+114         continue
             im = i
         else
             im = ncmp
@@ -143,9 +144,9 @@ subroutine rfmge1(modgen)
 !
         zr(lfon+iord) = vale(im)
 !
-100  end do
+    end do
 !
-9999  continue
+999 continue
 !
     call jedetr(knume)
 !

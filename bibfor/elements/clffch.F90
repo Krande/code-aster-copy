@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine clffch(alias, type, nno, xi, yi,&
                   zi, xin, yin, zin, tn,&
                   ajx, ajy, ajz, bjxx, bjyy,&
@@ -67,7 +67,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
 !     --- F. DE FORME ASSOCIEES AUX DDLS DE FLEXION DES POUTRES ---
 !     -------------------------------------------------------------
 !
-        do 10 i = 1, nno
+        do i = 1, nno
 !
             x0 = xi*xin(i)
             y0 = yi*yin(i)
@@ -123,7 +123,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
                 bjxz(i+8) = fxydx * fzdz
                 bjyz(i+8) = fxydy * fzdz
             endif
-10      continue
+        end do
 !
     else if (type .eq. 'FLUIDE') then
 !     --------------------------------------------------------------
@@ -133,7 +133,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
 !     --- FONCTIONS DE FORMES AUX DDL FLUIDE DE LA MAILLE HEXA20 ---
 !     --------------------------------------------------------------
 !
-            do 20 i = 1, nno
+            do i = 1, nno
                 x0 = xi*xin(i)
                 y0 = yi*yin(i)
                 z0 = zi*zin(i)
@@ -172,7 +172,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
                     ajy(i) = fdy
                     ajz(i) = fdz
                 endif
-20          continue
+            end do
 !
         else if (alias .eq. 'HEXA8 ') then
 !
@@ -181,7 +181,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
 !     ---    ET AUX DDL FLUIDE DE LA MAILLE HEXA8      ---
 !     ----------------------------------------------------
 !
-            do 30 i = 1, nno
+            do i = 1, nno
                 x0 = xi*xin(i)
                 y0 = yi*yin(i)
                 z0 = zi*zin(i)
@@ -201,7 +201,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
                     bjxz(i) = xin(i) * zin(i) * (1.d0+y0) * 0.125d0
                     bjyz(i) = yin(i) * zin(i) * (1.d0+x0) * 0.125d0
                 endif
-30          end do
+            end do
         endif
 !     ---------------------------------------------------------
     else

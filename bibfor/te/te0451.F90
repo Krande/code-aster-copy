@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0451(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -85,7 +85,7 @@ subroutine te0451(option, nomte)
     if (icodre(1) .eq. 0) lcoqmu=.true.
     if (lcoqmu) then
         ASSERT(nbcou.le.100)
-        do 10 icou = 1, nbcou
+        do icou = 1, nbcou
             call codent(icou, 'G', num)
             nomres='C'//num//'_V'//val
             call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
@@ -94,7 +94,7 @@ subroutine te0451(option, nomte)
             ASSERT(icodre(1).eq.0)
             ASSERT(epi(1).ge.0.d0)
             epcou(icou)=epi(1)
- 10     continue
+        end do
     endif
 !
 !
@@ -118,7 +118,7 @@ subroutine te0451(option, nomte)
     ASSERT(itab(2).eq.nbeff*npg)
 !
 !     -- BOUCLE SUR LES POINTS DE GAUSS :
-    do 30 kpg = 1, npg
+    do kpg = 1, npg
         nxx=0.d0
         nyy=0.d0
         nxy=0.d0
@@ -130,7 +130,7 @@ subroutine te0451(option, nomte)
 !
 !       -- BOUCLE SUR LES COUCHES :
         hb=-h/2
-        do 20 icou = 1, nbcou
+        do icou = 1, nbcou
             idec=((kpg-1)*nbcou+(icou-1))*npgh*nbsig
 !
 !         -- HB, HM, HH : "HAUTEUR" DES SOUS-POINTS :
@@ -193,7 +193,7 @@ subroutine te0451(option, nomte)
 !
 !         -- MISE A JOUR DE HB POUR LA COUCHE SUIVANTE :
             hb=hb+epi(1)
- 20     continue
+        end do
 !
         zr(jeff-1+(kpg-1)*nbeff+1)=nxx
         zr(jeff-1+(kpg-1)*nbeff+2)=nyy
@@ -205,7 +205,7 @@ subroutine te0451(option, nomte)
             zr(jeff-1+(kpg-1)*nbeff+7)=qx
             zr(jeff-1+(kpg-1)*nbeff+8)=qy
         endif
- 30 end do
+    end do
 !
 !
 !     -- POUR LES COQUES EXCENTREES, LES EFFORTS CALCULES SONT

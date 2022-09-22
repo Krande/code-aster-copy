@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hbmata(se, dg, etap, i1e, sigeqe,&
                   vp, vecp, parame, derive, sig3,&
                   detadg, dgdl, nbmat, materf, dsidep)
-    implicit      none
+    implicit none
 #include "asterfort/calcdl.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprsm.h"
@@ -73,32 +73,32 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! =====================================================================
 ! --- CALCUL DU VECTEUR UNITE -----------------------------------------
 ! =====================================================================
-    do 120 ii = 1, ndi
+    do ii = 1, ndi
         vunite(ii) = un
-120  end do
-    do 125 ii = ndi+1, 6
+    end do
+    do ii = ndi+1, 6
         vunite(ii) = 0.0d0
-125  end do
-    do 150 ii = 1, ndi
+    end do
+    do ii = 1, ndi
         seb(ii) = se(ii)
-150  end do
-    do 140 ii = ndi+1, ndt
+    end do
+    do ii = ndi+1, ndt
         seb(ii) = se(ii) / sqrt(deux)
-140  end do
-    do 145 ii = ndt+1, 6
+    end do
+    do ii = ndt+1, 6
         seb(ii) = 0.0d0
-145  end do
+    end do
 ! =====================================================================
 ! --- CALCUL DE DSEDE -------------------------------------------------
 ! =====================================================================
-    do 15 ii = 1, ndi
-        do 20 jj = 1, ndi
+    do ii = 1, ndi
+        do jj = 1, ndi
             dsede(ii,jj) = - deux*mu/trois
-20      continue
-15  end do
-    do 30 ii = 1, ndt
+        end do
+    end do
+    do ii = 1, ndt
         dsede(ii,ii) = dsede(ii,ii) + deux*mu
-30  end do
+    end do
 ! =====================================================================
 ! --- CALCUL DE K*DIEDE -----------------------------------------------
 ! =====================================================================
@@ -133,10 +133,10 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS ----------------------------------------------
 ! ======================================================================
-    do 90 ii = 1, ndt
-        do 100 jj = 1, ndt
+    do ii = 1, ndt
+        do jj = 1, ndt
             dsidep(ii,jj) = pmat6(ii,jj)+pmat3(ii,jj)-pmat4(ii,jj) -pmat5(ii,jj)
-100      end do
-90  end do
+        end do
+    end do
 ! ======================================================================
 end subroutine

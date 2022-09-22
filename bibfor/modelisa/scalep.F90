@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine scalep(spectr, noma, base, nuor, nbm,&
                   imodi, nbmr, nbexcp, ltable, iaxe,&
                   scal)
@@ -42,7 +42,6 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -52,6 +51,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
     aster_logical :: ltable
     character(len=8) :: noma
@@ -112,18 +112,18 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
         call jeveuo(spvare, 'L', ispre)
         call jeveuo(spvate, 'L', ispte)
 !
-        do 10 iex = 1, nbexcp
+        do iex = 1, nbexcp
             call jenonu(jexnom(nnoema, zk8(ispno+iex-1)), zi(inuno+iex- 1))
             theta = zr(ispre+iex-1) * dgrd
             zr(iteta+2*(iex-1)) = dble(cos(theta))
             zr(iteta+2*(iex-1)+1) = dble(sin(theta))
             zk8(inatu+iex-1) = zk16(ispte+4+iex-1)(1:8)
- 10     continue
+        end do
 !
     else
 !
         call jenonu(jexnom(nnoema, zk8(ispno)), nuno)
-        do 11 iex = 1, nbexcp
+        do iex = 1, nbexcp
             zi(inuno+iex-1) = nuno
             zr(iteta+2*(iex-1)) = 1.d0
             zr(iteta+2*(iex-1)+1) = 1.d0
@@ -133,7 +133,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
             else
                 zk8(inatu+iex-1) = 'FORCE'
             endif
- 11     continue
+        end do
 !
     endif
 !
@@ -142,14 +142,14 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 !
     call wkvect('&&SCALEP.TEMP.DEFM', 'V V R', 2*nbexcp*nbmr, idefm)
 !
-    do 20 imod = imodi, imodf
+    do imod = imodi, imodf
 !
         write(chvale,'(A8,A5,2I3.3,A5)') base(1:8),'.C01.',nuor(imod),&
         iv,'.VALE'
         call jeveuo(chvale, 'L', ivale)
         imr = imod - imodi + 1
 !
-        do 21 iex = 1, nbexcp
+        do iex = 1, nbexcp
             idec = 2*nbexcp*(imr-1)+2*(iex-1)
             if (zk8(inatu+iex-1)(1:1) .eq. 'F') then
                 zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+idir1- 1)
@@ -158,21 +158,21 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
                 zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+irot1- 1)
                 zr(idefm+idec+1) = zr(ivale+6*(zi(inuno+iex-1)-1)+ irot2-1)
             endif
- 21     continue
+        end do
 !
         call jelibe(chvale)
 !
- 20 end do
+    end do
 !
 ! --- 4.CALCUL DES PRODUITS SCALAIRES
 !
-    do 30 imr = 1, nbmr
-        do 31 iex = 1, nbexcp
+    do imr = 1, nbmr
+        do iex = 1, nbexcp
             idec = 2*nbexcp*(imr-1)+2*(iex-1)
             scal(iex,imr) = zr(idefm+idec)*zr(iteta+2*(iex-1)) + zr(idefm+idec+1)*zr(iteta+2*(iex&
                             &-1)+1)
- 31     continue
- 30 end do
+        end do
+    end do
 !
     call jedetr('&&SCALEP.TEMP.NUNO')
     call jedetr('&&SCALEP.TEMP.TETA')

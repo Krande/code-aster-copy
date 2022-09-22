@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltf21(p, front, frn, n, t1,&
                   t2, eps, ier)
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -37,7 +37,7 @@ subroutine mltf21(p, front, frn, n, t1,&
     r = p - 2*m
     l = n
     dia2 = -n
-    do 10 j = 1, m
+    do j = 1, m
         jj=j
 !                    TRAVAIL SUR LE BLOC TRIANGULAIRE
 !     MODIFS POUR STOCKAGE DGEMV
@@ -62,7 +62,7 @@ subroutine mltf21(p, front, frn, n, t1,&
             call col21j(front(dia1), front(dia21+n), frn, j, l,&
                         n, n1, t1, t2)
         endif
-10  end do
+    end do
 !                          TRAVAIL SUR LE RESTE DES COLONNES
 !                                            DU SUPERNOEUD
     if (r .eq. 1) then
@@ -76,6 +76,6 @@ subroutine mltf21(p, front, frn, n, t1,&
         if (ier .ne. 0) goto 30
         call col11j(front(dia1), frn, l, t1)
     endif
-30  continue
+ 30 continue
     if (ier .gt. 0) ier = ier + 2* (jj-1)
 end subroutine

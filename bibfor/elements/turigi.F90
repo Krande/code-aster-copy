@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine turigi(nomte, nbrddl, k)
 ! aslint: disable=W1306
     implicit none
@@ -80,9 +80,9 @@ subroutine turigi(nomte, nbrddl, k)
     data noms_cara1 /'R1','EP1'/
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+                     jgano=jgano)
 !
 !     DIMENSION DE LA MATRICE STOCKEE SOUS FORME VECTEUR
     nc = nbrddl* (nbrddl+1)/2
@@ -114,8 +114,8 @@ subroutine turigi(nomte, nbrddl, k)
     call jevech('PGEOMER', 'L', igeom)
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     r1 = vale_cara1(1)
-    h  = vale_cara1(2)
-    a  = r1-h/2.d0
+    h = vale_cara1(2)
+    a = r1-h/2.d0
 ! A= RMOY, H = EPAISSEUR
 !
 !
@@ -202,7 +202,7 @@ subroutine turigi(nomte, nbrddl, k)
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-        do 80 icou = 1, 2*nbcou + 1
+        do icou = 1, 2*nbcou + 1
             if (mmt .eq. 0) then
                 r = a
             else
@@ -211,7 +211,7 @@ subroutine turigi(nomte, nbrddl, k)
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-            do 70 isect = 1, 2*nbsec + 1
+            do isect = 1, 2*nbsec + 1
                 if (icoude .eq. 0) then
                     call bcoude(igau, icou, isect, l, h,&
                                 a, m, nno, nbcou, nbsec,&
@@ -235,8 +235,8 @@ subroutine turigi(nomte, nbrddl, k)
 !  LE DERNIER TERME C'EST R DU  R DFI DX DZETA
 !
                 call kcoude(nbrddl, poids, b, c, k)
-70          continue
-80      continue
+            end do
+        end do
     end do
 !
 ! FIN DU CALCUL DE LA MATRICE DE RIGIDITE
@@ -244,9 +244,9 @@ subroutine turigi(nomte, nbrddl, k)
 ! MULTIPLICATION PAR LE MODULE DE YOUNG E
 !
     do i = 1, nbrddl
-        do 100 j = 1, nbrddl
+        do j = 1, nbrddl
             k(i,j) = e*k(i,j)
-100      continue
+        end do
     end do
 !
 !  CHANGEMENT DE REPERE :

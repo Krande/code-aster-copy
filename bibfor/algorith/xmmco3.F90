@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmco3(ino, ndim, dsidep, pla, p,&
                   ffc, jac, nnol, raug, mmat)
     implicit none
@@ -65,11 +65,11 @@ subroutine xmmco3(ino, ndim, dsidep, pla, p,&
     call matini(3, 3, 0.d0, ptr)
 ! ensuite, on prend exemple sur XMMCO2 pour l'opération
 ! changement de base
-    do 10 i = 1, ndim
-        do 11 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
             dside2(i,j) = dsidep(i,j)
-11      continue
-10  continue
+        end do
+    end do
 !
 ! MATRICE TANGENTE EN BASE FIXE [P]T [DSIDEP] [P]
 !
@@ -86,33 +86,29 @@ subroutine xmmco3(ino, ndim, dsidep, pla, p,&
 ! avec la formulation qui inclut les directions
 ! on prend direct la matrice locale
     pli=pla(ino)
-    do 12 l = 1, ndim
-        do 13 k = 1, ndim
-            mmat(pli-1+k,pli-1+ndim+l) = mmat(pli-1+k, pli-1+ndim+l)+ &
-                ffc(ino)*dside2(k,l)*jac
-            mmat(pli-1+ndim+l,pli-1+k) = mmat(pli-1+ndim+l,pli-1+k)+ &
-                ffc(ino)*dside2(k,l)*jac
-13      continue
-12  continue
+    do l = 1, ndim
+        do k = 1, ndim
+            mmat(pli-1+k,pli-1+ndim+l) = mmat(pli-1+k, pli-1+ndim+l)+ ffc(ino)*dside2(k,l)*jac
+            mmat(pli-1+ndim+l,pli-1+k) = mmat(pli-1+ndim+l,pli-1+k)+ ffc(ino)*dside2(k,l)*jac
+        end do
+    end do
 ! on remplit la matrice w*/w
     pli=pla(ino)
-    do 14 l = 1, ndim
-        do 15 k = 1, ndim
-            mmat(pli-1+ndim+k,pli-1+ndim+l) = mmat(pli-1+ndim+k, pli-1+ndim+l)+ &
-                raug*ffc(ino)*dside2(k,l)*jac
-15      continue
-14  continue
+    do l = 1, ndim
+        do k = 1, ndim
+            mmat(pli-1+ndim+k,pli-1+ndim+l) = mmat(pli-1+ndim+k, pli-1+ndim+l)+ raug*ffc(ino)*dsi&
+                                              &de2(k,l)*jac
+        end do
+    end do
 ! on remplit la matrice lambda*/lambda :
 ! attention a ne pas oublier lambda*lambda*/raug
 ! sur la diagonale uniquement!
     pli=pla(ino)
-    do 1 l = 1, ndim
-        do 2 k = 1, ndim
-            mmat(pli-1+k,pli-1+l) = mmat(pli-1+k, pli-1+l)+ &
-                ffc(ino)*dside2(k,l)*jac/raug
-2      continue
-       mmat(pli-1+l,pli-1+l) = mmat(pli-1+l, pli-1+l)- &
-           ffc(ino)*jac/raug
-1  continue
+    do l = 1, ndim
+        do k = 1, ndim
+            mmat(pli-1+k,pli-1+l) = mmat(pli-1+k, pli-1+l)+ ffc(ino)*dside2(k,l)*jac/raug
+        end do
+        mmat(pli-1+l,pli-1+l) = mmat(pli-1+l, pli-1+l)- ffc(ino)*jac/raug
+    end do
 !
 end subroutine

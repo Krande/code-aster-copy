@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
                   nobj, nbel, versio)
     implicit none
@@ -80,10 +80,10 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
     call jemarq()
 !
 ! --- INIT
-    do 101 i = 1, ntyele
+    do i = 1, ntyele
         nbel(i) = 0
         jel(i) = 0
-101 end do
+    end do
 !
 ! --- TABLEAU DES INFOS DE DECOUPAGE
     call irgmtb(tdec, typd, versio)
@@ -122,19 +122,19 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
     if (nbmat .ne. 0) then
         nbmac = nbmat
         call wkvect('&&IRGMM3.NUME_MAILLE', 'V V I', nbmac, jmail)
-        do 20 ima = 1, nbmac
+        do ima = 1, nbmac
             zi(jmail+ima-1) = nummai(ima)
- 20     continue
+        end do
     else
         nbmac = nbma
         call wkvect('&&IRGMM3.NUME_MAILLE', 'V V I', nbmac, jmail)
-        do 22 ima = 1, nbmac
+        do ima = 1, nbmac
             zi(jmail+ima-1) = ima
- 22     continue
+        end do
     endif
 !
 ! --- COMBIEN D'ELEMENTS DE CHAQUE TYPE VA-T-ON CREER ?
-    do 10 im = 1, nbmac
+    do im = 1, nbmac
         ima = zi(jmail+im-1)
 !
         ind=zi(jtypm+ima-1)
@@ -148,11 +148,11 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
         else
             call utmess('A', 'ALGELINE_64', sk=typm)
         endif
- 10 end do
+    end do
 !
     nbmail = 0
     impr = 0
-    do 102 i = 1, ntyele
+    do i = 1, ntyele
         nbmail = nbmail + nbel(i)
 !
         if (nobj(i) .ne. ' ') then
@@ -177,7 +177,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
                 endif
             endif
         endif
-102 end do
+    end do
 !
     call wkvect(numold, 'V V I', max(1, nbmail), jnumol)
     call wkvect(nbnune, 'V V I', nbmac, jnbnun)
@@ -212,12 +212,12 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
                 nbmail)
     call jeecra('&&IRMGMS.LISMA', 'LONT', nbmail)
 !
-    do 103 i = 1, ntyele
+    do i = 1, ntyele
         nbel(i) = 0
-103 end do
+    end do
     imav = 0
 !
-    do 100 im = 1, nbmac
+    do im = 1, nbmac
         ima = zi(jmail+im-1)
 !
         ind=zi(jtypm+ima-1)
@@ -233,7 +233,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
         call jeecra(jexnum( '&&IRMGMS.LISMA', ima ), 'LONMAX', nbcr)
         call jeveuo(jexnum( '&&IRMGMS.LISMA', ima), 'E', idlima)
 !
-        do 110 i = 1, nbcr
+        do i = 1, nbcr
             imav = imav + 1
             if (imav .gt. nbmmax) then
                 call codent(nbmmax, 'G', k8b)
@@ -251,15 +251,15 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
 !
             call jeecra(jexnum(connex, ima2), 'LONMAX', nbp)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
-            do 115 ino = 1, nbp
+            do ino = 1, nbp
                 zi(jnpt-1+ino) = zi(jopt-1+tdec(ind,i,ino))
-115         continue
+            end do
             nbel(numel) = nbel(numel) + 1
             zi(jel(numel)-1+nbel(numel)) = imav
-110     continue
+        end do
         zi(jnbnun-1+ima )=nbcr
 !
-100 end do
+    end do
 !
     call jedetr('&&IRGMM3.NUME_MAILLE')
 !

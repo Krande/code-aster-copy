@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calkce(nno, ndim, kbp, kbb, pm,&
                   dp, kce, rce)
 ! person_in_charge: sebastien.fayolle at edf.fr
@@ -68,9 +68,9 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
                 kce)
 !
 ! - CALCUL DU PRODUIT RCE
-    do 1 i = 1, nno
+    do i = 1, nno
         pp(i,1)=pm(i)+dp(i)
- 1  end do
+    end do
 !
     call matmul(kce, pp, nno, nno, 1,&
                 rce)

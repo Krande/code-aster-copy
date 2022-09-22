@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eclapp(ndim, nno2, lonmin, coor)
 !
     implicit none
@@ -44,10 +44,10 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
 !
     if (nno2 .eq. 4) then
 !
-        do 10 i = 1, ndim
+        do i = 1, ndim
             d1(i) = (coor(i,2)+coor(i,3)-coor(i,1)-coor(i,4))/2
             d2(i) = (coor(i,3)+coor(i,4)-coor(i,1)-coor(i,2))/2
-10      continue
+        end do
 !
         l1 = dnrm2(ndim,d1,1)
         l2 = dnrm2(ndim,d2,1)
@@ -59,51 +59,51 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
                 d1(1) = d2(2)
                 d1(2) = -d2(1)
                 corr = lonmin/2.d0/dnrm2(ndim,d1,1)
-                do 12 i = 1, ndim
+                do i = 1, ndim
                     coor(i,1) = coor(i,1) - corr*d1(i)
                     coor(i,2) = coor(i,2) + corr*d1(i)
                     coor(i,3) = coor(i,3) + corr*d1(i)
                     coor(i,4) = coor(i,4) - corr*d1(i)
-12              continue
+                end do
             else
                 call r8inir(ndim, 0.d0, d2, 1)
                 d2(1) = -d1(2)
                 d2(2) = d1(1)
                 corr = lonmin/2.d0/dnrm2(ndim,d2,1)
-                do 15 i = 1, ndim
+                do i = 1, ndim
                     coor(i,1) = coor(i,1) - corr*d2(i)
                     coor(i,2) = coor(i,2) - corr*d2(i)
                     coor(i,3) = coor(i,3) + corr*d2(i)
                     coor(i,4) = coor(i,4) + corr*d2(i)
-15              continue
+                end do
             endif
-            goto 9999
+            goto 999
         endif
 !
 !      ELEMENTS EPAIS
         if (l1 .lt. lonmin) then
             corr = lonmin/l1
-            do 20 i = 1, ndim
+            do i = 1, ndim
                 coor(i,1) = corr*coor(i,1)+(1-corr)/2*(coor(i,1)+coor( i,2))
                 coor(i,2) = corr*coor(i,2)+(1-corr)/2*(coor(i,1)+coor( i,2))
                 coor(i,3) = corr*coor(i,3)+(1-corr)/2*(coor(i,3)+coor( i,4))
                 coor(i,4) = corr*coor(i,4)+(1-corr)/2*(coor(i,3)+coor( i,4))
-20          continue
+            end do
         endif
 !
         if (l2 .lt. lonmin) then
             corr = lonmin/l2
-            do 30 i = 1, ndim
+            do i = 1, ndim
                 coor(i,1) = corr*coor(i,1)+(1-corr)/2*(coor(i,1)+coor( i,4))
                 coor(i,2) = corr*coor(i,2)+(1-corr)/2*(coor(i,2)+coor( i,3))
                 coor(i,3) = corr*coor(i,3)+(1-corr)/2*(coor(i,2)+coor( i,3))
                 coor(i,4) = corr*coor(i,4)+(1-corr)/2*(coor(i,1)+coor( i,4))
-30          continue
+            end do
         endif
 !
     endif
 !
-9999  continue
+999 continue
 !
     call matfpe(1)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 !> Brief description of the subroutine,
 !> continuation line
 !>
@@ -93,7 +93,7 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
 !     PARENT SERA  LE PARENT PAR INCONNUE ET NON PAR SUPERNOEUD
     call infniv(ifm, niv)
     nbsn = 0
-    do 100 i = 1, nbnd
+    do i = 1, nbnd
         if (nv(i) .ne. 0) nbsn = nbsn + 1
         j = invp(i)
         if (pe(i) .ne. 0) then
@@ -102,32 +102,32 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
             parent(j)=0
         endif
         nnv(j) = nv(i)
-100  end do
+    end do
 !     NV CONTIENDRA  LA LARGEUR DES SN (LGSN AILLEURS)
     j = 1
-    do 110 i = 1, nbsn
+    do i = 1, nbsn
         nv(i) = 1
-111      continue
+111     continue
         if (nnv(j) .eq. 0) then
             nv(i) = nv(i) + 1
             j = j + 1
             goto 111
         endif
         j = j + 1
-110  end do
+    end do
 !
     supnd(1) = 1
-    do 120 i = 1, nbsn
+    do i = 1, nbsn
         supnd(i+1) = supnd(i) + nv(i)
-120  end do
+    end do
 !     LLIST SERA  L INVERSE DE SUPND, APPELE INVSUP AILLEURS
     k = 0
     adress(1) = 1
-    do 130 snj = 1, nbsn
-        do 125 i = 1, nv(snj)
+    do snj = 1, nbsn
+        do i = 1, nv(snj)
             k = k + 1
             llist(k) = snj
-125      continue
+        end do
 !     CALCUL DE ADRESS : ON CHERCHE DANS LE SN SNJ,
 !     LE NOEUD I T.Q. NNV(I) =/= 0, CETTE VALEUR CONTIENT
 !     LE "VRAI DEGRE" DE I,(SORTIE DE AMDBAR)
@@ -136,50 +136,50 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
         deb = supnd(snj)
         fin = supnd(snj+1)-1
         i= fin
-128      continue
+128     continue
         if (i .lt. deb) then
             call utmess('F', 'ALGELINE5_6', si=snj)
         endif
         if (nnv(i) .ne. 0) goto 129
         i= i-1
         goto 128
-129      continue
+129     continue
         adress(snj+1) = adress(snj) + nnv(i)
-130  end do
+    end do
 !
     lgind = adress(nbsn+1) - 1
     fctnzs = 0
     fctops = 0.d0
-    do 150 i = 1, nbsn
+    do i = 1, nbsn
         ncol = supnd(i+1) - supnd(i)
         nlig = adress(i+1) - adress(i)
         fctnzs = fctnzs + nlig*ncol - (ncol*(ncol+1))/2
-        do 140 j = 1, ncol
+        do j = 1, ncol
             nlig = nlig - 1
             fctops = fctops + nlig*(nlig+3)
-140      continue
-150  end do
+        end do
+    end do
 !     ON CALCUL PARENT EN SN A PARTIR DE PARENT/NOEUDS
 !     NV CONTIENDRA PROVISOIREMENT PARENT/NOEUDS
-    do 160 i = 1, nbnd
+    do i = 1, nbnd
         nv(i) = parent(i)
-160  end do
+    end do
 !
-    do 170 i = 1, nbnd
+    do i = 1, nbnd
         parent(i) = 0
-170  end do
-    do 180 snj = 1, nbsn
+    end do
+    do snj = 1, nbsn
         deb = supnd(snj)
         fin = supnd(snj+1)-1
         ndi= fin
-175      continue
+175     continue
         if (ndi .lt. deb) then
             call utmess('F', 'ALGELINE5_6', si=snj)
         endif
         if (nnv(ndi) .ne. 0) goto 177
         ndi= ndi-1
         goto 175
-177      continue
+177     continue
 !        LE NOEUD NDI EST LE ND REPRESENTATIF DU SN
 !        PARENT(SNJ) EST LE SN CONTENANT LE PARENT DE NDI
         if (nv(ndi) .ne. 0) then
@@ -188,14 +188,14 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
             parent(snj) =0
         endif
 !
-180  end do
+    end do
     if (niv .eq. 2) then
         write(ifm,*)'AMDAPT  :  TRAITEMENT DE AMDBAR'
         write(ifm,*)' NOMBRE DE SUPERNOEUDS: ',nbsn
-        do 200 i = 1, nbsn
+        do i = 1, nbsn
             write(ifm,*) 'SN ',i,' :NDS DE ',supnd(i),' A ',supnd(i+1)&
             -1, ',PARENT ',parent(i),',DEGRE :',adress(i+1)-adress(i)
-200      continue
+        end do
     endif
 !
 end subroutine

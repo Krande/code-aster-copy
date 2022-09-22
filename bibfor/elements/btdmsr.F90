@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr,&
                   epais, vectpt, hsj1m, hsj1s, btdm,&
                   btds)
@@ -39,18 +39,18 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr,&
     l4=387
     l5=423
 !
-    do 16 j = 1, 5*nb1+2
-        do 15 i = 1, 9
+    do j = 1, 5*nb1+2
+        do i = 1, 9
             dnsdsm(i,j)=0.d0
             dnsds(i,j)=0.d0
-15      end do
+        end do
         do i = 1, 3
             btdm(intsr,i,j)=0.d0
         end do
         do i = 1, 2
             btds(intsr,i,j)=0.d0
         end do
-16  end do
+    end do
 !
     intsr1=8*(intsr-1)
     intsr2=9*(intsr-1)
@@ -65,7 +65,7 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr,&
     i4=l4+intsr2
     i5=l5+intsr2
 !
-    do 30 j = 1, nb1
+    do j = 1, nb1
         j1=5*(j-1)
         dnsdsm(1,j1+1)=xr(i1+j)
         dnsdsm(2,j1+1)=xr(i2+j)
@@ -108,7 +108,7 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr,&
 !
         dnsds(9,j1+4)=-xr(i3+j)/2*epais*vectpt(j,2,3)
         dnsds(9,j1+5)= xr(i3+j)/2*epais*vectpt(j,1,3)
-30  end do
+    end do
 !
     dnsds(1,5*nb1+1)=-ksi3s2*xr(i4+nb2)*epais*vectpt(nb2,2,1)
     dnsds(1,5*nb1+2)= ksi3s2*xr(i4+nb2)*epais*vectpt(nb2,1,1)
@@ -139,50 +139,50 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr,&
 !
 !     CONSTRUCTION DE BTILDM = HFM * S * JTILD-1 * DNSDSM  : (3,5*NB1+2)
 !
-    do 40 i = 1, 3
-        do 50 jb = 1, nb1
-            do 60 j = 1, 3
+    do i = 1, 3
+        do jb = 1, nb1
+            do j = 1, 3
                 j1=j+5*(jb-1)
                 btdm(intsr,i,j1)=0.d0
-                do 70 k = 1, 2
+                do k = 1, 2
                     k1=k+3*(j-1)
                     btdm(intsr,i,j1)=btdm(intsr,i,j1)+hsj1m(i,k1)*&
                     dnsdsm(k1,j1)
-70              end do
-60          end do
-50      end do
+                end do
+            end do
+        end do
         btdm(intsr,i,5*nb1+1)=0.d0
         btdm(intsr,i,5*nb1+2)=0.d0
-40  end do
+    end do
 !
 !     CONSTRUCTION DE BTILDS = HS * S * JTILD-1 * DNSDS  : (2,5*NB1+2)
 !
-    do 80 i = 1, 2
-        do 90 jb = 1, nb1
-            do 100 j = 1, 5
+    do i = 1, 2
+        do jb = 1, nb1
+            do j = 1, 5
                 j1=j+5*(jb-1)
                 btds(intsr,i,j1)=0
                 if (j .le. 3) then
-                    do 110 k = 1, 2
+                    do k = 1, 2
                         k1=k+3*(j-1)
                         btds(intsr,i,j1)=btds(intsr,i,j1)+hsj1s(i,k1)*&
                         dnsds(k1,j1)
-110                  end do
+                    end do
                 else
-                    do 120 k = 1, 9
+                    do k = 1, 9
                         btds(intsr,i,j1)=btds(intsr,i,j1)+hsj1s(i,k)*&
                         dnsds(k,j1)
-120                  end do
+                    end do
                 endif
-100          end do
-90      end do
-        do 130 j = 1, 2
+            end do
+        end do
+        do j = 1, 2
             j1=5*nb1+j
             btds(intsr,i,j1)=0.d0
-            do 140 k = 1, 9
+            do k = 1, 9
                 btds(intsr,i,j1)=btds(intsr,i,j1)+hsj1s(i,k)*dnsds(k,&
                 j1)
-140          end do
-130      end do
-80  end do
+            end do
+        end do
+    end do
 end subroutine

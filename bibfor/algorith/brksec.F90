@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine brksec(h66, bt3, bc, nu, e,&
                   s3)
 !
@@ -35,15 +35,15 @@ subroutine brksec(h66, bt3, bc, nu, e,&
 !-----------------------------------------------------------------------
 !
 !     MISE  AZERO
-    do 10 i = 1, 6
-        do 20 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             h66(i,j)=0.d0
-20      continue
-10  end do
+        end do
+    end do
 !
 !
 !     PRISE EN COMPTE DU CARACTERE UNILATERAL
-    do 30 i = 1, 3
+    do i = 1, 3
         if (s3(i) .le. r8prem()*e) then
             bt3(i)=0.d0
         else
@@ -52,7 +52,7 @@ subroutine brksec(h66, bt3, bc, nu, e,&
             endif
         endif
         b(i)=exp(bt3(i))
-30  end do
+    end do
 !
 !     CARRé SUPERIEUR RELIANT LES CONTRAINTES NORMALES DANS
 !       LA MATRICE SECANTE
@@ -80,9 +80,9 @@ subroutine brksec(h66, bt3, bc, nu, e,&
     h66(5,5) = exp(-(bt3(1)+bt3(3)))/(1.d0+nu)
     h66(6,6) = exp(-(bt3(2)+bt3(3)))/(1.d0+nu)
 !
-    do 40 i = 1, 6
-        do 50 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             h66(i,j)=e*h66(i,j)*exp(-bc)
-50      continue
-40  end do
+        end do
+    end do
 end subroutine

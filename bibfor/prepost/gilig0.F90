@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     implicit none
 #include "jeveux.h"
@@ -59,10 +59,10 @@ subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     nbfois = nbobno / nbnom
     nbrest = nbobno - nbnom*nbfois
     icoj = 0
-    do 10 i = 1, nbfois
+    do i = 1, nbfois
         read(nfic,1007) (zk8(iaobno-1+j),j=icoj+1,icoj+nbnom)
         icoj = icoj + nbnom
-10  end do
+    end do
     if (nbrest .gt. 0) then
         read(nfic,1007) (zk8(iaobno-1+j),j=icoj+1,icoj+nbrest)
     endif
@@ -70,14 +70,14 @@ subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     nbfois = nbobno / nbnum
     nbrest = nbobno - nbnum*nbfois
     icoj = 0
-    do 12 i = 1, nbfois
+    do i = 1, nbfois
         if (niv .eq. 3) then
             read(nfic,1009) (zi(iaobnu-1+j),j=icoj+1,icoj+nbnum)
         else
             read(nfic,1008) (zi(iaobnu-1+j),j=icoj+1,icoj+nbnum)
         endif
         icoj = icoj + nbnum
-12  end do
+    end do
     if (nbrest .gt. 0) then
         if (niv .eq. 3) then
             read(nfic,1009) (zi(iaobnu-1+j),j=icoj+1,icoj+nbrest)
@@ -110,10 +110,10 @@ subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
 !
 !
     zi(iacuel-1+1) = 0
-    do 20 i = 1, nbobo
+    do i = 1, nbobo
         call gilio2(nfic, i, nbele, niv)
         zi(iacuel-1+i+1) = zi(iacuel-1+i) + nbele
-20  end do
+    end do
 !
     1007 format ( 8(1x,a8) )
     1008 format ( 1x,10(i7,1x) )

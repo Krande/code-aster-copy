@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo,&
                   typmai, nom1, nom2, ndim, lisrel,&
                   charge)
@@ -25,17 +25,17 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/arlcp2.h"
+#include "asterfort/arlcp3.h"
 #include "asterfort/arlmai.h"
 #include "asterfort/arlmod.h"
-#include "asterfort/arlcp2.h"
 #include "asterfort/codent.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/arlcp3.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
     character(len=24) :: typmai
     character(len=8) :: mail, nomo
@@ -115,8 +115,8 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo,&
 !
     iproj = 0
     proj = .false.
-    do 777 jma2 = 1, nbma2
-        do 888 jma1 = 1, nbma1
+    do jma2 = 1, nbma2
+        do jma1 = 1, nbma1
             call arlcp2(zocc, mail, nomo, typmai, nom1,&
                         nom2, marlel, modarl, jma1, jma2,&
                         tabcor, mailar, proj)
@@ -129,24 +129,24 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo,&
                 call jeveuo(jexnum(arlmt2(1:19)//'.RESL', 2), 'L', imatu2)
                 nbnoc1 = nint(zr(imatu2+nddl))
                 nbnoc2 = nint(zr(imatu2+nddl+1))
-                do 10 j = 1, nbnoc2
+                do j = 1, nbnoc2
                     call codent(nint(zr(imatu2-1+(nddl+4)+nbnoc1+j)), 'G', ch2)
                     numno2(j,jma2) = ch2
                     numno1(j,iproj) = ch2
- 10             end do
-                do 20 j = 1, nbnoc1
+                end do
+                do j = 1, nbnoc1
                     call codent(nint(zr(imatu2-1+(nddl+4)+j)), 'G', ch1)
                     numno1(nbnoc2+j,iproj) = ch1
- 20             end do
+                end do
 !
 ! --- RECUPERATION DE LA MATRICE DE COUPLAGE 1D-1D
 !
-                do 160 iaux = 1, 6*nbnoc2
-                    do 150 jaux = 1, 6*nbnoc2
+                do iaux = 1, 6*nbnoc2
+                    do jaux = 1, 6*nbnoc2
                         m1de(iaux,jaux) = zr(imatu2-1+(6*nbnoc2)*(iaux-1)+jaux)
                         m1dea(iaux,jaux,jma2) = m1de(iaux,jaux)
-150                 end do
-160             end do
+                    end do
+                end do
 !
 ! --- RECUPERATION DE LA MATRICE DE COUPLAGE 1D-3D            
 !
@@ -154,49 +154,49 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo,&
                 call jeexin(jexnum(arlmt1(1:19)//'.RESL', 1), iexi)
                 if (iexi == 0) goto 210
                 call jeveuo(jexnum(arlmt1(1:19)//'.RESL', 1), 'L', imatu1)
-                do 140 iaux = 1, 6*nbnoc2
-                    do 130 jaux = 1, 3*nbnoc1
+                do iaux = 1, 6*nbnoc2
+                    do jaux = 1, 3*nbnoc1
                         m3de(iaux,jaux) = zr(imatu1-1+(3*nbnoc1)*(iaux-1)+jaux)
                         m3dea(iaux,jaux,iproj) = m3de(iaux,jaux)
-130                 end do
-140             end do
+                    end do
+                end do
             endif
-888     end do
-777 end do
+        end do
+    end do
 !
 ! --- CREATION DES VECTEURS NUMEROS NOEUDS POUR L'ASSEMBLAGE
 !
     jj=0
-    do 71 i = 1, nbma2
-        do 72 j = 1, nbnoc2
+    do i = 1, nbma2
+        do j = 1, nbnoc2
             chtest = 0
-            do 73 k = 1, nbnoc2*nbma2
+            do k = 1, nbnoc2*nbma2
                 if (numno2(j,i) == numn2t(k)) then
                     chtest = 1
                 endif
- 73         end do
+            end do
             if (chtest == 0) then
                 jj=jj+1
                 numn2t(jj) = numno2(j,i)
             endif
- 72     end do
- 71 end do
+        end do
+    end do
     len2=jj
     jj=0
-    do 76 i = 1, nbma1
-        do 77 j = 1, nbnoc1
+    do i = 1, nbma1
+        do j = 1, nbnoc1
             chtest = 0
-            do 78 k = 1, nbnoc1*nbma1
+            do k = 1, nbnoc1*nbma1
                 if ((numno1(2+j,i) == numn1t(k)) .or. (numno1(2+j,i) == '0')) then
                     chtest = 1
                 endif
- 78         end do
+            end do
             if (chtest == 0) then
                 jj=jj+1
                 numn1t(jj) = numno1(2+j,i)
             endif
- 77     end do
- 76 end do
+        end do
+    end do
     len1=jj
 !
 ! --- ASSEMBLAGE DES MATRICES DE COUPLAGE ELEMENTAIRES

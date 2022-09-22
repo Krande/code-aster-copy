@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine usukwu(nbpt, fn, vg, para, w,&
                   iret)
     implicit none
@@ -62,20 +62,20 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
     if ((n1+n2) .eq. 0) then
         fnm = zero
         vgm = zero
-        do 10 i = 1, nbpt
+        do i = 1, nbpt
             fnm = max(fnm,fn(i))
             vgm = max(vgm,vg(i))
-10      continue
+        end do
     else if (n1 .eq. 0) then
         fnm = zero
-        do 12 i = 1, nbpt
+        do i = 1, nbpt
             fnm = max(fnm,fn(i))
-12      continue
+        end do
     else if (n2 .eq. 0) then
         vgm = zero
-        do 14 i = 1, nbpt
+        do i = 1, nbpt
             vgm = max(vgm,vg(i))
-14      continue
+        end do
     endif
     write(if,2000) fnm
     write(if,2010) vgm
@@ -86,13 +86,13 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
     if (ifn0 .eq. 0) then
         call utmess('A', 'ALGORITH11_5')
         iret = 10
-        goto 9999
+        goto 999
     endif
     ifn0 = ifn0 / 5
     if (ifn0 .eq. 0) then
         call utmess('A', 'ALGORITH11_5')
         iret = 10
-        goto 9999
+        goto 999
     endif
     vg0 = vgm / 5.d0
     fn1 = dble ( ifn0 )
@@ -133,7 +133,7 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
     xi53 = zero
     xi54 = zero
     xi55 = zero
-    do 30 i = 1, nbpt
+    do i = 1, nbpt
         xvg = vg(i)
         xfn = fn(i)
         if (xfn .gt. zero) then
@@ -199,7 +199,7 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
                 endif
             endif
         endif
-30  end do
+    end do
     xit1 = xi11 + xi12 + xi13 + xi14 + xi15
     xit2 = xi21 + xi22 + xi23 + xi24 + xi25
     xit3 = xi31 + xi32 + xi33 + xi34 + xi35
@@ -340,5 +340,5 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
     2070 format(1p,5x,'FACTEUR GLOBAL INTENSITE D''USURE            : '&
      &         ,e12.5)
 !
-9999  continue
+999 continue
 end subroutine

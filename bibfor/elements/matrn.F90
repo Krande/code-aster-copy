@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
                  intsn, vectn, matn)
 !
@@ -60,13 +60,13 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !     DECALAGE DE 8 NOEUDS DE SERENDIP ET 9 NOEUDS DE LAGRANGE
 !
 !
-    do 100 jn = 1, nb2
+    do jn = 1, nb2
 !
 !------- NORMALE ET ANTISYM AU NOEUD JN
 !
-        do 201 ii = 1, 3
+        do ii = 1, 3
             vecnj ( ii ) = vectn ( jn , ii )
-201      continue
+        end do
 !
         call antisy(vecnj, 1.d0, antnj)
 !
@@ -76,20 +76,20 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !
 !---------- PARTIE TRANSLATION
 !
-            do 400 jj = 1, 3
+            do jj = 1, 3
                 matn ( jj , ( jn - 1 ) * 6 + jj ) = xr ( 135 + 8 * (&
                 intsn - 1 ) + jn )
-400          continue
+            end do
 !
 !---------- PARTIE ROTATION
 !
-            do 300 jj = 1, 3
-                do 310 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     matn ( ii , ( jn - 1 ) * 6 + jj + 3 ) = - epais *&
                     ksi3s2 * xr ( 459 + 9 * ( intsn - 1 ) + jn ) *&
                     antnj ( ii , jj )
-310              continue
-300          continue
+                end do
+            end do
 !
         else
 !
@@ -97,18 +97,18 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !
 !---------- PARTIE ROTATION SEULEMENT
 !
-            do 500 jj = 1, 3
-                do 510 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     matn ( ii , nb1 * 6 + jj ) = - epais * ksi3s2&
                     * xr ( 459 + 9 * ( intsn - 1 ) + jn ) * antnj (&
                     ii , jj )
 !
-510              continue
-500          continue
+                end do
+            end do
 !
         endif
 !
-100  continue
+    end do
 !
 !FIN
 !

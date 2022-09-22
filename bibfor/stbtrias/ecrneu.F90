@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ecrneu(imod, nbnode, ama, bma, cma,&
                   ami, bmi, cmi, min, man,&
                   ites)
@@ -172,7 +172,7 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma,&
         write(imod,'(A)') chfone(2)
     endif
 !
-    do 15 i = 1, nbnode
+    do i = 1, nbnode
         node = info((i-1)*3+1)
         isc = info((i-1)*3+2)
         x = coor((i-1)*3+1)
@@ -196,7 +196,7 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma,&
             write (imod,'(2X,A,2X,3(1PE21.14,1X),A)') chnode,x,y,z,&
             chsc
         endif
-15  end do
+    end do
     write (imod,'(A)') 'FINSF'
     write (imod,'(A)') '%'
     call jedema()

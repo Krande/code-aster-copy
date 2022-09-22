@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0282(option, nomte)
 !
 !      CALCUL DU TAUX DE RESTITUTION D'ENERGIE ELEMENTAIRE
@@ -42,8 +42,8 @@ subroutine te0282(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 !
 !
@@ -88,14 +88,14 @@ subroutine te0282(option, nomte)
 !
 ! TEST SUR LA NULLITE DE THETA_FISSURE
     compt = 0
-    do 250 i = 1, nno
+    do i = 1, nno
         thx = zr(ithet + 2*(i - 1) )
         thy = zr(ithet + 2*(i - 1) + 1 )
         if ((abs(thx).lt.epsi) .and. (abs(thy).lt.epsi)) then
             compt = compt + 1
         endif
-250 end do
-    if (compt .eq. nno) goto 9999
+    end do
+    if (compt .eq. nno) goto 999
 !
 ! =====================================================================
 ! RECUPERATION DES CHAMPS LOCAUX
@@ -103,7 +103,7 @@ subroutine te0282(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
-    if (option .eq. 'CALC_G_XFEM_F' ) then
+    if (option .eq. 'CALC_G_XFEM_F') then
         fonc = .true.
         call jevech('PFF1D2D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)
@@ -123,24 +123,24 @@ subroutine te0282(option, nomte)
 ! =====================================================================
 !
     if (fonc) then
-        do 70 i = 1, nno
-            do 80 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 valpar(j) = zr(igeom+2*(i-1)+j-1)
- 80         continue
-            do 75 j = 1, 2
+            end do
+            do j = 1, 2
                 call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
                             presn(2*(i-1)+j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcn(2*(i-1)+j), icode)
- 75         continue
- 70     continue
+            end do
+        end do
     endif
 !
 ! ======================================================================
 ! BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! ======================================================================
 !
-    do 800 kp = 1, npg
+    do kp = 1, npg
 !
 ! INITIALISATIONS
         k = (kp-1)*nno
@@ -168,7 +168,7 @@ subroutine te0282(option, nomte)
 ! DU VECTEUR POSITION AU POINT DE GAUSS (XG,YG), DE SON VECTEUR
 ! DEPLACEMENT (UX,UY), DU CHAMP THETA FISSURE (THX,THY) ET DE SON
 ! GRADIENT (DTHXDE,DTHYDE).
-        do 10 i = 1, nno
+        do i = 1, nno
             vf = zr(ivf +k+i-1)
             dfde = zr(idfdk+k+i-1)
             dxde = dxde + dfde*zr(igeom+2*(i-1))
@@ -181,7 +181,7 @@ subroutine te0282(option, nomte)
             thy = thy + vf *zr(ithet+2*(i-1)+1)
             dthxde = dthxde + dfde*zr(ithet+2*(i-1) )
             dthyde = dthyde + dfde*zr(ithet+2*(i-1)+1)
- 10     continue
+        end do
 !
 ! ===========================================
 ! CALCUL DU CHARGEMENT ET DE SON GRADIENT
@@ -190,23 +190,23 @@ subroutine te0282(option, nomte)
         if (fonc) then
             valpar(1) = xg
             valpar(2) = yg
-            do 65 j = 1, 2
+            do j = 1, 2
                 call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
                             presg(j), icode)
                 call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
                             forcg(j), icode)
- 65         continue
+            end do
         else
             presg(1) = 0.d0
             presg(2) = 0.d0
             forcg(1) = 0.d0
             forcg(2) = 0.d0
-            do 4 i = 1, nno
-                do 6 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     presg(j) = presg(j) + zr(ipres+2*(i-1)+j-1)*zr( ivf+k+i-1)
                     forcg(j) = forcg(j) + zr(iforc+2*(i-1)+j-1)*zr( ivf+k+i-1)
-  6             continue
-  4         continue
+                end do
+            end do
         endif
 !
 ! VALEURS DU CHARGEMENT AUX POINTS DE GAUSS (FX,FY)
@@ -220,7 +220,7 @@ subroutine te0282(option, nomte)
 ! VALEURS DU CHARGEMENT AUX NOEUDS (FXNO,FYNO) ET DE SES DERIVEES
 ! AUX POINTS DE GAUSS (DFXDE,DFYDE,D2FXDE,D2FYDE)
         if (fonc) then
-            do 300 i = 1, nno
+            do i = 1, nno
                 dfde = zr(idfdk+k+i-1)
                 presno = presn(2*(i-1)+1)
                 cisano = presn(2*(i-1)+2)
@@ -228,7 +228,7 @@ subroutine te0282(option, nomte)
                 fyno = forcn(2*(i-1)+2)+(dxde*presno+dyde*cisano)/ dsde
                 dfxde = dfxde + dfde*fxno
                 dfyde = dfyde + dfde*fyno
-300         continue
+            end do
         endif
 !
 ! TESTS SUR LA NULLITE DES CHARGEMENTS ET DE LEURS GRADIENTS POUR EVITER
@@ -281,10 +281,10 @@ subroutine te0282(option, nomte)
 ! ======================================================================
 ! FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! ======================================================================
-800 end do
+    end do
 !
 ! EXIT EN CAS DE THETA FISSURE NUL PARTOUT
-9999 continue
+999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G
     tsom = tcla + tsurf + tsurp

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,20 +21,21 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                   istoc, iarchi, nbexci, nondp, nmodam,&
                   lamort, limped, lmodst, imat, masse,&
                   rigid, amort, nchar, nveca, liad,&
-                  lifo, modele, mate, mateco, carele, charge,&
-                  infoch, fomult, numedd, depla, vitea,&
-                  accea, dep0, vit0, acc0, fexte,&
-                  famor, fliai, depl1, vite1, acce1,&
-                  psdel, fammo, fimpe, fonde, vien,&
-                  vite, vita1, mltap, a0, a2,&
-                  a3, a4, a5, a6, a7,&
-                  a8, c0, c1, c2, c3,&
-                  c4, c5, nodepl, novite, noacce,&
-                  matres, maprec, solveu, criter, chondp,&
-                  vitini, vitent, valmod, basmod,&
+                  lifo, modele, mate, mateco, carele,&
+                  charge, infoch, fomult, numedd, depla,&
+                  vitea, accea, dep0, vit0, acc0,&
+                  fexte, famor, fliai, depl1, vite1,&
+                  acce1, psdel, fammo, fimpe, fonde,&
+                  vien, vite, vita1, mltap, a0,&
+                  a2, a3, a4, a5, a6,&
+                  a7, a8, c0, c1, c2,&
+                  c3, c4, c5, nodepl, novite,&
+                  noacce, matres, maprec, solveu, criter,&
+                  chondp, vitini, vitent, valmod, basmod,&
                   veanec, vaanec, vaonde, veonde, dt,&
                   theta, tempm, temps, iforc2, tabwk1,&
-                  tabwk2, archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
+                  tabwk2, archiv, nbtyar, typear, numrep,&
+                  ds_energy, kineLoad)
 !
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
 !     AVEC METHODES IMPLICITES :                  - THETA-WILSON
@@ -76,11 +77,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
 ! CORPS DU PROGRAMME
-
 !
-use NonLin_Datastructure_type
 !
-implicit none
+    use NonLin_Datastructure_type
+!
+    implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
@@ -182,16 +183,12 @@ implicit none
     chamno = '&&'//nompro//'.CHAMNO'
     call jeexin(chamno(1:19)//'.REFE', iret)
     if (iret .eq. 0) then
-        call vtcreb(chamno, 'V', 'R',&
-                    nume_ddlz = numedd,&
-                    nb_equa_outz = neq)
+        call vtcreb(chamno, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
     endif
     chamn2 = '&&'//nompro//'.CHAMN2'
     call jeexin(chamn2(1:19)//'.REFE', iret)
     if (iret .eq. 0) then
-        call vtcreb(chamn2, 'V', 'R',&
-                    nume_ddlz = numedd,&
-                    nb_equa_outz = neq)
+        call vtcreb(chamn2, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
     endif
 !====
 ! 2. DEPLACEMENT, VITESSE ET ACCELERATIONS A
@@ -225,7 +222,7 @@ implicit none
 !====
 ! 3.
 !====
-    do ieq = 1,neq
+    do ieq = 1, neq
         vite(ieq) = vit0(ieq)
     end do
     if (lmodst) then
@@ -239,9 +236,9 @@ implicit none
                     fimpe)
     endif
     if (nondp .ne. 0) then
-        call fondpl(modele, mate, mateco, numedd, neq, chondp,&
-                    nondp, vecond, veonde, vaonde, temps,&
-                    fonde)
+        call fondpl(modele, mate, mateco, numedd, neq,&
+                    chondp, nondp, vecond, veonde, vaonde,&
+                    temps, fonde)
     endif
 !
     if (nmodam .ne. 0) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmforn(ndim, nno1, nno2, npg, iw,&
                   vff1, vff2, idfde1, geom, vect)
 !
@@ -74,7 +74,7 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 !
     call nmgvdn(ndim, nno1, nno2, iu, ia)
 !
-    do 1000 g = 1, npg
+    do g = 1, npg
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
@@ -83,23 +83,23 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
                     dfdi1)
         call nmmabu(ndim, nno1, axi, grand, dfdi1,&
                     b)
-        do 300 n = 1, nno1
-            do 310 i = 1, ndim
+        do n = 1, nno1
+            do i = 1, ndim
                 kk = iu(nno1*(i-1)+n)
                 t1 = 0
-                do 320 kl = 1, ndimsi
+                do kl = 1, ndimsi
                     t1 = t1 + abs(b(kl,i,n))
-320             continue
+                end do
                 vect(kk) = vect(kk) + wg*t1*sigref
-310         continue
-300     continue
+            end do
+        end do
 !
-        do 400 n = 1, nno2
+        do n = 1, nno2
             kk = ia(n)
             vect(kk) = vect(kk) + wg*vff2(n,g)*varref
-400     continue
+        end do
 !
 !
-1000 end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                   idir, igrp, xint, yint, rint,&
                   sgn, orig, beta, a, b)
@@ -82,14 +82,14 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
     epsit = 1.d-5
 !
 !
-    do 1 i = 1, nbcyl
+    do i = 1, nbcyl
         rayi = 1.d0/rint(i)
 !
-        do 11 j = 1, nbtron
+        do j = 1, nbtron
             nj = 2*j+2*nbtron*(i-1)
             rayi = rayi*rint(i)
 !
-            do 111 k = 1, nbtot
+            do k = 1, nbtot
                 dc = sqrt(&
                      ( xint(k)-xint(i))*(xint(k)-xint(i))+ (yint(k)-yint(i))*(yint(k)-yint(i) ))
 !
@@ -114,7 +114,7 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                     rayk = rint(k)
                     dc1 = dc**j
 !
-                    do 1111 l = 1, nbtron
+                    do l = 1, nbtron
                         rayk = rint(k)*rayk
                         dc1 = dc*dc1
                         nl = 2*l+2*nbtron*(orig(k)-1)
@@ -125,16 +125,16 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                         a(nj,nl-1) = coef*sin(arg)+a(nj,nl-1)
                         a(nj-1,nl) = sgn(k)*coef*sin(arg)+a(nj-1,nl)
                         a(nj,nl) = -sgn(k)*coef*cos(arg)+a(nj,nl)
-1111                  continue
+                    end do
 !
                 else
                     nl = 2*j+2*nbtron*(orig(k)-1)
                     a(nj-1,nl-1) = a(nj-1,nl-1)-j
                     a(nj,nl) = a(nj,nl)-j
                 endif
-111          continue
+            end do
 !
-            do 112 k = nbtot+1, nbfin
+            do k = nbtot+1, nbfin
                 dc = sqrt(&
                      ( xint(k)-xint(i))*(xint(k)-xint(i))+ (yint(k)-yint(i))*(yint(k)-yint(i) ))
 !
@@ -156,7 +156,7 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                 endif
                 dc1 = dc**j
 !
-                do 1121 l = 1, nbtron
+                do l = 1, nbtron
                     dc1 = dc1*dc
                     coef = mefac2(l,j)*(rayi)/dc1
                     coef = coef*((-1)**l)
@@ -164,21 +164,21 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                     coef1 = coef*cos(arg)
                     coef2 = coef*sin(arg)
 !
-                    do 11211 m = 1, nbcyl
+                    do m = 1, nbcyl
                         nm = 2*nbtron*(m-1)+2*l
                         arg = rint(m)**(l+1)
                         a(nj-1,nm-1) = coef1*arg+a(nj-1,nm-1)
                         a(nj,nm-1) = coef2*arg+a(nj,nm-1)
                         a(nj-1,nm) = sgn(k)*coef2*arg+a(nj-1,nm)
                         a(nj,nm) = -sgn(k)*coef1*arg+a(nj,nm)
-11211                  continue
-1121              continue
-112          continue
-11      continue
+                    end do
+                end do
+            end do
+        end do
 !
         if (numgrp(i) .eq. igrp) then
             b(2*nbtron*(i-1)+idir) = 1.d0
         endif
- 1  end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine majsig(materf, se, seq, i1e, alpha,&
                   dp, plas, sig)
-    implicit      none
+    implicit none
     real(kind=8) :: materf(5, 2), dp, se(*), seq, i1e, alpha, sig(6)
 ! =====================================================================
 ! --- MISE A JOUR DES CONTRAINTES -------------------------------------
@@ -42,13 +42,13 @@ subroutine majsig(materf, se, seq, i1e, alpha,&
 ! --- MISE A JOUR DU DEVIATEUR ----------------------------------------
 ! =====================================================================
     if (plas .eq. 2.0d0) then
-        do 10 ii = 1, ndt
+        do ii = 1, ndt
             dev(ii) = 0.0d0
-10      continue
+        end do
     else
-        do 20 ii = 1, ndt
+        do ii = 1, ndt
             dev(ii) = se(ii)*(un-trois*deuxmu/deux*dp/seq)
-20      continue
+        end do
     endif
 !
 ! =====================================================================
@@ -58,11 +58,11 @@ subroutine majsig(materf, se, seq, i1e, alpha,&
 ! =====================================================================
 ! --- MISE A JOUR DU VECTEUR DE CONTRAINTES ---------------------------
 ! =====================================================================
-    do 30 ii = 1, ndt
+    do ii = 1, ndt
         sig(ii) = dev(ii)
-30  end do
-    do 40 ii = 1, ndi
+    end do
+    do ii = 1, ndi
         sig(ii) = sig(ii) + i1/trois
-40  end do
+    end do
 ! =====================================================================
 end subroutine

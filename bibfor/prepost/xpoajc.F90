@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
                   npg, jcesd1, jcesd2, jcvid1, jcvid2,&
                   ima, ndim, ndime, iadc, iadv,&
@@ -112,40 +112,40 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
     idecal = npg1*(ise-1)*ncmp1
     idcalv = npg1*(ise-1)*ncmv1
 !
-    do 30 icmp = 1, ncmp1
+    do icmp = 1, ncmp1
 !       VAL : MOYENNE SUR LES POINTS DE GAUSS DU CHAMP 1
         val=0.d0
-        do 20 ipg = 1, npg1
+        do ipg = 1, npg1
             val =val + zr(jcesv1-1+iadc-1+idecal+ncmp1*(ipg-1)+icmp)
- 20     continue
+        end do
         val = val/npg1
-        do 35 ipt = 1, npg2
+        do ipt = 1, npg2
             call cesexi('C', jcesd2, jcesl2, nbmac +inmtot, ipt,&
                         1, icmp, iad2)
             ASSERT(iad2.gt.0)
             zl(jcesl2-1+iad2) = .true.
             zr(jcesv2-1+iad2) = val
- 35     continue
- 30 continue
+        end do
+    end do
 !
     if (ncmv1 .ne. 0) then
-        do 50 icmp = 1, ncmv1
+        do icmp = 1, ncmv1
 !         VAL : MOYENNE SUR LES POINTS DE GAUSS DU CHAMP 1
             val=0.d0
-            do 40 ipg = 1, npg1
+            do ipg = 1, npg1
                 val =val + zr(jcviv1-1+iadv-1+idcalv+ncmv1*(ipg-1)+&
                 icmp)
- 40         continue
+            end do
             val = val/npg1
-            do 45 ipt = 1, npg2
+            do ipt = 1, npg2
                 call cesexi('C', jcvid2, jcvil2, nbmac +inmtot, ipt,&
                             1, icmp, iad2)
                 ASSERT(iad2.lt.0)
                 iad2 = -iad2
                 zl(jcvil2-1+iad2) = .true.
                 zr(jcviv2-1+iad2) = val
- 45         continue
- 50     continue
+            end do
+        end do
     endif
 !
 999 continue

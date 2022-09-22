@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vdsiro(np, nbsp, matev, sens, goun,&
                   tens1, tens2)
     implicit none
@@ -60,9 +60,9 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/utbtab.h"
+!
     real(kind=8) :: matev(2, 2, 1), tens1(1), tens2(1)
     character(len=2) :: sens
     character(len=1) :: goun
@@ -79,7 +79,7 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
 ! --- BOUCLE SUR LES POINTS OU SONT CALCULES LES TENSEURS
 ! --- (I.E. LES NOEUDS OU LES POINTS D'INTEGRATION) :
 !     ============================================
-    do 10 kpt = 1, np
+    do kpt = 1, np
 !
 !       -- IL Y A UN BUG DANS VDREPE : ON NE CALCULE PAS
 !          LES MATRICES POUR FAMI='MASS'
@@ -99,7 +99,7 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
             mattmp(2,1)=matev(1,2,kpt2)
         endif
 !
-        do 20 ksp = 1, nbsp
+        do ksp = 1, nbsp
             i=(kpt-1)*nbsp+ksp
             workel(1) = tens1(1+6*(i-1))
             workel(2) = tens1(4+6*(i-1))
@@ -118,8 +118,8 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
             tens2(5+6*(i-1)) = tampon(1) * mattmp(1,1) + tampon(2) * mattmp(2,1)
             tens2(6+6*(i-1)) = tampon(1) * mattmp(1,2) + tampon(2) * mattmp(2,2)
 !
-20      continue
-10  end do
+        end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

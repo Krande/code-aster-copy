@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aceama(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
@@ -83,7 +83,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     call nocart(cartma, 1, 7)
 !
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
         ang(1) = 0.d0
         ang(2) = 0.d0
         ang(3) = 0.d0
@@ -132,9 +132,9 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
-            do 20 i = 1, ng
+            do i = 1, ng
                 call nocart(cartma, 2, 7, groupma=zk24(jdls+i-1))
-20          continue
+            end do
         endif
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
@@ -144,7 +144,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                         limano=zk8(jdls2))
         endif
 !
-10  end do
+    end do
 !
     call jedetr('&&TMPMASSIF')
     call jedetr('&&TMPMASSIF2')

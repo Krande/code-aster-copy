@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                            refi, refr, refc, epsi, crit,&
                            llab, ssigne, ignore, compare)
@@ -103,7 +103,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
         valk(2) = type
         valk(3) = typrez
         call utmess('F', 'TEST0_9', nk=3, valk=valk)
-        goto 9999
+        goto 999
     endif
 !
     call jelira(cham19//sufv, 'LONMAX', neq)
@@ -113,71 +113,71 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
-            do 100 i = 1, neq
+            do i = 1, neq
                 vali = vali + abs( zi(jvale+i-1) )
-100         continue
+            end do
         else if (typtes .eq. 'SOMM') then
             vali = 0
-            do 102 i = 1, neq
+            do i = 1, neq
                 vali = vali + zi(jvale+i-1)
-102         continue
+            end do
         else if (typtes .eq. 'MAX') then
             vali = zi(jvale-1+1)
-            do 104 i = 2, neq
+            do i = 2, neq
                 vali = max( vali , zi(jvale+i-1) )
-104         continue
+            end do
         else if (typtes .eq. 'MIN') then
             vali = zi(jvale-1+1)
-            do 106 i = 2, neq
+            do i = 2, neq
                 vali = min( vali , zi(jvale+i-1) )
-106         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
 !
 !
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
-            do 200 i = 1, neq
+            do i = 1, neq
                 valr = valr + abs( zr(jvale+i-1) )
-200         continue
+            end do
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
-            do 202 i = 1, neq
+            do i = 1, neq
                 valr = valr + zr(jvale+i-1)
-202         continue
+            end do
         else if (typtes .eq. 'MAX') then
             valr = zr(jvale)
-            do 204 i = 2, neq
+            do i = 2, neq
                 valr = max( valr , zr(jvale+i-1) )
-204         continue
+            end do
         else if (typtes .eq. 'MIN') then
             valr = zr(jvale)
-            do 206 i = 2, neq
+            do i = 2, neq
                 valr = min( valr , zr(jvale+i-1) )
-206         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
 !
 !
     else if (type .eq. 'C') then
         if (typtes .eq. 'SOMM_ABS') then
             valc = dcmplx(0.d0,0.d0)
-            do 300 i = 1, neq
+            do i = 1, neq
                 valc = valc + abs( zc(jvale+i-1) )
-300         continue
+            end do
         else if (typtes .eq. 'SOMM') then
             valc = dcmplx(0.d0,0.d0)
-            do 302 i = 1, neq
+            do i = 1, neq
                 valc = valc + zc(jvale+i-1)
-302         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -186,7 +186,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                          refi, vali, refc, valc, ignore=skip,&
                          compare=ordgrd)
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

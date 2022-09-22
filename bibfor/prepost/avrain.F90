@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
                   jopic, fatsoc, ncycl, jvmin, jvmax,&
                   jomin, jomax)
@@ -74,7 +74,7 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
     call jemarq()
 !
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
 !
 ! LE TEST SI (NPIC(IVECT) .EQ. 0) EST EQUIVALENT
 ! AU TEST SI (IFLAG(IVECT) .EQ. 3).
@@ -87,9 +87,9 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
         lresi = .false.
         npicb = npic(ivect)
 !
-        do 20 i = 1, npicb
+        do i = 1, npicb
             zi(jitrv + i) = i
- 20     continue
+        end do
 !
         ncycl(ivect) = 0
 !
@@ -104,27 +104,27 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
             goto 100
         endif
 !
-        e1 = abs ( zr(jpic + adrs + zi(jitrv + i+1)) -  zr(jpic + adrs + zi(jitrv + i)) )
-        e2 = abs ( zr(jpic + adrs + zi(jitrv + i+2)) -  zr(jpic + adrs + zi(jitrv + i+1)) )
-        e3 = abs ( zr(jpic + adrs + zi(jitrv + i+3)) -  zr(jpic + adrs + zi(jitrv + i+2)) )
+        e1 = abs ( zr(jpic + adrs + zi(jitrv + i+1)) - zr(jpic + adrs + zi(jitrv + i)) )
+        e2 = abs ( zr(jpic + adrs + zi(jitrv + i+2)) - zr(jpic + adrs + zi(jitrv + i+1)) )
+        e3 = abs ( zr(jpic + adrs + zi(jitrv + i+3)) - zr(jpic + adrs + zi(jitrv + i+2)) )
 !
         if ((e1.ge. e2) .and. (e3 .ge. e2)) then
             ncycl(ivect) = ncycl(ivect) + 1
             if (zr(jpic+ adrs+ zi(jitrv + i+1)) .ge. zr(jpic + adrs+ zi(jitrv + i+2))) then
-                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs +  zi(jitrv + i+1))/ fatsoc
-                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs +  zi(jitrv + i+2))/ fatsoc
-                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs +  zi(jitrv + i+1))
-                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs +  zi(jitrv + i+2))
+                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+1))/ fatsoc
+                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+2))/ fatsoc
+                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+1))
+                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+2))
             else
-                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs +  zi(jitrv + i+2))/ fatsoc
-                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs +  zi(jitrv + i+1))/ fatsoc
-                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs +  zi(jitrv + i+2))
-                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs +  zi(jitrv + i+1))
+                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+2))/ fatsoc
+                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+1))/ fatsoc
+                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+2))
+                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+1))
             endif
 !
-            do 30 k = i+2, j+2, -1
+            do k = i+2, j+2, -1
                 zi(jitrv+ k) = zi(jitrv + k-2)
- 30         continue
+            end do
 !
             j=j+2
             i=j
@@ -140,9 +140,9 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
 !
         if (.not. lresi) then
             npicr = npicb - 2*ncycl(ivect)
-            do 110 i = 1, npicr
+            do i = 1, npicr
                 zi(jitrv + i) = zi(jitrv + 2*ncycl(ivect)+i)
-110         continue
+            end do
             r1 = zr(jpic + adrs + zi(jitrv + 1))
             r2 = zr(jpic + adrs + zi(jitrv + 2))
             rad= zr(jpic + adrs + zi(jitrv + npicr-1))
@@ -150,27 +150,27 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
             x = (rd-rad)*(r2-r1)
             y = (rd-rad)*(r1-rd)
             if ((x .gt. 0.d0) .and. (y .lt. 0.d0)) then
-                do 120 i = 1, npicr
+                do i = 1, npicr
                     zi(jitrv+i+npicr) = zi(jitrv + i)
-120             continue
+                end do
                 npicb = 2*npicr
             else if ((x .gt. 0.d0) .and. (y .ge. 0.d0)) then
 ! -- ON ELIMINE  R1 ET RN
-                do 130 i = npicr, 2, -1
+                do i = npicr, 2, -1
                     zi(jitrv + i+npicr-2) = zi(jitrv + i)
-130             continue
+                end do
                 npicb = 2*npicr - 2
             else if ((x .lt. 0.d0) .and. (y .lt. 0.d0)) then
 ! -- ON ELIMINE R1
-                do 140 i = npicr, 2, -1
+                do i = npicr, 2, -1
                     zi(jitrv + i+npicr-1) = zi(jitrv + i)
-140             continue
+                end do
                 npicb = 2*npicr - 1
             else if ((x .lt. 0.d0) .and. (y .ge. 0.d0)) then
 ! -- ON ELIMINE RN
-                do 150 i = npicr, 1, -1
+                do i = npicr, 1, -1
                     zi(jitrv + i+npicr-1) = zi(jitrv + i)
-150             continue
+                end do
                 npicb = 2*npicr - 1
             endif
             lresi = .true.
@@ -180,7 +180,8 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
 !
         ASSERT((nbordr+2) .ge. ncycl(ivect))
 !
- 10 end do
+ 10     continue
+    end do
 !
     call jedema()
 !

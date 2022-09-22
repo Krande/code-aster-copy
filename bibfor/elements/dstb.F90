@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     implicit none
 #include "asterf_types.h"
@@ -110,20 +110,20 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 ! --- AUX SEULES INCONNUES (UN) :
 ! --- (BF) = (BFB) + (BFA)*(AN)
 !     -------------------------
-    do 20 i = 1, 3
-        do 10 j = 1, 9
+    do i = 1, 3
+        do j = 1, 9
             bfn(i,j) = 0.d0
- 10     continue
- 20 end do
+        end do
+    end do
 !
-    do 50 i = 1, 3
-        do 40 j = 1, 9
-            do 30 k = 1, 3
+    do i = 1, 3
+        do j = 1, 9
+            do k = 1, 3
                 bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
- 30         continue
+            end do
             bf(i,j) = bfb(i,j) + bfn(i,j)
- 40     continue
- 50 end do
+        end do
+    end do
 !
 ! --- CALCUL DE LA MATRICE B_CISAILLEMENT, NOTEE (BC) ET RELATIVE
 ! --- AUX  INCONNUES (UN) , AVEC LES NOTATIONS DE BATOZ
@@ -133,28 +133,28 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 ! --- DES DEFORMATIONS DE CISAILLEMENT TRANSVERSE , D'OU :
 ! --- (BC) = (DCI)*(BCA)*(AN)
 !     -----------------------
-    do 70 i = 1, 2
-        do 60 j = 1, 9
+    do i = 1, 2
+        do j = 1, 9
             bc(i,j) = 0.d0
             bcn(i,j) = 0.d0
- 60     continue
- 70 end do
+        end do
+    end do
 !
-    do 100 i = 1, 2
-        do 90 j = 1, 9
-            do 80 k = 1, 3
+    do i = 1, 2
+        do j = 1, 9
+            do k = 1, 3
                 bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
- 80         continue
- 90     continue
-100 end do
+            end do
+        end do
+    end do
 !
-    do 130 i = 1, 2
-        do 120 j = 1, 9
-            do 110 k = 1, 2
+    do i = 1, 2
+        do j = 1, 9
+            do k = 1, 2
                 bc(i,j) = bc(i,j) + dci(i,k)*bcn(k,j)
-110         continue
-120     continue
-130 end do
+            end do
+        end do
+    end do
 !
 ! --- AFFECTATION DE LA MATRICE B COMPLETE, NOTEE (BMAT)
 ! --- AVEC LES MATRICES (BM), (BF) ET (BC)

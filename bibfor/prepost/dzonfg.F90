@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                   tbelzo, nbelzo, tbnozo, nbnozo)
 !
@@ -69,22 +69,22 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 !
     nbelzo(1) = numeli(1,inno)
     ASSERT(nbelzo(1).le.1000)
-    do 10 inel = 1, nbelzo(1)
+    do inel = 1, nbelzo(1)
         tbelzo(inel) = numeli(inel+2,inno)
- 10 end do
+    end do
 !
 ! 1.2 - COUCHES 2 ET 3
 !
     nedep = 1
     nefin = nbelzo(1)
 !
-    do 20 j = 1, 2
+    do j = 1, 2
         nbelco = 0
-        do 30 inel = nedep, nefin
+        do inel = nedep, nefin
             nuef = tbelzo(inel)
-            do 40 ind = 1, icnc(1, nuef)
+            do ind = 1, icnc(1, nuef)
                 noeud = icnc(ind+2,nuef)
-                do 50 iel = 1, numeli(1, noeud)
+                do iel = 1, numeli(1, noeud)
                     elem = numeli(iel+2,noeud)
                     test = .true.
                     n = 1
@@ -99,9 +99,9 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                         ASSERT((nefin+nbelco).le.1000)
                         tbelzo(nefin+nbelco) = elem
                     endif
- 50             continue
- 40         continue
- 30     continue
+                end do
+            end do
+        end do
         if (j .eq. 1) then
             nbelzo(2) = nbelco
             nedep = nbelzo(1)+1
@@ -109,7 +109,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
         else
             nbelzo(3) = nbelco
         endif
- 20 end do
+    end do
 !
 ! 2 - NOEUDS DES COUCHES 1 2 ET 3
 !
@@ -121,11 +121,11 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 !
     nedep=0
 !
-    do 70 j = 1, 3
+    do j = 1, 3
         nefin=nedep+nbelzo(j)
-        do 80 inel = nedep+1, nefin
+        do inel = nedep+1, nefin
             nuef = tbelzo(inel)
-            do 90 ind = 1, icnc(1, nuef)
+            do ind = 1, icnc(1, nuef)
                 noeud = icnc(ind+2,nuef)
                 n = 1
                 test = .true.
@@ -141,10 +141,10 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                     ASSERT(nbnoco.le.1000)
                     tbnozo(nbnoco) = noeud
                 endif
- 90         continue
- 80     continue
+            end do
+        end do
         nedep=nefin
- 70 end do
+    end do
 !
     nbelzo(2)=nbelzo(1)+nbelzo(2)
     nbelzo(3)=nbelzo(2)+nbelzo(3)

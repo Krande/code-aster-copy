@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0196()
     implicit none
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -29,11 +29,11 @@ subroutine op0196()
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/gettco.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -113,7 +113,7 @@ subroutine op0196()
     call rscrsd('G', resux, tysd, nbordr)
 !
 !     BOUCLE SUR LES NBORDR NUMEROS D'ORDRE
-    do 10 ior = 1, nbordr
+    do ior = 1, nbordr
 !
         iord=zi(jord-1+ior)
 !       ----------------------------------------------------------------
@@ -168,7 +168,7 @@ subroutine op0196()
 !
         call jelira(licham, 'LONMAX', nbcham)
         call jeveuo(licham, 'L', jlicha)
-        do 20 ic = 1, nbcham
+        do ic = 1, nbcham
             nomcha = zk16(jlicha-1+ic)
 !
 !         SI LE CHAMP N'EXISTE PAS DANS LE RESU EN ENTREE, ON PASSE
@@ -199,7 +199,8 @@ subroutine op0196()
 !
             endif
             call rsnoch(resux, nomcha, iord)
- 20     continue
+ 20         continue
+        end do
 !
 !       CARTE DU COMPORTEMENT
         call rsexch(' ', resuco, 'COMPORTEMENT', iord, k19,&
@@ -245,7 +246,7 @@ subroutine op0196()
         call detrsd('CHAM_ELEM_S', comps1)
         call detrsd('CHAM_ELEM_S', comps2)
 !
- 10 continue
+    end do
 !
     call jeexin(mailc, iret)
     if (iret .ne. 0) call jedetr(mailc)

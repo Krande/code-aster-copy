@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtcro3(m, n, a, nmax, x,&
                   y)
     implicit none
@@ -51,13 +51,13 @@ subroutine mtcro3(m, n, a, nmax, x,&
         call utmess('A', 'ALGELINE2_13')
     endif
 !
-    do 20, j = 1, n
-    if (x( j ) .ne. zero) then
-        do 10, i = 1, m
-        y( i ) = y( i ) - x( j )*a( i, j )
-10      continue
-    endif
-    20 end do
+    do j = 1, n
+        if (x( j ) .ne. zero) then
+            do i = 1, m
+                y( i ) = y( i ) - x( j )*a( i, j )
+            end do
+        endif
+    end do
 !
 !
 end subroutine

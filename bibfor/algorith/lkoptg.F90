@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkoptg(val, dum, dt, nbmat, mater,&
                   invar, s, iel, sel, ucrpm,&
                   ucrvm, ucriv, seuilv, vinm, de,&
                   depsv, dside, retcom)
 !
-    implicit   none
+    implicit none
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -166,11 +166,11 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 !
     call lcprte(degv, dphi, dphigv)
 !
-    do 10 i = 1, ndt
-        do 20 k = 1, ndt
+    do i = 1, ndt
+        do k = 1, ndt
             aa(i,k) = de(i,k) - dphigv(i,k)*dt
-20      end do
-10  end do
+        end do
+    end do
 !
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR AA -----------------------------------
@@ -216,7 +216,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! --- CALCUL DE DLAM ----------------------------------------------
 ! =================================================================
 !
-    do 30 i = 1, ndt
+    do i = 1, ndt
 !
         if (dum .eq. 0) then
 !
@@ -226,7 +226,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
             ddlam(i) = ( nume(i) + dfdxip*dd(i))/ (dfdegp - dfdxip* sqrt(deux/trois)*devgii )
         endif
 !
-30  end do
+    end do
 ! =================================================================
 ! --- CALCUL DE L OPERATEUR TANGENT -------------------------------
 ! =================================================================
@@ -239,10 +239,10 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 !
     call r8inir(6*6, 0.d0, dside, 1)
 !
-    do 40 i = 1, ndt
-        do 50 k = 1, ndt
+    do i = 1, ndt
+        do k = 1, ndt
             dside(i,k) = de(i,k) - dedgp(i,k) - dphigv(i,k)*dt
-50      end do
-40  end do
+        end do
+    end do
 ! =================================================================
 end subroutine

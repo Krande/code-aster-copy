@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismme(questi, nomobz, repi, repkz, ierd)
     implicit none
 !     --     DISMOI(MATR_ELEM OU VECT_ELEM)
@@ -72,15 +72,16 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 1 i = 1, nbresu
+            do i = 1, nbresu
                 call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 1
                 call dismre(questi, zk24(ialire-1+i), repi, typmat, i1)
                 if ((i1.eq.0) .and. (typmat.eq.'NON_SYM')) then
                     repk='NON_SYM'
-                    goto 9999
+                    goto 999
                 endif
-  1         continue
+  1             continue
+            end do
         endif
 !
     else if (questi.eq.'ZERO') then
@@ -89,15 +90,16 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 4 i = 1, nbresu
+            do i = 1, nbresu
                 call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 4
                 call dismre(questi, zk24(ialire-1+i), repi, zero, i1)
                 if ((i1.eq.0) .and. (zero.eq.'NON')) then
                     repk='NON'
-                    goto 9999
+                    goto 999
                 endif
-  4         continue
+  4             continue
+            end do
         endif
 !
     else if (questi.eq.'PARTITION') then
@@ -106,7 +108,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 2 i = 1, nbresu
+            do i = 1, nbresu
                 call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 2
                 call dismre(questi, zk24(ialire-1+i), repi, partit, i1)
@@ -114,7 +116,8 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
                 if (partit .ne. ' ') then
                     ASSERT(repk.eq.partit)
                 endif
-  2         continue
+  2             continue
+            end do
         endif
 !
     else if (questi.eq.'MPI_COMPLET') then
@@ -123,7 +126,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
-            do 3 i = 1, nbresu
+            do i = 1, nbresu
                 call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 3
                 call dismre(questi, zk24(ialire-1+i), repi, kmpic, i1)
@@ -132,7 +135,8 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
                 else
                     ASSERT(repk.eq.kmpic)
                 endif
-  3         continue
+  3             continue
+            end do
         endif
 !
     else if (questi.eq.'CHAM_MATER') then
@@ -160,7 +164,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         ierd=1
     endif
 !
-9999 continue
+999 continue
     repkz = repk
     call jedema()
 end subroutine

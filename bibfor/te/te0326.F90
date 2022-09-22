@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0326(option, nomte)
     implicit none
 !
@@ -64,20 +64,20 @@ subroutine te0326(option, nomte)
 !     CALCUL DES DERIVEES PREMIERES DES FONCTIONS DE FORME
 !     POUR LES ELEMENTS QUAD4 ET QUAD8
 !
-    call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
-    do 111 ii = 1, nno
+    do ii = 1, nno
         kdec=(ii-1)*nno*ndim
-        do 211 j = 1, nno
+        do j = 1, nno
             idec=(j-1)*ndim
             dfde(j,ii) = zr(idfdx+kdec+idec)
             dfdk(j,ii) = zr(idfdy+kdec+idec)
-211      continue
-111  end do
+        end do
+    end do
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -94,40 +94,40 @@ subroutine te0326(option, nomte)
                 ' ', 'THER', 0, ' ', [0.d0],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
-    do 1200 i = 1, nno
+    do i = 1, nno
         acloc(1,i)=0.0d0
         acloc(2,i)=0.0d0
         acloc(3,i)=0.0d0
-1200  end do
+    end do
     k=0
-    do 1201 i = 1, nno
-        do 20 idim = 1, 3
+    do i = 1, nno
+        do idim = 1, 3
             k=k+1
             acloc(idim,i) = zr(iacce+k-1)
-20      continue
-1201  end do
-    do 1052 ipg = 1, npg1
+        end do
+    end do
+    do ipg = 1, npg1
         acc(1,ipg)=0.0d0
         acc(2,ipg)=0.0d0
         acc(3,ipg)=0.0d0
-1052  end do
-    do 1051 ipg = 1, npg1
+    end do
+    do ipg = 1, npg1
         ldec=(ipg-1)*nno
-        do 105 i = 1, nno
+        do i = 1, nno
             acc(1,ipg) = acc(1,ipg) + acloc(1,i)*zr(ivf+ldec+i-1)
             acc(2,ipg) = acc(2,ipg) + acloc(2,i)*zr(ivf+ldec+i-1)
             acc(3,ipg) = acc(3,ipg) + acloc(3,i)*zr(ivf+ldec+i-1)
-105      continue
-1051  end do
+        end do
+    end do
 !
-    do 11 i = 1, nno
+    do i = 1, nno
         zr(ivectt+i-1) = 0.d0
-11  end do
+    end do
 !
 ! --- CALCUL DES VECTEURS E1, E2 TANGENTS A L'ELEMENT NON NORMALISES
 !     ET DES VECTEURS UNITAIRES NORMES
 !
-    do 90 ipg = 1, npg1
+    do ipg = 1, npg1
         kdec=(ipg-1)*nno*ndim
 !
         e1(1,ipg)=0.0d0
@@ -138,7 +138,7 @@ subroutine te0326(option, nomte)
         e2(2,ipg)=0.0d0
         e2(3,ipg)=0.0d0
 !
-        do 91 j = 1, nno
+        do j = 1, nno
             idec=(j-1)*ndim
 !
             e1(1,ipg)= e1(1,ipg)+zr(igeom + 3*(j-1) -1+1) *zr(idfdx+&
@@ -154,24 +154,24 @@ subroutine te0326(option, nomte)
             kdec+idec)
             e2(3,ipg)=e2(3,ipg)+zr( igeom + 3*(j-1) -1+3) *zr(idfdy+&
             kdec+idec)
-91      continue
-90  end do
+        end do
+    end do
 !
 ! --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
-    do 21 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 22 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
-22      continue
-21  end do
+        end do
+    end do
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 ipg = 1, npg1
+    do ipg = 1, npg1
 !
         kdec=(ipg-1)*nno*ndim
         ldec=(ipg-1)*nno
@@ -180,16 +180,16 @@ subroutine te0326(option, nomte)
         ny(ipg) = 0.0d0
         nz(ipg) = 0.0d0
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 104 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
 !
                 nx(ipg) = nx(ipg) + zr(idfdx+kdec+idec) * zr(idfdy+ kdec+jdec) * sx(i,j)
                 ny(ipg) = ny(ipg) + zr(idfdx+kdec+idec) * zr(idfdy+ kdec+jdec) * sy(i,j)
                 nz(ipg) = nz(ipg) + zr(idfdx+kdec+idec) * zr(idfdy+ kdec+jdec) * sz(i,j)
-104          continue
-102      continue
+            end do
+        end do
 !
 ! ------ CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
@@ -201,7 +201,7 @@ subroutine te0326(option, nomte)
         norm(2,ipg) = ny(ipg)/jac(ipg)
         norm(3,ipg) = nz(ipg)/jac(ipg)
 !
-101  end do
+    end do
 !
 ! --- CALCUL DU PRODUIT (XI.N) AUX NOEUDS
 !
@@ -209,12 +209,12 @@ subroutine te0326(option, nomte)
                 nxn, nyn, nzn, normn, j1n,&
                 j2n, san, can)
 !
-    do 200 i = 1, nno
+    do i = 1, nno
         xin(i)=acloc(1,i)*normn(1,i) + acloc(2,i)*normn(2,i) + acloc(&
         3,i)*normn(3,i)
-200  end do
+    end do
 !
-    do 202 ipg = 1, npg1
+    do ipg = 1, npg1
 !
 ! CALCUL DES DERIVEES DES (XIN) (GRADSIGMA(XI.N)) AUX POINTS DE GAUSS
 !
@@ -222,11 +222,11 @@ subroutine te0326(option, nomte)
         dxindk(ipg)=0.0d0
 !
         kdec=(ipg-1)*nno*ndim
-        do 203 i = 1, nno
+        do i = 1, nno
             idec=(i-1)*ndim
             dxinde(ipg)=dxinde(ipg)+zr(idfdx+kdec+idec)*xin(i)
             dxindk(ipg)=dxindk(ipg)+zr(idfdy+kdec+idec)*xin(i)
-203      continue
+        end do
 !
         dxn(1) = dxinde(ipg)
         dxn(2) = dxindk(ipg)
@@ -237,21 +237,21 @@ subroutine te0326(option, nomte)
 ! ------ CALCUL DE GRAD(PHIBARRE):VITESSE FLUIDE PERMANENTE
 !        VIBAR  AUX POINTS DE GAUSS
 !
-        do 108 i = 1, nno
+        do i = 1, nno
             idec=(i-1)*ndim
             vibar(1,ipg)=vibar(1,ipg)+zr(itemp+i-1)*zr(idfdx+kdec+&
             idec)
             vibar(2,ipg)=vibar(2,ipg)+zr(itemp+i-1)*zr(idfdy+kdec+&
             idec)
-108      continue
+        end do
 !
 ! ------ CONSTITUTION DE LA BASE DES DEUX VECTEURS COVARIANTS
 !        AUX POINTS DE GAUSS
 !
-        do 204 i = 1, 3
+        do i = 1, 3
             cova(i,1)=e1(i,ipg)
             cova(i,2)=e2(i,ipg)
-204      continue
+        end do
 !
 ! ------ ON CALCULE LE TENSEUR METRIQUE
 !
@@ -265,13 +265,13 @@ subroutine te0326(option, nomte)
 !        GRAD(DEPLACEMENT NORMAL) RELATIVEMENT A LA BASE CONTRAVARIANTE
 !
         gphgxn(ipg) = 0.d0
-        do 205 i = 1, 2
-            do 206 j = 1, 2
+        do i = 1, 2
+            do j = 1, 2
                 gphgxn(ipg) = gphgxn(ipg) + a(i,j)*vibar(i,ipg)*dxn(j)
-206          continue
-205      continue
+            end do
+        end do
 !
-202  end do
+    end do
 !
 !
 ! --- CALCUL DE LA DIVSIGMA(GRAD(PHIBAR)) AUX POINTS DE GAUSS
@@ -281,21 +281,21 @@ subroutine te0326(option, nomte)
 !
 ! --- CALCUL DU FLUX FLUIDE NORMAL AUX POINTS DE GAUSS
 !
-    do 1070 ipg = 1, npg1
+    do ipg = 1, npg1
         flufn(ipg) = 0.0d0
         flufn(ipg) = acc(1,ipg)*norm(1,ipg)+acc(2,ipg)*norm(2,ipg) +acc(3,ipg)*norm(3,ipg)
-1070  end do
+    end do
 !
 ! --- CALCUL DU VECTEUR ASSEMBLE SECOND MEMBRE
 !     POUR LE CALCUL DU SECOND POTENTIEL INSTATIONNAIRE PHI2
 !
-    do 61 ipg = 1, npg1
+    do ipg = 1, npg1
         ldec=(ipg-1)*nno
-        do 103 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + rho(1)*jac(ipg)*zr(ipoids+ ipg-1) *zr(ivf+ldec+i-1)&
-                             *(flufn(ipg)*divsig(ipg) + gphgxn(ipg))
+                             & *(flufn(ipg)*divsig(ipg) + gphgxn(ipg))
 !
-103      continue
-61  end do
+        end do
+    end do
 !
 end subroutine

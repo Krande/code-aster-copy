@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, crit, instam, instap,&
                   deps, sigm, vim, option, sigp,&
@@ -185,21 +185,21 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
 !
 !       -------------------------------------------------
     sigmmo=trace(3,sigm)/3.d0
-    do 70 i = 1, ndimsi
+    do i = 1, ndimsi
         sigmp(i)= deuxmu/deumum*(sigm(i)-sigmmo*kron(i)) + troisk/&
         troikm*sigmmo*kron(i)
-70  end do
+    end do
 !     SIGMMO A PU CHANGER A CAUSE DE TROISK/TROIKM
     sigmmo=trace(3,sigmp)/3.d0
 !
 ! --- CALCUL DU SEUIL :
     sieleq = 0.d0
-    do 90 i = 1, ndimsi
+    do i = 1, ndimsi
         sigmdv(i) = sigmp(i)- sigmmo*kron(i)
         sigedv(i) = sigmdv(i) + deuxmu * depsdv(i)
         sigel(i) = sigedv(i)-cm*alfam(i)/1.5d0-c2m*alfa2m(i)/1.5d0
         sieleq = sieleq + sigel(i)*sigel(i)
-90  end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
     seuil = sieleq - rpm
 !
@@ -214,7 +214,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
         else
 ! ---       DETERMINATION DE DP SOLUTION D'UNE EQUATION NON LINEAIRE
             call nmchdp(crit, seuil, dp, iret, niter)
-            if (iret .gt. 0) goto 9999
+            if (iret .gt. 0) goto 999
             plast = un
         endif
 !
@@ -228,7 +228,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
                        1)
         endif
 !
-        do 110 i = 1, ndimsi
+        do i = 1, ndimsi
             if (cinf .ne. 0.d0) then
                 dalfa(i) = (n1*depsp(i)-gammap*delta1*dp*alfam(i))
                 dalfa(i) = dalfa(i)/(un+gammap*delta1*dp)
@@ -243,16 +243,16 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
                     dalfa2(i)=0.d0
                 endif
             endif
-110      continue
+        end do
 !
-        do 130 i = 1, ndimsi
+        do i = 1, ndimsi
             alfa(i) = alfam(i) + dalfa(i)
             if (nbvar .eq. 2) then
                 alfa2(i) = alfa2m(i) + dalfa2(i)
             endif
             sigpdv(i) = sigedv(i) - deuxmu * depsp(i)
             sigp(i) = sigpdv(i) + (sigmmo + troisk*depsmo)*kron(i)
-130      continue
+        end do
 !
     endif
 !
@@ -308,5 +308,5 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
 !
-9999  continue
+999 continue
 end subroutine

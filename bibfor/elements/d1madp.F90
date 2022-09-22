@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine d1madp(fami, mater, instan, poum, kpg,&
                   ksp, repere, d1)
 !.======================================================================
@@ -74,12 +74,13 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
     nompar = 'INST'
     valpar = instan
 !
-    do 10 i = 1, 4
-        do 10 j = 1, 4
+    do i = 1, 4
+        do j = 1, 4
             d1(i,j) = zero
             d1orth(i,j) = zero
             work(i,j) = zero
-10      continue
+        end do
+    end do
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
@@ -177,10 +178,11 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
             call utbtab('ZERO', 4, 4, d1orth, passag,&
                         work, d1)
         else if (irep.eq.0) then
-            do 20 i = 1, 4
-                do 20 j = 1, 4
+            do i = 1, 4
+                do j = 1, 4
                     d1(i,j) = d1orth(i,j)
-20              continue
+                end do
+            end do
         endif
 !
 !      -----------------------
@@ -232,10 +234,11 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
             call utbtab('ZERO', 4, 4, d1orth, passag,&
                         work, d1)
         else if (irep.eq.0) then
-            do 30 i = 1, 4
-                do 30 j = 1, 4
+            do i = 1, 4
+                do j = 1, 4
                     d1(i,j) = d1orth(i,j)
-30              continue
+                end do
+            end do
         endif
 !
     else

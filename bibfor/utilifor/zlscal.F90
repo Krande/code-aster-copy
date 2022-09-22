@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) BLAS
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zlscal(n, za, zx, incx)
 !     SCALES A VECTOR BY A CONSTANT.
 !     JACK DONGARRA, 3/11/78.
@@ -32,23 +32,23 @@ subroutine zlscal(n, za, zx, incx)
     complex(kind=8) :: za, zx(*)
     integer :: i, incx, ix, n
 !
-    if (n .le. 0 .or. incx .le. 0) goto 9999
+    if (n .le. 0 .or. incx .le. 0) goto 999
     if (incx .eq. 1) goto 20
 !
 !        CODE FOR INCREMENT NOT EQUAL TO 1
 !
     ix = 1
-    do 10 i = 1, n
+    do i = 1, n
         zx(ix) = za*zx(ix)
         ix = ix + incx
-10  end do
-    goto 9999
+    end do
+    goto 999
 !
 !        CODE FOR INCREMENT EQUAL TO 1
 !
-20  continue
-    do 30 i = 1, n
+ 20 continue
+    do i = 1, n
         zx(i) = za*zx(i)
-30  end do
-9999  continue
+    end do
+999 continue
 end subroutine

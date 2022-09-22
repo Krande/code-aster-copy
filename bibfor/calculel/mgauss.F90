@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mgauss(cara, a, b, dim, nordre,&
                   nb, det, iret)
 !
@@ -143,22 +143,22 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         iret = inf4
 !
 !       -- RECOPIE DE X DANS B :
-        do 20 i = 1, n
-            do 10 j = 1, nb
+        do i = 1, n
+            do j = 1, nb
                 b(i,j) = x(i,j)
- 10         continue
- 20     continue
+            end do
+        end do
 !
         if (ldet) then
             det = 1.d0
             detr = 1.d0
             detc = 1.d0
-            do 30 i = 1, n
+            do i = 1, n
                 if (ipiv4(i) .ne. i) det = (-1.d0)*det
                 det = det * af(i,i)
                 detr = detr * r(i)
                 detc = detc * c(i)
- 30         continue
+            end do
             if (equed .eq. 'R') then
                 det = det / detr
             else if (equed.eq.'C') then
@@ -182,17 +182,17 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         ldb = dim
 !
         if (ltrans) then
-            do 50 i = 1, n
-                do 40 j = 1, n
+            do i = 1, n
+                do j = 1, n
                     af(j,i) = a(i,j)
- 40             continue
- 50         continue
+                end do
+            end do
         else
-            do 70 i = 1, n
-                do 60 j = 1, n
+            do i = 1, n
+                do j = 1, n
                     af(i,j) = a(i,j)
- 60             continue
- 70         continue
+                end do
+            end do
         endif
 !
 !       ---   RESOLUTION
@@ -201,10 +201,10 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         iret = inf4
         if (ldet) then
             det = 1.d0
-            do 80 i = 1, n
+            do i = 1, n
                 if (ipiv4(i) .ne. i) det = (-1.d0)*det
                 det = det*af(i,i)
- 80         continue
+            end do
         endif
 !
 !
@@ -213,11 +213,11 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     else if (cara2(3:3).eq.'W') then
         n = nordre
         if (ltrans) then
-            do 100 i = 1, n
-                do 90 j = 1, n
+            do i = 1, n
+                do j = 1, n
                     af(j,i) = a(i,j)
- 90             continue
-100         continue
+                end do
+            end do
         endif
         if (ldet) then
             det = 1.d0

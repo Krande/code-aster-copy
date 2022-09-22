@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jm1dn3(nb2, xr, epais, ksi3s2, intsn,&
                   jm1, j1dn3)
 !
@@ -100,7 +100,7 @@ subroutine jm1dn3(nb2, xr, epais, ksi3s2, intsn,&
 !
 !        MODIFICATION VERIFIEE  DANS INIT080  NB2 AU LIEU DE NB1
 !
-    do 100 jn = 1, nb2
+    do jn = 1, nb2
 !
 !------- REMPLISSAGE DE VI ( 3 )
 !
@@ -135,7 +135,7 @@ subroutine jm1dn3(nb2, xr, epais, ksi3s2, intsn,&
         j1dn3 ( 8 ,(jn-1)*3 + 3 ) = tmpi ( 2 )
         j1dn3 ( 9 ,(jn-1)*3 + 3 ) = tmpi ( 3 )
 !
-100  end do
+    end do
 !
 !
 !FIN

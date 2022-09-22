@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cvalea(ndim, cmod, ndimax, nbmod)
     implicit none
 !
@@ -49,10 +49,11 @@ subroutine cvalea(ndim, cmod, ndimax, nbmod)
     integer :: ndimax
 !-----------------------------------------------------------------------
     dseed = 24331.d0
-    do 10 k = 1, nbmod
-        do 10 i = 1, ndim
+    do k = 1, nbmod
+        do i = 1, ndim
             call ggubs(dseed, 2, r)
             cmod(i,k)=dcmplx(r(1),r(2))
-10      continue
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cvmmat(fami, kpg, ksp, mod, imat,&
                   nmat, materd, materf, matcst, typma,&
                   ndt, ndi, nr, crit, vim,&
@@ -45,10 +45,10 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
+#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvalt.h"
 #include "asterfort/rupmat.h"
-#include "asterfort/assert.h"
 !       ----------------------------------------------------------------
     integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, lgpg
     integer :: ioptio, idnr, i, j, imat
@@ -139,8 +139,8 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
     nomc(27) ='G2_0'
     nomc(28) ='A_I'
 !
-    do  j = 1, 2
-        do  i = 1, nmat
+    do j = 1, 2
+        do i = 1, nmat
             materd(i,j) = 0.d0
             materf(i,j) = 0.d0
         enddo
@@ -161,11 +161,12 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !
 !
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
-
-    call rcvalt(fami, kpg, ksp, '-', imat, ' ',  'VISCOCHAB', &
-                0, [' '], [0.d0], 5, materd(1, 2), cerr(4), 2)
-
-
+!
+    call rcvalt(fami, kpg, ksp, '-', imat,&
+                ' ', 'VISCOCHAB', 0, [' '], [0.d0],&
+                5, materd(1, 2), cerr(4), 2)
+!
+!
 !
 ! -     MISE A JOUR DU COMMUN COED POUR TRAITER LE CAS ANISOTHERME
 !
@@ -186,9 +187,10 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
     endif
 !
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
-
-    call rcvalt(fami, kpg, ksp, '+', imat, ' ', 'VISCOCHAB', &
-                0, [' '], [0.d0], 25, materf(1, 2), cerr(4), 2)
+!
+    call rcvalt(fami, kpg, ksp, '+', imat,&
+                ' ', 'VISCOCHAB', 0, [' '], [0.d0],&
+                25, materf(1, 2), cerr(4), 2)
 !
 ! -     PARAMETRES DES LOIS DE COMPORTEMENT A 2 SEUILS
 !
@@ -205,20 +207,20 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 ! -     MATERIAU CONSTANT ?
 !
     matcst = 'OUI'
-    do 30 i = 1, 2
+    do i = 1, 2
         if (abs ( materd(i,1) - materf(i,1) ) .gt. epsi) then
             matcst = 'NON'
-            goto 9999
+            goto 999
         endif
-30  continue
-    do 40 i = 1, 25
+    end do
+    do i = 1, 25
         if (abs ( materd(i,2) - materf(i,2) ) .gt. epsi) then
             matcst = 'NON'
-            goto 9999
+            goto 999
         endif
-40  continue
+    end do
 !
-9999  continue
+999 continue
 !     NOMBRE DE COEF MATERIAU
     materf(nmat,2)=25
     materd(nmat,2)=25

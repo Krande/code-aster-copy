@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbimfi(nparfi, table, newtab, iret)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvc8.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -31,15 +33,13 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: nparfi, iret
     character(len=19) :: table, newtab
 !     OPERATEUR  IMPR_TABLE , TRAITEMENT DU MOT CLE FACTEUR "FILTRE"
 !     ------------------------------------------------------------------
 !
-    integer ::   jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
-    integer ::         l, l1, l2
+    integer :: jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
+    integer :: l, l1, l2
     integer :: l3, l4, irt
     character(len=80) :: montit
     character(len=8), pointer :: critere(:) => null()
@@ -60,9 +60,9 @@ subroutine tbimfi(nparfi, table, newtab, iret)
         call jelira(table//'.TITR', 'LONMAX', lonma1)
         lonmax = lonma1 + nparfi
         call wkvect(newtab//'.TITR', 'V V K80', lonmax, jtitr)
-        do 10 ititr = 1, lonma1
+        do ititr = 1, lonma1
             zk80(jtitr+ititr-1) = titr(ititr)
-10      continue
+        end do
     else
         lonma1 = 0
         lonmax = lonma1 + nparfi
@@ -83,7 +83,7 @@ subroutine tbimfi(nparfi, table, newtab, iret)
     ic = -1
     ik = -1
 !
-    do 20 ioc = 1, nparfi
+    do ioc = 1, nparfi
         call getvtx('FILTRE', 'NOM_PARA', iocc=ioc, scal=noms_para(ioc), nbret=l)
         call getvtx('FILTRE', 'CRIT_COMP', iocc=ioc, scal=crit_para(ioc), nbret=l)
         montit = ' '
@@ -118,7 +118,7 @@ subroutine tbimfi(nparfi, table, newtab, iret)
             vale_k(ik+1)
         endif
         zk80(jtitr+lonma1+ioc-1) = montit
-20  end do
+    end do
 !
     call tbextb(table, 'V', newtab, nparfi, noms_para,&
                 crit_para, vale_i, vale_r, vale_c, vale_k,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
                   theta2, iran)
 !
@@ -130,10 +130,10 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 !
 ! --- MISE A JOUR DES DEPLACEMENTS
 !
-    do 14 ic = 1, 3
+    do ic = 1, 3
         depp(1+iran(ic) -1) = theta1(ic)
         depde(1+iran(ic)-1) = theta1(ic)
-14  end do
+    end do
 !
 ! --- QUATERNION DE LA ROTATION PRECEDENTE
 !
@@ -146,25 +146,25 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 !
 ! --- MISE A JOUR DE LA ROTATION
 !
-    do 15 ic = 1, 3
+    do ic = 1, 3
         vromk(1+iran(ic) -1) = theta2(ic)
-15  end do
+    end do
 !
 ! --- CALCUL DES INCREMENTS DE ROTATION
 !
-    do 16 ic = 1, 3
+    do ic = 1, 3
         qim (ic) = depm(1+iran(ic) -1)
         qikm1 (ic) = depkm(1+iran(ic)-1)
         qik (ic) = depp(1+iran(ic) -1)
         omkm1 (ic) = vitkm(1+iran(ic)-1)
         ompkm1(ic) = acckm(1+iran(ic)-1)
-16  end do
+    end do
 !
 ! --- CALCUL DE L'INCREMENT DE ROTATION TOTALE
 !
-    do 17 ic = 1, 3
+    do ic = 1, 3
         delrot(ic) = vromk(1+iran(ic) -1) - romkm(1+iran(ic)-1)
-17  end do
+    end do
 !
 ! --- CALCUL DES MATRICES DE ROTATION
 !
@@ -186,9 +186,9 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
                 3, 3, 1, vect3)
     call promat(rotk, 3, 3, 3, vect3,&
                 3, 3, 1, vect1)
-    do 18 ic = 1, 3
+    do ic = 1, 3
         vitp(1+iran(ic)-1) = vect1(ic) + coevit*vect2(ic)
-18  end do
+    end do
 !
 ! --- CALCUL DE L'ACCELERATION ANGULAIRE
 !
@@ -196,9 +196,9 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
                 3, 3, 1, vect4)
     call promat(rotk, 3, 3, 3, vect4,&
                 3, 3, 1, vect3)
-    do 19 ic = 1, 3
+    do ic = 1, 3
         accp(1+iran(ic)-1) = vect3(ic) + coeacc*vect2(ic)
-19  end do
+    end do
 !
     call jedema()
 end subroutine

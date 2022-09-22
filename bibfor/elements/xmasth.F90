@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                   igeom, lonch, cnset, jpintt, lsn,&
-                  lst, heavn, basloc, heavt, nfh, nfe,&
-                  mattt)
+                  lst, heavn, basloc, heavt, nfh,&
+                  nfe, mattt)
 ! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
     implicit none
@@ -63,15 +63,15 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-#include "asterfort/xcalc_heav.h"
-#include "asterfort/xcalc_code.h"
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27,5)
+    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
     real(kind=8) :: lsn(nnop), lst(nnop), basloc(*), mattt(*)
 !
 !-----------------------------------------------------------------------
@@ -139,16 +139,16 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 ! --- BOUCLE SUR LES NSE SOUS-ELEMENTS
 ! ----------------------------------------------------------------------
 !
-    do 1000 ise = 1, nse
+    do ise = 1, nse
 !
 !       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
         he = 1.d0*heavt(ise)
         hea_se=xcalc_code(1, he_real=[he])
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
-        do 1100 in = 1, nno
+        do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
-            do 1110 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -157,23 +157,23 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 else
                     ASSERT(.false.)
                 endif
-1110         continue
-1100     continue
+            end do
+        end do
 !
 ! ----------------------------------------------------------------------
 ! ----- BOUCLE SUR LES POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-        do 1200 kpg = 1, npg
+        do kpg = 1, npg
 !
 !         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
             call vecini(ndim, 0.d0, xg)
-            do 1210 j = 1, ndim
-                do 1211 in = 1, nno
+            do j = 1, ndim
+                do in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
                     in-1)+j)
-1211             continue
-1210         continue
+                end do
+            end do
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
             call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
@@ -185,13 +185,13 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 call vecini(3*ndim, 0.d0, baslog)
                 lsng = 0.d0
                 lstg = 0.d0
-                do 1220 inp = 1, nnop
+                do inp = 1, nnop
                     lsng = lsng + lsn(inp) * ff(inp)
                     lstg = lstg + lst(inp) * ff(inp)
-                    do 1221 j = 1, 3*ndim
+                    do j = 1, 3*ndim
                         baslog(j) = baslog(j) + basloc(3*ndim*(inp-1)+ j) * ff(inp)
-1221                 continue
-1220             continue
+                    end do
+                end do
 !           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
                 if (ndim .eq. 2) then
                     call xcalf2(he, lsng, lstg, baslog, femec,&
@@ -221,9 +221,9 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !         MODIFICATION DU JACOBIEN SI AXI
             if (axi) then
                 r = 0.d0
-                do 1230 inp = 1, nnop
+                do inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
-1230             continue
+                end do
                 ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
@@ -235,7 +235,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
             rhocp = valres(1)
 !
 !         FFENR : TABLEAU DES FF ENRICHIES
-            do 1250 inp = 1, nnop
+            do inp = 1, nnop
 !           DDL CLASSIQUE (TEMP)
                 ffenr(inp,1) = ff(inp)
 !           DDL HEAVISIDE (H1)
@@ -246,19 +246,19 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 if (nfe .eq. 1) then
                     ffenr(inp,1+nfh+nfe) = feth*ff(inp)
                 endif
-1250         continue
+            end do
 !
 ! ------- REMPLISSAGE DE LA MATRICE DE MASSE
 !
-            do 1270 inp = 1, nnop
+            do inp = 1, nnop
 !
-                do 1271 kddl = 1, nbddl
+                do kddl = 1, nbddl
 !
                     ind1 = (nbddl*(inp-1)+kddl-1) * (nbddl*(inp-1)+ kddl) /2
 !
-                    do 1272 lddl = 1, nbddl
+                    do lddl = 1, nbddl
 !
-                        do 1273 jnp = 1, inp
+                        do jnp = 1, inp
 !
 !                 IDDLMA : NUMERO DE DDL MAX PR NE PAS DEPASSER LA
 !                 DIGAONALE (ON STOCKE LA PARTIE TRIANGULAIRE INF)
@@ -275,18 +275,18 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                                               &r(jnp, lddl)
                             endif
 !
-1273                     continue
-1272                 continue
-1271             continue
-1270         continue
+                        end do
+                    end do
+                end do
+            end do
 !
-1200     continue
+        end do
 !
 ! ----------------------------------------------------------------------
 ! ----- FIN BOUCLE SUR LES POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-1000 continue
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- FIN BOUCLE SUR LES SOUS-ELEMENTS

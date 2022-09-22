@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
                   nbsn, nbnd, supnd, adress, global,&
                   lgsn, factol, factou, sm, x,&
@@ -23,7 +23,6 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
@@ -31,6 +30,7 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
 #include "asterfort/jexnum.h"
 #include "asterfort/sspmvb.h"
 #include "blas/dgemv.h"
+!
     integer :: nbsn, nbnd, nbloc, lgbloc(nbsn), ncbloc(nbnd), decal(nbsn)
     integer(kind=4) :: global(*)
     integer :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)
@@ -60,42 +60,42 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
     incy=1
     k0=0
 !
-    do 110 j = 1, nbnd
+    do j = 1, nbnd
         x(invp(j)) = sm(j)
-110  end do
-    do 120 j = 1, nbnd
+    end do
+    do j = 1, nbnd
         sm(j) = x(j)
-120  end do
+    end do
 !     DESCENTE  L * Y = B
     isnd = 0
-    do 180 ib = 1, nbloc
+    do ib = 1, nbloc
         call jeveuo(jexnum(factol, ib), 'L', ifac)
         adfac = ifac - 1
-        do 170 nc = 1, ncbloc(ib)
+        do nc = 1, ncbloc(ib)
             isnd = isnd + 1
             sni = seq(isnd)
             long = adress(sni+1) - adress(sni)
             l = lgsn(sni)
             k = 1
-            do 130 i = adress(sni), adress(sni+1) - 1
+            do i = adress(sni), adress(sni+1) - 1
                 trav(k) = x(global(i))
                 k = k + 1
-130          continue
+            end do
             ad(1) = decal(sni)
             ndj = supnd(sni) - 1
-            do 150 j = 1, l - 1
+            do j = 1, l - 1
                 ndj = ndj + 1
 !                 RANGEMENT DU TERME DIAGONAL
                 sm(ndj) = zr(ifac-1+ad(j))
 !
                 k = 1
-                do 140 i = j + 1, l
+                do i = j + 1, l
                     trav(i) = trav(i) - zr(ifac-1+ad(j)+k) *trav(j)
                     k = k + 1
-140              continue
+                end do
                 ad(j+1) = ad(j) + long + 1
                 ad(j) = ad(j) + l - j + 1
-150          continue
+            end do
             ndj = ndj + 1
 !                 RANGEMENT DU TERME DIAGONAL
             sm(ndj) = zr(ifac-1+ ad(l))
@@ -114,13 +114,13 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
                 endif
             endif
             k = 1
-            do 160 i = adress(sni), adress(sni+1) - 1
+            do i = adress(sni), adress(sni+1) - 1
                 x(global(i)) = trav(k)
                 k = k + 1
-160          continue
-170      continue
+            end do
+        end do
         call jelibe(jexnum(factol, ib))
-180  end do
+    end do
 !
     if (typsym .ne. 0) then
         factor = factol
@@ -131,20 +131,20 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
     endif
 !=======================================================================
 !     D * Z = Y
-    do 190 j = deb1, nbnd
+    do j = deb1, nbnd
         x(j) = x(j)/sm(j)
-190  continue
+    end do
 !=======================================================================
 !     REMONTEE  U * X = Z
     isnd = nbsn + 1
-    do 260 ib = nbloc, 1, -1
+    do ib = nbloc, 1, -1
         call jeveuo(jexnum(factor, ib), 'L', ifac)
         if (ib .ne. nbloc) then
             adfac = lgbloc(ib) + ifac
         else
             adfac = lgbloc(ib) + ifac - lgsn(nbsn)
         endif
-        do 250 nc = 1, ncbloc(ib)
+        do nc = 1, ncbloc(ib)
             isnd = isnd - 1
             sni = seq(isnd)
             l = lgsn(sni)
@@ -160,21 +160,21 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
             endif
             if (l .gt. 1) then
                 k = 1
-                do 200 i = adress(sni), adress(sni+1) - 1
+                do i = adress(sni), adress(sni+1) - 1
                     trav(k) = x(global(i))
                     k = k + 1
-200              continue
+                end do
                 k0 = k
             endif
-            do 230 ndk = debndk, supnd(sni), -1
+            do ndk = debndk, supnd(sni), -1
                 s = 0.d0
                 if (l .gt. 1) then
                     k = k0
-                    do 210 j = fin, deb, -1
+                    do j = fin, deb, -1
                         adfac = adfac - 1
                         k = k - 1
                         s = s + zr(adfac)*trav(k)
-210                  continue
+                    end do
                     deb = deb - 1
                     adfac = adfac - 1
                     trav(il) =trav(il) - s
@@ -183,12 +183,12 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
                     adfac = adfac - (ndk-supnd(sni))
                 else
                     k = k0
-                    do 220 j = fin, deb, -1
+                    do j = fin, deb, -1
                         gj = global(j)
                         adfac = adfac - 1
                         k = k - 1
                         s = s + zr(adfac)*x(gj)
-220                  continue
+                    end do
                     deb = deb - 1
                     adfac = adfac - 1
                     x(ndk) = x(ndk) - s
@@ -197,20 +197,20 @@ subroutine mltdra(nbloc, lgbloc, ncbloc, decal, seq,&
                     adfac = adfac - (ndk-supnd(sni))
                 endif
                 il = il - 1
-230          continue
+            end do
             if (l .gt. 1) then
                 k = 1
-                do 240 i = adress(sni), adress(sni+1) - 1
+                do i = adress(sni), adress(sni+1) - 1
                     x(global(i)) = trav(k)
                     k = k + 1
-240              continue
+                end do
             endif
-250      continue
+        end do
         call jelibe(jexnum(factor, ib))
-260  end do
+    end do
 !     ON RANGE DANS SM  LA SOLUTION DANS LA NUMEROTATION INITIALE
-    do 270 j = 1, nbnd
+    do j = 1, nbnd
         sm(perm(j)) = x(j)
-270  end do
+    end do
     call jedema()
 end subroutine

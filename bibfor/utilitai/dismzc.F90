@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     implicit none
 #include "jeveux.h"
@@ -49,7 +49,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     character(len=19) :: nolig
     character(len=24) :: nema
     character(len=32) :: repk
-    integer ::      idnema, ier
+    integer :: idnema, ier
     integer :: ii, ilmaco, ima, ino, iocc, itypm
     integer :: jima, jnbno, nbma, nbnoma, nbnot, nbpt, numail
     integer :: nunoel, nunota, nutioc
@@ -97,7 +97,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
     call jeveuo('&CATA.TM.NBNO', 'L', vi=nbno)
 !
-    do 10 iocc = 1, nutioc
+    do iocc = 1, nutioc
 !
         call jelira(jexnum(nolig//'.LIEL', iocc), 'LONMAX', nbma)
         call jeveuo(jexnum(nolig//'.LIEL', iocc), 'L', jima)
@@ -106,7 +106,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
         nbpt = nbno(itypm)
         nbma = nbma - 1
 !
-        do 15 ii = 1, nbma
+        do ii = 1, nbma
 !
             numail = zi(jima+ii-1)
 !
@@ -120,48 +120,48 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
                 call jelira(jexnum(nema, ima), 'LONMAX', nbnot)
 ! --------- NEMA NOUS DONNE DIRECTEMENT LE NUMERO DU NOEUD
                 nbnot = nbnot-1
-                do 22 ino = 1, nbnot
+                do ino = 1, nbnot
                     nunota = zi(idnema+ino-1)
                     if (nunota .lt. 0) then
                         call utmess('F', 'UTILITAI_72')
                     endif
                     zi(jnbno+nunota-1) = 1
-22              continue
+                end do
             else
 !
 ! --------- RECUPERATION DU NOMBRE DE NOEUDS ET DE LA LISTE
 !           DES NOEUDS DE LA MAILLE NUMAIL
 !
-                do 20 ino = 1, nbpt
+                do ino = 1, nbpt
                     nunoel = numglm(numail,ino)
                     zi(jnbno+nunoel-1) = 1
-20              continue
+                end do
             endif
-15      continue
-10  end do
+        end do
+    end do
 !
 ! --- ON RECUPERE LA COORDONNEE Z DU PREMIER NOEUD DU MAILLAGE
 !     CONTENU DANS LE MODELE POUR TESTER LES Z SUIVANTS
 !
-    do 24 ino = 1, nbnoma
+    do ino = 1, nbnoma
         if (zi(jnbno+ino-1) .ne. 0) then
             z1 = vale(3*(ino-1)+3)
             goto 26
         endif
-24  end do
-26  continue
+    end do
+ 26 continue
 !
-    do 25 ino = 1, nbnoma
+    do ino = 1, nbnoma
         if (zi(jnbno+ino-1) .ne. 0) then
             if (vale(3*(ino-1)+3) .ne. z1) goto 30
         endif
-25  end do
+    end do
     repk = 'OUI'
-    goto 9999
-30  continue
+    goto 999
+ 30 continue
     repk = 'NON'
 !
-9999  continue
+999 continue
     repkz=repk
     call jedetr('&&DISMZC.TRAV.NOEUDS')
     call jedema()

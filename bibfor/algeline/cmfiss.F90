@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
                   nomgma, noma, connec, tyma, ngma,&
                   gpma)
@@ -117,7 +117,7 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 ! - CREATION DES MAILLES
 !
     jcon = iconne
-    do 10 ma = 1, nbmajo
+    do ma = 1, nbmajo
 !
 !      NOM DE LA MAILLE CREEE
         call codent(mainit-1+ma, 'G', knume)
@@ -159,6 +159,6 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 !      INSERTION DE LA MAILLE DANS LE NOUVEAU GROUP_MA
         zi(igpma + ma) = - ma
 !
-10  end do
+    end do
 !
 end subroutine

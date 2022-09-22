@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dcalph(x, y, nbpts, pe)
 !
 !**********************************************************
@@ -49,11 +49,11 @@ subroutine dcalph(x, y, nbpts, pe)
     iter=0
 !
     ymin=y(1)
-    do 5 ipt = 2, nbpts
+    do ipt = 2, nbpts
         ymin=min(ymin,y(ipt))
- 5  end do
+    end do
 !
-100  continue
+100 continue
 !
     xmoy=0.d0
     ymoy=0.d0
@@ -62,18 +62,18 @@ subroutine dcalph(x, y, nbpts, pe)
 !
 ! 2 - RECHERCHE DU X MOYEN ET DU Y MOYEN
 !
-    do 10 ipt = 1, nbpts
+    do ipt = 1, nbpts
         xmoy=xmoy+log(x(ipt))
         ymoy=ymoy+log(y(ipt)-c)
-10  end do
+    end do
 !
     xmoy=xmoy/nbpts
     ymoy=ymoy/nbpts
 !
-    do 15 ipt = 1, nbpts
+    do ipt = 1, nbpts
         vx=vx+(xmoy-log(x(ipt)))*(xmoy-log(x(ipt)))
         vxy= vxy+(xmoy-log(x(ipt)))*(ymoy-log(y(ipt)-c))
-15  end do
+    end do
 !
 ! 3 - PENTE THEORIQUE = VXY/VX
 ! CONSTANTE = Y - PENTE * X
@@ -82,15 +82,15 @@ subroutine dcalph(x, y, nbpts, pe)
     b=exp(ymoy - a*xmoy)
     f=0.d+0
 !
-    do 20 ipt = 1, nbpts
+    do ipt = 1, nbpts
         f=f+(y(ipt)-c-b*x(ipt)**a)**2
-20  end do
+    end do
 !
     c1=0.d+0
 !
-    do 25 ipt = 1, nbpts
+    do ipt = 1, nbpts
         c1=c1+(y(ipt)-c-b*x(ipt)**a)
-25  end do
+    end do
 !
     c1=c1/nbpts
 !
@@ -98,9 +98,9 @@ subroutine dcalph(x, y, nbpts, pe)
         if (abs((c1-c)/c1) .gt. 1) then
             c=c1
             f=0.d+0
-            do 30 ipt = 1, nbpts
+            do ipt = 1, nbpts
                 f=f+(y(ipt)-c-b*x(ipt)**a)**2
-30          continue
+            end do
             iter=iter+1
             if (iter .lt. 5) goto 100
         endif

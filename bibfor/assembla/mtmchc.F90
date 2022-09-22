@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtmchc(matas, action)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmchc.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -31,8 +32,7 @@ subroutine mtmchc(matas, action)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     character(len=*) :: matas, action
 ! OBJET :
 !        TRAITEMENT DES CHARGES CINEMATIQUES DANS UNE MATRICE ASSEMBLEE
@@ -73,7 +73,7 @@ subroutine mtmchc(matas, action)
     call jeexin(mat//'.CCID', ier)
     if (refa(3) .eq. ' ') then
         ASSERT(ier.eq.0)
-        goto 9999
+        goto 999
     else
         ASSERT(ier.gt.0)
     endif
@@ -81,7 +81,7 @@ subroutine mtmchc(matas, action)
     if (action .eq. 'ELIMF') then
         ASSERT(refa(3).eq.'ELIML')
         call asmchc(mat)
-        goto 9999
+        goto 999
     else if (action.eq.'ELIML') then
         ASSERT(refa(3).eq.'ELIMF')
 !        TRAITEMENT CI-DESSOUS
@@ -137,7 +137,7 @@ subroutine mtmchc(matas, action)
     AS_ALLOCATE(vi=elim, size=neq)
     call jeveuo(mat//'.CCID', 'L', jccid)
     nelim=0
-    do 1 ieq = 1, neq
+    do ieq = 1, neq
         if (imatd .ne. 0) then
             keta=zi(jccid-1+nulg(ieq))
         else
@@ -150,21 +150,21 @@ subroutine mtmchc(matas, action)
         else
             elim(ieq)=0
         endif
-  1 end do
+    end do
 !
 !
 !     -- RECOPIE DE .CCVA DANS .VALM :
 !     -----------------------------------------
     AS_ALLOCATE(vi=remplis, size=nelim)
     kfin=0
-    do 121 jcol = 1, neq
+    do jcol = 1, neq
         kdeb = kfin + 1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             deciel=ccll(3*(jelim-1)+3)
-            do 111 k = kdeb, kfin - 1
+            do k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .eq. 0) then
@@ -176,10 +176,10 @@ subroutine mtmchc(matas, action)
                         zc(jvalm-1+k)=zc(jccva-1+deciel+iremp)
                     endif
                 endif
-111         continue
+            end do
 !
         else
-            do 112 k = kdeb, kfin - 1
+            do k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 decjel=ccll(3*(ielim-1)+3)
@@ -200,10 +200,10 @@ subroutine mtmchc(matas, action)
                         endif
                     endif
                 endif
-112         continue
+            end do
         endif
 !
-121 end do
+    end do
 !
 !
     refa(3)='ELIML'
@@ -214,7 +214,7 @@ subroutine mtmchc(matas, action)
     AS_DEALLOCATE(vi=elim)
 !
 !
-9999 continue
+999 continue
 !     CALL CHEKSD('sd_matr_asse',MAT,IRET)
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine compt(nbpt, fn, offset, t, elapse,&
                  nbchoc, tchocm, tchmax, tchmin, nbrebo,&
                  trebom, tchoct, nbinst)
@@ -60,7 +60,7 @@ subroutine compt(nbpt, fn, offset, t, elapse,&
     dt = t(4) - t(3)
     nbpas = max(1, nint ( elapse / dt ) )
 !
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
 !
         if (abs(fn(i)) .le. offset) then
 !
@@ -74,9 +74,9 @@ subroutine compt(nbpt, fn, offset, t, elapse,&
             idech = 0
             jfin=min(i+nbpas,nbinst)
             if (jfin .gt. (i+1)) then
-                do 15 j = i+1, jfin
+                do j = i+1, jfin
                     if (abs(fn(j)) .gt. offset) idech =1
-15              continue
+                end do
             endif
 !
             if (idech .eq. 0 .and. ichoc .eq. 1) then
@@ -106,7 +106,7 @@ subroutine compt(nbpt, fn, offset, t, elapse,&
 !
         endif
 !
-10  continue
+    end do
 !
     tchoct = tchocm
     if (nbchoc .ne. 0) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
                   npoin, jvalpo, jvalor, npic, jpic,&
                   jordpi)
@@ -75,7 +75,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
         call utmess('F', 'PREPOST_4', sk=k8b)
     endif
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
 !
 ! LE TEST SI (NPOIN(IVECT) .EQ. 0) EST EQUIVALENT
 ! AU TEST SI (IFLAG(IVECT) .EQ. 3).
@@ -90,27 +90,27 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 !
         pmax = abs(zr(jvalpo + (ivect-1)*nbordr + 1))
         nmax = 1
-        do 20 i = 2, npoin(ivect)
+        do i = 2, npoin(ivect)
             if (abs(zr(jvalpo + (ivect-1)*nbordr + i)) .gt. pmax*(1.0d0+ epsilo)) then
 !
                 pmax = abs(zr(jvalpo + (ivect-1)*nbordr + i))
                 nmax = i
             endif
-20      continue
+        end do
         pmax = zr(jvalpo + (ivect-1)*nbordr + nmax)
         ntrv = npoin(ivect)
 !
 ! ----- REARANGEMENT AVEC POINT LE PLUS GRAND AU DEBUT
 !       ET A LA FIN                                    -----
 !
-        do 30 i = nmax, npoin(ivect)
+        do i = nmax, npoin(ivect)
             zr(jrtrv + i-nmax+1) = zr(jvalpo + (ivect-1)*nbordr + i)
             zi(jitrv + i-nmax+1) = zi(jvalor + (ivect-1)*nbordr + i)
-30      continue
-        do 40 i = 1, nmax-1
+        end do
+        do i = 1, nmax-1
             zr(jrtrv +npoin(ivect)+i-nmax+1) = zr(jvalpo + (ivect-1)*nbordr + i)
             zi(jitrv +npoin(ivect)+i-nmax+1) = zi(jvalor + (ivect-1)*nbordr + i)
-40      continue
+        end do
 !
 ! ----- EXTRACTION DES PICS SUR LE VECTEUR REARANGE -----
 !
@@ -124,7 +124,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 !
 ! 2. RECHERCHE DE TOUS LES PICS
 !
-        do 50 i = 3, ntrv
+        do i = 3, ntrv
             dp1 = pinter - zr(jpic + adrs + npic(ivect))
             dp2 = zr(jrtrv + i) - pinter
 !
@@ -140,7 +140,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 !
             pinter = zr(jrtrv + i)
             ointer = zi(jitrv + i)
-50      continue
+        end do
 !
 ! 3. LE DERNIER POINT EST UN PIC
 !
@@ -148,7 +148,8 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
         zr(jpic + adrs + npic(ivect)) = zr(jrtrv + ntrv)
         zi(jordpi + adrs + npic(ivect)) = zi(jitrv + ntrv)
 !
-10  end do
+ 10     continue
+    end do
 !
     call jedema()
 !

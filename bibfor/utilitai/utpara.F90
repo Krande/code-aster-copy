@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utpara(bas1, nomsd, typsd, nbordr)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -36,6 +35,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 #include "asterfort/jexnum.h"
 #include "asterfort/utpar1.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomsd, typsd
     character(len=1) :: bas1
     integer :: nbordr
@@ -67,13 +67,13 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !     --------------------------------------------
     call jecreo(noms2//'.NOVA', bas1//' N K16')
     call jeecra(noms2//'.NOVA', 'NOMMAX', nbpara)
-    do 2 i = 1, nbpara
+    do i = 1, nbpara
         para=lipara(i)
         i1= index(para,'#')
         ASSERT(i1.ge.2)
         nopara=para(1:i1-1)
         call jecroc(jexnom(noms2//'.NOVA', nopara))
- 2  end do
+    end do
 !
     call jecrec(noms2//'.TAVA', bas1//' V K8', 'NU', 'CONTIG', 'CONSTANT',&
                 nbpara)
@@ -91,7 +91,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
     nbk24=0
     nbk32=0
     nbk80=0
-    do 1 i = 1, nbpara
+    do i = 1, nbpara
         para=lipara(i)
         i1= index(para,'#')
         ASSERT(para(i1:i1+2).eq.'#A#'.or.para(i1:i1+2).eq.'#P#')
@@ -122,7 +122,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         else
             ASSERT(.false.)
         endif
- 1  end do
+    end do
 !
 !
 !     -- PARAMETRES REELS :
@@ -133,13 +133,13 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V R', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
-        do 10 i = 1, n2
+        do i = 1, n2
             zr(jpara+i-1) = rundef
-10      end do
+        end do
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 11 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             type=litype(i)
@@ -154,7 +154,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-11      continue
+        end do
     endif
 !
 !
@@ -166,13 +166,13 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V C', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
-        do 20 i = 1, n2
+        do i = 1, n2
             zc(jpara+i-1) = dcmplx(rundef,rundef)
-20      continue
+        end do
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 21 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             type=litype(i)
@@ -188,7 +188,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-21      continue
+        end do
     endif
 !
 !
@@ -200,13 +200,13 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V I', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
-        do 30 i = 1, n2
+        do i = 1, n2
             zi(jpara+i-1) = iundef
-30      continue
+        end do
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 31 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             acces=para(i1+1:i1+1)
@@ -222,7 +222,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-31      continue
+        end do
     endif
 !
 !
@@ -237,7 +237,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 41 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             acces=para(i1+1:i1+1)
@@ -253,7 +253,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-41      continue
+        end do
     endif
 !
 !
@@ -268,7 +268,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 51 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             acces=para(i1+1:i1+1)
@@ -284,7 +284,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-51      continue
+        end do
     endif
 !
 !
@@ -299,7 +299,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 61 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             acces=para(i1+1:i1+1)
@@ -315,7 +315,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-61      continue
+        end do
     endif
 !
 !
@@ -330,7 +330,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 71 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             acces=para(i1+1:i1+1)
@@ -346,7 +346,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-71      continue
+        end do
     endif
 !
 !
@@ -361,7 +361,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
         call codent(n1, 'G', ch8)
         ico=0
-        do 81 i = 1, nbpara
+        do i = 1, nbpara
             para=lipara(i)
             i1= index(para,'#')
             acces=para(i1+1:i1+1)
@@ -377,7 +377,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
             endif
-81      continue
+        end do
     endif
 !
 !

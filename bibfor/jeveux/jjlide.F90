@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjlide(nomap, nomlu, itype)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -90,9 +90,9 @@ subroutine jjlide(nomap, nomlu, itype)
     integer :: iadmi, iaddi(2), nld, it(nparm), kt(nparm)
     aster_logical :: lsauv, ldate, lmarq, llibp, ltout, lattr, lxu, lad
 ! DEB ------------------------------------------------------------------
-    do 1 k = 1, nparm
+    do k = 1, nparm
         kt(k) = 0
-  1 end do
+    end do
     noml32 = nomlu
     iadit = 0
     iasig = 0
@@ -216,7 +216,7 @@ subroutine jjlide(nomap, nomlu, itype)
                 ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
                 ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
                 ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
-                do 10 k = 1, nmax
+                do k = 1, nmax
                     nadm = jiszon + ibiadm - 1 + 2*k-1
                     if (iszon( nadm ) .ne. 0) then
                         ijit = jit + nld * nparm
@@ -242,13 +242,13 @@ subroutine jjlide(nomap, nomlu, itype)
                         it(ijit + iltyp) = jltyp(ic) + ixdeso
                         it(ijit + isauv) = 1
                     endif
- 10             continue
+                end do
             endif
             nldo= nld
 !
 ! --------OBJETS ATTRIBUTS DE COLLECTION
 !
-            do 20 k = 1, idnum
+            do k = 1, idnum
                 ix = iszon( jiszon + ibacol + k )
                 if (ix .gt. 0) then
                     if (rnom(jrnom(ic)+ix)(25:26) .eq. '$$' .or. ipgcl .eq. -2) then
@@ -277,7 +277,7 @@ subroutine jjlide(nomap, nomlu, itype)
                         endif
                     endif
                 endif
- 20         continue
+            end do
             ijit = jit + nld * nparm
             ikit = kit + nld * nparm
             nld = nld + 1
@@ -353,7 +353,7 @@ subroutine jjlide(nomap, nomlu, itype)
     endif
 !
     ltout = .true.
-    do 100 k = 1, nld
+    do k = 1, nld
         lattr = ( k .gt. nldo .and. nldo .gt. 0 )
         llibp = .false.
         lsauv = .false.
@@ -560,7 +560,8 @@ subroutine jjlide(nomap, nomlu, itype)
                 iszon ( it(jit+kk+ iiadm) + 1) = 0
             endif
         endif
-100 end do
+100     continue
+    end do
 101 continue
     call jjlidy(iady1, iadit)
     call jjlidy(iady2, iasig)

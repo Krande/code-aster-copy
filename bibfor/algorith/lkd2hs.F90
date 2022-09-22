@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
                   dhds, d2hds2)
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     CALCUL DE DERIVEE 2NDE DE H PAR RAPPORT A DEVIATEUR SIGMA
 !     IN  NMAT   : DIMENSION TABLE DES PARAMETRES MATERIAU
@@ -61,9 +61,9 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
 !
 ! --- CONSTRUCTION TENSEUR IDENTITE
     call lcinma(zero, mident)
-    do 10 i = 1, ndt
+    do i = 1, ndt
         mident(i,i) = un
-10  end do
+    end do
 !
     rhlode = lkhlod (gamcjs, rcos3t)
 !
@@ -89,11 +89,11 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
 !
     call lkd2de(devsig, d2dets)
 !
-    do 20 i = 1, ndt
-        do 30 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             d2hds2(i,j) = coef1*mat1(i,j)-coef2*mat2(i,j)+ coef3* mident(i,j)-coef4*mat2(i,j)- co&
                           &ef5*mat5(i,j)+coef6*mat6(i, j)+ coef1*mat7(i,j)-coef7*d2dets(i,j)
-30      continue
-20  end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
                   vecpe)
 !
@@ -42,28 +42,28 @@ subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
 !
     call r8inir(51, 0.d0, vecpe, 1)
 !
-    do 200 in = 1, nb1
+    do in = 1, nb1
 !
 !----------- NOEUDS DE SERENDIP
 !
-        do 210 ii = 1, 3
+        do ii = 1, 3
 !
             vecpe ((in-1)*6+ ii )= vecu ( in , ii )
 !
             vecpe ((in-1)*6+ ii + 3 )= vecnph ( in , ii ) - vectn&
             ( in , ii )
 !
-210      continue
+        end do
 !
-200  end do
+    end do
 !
 !---- SUPERNOEUD
 !
-    do 220 ii = 1, 3
+    do ii = 1, 3
 !
         vecpe ( (nb1)*6+ ii )= vecnph ( nb2, ii ) - vectn ( nb2, ii )
 !
-220  end do
+    end do
 !
 !
 !

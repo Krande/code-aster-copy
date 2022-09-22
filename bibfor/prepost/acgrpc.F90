@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine acgrpc(nbordr, kwork,&
-                  sompgw, jrwork, tspaq, ipg, &
-                  nommet, forcri,nompar, vanocr, respc,vnmax)
-    implicit   none
+!
+subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
+                  ipg, nommet, forcri, nompar, vanocr,&
+                  respc, vnmax)
+    implicit none
 #include "jeveux.h"
-#include "asterc/r8maem.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
+#include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/acgrcr.h"
@@ -31,15 +31,15 @@ subroutine acgrpc(nbordr, kwork,&
 #include "asterfort/jedisp.h"
 #include "asterfort/raycir.h"
 #include "asterfort/taurlo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/utmess.h"
     integer :: nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg
     character(len=16) :: nommet, forcri
     character(len=8) :: nompar(35)
-    real(kind=8) :: respc(24),vnmax(6), vanocr(23)
-
+    real(kind=8) :: respc(24), vnmax(6), vanocr(23)
+!
 !
 ! BUT: POUR LA FATIGUE A AMPLITUDE CONSTANTE
 !      DETERMINER LE PLAN DES MAX DES TAU_MAX ET CALCULER DES GRANDEURS
@@ -73,16 +73,16 @@ subroutine acgrpc(nbordr, kwork,&
     integer :: i, j, k, n
     integer :: nbvec, dim, jvpg2
     integer :: jvecn2, jvecu2, jvecv2
-    integer :: ideb, ngam 
+    integer :: ideb, ngam
     integer :: tneces, tdisp(1), jvecno, jnorm2
-    integer :: tab2(18),jvectn, jvectu, jvectv
+    integer :: tab2(18), jvectn, jvectu, jvectv
     integer :: vali(2), tnecno, jnorma
 !
     real(kind=8) :: dgam, dphi, tab1(18)
     real(kind=8) :: epsilo, gamma, pi
     real(kind=8) :: gammam, phim, dgam2, dphi2, phi0
     real(kind=8) :: nxm(2), nym(2), nzm(2)
-
+!
 !
 !-----------------------------------------------------------------------
     data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
@@ -93,7 +93,7 @@ subroutine acgrpc(nbordr, kwork,&
      &           12, 9, 6, 3 /
 !
 !-----------------------------------------------------------------------
-    !     ------------------------------------------------------------------
+!     ------------------------------------------------------------------
 !
 !234567
 !
@@ -116,7 +116,7 @@ subroutine acgrpc(nbordr, kwork,&
     call wkvect('&&ACGRPC.VECT_NORMA', 'V V R', 630, jvectn)
     call wkvect('&&ACGRPC.VECT_TANGU', 'V V R', 630, jvectu)
     call wkvect('&&ACGRPC.VECT_TANGV', 'V V R', 630, jvectv)
-
+!
     tneces = 209*nbordr*2
     tnecno = 209*nbordr
     call jedisp(1, tdisp)
@@ -136,7 +136,7 @@ subroutine acgrpc(nbordr, kwork,&
     k = 1
     ideb = 1
     dim = 627
-    do 300 j = 1, 18
+    do j = 1, 18
         gamma=(j-1)*dgam*(pi/180.0d0)
         dphi=tab1(j)*(pi/180.0d0)
         phi0=dphi/2.0d0
@@ -146,38 +146,39 @@ subroutine acgrpc(nbordr, kwork,&
                     n, k, dim, zr( jvectn), zr(jvectu),&
                     zr(jvectv))
 !
-300  end do
-
-
-    do  21 i = 1, 24
+    end do
+!
+!
+    do i = 1, 24
         respc(i) = 0.0d0
-21  continue
-
+    end do
+!
 !!!!IDENTIFIER LE PLAN DE MAXIMUM DE GRANDEUR CRITIQUE
     nbvec = 209
-
-    call acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr, kwork,&
-                  sompgw, jrwork, tspaq, ipg, &
-                  nommet, jvecno, jnorma, forcri,nompar,vanocr, respc,vnmax)
-
-
+!
+    call acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
+                kwork, sompgw, jrwork, tspaq, ipg,&
+                nommet, jvecno, jnorma, forcri, nompar,&
+                vanocr, respc, vnmax)
+!
+!
 !!!REFINEMENT DE PLAN CRITIQUE
     call wkvect('&&ACGRPC.VECT_NORMA2', 'V V R', 27, jvecn2)
     call wkvect('&&ACGRPC.VECT_TANGU2', 'V V R', 27, jvecu2)
     call wkvect('&&ACGRPC.VECT_TANGV2', 'V V R', 27, jvecv2)
 !
-
+!
     call wkvect('&&ACGRPC.VECTPG2', 'V V R', 18*nbordr, jvpg2)
     call wkvect('&&ACGRPC.VECTNO2', 'V V R', 9*nbordr, jnorm2)
-
+!
     dim = 27
 !
-    do 441 k = 1, 2
-
+    do k = 1, 2
+!
         nxm(k) = vnmax(1+(k-1)*3)
         nym(k) = vnmax(2+(k-1)*3)
         nzm(k) = vnmax(3+(k-1)*3)
-
+!
         gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)),nzm(k))
         if (gammam .lt. 0.0d0) then
             gammam = gammam + pi
@@ -210,35 +211,37 @@ subroutine acgrpc(nbordr, kwork,&
                         zr(jvecv2))
 !
             nbvec = 7
-
-            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr, kwork,&
-                  sompgw, jrwork, tspaq, ipg, &
-                  nommet, jvpg2, jnorm2, forcri,nompar,vanocr, respc,vnmax)
-
+!
+            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        nommet, jvpg2, jnorm2, forcri, nompar,&
+                        vanocr, respc, vnmax)
+!
         else
             dgam2 = 2.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
-            do 461 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-2)*dgam2
 !
                 call vecnuv(1, 3, gamma, phim, dphi2,&
                             n, 2, dim, zr(jvecn2), zr(jvecu2),&
                             zr(jvecv2))
 !
-461          continue
+            end do
 !
             nbvec = 9
-
-            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr, kwork,&
-                  sompgw, jrwork, tspaq, ipg, &
-                  nommet, jvpg2, jnorm2, forcri,nompar,vanocr, respc,vnmax)
-
+!
+            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
+                        kwork, sompgw, jrwork, tspaq, ipg,&
+                        nommet, jvpg2, jnorm2, forcri, nompar,&
+                        vanocr, respc, vnmax)
+!
         endif
-
-441 continue
-
-
+!
+    end do
+!
+!
     call jedetr('&&ACGRPC.DTAU_MAX')
     call jedetr('&&ACGRPC.RESU_N')
     call jedetr('&&ACGRPC.VECT_NORMA')
@@ -246,17 +249,17 @@ subroutine acgrpc(nbordr, kwork,&
     call jedetr('&&ACGRPC.VECT_TANGV')
     call jedetr('&&ACGRPC.VECTNO')
     call jedetr('&&ACGRPC.VECT_NOR')
-
+!
 !     call jedetr('&&ACGRPC.VECT_NORMA1')
 !     call jedetr('&&ACGRPC.VECT_TANGU1')
 !     call jedetr('&&ACGRPC.VECT_TANGV1')
 !     call jedetr('&&ACGRPC.VECTPG1')
-
+!
     call jedetr('&&ACGRPC.VECT_NORMA2')
     call jedetr('&&ACGRPC.VECT_TANGU2')
     call jedetr('&&ACGRPC.VECT_TANGV2')
     call jedetr('&&ACGRPC.VECTPG2')
     call jedetr('&&ACGRPC.VECTNO2')
-
-
+!
+!
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcdevi(a, d)
     implicit none
 !       DEVIATEUR D UN TENSEUR (3X3) SOUS FORME VECTEUR  (6X1)
@@ -31,14 +31,14 @@ subroutine lcdevi(a, d)
     integer :: i
 !-----------------------------------------------------------------------
     ta = 0.d0
-    do 1 i = 1, nd
+    do i = 1, nd
         ta = ta + a(i)
- 1  continue
+    end do
     ta = ta / 3.d0
-    do 2 i = 1, nd
+    do i = 1, nd
         d(i) = a(i) - ta
- 2  continue
-    do 3 i = nd + 1, n
+    end do
+    do i = nd + 1, n
         d(i) = a(i)
- 3  continue
+    end do
 end subroutine

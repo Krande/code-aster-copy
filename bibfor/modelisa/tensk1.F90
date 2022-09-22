@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tensk1(icabl, nbno, s, alpha, f0,&
                   delta, ea, frco, frli, sa,&
                   f)
@@ -76,9 +76,9 @@ subroutine tensk1(icabl, nbno, s, alpha, f0,&
 ! 1   PRISE EN COMPTE DES PERTES DE TENSION PAR FROTTEMENT
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         f(ino) = f0 * dble ( exp (-frco*alpha(ino)-frli*s(ino)) )
-10  end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   PRISE EN COMPTE DES PERTES DE TENSION PAR RECUL DE L'ANCRAGE

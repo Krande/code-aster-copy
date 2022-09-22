@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ortloc(dsidep, i1, j1, r)
     implicit none
 #include "asterfort/utbtab.h"
@@ -29,19 +29,19 @@ subroutine ortloc(dsidep, i1, j1, r)
 !       OUT     DSIDEP = MATRICE TANGENTE
 !-----------------------------------------------------------------------
 !
-    do 10 i = 1, 3
-        do 20 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             trav(i,j) = dsidep(i+i1,j+j1)
-20      continue
-10  end do
+        end do
+    end do
 !
     call utbtab('ZERO', 3, 3, trav, r,&
                 xab, trav)
 !
-    do 30 i = 1, 3
-        do 40 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             dsidep(i+i1,j+j1) = trav(i,j)
-40      continue
-30  end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
                   dtime, coeft, nmat, coel)
     implicit none
@@ -44,17 +44,17 @@ subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
     call r8inir(nmat, 0.d0, coel, 1)
 !
     if (cothe(nmat) .eq. 0) then
-        do 12 i = 1, 3
+        do i = 1, 3
             coel(i)=cothe(i)+hsdt*dcothe(i)
-12      continue
+        end do
         coel(nmat)=0.d0
     else if (cothe(nmat).eq.1) then
 !          MATERIAU ISOTROPE, OU ANISOTROPE, MATRICE DE HOOKE
         coel(nmat)=1.d0
         ncoel=75
-        do 11 i = 1, ncoel
+        do i = 1, ncoel
             coel(i)=cothe(i)+hsdt*dcothe(i)
-11      continue
+        end do
     endif
 !
 !       POUR GAGNER DU TEMPS CPU
@@ -64,8 +64,8 @@ subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
         ncoe=nint(coeff(nmat))
     endif
 !
-    do 10 i = 1, ncoe
+    do i = 1, ncoe
         coeft(i)=coeff(i)+hsdt*dcoeff(i)
-10  continue
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
                   dtmin)
 !
@@ -62,7 +62,7 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 !
     integer :: n2, n3, i, iret
     character(len=19) :: list
-    integer ::  jslist
+    integer :: jslist
     character(len=16) :: motfac
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -108,16 +108,16 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
                     nbret=iret)
     else
         call jeveuo(list//'.VALE', 'L', vr=vale)
-        do 43 i = 1, nbinst
+        do i = 1, nbinst
             zr(jslist+i-1) = vale(i)
-43      continue
+        end do
     endif
 !
 ! --- CALCUL DU DELTA MINIMUM DE LA LISTE
 !
     call nmcrpm(zr(jslist), nbinst, dtmin)
 !
-99  continue
+ 99 continue
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cajgr2(igrap, vr, cocaj1, cocaj2)
     implicit none
 ! CALCUL DES COEFFICIENTS ADIMENSIONNELS DE FORCE D'AMORTISSEMENT
@@ -84,52 +84,52 @@ subroutine cajgr2(igrap, vr, cocaj1, cocaj2)
         endif
 !
 ! ---    BLOC D'INITIALISATION
-        do 10 i = 1, nbmax
-            do 20 j = 1, nbomax
+        do i = 1, nbmax
+            do j = 1, nbomax
                 boca1(i,j) = zero
                 boca2(i,j) = zero
                 borne1(i,j) = zero
                 borne2(i,j) = zero
-                do 30 k = 1, ncamax
+                do k = 1, ncamax
                     coeca1(i,j,k) = zero
                     coeca2(i,j,k) = zero
                     coef1(i,j,k) = zero
                     coef2(i,j,k) = zero
-30              continue
-20          continue
-10      continue
+                end do
+            end do
+        end do
 !
         read (unit,*) nbloc
-        do 40 l = 1, nbloc
+        do l = 1, nbloc
             read (unit,*) nb1
             if (nb1 .ne. 0) then
                 read (unit,*) (boca1(l,i),i = 1,nb1)
             endif
-            do 50 i = 1, nb1+1
+            do i = 1, nb1+1
                 read (unit,*) (coef1(l,i,j),j = 1,ncamax)
-50          continue
+            end do
             read (unit,*) nb2
             if (nb2 .ne. 0) then
                 read (unit,*) (boca2(l,i),i = 1,nb2)
             endif
-            do 60 i = 1, nb2+1
+            do i = 1, nb2+1
                 read (unit,*) (coef2(l,i,j),j = 1,ncamax)
-60          continue
+            end do
             read (unit,*)
-            do 70 i = 1, nbmax
-                do 80 j = 1, nbomax
+            do i = 1, nbmax
+                do j = 1, nbomax
                     borne1(i,j) = boca1(i,j)
                     borne2(i,j) = boca2(i,j)
-                    do 90 k = 1, ncamax
+                    do k = 1, ncamax
                         coeca1(i,j,k) = coef1(i,j,k)
                         coeca2(i,j,k) = coef2(i,j,k)
-90                  continue
-80              continue
-70          continue
+                    end do
+                end do
+            end do
             call jedetr(nom1)
             call wkvect(nom1, 'V V I', 1, iflag)
             zi(iflag-1+1) = 1
-40      continue
+        end do
     endif
 !
 !-----1.CONFIG. ECOULEMENT ASCENDANT TIGE DE COMMANDE CENTREE

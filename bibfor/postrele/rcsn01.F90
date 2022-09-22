@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
                   alphaa, alphab, nbth, iocs, sn6)
     implicit none
@@ -32,7 +32,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
 !     ------------------------------------------------------------------
     integer :: vali(3)
 !
-    integer ::  iad, icmp, nbcmp, decal,   jcesl, nbinst, i
+    integer :: iad, icmp, nbcmp, decal, jcesl, nbinst, i
     integer :: jmoye, jmoy2
     real(kind=8) :: ta, tb, tab, dt1, dt1max, tabmax
     character(len=24) :: chtemp
@@ -43,7 +43,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
 ! DEB ------------------------------------------------------------------
 !
     sn6 = 0.d0
-    if (nbth .eq. 0) goto 9999
+    if (nbth .eq. 0) goto 999
 !
     call jeveuo('&&RC3600.CHAM_THER', 'L', vk24=cham_ther)
 !
@@ -83,7 +83,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
     dt1max = 0.d0
     tabmax = 0.d0
 !
-    do 10 i = 1, nbinst
+    do i = 1, nbinst
 !
 ! ------ DT1: AMPLITUDE DE LA VARIATION ENTRE LES 2 ETATS STABILISES
 !             DE LA DIFFERENCE DE TEMPERATURE ENTRE LES PAROIS
@@ -107,11 +107,11 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
             tabmax = max ( tabmax, abs( tab ) )
         endif
 !
-10  end do
+    end do
 !
     sn6 = sn6 + ( sn3 * dt1max )
     if (nbm .gt. 1) sn6 = sn6 + ( sn4 * tabmax )
 !
-9999  continue
+999 continue
 !
 end subroutine

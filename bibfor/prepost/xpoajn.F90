@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
                   nfiss, he, nnn, inn, inntot,&
                   nbnoc, nbnofi, inofi, co, iacoo2)
@@ -89,28 +89,28 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 ! --- ON ATTACHERA DANS CE CAS CE NOEUDS AU GROUPE NFISSU
     if (ino .lt. 1000) then
         lpint = .false.
-        do 10 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             if (lsn(ifiss) .eq. 0.d0) lpint = .true.
- 10     continue
+        end do
     else if (ino.gt.1000.and.ino.lt.2000) then
         lpint = .true.
     else if (ino.gt.2000) then
         lpint = .false.
-        do 20 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             if (abs(lsn(ifiss)) .lt. crilsn) lpint = .true.
- 20     continue
+        end do
     endif
 !
     if (lpint) then
         minlsn = r8maem()
-        do 50 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
 !     ON DETECTE LA FISSURE CORESPONDANTE AU POINT D'INTERSECTION
 !     ATTENTION, IL PEUT Y AVOIR PLUSIEURS CANDIDAT AU NIV DE L'INTER
             if (abs(lsn(ifiss)) .lt. minlsn .and. he(ifiss) .ne. 0) then
                 minlsn = abs(lsn(ifiss))
                 fiss = ifiss
             endif
- 50     continue
+        end do
         if (he(fiss) .eq. -1) then
             nm=prefno(2)
         else
@@ -130,15 +130,15 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 !
     zi(jdirno-1+(2+nfiss)*(inn-1)+1) = ino
     zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot
-    do 30 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
- 30 end do
+    end do
     call codlet(inntot, 'G', chn)
 !
     call jecroc(jexnom(maxfem//'.NOMNOE', nm//chn))
-    do 40 j = 1, 3
+    do j = 1, 3
         zr(iacoo2-1+3*(nbnoc+inntot-1)+j)=co(j)
- 40 end do
+    end do
 !       LISTE DES NOEUDS SUR LA FISSURE
     if (lpint) then
         nbnofi=nbnofi+1

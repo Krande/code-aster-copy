@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcopli(typ, mod, mater, hook)
     implicit none
 !       OPERATEUR DE RIGIDITE POUR COMPORTEMENT ELASTIQUE LINEAIRE
@@ -57,15 +57,17 @@ subroutine lcopli(typ, mod, mater, hook)
 !
         if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:6) .eq. 'C_PLAN' .or.&
             mod(1:4) .eq. 'AXIS') then
-            do 40 i = 1, ndi
-                do 40 j = 1, ndi
+            do i = 1, ndi
+                do j = 1, ndi
                     if (i .eq. j) hook(i,j) = al
                     if (i .ne. j) hook(i,j) = la
-40              continue
-            do 45 i = ndi+1, ndt
-                do 45 j = ndi+1, ndt
+                end do
+            end do
+            do i = ndi+1, ndt
+                do j = ndi+1, ndt
                     if (i .eq. j) hook(i,j) = deux* mu
-45              continue
+                end do
+            end do
 !
 ! - 1D
 !
@@ -75,11 +77,11 @@ subroutine lcopli(typ, mod, mater, hook)
 !
     else if (typ .eq. 'ORTHOTRO') then
 !
-        do 55 i = 1, 6
-            do 56 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 hook(i,j)=mater(6*(j-1)+i)
-56          continue
-55      continue
+            end do
+        end do
 !
     endif
 !

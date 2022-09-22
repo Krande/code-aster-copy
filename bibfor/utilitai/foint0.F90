@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foint0()
     implicit none
 !     REMISE A "ZERO" DU COMMON UTILISE PAR FOINT2
@@ -42,7 +42,7 @@ subroutine foint0()
     mxpara = 10
     mxsave = 4
     isvnxt = mxsave
-    do 10 i = 1, mxsave
+    do i = 1, mxsave
         svnomf(i)= '????????'
         svresu(i)= 0.d0
         isvind(i)= 1
@@ -52,7 +52,7 @@ subroutine foint0()
         luvale(i)=0
         iapara(i)=0
         lupara(i)=0
-10  end do
+    end do
     nextsv(1) = 2
     nextsv(2) = 3
     nextsv(3) = 4

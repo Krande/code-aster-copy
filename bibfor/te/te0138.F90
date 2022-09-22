@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0138(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS RESIDUS
 !                          OPTION : 'RESI_THER_FLUXNL'
@@ -33,7 +33,6 @@ subroutine te0138(option, nomte)
 ! PARAMETRES D'APPEL
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -42,6 +41,7 @@ subroutine te0138(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 !
 !
@@ -82,48 +82,48 @@ subroutine te0138(option, nomte)
     coef = zk8(iflux)
     if (coef(1:7) .eq. '&FOZERO') goto 100
     call connec(nomte, nse, nnop2, c)
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i) = 0.d0
- 10 end do
+    end do
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
-    do 80 ise = 1, nse
+    do ise = 1, nse
 !
-        do 30 i = 1, nno
-            do 20 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
- 20         continue
- 30     continue
-        do 70 kp = 1, npg
+            end do
+        end do
+        do kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         coorse, nx, ny, poids)
             if (laxi) then
                 r = 0.d0
-                do 40 i = 1, nno
+                do i = 1, nno
                     l = (kp-1)*nno + i
                     r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
- 40             continue
+                end do
                 poids = poids*r
             endif
 !
             tpg = 0.d0
-            do 50 i = 1, nno
+            do i = 1, nno
                 l = (kp-1)*nno + i
                 tpg = tpg + zr(itempi-1+c(ise,i))*zr(ivf+l-1)
- 50         continue
+            end do
             call foderi(coef, tpg, alpha, rbid)
 !
-            do 60 i = 1, nno
+            do i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) - poids*theta*alpha* zr(li)
- 60         continue
- 70     continue
- 80 end do
+            end do
+        end do
+    end do
 !
-    do 90 i = 1, nnop2
+    do i = 1, nnop2
         zr(iveres-1+i) = vectt(i)
- 90 end do
+    end do
 100 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

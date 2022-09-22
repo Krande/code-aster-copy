@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
                   mailar, typmai, nbchel, chames, jma1,&
                   jma2, tabcor, proj)
@@ -26,26 +26,26 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
+#include "asterfort/arlcnn.h"
+#include "asterfort/arlcos.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/codent.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/carces.h"
-#include "asterfort/cesred.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/codent.h"
-#include "asterfort/cescre.h"
-#include "asterfort/arlcnn.h"
-#include "asterfort/arlcos.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/rcvale.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
 !
     aster_logical :: proj
@@ -205,10 +205,10 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
     ncmpf = 1
     vfami = 'Z1'
     ncmpi = 26
-    do 10 icmp = 1, ncmpi
+    do icmp = 1, ncmpi
         call codent(icmp, 'G', ch2)
         vinfo(icmp) = 'X'//ch2
- 10 end do
+    end do
 !
     call cescre('V', ctfami, 'ELEM', mailar, 'NEUT_K8',&
                 ncmpf, vfami, [-1], [-1], [-ncmpf])
@@ -221,11 +221,11 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
     vref1 = 'Z1'
     vref2 = 'Z1'
     ncmpc = 3*nbnomx
-    do 13 icmp = 1, ncmpc
+    do icmp = 1, ncmpc
         call codent(icmp, 'G', ch2)
         vcoo1(icmp) = 'X'//ch2
         vcoo2(icmp) = 'X'//ch2
- 13 end do
+    end do
 !
     call cescre('V', ctref1, 'ELEM', mailar, 'NEUT_K8',&
                 ncmpr, vref1, [-1], [-1], [-ncmpr])
@@ -266,7 +266,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
 !
     nomfam = 'ARLQ_1'
     proj = .false.
-    do 90 ima = 1, nbma
+    do ima = 1, nbma
 !
 ! --- NUMERO DES MAILLES CONCERNEES
 !
@@ -305,7 +305,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
         else if (ntmc1 == 'TETRA4') then
             elref1 = 'TE4'
         else
-            call utmess('F','CHARGES_9',sk=ntmc1)
+            call utmess('F', 'CHARGES_9', sk=ntmc1)
         endif
 !
 ! --- COORDONNEES SOLIDES DE LA MAILLE 2 DU COUPLE
@@ -329,15 +329,15 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
         else if (ntmc2 == 'TETRA4') then
             elref2 = 'TE4'
         else
-            call utmess('F','CHARGES_9',sk=ntmc2)
+            call utmess('F', 'CHARGES_9', sk=ntmc2)
         endif
 !
 ! --- PROJECTION DU BARYCENTRE DE LA MAILLE 3D SUR LA MAILLE 1D
 !
         cnoeud = 0.D0
-        do 241 l = 1, nbnoc1
+        do l = 1, nbnoc1
             cnoeud = cnoeud + cno1(3*l-2)
-241     end do
+        end do
         cnoeud = cnoeud / nbnoc1
         inf = min(cno2(3*1-2),cno2(3*2-2))
         sup = max(cno2(3*1-2),cno2(3*2-2))
@@ -351,170 +351,170 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
                     1, 1, iad)
         if (iad > 0) then
             mater = cesv1(iad)
-            end if
-            call rcvale(mater, 'ELAS', 0, k8b, rbid(1),&
-                        1, 'E       ', para(1), icodre, 1)
-            call rcvale(mater, 'ELAS', 0, k8b, rbid(1),&
-                        1, 'RHO     ', para(2), icodre, 1)
-            call rcvale(mater, 'ELAS', 0, k8b, rbid(1),&
-                        1, 'NU      ', para(3), icodre, 1)
+        end if
+        call rcvale(mater, 'ELAS', 0, k8b, rbid(1),&
+                    1, 'E       ', para(1), icodre, 1)
+        call rcvale(mater, 'ELAS', 0, k8b, rbid(1),&
+                    1, 'RHO     ', para(2), icodre, 1)
+        call rcvale(mater, 'ELAS', 0, k8b, rbid(1),&
+                    1, 'NU      ', para(3), icodre, 1)
 !
 ! --- RECHERCHE DES CARACTERISTIQUES POUTRE
 !
-            ityel = zi(jtyel-1+nummc2)
-            call jenuno(jexnum('&CATA.TE.NOMTE', ityel), nomte)
-            nbpt = 1
-            ncmpi = 15
-            if (nomte(6:12) == 'POU_D_T') then
-                do 110 ipt = 1, nbpt
-                    do 120 icmp = 1, ncmpi
-                        if (ipt == 1) then
-                            decal = 0
-                        else
-                            decal = 15
-                        endif
-                        call cesexi('S', jcesd2, jcesl2, nummc2, ipt,&
-                                    1, icmp+decal, iadc)
-                        ASSERT(iadc.gt.0)
-                        cpara(icmp) = cesv2(iadc)
-120                 end do
-                    do 130 icmp = 1, 3
-                        call cesexi('S', jcesd3, jcesl3, nummc2, ipt,&
-                                    1, icmp, iado)
-                        ASSERT(iad.gt.0)
-                        corie(icmp) = cesv3(iado)
-130                 end do
-110             end do
-            else
-                do 111 ipt = 1, nbpt
-                    do 121 icmp = 1, ncmpi
-                        cpara(icmp) = 0.D0
-                        goto 777
-121                 end do
-111             end do
-777             continue
-            endif
+        ityel = zi(jtyel-1+nummc2)
+        call jenuno(jexnum('&CATA.TE.NOMTE', ityel), nomte)
+        nbpt = 1
+        ncmpi = 15
+        if (nomte(6:12) == 'POU_D_T') then
+            do ipt = 1, nbpt
+                do icmp = 1, ncmpi
+                    if (ipt == 1) then
+                        decal = 0
+                    else
+                        decal = 15
+                    endif
+                    call cesexi('S', jcesd2, jcesl2, nummc2, ipt,&
+                                1, icmp+decal, iadc)
+                    ASSERT(iadc.gt.0)
+                    cpara(icmp) = cesv2(iadc)
+                end do
+                do icmp = 1, 3
+                    call cesexi('S', jcesd3, jcesl3, nummc2, ipt,&
+                                1, icmp, iado)
+                    ASSERT(iad.gt.0)
+                    corie(icmp) = cesv3(iado)
+                end do
+            end do
+        else
+            do ipt = 1, nbpt
+                do icmp = 1, ncmpi
+                    cpara(icmp) = 0.D0
+                    goto 777
+                end do
+            end do
+777         continue
+        endif
 !
 ! --- REMPLISSAGE CTINFO
 !
-            call cesexi('S', jinfd, jinfl, ima, 1,&
-                        1, 1, jadi)
-            if (jadi < 0) then
-                zr(jinfv-1-jadi) = ndim
-                zl(jinfl-1-jadi) = .true.
-            endif
+        call cesexi('S', jinfd, jinfl, ima, 1,&
+                    1, 1, jadi)
+        if (jadi < 0) then
+            zr(jinfv-1-jadi) = ndim
+            zl(jinfl-1-jadi) = .true.
+        endif
 !
-            call cesexi('S', jinfd, jinfl, ima, 1,&
-                        1, 2, jadi)
-            if (jadi < 0) then
-                zr(jinfv-1-jadi) = nbnoc1
-                zl(jinfl-1-jadi) = .true.
-            endif
+        call cesexi('S', jinfd, jinfl, ima, 1,&
+                    1, 2, jadi)
+        if (jadi < 0) then
+            zr(jinfv-1-jadi) = nbnoc1
+            zl(jinfl-1-jadi) = .true.
+        endif
 !
-            call cesexi('S', jinfd, jinfl, ima, 1,&
-                        1, 3, jadi)
-            if (jadi < 0) then
-                zr(jinfv-1-jadi) = nbnoc2
-                zl(jinfl-1-jadi) = .true.
-            endif
+        call cesexi('S', jinfd, jinfl, ima, 1,&
+                    1, 3, jadi)
+        if (jadi < 0) then
+            zr(jinfv-1-jadi) = nbnoc2
+            zl(jinfl-1-jadi) = .true.
+        endif
 !
+        call cesexi('S', jinfd, jinfl, ima, 1,&
+                    1, 4, jadi)
+        if (jadi < 0) then
+            zr(jinfv-1-jadi) = nummc1
+            zl(jinfl-1-jadi) = .true.
+        endif
+        call cesexi('S', jinfd, jinfl, ima, 1,&
+                    1, 5, jadi)
+        if (jadi < 0) then
+            zr(jinfv-1-jadi) = nummc2
+            zl(jinfl-1-jadi) = .true.
+        endif
+        do i = 1, 3
             call cesexi('S', jinfd, jinfl, ima, 1,&
-                        1, 4, jadi)
+                        1, 5+i, jadi)
             if (jadi < 0) then
-                zr(jinfv-1-jadi) = nummc1
+                zr(jinfv-1-jadi) = para(i)
                 zl(jinfl-1-jadi) = .true.
             endif
+        end do
+        do j = 1, ncmpi
             call cesexi('S', jinfd, jinfl, ima, 1,&
-                        1, 5, jadi)
+                        1, 8+j, jadi)
             if (jadi < 0) then
-                zr(jinfv-1-jadi) = nummc2
+                zr(jinfv-1-jadi) = cpara(j)
                 zl(jinfl-1-jadi) = .true.
             endif
-            do 991 i = 1, 3
-                call cesexi('S', jinfd, jinfl, ima, 1,&
-                            1, 5+i, jadi)
-                if (jadi < 0) then
-                    zr(jinfv-1-jadi) = para(i)
-                    zl(jinfl-1-jadi) = .true.
-                endif
-991         end do
-            do 992 j = 1, ncmpi
-                call cesexi('S', jinfd, jinfl, ima, 1,&
-                            1, 8+j, jadi)
-                if (jadi < 0) then
-                    zr(jinfv-1-jadi) = cpara(j)
-                    zl(jinfl-1-jadi) = .true.
-                endif
-992         end do
-            do 993 i = 1, 3
-                call cesexi('S', jinfd, jinfl, ima, 1,&
-                            1, 23+i, jadi)
-                if (jadi < 0) then
-                    zr(jinfv-1-jadi) = corie(i)
-                    zl(jinfl-1-jadi) = .true.
-                endif
-993         end do
+        end do
+        do i = 1, 3
+            call cesexi('S', jinfd, jinfl, ima, 1,&
+                        1, 23+i, jadi)
+            if (jadi < 0) then
+                zr(jinfv-1-jadi) = corie(i)
+                zl(jinfl-1-jadi) = .true.
+            endif
+        end do
 !
 ! --- REMPLISSAGE CTCOO1/CTCOO2
 !
-            do 500 icmp = 1, ncmpc
-                call cesexi('S', jcoo1d, jcoo1l, ima, 1,&
-                            1, icmp, jadc)
-                
-                if (jadc < 0) then
-                    if (icmp <= (ndim*nbnoc1)) then
-                        zr(jcoo1v-1-jadc)=cno1(icmp)
-                        zl(jcoo1l-1-jadc)=.true.
-                        elseif (icmp > (ndim*nbnoc1) .and. &
-                    icmp <= (ndim*nbnoc1)+nbnoc1) then
-                        zr(jcoo1v-1-jadc)=cxno1(icmp-(ndim*nbnoc1))
-                        zl(jcoo1l-1-jadc)=.true.
-                    else
-                        zr(jcoo1v-1-jadc) = 0.d0
-                        zl(jcoo1l-1-jadc) = .true.
-                    endif
-                endif
+        do icmp = 1, ncmpc
+            call cesexi('S', jcoo1d, jcoo1l, ima, 1,&
+                        1, icmp, jadc)
 !
-                call cesexi('S', jcoo2d, jcoo2l, ima, 1,&
-                            1, icmp, jadc)
-                if (jadc < 0) then
-                    if (icmp <= (ndim*nbnoc2)) then
-                        zr(jcoo2v-1-jadc)=cno2(icmp)
-                        zl(jcoo2l-1-jadc)=.true.
-                        elseif (icmp > (ndim*nbnoc2) .and. &
-                    icmp <= (ndim*nbnoc2)+nbnoc2) then
-                        zr(jcoo2v-1-jadc)=cxno2(icmp-(ndim*nbnoc2))
-                        zl(jcoo2l-1-jadc)=.true.
-                    else
-                        zr(jcoo2v-1-jadc) = 0.d0
-                        zl(jcoo2l-1-jadc) = .true.
-                    endif
+            if (jadc < 0) then
+                if (icmp <= (ndim*nbnoc1)) then
+                    zr(jcoo1v-1-jadc)=cno1(icmp)
+                    zl(jcoo1l-1-jadc)=.true.
+                    elseif (icmp > (ndim*nbnoc1) .and. &
+                    icmp <= (ndim*nbnoc1)+nbnoc1) then
+                    zr(jcoo1v-1-jadc)=cxno1(icmp-(ndim*nbnoc1))
+                    zl(jcoo1l-1-jadc)=.true.
+                else
+                    zr(jcoo1v-1-jadc) = 0.d0
+                    zl(jcoo1l-1-jadc) = .true.
                 endif
-500         end do
+            endif
+!
+            call cesexi('S', jcoo2d, jcoo2l, ima, 1,&
+                        1, icmp, jadc)
+            if (jadc < 0) then
+                if (icmp <= (ndim*nbnoc2)) then
+                    zr(jcoo2v-1-jadc)=cno2(icmp)
+                    zl(jcoo2l-1-jadc)=.true.
+                    elseif (icmp > (ndim*nbnoc2) .and. &
+                    icmp <= (ndim*nbnoc2)+nbnoc2) then
+                    zr(jcoo2v-1-jadc)=cxno2(icmp-(ndim*nbnoc2))
+                    zl(jcoo2l-1-jadc)=.true.
+                else
+                    zr(jcoo2v-1-jadc) = 0.d0
+                    zl(jcoo2l-1-jadc) = .true.
+                endif
+            endif
+        end do
 !
 ! --- REMPLISSAGE CTREF1/CTREF2
 !
-            call cesexi('S', jref1d, jref1l, ima, 1,&
-                        1, 1, jadr)
-            if (jadr < 0) then
-                zk8(jref1v-1-jadr) = elref1
-                zl(jref1l-1-jadr) = .true.
-            endif
+        call cesexi('S', jref1d, jref1l, ima, 1,&
+                    1, 1, jadr)
+        if (jadr < 0) then
+            zk8(jref1v-1-jadr) = elref1
+            zl(jref1l-1-jadr) = .true.
+        endif
 !
-            call cesexi('S', jref2d, jref2l, ima, 1,&
-                        1, 1, jadr)
-            if (jadr < 0) then
-                zk8(jref2v-1-jadr) = elref2
-                zl(jref2l-1-jadr) = .true.
-            endif
+        call cesexi('S', jref2d, jref2l, ima, 1,&
+                    1, 1, jadr)
+        if (jadr < 0) then
+            zk8(jref2v-1-jadr) = elref2
+            zl(jref2l-1-jadr) = .true.
+        endif
 !
-            90 end do
+    end do
 !
 ! --- MENAGE
 !
-            call jedetr('&&'//nompro//'.CESMAT')
-            call jedetr('&&'//nompro//'.CARGENPO')
-            call jedetr('&&'//nompro//'.CARORIEN')
+    call jedetr('&&'//nompro//'.CESMAT')
+    call jedetr('&&'//nompro//'.CARGENPO')
+    call jedetr('&&'//nompro//'.CARORIEN')
 !
-            call jedema()
-        end subroutine
+    call jedema()
+end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chveva(nbma, ligr1, ligr2, iret)
 !
 ! person_in_charge: jacques.pellet at edf.fr
@@ -71,10 +71,10 @@ subroutine chveva(nbma, ligr1, ligr2, iret)
     linut1 = '&&CHVEVA.LINUT1'
     call liglma(ligr1, nbma1, linum1, linut1)
     call jeveuo(linum1, 'L', jligr1)
-    do 10 ima = 1, nbma1
+    do ima = 1, nbma1
         numa = zi(jligr1-1+ima)
         zi(jtrav+2*(numa-1)-1+1) = 1
-10  end do
+    end do
     call jedetr(linum1)
     call jedetr(linut1)
 !
@@ -84,25 +84,25 @@ subroutine chveva(nbma, ligr1, ligr2, iret)
     linut2 = '&&CHVEVA.LINUT2'
     call liglma(ligr2, nbma2, linum2, linut2)
     call jeveuo(linum2, 'L', jligr2)
-    do 20 ima = 1, nbma2
+    do ima = 1, nbma2
         numa = zi(jligr2-1+ima)
         zi(jtrav+2*(numa-1)-1+2) = 1
-20  end do
+    end do
     call jedetr(linum2)
     call jedetr(linut2)
 !
 ! --- VERIFICATION
 !
-    do 30 ima = 1, nbma
+    do ima = 1, nbma
         ipres1 = zi(jtrav+2*(numa-1)-1+1)
         ipres2 = zi(jtrav+2*(numa-1)-1+2)
         if ((ipres1.eq.0) .and. (ipres2.ne.0)) then
             iret = -1
             goto 99
         endif
-30  end do
+    end do
 !
-99  continue
+ 99 continue
 !
     call jedetr(tbtrav)
     call jedema()

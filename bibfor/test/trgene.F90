@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trgene(ific, nocc)
 !     COMMANDE:  TEST_RESU      MOT CLE FACTEUR "GENE"
 ! ----------------------------------------------------------------------
@@ -25,11 +25,11 @@ subroutine trgene(ific, nocc)
     integer, intent(in) :: nocc
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/extrac.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -45,10 +45,10 @@ subroutine trgene(ific, nocc)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/trprec.h"
 #include "asterfort/tresu_ordgrd.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/tresu_read_refe.h"
+#include "asterfort/trprec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
@@ -91,7 +91,7 @@ subroutine trgene(ific, nocc)
     irefcr=1
     irefrr=1
 !
-    do 100 iocc = 1, nocc
+    do iocc = 1, nocc
         lign1 = ' '
         lign2 = ' '
 !
@@ -180,12 +180,13 @@ subroutine trgene(ific, nocc)
                 call jeveuo(nugene//'.NUME.NEQU', 'L', jnume)
                 nbmode = zi(jnume)
                 im = 0
-                do 110 i = 1, nbmode
+                do i = 1, nbmode
                     istru = zi(jdeeq+2*(i-1)+2-1)
                     if (istru .lt. 0) goto 110
                     im = im + 1
                     if (im .eq. ncmp) goto 114
-110             continue
+110                 continue
+                end do
                 call utmess('F', 'CALCULEL6_98')
 114             continue
                 im = i
@@ -357,12 +358,13 @@ subroutine trgene(ific, nocc)
                 call jeveuo(nugene//'.NUME.NEQU', 'L', jnume)
                 nbmode = zi(jnume)
                 im = 0
-                do 120 i = 1, nbmode
+                do i = 1, nbmode
                     istru = zi(jdeeq+2*(i-1)+2-1)
                     if (istru .lt. 0) goto 120
                     im = im + 1
                     if (im .eq. ncmp) goto 124
-120             continue
+120                 continue
+                end do
                 call utmess('F', 'CALCULEL6_98')
                 goto 100
 124             continue
@@ -623,7 +625,8 @@ subroutine trgene(ific, nocc)
             call jedetr('&&TRGENE.CHAMP')
         endif
         write (ific,*)' '
-100 end do
+100     continue
+    end do
     1160 format(1x,a80,a)
     1200 format(1x,2(a80),a)
     call jedetr(travr)

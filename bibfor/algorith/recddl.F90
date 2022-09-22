@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recddl(nbcmp, lino, nbno, nbec, ideeq,&
                   neq, mcoddl, idec)
 !    P. RICHARD     DATE 20/02/91
@@ -49,29 +49,29 @@ subroutine recddl(nbcmp, lino, nbno, nbec, ideeq,&
 !-----------------------------------------------------------------------
 !
 !
-    if (nbno .eq. 0) goto 9999
+    if (nbno .eq. 0) goto 999
 !
 !  MISE A ZERO DU COMPTEUR DE DDL ACTIFS
 !
 !
-    do 10 j = 1, nbno
-        do 30 k = 1, nbcmp
+    do j = 1, nbno
+        do k = 1, nbcmp
             idec(k,1)=0
             idec(k,2)=0
-30      continue
+        end do
 !
         jno=lino(j)
-        do 20 i = 1, neq
+        do i = 1, neq
             ino=ideeq(1,i)
             if (jno .eq. ino) then
                 ityp=ideeq(2,i)
                 if (ityp .lt. 0) idec(-ityp,2)=1
                 if (ityp .gt. 0) idec(ityp,1)=1
             endif
-20      continue
+        end do
         call iscode(idec(1, 1), mcoddl((j-1)*nbec+1, 1), nbcmp)
         call iscode(idec(1, 2), mcoddl((j-1)*nbec+1, 2), nbcmp)
-10  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

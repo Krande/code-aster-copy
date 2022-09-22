@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine focain(method, nomfon, cste, sortie, base)
     implicit none
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/foc2in.h"
+#include "asterfort/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -80,9 +80,9 @@ subroutine focain(method, nomfon, cste, sortie, base)
         call wkvect(nomfs//'.VALE', base//' V R', nbval, lres)
 !
 !       --- RECOPIE DES VARIABLES ---
-        do 410 i = 0, nbpts-1
+        do i = 0, nbpts-1
             zr(lres+i) = zr(lvar+i)
-410      continue
+        end do
         lres = lres + nbpts
 !
 !       --- INTEGRATION ---

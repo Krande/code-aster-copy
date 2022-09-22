@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0290(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -40,41 +40,41 @@ subroutine te0290(option, nomte)
     integer :: ndim, nno, npg, nsom
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nsom,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nsom, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
-    do 1 i = 1, nsom
+    do i = 1, nsom
         coor(2*i-1) = zr(igeom+2*(i-1))
         coor(2*i) = zr(igeom+2*i-1)
- 1  end do
-    do 2 i = 1, nsom-1
+    end do
+    do i = 1, nsom-1
         dx(i) = coor(2*i+1)-coor(2*i-1)
         dy(i) = coor(2*i+2)-coor(2*i)
- 2  end do
+    end do
     dx(nsom) = coor(1)-coor(2*nsom-1)
     dy(nsom) = coor(2)-coor(2*nsom)
 !
 !   INITIALISATION A 0.
 !
-    do 3 i = 1, nno
+    do i = 1, nno
         zr(ivectu+2*i-2) = 0.d0
         zr(ivectu+2*i-1) = 0.d0
         nx(i) = 0.d0
         ny(i) = 0.d0
- 3  end do
+    end do
     nx(1) = (dy(nsom)+dy(1))
     ny(1) = -(dx(nsom)+dx(1))
-    do 4 i = 2, nsom
+    do i = 2, nsom
         nx(i) = (dy(i-1)+dy(i))
         ny(i) = -(dx(i-1)+dx(i))
- 4  end do
+    end do
     if (nno .ne. nsom) then
-        do 6 i = nsom+1, 2*nsom
+        do i = nsom+1, 2*nsom
             nx(i) = dy(i-nsom)
             ny(i) = -dx(i-nsom)
- 6      continue
+        end do
     endif
 !
 !   VERIFICATION DU SENS DE L'ELEMENT
@@ -83,14 +83,14 @@ subroutine te0290(option, nomte)
     if (sens .eq. 0.d0) then
         call utmess('F', 'ELEMENTS3_67')
     else if (sens.lt.0.d0) then
-        do 7 i = 1, nno
+        do i = 1, nno
             nx(i) = -nx(i)
             ny(i) = -ny(i)
- 7      continue
+        end do
     endif
 !
-    do 5 i = 1, nno
+    do i = 1, nno
         zr(ivectu+2*i-2) = nx(i)
         zr(ivectu+2*i-1) = ny(i)
- 5  end do
+    end do
 end subroutine

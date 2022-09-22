@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LINPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function ldasum(n, dx, incx)
 !     SUBROUTINE LINPACK CALCULANT UNE SOMME DE VALEUR ABSOLUE.
 !-----------------------------------------------------------------------
@@ -49,10 +49,10 @@ function ldasum(n, dx, incx)
 !
     ix = 1
     if(incx.lt.0)ix = (-n+1)*incx + 1
-    do 10 i = 1, n
+    do i = 1, n
         dtemp = dtemp + abs(dx(ix))
         ix = ix + incx
-10  end do
+    end do
     ldasum = dtemp
     goto 1000
 !
@@ -62,25 +62,25 @@ function ldasum(n, dx, incx)
 !        CLEAN-UP LOOP
 !
 ! DUE TO CRP_11
-20  continue
+ 20 continue
     m = mod(n,6)
     if (m .eq. 0) goto 40
-    do 30 i = 1, m
+    do i = 1, m
         dtemp = dtemp + abs(dx(i))
-30  end do
+    end do
     if (n .lt. 6) goto 60
 ! DUE TO CRP_11
-40  continue
+ 40 continue
     mp1 = m + 1
-    do 50 i = mp1, n, 6
+    do i = mp1, n, 6
         dtemp = dtemp + abs(&
                 dx(i)) + abs(dx(i + 1)) + abs(dx(i + 2)) + abs(dx(i + 3)) + abs(dx(i + 4)) + abs(&
                 &dx(i + 5)&
                 )
-50  end do
+    end do
 ! DUE TO CRP_11
-60  continue
+ 60 continue
     ldasum = dtemp
 !
-1000  continue
+1000 continue
 end function

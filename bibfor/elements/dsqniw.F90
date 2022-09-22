@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
                   bcb, bca, an, am, wsq,&
                   wmesq)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, caraq4(*), dci(2, 2), bcb(2, 12), bca(2, 4)
     real(kind=8) :: an(4, 12), am(4, 8), bcm(2, 8), wsq(12), wmesq(8)
 !.======================================================================
@@ -105,9 +105,9 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
     y7 = caraq4(7)
     y8 = caraq4(8)
 !
-    do 10 i = 1, 8
+    do i = 1, 8
         wmesq(i) = zero
-10  end do
+    end do
 !
     peta = un + eta
     meta = un - eta
@@ -145,34 +145,35 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
 !
 ! ---   CALCUL DE  [DCI]*([BCA]*[AN] + [BCB]) :
 !       -------------------------------------
-    do 20 i = 1, 2
-        do 20 j = 1, 12
+    do i = 1, 2
+        do j = 1, 12
             bn(i,j) = zero
-20      continue
-    do 30 j = 1, 12
-        do 40 k = 1, 4
+        end do
+    end do
+    do j = 1, 12
+        do k = 1, 4
             bn(1,j) = bn(1,j) + bca(1,k)*an(k,j)
             bn(2,j) = bn(2,j) + bca(2,k)*an(k,j)
-40      end do
+        end do
         bn(1,j) = bn(1,j) + bcb(1,j)
         bn(2,j) = bn(2,j) + bcb(2,j)
-30  end do
-    do 50 j = 1, 12
+    end do
+    do j = 1, 12
         dba(1,j) = dci(1,1)*bn(1,j) + dci(1,2)*bn(2,j)
         dba(2,j) = dci(2,1)*bn(2,j) + dci(2,2)*bn(2,j)
-50  end do
+    end do
 !
 ! ---   FONCTIONS D'INTERPOLATION WST RELATIVES AUX DDLS DE FLEXION
 ! ---   W, BETA_X ET BETA_Y :
 !       -------------------
-    do 60 j = 1, 12
+    do j = 1, 12
         wsq(j) = (&
                  - dba(1,j)*x5 + dba(2,j)*x8) * n(2) + (- dba(1,j)* y5 + dba(2,j)*y8) * n(2) + (-&
                  & dba(1,j)*x5 - dba(2,j)*x6) * n( 5) + (- dba(1,j)*y5 - dba(2,j)*y6) * n(5) + ( &
                  &dba(1,j)*x7 - dba(2,j)*x6) * n(8) + ( dba(1,j)*y7 - dba(2,j)*y6) * n(8) + ( dba&
                  &(1,j)*x7 + dba(2,j)*x8) * n(11) + ( dba(1,j)*y7 + dba( 2,j)*y8) * n(11&
                  )
-60  end do
+    end do
 !
     wsq(1) = wsq(1) + n(1)
     wsq(2) = wsq(2) + (- x5*n(2) + x8*n(3) ) * undemi
@@ -189,27 +190,27 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
 !
 ! ---   CALCUL DE  [DCI]*([BCA]*[AM]+[BCM]) :
 !       -----------------------------------
-    do 70 j = 1, 4
+    do j = 1, 4
         db(1,j) = dci(1,1)*bca(1,j) + dci(1,2)*bca(2,j)
         db(2,j) = dci(2,1)*bca(1,j) + dci(2,2)*bca(2,j)
-70  end do
-    do 80 j = 1, 8
+    end do
+    do j = 1, 8
         dbam(1,j) = db(1,1)*am(1,j) + db(1,2)*am(2,j) + db(1,3)*am(3, j) + db(1,4)*am(4,j)
         dbam(2,j) = db(2,1)*am(1,j) + db(2,2)*am(2,j) + db(2,3)*am(3, j) + db(2,4)*am(4,j)
-80  end do
-    do 90 j = 1, 8
+    end do
+    do j = 1, 8
         dcm(1,j) = dci(1,1)*bcm(1,j) + dci(1,2)*bcm(2,j)
         dcm(2,j) = dci(2,1)*bcm(1,j) + dci(2,2)*bcm(2,j)
-90  end do
-    do 100 j = 1, 8
+    end do
+    do j = 1, 8
         dbam(1,j) = dbam(1,j) + dcm(1,j)
         dbam(2,j) = dbam(2,j) + dcm(2,j)
-100  end do
+    end do
 !
 ! ---   FONCTIONS D'INTERPOLATION WMESQ RELATIVES AUX DDLS DE
 ! ---   MEMBRANE U ET V :
 !       ---------------
-    do 110 j = 1, 8
+    do j = 1, 8
         wmesq(j) = (&
                    - dbam(1,j)*x5 + dbam(2,j)*x8) * n(2) + (- dbam(1, j)*y5 + dbam(2,j)*y8) * n(2&
                    &) + (- dbam(1,j)*x5 - dbam(2,j)*x6) * n(5) + (- dbam(1,j)*y5 - dbam(2,j)*y6) &
@@ -217,6 +218,6 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
                    &y6) * n(8) + ( dbam(1,j)*x7 + dbam(2,j)*x8) * n(11) + ( dbam(1,j)* y7 + dbam(&
                    &2,j)*y8) * n(11&
                    )
-110  end do
+    end do
 !
 end subroutine

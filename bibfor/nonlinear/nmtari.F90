@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtari(type, ndimsi, mat, sigel, vim,&
                   epm, dp, sp, xi, dsidep)
 !
@@ -52,15 +52,15 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim,&
     call matini(6, 6, 0.d0, dsidep)
 !
     tmp = (mat(1) - mat(2)) / 3.d0
-    do 30 i = 1, 3
-        do 40 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             dsidep(i,j) = tmp
-40      continue
-30  end do
+        end do
+    end do
 !
-    do 50 i = 1, ndimsi
+    do i = 1, ndimsi
         dsidep(i,i) = dsidep(i,i) + mat(2)
-50  end do
+    end do
 !
 !
 !    CONTRIBUTION NON LINEAIRE SYMETRISEE
@@ -72,12 +72,12 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim,&
                     epm, dp, sp, xi, f,&
                     g, fds, gds, fdp, gdp,&
                     fdx, gdx, dpmax, sig, tang)
-        do 60 i = 1, ndimsi
-            do 70 j = 1, ndimsi
+        do i = 1, ndimsi
+            do j = 1, ndimsi
                 dsidep(i,j)=dsidep(i,j)-mat(2)**2*(tang(i,j)+tang(j,i)&
                 )/2.d0
-70          continue
-60      continue
+            end do
+        end do
     endif
 !
 !

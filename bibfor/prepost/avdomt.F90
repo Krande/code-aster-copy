@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, ncycl(nbvec), jdomel
-    real(kind=8) ::  domtot(nbvec)
+    real(kind=8) :: domtot(nbvec)
 !   real(kind=8) ::domel(nbvec*nbordr),
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LE DOMMAGE TOTAL (CUMUL) POUR TOUS LES VECTEURS NORMAUX.
@@ -48,16 +48,16 @@ subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
 !
 ! INITIALISATION
 !
-    do 100 i = 1, nbvec
+    do i = 1, nbvec
         domtot(i) = 0
-100  end do
+    end do
 !
-    do 10 ivect = 1, nbvec
-        do 20 icycl = 1, ncycl(ivect)
+    do ivect = 1, nbvec
+        do icycl = 1, ncycl(ivect)
             adrs = (ivect-1)*nbordr + icycl
             domtot(ivect) = domtot(ivect) + zr(jdomel+adrs)
-20      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 !

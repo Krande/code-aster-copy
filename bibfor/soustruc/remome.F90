@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine remome(promes, modmes, nommac)
 !
 !     RECUPERATION DES MODES MESURES ET CREATION DE  .PJMMM
@@ -100,7 +100,7 @@ subroutine remome(promes, modmes, nommac)
 !
 ! BOUCLE SUR LES NUMEROS ORDRE
 !
-    do 110 numord = 1, nbmtot
+    do numord = 1, nbmtot
 !        -> EXISTENCE DES CHAMPS DANS LA STRUCTURE DE DONNEES MESURE
         call rsexch('F', modmes, nomcha, ordr(numord), chamno,&
                     iret)
@@ -130,53 +130,53 @@ subroutine remome(promes, modmes, nommac)
 !
         nbcmp = cnsd(2)
 !
-        do 120 imes = 1, nbmesu
+        do imes = 1, nbmesu
             ino = zi(lnoeud-1 +imes)
 !
 ! DIRECTION DE MESURE (VECTEUR DIRECTEUR)
-            do 21 ii = 1, 3
+            do ii = 1, 3
                 vori(ii) = zr(lori-1 + (imes-1)*3 +ii)
- 21         continue
+            end do
 !
 ! NORMALISATION DU VECTEUR DIRECTEUR
             val = 0.d0
-            do 22 ii = 1, 3
+            do ii = 1, 3
                 val = val + vori(ii)*vori(ii)
- 22         continue
+            end do
             val = sqrt(val)
-            do 23 ii = 1, 3
+            do ii = 1, 3
                 vori(ii) = vori(ii)/val
- 23         continue
+            end do
 !
             if (zcmplx) then
-                do 130 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
                     if (cnsc(icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
                     if (cnsc(icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
                     if (cnsc(icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
-130             continue
+                end do
 !
                 valc = dcmplx(0.d0,0.d0)
 !
-                do 300 ii = 1, 3
+                do ii = 1, 3
                     valc = valc + vectc(ii) * vori(ii)
-300             continue
+                end do
                 zc(lmesu-1 +(numord-1)*nbmesu+imes) = valc
             else
-                do 230 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
                     if (cnsc(icmp) .eq. 'DX') vect(1) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
                     if (cnsc(icmp) .eq. 'DY') vect(2) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
                     if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
-230             continue
+                end do
                 val = 0.d0
-                do 320 ii = 1, 3
+                do ii = 1, 3
                     val = val + vect(ii) * vori(ii)
-320             continue
+                end do
                 zr(lmesu-1 +(numord-1)*nbmesu+imes) = val
             endif
-120     continue
+        end do
 !
 ! FIN BOUCLE SUR NUMERO ORDRE
-110 continue
+    end do
 !
     call detrsd('CHAM_NO_S', chs)
 !

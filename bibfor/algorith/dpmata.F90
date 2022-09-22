@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
                   pplus, se, seq, plas, dsde)
-    implicit      none
+    implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
@@ -61,7 +61,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
     if (plas .eq. 0.0d0) then
         call lcopli('ISOTROPE', mod, mater(1, 1), dsde)
-        goto 9999
+        goto 999
     else
         if (plas .ne. 2.0d0 .or. pplus .lt. pult) then
 ! =====================================================================
@@ -80,27 +80,27 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
 ! --- CALCUL DU VECTEUR UNITE -----------------------------------------
 ! =====================================================================
-            do 120 ii = 1, ndi
+            do ii = 1, ndi
                 vunite(ii) = un
-120          continue
+            end do
             if (plas .eq. 1.0d0) then
 ! =====================================================================
 ! --- CAS PLASTIQUE ---------------------------------------------------
 ! =====================================================================
 ! --- CALCUL DE DSEDE -------------------------------------------------
 ! =====================================================================
-                do 30 ii = 1, ndi
-                    do 40 jj = 1, ndi
+                do ii = 1, ndi
+                    do jj = 1, ndi
                         dsede(ii,jj) = - deuxmu/trois
-40                  continue
-30              continue
-                do 50 ii = 1, ndt
+                    end do
+                end do
+                do ii = 1, ndt
                     dsede(ii,ii) = dsede(ii,ii) + deuxmu
-50              continue
+                end do
 ! =====================================================================
 ! --- CALCUL DE PMAT1 -------------------------------------------------
 ! =====================================================================
-                if(seq.gt.r8prem())then
+                if (seq .gt. r8prem()) then
                     param1 = un - trois * deuxmu * dp / deux / seq
                     call lcprsm(param1, dsede, pmat1)
                 else
@@ -161,6 +161,6 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
         endif
     endif
 ! =====================================================================
-9999  continue
+999 continue
 ! =====================================================================
 end subroutine

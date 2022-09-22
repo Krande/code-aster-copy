@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
                   dphi)
 !
-    implicit    none
+    implicit none
 #include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
     integer :: nbmat
@@ -64,12 +64,12 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
 ! =================================================================
 ! --- CALCUL DE DPHI/DDEPS ------------------------------------
 ! =================================================================
-    do 10 i = 1, ndt
+    do i = 1, ndt
         if (seuilv .le. zero) then
             dphi(i) = zero
         else
             dphi(i) = a * n /pa * (seuilv/pa)**(n-un)*aa(i)
         endif
-10  end do
+    end do
 ! =================================================================
 end subroutine

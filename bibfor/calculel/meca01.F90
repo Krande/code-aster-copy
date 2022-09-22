@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
-                  kcha, tbgrca, resuco, resuc1,&
-                  leres1, noma, modele, ligrmo, mate,&
-                  cara, chvarc, codret)
+                  kcha, tbgrca, resuco, resuc1, leres1,&
+                  noma, modele, ligrmo, mate, cara,&
+                  chvarc, codret)
 ! person_in_charge: josselin.delmas at edf.fr
 ! ----------------------------------------------------------------------
 ! COMMANDE DE CALC_ERREUR SPECIFIQUE AUX INDICATEURS D'ERREUR
@@ -50,7 +50,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
 #include "asterfort/alchml.h"
 #include "asterfort/codent.h"
@@ -60,6 +59,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 #include "asterfort/exisd.h"
 #include "asterfort/exithm.h"
 #include "asterfort/exixfe.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -221,8 +221,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 2.2.1 ==> SAISIT ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
 !           RECUPERE LES CHARGES POUR LE NUMERO D'ORDRE IORDR
-            call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                        resuco, iordr)
+            call medom1(modele, mate, mateco, cara, kcha,&
+                        nchar, resuco, iordr)
             call jeveuo(kcha//'.LCHA', 'L', jcha)
             call mecara(cara, chcara)
 !
@@ -490,10 +490,10 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                     ncmp=1, nomcmp='X1', sr=s)
 !
 ! 4.2.2. ==> SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-        call medom1(modele, mate, mateco, cara, kchap, ncharp,&
-                    resup, iordr)
-        call medom1(modele, mate, mateco, cara, kchad, nchard,&
-                    resud, iordr)
+        call medom1(modele, mate, mateco, cara, kchap,&
+                    ncharp, resup, iordr)
+        call medom1(modele, mate, mateco, cara, kchad,&
+                    nchard, resud, iordr)
         call jeveuo(kchap//'.LCHA', 'L', jchap)
         call jeveuo(kchad//'.LCHA', 'L', jchad)
 !
@@ -622,10 +622,10 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         iordr = zi(jordr+iaux-1)
 !
 ! 6.2.1. ==> SAISIT ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-        call medom1(modele, mate, mateco, cara, kchap, ncharp,&
-                    resup, iordr)
-        call medom1(modele, mate, mateco, cara, kchad, nchard,&
-                    resud, iordr)
+        call medom1(modele, mate, mateco, cara, kchap,&
+                    ncharp, resup, iordr)
+        call medom1(modele, mate, mateco, cara, kchad,&
+                    nchard, resud, iordr)
         call jeveuo(kchap//'.LCHA', 'L', jchap)
         call jeveuo(kchad//'.LCHA', 'L', jchad)
 !
@@ -698,8 +698,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         call jerecu('V')
 !
         iordr = zi(jordr+iaux-1)
-        call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                    resuco, iordr)
+        call medom1(modele, mate, mateco, cara, kcha,&
+                    nchar, resuco, iordr)
         call jeveuo(kcha//'.LCHA', 'L', jcha)
         call mecara(cara, chcara)
         call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&

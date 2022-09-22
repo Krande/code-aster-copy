@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine snecol(imod, nbnode)
     implicit none
 !     =================
@@ -67,16 +67,16 @@ subroutine snecol(imod, nbnode)
 !
     prfnoe='N'
     icmax = 256
-    do 10 i = 1, icmax
+    do i = 1, icmax
         logiq(i) = .false.
         jpo(i) = 0
         jnomb(i) = 0
         jmax(i) = 1000
- 10 end do
+    end do
 !
     nbmax = 1000
     call jeveuo('&&PRESUP.INFO.NOEUDS', 'L', vi=noeuds)
-    do 100 i = 1, nbnode
+    do i = 1, nbnode
         inum = noeuds((i-1)*3+1)
         call codnop(chnode, prfnoe, 1, 1)
         call codent(inum, 'G', chnode(2:8))
@@ -102,11 +102,12 @@ subroutine snecol(imod, nbnode)
         endif
         jnomb(ipos) = nbno + 1
         zk8(jpo(ipos)-1+nbno+1) = chnode
-100 end do
+100     continue
+    end do
 !
 ! --> ECRITURE DES GROUPES DE NOEUDS PAR COULEUR
 !
-    do 110 ic = 1, icmax
+    do ic = 1, icmax
         if (logiq(ic)) then
             call codent((ic-1), 'G', kbid)
             chgrou = 'COUL_'//kbid
@@ -117,7 +118,7 @@ subroutine snecol(imod, nbnode)
             write (imod,'(A)') '%'
             call jedetr('&&PRESUP.COUL'//kbid)
         endif
-110 end do
+    end do
 !
     call jedema()
 end subroutine

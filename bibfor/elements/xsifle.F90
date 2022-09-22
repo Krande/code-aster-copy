@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xsifle(ndim, ifa, jptint, cface,&
-                  igeom, nfh, jheavn, singu, nfe, ddlc,&
-                  ddlm, jlsn, jlst, jstno, ipres, ipref, itemps,&
-                  idepl, nnop, valres, basloc, ithet,&
-                  nompar, option, igthet, jbasec,&
-                  contac)
+!
+subroutine xsifle(ndim, ifa, jptint, cface, igeom,&
+                  nfh, jheavn, singu, nfe, ddlc,&
+                  ddlm, jlsn, jlst, jstno, ipres,&
+                  ipref, itemps, idepl, nnop, valres,&
+                  basloc, ithet, nompar, option, igthet,&
+                  jbasec, contac)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 ! aslint: disable=W1306,W1504
     implicit none
+#include "jeveux.h"
+#include "asterc/r8pi.h"
 #include "asterfort/assert.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterc/r8pi.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xjacf2.h"
@@ -40,7 +41,6 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 #include "asterfort/xsifl1.h"
 #include "asterfort/xsifl2.h"
 #include "asterfort/xxmmvd.h"
-#include "jeveux.h"
 !
     character(len=8) :: nompar(4)
     character(len=16) :: option
@@ -86,7 +86,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !
 !
     integer :: nnof, npgf, ipoidf, ivff, idfdef
-    integer :: ipgf, zxain, heavn(nnop,5)
+    integer :: ipgf, zxain, heavn(nnop, 5)
     integer :: ddld, ddls, ncompn, ino, ig, iret, jtab(7)
     real(kind=8) :: xg(3), jac, ff(27), nd(3)
     real(kind=8) :: angl(2)
@@ -108,16 +108,16 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     angl(2) = r8pi()
 !
 !     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
-    if (nfh.gt.0) then
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+    if (nfh .gt. 0) then
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn.eq.5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            enddo
         enddo
-      enddo
     endif
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
@@ -130,15 +130,15 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !
     if (ndim .eq. 3) then
         elc='TR3'
-        if(option.eq.'CALC_K_G_COHE') fpg='FPG4'
-        if(option.ne.'CALC_K_G_COHE') fpg='XCON'
+        if (option .eq. 'CALC_K_G_COHE') fpg='FPG4'
+        if (option .ne. 'CALC_K_G_COHE') fpg='XCON'
     else if (ndim.eq.2) then
         elc='SE2'
         fpg='MASS'
     endif
 !
-    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-                     npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                     jvf=ivff, jdfde=idfdef)
 !
 !     MATÉRIAU HOMOGENE
 !     ON PEUT PAS LE RECUPERER SUR LES POINTS DE GAUSS DES FACETTES
@@ -148,17 +148,17 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     mu = e / (2.d0*(1.d0+nu))
 !
 !   DEFINITION DE KAPPA
-    if (ndim.eq.2.and.lteatt('C_PLAN','OUI')) then
-      ka = (3.d0-nu)/(1.d0+nu)
+    if (ndim .eq. 2 .and. lteatt('C_PLAN','OUI')) then
+        ka = (3.d0-nu)/(1.d0+nu)
     else
-      ka = 3.d0 - 4.d0*nu
+        ka = 3.d0 - 4.d0*nu
     endif
     coeff = e / (1.d0-nu*nu)
     coeff3 = 2.d0 * mu
 !
 !     ----------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
-    do 900 ipgf = 1, npgf
+    do ipgf = 1, npgf
 !
 !       CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 !       ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
@@ -172,29 +172,32 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
             ASSERT(nno.eq.nnop)
             call xjacff(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ipgf, nnop,&
-                        nnos, igeom, jbasec, xg, jac, ff,&
-                        r27bid, dfdi, nd, tau1, tau2)
+                        nnos, igeom, jbasec, xg, jac,&
+                        ff, r27bid, dfdi, nd, tau1,&
+                        tau2)
         else if (ndim.eq.2) then
             call xjacf2(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ndim, ipgf,&
-                        nnop, nnos, igeom, jbasec, xg, jac,&
-                        ff, r27bid, dfdi, nd, tau1)
+                        nnop, nnos, igeom, jbasec, xg,&
+                        jac, ff, r27bid, dfdi, nd,&
+                        tau1)
         endif
         if (option .ne. 'CALC_K_G_COHE') then
-            call xsifl1(elref, angl, basloc, coeff, coeff3, ddlm,&
-                        ddls, dfdi, ff, he, heavn, idepl,&
-                        igthet, ipref, ipres, ithet, jac,&
-                        jlsn, jlst, jstno, ka, mu, nd,&
-                        ndim, nfh, nnop, nnos, itemps,&
-                        nompar, option, singu, xg, igeom)
+            call xsifl1(elref, angl, basloc, coeff, coeff3,&
+                        ddlm, ddls, dfdi, ff, he,&
+                        heavn, idepl, igthet, ipref, ipres,&
+                        ithet, jac, jlsn, jlst, jstno,&
+                        ka, mu, nd, ndim, nfh,&
+                        nnop, nnos, itemps, nompar, option,&
+                        singu, xg, igeom)
         endif
         if (option .eq. 'CALC_K_G_COHE') then
             call xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
                         ddls, dfdi, ff, idepl, igthet,&
-                        ithet, jac, ndim, nnop,&
-                        nnos, tau1, tau2, nd, xg)
+                        ithet, jac, ndim, nnop, nnos,&
+                        tau1, tau2, nd, xg)
         endif
-900  continue
+    end do
 !     FIN DE BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !     ----------------------------------------------------------------
 !

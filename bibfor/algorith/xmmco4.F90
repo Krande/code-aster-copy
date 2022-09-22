@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmco4(ndim, nno, pla, nd, tau1,&
                   tau2, ffc, ddls, jac, ffp,&
                   nnol, ddlm, nnos, mmat)
@@ -71,54 +71,54 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
     call matini(3, 3, 0.d0, p)
     coefj=xcalc_saut(1,0,1)
 ! idem, il va falloir introduire les matrices de passage
-    do 17 i = 1, ndim
+    do i = 1, ndim
         p(1,i) = nd(i)
-17  continue
-    do 18 i = 1, ndim
+    end do
+    do i = 1, ndim
         p(2,i) = tau1(i)
-18  continue
+    end do
     if (ndim .eq. 3) then
-        do 19 i = 1, ndim
+        do i = 1, ndim
             p(3,i) = tau2(i)
-19      continue
+        end do
     endif
 ! on construit la transposee de la matrice de passage
     call transp(p, 3, ndim, ndim, ptr,&
                 3)
 !
-    do 1 i = 1, nnol
+    do i = 1, nnol
         pli = pla(i)
-        do 2 j = 1, nno
+        do j = 1, nno
             call indent(j, ddls, ddlm, nnos, jn)
-            do 3 l = 1, ndim
-                do 8 k = 1, ndim
+            do l = 1, ndim
+                do k = 1, ndim
 ! on remplit A : matrice [u*] / mu
-                    mmat(pli+2*ndim-1+k,jn+ndim+l) = mmat(pli+2*ndim-1+k,jn+ndim+l)+&
-                    coefj*ffc(i)*p(k,l)*ffp(j)*jac
+                    mmat(pli+2*ndim-1+k,jn+ndim+l) = mmat(pli+2*ndim-1+k,jn+ndim+l)+ coefj*ffc(i)&
+                                                     &*p(k,l)*ffp(j)*jac
 ! et sa transposee
-                    mmat(jn+ndim+l,pli+2*ndim-1+k) = mmat(jn+ndim+l,pli+2*ndim-1+k)+&
-                    coefj*ffc(i)*p(k,l)*ffp(j)*jac
- 8              continue
- 3          continue
- 2      continue
- 1  end do
+                    mmat(jn+ndim+l,pli+2*ndim-1+k) = mmat(jn+ndim+l,pli+2*ndim-1+k)+ coefj*ffc(i)&
+                                                     &*p(k,l)*ffp(j)*jac
+                end do
+            end do
+        end do
+    end do
 !
 ! on remplit B : matrice w* / mu
-    do 4 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
-        do 5 j = 1, nnol
+        do j = 1, nnol
             plj=pla(j)
-            do 6 l = 1, ndim
+            do l = 1, ndim
 ! on remplit B
-                mmat(pli-1+ndim+l,plj+2*ndim-1+l) = mmat(pli-1+ndim+l,plj+2*ndim-1+ l)-&
-                ffc(i)*ffc(j)*jac
+                mmat(pli-1+ndim+l,plj+2*ndim-1+l) = mmat(pli-1+ndim+l,plj+2*ndim-1+ l)- ffc(i)*ff&
+                                                    &c(j)*jac
 ! et sa transposee
-                mmat(plj+2*ndim-1+l,pli+ndim-1+l) = mmat(plj+2*ndim-1+l,pli+ndim-1+ l)-&
-                ffc(i)*ffc(j)*jac
+                mmat(plj+2*ndim-1+l,pli+ndim-1+l) = mmat(plj+2*ndim-1+l,pli+ndim-1+ l)- ffc(i)*ff&
+                                                    &c(j)*jac
 !
- 6          continue
- 5      continue
- 4  end do
+            end do
+        end do
+    end do
 ! on a enlevé le remplissage de C
 !
 end subroutine

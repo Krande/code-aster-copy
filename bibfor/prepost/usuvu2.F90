@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
                   nbpt, nbpair, coef, ang, fn,&
                   vg, iret, vustub, vusob, pus,&
@@ -74,9 +74,9 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
                         nbinst, temps, puusu2, vustub, vusob,&
                         pus, pmoye, pourpu, poupre)
         endif
-        do 16 i = 1, nbinst
+        do i = 1, nbinst
             vusur(i) = puusu2 * temps(i)
-16      continue
+        end do
 !
 ! **********************************************************************
 !                 M O D E L E     K W U _ E P R I
@@ -112,13 +112,13 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
                     call usuban(mate, isupp, para, iret)
                 else
                     isupp = 0
-                    goto 9999
+                    goto 999
                 endif
             endif
             nn = n1 + n2 + n3 + n4 + n5
             if (nn .eq. 0) then
                 isupp = 0
-                goto 9999
+                goto 999
             endif
             write(ifires,2200)
         endif
@@ -132,9 +132,9 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
         if (iret .eq. 10) then
             call utmess('F', 'PREPOST4_85')
         endif
-        do 20 i = 1, nbinst
+        do i = 1, nbinst
             vusur(i) = para(1) * w * puusur * temps(i)
-20      continue
+        end do
 !
 ! **********************************************************************
 !                 M O D E L E     E D F _ M Z
@@ -180,14 +180,14 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
                     xa = para(1)
                 else
                     isupp = 0
-                    goto 9999
+                    goto 999
                 endif
             endif
             call getfac('OBSTACLE', n6)
             nn = n1 + n2 + n3 + n4 + n5 + n6
             if (nn .eq. 0) then
                 isupp = 0
-                goto 9999
+                goto 999
             endif
             write(ifires,2200)
         endif
@@ -201,13 +201,13 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
             iret = 10
             call utmess('I', 'PREPOST4_86')
             call utmess('I', 'PREPOST4_87')
-            goto 9999
+            goto 999
         endif
         x1 = ( 1.d0 - xd ) / xn
-        do 30 i = 1, nbinst
+        do i = 1, nbinst
             t = temps(i)
             vusur(i) = v0 * ( xd*t + x1*( 1.d0 - exp(-xn*t) ) )
-30      continue
+        end do
 !
     endif
 !
@@ -225,5 +225,5 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
     2070 format (1p,4x,'               CONSTANTE K : ',e12.5)
     2080 format (1p,4x,'               CONSTANTE C : ',e12.5)
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                  kwork, sompgw, jrwork, tspaq, ipg, dectau, &
-                  jvecpg, jnorma)
-    implicit   none
+                  kwork, sompgw, jrwork, tspaq, ipg,&
+                  dectau, jvecpg, jnorma)
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -73,8 +73,8 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
 !
     n = 0
 !
-
-    do 10 ivect = 1, nbvec
+!
+    do ivect = 1, nbvec
         nx = zr(jvectn + (ivect-1)*3)
         ny = zr(jvectn + (ivect-1)*3 + 1)
         nz = zr(jvectn + (ivect-1)*3 + 2)
@@ -87,7 +87,7 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
         vy = zr(jvectv + (ivect-1)*3 + 1)
         vz = zr(jvectv + (ivect-1)*3 + 2)
 !
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
             decal = 18
             adrs = (iordr-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
@@ -97,7 +97,7 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
             sixy = zr(jrwork + adrs + 3 + dectau)
             sixz = zr(jrwork + adrs + 4 + dectau)
             siyz = zr(jrwork + adrs + 5 + dectau)
-
+!
 ! CALCUL DE vect_F = [SIG].vect_n
             fx = sixx*nx + sixy*ny + sixz*nz
             fy = sixy*nx + siyy*ny + siyz*nz
@@ -118,9 +118,9 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
             zr( jvecpg + (n-1)*2 ) = cutau
             zr( jvecpg + (n-1)*2 + 1 ) = cvtau
             zr( jnorma + (n-1) ) = norm
-20      continue
+        end do
 !
-10  end do
+    end do
 !
     call jedema()
 end subroutine

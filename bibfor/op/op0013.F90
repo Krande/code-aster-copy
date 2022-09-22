@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0013()
     implicit none
 !
@@ -23,8 +23,8 @@ subroutine op0013()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assvec.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -45,7 +45,7 @@ subroutine op0013()
 !
     character(len=19) :: ch19
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ifm,  ilivec, nbvec, niv
+    integer :: i, ibid, ifm, ilivec, nbvec, niv
     real(kind=8), pointer :: licoef(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -71,9 +71,9 @@ subroutine op0013()
     call jecreo(vecas//'.LICOEF', 'V V R ')
     call jeecra(vecas//'.LICOEF', 'LONMAX', nbvec)
     call jeveuo(vecas//'.LICOEF', 'E', vr=licoef)
-    do 5 i = 1, nbvec
+    do i = 1, nbvec
         licoef(i) = 1.0d0
- 5  end do
+    end do
 !
     call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
     vprof = '        '

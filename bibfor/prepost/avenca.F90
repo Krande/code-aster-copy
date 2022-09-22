@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
                   rmima)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+!
     integer :: nbvec, nbordr, iflag(nbvec), jrvecp
     real(kind=8) :: rmima(4*nbvec)
     aster_logical :: lsig0
@@ -89,7 +89,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
     n1 = 0
     nsig0 = 0
 !
-    do 30 ivect = 1, nbvec
+    do ivect = 1, nbvec
 !
 ! INITIALISATION
 !
@@ -100,7 +100,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
         cvmin = r8maem()
         cvmax = -r8maem()
 !
-        do 40 iordr = 1, nbordr
+        do iordr = 1, nbordr
             n1 = n1 + 1
             cui = zr(jrvecp+2*n1 -1)
             cvi = zr(jrvecp+2*n1)
@@ -117,7 +117,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
             if (cvi .gt. cvmax) then
                 cvmax = cvi
             endif
- 40     continue
+        end do
 !
 !-----------------------------------------------------------------------
 !   ------------------------------------
@@ -155,7 +155,7 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
             lsig0 = .true.
         endif
 !
- 30 end do
+    end do
 !
     call jedema()
 end subroutine

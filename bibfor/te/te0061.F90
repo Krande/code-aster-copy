@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0061(option, nomte)
 !
 !     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE CORRESPON-
@@ -88,8 +88,8 @@ subroutine te0061(option, nomte)
     call jevech('PTEMPER', 'L', itemp)
     call jevech('PTEMPSR', 'L', itps)
     valpar(1) = zr(itps)
-    deltat    = zr(itps+1)
-    theta     = zr(itps+2)
+    deltat = zr(itps+1)
+    theta = zr(itps+2)
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
 !====
@@ -134,10 +134,10 @@ subroutine te0061(option, nomte)
             call matrot(angl, p)
         else
             global = .false.
-            alpha   = zr(icamas+1)*r8dgrd()
-            beta    = zr(icamas+2)*r8dgrd()
-            dire(1) =  cos(alpha)*cos(beta)
-            dire(2) =  sin(alpha)*cos(beta)
+            alpha = zr(icamas+1)*r8dgrd()
+            beta = zr(icamas+2)*r8dgrd()
+            dire(1) = cos(alpha)*cos(beta)
+            dire(2) = sin(alpha)*cos(beta)
             dire(3) = -sin(beta)
             orig(1) = zr(icamas+4)
             orig(2) = zr(icamas+5)
@@ -152,7 +152,7 @@ subroutine te0061(option, nomte)
 !
 ! ---   BOUCLE SUR LES POINTS DE GAUSS :
 !       ------------------------------
-    do 160 kp = 1, npg1
+    do kp = 1, npg1
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
@@ -161,12 +161,12 @@ subroutine te0061(option, nomte)
         dtemdx = zero
         dtemdy = zero
         dtemdz = zero
-        do 110 i = 1, nno
+        do i = 1, nno
 ! CALCUL DE GRAD(T-)
             dtemdx = dtemdx + zr(itemp+i-1)*dfdx(i)
             dtemdy = dtemdy + zr(itemp+i-1)*dfdy(i)
             dtemdz = dtemdz + zr(itemp+i-1)*dfdz(i)
-110     continue
+        end do
 !
         if (.not.aniso) then
             fluglo(1) = lambda*dtemdx
@@ -177,11 +177,11 @@ subroutine te0061(option, nomte)
                 point(1) = zero
                 point(2) = zero
                 point(3) = zero
-                do 130 nuno = 1, nno
+                do nuno = 1, nno
                     point(1) = point(1) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-3)
                     point(2) = point(2) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-2)
                     point(3) = point(3) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-1)
-130             continue
+                end do
                 call utrcyl(point, dire, orig, p)
             endif
             fluglo(1) = dtemdx
@@ -200,12 +200,11 @@ subroutine te0061(option, nomte)
 !
 ! --- AFFECTATION DES TERMES DE RIGIDITE :
 !     ----------------------------------
-        do 140 i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) - poids*&
-                             & ( (1.0d0-theta)*&
-                                 & (dfdx(i)*fluglo(1)+dfdy(i)*fluglo(2)+ dfdz(i)*fluglo(3)))
-140     continue
-160 continue
+        do i = 1, nno
+            zr(ivectt+i-1) = zr(ivectt+i-1) - poids* ( (1.0d0-theta)* (dfdx(i)*fluglo(1)+dfdy(i)*&
+                             &fluglo(2)+ dfdz(i)*fluglo(3)))
+        end do
+    end do
 !
 !====
 ! 3.2 CALCULS TERMES DE MASSE
@@ -214,23 +213,23 @@ subroutine te0061(option, nomte)
 !
 ! ---   BOUCLE SUR LES POINTS DE GAUSS :
 !       ------------------------------
-    do 210 kp = 1, npg2
+    do kp = 1, npg2
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
                     poids, dfdx, dfdy, dfdz)
         tem = zero
-        do 170 i = 1, nno
+        do i = 1, nno
 ! CALCUL DE T-
             tem = tem + zr(itemp+i-1)*zr(ivf2+l+i-1)
-170     continue
+        end do
 !
 ! --- AFFECTATION DU TERME DE MASSE :
 !     -----------------------------
-        do 190 i = 1, nno
+        do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*cp/deltat*zr(ivf2+ l+i-1)*tem
-190     continue
-210 continue
+        end do
+    end do
 !
 !
 end subroutine

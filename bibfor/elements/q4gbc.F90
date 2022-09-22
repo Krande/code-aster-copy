@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine q4gbc(qsi, eta, jacob, caraq4, bc)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, jacob(*), caraq4(*), bc(2, 12)
 !     MATRICE BC(2,12) AU POINT QSI ETA POUR L'ELEMENT Q4GAMMA
 !     --------------------------------------------------------
@@ -70,9 +70,9 @@ subroutine q4gbc(qsi, eta, jacob, caraq4, bc)
     beta(11) = - x8 * mqsi
     beta(12) = - y8 * mqsi
 !     --------------------- CALCUL DE BC ------------------------------
-    do 100 j = 1, 12
+    do j = 1, 12
         bc(1,j) = vj11 * bqsi(j) + vj12 * beta(j)
         bc(2,j) = vj21 * bqsi(j) + vj22 * beta(j)
 !
-100  end do
+    end do
 end subroutine

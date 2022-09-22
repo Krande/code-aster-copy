@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine epdcp(tc, td, sigi, epsi)
 !
 ! FONCTION : CALCUL DE LA DEFORMATION DANS LA DIRECTION DE LA PLUS
@@ -85,15 +85,15 @@ subroutine epdcp(tc, td, sigi, epsi)
         vecint(1) = 0.d0
         vecint(2) = 0.d0
         vecint(3) = 0.d0
-        do 1 k = 1, 3
+        do k = 1, 3
             vecint(1)=vecint(1)+t(1,k)*vecp(k,1)
             vecint(2)=vecint(2)+t(2,k)*vecp(k,1)
             vecint(3)=vecint(3)+t(3,k)*vecp(k,1)
- 1      continue
+        end do
         epsi = 0.d0
-        do 3 i = 1, 3
+        do i = 1, 3
             epsi=epsi+vecint(i)*vecp(i,1)
- 3      continue
+        end do
         sigi=equi(1)
     else
         epsi = 0.d0

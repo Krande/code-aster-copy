@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
                   yint, rint, sgn, orig, beta,&
                   ppxx, ppxy, ppyx, ppyy, vnxx,&
@@ -106,20 +106,20 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
 ! --- INITIALISATIONS
 !
     nmax = 4 * nbtron * nbcyl * nbgrp
-    do 1 i = 1, nmax
+    do i = 1, nmax
         zr(ixx+i-1) = 0.d0
- 1  end do
+    end do
 !
     nmax = 2 * nbtron * nbcyl
-    do 2 igrp = 1, nbgrp
-        do 21 idir = 1, 2
-            do 211 i = 1, nmax*nmax
+    do igrp = 1, nbgrp
+        do idir = 1, 2
+            do i = 1, nmax*nmax
                 zr(ia+i-1) = 0.d0
-211          continue
-            do 212 i = 1, nmax
+            end do
+            do i = 1, nmax
                 zr(ib+i-1) = 0.d0
                 zr(ix+i-1) = 0.d0
-212          continue
+            end do
 !
 ! ---       ASSEMBLAGE
             call mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
@@ -134,17 +134,17 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
                 call utmess('F', 'ALGELINE_76')
             endif
 !
-            do 213 i = 1, nmax
+            do i = 1, nmax
                 zr(ixx+i-1+nmax*(2*igrp-idir)) = zr(ix+i-1)
-213          continue
-21      continue
- 2  end do
+            end do
+        end do
+    end do
 !
 !
 ! --- CALCUL DES COEFFICIENTS PPXX, PPXY, PPYX, PPYY,
 ! --- ET VNXX, VNXY, VNYX, VNYY
-    do 3 i = 1, nbgrp
-        do 31 j = 1, nbcyl
+    do i = 1, nbgrp
+        do j = 1, nbcyl
             ppxx(j,i) = 2.d0*zr(ixx-1+2*nbtron*(nbcyl*(2*i-1)+j-1)+1)
             ppxy(j,i) = 2.d0*zr(ixx-1+2*nbtron*(nbcyl*(2*i-2)+j-1)+1)
             ppyx(j,i) = 2.d0*zr(ixx-1+2*nbtron*(nbcyl*(2*i-1)+j-1)+2)
@@ -154,47 +154,47 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
                 ppxx(j,i) = ppxx(j,i) + 1.d0
                 ppyy(j,i) = ppyy(j,i) + 1.d0
             endif
-31      continue
- 3  end do
+        end do
+    end do
 !
-    do 4 i = 1, nbgrp
-        do 41 j = 1, nbgrp
+    do i = 1, nbgrp
+        do j = 1, nbgrp
             tmp(1,j) = 0.d0
             tmp(2,j) = 0.d0
             tmp(3,j) = 0.d0
             tmp(4,j) = 0.d0
-41      continue
-        do 42 j = 1, nbcyl
+        end do
+        do j = 1, nbcyl
             tmp(1,numgrp(j)) = tmp(1,numgrp(j)) + ppxx(j,i)
             tmp(2,numgrp(j)) = tmp(2,numgrp(j)) + ppxy(j,i)
             tmp(3,numgrp(j)) = tmp(3,numgrp(j)) + ppyx(j,i)
             tmp(4,numgrp(j)) = tmp(4,numgrp(j)) + ppyy(j,i)
-42      continue
-        do 43 j = 1, nbgrp
+        end do
+        do j = 1, nbgrp
             ppxx(j,i) = tmp(1,j)
             ppxy(j,i) = tmp(2,j)
             ppyx(j,i) = tmp(3,j)
             ppyy(j,i) = tmp(4,j)
-43      continue
- 4  end do
+        end do
+    end do
 !
 ! --- ON FORCE LA SYMETRIE DES COEFFICIENTS
 !
-    do 5 i = 1, nbgrp
-        do 50 k = 1, nbcyl
+    do i = 1, nbgrp
+        do k = 1, nbcyl
             if (numgrp(k) .eq. i) then
                 rayoi = rint(k)
             endif
-50      continue
+        end do
         ppxy(i,i) = ppxy(i,i) + ppyx(i,i)
         ppxy(i,i) = ppxy(i,i) / 2.d0
         ppyx(i,i) = ppxy(i,i)
-        do 51 j = 1, i-1
-            do 511 k = 1, nbcyl
+        do j = 1, i-1
+            do k = 1, nbcyl
                 if (numgrp(k) .eq. j) then
                     rayoj = rint(k)
                 endif
-511          continue
+            end do
             ppxx(i,j) = rayoi * rayoi * ppxx(i,j) + rayoj * rayoj * ppxx(j,i)
             ppxx(i,j) = ppxx(i,j) / 2.d0
             ppxx(j,i) = ppxx(i,j)
@@ -218,25 +218,25 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
             ppyy(j,i) = ppyy(i,j)
             ppyy(i,j) = ppyy(i,j) / rayoi / rayoi
             ppyy(j,i) = ppyy(j,i) / rayoj / rayoj
-51      continue
- 5  end do
+        end do
+    end do
 !
-    do 6 i = 1, nbgrp
-        do 61 j = 1, nbgrp
+    do i = 1, nbgrp
+        do j = 1, nbgrp
             vnxx(j,i) = 0.5d0 * ppxx(j,i)
             vnxy(j,i) = 0.5d0 * ppxy(j,i)
             vnyx(j,i) = 0.5d0 * ppyx(j,i)
             vnyy(j,i) = 0.5d0 * ppyy(j,i)
             if (j .eq. i) then
                 ncyl = 0
-                do 611 k = 1, nbcyl
+                do k = 1, nbcyl
                     if (numgrp(k) .eq. i) ncyl = ncyl + 1
-611              continue
+                end do
                 vnxx(j,i) = vnxx(j,i) + 0.5d0 * ncyl
                 vnyy(j,i) = vnyy(j,i) + 0.5d0 * ncyl
             endif
-61      continue
- 6  end do
+        end do
+    end do
 !
 ! --- MENAGE
     call jedetr('&&MEFREC.TMP.AB')

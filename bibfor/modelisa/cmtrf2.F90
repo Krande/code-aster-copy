@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
                   ltrf, nbma, codint, lint, nint)
-    implicit   none
+    implicit none
 #include "asterfort/assert.h"
     integer :: codcm1, codtrf, codint, ncm1, ntrf, nint, nbma
     integer :: lint(nbma), lcm1(ncm1), ltrf(ntrf)
@@ -41,39 +41,39 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
             nint = nbma
 !
         else
-            do 10,k = 1,ntrf
-            lint(k) = ltrf(k)
-            nint = ntrf
-10          continue
+            do k = 1, ntrf
+                lint(k) = ltrf(k)
+                nint = ntrf
+            end do
         endif
 !
     else
         if (codtrf .eq. 1) then
-            do 20,k = 1,ncm1
-            lint(k) = lcm1(k)
-            nint = ncm1
-20          continue
+            do k = 1, ncm1
+                lint(k) = lcm1(k)
+                nint = ncm1
+            end do
 !
         else
 !            -- ON NE PEUT PLUS RECULER, IL FAUT CALCULER
 !               L'INTERSECTION :
-            do 30,k = 1,nbma
-            lint(k) = 0
-30          continue
-            do 40,k = 1,ncm1
-            lint(lcm1(k)) = 1
-40          continue
-            do 50,k = 1,ntrf
-            lint(ltrf(k)) = lint(ltrf(k)) + 1
-50          continue
+            do k = 1, nbma
+                lint(k) = 0
+            end do
+            do k = 1, ncm1
+                lint(lcm1(k)) = 1
+            end do
+            do k = 1, ntrf
+                lint(ltrf(k)) = lint(ltrf(k)) + 1
+            end do
 !          -- LES MAILLES COMMUNES CONTIENNENT 2 (1+1) :
             nint = 0
-            do 60,k = 1,nbma
-            if (lint(k) .eq. 2) then
-                nint = nint + 1
-                lint(nint) = k
-            endif
-60          continue
+            do k = 1, nbma
+                if (lint(k) .eq. 2) then
+                    nint = nint + 1
+                    lint(nint) = k
+                endif
+            end do
         endif
     endif
 !

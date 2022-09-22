@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpinte(option, nfreq, valp, det, idet,&
                   ieme, npas, tolf, nitf, lraide,&
                   lmasse, ldynam, resufi, resufr, nfreqb,&
@@ -61,7 +61,7 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
     idet0 = 0
     if (option(1:6) .eq. 'AJUSTE') then
 !
-        do 1 jfreq = 1, nfreq - 1
+        do jfreq = 1, nfreq - 1
             iemei = ieme(jfreq+1) - ieme(jfreq)
             if (iemei .eq. 0) goto 1
             if (valp(jfreq) .eq. 0.0d0) then
@@ -75,7 +75,7 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                 valeur = (valp(jfreq)+valp(jfreq+1))*0.5d0
                 preci = (valp(jfreq+1)-valp(jfreq)) / valeur
                 if (jfreq .eq. 1) then
-                    do 110 ii = 1, abs(iemei)-1
+                    do ii = 1, abs(iemei)-1
                         ifreq = ifreq + 1
                         resufi(ifreq,1) = ieme(jfreq+1)
                         resufi(ifreq,2) = max(npas(jfreq),npas(jfreq+ 1))
@@ -84,7 +84,7 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                         resufr(ifreq,2) = valeur
                         resufr(ifreq,3) = 0.0d0
                         resufr(ifreq,14) = preci
-110                  continue
+                    end do
                 endif
             else
                 om0 = valp(jfreq)
@@ -99,7 +99,7 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                 ier = 0
 !
 !              --- CALCUL DU ZERO ---
-                do 50 niter = 1, nitf
+                do niter = 1, nitf
                     itrig = 0
                     om = (w1*f2*d1-w2*f1*d2)/ (w1*d1-w2*d2)
                     if (niter .le. 3) then
@@ -108,7 +108,7 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                         if (om .lt. f1+ftol) om = f1 + ftol
                         if (om .gt. f2-ftol) om = f2 - ftol
                     endif
-25                  continue
+ 25                 continue
                     idet0 = 0
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
                     call vpstur(lraide, om, lmasse, ldynam, det0,&
@@ -145,11 +145,11 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                     endif
                     w1 = 2** (((ip1-1)* (ip1-2))/2)
                     w2 = 2** (((ip2-1)* (ip2-2))/2)
-50              continue
+                end do
                 nbiter = -nitf
 !
 !              --- SORTIE DE LA BOUCLE SUR LES FREQUENCES ---
-60              continue
+ 60             continue
                 if (ier .ne. 0) then
                     valeur = 1.01d0 * om
                 else
@@ -165,13 +165,14 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
             resufr(ifreq,2) = valeur
             resufr(ifreq,3) = 0.0d0
             resufr(ifreq,14) = preci
- 1      continue
+  1         continue
+        end do
 !
     else
 !
 !        --- ON PREND LE MILIEU DE L'INTERVALLE ---
         nbiter = 0
-        do 200 jfreq = 1, nfreq - 1
+        do jfreq = 1, nfreq - 1
             if (abs(ieme(jfreq+1)-ieme(jfreq)) .gt. 0) then
                 ifreq = ifreq + 1
                 valeur = (valp(jfreq)+valp(jfreq+1))*0.5d0
@@ -184,36 +185,36 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                 resufr(ifreq,3) = 0.0d0
                 resufr(ifreq,14) = preci
             endif
-200      continue
+        end do
 !
     endif
 !
 !     --- MISE EN EXTENSION DES VALEURS PROPRES "MULTIPLES" ---
     if (abs(resufi(ifreq,1)-resufi(1,1)) .gt. ifreq-1) then
         nfreq = 0
-        do 300 jfreq = 1, ifreq-1
+        do jfreq = 1, ifreq-1
             nfreq = nfreq+1
             ntrou = abs(resufi(nfreq+1,1)-resufi(nfreq,1))-1
             if (ntrou .gt. 0) then
-                do 310 idec = nfreq+ifreq-jfreq, nfreq+1, -1
-                    do 312 jdec = 1, 4
+                do idec = nfreq+ifreq-jfreq, nfreq+1, -1
+                    do jdec = 1, 4
                         resufi(idec+ntrou,jdec) = resufi(idec,jdec)
-312                  continue
-                    do 315 jdec = 1, 14
+                    end do
+                    do jdec = 1, 14
                         resufr(idec+ntrou,jdec) = resufr(idec,jdec)
-315                  continue
-310              continue
-                do 320 idec = 2, ntrou
-                    do 322 jdec = 1, 4
+                    end do
+                end do
+                do idec = 2, ntrou
+                    do jdec = 1, 4
                         resufi(nfreq+idec,jdec) = resufi(nfreq+1,jdec)
-322                  continue
-                    do 325 jdec = 1, 14
+                    end do
+                    do jdec = 1, 14
                         resufr(nfreq+idec,jdec) = resufr(nfreq+1,jdec)
-325                  continue
-320              continue
+                    end do
+                end do
                 nfreq = nfreq + ntrou
             endif
-300      continue
+        end do
         nfreq = nfreq + 1
     else
 !        --- PAS DE VALEURS PROPRES "MULTIPLES" ---

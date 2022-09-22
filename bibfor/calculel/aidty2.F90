@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aidty2(impr)
-
+!
     implicit none
 !    BUT:
 !       ECRIRE SUR LE FICHIER "IMPR"
@@ -25,7 +25,6 @@ subroutine aidty2(impr)
 !          (POUR VERIFIER LA COMPLETUDE)
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/aidtyp.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -34,8 +33,9 @@ subroutine aidty2(impr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: nomte, noop
-    integer ::  nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
+    integer :: nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
     integer :: impr
     integer, pointer :: optte(:) => null()
 !
@@ -49,7 +49,7 @@ subroutine aidty2(impr)
     call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
     call wkvect('&&AIDTY2.NOP2', 'V V K16', nbop, ianop2)
-    do iop=1,nbop
+    do iop = 1, nbop
         call jenuno(jexnum('&CATA.OP.NOMOPT', iop), noop)
         zk16(ianop2-1+iop)=noop
     end do
@@ -57,16 +57,17 @@ subroutine aidty2(impr)
 !
 !     -- ECRITURE DES COUPLES (TE,OPT)
 !     --------------------------------
-    do ite=1,nbte
+    do ite = 1, nbte
         call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
-        do 101,iop=1,nbop
+        do iop = 1, nbop
             ioptte= optte(nbop*(ite-1)+iop)
             if (ioptte .eq. 0) goto 101
             call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
             nucalc= zi(iaopmo)
             if (nucalc .le. 0) goto 101
             write(impr,*)'&&CALCUL/'//nomte//'/'//zk16(ianop2-1+iop)
-101     continue
+101         continue
+        end do
     end do
 !
 !

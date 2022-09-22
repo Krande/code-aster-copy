@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
                   epsmax, dom)
     implicit none
@@ -57,7 +57,7 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
     nbpar = 1
     pheno = 'FATIGUE   '
     nompar = 'EPSI    '
-    do 10 i = 1, nbcycl
+    do i = 1, nbcycl
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
         if (delta .gt. epmax-zero) then
             epmax = delta
@@ -69,14 +69,16 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
             nomp(2) = 'EPSI'
             valp(1) = epmax
             valp(2) = delta
-            call fointe('F ', nomnap, 2, nomp, valp, dsigm, ier)
+            call fointe('F ', nomnap, 2, nomp, valp,&
+                        dsigm, ier)
             nomp(2) = 'SIGM'
-            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm], depsi, ier)
+            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm],&
+                        depsi, ier)
             call rcvale(nommat, pheno, nbpar, nompar, [depsi],&
                         1, nomres, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)
         endif
-10  end do
+    end do
 !
     call jedema()
 end subroutine

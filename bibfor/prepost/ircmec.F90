@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
                   instan, numord, val, ncmpve, nbenty,&
                   nbrepg, nvalec, typent, typgeo, codret)
@@ -115,7 +115,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
         write (ifm,13002)&
      &    '. PREMIERE ET DERNIERE VALEURS A ECRIRE POUR LA COMPOSANTE',&
      &    iaux, ' : ',val(iaux),val((nvalec*nbrepg-1)*ncmpve+iaux)
-13      continue
+ 13     continue
     endif
     13001 format(2x,'. NBREPG =',i4,', TYPENT =',i4,', TYPGEO =',i4)
     13002 format(2x,a,i3,a3,5g16.6)

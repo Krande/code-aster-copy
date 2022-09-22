@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
-    implicit   none
+    implicit none
 #include "asterc/r8miem.h"
     integer :: nbmode, neq, exclus(*)
     complex(kind=8) :: vecp(neq, nbmode)
@@ -37,20 +37,20 @@ subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
 !
     prec=r8miem()*10.d0
     zero = dcmplx(0.0d0,0.0d0)
-    do 100 imode = 1, nbmode
+    do imode = 1, nbmode
         normx = zero
-        do 110 ieq = 1, neq
+        do ieq = 1, neq
             if (abs(vecp(ieq,imode)*exclus(ieq)) .gt. abs(normx)) then
                 normx = vecp(ieq,imode)
             endif
-110      continue
+        end do
         if (abs(normx) .gt. prec) then
             normx = 1.d0 / normx
-            do 120 ieq = 1, neq
+            do ieq = 1, neq
                 vecp(ieq,imode) = vecp(ieq,imode) * normx
-120          continue
+            end do
         endif
         resufk(imode) = 'SANS_CMP: LAGR'
-100  end do
+    end do
 !
 end subroutine

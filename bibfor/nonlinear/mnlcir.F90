@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlcir(xdep, ydep, omega, alpha, eta,&
                   h, hf, nt, xsort)
     implicit none
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/dscal.h"
+#include "asterc/r8depi.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mnlfft.h"
-#include "asterc/r8depi.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
+!
     integer :: h, hf, nt
     real(kind=8) :: omega, alpha, eta
     character(len=14) :: xdep, ydep, xsort
@@ -63,26 +63,26 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta,&
 !
     depi=r8depi()
     t(1)=0.d0
-    do 10 k = 2, nt
+    do k = 2, nt
         t(k)=t(k-1)+(depi/omega)/nt
-10  continue
+    end do
 !
-    do 20 k = 1, nt
+    do k = 1, nt
         xt=zr(ix)
         yt=zr(iy)
-        do 21 j = 1, h
+        do j = 1, h
             xt=xt+zr(ix+j)*dcos(dble(j)*omega*t(k))
             yt=yt+zr(iy+j)*dcos(dble(j)*omega*t(k))
             xt=xt+zr(ix+h+j)*dsin(dble(j)*omega*t(k))
             yt=yt+zr(iy+h+j)*dsin(dble(j)*omega*t(k))
-21      continue
+        end do
         rk=xt**2+yt**2
         r(k)=sqrt(rk)
         fn(k)=((r(k)-1.d0)+sqrt((r(k)-1.d0)**2+&
         4.d0*eta/alpha))/(2.d0/alpha)
         fx(k)=fn(k)*xt/r(k)
         fy(k)=fn(k)*yt/r(k)
-20  continue
+    end do
 !
     call dscal(4*(2*hf+1), 0.d0, zr(isor), 1)
     call mnlfft(1, zr(isor), fx, hf, nt,&
@@ -99,7 +99,7 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta,&
     AS_DEALLOCATE(vr=fy)
     AS_DEALLOCATE(vr=fn)
     AS_DEALLOCATE(vr=r)
-
+!
     call jedema()
 !
 end subroutine

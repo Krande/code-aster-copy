@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
                   nparpg, formar)
 !      IMPRESSION DE LA TABLE "TABLE".
@@ -54,8 +54,8 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: iret,  nbpara, nblign
-    integer ::  lonmax, ititr
+    integer :: iret, nbpara, nblign
+    integer :: lonmax, ititr
     character(len=8) :: format
     character(len=19) :: nomtab
     integer, pointer :: tbnp(:) => null()
@@ -78,7 +78,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     call exisd('TABLE', nomtab, iret)
     if (iret .eq. 0) then
         call utmess('A', 'UTILITAI4_64')
-        goto 9999
+        goto 999
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
@@ -86,11 +86,11 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('A', 'UTILITAI4_65')
-        goto 9999
+        goto 999
     endif
     if (nblign .eq. 0) then
         call utmess('A', 'UTILITAI4_76')
-        goto 9999
+        goto 999
     endif
 !SV
     write(ifr,*) ' '
@@ -104,13 +104,13 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     if (iret .ne. 0) then
         call jeveuo(nomtab//'.TITR', 'L', vk80=titr)
         call jelira(nomtab//'.TITR', 'LONMAX', lonmax)
-        do 10 ititr = 1, lonmax
+        do ititr = 1, lonmax
             if (format .eq. 'ASTER') then
                 write(ifr,2000) '#TITRE',titr(ititr)
             else
                 write(ifr,'(1X,A)') titr(ititr)
             endif
-10      continue
+        end do
     endif
 !
     if (nparpg .eq. 0) then
@@ -136,7 +136,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
         write(ifr,1000) '#FIN_TABLE'
     endif
 !
-9999  continue
+999 continue
     1000 format(a)
     2000 format(a,1x,a)
 !

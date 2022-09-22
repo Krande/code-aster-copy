@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                   do1o2, r, norm, nint, nhop,&
                   npir, coord, nbi)
@@ -61,7 +61,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
 ! VERIFICATION SI UN DES NOEUDS DU TETRA EST CONFONDU
 ! AVEC NOEU1 OU NOEU2
 !
-    do 10 j = 1, 4
+    do j = 1, 4
         lnoeu(1,j) = .false.
         lnoeu(2,j) = .false.
         xo1a = coord(1,j) - coord1(1)
@@ -74,17 +74,17 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
         dao2 = sqrt( xo2a**2 + yo2a**2 + zo2a**2 )
         if (abs(dao1) .le. 1.0d-6) lnoeu(1,j) = .true.
         if (abs(dao2) .le. 1.0d-6) lnoeu(2,j) = .true.
- 10 end do
+    end do
 !
 ! RECHERCHE DES INTERSECTIONS DES ARETES DU TETRA AVEC LE CYLINDRE
-    do 20 j = 1, 3
-        do 30 k = j+1, 4
+    do j = 1, 3
+        do k = j+1, 4
             l = l+1
 ! LES 2 NOEUDS SONT EXTERIEURS OU INTERIEURS
             if ((norm(1,j)*norm(1,k)) .gt. 0) then
-                do 35 i = 1, 3
+                do i = 1, 3
                     coord(i,l) = 1.0d30
- 35             continue
+                end do
             else
 ! UN POINT EST EXTERIEUR ET L AUTRE INTERIEUR
                 nbi = nbi + 1
@@ -258,8 +258,8 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                     coord(3,l) = lambda*zab + coord(3,ia)
                 endif
             endif
- 30     continue
- 20 end do
+        end do
+    end do
 !
 ! SUIVANT LES CAS IL RESTE DES CALCULS A FAIRE
     if (nint .eq. 1 .and. nbi .ge. 1) then
@@ -268,10 +268,10 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
 ! CALCUL LA PROJECTION DE L INTERSECTION SUR LA FACE
 ! RECHERCHE DU NUMERO DU POINT INTERNE
 !
-        do 40 i = 1, 4
+        do i = 1, 4
             if (norm(1,i) .eq. 1) ib = i
- 40     continue
-        do 50 i = 1, 4
+        end do
+        do i = 1, 4
             if (norm(1,i) .eq. -1 .and. norm(2,i) .ne. 0) then
 !
 ! DE QUEL COTE SE TROUVE LES POINTS EXTERNES 01 OU 02
@@ -303,7 +303,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                     coord(3,l) = -lambda*zo1o2/do1o2 + coord(3,i)
                 endif
             endif
- 50     continue
+        end do
     else if (nint.eq.2 .and. nhop.eq.2 .and. npir.ge.3) then
 !
 ! SI LES 2 POINTS EXTERNES SONT DU MEME COTE ON NE FAIT RIEN
@@ -311,13 +311,13 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
 ! ON CHERCHE LES POINTS EXTERNES
 !
         ia = 0
-        do 60 i = 1, 4
+        do i = 1, 4
             if (norm(1,i) .eq. -1 .and. ia .eq. 0) then
                 ia = i
             else if (norm(1,i).eq.-1) then
                 ib = i
             endif
- 60     continue
+        end do
 ! SI LES 2 POINTS NE SONT PAS DU MEME COTE
         if (norm(2,ia) .ne. norm(2,ib)) then
             xab = coord(1,ib) - coord(1,ia)

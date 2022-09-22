@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0151()
     implicit none
 !       C A L C _ F A T I G U E
@@ -592,9 +592,9 @@ subroutine op0151()
     call jeveuo(chelem//'.CELV', 'E', vr=celv)
     call jelira(chelem//'.CELV', 'LONMAX', ibid)
     ASSERT(ibid.eq.nbpt)
-    do 222 i = 1, nbpt
+    do i = 1, nbpt
         celv(i) = zr(ivdmg+i-1)
-222 end do
+    end do
     call jedetr('&&OP0151.DOMMAGE')
 !
 7777 continue

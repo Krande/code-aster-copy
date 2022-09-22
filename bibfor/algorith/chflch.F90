@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine chflch(rigthe, vec2nd,infcha)
+!
+subroutine chflch(rigthe, vec2nd, infcha)
     implicit none
 !
 ! person_in_charge: hassan.berro at edf.fr
@@ -79,119 +79,119 @@ subroutine chflch(rigthe, vec2nd,infcha)
     cnchtp ='    '
     tpsthe(1) = 0.0d0
     inst= ' '
-
+!
     call jemarq()
-
-    call dismoi('NOM_MODELE',rigthe, 'MATR_ASSE', repk=modele)
-    call dismoi('CHAM_MATER',rigthe, 'MATR_ASSE', repk=mate)
-    call dismoi('CARA_ELEM',rigthe, 'MATR_ASSE', repk=carele)
-    call dismoi('NOM_NUME_DDL',rigthe, 'MATR_ASSE', repk=numedd)
-
+!
+    call dismoi('NOM_MODELE', rigthe, 'MATR_ASSE', repk=modele)
+    call dismoi('CHAM_MATER', rigthe, 'MATR_ASSE', repk=mate)
+    call dismoi('CARA_ELEM', rigthe, 'MATR_ASSE', repk=carele)
+    call dismoi('NOM_NUME_DDL', rigthe, 'MATR_ASSE', repk=numedd)
+!
     call vtcreb(vec2nd, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
-
+!
     charge = infcha//'.LCHA'
     infoch = infcha//'.INFC'
     fomult = infcha//'.FCHA'
-
+!
     call getfac('EXCIT', nchar)
-    call lisccr('THER',infcha,nchar,'G')
-
+    call lisccr('THER', infcha, nchar, 'G')
+!
     if (nchar .ne. 0) then
-        ! call wkvect(charge, 'V V K24', nchar, ialich)
-        ! call wkvect(infoch, 'V V IS', 2*nchar+1, jinf)
-        ! call wkvect(fomult, 'V V K24', nchar, ialifc)
-        call jeveuo(charge,'E',ialich)
-        call jeveuo(infoch,'E',jinf)
-        call jeveuo(fomult,'E',ialifc)
+! call wkvect(charge, 'V V K24', nchar, ialich)
+! call wkvect(infoch, 'V V IS', 2*nchar+1, jinf)
+! call wkvect(fomult, 'V V K24', nchar, ialifc)
+        call jeveuo(charge, 'E', ialich)
+        call jeveuo(infoch, 'E', jinf)
+        call jeveuo(fomult, 'E', ialifc)
         zi(jinf) = nchar
         nchci = 0
         do 32 , ich = 1 , nchar
-            call getvid('EXCIT', 'CHARGE', iocc=ich, scal=nomcha)
-            zk24(ialich+ich-1) = nomcha
-
-            call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=typch)
-            if ((typch(1:5).ne.'THER_') .and. (typch(1:5).ne.'CITH_')) then
-                call utmess('E', 'CHARGES_21', sk=nomcha(1:8))
-            endif
-
-            ligrch = nomcha(1:8)//'.CHTH.LIGRE'
-
-            if (typch(1:5) .eq. 'CITH_') then
-                call jeexin(nomcha(1:19)//'.AFCK', iret)
-                ASSERT(iret.ne.0)
-                if (typch(5:7) .eq. '_FT') then
-                    zi(jinf+ich) = -3
-                else if (typch(5:7).eq.'_FO') then
-                    zi(jinf+ich) = -2
-                else
-                    zi(jinf+ich) = -1
-                endif
-            endif
-
-            lchin = ligrch(1:13)//'.CIMPO.DESC'
-            call jeexin(lchin, iret)
-            if (iret .ne. 0) then
-                if (typch(5:7) .eq. '_FO') then
-                    zi(jinf+ich) = 2
-                    call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
-                    if (parcha(1:3) .eq. 'OUI') then
-                        zi(jinf+ich) = 3
-                    endif
-                else
-                    zi(jinf+ich) = 1
-                endif
-            endif
-
-            fmult = .false.
-            call getvid('EXCIT', 'FONC_MULT', iocc=ich, scal=zk24( ialifc+ich-1), nbret=n1)
-
-            if (n1 .eq. 0) then
-                nomfct = '&&OP0116'
-                call jeexin(nomfct(1:19)//'.PROL', iret)
-                if (iret .eq. 0) then
-                    ASSERT(lxlgut(nomfct).le.24)
-                    call wkvect(nomfct(1:19)//'.PROL', 'V V K24', 6, jpro)
-                    zk24(jpro) = 'CONSTANT'
-                    zk24(jpro+1) = 'CONSTANT'
-                    zk24(jpro+2) = 'TOUTPARA'
-                    zk24(jpro+3) = 'TOUTRESU'
-                    zk24(jpro+4) = 'CC      '
-                    zk24(jpro+5) = nomfct
+        call getvid('EXCIT', 'CHARGE', iocc=ich, scal=nomcha)
+        zk24(ialich+ich-1) = nomcha
 !
-                    call wkvect(nomfct(1:19)//'.VALE', 'V V R', 2, jval)
-                    zr(jval) = 1.0d0
-                    zr(jval+1)= 1.0d0
-                endif
-                zk24(ialifc+ich-1) = '&&OP0116'
+        call dismoi('TYPE_CHARGE', nomcha, 'CHARGE', repk=typch)
+        if ((typch(1:5).ne.'THER_') .and. (typch(1:5).ne.'CITH_')) then
+            call utmess('E', 'CHARGES_21', sk=nomcha(1:8))
+        endif
+!
+        ligrch = nomcha(1:8)//'.CHTH.LIGRE'
+!
+        if (typch(1:5) .eq. 'CITH_') then
+            call jeexin(nomcha(1:19)//'.AFCK', iret)
+            ASSERT(iret.ne.0)
+            if (typch(5:7) .eq. '_FT') then
+                zi(jinf+ich) = -3
+            else if (typch(5:7).eq.'_FO') then
+                zi(jinf+ich) = -2
             else
-                fmult = .true.
+                zi(jinf+ich) = -1
             endif
-
-            do 326 , k = 2 ,nbtych
-                lchin = ligrch(1:13)//nomlig(k)//'.DESC'
-                call exisd('CHAMP_GD', lchin, iret)
-                if (iret .ne. 0) then
-                    if ((k.ge.7) .and. fmult) then
-                        call utmess('F', 'CHARGES_20', sk=nomcha(1:8))
-                    endif
-                    if (typch(5:7) .eq. '_FO') then
-                        zi(jinf+nchar+ich) = max(2,zi(jinf+nchar+ich))
-                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
-                        if (parcha(1:3) .eq. 'OUI') then
-                            if (nomlig(k) .ne. '.T_EXT') then
-                                coecst = .false.
-                            endif
-                            zi(jinf+nchar+ich) = max(3,zi(jinf+nchar+ ich))
-                        endif
-                    else
-                        zi(jinf+nchar+ich) = max(1,zi(jinf+nchar+ich))
-                    endif
+        endif
+!
+        lchin = ligrch(1:13)//'.CIMPO.DESC'
+        call jeexin(lchin, iret)
+        if (iret .ne. 0) then
+            if (typch(5:7) .eq. '_FO') then
+                zi(jinf+ich) = 2
+                call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
+                if (parcha(1:3) .eq. 'OUI') then
+                    zi(jinf+ich) = 3
                 endif
-326         continue
-32      continue
+            else
+                zi(jinf+ich) = 1
+            endif
+        endif
+!
+        fmult = .false.
+        call getvid('EXCIT', 'FONC_MULT', iocc=ich, scal=zk24( ialifc+ich-1), nbret=n1)
+!
+        if (n1 .eq. 0) then
+            nomfct = '&&OP0116'
+            call jeexin(nomfct(1:19)//'.PROL', iret)
+            if (iret .eq. 0) then
+                ASSERT(lxlgut(nomfct).le.24)
+                call wkvect(nomfct(1:19)//'.PROL', 'V V K24', 6, jpro)
+                zk24(jpro) = 'CONSTANT'
+                zk24(jpro+1) = 'CONSTANT'
+                zk24(jpro+2) = 'TOUTPARA'
+                zk24(jpro+3) = 'TOUTRESU'
+                zk24(jpro+4) = 'CC      '
+                zk24(jpro+5) = nomfct
+!
+                call wkvect(nomfct(1:19)//'.VALE', 'V V R', 2, jval)
+                zr(jval) = 1.0d0
+                zr(jval+1)= 1.0d0
+            endif
+            zk24(ialifc+ich-1) = '&&OP0116'
+        else
+            fmult = .true.
+        endif
+!
+        do 326 , k = 2 ,nbtych
+        lchin = ligrch(1:13)//nomlig(k)//'.DESC'
+        call exisd('CHAMP_GD', lchin, iret)
+        if (iret .ne. 0) then
+            if ((k.ge.7) .and. fmult) then
+                call utmess('F', 'CHARGES_20', sk=nomcha(1:8))
+            endif
+            if (typch(5:7) .eq. '_FO') then
+                zi(jinf+nchar+ich) = max(2,zi(jinf+nchar+ich))
+                call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
+                if (parcha(1:3) .eq. 'OUI') then
+                    if (nomlig(k) .ne. '.T_EXT') then
+                        coecst = .false.
+                    endif
+                    zi(jinf+nchar+ich) = max(3,zi(jinf+nchar+ ich))
+                endif
+            else
+                zi(jinf+nchar+ich) = max(1,zi(jinf+nchar+ich))
+            endif
+        endif
+326     continue
+ 32     continue
     endif
 !
-
+!
 !   --- Dirichlet
     call vedith(modele, infcha, inst, vediri)
     call asasve(vediri, numedd, 'R', vadirp)
@@ -203,8 +203,9 @@ subroutine chflch(rigthe, vec2nd,infcha)
     call ascavc(charge, infoch, fomult, numedd, tpsthe(1),&
                 cnchci, l_hho_=ASTER_FALSE)
 !   --- Other
-    call vechth('STAT',modele, charge, infoch, carele, mate, ' ', &
-                tpsthe(1), ' ', ' ', vechtp)
+    call vechth('STAT', modele, charge, infoch, carele,&
+                mate, ' ', tpsthe(1), ' ', ' ',&
+                vechtp)
     call asasve(vechtp, numedd, 'R', vachtp)
     call ascova('D', vachtp, fomult, 'INST', tpsthe(1),&
                 'R', cnchtp)
@@ -218,7 +219,7 @@ subroutine chflch(rigthe, vec2nd,infcha)
     do k = 0, loncm1
         zr(j2nd+k) = zr(jnchtp+k) + zr(jndirp+k)
     enddo
-
+!
     call jedema()
-
+!
 end subroutine

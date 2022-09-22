@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rldur8(nommat, hcol, adia, ablo, neq,&
                   nbbloc, xsol, nbsol)
     implicit none
 !
 ! aslint: disable=W1306
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -30,6 +29,7 @@ subroutine rldur8(nommat, hcol, adia, ablo, neq,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nommat
     integer :: neq
     integer :: hcol(*), adia(*), ablo(*)
@@ -125,7 +125,7 @@ subroutine rldur8(nommat, hcol, adia, ablo, neq,&
 !     --- DANS L'ETAPE DE RESOLUTION DESCENDANTE, SEULE EST
 !     --- CONCERNEE LA PARTIE INFERIEURE DE LA MATRICE
 !
-    do 100 ibloc = 1, nbbloc
+    do ibloc = 1, nbbloc
         if (ablo(ibloc) .ge. neq) goto 101
 !
 !        -- IDERBL EST LE NUMERO DU DERNIER BLOC A TRAITER:
@@ -134,7 +134,7 @@ subroutine rldur8(nommat, hcol, adia, ablo, neq,&
 !
         iderbl=ibloc+nbbloc
         call jeveuo(jexnum(ualf, ibloc+nbbloc), 'L', lmat)
-        do 110 iequa = ablo(ibloc)+1, ablo(ibloc+1)
+        do iequa = ablo(ibloc)+1, ablo(ibloc+1)
             if (iequa .gt. neq) goto 111
             ilong = hcol (iequa)
 !-  ADRESSE DANS LE BLOC INF DU TERME DIAGONAL CORRESPONDANT A
@@ -146,27 +146,27 @@ subroutine rldur8(nommat, hcol, adia, ablo, neq,&
 !-  INDICE DU PREMIER TERME NON NUL SUR LA LIGNE IEQUA
             ixx = iequa - ilong + 1
             zr(ldiag+iequa-1) = zr(iadia)
-            do 120 isol = 1, nbsol
+            do isol = 1, nbsol
                 r8val = 0
-                do 130 i = 0, ilong - 2
+                do i = 0, ilong - 2
                     r8val = r8val + xsol(ixx+i,isol) * zr(ide+i)
-130              continue
+                end do
                 xsol(iequa,isol) = xsol(iequa,isol) - r8val
                 xsol(iequa,isol) = xsol(iequa,isol)/zr(ldiag+iequa-1)
-120          continue
-110      continue
-111      continue
+            end do
+        end do
+111     continue
         call jelibe(jexnum(ualf, ibloc+nbbloc))
-100  end do
-101  continue
+    end do
+101 continue
 !
 !
 !     --- DEUXIEME  PARTIE : RESOLUTION REMONTANTE ---
 !     --- UTILISATION DES BLOCS SUP DE LA MATRICE   ---
     iderbl = nbbloc + nbbloc
-    do 300 ibloc = iderbl, nbbloc+1, -1
+    do ibloc = iderbl, nbbloc+1, -1
         call jeveuo(jexnum(ualf, ibloc-nbbloc), 'L', lmat)
-        do 310 iequa = ablo(ibloc-nbbloc+1), ablo(ibloc-nbbloc)+1, -1
+        do iequa = ablo(ibloc-nbbloc+1), ablo(ibloc-nbbloc)+1, -1
             if (iequa .gt. neq) goto 310
             ilong = hcol(iequa)
 !-  ADRESSE DANS LE BLOC SUP DU TERME DIAGONAL CORRESPONDANT A
@@ -177,20 +177,21 @@ subroutine rldur8(nommat, hcol, adia, ablo, neq,&
             ide = iadia - ilong + 1
 !-  INDICE DU PREMIER TERME NON NUL SUR LA COLONNE IEQUA
             ixx = iequa - ilong + 1
-            do 320 isol = 1, nbsol
+            do isol = 1, nbsol
                 r8val = - xsol(iequa,isol)
                 if (r8val .ne. 0) then
-                    do 330 i = 0, ilong - 2
+                    do i = 0, ilong - 2
                         xsol(ixx+i,isol)=xsol(ixx+i,isol)+r8val*zr(&
                         ide+i)
 !                    XSOL(IXX+I,ISOL)=XSOL(IXX+I,ISOL)+R8VAL*ZR(IDE+I)/
 !     1              ZR(LDIAG+IXX+I-1)
-330                  continue
+                    end do
                 endif
-320          continue
-310      continue
+            end do
+310         continue
+        end do
         call jelibe(jexnum(ualf, ibloc-nbbloc))
-300  end do
+    end do
 !
     call jedetr(nomdia)
 !

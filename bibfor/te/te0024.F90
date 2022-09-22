@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0024(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -50,15 +50,15 @@ subroutine te0024(option, nomte)
     call elref1(elp)
 !
 !     ON CALCULE LES GRADIENTS SUR TOUS LES NOEUDS DE L'ELEMENT DE REF
-    call elrefe_info(elrefe=elp,fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgan)
+    call elrefe_info(elrefe=elp, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgan)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PNEUTER', 'L', ineut)
     call jevech('PGNEUTR', 'E', igr)
 !
 !     BOUCLE SUR LES NOEUDS
-    do 100 ino = 1, nno
+    do ino = 1, nno
         if (ndim .eq. 3) then
             call dfdm3d(nno, ino, ipoids, idfde, zr(igeom),&
                         jac, dfdx, dfdy, dfdz)
@@ -71,18 +71,18 @@ subroutine te0024(option, nomte)
         grady = 0.0d0
         gradz = 0.0d0
 !
-        do 110 i = 1, nno
+        do i = 1, nno
 !
             gradx = gradx + dfdx(i)*zr(ineut+i-1)
             grady = grady + dfdy(i)*zr(ineut+i-1)
             if (ndim .eq. 3) gradz = gradz + dfdz(i)*zr(ineut+i-1)
 !
-110      continue
+        end do
         zr(igr-1+(ino-1)*ndim+1)= gradx
         zr(igr-1+(ino-1)*ndim+2)= grady
         if (ndim .eq. 3) zr(igr-1+(ino-1)*ndim+3)= gradz
 !
-100  end do
+    end do
 !
 !
 ! FIN ------------------------------------------------------------------

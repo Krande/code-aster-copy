@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                   lres)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -29,6 +28,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtxcnl.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: typcst(*)
     character(len=*) :: typres
@@ -56,7 +56,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer ::  icomb, iconst, ier1, ier2, jcomb, lconl1
+    integer :: icomb, iconst, ier1, ier2, jcomb, lconl1
     integer :: lconl2, neq
 !-----------------------------------------------------------------------
     call jemarq()
@@ -67,7 +67,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
     neq = zi(lres+2)
     jcomb = 0
     iconst = 1
-    do 10 icomb = 1, nbcomb
+    do icomb = 1, nbcomb
         cbid(2) = zk24(zi(lmat(icomb)+1))
         call jeexin(cbid(2)//'.CONL', ier2)
         if (ier2 .ne. 0) then
@@ -89,7 +89,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
 !
 !           --- REMPLISSAGE ---
             cumul = 'ZERO'
-            do 30 jcomb = icomb, nbcomb
+            do jcomb = icomb, nbcomb
                 cbid(2) = zk24(zi(lmat(jcomb)+1))
                 call jeexin(cbid(2)//'.CONL', ier2)
                 if (ier2 .ne. 0) then
@@ -104,7 +104,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                     if (typcst(jcomb) .eq. 'C') then
                         tcst = abs(dcmplx(const(iconst),const(iconst+ 1)))
                         tpcst = 'R'
-                        call mtxcnl(cumul, tpcst, [tcst,0.d0], type, lconl2,&
+                        call mtxcnl(cumul, tpcst, [tcst, 0.d0], type, lconl2,&
                                     typrez, lconl1, neq)
                     else
                         call mtxcnl(cumul, typcst(jcomb), const(iconst), type, lconl2,&
@@ -114,16 +114,16 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                 endif
                 iconst = iconst + 1
                 if (typcst(jcomb) .eq. 'C') iconst = iconst + 1
-30          continue
+            end do
             goto 20
         else
             iconst = iconst + 1
             if (typcst(icomb) .eq. 'C') iconst = iconst + 1
         endif
-10  end do
+    end do
 !
 !
-20  continue
+ 20 continue
     if (jcomb .eq. 0) then
 !        --- PAS DE .CONL ---
         call jeexin(cbid(1)//'.CONL', ier1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
                   xdet)
 !
@@ -77,7 +77,7 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
 !
 ! --- CALCUL DE L'EXTRAPOLATION
 !
-    do 110 i = depart, iterat
+    do i = depart, iterat
         xx = log(vresi(i+1))
         if (i .gt. (iterat - 3)) then
             xn = xn + deux
@@ -92,7 +92,7 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
             sx2 = sx2 + xx**2
             syx = syx + xx*i
         endif
-110  end do
+    end do
     xdet = -sx**2 + sx2*xn
     xa0 = sx2*sy - sx*syx
     xa1 = -(sx*sy) + syx*xn

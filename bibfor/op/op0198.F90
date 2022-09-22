@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0198()
-    implicit   none
+    implicit none
 ! --- BUT : COMMANDE POST_K_BETA ---------------------------------------
 ! ======================================================================
 ! ======================================================================
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/calc_infl_k1.h"
 #include "asterfort/calck1.h"
 #include "asterfort/coplas.h"
 #include "asterfort/infmaj.h"
@@ -40,7 +41,6 @@ subroutine op0198()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/veritb.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/calc_infl_k1.h"
     integer :: ndim, nk1d, ik1d, jnogn, itime, nbval, jtbint, nbval2
     integer :: norev, nomdb, ibid, nval
     real(kind=8) :: lrev, deklag, prodef, londef, temps, k1acp
@@ -90,8 +90,8 @@ subroutine op0198()
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES AUTRE QUE K1D ---------------------------
 ! ======================================================================
-    call recupe(noma, ndim, nk1d, lrev, lmdb, &
-                matrev, matmdb, deklag, prodef, londef, &
+    call recupe(noma, ndim, nk1d, lrev, lmdb,&
+                matrev, matmdb, deklag, prodef, londef,&
                 oridef, profil)
 ! ======================================================================
 ! --- VERIFICATION DES DONNEES -----------------------------------------
@@ -108,8 +108,8 @@ subroutine op0198()
 ! ======================================================================
     call tbcrsd(result, 'G')
     nval = 8
-    if(profil(1:12).eq.'SEMI_ELLIPSE') then
-       nval     = 11
+    if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
+        nval = 11
     endif
     call tbajpa(result, nval, nomtab, typpar)
 ! ======================================================================
@@ -120,19 +120,19 @@ subroutine op0198()
 ! ======================================================================
 ! --- ITERATIONS SUR LES DIFFERENTES OCCURENCES DE K1D -----------------
 ! ======================================================================
-    do 10 ik1d = 1, nk1d
+    do ik1d = 1, nk1d
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-        dkma  = 0.0d0
-        dkmb  = 0.0d0
-        dkmc  = 0.0d0
+        dkma = 0.0d0
+        dkmb = 0.0d0
+        dkmc = 0.0d0
         k1acp = 0.0d0
         k1bcp = 0.0d0
         k1ccp = 0.0d0
-        kal   = 0.0d0
-        kbl   = 0.0d0
-        kcl   = 0.0d0
+        kal = 0.0d0
+        kbl = 0.0d0
+        kcl = 0.0d0
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES ASSOCIEES A LA IK1D OCCURENCE DE K1D ----
 ! ======================================================================
@@ -140,7 +140,7 @@ subroutine op0198()
 ! ======================================================================
 ! --- ITERATIONS SUR LES INSTANTS MECANIQUES ---------------------------
 ! ======================================================================
-        do 20 itime = 1, nbval
+        do itime = 1, nbval
             temps = zr(jtbint-1+itime)
 ! ======================================================================
 ! --- RECUPERATION DES CHAMPS MECANIQUES -------------------------------
@@ -157,29 +157,29 @@ subroutine op0198()
 ! ======================================================================
 ! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
 ! ======================================================================
-            if(profil(1:7).eq.'ELLIPSE') then
-               call calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
-                           tbscmb, prodef, londef, deklag, lrev,&
-                           k1a, k1b)
+            if (profil(1:7) .eq. 'ELLIPSE') then
+                call calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
+                            tbscmb, prodef, londef, deklag, lrev,&
+                            k1a, k1b)
 ! ======================================================================
 ! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
 ! --- METHODE DES COEFFICIENTS D'INFLUENCE -----------------------------
 ! ======================================================================
-            else if(profil(1:12).eq.'SEMI_ELLIPSE') then
-               call calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
-                                 lrev, lmdb, matrev, matmdb, tempa,&
-                                 tempb, k1a, k1b, k1c)
+            else if (profil(1:12).eq.'SEMI_ELLIPSE') then
+                call calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef,&
+                                  lrev, lmdb, matrev, matmdb, tempa,&
+                                  tempb, k1a, k1b, k1c)
             endif
 ! ======================================================================
 ! --- AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------------
 ! --- D'INTENSITE DE CONTRAINTES ---------------------------------------
 ! ======================================================================
             decal=deklag
-            if(deklag.ge.0.d0) decal=0.d0
-            if(profil(1:12).eq.'SEMI_ELLIPSE') decal=0.d0
-            call coplas(tempa, k1a, k1b, k1c, matrev, &
-                        lrev, decal, prodef, oridef, profil, &
-                        kal, kbl, kcl, dkma, dkmb, &
+            if (deklag .ge. 0.d0) decal=0.d0
+            if (profil(1:12) .eq. 'SEMI_ELLIPSE') decal=0.d0
+            call coplas(tempa, k1a, k1b, k1c, matrev,&
+                        lrev, decal, prodef, oridef, profil,&
+                        kal, kbl, kcl, dkma, dkmb,&
                         dkmc, k1acp, k1bcp, k1ccp)
 ! ======================================================================
 ! --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------
@@ -191,26 +191,26 @@ subroutine op0198()
             rnom(5) = k1b
             rnom(6) = k1bcp
             rnom(7) = tempb
-            knom    = zk32(jnogn+ik1d-1)
-            nval    = 8
+            knom = zk32(jnogn+ik1d-1)
+            nval = 8
 !
-            if(profil(1:12).eq.'SEMI_ELLIPSE') then
-               nval     = 11
-               rnom(8)  = k1c
-               rnom(9)  = k1ccp
-               rnom(10) = tempa
+            if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
+                nval = 11
+                rnom(8) = k1c
+                rnom(9) = k1ccp
+                rnom(10) = tempa
             endif
-!    
+!
             call tbajli(result, nval, nomtab, [ibid], rnom,&
                         [c16b], knom, 0)
-
+!
 ! ======================================================================
 ! --- DESTRUCTION DES CHAMPS DE CONTRAINTES ----------------------------
 ! ======================================================================
             call jedetr(sigmrv)
             call jedetr(sigmdb)
-20      continue
-10  continue
+        end do
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

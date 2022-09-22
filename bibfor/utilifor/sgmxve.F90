@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function sgmxve(nbterm, vect)
     implicit none
     real(kind=8) :: sgmxve
@@ -37,9 +37,9 @@ function sgmxve(nbterm, vect)
 ! --- ------------------------------------------------------------------
 !
     vmax = vect(1)
-    do 10 ii = 2, nbterm
+    do ii = 2, nbterm
         if (abs(vect(ii)) .ge. abs(vmax)) vmax = vect(ii)
-10  end do
+    end do
     if (vmax .ge. 0.0d0) then
         sgmxve = 1.0d0
     else

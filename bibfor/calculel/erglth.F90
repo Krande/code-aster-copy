@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine erglth(champ, inst, niveau, iordr, resuco)
 ! ERREUR GLOBALE AU MAILLAGE - THERMIQUE
 ! **     **                    **
@@ -99,7 +99,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
 !     -- ON VERIFIE LES LONGUEURS:
     first = .true.
     nbgr = nbgrel(ligrel)
-    do 1 j = 1, nbgr
+    do j = 1, nbgr
         mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 1
         long2 = digdel(mode)
@@ -113,7 +113,8 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
             endif
         endif
         first = .false.
-  1 end do
+  1     continue
+    end do
 !
 !        -- ON CUMULE :
     call jeveuo(champ2//'.CELV', 'E', iavale)
@@ -136,12 +137,12 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
         terme2 = 0.d0
     endif
 !
-    do 2 j = 1, nbgr
+    do j = 1, nbgr
         mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 2
         nel = nbelem(ligrel,j)
         idecgr=celd(celd(4+j)+8)
-        do 3 k = 1, nel
+        do k = 1, nel
             iad = iavale-1+idecgr+(k-1)*longt
             err0 = err0 + zr(iad)**2
             nors = nors + zr(iad+2)**2
@@ -156,8 +157,9 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
                 terme1 = terme1 + zr(iad+14)**2
             endif
             nbel = nbel + 1
-  3     continue
-  2 continue
+        end do
+  2     continue
+    end do
     err0 = sqrt(err0)
     nors = sqrt(nors)
     if (niveau .eq. 2) then

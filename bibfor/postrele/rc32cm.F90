@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc32cm()
     implicit none
-#include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/jemarq.h"
+#include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/getvis.h"
 #include "asterfort/codent.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     LECTURE DU MOT CLE FACTEUR "CHAR_MECA"
 !     ------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine rc32cm()
     call jecrec('&&RC3200.VALE_CHAR', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbchar)
 !
-    do 20, iocc = 1, nbchar, 1
+    do iocc = 1, nbchar, 1
 !
         call getvis('CHAR_MECA', 'NUME_CHAR', iocc=iocc, scal=nume, nbret=n1)
         knumec = 'C       '
@@ -60,9 +60,9 @@ subroutine rc32cm()
         call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'E', jchar)
 !
 !-- cas simple ou cas corps/tubulure ?
-        do 30 i=1,12
+        do i = 1, 12
             zr(jchar-1+i)=0.d0
- 30 continue
+        end do
 !
         call getvr8('CHAR_MECA', 'MX', iocc=iocc, nbval=0, nbret=n2)
 !
@@ -90,7 +90,7 @@ subroutine rc32cm()
             call getvr8('CHAR_MECA', 'MZ_CORP', iocc=iocc, scal=zr(jchar-1+12), nbret=n1)
         endif
 !
-    20 continue
+    end do
 !
 999 continue
     call jedema()

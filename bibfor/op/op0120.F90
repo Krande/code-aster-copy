@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0120()
     implicit none
 !     CALCUL D'UNE MATRICE INTERSPECTRALE
@@ -130,48 +130,48 @@ subroutine op0120()
     call wkvect('&&OP0120.TEMP.LSSX', 'V V R', long1, lssx)
     call wkvect('&&OP0120.TEMP.LRMS', 'V V R', long2, lrms)
 !C
-    do 20 imatr = 1, nmatr
-        do 30 kf = 1, nfonc
+    do imatr = 1, nmatr
+        do kf = 1, nfonc
             nomfon = zk8(lfon+kf-1)
-            do 50 it = 1, nbpts
+            do it = 1, nbpts
                 tinst = tinst1 + (imatr-1)* (durdec) + (it-1)*dt
                 call fointe('F ', nomfon, 1, ['INST'], [tinst],&
                             resu, ier)
                 zero = 0.d0
                 zc(lvale+it-1) = dcmplx(resu,zero)
-50          continue
+            end do
 !       --- CALCUL DE LA TRANFORMEE DE FOURIER ---
             ifft = 1
             call fft(zc(lvale), nbpts, ifft)
 !       ---
-            do 60 it = 1, nbpts2
+            do it = 1, nbpts2
                 lresu1 = lvalc + (kf-1)*nbpts2 + (it-1)
                 zc(lresu1) = zc(lvale+it-1)*dt
-60          continue
-30      continue
+            end do
+        end do
         lcomp1 = 0
-        do 70 j = 1, nfonc
-            do 80 i = 1, j
+        do j = 1, nfonc
+            do i = 1, j
 !
                 call calint(i, j, zc(lvalc), nbpts, zr(lint),&
                             long, durana)
 !
-                do 90 kk = 1, nbpts2
+                do kk = 1, nbpts2
                     l1 = lint + kk - 1
                     l2 = lssx + kk - 1 + nbpts*lcomp1
                     zr(l2) = zr(l2) + zr(l1)
                     zr(l2+nbpts2) = zr(l2+nbpts2) + zr(l1+nbpts2)
-90              continue
+                end do
                 lcomp1 = lcomp1 + 1
-80          continue
-70      continue
+            end do
+        end do
         call rms(imatr, zr(lssx), long1, zr(lrms), long2,&
                  nbpts, nfcod, dfreq, nfonc)
-20  end do
-    do 110 kb = 1, long1
+    end do
+    do kb = 1, long1
         ls1 = lssx + kb - 1
         zr(ls1) = zr(ls1)/dble(nmatr)
-110  end do
+    end do
 !
 !     --- CREATION DES NOMS DE FONCTIONS ---
     mxval = nfonc*(nfonc+1)/2
@@ -185,16 +185,16 @@ subroutine op0120()
     call wkvect(chnumj, 'G V I', mxval, lnumj)
     call wkvect(chfreq, 'G V R', nbpts2, lfreq)
 !
-    do 250 k = 1, nbpts2
+    do k = 1, nbpts2
         zr(lfreq+k-1) = (k-1)*dfreq
-250  end do
+    end do
 !
     ktabl = 1
     ipf = 0
-    do 130 j = 1, nfonc
+    do j = 1, nfonc
         ival(2) = j
 !
-        do 140 i = 1, j
+        do i = 1, j
             ival(1) = i
             ipf = ipf+1
             zi(lnumi-1+ipf) = ival(1)
@@ -211,7 +211,7 @@ subroutine op0120()
             call jeecra(jexnum(chvale, ipf), 'LONUTI', nbabs)
             call jeveuo(jexnum(chvale, ipf), 'E', ispec)
 !
-            do 150 k = 1, nbpts2
+            do k = 1, nbpts2
                 if (ival(1) .eq. ival(2)) then
                     l1 = ispec + k-1
                     l2 = lssx + nbpts* (ktabl-1) + k - 1
@@ -222,10 +222,10 @@ subroutine op0120()
                     zr(l1) = zr(l2)
                     zr(l1+1) = zr(l2+nbpts2)
                 endif
-150          continue
+            end do
             ktabl = ktabl + 1
-140      continue
-130  end do
+        end do
+    end do
 !
     if (niv .ge. 1) then
         freini = 0.d0

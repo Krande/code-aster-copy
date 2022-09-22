@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zader2(uplo, n, alpha, x, incx,&
                   y, incy, a, lda)
     implicit none
@@ -45,7 +45,7 @@ subroutine zader2(uplo, n, alpha, x, incx,&
     aster_logical :: upper
     real(kind=8) :: dble
 !
-    if (n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0)) goto 9999
+    if (n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0)) goto 999
 !
     ix = 1
     iy = 1
@@ -54,7 +54,7 @@ subroutine zader2(uplo, n, alpha, x, incx,&
 !
     upper = (uplo(1:1).eq.'U') .or. (uplo(1:1).eq.'u')
 !
-    do 10 j = 1, n
+    do j = 1, n
         tempx = dconjg(alpha*x(ix))
         tempy = alpha*dconjg(y(iy))
         if (upper) then
@@ -92,7 +92,7 @@ subroutine zader2(uplo, n, alpha, x, incx,&
         a(j,j) = dble(temp1)
         ix = ix + incx
         iy = iy + incy
- 10 end do
+    end do
 !
-9999 continue
+999 continue
 end subroutine

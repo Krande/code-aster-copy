@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lctel2()
 !     BUT : AJOUTER AUX OBJETS RESULTANTS DE LA LECTURE DES CATALOGUES
 !      L'OBJET '&CATA.TE.TAILLMAX'   S V I
@@ -27,7 +27,6 @@ subroutine lctel2()
 ! ----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -38,6 +37,7 @@ subroutine lctel2()
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: nomolo
     character(len=16) :: nomte
     integer :: nbte, nbop, nbgd, iatamx, nbmolo, imolo, jnblig, iamolo
@@ -57,15 +57,15 @@ subroutine lctel2()
 !     OBJET .TAILLMAX :
 !     -------------------
     call wkvect('&CATA.TE.TAILLMAX', 'G V I', nbte, iatamx)
-    do 1, imolo=1,nbmolo
-    call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
-    if (zi(iamolo-1+1) .eq. 5) then
-        call jenuno(jexnum('&CATA.TE.NOMMOLOC', imolo), nomolo)
-        nomte= nomolo(1:16)
-        call jenonu(jexnom('&CATA.TE.NOMTE', nomte), ite)
-        zi(iatamx-1+ite)=max(zi(iatamx-1+ite),zi(iamolo-1+3))
-    endif
-    1 end do
+    do imolo = 1, nbmolo
+        call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
+        if (zi(iamolo-1+1) .eq. 5) then
+            call jenuno(jexnum('&CATA.TE.NOMMOLOC', imolo), nomolo)
+            nomte= nomolo(1:16)
+            call jenonu(jexnom('&CATA.TE.NOMTE', nomte), ite)
+            zi(iatamx-1+ite)=max(zi(iatamx-1+ite),zi(iamolo-1+3))
+        endif
+    end do
 !
 !
 !     OBJET .NBLIGCOL :
@@ -84,12 +84,13 @@ subroutine lctel2()
     call jeveuo('&CATA.TE.OPTT2', 'L', vi=optt2)
     call jelira('&CATA.TE.OPTT2', 'LONMAX', n)
     call wkvect('&CATA.TE.OPTTE', 'G V I', nbte*nbop, joptte)
-    do 2,ioptte=1,n/2
-    iop=optt2(2*(ioptte-1)+1)
-    ite=optt2(2*(ioptte-1)+2)
-    if (iop .eq. 0 .or. ite .eq. 0) goto 2
-    zi(joptte-1+(ite-1)*nbop+iop)=ioptte
-    2 end do
+    do ioptte = 1, n/2
+        iop=optt2(2*(ioptte-1)+1)
+        ite=optt2(2*(ioptte-1)+2)
+        if (iop .eq. 0 .or. ite .eq. 0) goto 2
+        zi(joptte-1+(ite-1)*nbop+iop)=ioptte
+  2     continue
+    end do
     call jedetr('&CATA.TE.OPTT2')
 !
 !

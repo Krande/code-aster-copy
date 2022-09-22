@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
     implicit none
 !     VERIFICATION DE LA COHERENCE DES DISCRETISATIONS SPATIALES DES
@@ -77,7 +77,7 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !
 !-----BOUCLE SUR LE NOMBRE DE TABLE_FONCTIONS DE FORME
 !
-    do 10 ifo = 1, nbfonc
+    do ifo = 1, nbfonc
 !
         tbfonc = nomfon(ifo)
         tbnp = tbfonc//'.TBNP'
@@ -144,21 +144,21 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
         call jelibe(vale2)
 !
 !
-10  end do
+    end do
 !
 !-----VERIFICATION DE LA COHERENCE DES DISCRETISATIONS DE TOUTES LES
 !-----FONCTIONS :  - LA LONGUEUR EXCITEE L DOIT ETRE COMMUNE
 !-----             - NBP1 ET NBP2 DOIVENT ETRE COMMUNS
 !
     if (nbfonc .gt. 1) then
-        do 30 ifo = 1, nbfonc-1
+        do ifo = 1, nbfonc-1
             if (zr(ilexc+ifo-1) .ne. zr(ilexc+ifo)) then
                 call utmess('F', 'MODELISA7_71')
             endif
             if (zi(inbp1+ifo-1) .ne. zi(inbp1+ifo) .or. zi(inbp2+ifo-1) .ne. zi(inbp2+ifo)) then
                 call utmess('F', 'MODELISA7_72')
             endif
-30      continue
+        end do
     endif
 !
 !-----ON RENVOIE LES GRANDEURS CARACTERISTIQUES COMMUNES AUX

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bcoudc(igau, icou, isect, h, a,&
                   m, omega, xpg, nno, ncou,&
                   nsect, ff, df1, df2, rayon,&
@@ -87,7 +87,7 @@ subroutine bcoudc(igau, icou, isect, h, a,&
 !
 !  REMLISSAGE DE LA MATRICE
 !
-    do 30 k = 1, nno
+    do k = 1, nno
 !
         hk = ff(nno* (igau-1)+k)
         dhk = df1(nno* (igau-1)+k)* (2.d0/theta)
@@ -144,7 +144,7 @@ subroutine bcoudc(igau, icou, isect, h, a,&
 !      PARTIE IN-PLANE
 !
 !
-        do 10 n = 2, m
+        do n = 2, m
             icolon = ibloc + 6 + 3* (n-2)
 !C         COSMTE = COS(N*FI-OMEGA)
 !C         SINMTE = SIN(N*FI-OMEGA)
@@ -173,11 +173,11 @@ subroutine bcoudc(igau, icou, isect, h, a,&
             b(4,icolon+3) = 0.d0
 !
 !
-10      continue
+        end do
 !
 !  FIN PARTIE IN-PLANE DEBUT PARTIE OUT-OF-PLANE
 !
-        do 20 n = 2, m
+        do n = 2, m
             icolon = ibloc + 6 + 3* (m-1) + 3* (n-2)
 !C          COSMTE = COS(N*FI-OMEGA)
 !C          SINMTE = SIN(N*FI-OMEGA)
@@ -206,7 +206,7 @@ subroutine bcoudc(igau, icou, isect, h, a,&
             b(4,icolon+3) = 0.d0
 !
 !
-20      continue
+        end do
 !
 !  FIN OUT-OF-PLANE DEBUT PARTIE GONFLEMENT
 !
@@ -241,7 +241,7 @@ subroutine bcoudc(igau, icou, isect, h, a,&
 !
 ! FIN DES 1ERS MODES EN W
 !
-30  end do
+    end do
 !
 !
 ! FIN REMPLISSAGE DE LA MATRICE

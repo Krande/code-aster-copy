@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utdtab(raz, na, nb, mb, md,&
                   a, b, d, xab, dtab)
     implicit none
@@ -47,17 +47,21 @@ subroutine utdtab(raz, na, nb, mb, md,&
     raz2=raz
 !
     call r8inir(na*mb, 0.0d0, xab, 1)
-    do 15 i = 1, na
-        do 15 k = 1, nb
-            do 15 j = 1, mb
+    do i = 1, na
+        do k = 1, nb
+            do j = 1, mb
                 xab(i,j) = xab(i,j) + a(i,k) * b(k,j)
-15          continue
+            end do
+        end do
+    end do
 !
     if (raz2 .eq. 'ZERO') call r8inir(md*mb, 0.0d0, dtab, 1)
 !
-    do 25 i = 1, md
-        do 25 k = 1, na
-            do 25 j = 1, mb
+    do i = 1, md
+        do k = 1, na
+            do j = 1, mb
                 dtab(i,j) = dtab(i,j) + d(k,i) * xab(k,j)
-25          continue
+            end do
+        end do
+    end do
 end subroutine

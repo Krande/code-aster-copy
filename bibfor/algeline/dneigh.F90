@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dneigh(rnorm, n, h, ldh, ritzr,&
                   ritzi, bounds, q, ldq, workl,&
                   ierr)
@@ -124,10 +124,10 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !
 #include "asterf_types.h"
 #include "asterc/matfpe.h"
+#include "asterfort/ar_dtrevc.h"
 #include "asterfort/dlaqrb.h"
 #include "asterfort/dmout.h"
 #include "asterfort/dvout.h"
-#include "asterfort/ar_dtrevc.h"
 #include "blas/dgemv.h"
 #include "blas/dlacpy.h"
 #include "blas/dlapy2.h"
@@ -220,8 +220,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     %-----------------------------------------------------------%
 !
     call ar_dtrevc('R', 'A', select, n, workl,&
-                n, vl, n, q, ldq,&
-                n, n, workl(n*n+1), ierr)
+                   n, vl, n, q, ldq,&
+                   n, n, workl(n*n+1), ierr)
 !
     if (ierr .ne. 0) goto 9000
 !
@@ -235,7 +235,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     %------------------------------------------------%
 !
     iconj = 0
-    do 10 i = 1, n
+    do i = 1, n
         if (abs( ritzi(i) ) .le. zero) then
 !
 !           %----------------------%
@@ -262,7 +262,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
                 iconj = 0
             endif
         endif
- 10 end do
+    end do
 !
     call dgemv('T', n, n, one, q,&
                ldq, bounds, 1, zero, workl,&
@@ -277,7 +277,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     %----------------------------%
 !
     iconj = 0
-    do 20 i = 1, n
+    do i = 1, n
         if (abs( ritzi(i) ) .le. zero) then
 !
 !           %----------------------%
@@ -303,7 +303,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
                 iconj = 0
             endif
         endif
- 20 end do
+    end do
 !
     if (msglvl .gt. 2) then
         call dvout(logfil, n, ritzr, ndigit, '_NEIGH: REAL PART OF THE EIGENVALUES OF H')

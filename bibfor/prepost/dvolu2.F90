@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function dvolu2(coord, norm)
 !
 !**********************************************************
@@ -44,10 +44,10 @@ function dvolu2(coord, norm)
 !     RQ : 2 POINTS DEDANS ET 4 INTERSECTIONS
 !
     i = 0
-    do 10 k = 1, 4
+    do k = 1, 4
         if (norm(1,k) .eq. 1 .and. i .gt. 0) j = k
         if (norm(1,k) .eq. 1 .and. i .eq. 0) i = k
-10  end do
+    end do
 !
 ! 2 - TABLEAU DES INTERSECTIONS
 !

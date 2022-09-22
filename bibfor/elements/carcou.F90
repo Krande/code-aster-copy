@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine carcou(orien, l, pgl, rayon, theta,&
                   pgl1, pgl2, pgl3, pgl4, nno,&
                   omega, icoude)
@@ -50,16 +50,16 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
     integer :: i, icmp, nno
 !-----------------------------------------------------------------------
 !
-    do 63 i = 1, 3
+    do i = 1, 3
         angl1(i)=orien(i)
         angl2(i)=orien(3+i)
         angl3(i)=orien(6+i)
-63  end do
+    end do
     icmp=9
     if (nno .eq. 4) then
-        do 64 i = 1, 3
+        do i = 1, 3
             angl4(i)=orien(9+i)
-64      continue
+        end do
         icmp=12
     else if (nno.ne.3) then
         call utmess('F', 'ELEMENTS_18')

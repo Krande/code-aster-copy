@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacoor(nomma, ima, nbno, coor)
     implicit none
 #include "jeveux.h"
@@ -69,22 +69,22 @@ subroutine pacoor(nomma, ima, nbno, coor)
         if (nbno .gt. nbnomx) then
             call utmess('F', 'MODELISA6_5')
         endif
-        do 1 inoma = 1, nbno
+        do inoma = 1, nbno
             ino = zi(idconn-1+inoma)
             idino = idvale+ nbcmp*(ino-1)-1
-            do 2 icmp = 1, nbcmp
+            do icmp = 1, nbcmp
                 x(icmp) = zr(idino+icmp)
- 2          continue
+            end do
             icoor = 3*(inoma-1)
-            do 3 i = 1, 3
+            do i = 1, 3
                 coor(icoor+i) = x(i)
- 3          continue
- 1      continue
+            end do
+        end do
     else if (nbno.eq.0) then
         idino = idvale+ nbcmp*(ima-1)-1
-        do 4 icmp = 1, nbcmp
+        do icmp = 1, nbcmp
             coor(icmp) = zr(idino+icmp)
- 4      continue
+        end do
     else
         call utmess('F', 'MODELISA6_6')
     endif

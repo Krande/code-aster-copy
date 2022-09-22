@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0486(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -206,9 +206,9 @@ subroutine te0486(option, nomte)
 !
 !
         else if (option(10:16).eq.'_PRSU_R') then
-            do 56 kn = 1, nb2
+            do kn = 1, nb2
                 presno ( kn ) =  zr ( jpres - 1 + ( kn - 1 )*1 + 1)
- 56         continue
+            end do
 !
         else if (option(10:16).eq.'_PRSU_F') then
             call jevech('PTEMPSR', 'L', itemps)
@@ -217,7 +217,7 @@ subroutine te0486(option, nomte)
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
-            do 57 j = 0, nb1-1
+            do j = 0, nb1-1
                 valpar(1) = zr(igeom+3*j )
                 valpar(2) = zr(igeom+3*j+1)
                 valpar(3) = zr(igeom+3*j+2)
@@ -232,7 +232,7 @@ subroutine te0486(option, nomte)
                     valk = nomail
                     call utmess('F', 'ELEMENTS4_92', sk=valk)
                 endif
- 57         continue
+            end do
         endif
 !
 !        ---- VECTEURS TANGENTS A1 ET A2 AUX NOEUDS NON NORMALISES

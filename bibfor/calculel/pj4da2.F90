@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
                   cobary, d2, surf)
     implicit none
@@ -29,7 +29,7 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
 !    determiner la distance d entre le noeud ino2 et le tria3 i.
 !    determiner les coordonnees barycentriques
 !    du point de i le plus proche de ino2.
-
+!
 !  in   ino2       i  : numero du noeud de m2 cherche
 !  in   geom2(*)   r  : coordonnees des noeuds du maillage m2
 !  in   geom1(*)   r  : coordonnees des noeuds du maillage m1
@@ -38,27 +38,27 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
 !  out  cobary(3)  r  : coordonnees barycentriques de ino2 projete sur i
 !  out  d2         r  : carre de la distance entre i et ino2
 !  out  surf       r  : surface du tria3 i
-
+!
 ! ----------------------------------------------------------------------
     integer :: k
     aster_logical :: ok
     real(kind=8) :: dp, l1, l2, l3, la, lb, lc
     real(kind=8) :: a(3), b(3), c(3), m(3), ab(3), ac(3), v(3)
 ! DEB ------------------------------------------------------------------
-
-    do 1 k = 1, 3
+!
+    do k = 1, 3
         m(k)=geom2(3*(ino2-1)+k)
         a(k)=geom1(3*(tria3(1+4*(i-1)+1)-1)+k)
         b(k)=geom1(3*(tria3(1+4*(i-1)+2)-1)+k)
         c(k)=geom1(3*(tria3(1+4*(i-1)+3)-1)+k)
         ab(k)=b(k)-a(k)
         ac(k)=c(k)-a(k)
-  1 end do
-
+    end do
+!
     d2=r8maem()
     dp=r8maem()
-
-
+!
+!
 !   1. on cherche le point le plus proche a l'interieur du tria3
 !   -------------------------------------------------------------
     call pj3da3(m, a, b, c, ok,&
@@ -69,8 +69,8 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
         lb=l2
         lc=l3
     endif
-
-
+!
+!
 !   2. on boucle sur les 3 arretes du tria3 :
 !   -----------------------------------------
     call pj3da4(m, a, b, l1, l2,&
@@ -81,7 +81,7 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
         lb=l2
         lc=0.d0
     endif
-
+!
     call pj3da4(m, b, c, l1, l2,&
                 dp)
     if (dp .lt. d2) then
@@ -90,7 +90,7 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
         lc=l2
         la=0.d0
     endif
-
+!
     call pj3da4(m, a, c, l1, l2,&
                 dp)
     if (dp .lt. d2) then
@@ -99,8 +99,8 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
         lc=l2
         lb=0.d0
     endif
-
-
+!
+!
 !   3. on calcule surf :
 !   --------------------
     v(1)=ab(2)*ac(3)-ab(3)*ac(2)
@@ -108,10 +108,10 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
     v(3)=ab(1)*ac(2)-ab(2)*ac(1)
     surf=sqrt(v(1)*v(1)+v(2)*v(2)+v(3)*v(3))
     surf=surf/2.d0
-
-
+!
+!
     cobary(1)=la
     cobary(2)=lb
     cobary(3)=lc
-
+!
 end subroutine

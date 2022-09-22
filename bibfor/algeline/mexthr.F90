@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mexthr(n, a, lda)
     implicit none
 #include "asterc/r8prem.h"
@@ -44,7 +44,7 @@ subroutine mexthr(n, a, lda)
         goto 9000
     endif
     eps = 10.0d0*r8prem()
-    do 10 i = 1, n
+    do i = 1, n
         if (abs(dimag(a(i,i))) .ne. 0.0d0) then
             if (abs(dimag(a(i,i))) .gt. eps*abs(dble(a(i,i)))) then
                 write(6,*) a(i,i)
@@ -61,13 +61,13 @@ subroutine mexthr(n, a, lda)
                 a(i,i) = dble(a(i,i))
             endif
         endif
-10  end do
+    end do
 !
-    do 30 j = 1, n - 1
-        do 20 i = j + 1, n
+    do j = 1, n - 1
+        do i = j + 1, n
             a(i,j) = dconjg(a(j,i))
-20      continue
-30  end do
+        end do
+    end do
 !
-9000  continue
+9000 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
-                  ihechp, jptint, jcface, jlonch,&
-                  jlst, jbasec, nfh, nfe, fonree,&
-                  imattt, heavn)
+                  ihechp, jptint, jcface, jlonch, jlst,&
+                  jbasec, nfh, nfe, fonree, imattt,&
+                  heavn)
 ! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
 ! aslint: disable=W1306
@@ -54,22 +54,22 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !.......................................................................
 #include "asterf_types.h"
 #include "jeveux.h"
-!-----------------------------------------------------------------------
-!
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_saut.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"
-#include "asterfort/xcalc_saut.h"
-#include "asterfort/xcalc_code.h"
-#include "asterfort/xcalc_heav.h"
+!-----------------------------------------------------------------------
+!
     character(len=4) :: fonree
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, itps, ihechp, jptint, jcface, jlonch
-    integer :: jlst, jbasec, nfh, nfe, imattt, heavn(27,5)
+    integer :: jlst, jbasec, nfh, nfe, imattt, heavn(27, 5)
 !
 !-----------------------------------------------------------------------
 !
@@ -103,8 +103,8 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
     ASSERT(nnop.le.mxstac .and. 1+nfh+nfe.le.mxstac)
 !
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
-    do ilev=1,2
-      hea_fa(ilev)=xcalc_code(1,he_real=[he(ilev)])
+    do ilev = 1, 2
+        hea_fa(ilev)=xcalc_code(1,he_real=[he(ilev)])
     enddo
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
@@ -134,26 +134,26 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
     nface =zi(jlonch-1+2)
     nptf  =zi(jlonch-1+3)
     if (ninter .lt. ndim) goto 999
-    do 11 i = 1, nface
-        do 12 j = 1, nptf
+    do i = 1, nface
+        do j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
- 12     continue
- 11 continue
+        end do
+    end do
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES FACETTES
 !-----------------------------------------------------------------------
 !
-    do 100 ifa = 1, nface
+    do ifa = 1, nface
 !
-        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+                         jvf=ivff, jdfde=idfdef)
 !
 !-----------------------------------------------------------------------
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !-----------------------------------------------------------------------
 !
-        do 200 ipgf = 1, npgf
+        do ipgf = 1, npgf
 !
 !         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 !         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
@@ -163,21 +163,23 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
             if (ndim .eq. 3) then
                 call xjacff(elrefp, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, ipgf, nnop,&
-                            nnop, igeom, jbasec, xg, jac, ff,&
-                            r27bid, dfbid, nd, r3bid, r3bid)
+                            nnop, igeom, jbasec, xg, jac,&
+                            ff, r27bid, dfbid, nd, r3bid,&
+                            r3bid)
             else if (ndim.eq.2) then
                 call xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, nptf, ipgf,&
-                            nnop, nnop, igeom, jbasec, xg, jac,&
-                            ff, r27bid, dfbid, nd, r3bid)
+                            nnop, nnop, igeom, jbasec, xg,&
+                            jac, ff, r27bid, dfbid, nd,&
+                            r3bid)
             endif
 !
 !         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
             if (nfe .eq. 1) then
                 lst=0.d0
-                do 210 i = 1, nnop
+                do i = 1, nnop
                     lst=lst+zr(jlst-1+i)*ff(i)
-210             continue
+                end do
                 ASSERT(lst.lt.0.d0)
                 rr(1)=-sqrt(-lst)
                 rr(2)= sqrt(-lst)
@@ -202,9 +204,9 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !         MODIFICATION DU JACOBIEN SI AXI
             if (axi) then
                 r = 0.d0
-                do 220 inp = 1, nnop
+                do inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
-220             continue
+                end do
                 ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
@@ -213,10 +215,10 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !         BOUCLE SUR LES (DEUX) LEVRES DE LA FISSURES
 !-----------------------------------------------------------------------
 !
-            do 300 ilev = 1, 2
+            do ilev = 1, 2
 !
 !           FFENR : TABLEAU DES FF ENRICHIES
-                do 310 i = 1, nnop
+                do i = 1, nnop
 !             DDL CLASSIQUE (TEMP)
                     ffenr(i,1) = ff(i)
 !             DDL HEAVISIDE (H1)
@@ -227,22 +229,22 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                     if (nfe .eq. 1) then
                         ffenr(i,1+nfh+nfe) = rr(ilev)*ff(i)
                     endif
-310             continue
+                end do
 !
 !           REMPLISSAGE DE LA MATRICE
-                do 400 inp = 1, nnop
-                    do 410 kddl = 1, nbddl
+                do inp = 1, nnop
+                    do kddl = 1, nbddl
 !
                         ind1 = (nbddl*(inp-1)+kddl-1) * (nbddl*(inp-1) +kddl ) /2
 !
-                        do 510 jnp = 1, inp
+                        do jnp = 1, inp
 !
 !                   IDDLMA : NUMERO DE DDL MAX PR NE PAS DEPASSER LA
 !                   DIGAONALE (ON STOCKE LA PARTIE TRIANGULAIRE INF)
                             if (jnp .eq. inp) then
-                                 iddlma = kddl
+                                iddlma = kddl
                             else
-                                 iddlma = nbddl
+                                iddlma = nbddl
                             endif
 !
                             do ifh = 1, nfh
@@ -253,47 +255,55 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !                      * DE LA CONVENTION D ECRITURE DU SAUT SUR CHAQUE FRONTIERE 
 !                               - FRONTIERE 1 : 1-->2
 !                               - FRONTIERE 2 : 2-->1
-                                      if (ilev .eq. 1) then
-                                       r8tmp = (xcalc_heav(heavn(jnp,1),hea_fa(1),heavn(jnp,5))&
-                                               -xcalc_heav(heavn(jnp,1),hea_fa(2),heavn(jnp,5))&
-                                              )*ff(jnp)
-                                      elseif (ilev .eq. 2) then
-                                       r8tmp = (xcalc_heav(heavn(jnp,1),hea_fa(2),heavn(jnp,5))&
-                                               -xcalc_heav(heavn(jnp,1),hea_fa(1),heavn(jnp,5))&
-                                              )*ff(jnp)
-                                      endif
-                                      ind2 = ind1 + nbddl*(jnp-1)+lddl
-                                      zr(imattt-1+ind2) = zr(imattt-1+ ind2) + theta*hechp*jac&
-                                                        &* ffenr(inp,kddl)*r8tmp
-                                  endif
-                              enddo
+                                    if (ilev .eq. 1) then
+                                        r8tmp = (&
+                                                xcalc_heav(&
+                                                heavn(jnp, 1), hea_fa(1),&
+                                                heavn(jnp, 5)) -xcalc_heav(heavn(jnp, 1),&
+                                                hea_fa(2), heavn(jnp, 5))&
+                                                )*ff(jnp&
+                                                )
+                                    else if (ilev .eq. 2) then
+                                        r8tmp = (&
+                                                xcalc_heav(&
+                                                heavn(jnp, 1), hea_fa(2),&
+                                                heavn(jnp, 5)) -xcalc_heav(heavn(jnp, 1),&
+                                                hea_fa(1), heavn(jnp, 5))&
+                                                )*ff(jnp&
+                                                )
+                                    endif
+                                    ind2 = ind1 + nbddl*(jnp-1)+lddl
+                                    zr(imattt-1+ind2) = zr(imattt-1+ ind2) + theta*hechp*jac* ffe&
+                                                        &nr(inp,kddl)*r8tmp
+                                endif
+                            enddo
 !
-                              do ife = 1, nfe
+                            do ife = 1, nfe
                                 lddl=1+nfh+ife
                                 if (lddl .le. iddlma) then
-                                      r8tmp = 2.d0*rr(ilev)*ff(jnp)
-                                      ind2 = ind1 + nbddl*(jnp-1)+lddl
-                                      zr(imattt-1+ind2) = zr(imattt-1+ ind2) + theta*hechp*jac&
-                                                        &* ffenr(inp,kddl)*r8tmp
+                                    r8tmp = 2.d0*rr(ilev)*ff(jnp)
+                                    ind2 = ind1 + nbddl*(jnp-1)+lddl
+                                    zr(imattt-1+ind2) = zr(imattt-1+ ind2) + theta*hechp*jac* ffe&
+                                                        &nr(inp,kddl)*r8tmp
                                 endif
-                              enddo
+                            enddo
 !
-510                     continue
-410                 continue
-400             continue
+                        end do
+                    end do
+                end do
 !
-300         continue
+            end do
 !
 !-----------------------------------------------------------------------
 !         FIN BOUCLE SUR LES (DEUX) LEVRES DE LA FISSURES
 !-----------------------------------------------------------------------
 !
-200     continue
+        end do
 !-----------------------------------------------------------------------
 !       FIN BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !-----------------------------------------------------------------------
 !
-100 continue
+    end do
 !-----------------------------------------------------------------------
 !     FIN BOUCLE SUR LES FACETTES
 !-----------------------------------------------------------------------

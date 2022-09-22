@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                   vc, vk, lprec, lcrit, nume)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -29,8 +31,6 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: npacri, vi(*), nume
     real(kind=8) :: vr(*), lprec(*)
@@ -83,36 +83,37 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
-    if (nblign .eq. 0) goto 9999
+    if (nblign .eq. 0) goto 999
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
-    do 10 i = 1, npacri
+    do i = 1, npacri
         inpar = lipacr(i)
-        do 12 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) goto 10
- 12     continue
+        end do
         valk = inpar
         call utmess('F', 'UTILITAI6_89', sk=valk)
- 10 end do
+ 10     continue
+    end do
 !
     nomjv = tblp(3)
     call jelira(nomjv, 'LONUTI', nbpu)
     AS_ALLOCATE(vi=numero, size=nbpu)
-    do 18 i = 1, nbpu
+    do i = 1, nbpu
         numero(i) = i
- 18 end do
+    end do
 !
     ki = 0
     kr = 0
     kc = 0
     kk = 0
-    do 20 i = 1, npacri
+    do i = 1, npacri
         itrouv = 0
         inpar = lipacr(i)
-        do 22 j = 1, nbpara
+        do j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
                 type = tblp(1+4*(j-1)+1)
@@ -122,7 +123,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                 call jeveuo(nomjvl, 'L', jvall)
                 if (type(1:1) .eq. 'I') then
                     ki = ki + 1
-                    do 30 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 30
@@ -130,12 +131,13 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 30                 continue
+ 30                     continue
+                    end do
                 else if (type(1:1) .eq. 'R') then
                     kr = kr + 1
                     prec = lprec(kr)
                     crit = lcrit(kr)
-                    do 31 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 31
@@ -151,10 +153,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 31                 continue
+ 31                     continue
+                    end do
                 else if (type(1:1) .eq. 'C') then
                     kc = kc + 1
-                    do 32 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 32
@@ -162,10 +165,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 32                 continue
+ 32                     continue
+                    end do
                 else if (type(1:3) .eq. 'K80') then
                     kk = kk + 1
-                    do 33 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 33
@@ -173,10 +177,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 33                 continue
+ 33                     continue
+                    end do
                 else if (type(1:3) .eq. 'K32') then
                     kk = kk + 1
-                    do 34 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 34
@@ -184,10 +189,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 34                 continue
+ 34                     continue
+                    end do
                 else if (type(1:3) .eq. 'K24') then
                     kk = kk + 1
-                    do 35 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 35
@@ -195,10 +201,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 35                 continue
+ 35                     continue
+                    end do
                 else if (type(1:3) .eq. 'K16') then
                     kk = kk + 1
-                    do 36 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 36
@@ -206,10 +213,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 36                 continue
+ 36                     continue
+                    end do
                 else if (type(1:2) .eq. 'K8') then
                     kk = kk + 1
-                    do 37 k = 1, nbpu
+                    do k = 1, nbpu
                         n = numero(k)
                         numero(k) = 0
                         if (zi(jvall+n-1) .eq. 0) goto 37
@@ -217,12 +225,13 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                             itrouv = itrouv + 1
                             numero(itrouv) = n
                         endif
- 37                 continue
+ 37                     continue
+                    end do
                 endif
             endif
- 22     continue
+        end do
         nbpu = itrouv
- 20 end do
+    end do
 !
     if (nbpu .eq. 1) then
         nume = numero(1)
@@ -232,6 +241,6 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 !
     AS_DEALLOCATE(vi=numero)
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

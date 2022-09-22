@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmffft(fv, sv)
     implicit none
 !    -------------------------------------------------------------------
@@ -46,10 +46,10 @@ subroutine pmffft(fv, sv)
     data ip/0,1,3,6,10,15,21,28,36,45,55,66/
 !
 !
-    do 10 i = 1, 12
-        do 20 j = 1, i
+    do i = 1, 12
+        do j = 1, i
             sv(ip(i)+j)=fv(i)*fv(j)
-20      continue
-10  end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trlds(a, nmax, nordre, ierr)
     implicit none
 !A
@@ -38,50 +38,50 @@ subroutine trlds(a, nmax, nordre, ierr)
     integer :: nmax, nordre
 !-----------------------------------------------------------------------
     ierr = 0
-    do 100 in = 1, nordre
+    do in = 1, nordre
         if (in .eq. 1) goto 50
 !
 !        UTILISATION  DES  LIGNES  (1) A (IN-1)
-        do 40 jn = 1, in-1
+        do jn = 1, in-1
 !
             if (jn .eq. 1) goto 36
             ibm = jn - 1
 !
             r8val = a ( jn , in )
-            do 30 i = 1, ibm
+            do i = 1, ibm
                 r8val = r8val - a ( jn , i ) * a ( i , in ) * a(i,i)
-30          continue
+            end do
             a ( jn , in ) = r8val
 !
             r8val = a ( in , jn )
-            do 35 i = 1, ibm
+            do i = 1, ibm
                 r8val = r8val - a ( in , i ) * a ( i , jn ) * a(i,i)
-35          continue
+            end do
             a ( in , jn ) = r8val
 !
-36          continue
+ 36         continue
             a ( jn , in ) = a ( jn , in ) / a(jn,jn)
             a ( in , jn ) = a ( in , jn ) / a(jn,jn)
-40      continue
+        end do
 !
-50      continue
+ 50     continue
 !
 !        UTILISATION  DE LA LIGNE IN ( CALCUL DU TERME PIVOT)
         ibm = in - 1
 !
         r8val = a ( in , in )
-        do 85 i = 1, ibm
+        do i = 1, ibm
             r8val = r8val - a ( in , i ) * a ( i , in ) * a(i,i)
-85      continue
+        end do
         a ( in , in ) = r8val
         if (r8val .eq. 0.d00) then
             ierr = in
             ifm=iunifi('MESSAGE')
             write(ifm,*) ' TRLDS : PIVOT NUL A LA LIGNE ',in
-            goto 9999
+            goto 999
         endif
 !
-100  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

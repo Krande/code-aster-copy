@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rectfr(nbmode, nbvect, omeshi, npivot, nblagr,&
                   valpro, nvpro, resufi, resufr, nfreq)
-    implicit   none
+    implicit none
     integer :: nbmode, nbvect, npivot, nblagr, nvpro, nfreq
     integer :: resufi(nfreq, *)
     real(kind=8) :: valpro(nvpro), resufr(nfreq, *)
@@ -48,7 +48,7 @@ subroutine rectfr(nbmode, nbvect, omeshi, npivot, nblagr,&
     ineg = 0
     ip = 0
     im = 1
-    do 10 ivec = 1, nbvect
+    do ivec = 1, nbvect
         om = valpro(ivec)
         if (om .gt. 0.0d0) then
             ip = ip + 1
@@ -66,19 +66,19 @@ subroutine rectfr(nbmode, nbvect, omeshi, npivot, nblagr,&
             resufi(ivec,1) = npivot+in
             resufr(ivec,2) = om
         endif
-10  end do
+    end do
     if (ineg .eq. nbvect) then
-        do 20 ivec = 1, nbmode
+        do ivec = 1, nbmode
             resufi(ivec,1) = npivot + ivec
-20      continue
+        end do
     endif
 !
 !     ------------------------------------------------------------------
 !     -- RECTIFICATION DE LA POSITION MODALE (A CAUSE DES LAGRANGE) ----
 !     ------------------------------------------------------------------
 !
-    do 30 ifreq = 1, nbmode
+    do ifreq = 1, nbmode
         resufi(ifreq,1) = resufi(ifreq,1) - nblagr
-30  end do
+    end do
 !
 end subroutine

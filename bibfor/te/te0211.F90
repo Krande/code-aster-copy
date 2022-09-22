@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0211(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !
@@ -43,8 +43,8 @@ subroutine te0211(option, nomte)
     aster_logical :: laxi
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -62,7 +62,7 @@ subroutine te0211(option, nomte)
         igeom2 = igeom + 6
     endif
 !
-    do 50 kp = 1, npg
+    do kp = 1, npg
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids1)
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -70,24 +70,24 @@ subroutine te0211(option, nomte)
         if (laxi) then
             r1 = 0.d0
             r2 = 0.d0
-            do 10 i = 1, nno
+            do i = 1, nno
                 l = (kp-1)*nno + i
                 r1 = r1 + zr(igeom+2*i-2)*zr(ivf+l-1)
                 r2 = r2 + zr(igeom2+2*i-2)*zr(ivf+l-1)
- 10         continue
+            end do
             poids1 = poids1*r1
             poids2 = poids2*r2
         endif
         poids = (poids1+poids2)/2.d0
         k = 0
-        do 30 i = 1, nno
+        do i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
-            do 20 j = 1, i
+            do j = 1, i
                 lj = ivf + (kp-1)*nno + j - 1
                 k = k + 1
                 mat(k) = poids*theta*zr(li)*zr(lj)*coefh
- 20         continue
- 30     continue
+            end do
+        end do
         if (nomte(5:8) .eq. 'SE22') then
             zr(imatt-1+1) = zr(imatt-1+1) + mat(1)
             zr(imatt-1+2) = zr(imatt-1+2) + mat(2)
@@ -121,8 +121,8 @@ subroutine te0211(option, nomte)
             zr(imatt-1+19) = zr(imatt-1+19) + mat(4)
             zr(imatt-1+20) = zr(imatt-1+20) + mat(5)
             zr(imatt-1+21) = zr(imatt-1+21) + mat(6)
-            do 40 i = 1, 21
- 40         continue
+            do i = 1, 21
+            end do
         endif
- 50 end do
+    end do
 end subroutine

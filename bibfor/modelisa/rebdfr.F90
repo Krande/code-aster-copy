@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
                   nmodi, nmodf, nbm, npv)
     implicit none
@@ -66,22 +66,22 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
 !                DE LA FREQUENCE FINALE
 !
     if (nfi .eq. 0) then
-        do 10 i = 1, npv
+        do i = 1, npv
             if (freq(1,1,i) .gt. 0.d0) then
                 frqmin = min(frqmin,freq(1,1,i))
                 frqmma = max(frqmma,freq(1,1,i))
             endif
-10      continue
+        end do
         nmodi = 1
         freqi = frqmin/2.d0
     endif
 !
     if (nff .eq. 0) then
-        do 20 i = 1, npv
+        do i = 1, npv
             if (freq(1,nbm,i) .gt. 0.d0) then
                 frqmax = max(frqmax,freq(1,nbm,i))
             endif
-20      continue
+        end do
         nmodf = nbm
         freqf = frqmax + ( frqmma/2.d0)
     endif
@@ -89,37 +89,37 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
 ! 2. ---- ON SECTIONNE LES MODES COMPRIS ENTRE FREQI ET FREQF
 !
     if (nmodi .eq. 0) then
-        do 30 i = 1, nbm
+        do i = 1, nbm
             ind = 1
-            do 40 j = 1, npv
+            do j = 1, npv
                 if (freq(1,i,j) .le. freqi) then
                     ind = 0
                 endif
-40          continue
+            end do
             if (ind .eq. 1) then
                 nmodi = i
                 goto 900
             endif
-30      continue
+        end do
     endif
-900  continue
+900 continue
     if (nmodi .eq. 0) nmodi = 1
 !
     if (nmodf .eq. 0) then
-        do 50 i = nbm, 1, -1
+        do i = nbm, 1, -1
             ind = 1
-            do 60 j = 1, npv
+            do j = 1, npv
                 if (freq(1,i,j) .gt. freqf) then
                     ind = 0
                 endif
-60          continue
+            end do
             if (ind .eq. 1) then
                 nmodf = i
                 goto 901
             endif
-50      continue
+        end do
     endif
-901  continue
+901 continue
     if (nmodf .eq. 0) nmodi = nbm
 !
     if (nmodf .lt. nmodi) then

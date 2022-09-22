@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine b1tdb2(b1, b2, d, jacob, nbsig,&
                   nbinco, btdb)
 !.======================================================================
@@ -55,29 +55,29 @@ subroutine b1tdb2(b1, b2, d, jacob, nbsig,&
 !-----------------------------------------------------------------------
     zero = 0.0d0
 !
-    do 10 i = 1, nbinco
-        do 20 j = 1, nbsig
+    do i = 1, nbinco
+        do j = 1, nbsig
             tab1(j) = jacob * b1 ( j , i )
-20      end do
+        end do
 !
-        do 30 j1 = 1, nbsig
+        do j1 = 1, nbsig
             s = zero
-            do 40 j2 = 1, nbsig
+            do j2 = 1, nbsig
                 s = s + tab1(j2)*d(j1,j2)
-40          continue
+            end do
             tab2(j1) = s
-30      continue
+        end do
 !
-        do 50 j1 = 1, nbinco
+        do j1 = 1, nbinco
             s = zero
-            do 60 j2 = 1, nbsig
+            do j2 = 1, nbsig
                 s = s + b2 ( j2 , j1 ) * tab2(j2)
-60          continue
+            end do
 !
             btdb(i,j1) = btdb(i,j1) + s
 !
-50      continue
-10  end do
+        end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

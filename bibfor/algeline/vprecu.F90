@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
                   nbpara, nopara, nomvai, nomvar, nomvak,&
                   neq, nbmode, typmod, nbpari, nbparr,&
@@ -111,9 +111,9 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
 !        --- A PARTIR D'UNE LISTE DE NUMEROS D'ORDRE ---
         nbmode = nbvect
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmode, lnumor)
-        do 10 i = 1, nbvect
+        do i = 1, nbvect
             zi(lnumor+i-1) = lposi(i)
- 10     continue
+        end do
 !
     else
 !        --- RIEN ---
@@ -157,7 +157,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     endif
 !
 !        --- VECTEUR PROPRE ---
-    do 20 imode = 1, nbmode
+    do imode = 1, nbmode
         nordr = zi(lnumor-1+imode)
         call rsexch('F', modes, nomsy, nordr, vale(1:19),&
                     iret)
@@ -175,19 +175,19 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
             call utmess('F', 'ALGELINE3_70')
         else if (neq .eq. neq1) then
             if (typmod(1:1) .eq. 'R') then
-                do 22 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     zr(lmode+neq*(imode-1)+ieq) = zr(lvale+ieq)
- 22             continue
+                end do
             else if (typmod(1:1) .eq. 'C') then
-                do 24 ieq = 0, neq-1
+                do ieq = 0, neq-1
                     zc(lmode+neq*(imode-1)+ieq) = zc(lvale+ieq)
- 24             continue
+                end do
             endif
             call jelibe(vale)
         else
             call utmess('F', 'ALGELINE3_71')
         endif
- 20 end do
+    end do
 100 continue
 !     ------------------------------------------------------------------
 !
@@ -217,7 +217,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     nbpari = 0
     nbparr = 0
     nbpark = 0
-    do 40 i = 1, nbout
+    do i = 1, nbout
         call rsadpa(modes, 'L', 1, zk16(jpara+i-1), zi(lnumor),&
                     i, sjv=lnume, styp=type, istop=0)
         if (type(1:1) .eq. 'I') then
@@ -228,7 +228,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
             nbpark = nbpark + 1
         else
         endif
- 40 end do
+    end do
     if (recunp) then
         nbtpar = nbpari + nbparr + nbpark
         call wkvect(nopara, 'V V K16', nbtpar, lnopar)
@@ -241,8 +241,8 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     ii = 0
     ir = 0
     ik = 0
-    do 50 i = 1, nbout
-        do 52 j = 1, nbmode
+    do i = 1, nbout
+        do j = 1, nbmode
             nordr = zi(lnumor-1+j)
             call rsadpa(modes, 'L', 1, zk16(jpara+i-1), nordr,&
                         i, sjv=lnume, styp=type, istop=0)
@@ -269,8 +269,8 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
                     zk16(lnopar+nbpari+nbparr+ik-1) = zk16(jpara+i-1)
                 endif
             endif
- 52     continue
- 50 end do
+        end do
+    end do
 200 continue
 !
 !     --- DESTRUCTION DES OBJET DE TRAVAIL ---

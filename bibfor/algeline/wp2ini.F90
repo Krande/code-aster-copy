@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                   lmtpsc, sigma, xh, xb, optiof,&
                   prorto, nborto, nbvect, neq, lbloq,&
@@ -135,7 +135,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     call wkvect('&&WP2INI.PT.B.LANCZO.H', 'V V I', nbvect, aptbyh)
     call wkvect('&&WP2INI.PT.B.LANCZO.B', 'V V I', nbvect, aptbyb)
 !
-    do 10 i = 1, nbvect, 1
+    do i = 1, nbvect, 1
         call codent(i, 'G', strg)
         call jecreo('&&WP2INI.BYH'//strg, 'V V R')
         call jeecra('&&WP2INI.BYH'//strg, 'LONMAX', neq)
@@ -145,14 +145,14 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         call jeecra('&&WP2INI.BYB'//strg, 'LONMAX', neq)
         call jeecra('&&WP2INI.BYB'//strg, 'LONUTI', neq)
         call jeveut('&&WP2INI.BYB'//strg, 'E', zi(aptbyb + i-1))
- 10 end do
+    end do
 !
     dseed = 773218.d0
     call ggubs(dseed, neq, xb)
-    do 15 ii = 1, neq
+    do ii = 1, neq
         xh(ii) = 0.d0
         xb(ii) = lbloq(ii)*lddl(ii)*xb(ii)
- 15 end do
+    end do
 !
 !     1 - GENERATION DU PREMIER VECTEUR
 !
@@ -162,16 +162,16 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 zr(au1), zr(au2), zr(au3), zr(au4), zc(av),&
                 neq, solveu)
 !
-    do 100 i = 1, neq
+    do i = 1, neq
         zr(abayh + i-1) = -zr(au1 + i-1) - zr(au2 + i-1)
         zr(abayb + i-1) = -zr(au3 + i-1)
-100 end do
+    end do
 !
 !     --- 1.2. B_NORMALISATION
     c = 0.d0
-    do 110 ips = 1, neq
+    do ips = 1, neq
         c = c + zr(abayh+ips-1)*yh(ips,1) + zr(abayb+ips-1)*yb(ips,1)
-110 end do
+    end do
     a = 1.d0/sqrt(abs(c))
     if (c .gt. 0.d0) then
         signe(1) = 1.d0
@@ -182,12 +182,12 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !
     abyh = zi(aptbyh + 1-1)
     abyb = zi(aptbyb + 1-1)
-    do 120 i = 1, neq
+    do i = 1, neq
         yh(i,1) = a*yh(i,1)
         yb(i,1) = a*yb(i,1)
         zr(abyh + i-1) = a*zr(abayh + i-1)
         zr(abyb + i-1) = a*zr(abayb + i-1)
-120 end do
+    end do
 !
 !     --- 1.3. COEFFICIENT DE LA TRIDIAGONALE
     call mrmult('ZERO', lamor, yh(1, 1), zr(au1), 1,&
@@ -198,14 +198,14 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 .false._1)
 !
     a = 0.d0
-    do 130 i = 1, neq
+    do i = 1, neq
         a = a - yh(i,1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i,1)* zr( au3 + i-1)
-130 end do
+    end do
     alpha(1) = a
     beta(1) = 0.d0
 !
 !     2  -  GENERATION DES VECTEURS 2, 3, .. , NBVECT
-    do 200 j = 2, nbvect
+    do j = 2, nbvect
 !
 !        --- 2.1. DIRECTION
         call wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
@@ -213,36 +213,36 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                     zr(au1), zr(au2), zr(au3), zr(au4), zc(av),&
                     neq, solveu)
 !
-        do 210 i = 1, neq
+        do i = 1, neq
             zr(abayh + i-1) = -zr(au1 + i-1) - zr(au2 + i-1)
             zr(abayb + i-1) = -zr(au3 + i-1)
-210     continue
+        end do
 !
         a = 0.d0
-        do 215 ips = 1, neq
+        do ips = 1, neq
             a = a + zr(abayh+ips-1)*yh(ips,j-1) + zr(abayb+ips-1)*yb( ips,j-1)
-215     continue
+        end do
 !
         d1 = signe(j-1)
         a = d1*a
 !
         if (j .eq. 2) then
-            do 220 i = 1, neq
+            do i = 1, neq
                 yh(i,j) = yh(i,j) - a*yh(i,j-1)
                 yb(i,j) = yb(i,j) - a*yb(i,j-1)
-220         continue
+            end do
         else
             k = j-2
             b = 0.d0
-            do 225 ips = 1, neq
+            do ips = 1, neq
                 b = b + zr(abayh+ips-1)*yh(ips,k) + zr(abayb+ips-1)* yb(ips,k)
-225         continue
+            end do
             d2 = signe(k)
             b = d2*b
-            do 230 i = 1, neq
+            do i = 1, neq
                 yh(i,j) = yh(i,j) - a*yh(i,j-1) - b*yh(i,k)
                 yb(i,j) = yb(i,j) - a*yb(i,j-1) - b*yb(i,k)
-230         continue
+            end do
         endif
 !
 !        --- 2.2. NORMALISATION
@@ -260,9 +260,9 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                         neq)
         endif
         c = 0.d0
-        do 235 ips = 1, neq
+        do ips = 1, neq
             c = c + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb(ips, j)
-235     continue
+        end do
 !
         a = 1.d0/sqrt(abs(c))
         if (c .gt. 0.d0) then
@@ -272,22 +272,22 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             a = -a
         endif
 !
-        do 240 i = 1, neq
+        do i = 1, neq
             zr(abyh + i-1) = a*zr(abyh + i-1)
             zr(abyb + i-1) = a*zr(abyb + i-1)
             yh(i,j) = a*yh(i,j)
             yb(i,j) = a*yb(i,j)
-240     continue
+        end do
 !
 !        --- 2.3. REORTHOGONALISTION
         ro = .false.
-        do 300 i = 1, j-1
+        do i = 1, j-1
             abyh = zi(aptbyh + i-1)
             abyb = zi(aptbyb + i-1)
             a = 0.d0
-            do 310 ips = 1, neq
+            do ips = 1, neq
                 a = a + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb( ips,j)
-310         continue
+            end do
             oc = ( abs(a) .lt. prorto )
             ro = (.not. oc) .or. ro
 !
@@ -295,14 +295,14 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 600         continue
             if ((.not. oc) .and. (io .le. nborto)) then
                 a = a*signe(i)
-                do 315 k = 1, neq
+                do k = 1, neq
                     yh(k,j) = yh(k,j) - a*yh(k,i)
                     yb(k,j) = yb(k,j) - a*yb(k,i)
-315             continue
+                end do
                 b = 0.d0
-                do 320 ips = 1, neq
+                do ips = 1, neq
                     b = b + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)* yb(ips,j)
-320             continue
+                end do
                 if (abs(b) .gt. abs(a)) then
                     vali (1) = io
                     vali (2) = io
@@ -318,7 +318,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 endif
                 goto 600
             endif
-300     continue
+        end do
 !
 !        --- 2.4. REACTUALISATION
         if (ro) then
@@ -336,9 +336,9 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                             neq)
             endif
             c = 0.d0
-            do 350 ips = 1, neq
+            do ips = 1, neq
                 c = c + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb( ips,j)
-350         continue
+            end do
             a = 1.d0/sqrt(abs(c))
             if (c .gt. 0.d0) then
                 signe(j) = 1.d0
@@ -347,12 +347,12 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 a = -a
             endif
 !
-            do 400 i = 1, neq
+            do i = 1, neq
                 zr(abyh + i-1) = a*zr(abyh + i-1)
                 zr(abyb + i-1) = a*zr(abyb + i-1)
                 yh(i,j) = a*yh(i,j)
                 yb(i,j) = a*yb(i,j)
-400         continue
+            end do
         endif
 !
 !        --- 2.5. COEFFICIENTS DE LA TRIDIAGONALE
@@ -365,13 +365,13 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !
         a = 0.d0
         b = 0.d0
-        do 500 i = 1, neq, 1
+        do i = 1, neq, 1
             a = a - yh(i,j)*(zr(au1+ i-1) + zr(au2 + i-1)) - yb(i,j)* zr(au3 + i-1)
             b = b - yh(i,j-1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i, j-1)* zr(au3 + i-1)
-500     continue
+        end do
         alpha(j) = a
         beta (j) = b
-200 end do
+    end do
 !
 !     --- DESTRUCTION DES OJB TEMPORAIRES
     call jedetr('&&WP2INI.VECTEUR.AUX.U1R')
@@ -383,11 +383,11 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     call jedetr('&&WP2INI.B_A.VECT.LANC.B')
     call jedetr('&&WP2INI.PT.B.LANCZO.H')
     call jedetr('&&WP2INI.PT.B.LANCZO.B')
-    do 700 i = 1, nbvect, 1
+    do i = 1, nbvect, 1
         call codent(i, 'G', strg)
         call jedetr('&&WP2INI.BYH'//strg)
         call jedetr('&&WP2INI.BYB'//strg)
-700 end do
+    end do
 !
     call jedema()
 end subroutine

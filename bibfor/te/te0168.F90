@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0168(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -49,8 +49,8 @@ subroutine te0168(option, nomte)
 ! ......................................................................
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
     nddl = 3*nno
     nvec = nddl* (nddl+1)/2
@@ -65,40 +65,40 @@ subroutine te0168(option, nomte)
     a = zr(lsect)
 !
     k = 0
-    do 20 kp = 1, npg
-        do 10 i = 1, nno
+    do kp = 1, npg
+        do i = 1, nno
             k = k + 1
             en(i,kp) = zr(ivf-1+k)
-10      continue
-20  end do
+        end do
+    end do
 !
-    do 30 k = 1, nvec
+    do k = 1, nvec
         matv(k) = 0.0d0
-30  end do
+    end do
 !
-    do 70 kp = 1, npg
+    do kp = 1, npg
         ky = (kp-1)*nddl*nddl
         jacobi = sqrt(biline(nddl,zr(igeom),zr(iyty+ky),zr(igeom)))
         coef = rho(1)*a*jacobi*zr(ipoids-1+kp)
         k = 0
-        do 60 ii = 1, nno
-            do 50 ki = 1, 3
+        do ii = 1, nno
+            do ki = 1, 3
                 k = k + ki - 3
-                do 40 jj = 1, ii
+                do jj = 1, ii
                     k = k + 3
                     matv(k) = matv(k) + coef*en(ii,kp)*en(jj,kp)
-40              continue
-50          continue
-60      continue
-70  end do
+                end do
+            end do
+        end do
+    end do
 !
     if (option .eq. 'MASS_MECA') then
 !
         call jevech('PMATUUR', 'E', imatuu)
 !
-        do 80 i = 1, nvec
+        do i = 1, nvec
             zr(imatuu+i-1) = matv(i)
-80      continue
+        end do
 !
     else if (option.eq.'M_GAMMA') then
 !

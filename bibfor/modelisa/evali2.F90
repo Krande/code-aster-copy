@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine evali2(isz, pg, nma, phi, valpar,&
                   posmai, ipg, pdgi, icmp, nocmpi,&
                   sphi)
@@ -46,7 +46,6 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/fointc.h"
@@ -54,10 +53,11 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     integer :: icmpi, icmpj, ier, ifo
-    integer :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg,  jma
-    integer :: modj, nbcmp, nbm, nbsp, nma, iphi, posma,  idfi, ilfi
-    integer :: ikfi,  icmp, iret, ivpg, isphi, posmai, posmaj
+    integer :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg, jma
+    integer :: modj, nbcmp, nbm, nbsp, nma, iphi, posma, idfi, ilfi
+    integer :: ikfi, icmp, iret, ivpg, isphi, posmai, posmaj
     integer :: jcmp
     real(kind=8) :: valpar(7), pdgj, pdgi, valphi, zerod
     real(kind=8) :: resur, resui
@@ -65,7 +65,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
     character(len=19) :: phi, sphi, phii, sphii, pg, is
     character(len=24) :: k24, cmpis, cmpjs, nofos
     character(len=8) :: nompar(7), fonc, cmpi, cmpj, nocmpi, nocmpj
-    character(len=8) ::  isz
+    character(len=8) :: isz
     integer, pointer :: tbnp(:) => null()
     integer, pointer :: vpg(:) => null()
     character(len=8), pointer :: cesc(:) => null()
@@ -118,7 +118,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
     call jeveuo(is//'.TBLP', 'L', vk24=tblp)
     nbpara=tbnp(1)
     nbl=tbnp(2)
-    do 1 ipara = 1, nbpara
+    do ipara = 1, nbpara
         k24=tblp(1-4+ipara*4)
         if (k24(1:10) .eq. 'FONCTION_C') then
             nofos=tblp(1-4+ipara*4+2)
@@ -127,7 +127,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
         else if (k24(1:12).eq.'NUME_ORDRE_J') then
             cmpjs=tblp(1-4+ipara*4+2)
         endif
- 1  end do
+    end do
 !
 ! CHAMP CONTENANT LES COORDONNEES DES POINTS DE GAUSS DU MAILLAGE
     call jeveuo(pg//'.CESV', 'L', ivpg)
@@ -141,7 +141,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
     call jelira(phi, 'LONMAX', nbm)
 !
 ! BOUCLES SUR LES LIGNES DE LA TABLE INTER-SPECTRE ANALYTIQUE
-    do 3 ili = 1, nbl
+    do ili = 1, nbl
         call jeveuo(cmpis, 'L', icmpi)
         cmpi=zk8(icmpi-1+ili)
         call jeveuo(cmpjs, 'L', icmpj)
@@ -150,13 +150,13 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
         fonc=zk8(ifo-1+ili)
 ! BOUCLE SUR LES MAILLES ET POINTS DE GAUSS & EVALUATION DE LA FONCTION
 ! DE L'IS CORRESPONDANT AUX COMP CMPI ET CMPJ
-        do 4 jma = 1, nma
+        do jma = 1, nma
 !  NOMBRE DE PDG ET DE SOUS PDG DE LA MAILLE JMA
             nbpg=vpg(5+4*(jma-1)+1)
             nbsp=vpg(5+4*(jma-1)+2)
             posma=vpg(5+4*(jma-1)+4)
             ASSERT(nbsp.eq.1)
-            do 5 jpg = 1, nbpg
+            do jpg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS JPG X2,Y2,Z2
                 valpar(4)=zr(ivpg+posma+4*(jpg-1))
                 valpar(5)=zr(ivpg+posma+4*(jpg-1)+1)
@@ -167,7 +167,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
                 resu=dcmplx(resur,resui)
 !
 ! BOUCLE SUR LES MODES
-                do 6 modj = 1, nbm
+                do modj = 1, nbm
 ! ALLER CHERCHER LA VALEUR DE PHI(MODJ) AU POINT DE GAUSS DONNE
 ! POUR LA COMPOSANTE DONNEE
                     phii=zk24(iphi-1+modj)(1:19)
@@ -180,7 +180,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
                     call jeveuo(sphii//'.CESV', 'E', vc=vsfi)
                     nbcmp=zi(idfi-1+5+4*(jma-1)+3)
                     posmaj=zi(idfi-1+5+4*(jma-1)+4)
-                    do 7 jcmp = 1, nbcmp
+                    do jcmp = 1, nbcmp
                         nocmpj=cesc(jcmp)
                         if ((nocmpj.eq.cmpj) .and. (nocmpi.eq.cmpi)) then
                             call cesexi('S', idfi, ilfi, jma, jpg,&
@@ -195,12 +195,12 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
                             vsfi(1+posmai+nbcmp*(ipg-1)+icmp-1) =&
                             valsph
                         endif
- 8                      continue
- 7                  continue
- 6              continue
- 5          continue
- 4      continue
- 3  end do
+  8                     continue
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

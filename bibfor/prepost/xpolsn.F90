@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                   ima, iad, igeom, nfiss, ndime,&
                   ndim, jconx1, jconx2, fisco, co,&
@@ -73,67 +73,68 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
         co(2)=zr(iad-1+3*(i-1)+2)
         co(3)=zr(iad-1+3*(i-1)+3)
 !
-        do 23 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
 !
             lsn(ifiss) = zr(jlsn-1+nfiss*(ino-1)+ifiss)
             lst(ifiss) = zr(jlst-1+nfiss*(ino-1)+ifiss)
 !
 !     TRAITEMENT SPECIAL POUR LES JONCTIONS
             do i = 1, 2*nfiss
-               fisc(i) = 0
+                fisc(i) = 0
             end do
             ifisc = ifiss
             nfisc = 0
  80         continue
             if (fisco(2*ifisc-1) .gt. 0) then
 !     STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
-               nfisc = nfisc+1
-               fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
-               ifisc = fisco(2*ifisc-1)
-               fisc(2*(nfisc-1)+1) = ifisc
-               goto 80
+                nfisc = nfisc+1
+                fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+                ifisc = fisco(2*ifisc-1)
+                fisc(2*(nfisc-1)+1) = ifisc
+                goto 80
             endif
             do i = 1, nfisc
-               if (fisco(2*i)*zr(jlsn-1+(ino-1)*nfiss+fisco(2*i-1)) .gt. 0) lsn(ifiss) = 1.d0
+                if (fisco(2*i)*zr(jlsn-1+(ino-1)*nfiss+fisco(2*i-1)) .gt. 0) lsn(ifiss) = &
+                                                                             1.d0
             end do
 !
-23      continue
+        end do
 !
 !     CAS D'UN POINT D'INTERSECTION OU D'UN POINT MILIEU
     else if (ino.gt.1000) then
-        do 11 i = 1, ndim
+        do i = 1, ndim
             co(i)=zr(iad-1+i)
-11      continue
+        end do
 !
 !       FF : FONCTIONS DE FORMES
         call xpoffo(ndim, ndime, elrefp, n, igeom,&
                     co, ff)
 !
-        do 35 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
 !
             lsn(ifiss) = 0.d0
             lst(ifiss) = 0.d0
-            do 30 i = 1, n
+            do i = 1, n
                 lsn(ifiss)=lsn(ifiss)+zr(jlsn-1+nfiss*(i-1)+ifiss)*ff(&
                 i)
                 lst(ifiss)=lst(ifiss)+zr(jlst-1+nfiss*(i-1)+ifiss)*ff(&
                 i)
-30          continue
+            end do
 !
 !     TRAITEMENT SPECIAL POUR LES JONCTIONS
             do i = 1, 2*nfiss
-               fisc(i) = 0
+                fisc(i) = 0
             end do
             ifisc = ifiss
             nfisc = 0
  90         continue
             if (fisco(2*ifisc-1) .gt. 0) then
 !     STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
-               nfisc = nfisc+1
-               fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
-               ifisc = fisco(2*ifisc-1)
-               fisc(2*(nfisc-1)+1) = ifisc
-               goto 90
+                nfisc = nfisc+1
+                fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+                ifisc = fisco(2*ifisc-1)
+                fisc(2*(nfisc-1)+1) = ifisc
+                goto 90
             endif
             call vecini(nfisc+1, 0.d0, somlsn)
             do i = 1, n
@@ -142,12 +143,12 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                 end do
             end do
             do i = 1, nfisc
-               if (fisco(2*i)*somlsn(i) .gt. 0) lsn(ifiss) = 1.d0
+                if (fisco(2*i)*somlsn(i) .gt. 0) lsn(ifiss) = 1.d0
             end do
 !
-35      continue
+        end do
 !
-    endif   
+    endif 
 !
     call jedema()
 !

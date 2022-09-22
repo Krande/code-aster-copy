@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                   rmima, jraxe)
 ! person_in_charge: van-xuan.tran at edf.fr
@@ -87,7 +87,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
 !
     n1 = 0
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
         call jerazo('&&PROJAX.SECT1', nbordr*2, 1)
         call jerazo('&&PROJAX.SECT2', nbordr*2, 1)
         call jerazo('&&PROJAX.SECT3', nbordr*2, 1)
@@ -118,7 +118,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
         nptsec(3) = 0
         nptsec(4) = 0
 !
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
             n1 = n1 + 1
             ui = zr(jvecpg+2*n1-1)
             vi = zr(jvecpg+2*n1)
@@ -129,7 +129,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
             dists(4) = sqrt((umin - ui)**2 + (vmin - vi)**2)
 !
             indsec = 0
-            do 30 i = 1, 4
+            do i = 1, 4
                 if ((dists(i) .ge. diamin) .and. (indsec .eq. 0)) then
                     if (ui .ge. u0) then
                         if (vi .ge. v0) then
@@ -157,8 +157,8 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                         endif
                     endif
                 endif
-30          continue
-20      continue
+            end do
+        end do
 !
 ! 2. CHOIX DE L'AXE INITIAL (SI UN 2EME AXE EST DEMANDE,
 !                            IL SERA DEDUIT DE L'AXE INITIAL.)
@@ -243,7 +243,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
 !
 ! 4. PROJECTION SUR UN AXE OU DEUX AXES
 !
-            do 40 iordr = 1, nbordr
+            do iordr = 1, nbordr
                 n1 = n1 + 1
 !
                 ui = zr(jvecpg + 2*n1 - 1)
@@ -270,13 +270,13 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                 else
                     zr(jraxe+n1) = sqrt(rpaxi**2 + rpaxs**2)
                 endif
-40          continue
+            end do
 !
 ! LES POINTS SONT ALIGNES VERTICALEMENT (PAS DE PROJECTION)
         else if (iflag(ivect) .eq. 1) then
             n1 = n1 - nbordr
 !
-            do 50 iordr = 1, nbordr
+            do iordr = 1, nbordr
                 n1 = n1 + 1
 !
                 ui = zr(jvecpg+2*n1 - 1)
@@ -288,13 +288,13 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                     val = -val
                 endif
                 zr(jraxe+n1) = val
-50          continue
+            end do
 !
 ! LES POINTS SONT ALIGNES HORIZONTALEMENT (PAS DE PROJECTION)
         else if (iflag(ivect) .eq. 2) then
             n1 = n1 - nbordr
 !
-            do 60 iordr = 1, nbordr
+            do iordr = 1, nbordr
                 n1 = n1 + 1
 !
                 ui = zr(jvecpg+2*n1 - 1)
@@ -306,14 +306,14 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                     val = -val
                 endif
                 zr(jraxe+n1) = val
-60          continue
+            end do
 !
 ! LES POINTS SONT DANS UN CADRE DONT LES COTES SONT INFERIEURS A EPSILO
 ! (PAS DE PROJECTION)
         else if (iflag(ivect) .eq. 3) then
             n1 = n1 - nbordr
 !
-            do 70 iordr = 1, nbordr
+            do iordr = 1, nbordr
                 n1 = n1 + 1
 !
                 ui = zr(jvecpg+2*n1 - 1)
@@ -325,11 +325,11 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                     val = -val
                 endif
                 zr(jraxe+n1) = val
-70          continue
+            end do
 !
         endif
 !
-10  end do
+    end do
 !
     call jedetr('&&PROJAX.SECT1')
     call jedetr('&&PROJAX.SECT2')

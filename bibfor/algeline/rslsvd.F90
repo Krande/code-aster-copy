@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rslsvd(nm, m, n, a, w,&
                   u, v, nb, b, eps,&
                   ierr, rvnm)
@@ -93,7 +93,7 @@ subroutine rslsvd(nm, m, n, a, w,&
     matuv = .true.
     call calsvd(nm, m, n, a, w,&
                 matuv, u, matuv, v, ierr)
-    if (ierr .ne. 0) goto 9999
+    if (ierr .ne. 0) goto 999
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   POST-TRAITEMENTS AU CALCUL DE LA DECOMPOSITION AUX VALEURS
@@ -109,24 +109,24 @@ subroutine rslsvd(nm, m, n, a, w,&
                 rvnm)
     if (rg .eq. 0) then
         ierr = -1
-        goto 9999
+        goto 999
     endif
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   CALCUL DES SOLUTIONS DU SYSTEME
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    do 10 ib = 1, nb
+    do ib = 1, nb
         call r8inir(n, 0.0d0, rvnm(1), 1)
-        do 20 j = 1, rg
+        do j = 1, rg
             alphaj = ddot(m,u(1,j),1,b(1,ib),1) / w(j)
             call daxpy(n, alphaj, v(1, j), 1, rvnm(1),&
                        1)
- 20     continue
+        end do
         call dcopy(n, rvnm(1), 1, b(1, ib), 1)
- 10 end do
+    end do
 !
-9999 continue
+999 continue
 !
 ! --- FIN DE RSLSVD.
 end subroutine

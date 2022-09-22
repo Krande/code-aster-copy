@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstapv(nbpt, d, t, dmin, dmax,&
                   dmoy, detyp, drms, sd, sde,&
                   sd2)
@@ -73,32 +73,32 @@ subroutine dstapv(nbpt, d, t, dmin, dmax,&
 !
 ! --- RECHERCHE DES EXTREMAS ABSOLUS
 !
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
         if (d(i) .gt. dmax) dmax=d(i)
         if (d(i) .lt. dmin) dmin=d(i)
-10  continue
+    end do
 !
 ! --- DEPLACEMENT MOYEN
 !
-    do 20 i = 1, nbpt
+    do i = 1, nbpt
         zr(ift + i-1) = d(i)
-20  continue
+    end do
     call trapez(t, zr(ift), nbpt, sd)
     dmoy = sd / (t(nbpt) - t(1))
 !
 ! --- DEPLACEMENT QUADRATIQUE MOYEN
 !
-    do 30 i = 1, nbpt
+    do i = 1, nbpt
         zr(ift + i-1) = d(i)*d(i)
-30  continue
+    end do
     call trapez(t, zr(ift), nbpt, sd2)
     drms = sqrt(sd2 / (t(nbpt) - t(1)))
 !
 ! --- DEPLACEMENT QUADRATIQUE MOYEN (MOYENNE NULLE)
 !
-    do 40 i = 1, nbpt
+    do i = 1, nbpt
         zr(ift + i-1) = (d(i)-dmoy)*(d(i)-dmoy)
-40  continue
+    end do
     call trapez(t, zr(ift), nbpt, sde)
     detyp = sqrt(sde / (t(nbpt) - t(1)))
 !

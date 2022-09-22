@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssrone(mag, isma, rota)
     implicit none
 !
@@ -44,7 +44,7 @@ subroutine ssrone(mag, isma, rota)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  iret, k
+    integer :: iret, k
     real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -59,9 +59,9 @@ subroutine ssrone(mag, isma, rota)
     rot2=rot1
     if (rot2 .eq. 1) then
         r1=0.0d0
-        do 3,k=4,6
-        r1= r1+ abs(para_r(14*(isma-1)+k))
- 3      continue
+        do k = 4, 6
+            r1= r1+ abs(para_r(14*(isma-1)+k))
+        end do
         rot1=0
         if (r1 .gt. 1.d-6) rot1=2
     endif

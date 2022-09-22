@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pofaqu()
     implicit none
 !     COMMANDE POST_FATIGUE
@@ -24,6 +24,8 @@ subroutine pofaqu()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/fgdomm.h"
 #include "asterfort/fglema.h"
 #include "asterfort/getvid.h"
@@ -38,10 +40,8 @@ subroutine pofaqu()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, j, ibid
-    integer :: ifonc1, ifonc, nbpapf,   ivdome
+    integer :: ifonc1, ifonc, nbpapf, ivdome
     real(kind=8) :: rdomm, val(2)
     complex(kind=8) :: cbid
     character(len=8) :: k8b, nomten(6), nommat, kdomm, result, nomp, nomt, txcum
@@ -81,28 +81,28 @@ subroutine pofaqu()
     fvale(1) = nomten(1)//'           .VALE'
     call jelira(fvale(1), 'LONMAX', nbpts)
     nbptot = nbpts
-    do 20 i = 2, nbf
+    do i = 2, nbf
         fvale(i) = nomten(i)//'           .VALE'
         call jelira(fvale(i), 'LONMAX', nbpts)
         if (nbpts .ne. nbptot) then
             call utmess('F', 'FATIGUE1_21')
         endif
-20  end do
+    end do
     AS_ALLOCATE(vr=ordo, size=nbptot/2*nbf)
     call jeveuo(fvale(1), 'L', ifonc1)
-    do 30 i = 2, nbf
+    do i = 2, nbf
         call jeveuo(fvale(i), 'L', ifonc)
-        do 35 j = 1, nbptot/2
+        do j = 1, nbptot/2
             if (zr(ifonc+j-1) .ne. zr(ifonc1+j-1)) then
                 call utmess('F', 'FATIGUE1_21')
             endif
             ordo(1+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
-35      continue
-30  end do
+        end do
+    end do
     nbptot = nbptot / 2
-    do 40 j = 1, nbptot
+    do j = 1, nbptot
         ordo(1+(j-1)*nbf) = zr(ifonc1+nbptot+j-1)
-40  end do
+    end do
 !
     fvale(1) = nomp//'           .VALE'
     call jelira(fvale(1), 'LONMAX', nbpts)
@@ -111,12 +111,12 @@ subroutine pofaqu()
     endif
     AS_ALLOCATE(vr=defpla, size=nbptot)
     call jeveuo(fvale(1), 'L', ifonc)
-    do 45 j = 0, nbptot-1
+    do j = 0, nbptot-1
         if (zr(ifonc+j) .ne. zr(ifonc1+j)) then
             call utmess('F', 'FATIGUE1_22')
         endif
         defpla(1+j) = zr(ifonc+nbptot+j)
-45  end do
+    end do
 !
     fvale(1) = nomt//'           .VALE'
     call jelira(fvale(1), 'LONMAX', nbpts)
@@ -125,12 +125,12 @@ subroutine pofaqu()
     endif
     AS_ALLOCATE(vr=temp, size=nbptot)
     call jeveuo(fvale(1), 'L', ifonc)
-    do 46 j = 0, nbptot-1
+    do j = 0, nbptot-1
         if (zr(ifonc+j) .ne. zr(ifonc1+j)) then
             call utmess('F', 'FATIGUE1_23')
         endif
         temp(1+j) = zr(ifonc+nbptot+j)
-46  end do
+    end do
 !
 !     --- CREATION DE LA TABLE ---
 !
@@ -155,12 +155,12 @@ subroutine pofaqu()
         call utmess('F', 'FATIGUE1_20')
     endif
 !
-    do 50 i = 1, nbptot
+    do i = 1, nbptot
         val(1) = zr(ifonc1+i-1)
         val(2) = zr(ivdome+i-1)
         call tbajli(result, 2, nomppf, [ibid], val,&
                     [cbid], k8b, 0)
-50  end do
+    end do
 !
 !     --- CALCUL DU DOMMAGE TOTAL ---
 !

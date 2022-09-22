@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
                   nelem, xy, prec, ligrmo, chelem,&
                   types)
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cesexi.h"
 #include "asterfort/dsingu.h"
 #include "asterfort/jedema.h"
@@ -32,6 +31,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 #include "asterfort/rsingu.h"
 #include "asterfort/ssingu.h"
 #include "asterfort/tsingu.h"
+!
     integer :: ndim, nnoem, nelem
     real(kind=8) :: xy(3, nnoem), prec
     character(len=8) :: nomail
@@ -120,11 +120,11 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
     call jeveuo(cherrs//'.CESV', 'L', jcesv)
 !
 ! LECTURE DE LA SD .CESC
-    do 10 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         if (zk8(jcesc+icmp-1)(1:6) .eq. 'ERREST') ncmp=icmp
-10  end do
+    end do
 !
-    do 20 inel = 1, nelem
+    do inel = 1, nelem
         call cesexi('C', jcesd, jcesl, inel, 1,&
                     1, ncmp, iad)
         if (iad .gt. 0) then
@@ -134,14 +134,14 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
             erreur(inel)=0.d0
             nbr(inel)=0
         endif
-20  end do
+    end do
 !
 ! LECTURE DE LA SD .CESC
-    do 30 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         if (zk8(jcesc+icmp-1)(1:6) .eq. 'TAILLE') ncmp=icmp
-30  end do
+    end do
 !
-    do 40 inel = 1, nelem
+    do inel = 1, nelem
         call cesexi('C', jcesd, jcesl, inel, 1,&
                     1, ncmp, iad)
         if (iad .gt. 0) then
@@ -151,7 +151,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
             taille(inel)=0.d0
             nbr(inel)=0
         endif
-40  end do
+    end do
 !
 ! 4 - RECUPERATION DE L'ENERGIE EN CHAQUE EF ENERGI(EF)
 !
@@ -162,11 +162,11 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
     call jeveuo(chenes//'.CESV', 'L', jcesv)
 !
 ! LECTURE DE LA SD .CESC
-    do 50 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         if (zk8(jcesc+icmp-1)(1:6) .eq. 'TOTALE') ncmp=icmp
-50  end do
+    end do
 !
-    do 60 inel = 1, nelem
+    do inel = 1, nelem
         call cesexi('C', jcesd, jcesl, inel, 1,&
                     1, ncmp, iad)
         if (iad .gt. 0) then
@@ -174,7 +174,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
         else
             energi(inel)=0.d0
         endif
-60  end do
+    end do
 !
 ! 5 - CALCUL DU DEGRE DE LA SINGULARITE ALPHA(NELEM) PAR EF
 !

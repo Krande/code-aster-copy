@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine poeihm(nomte, option, modint, jgao, nno1,&
                   nno2, ncmp, nvim, vpg, vno)
-    implicit     none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
@@ -68,24 +68,24 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
     if (modint .ne. 'RED') then
         call ppgan2(jgao, 1, ncmp, vpg, vno1)
 !
-        do 110 i = 1, nno1
-            do 120 j = 1, nvim
+        do i = 1, nno1
+            do j = 1, nvim
                 vno((next(i)-1)*ncmp+j) = vno1((i-1)*ncmp+j)
                 vno((next2(i)-1)*ncmp+j) = vno1((i-1)*ncmp+j)
-120          continue
-            do 130 j = nvim+1, ncmp
+            end do
+            do j = nvim+1, ncmp
                 vno((next(i)-1)*ncmp+j) = vno1((i-1)*ncmp+j)
                 vno((next2(i)-1)*ncmp+j) = vno1((i-1)*ncmp+j)
-130          continue
-110      continue
-        do 140 i = 1, nno2
-            do 150 j = 1, nvim
+            end do
+        end do
+        do i = 1, nno2
+            do j = 1, nvim
                 vno((nmil(i)-1)*ncmp+j) = vno1((i-1)*ncmp+j)
-150          continue
-            do 160 j = nvim+1, ncmp
+            end do
+            do j = nvim+1, ncmp
                 vno((nmil(i)-1)*ncmp+j) = vno1((i-1)*ncmp+j)
-160          continue
-140      continue
+            end do
+        end do
 !
     else
 !
@@ -95,19 +95,19 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
         call elref2(nomte, 2, lielrf, ntrou)
 !
 !
-        call elrefe_info(elrefe=lielrf(1),fami='MASS',ndim=ndim,nno=nno1,nnos=nnos1,&
-  npg=npg,jgano=jgapg1)
+        call elrefe_info(elrefe=lielrf(1), fami='MASS', ndim=ndim, nno=nno1, nnos=nnos1,&
+                         npg=npg, jgano=jgapg1)
 !
-        call elrefe_info(elrefe=lielrf(2),fami='MASS',ndim=ndim,nno=nno2,nnos=nnos2,&
-  npg=npg,jgano=jgapg2)
+        call elrefe_info(elrefe=lielrf(2), fami='MASS', ndim=ndim, nno=nno2, nnos=nnos2,&
+                         npg=npg, jgano=jgapg2)
 ! =====================================================================
 ! --- MATRICE DE PASSAGE SOMMETS -> SOMMETS : JGASO ------------------
 ! =====================================================================
-        call elrefe_info(elrefe=lielrf(1),fami='NOEU_S',ndim=ndim2,nno=nno3,nnos=nnos3,&
-  npg=npg2,jgano=jgaso1)
+        call elrefe_info(elrefe=lielrf(1), fami='NOEU_S', ndim=ndim2, nno=nno3, nnos=nnos3,&
+                         npg=npg2, jgano=jgaso1)
 !
-        call elrefe_info(elrefe=lielrf(2),fami='NOEU_S',ndim=ndim2,nno=nno3,nnos=nnos3,&
-  npg=npg2,jgano=jgaso2)
+        call elrefe_info(elrefe=lielrf(2), fami='NOEU_S', ndim=ndim2, nno=nno3, nnos=nnos3,&
+                         npg=npg2, jgano=jgaso2)
 !
         nno=2*nno1+nno2
 ! =====================================================================
@@ -121,68 +121,68 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
             ASSERT(ncmp .le. dimmax)
-            do 100 i = 1, ncmp*npg
+            do i = 1, ncmp*npg
                 spg1(i) = vpg(i)
-100          continue
-            do 200 i = 1, ncmp*npg2
+            end do
+            do i = 1, ncmp*npg2
                 spg2(i) = vpg(ncmp*npg+i)
-200          continue
+            end do
             call ppgan2(jgapg1, 1, ncmp, spg1, sefpg1)
             call ppgan2(jgaso1, 1, ncmp, spg2, sefso1)
-            do 10 i = 1, nno1
-                do 20 j = 1, nvim
+            do i = 1, nno1
+                do j = 1, nvim
                     vno((next(i)-1)*ncmp+j) = sefpg1((i-1)*ncmp+j)
                     vno((next2(i)-1)*ncmp+j) = sefpg1((i-1)*ncmp+j)
-20              continue
-                do 30 j = nvim+1, ncmp
+                end do
+                do j = nvim+1, ncmp
                     vno((next(i)-1)*ncmp+j) = sefso1((i-1)*ncmp+j)
                     vno((next2(i)-1)*ncmp+j) = sefso1((i-1)*ncmp+j)
-30              continue
-10          continue
+                end do
+            end do
             call ppgan2(jgapg2, 1, ncmp, spg1, sefpg2)
             call ppgan2(jgaso2, 1, ncmp, spg2, sefso2)
-            do 40 i = 1, nno2
-                do 50 j = 1, nvim
+            do i = 1, nno2
+                do j = 1, nvim
                     vno((nmil(i)-1)*ncmp+j) = sefpg1((i-1)*ncmp+j)
-50              continue
-                do 60 j = nvim+1, ncmp
+                end do
+                do j = nvim+1, ncmp
                     vno((nmil(i)-1)*ncmp+j) = sefso1((i-1)*ncmp+j)
-60              continue
-40          continue
+                end do
+            end do
         endif
         if (option .eq. 'VARI_ELNO  ') then
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
             ASSERT(ncmp .le. nvmax)
-            do 300 i = 1, ncmp*npg
+            do i = 1, ncmp*npg
                 vpg1(i) = vpg(i)
-300          continue
-            do 400 i = 1, ncmp*npg2
+            end do
+            do i = 1, ncmp*npg2
                 vpg2(i) = vpg(ncmp*npg+i)
-400          continue
+            end do
             call ppgan2(jgapg1, 1, ncmp, vpg1, varpg1)
             call ppgan2(jgaso1, 1, ncmp, vpg2, varso1)
-            do 70 i = 1, nno1
-                do 80 j = 1, nvim
+            do i = 1, nno1
+                do j = 1, nvim
                     vno((next(i)-1)*ncmp+j) = varpg1((i-1)*ncmp+j)
                     vno((next2(i)-1)*ncmp+j) = varpg1((i-1)*ncmp+j)
-80              continue
-                do 90 j = nvim+1, ncmp
+                end do
+                do j = nvim+1, ncmp
                     vno((next(i)-1)*ncmp+j) = varso1((i-1)*ncmp+j)
                     vno((next2(i)-1)*ncmp+j) = varso1((i-1)*ncmp+j)
-90              continue
-70          continue
+                end do
+            end do
             call ppgan2(jgapg2, 1, ncmp, vpg1, varpg2)
             call ppgan2(jgaso2, 1, ncmp, vpg2, varso2)
-            do 71 i = 1, nno2
-                do 81 j = 1, nvim
+            do i = 1, nno2
+                do j = 1, nvim
                     vno((nmil(i)-1)*ncmp+j) = varpg1((i-1)*ncmp+j)
-81              continue
-                do 91 j = nvim+1, ncmp
+                end do
+                do j = nvim+1, ncmp
                     vno((nmil(i)-1)*ncmp+j) = varso1((i-1)*ncmp+j)
-91              continue
-71          continue
+                end do
+            end do
         endif
     endif
 ! =====================================================================

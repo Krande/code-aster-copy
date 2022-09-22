@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0325(option, nomte)
     implicit none
 !
@@ -52,8 +52,8 @@ subroutine te0325(option, nomte)
     integer :: k, mater
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -79,12 +79,12 @@ subroutine te0325(option, nomte)
 ! ON RECUPERE LE CHAMNO DE DEPL (MODAL)
 !
     k = 0
-    do 10 i = 1, nno
+    do i = 1, nno
         if (option(16:16) .eq. 'R') then
-            do 20 idim = 1, 3
+            do idim = 1, 3
                 k=k+1
                 acloc(idim,i) = zr(iacce+k-1)
-20          continue
+            end do
         else if (option(16:16) .eq. 'X') then
             k=k+1
             acloc(1,i) = zr(itemp+k-1)
@@ -101,27 +101,27 @@ subroutine te0325(option, nomte)
             acloc(2,i) = 0.d0
             acloc(3,i) = zr(itemp+k-1)
         endif
-10  end do
+    end do
 !
-    do 11 i = 1, nno
+    do i = 1, nno
         zr(ivectt+i-1) = 0.d0
-11  end do
+    end do
 !
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
-    do 21 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 22 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
-22      continue
-21  end do
+        end do
+    end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 ipg = 1, npg1
+    do ipg = 1, npg1
         kdec=(ipg-1)*nno*ndim
         ldec=(ipg-1)*nno
 !
@@ -129,26 +129,26 @@ subroutine te0325(option, nomte)
         ny = 0.0d0
         nz = 0.0d0
 !        --- ON CALCULE L ACCEL AU POINT DE GAUSS
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 104 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
 !
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
 !
-104          continue
-102      continue
+            end do
+        end do
 !
         acc(1,ipg)=0.0d0
         acc(2,ipg)=0.0d0
         acc(3,ipg)=0.0d0
-        do 105 i = 1, nno
+        do i = 1, nno
             acc(1,ipg) = acc(1,ipg) + acloc(1,i)*zr(ivf+ldec+i-1)
             acc(2,ipg) = acc(2,ipg) + acloc(2,i)*zr(ivf+ldec+i-1)
             acc(3,ipg) = acc(3,ipg) + acloc(3,i)*zr(ivf+ldec+i-1)
-105      continue
+        end do
 !
 !        CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
@@ -160,10 +160,10 @@ subroutine te0325(option, nomte)
 ! CALCUL DU FLUX FLUIDE NORMAL AU POINT DE GAUSS
         flufn(ipg) = acc(1,ipg)*norm(1) + acc(2,ipg)*norm(2) +acc(3, ipg)*norm(3)
 !
-        do 103 i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + jac*zr(ipoids+ipg-1)* flufn(ipg) * rho(1) *&
-                             zr(ivf+ldec+i-1)
-103      continue
-101  end do
+        do i = 1, nno
+            zr(ivectt+i-1) = zr(ivectt+i-1) + jac*zr(ipoids+ipg-1)* flufn(ipg) * rho(1) * zr(ivf+&
+                             &ldec+i-1)
+        end do
+    end do
 !
 end subroutine

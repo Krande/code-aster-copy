@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !.======================================================================
     implicit none
@@ -170,16 +170,16 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! --- AFFECTATION DES VECTEURS DE TRANSLATION ET DE ROTATION :
 !     ------------------------------------------------------
-    do 20 in = 1, nb1
-        do 30 ii = 1, 3
+    do in = 1, nb1
+        do ii = 1, 3
             vecu(in,ii) = zr(idepl+6*(in-1)+ii-1)
             vecthe(in,ii) = zr(idepl+6*(in-1)+ii+3-1)
- 30     continue
- 20 continue
+        end do
+    end do
 !
-    do 40 ii = 1, 3
+    do ii = 1, 3
         vecthe(nb2,ii) = zr(idepl+6*nb1+ii-1)
- 40 continue
+    end do
 !
 ! --- DETERMINATION DES REPERES LOCAUX AUX NOEUDS DANS LA
 ! --- CONFIGURATION INITIALE
@@ -214,11 +214,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! --- BOUCLE SUR LES COUCHES :
 !     ----------------------
-    do 50 icou = 1, nbcou
+    do icou = 1, nbcou
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION DANS L'EPAISSEUR :
 !       ----------------------------------------------------
-        do 60 inte = 1, npge
+        do inte = 1, npge
 !
 ! ---      POSITION DANS L'EPAISSEUR :
             if (inte .eq. 1) then
@@ -233,7 +233,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! ---      BOUCLE SUR LES POINTS D'INTEGRATION DANS LE PLAN MOYEN :
 !          ------------------------------------------------------
-            do 70 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
                 kpgs = kpgs + 1
 !
@@ -265,11 +265,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
                 call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe,&
                             6*nb1+3, 6*nb1+3, 1, dudxnc)
 !
-                do 80 i = 1, 3
+                do i = 1, 3
                     dudx(i) = dudxnc(1+3*(i-1))
                     dudy(i) = dudxnc(2+3*(i-1))
                     dudz(i) = dudxnc(3+3*(i-1))
- 80             continue
+                end do
 !
 ! ---         CONSTRUCTION DE LA MATRICE [F] DU GRADIENT DES
 ! ---         DEFORMATIONS AU POINT D'INTEGRATION COURANT.
@@ -280,11 +280,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! ---         PAR COMMODITE, ON UTILISE PLUTOT [FT] , LA MATRICE
 ! ---         TRANSPOSEE DE [F] :
 !             -----------------
-                do 90 i = 1, 3
+                do i = 1, 3
                     ft(1,i) = dudx(i)
                     ft(2,i) = dudy(i)
                     ft(3,i) = dudz(i)
- 90             continue
+                end do
 !
                 ft(1,1) = ft(1,1) + un
                 ft(2,2) = ft(2,2) + un
@@ -350,9 +350,9 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
                 sigma(6,kpgs) = sigmat(2,3)*detfm1
 !
 !
- 70         continue
- 60     continue
- 50 continue
+            end do
+        end do
+    end do
 !
 999 continue
 !.============================ FIN DE LA ROUTINE ======================

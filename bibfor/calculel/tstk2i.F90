@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function tstk2i(nlong, chaine)
 ! aslint: disable=
     implicit none
@@ -33,8 +33,8 @@ function tstk2i(nlong, chaine)
 ! ----------------------------------------------------------------------
     integer :: ival, k
     ival=0
-    do 1, k=1,nlong
-    ival = ival+ichar(chaine(k:k))
-    1 end do
+    do k = 1, nlong
+        ival = ival+ichar(chaine(k:k))
+    end do
     tstk2i=ival
 end function

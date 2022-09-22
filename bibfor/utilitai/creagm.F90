@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine creagm(nbmato, nbpart, ma, masd)
 !
 !    - FONCTION REALISEE:
@@ -68,10 +68,10 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: id1, isd, nbma, ima, nbre, idma, ifm, niv
-    integer ::  nbgrsd
+    integer :: nbgrsd
     real(kind=8) :: tmps(7)
     character(len=8) :: ktmp
-    character(len=24) ::  grpema
+    character(len=24) :: grpema
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
     call jemarq()
@@ -93,38 +93,39 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 !
 ! ------- On RECUPERE LE NOM DES SOUS DOMAINES
 !
-    do 51 isd = 1, nbpart
+    do isd = 1, nbpart
         write(ktmp,'(I4)')isd-1
         call lxcadr(ktmp)
         zk24(nomsdm-1+isd) = 'SD'//ktmp
-51  end do
+    end do
 !
 !
 ! ------- CREATION DU TABLEAU DES PLACES DES GRPMA
 !
     zi(idmasd)=1
-    do 32 isd = 2, nbpart+1
+    do isd = 2, nbpart+1
         zi(idmasd-1+isd)=zi(idmasd-1+isd-1)+zi(nbmasd-1+isd-1)
-32  end do
+    end do
 !
 ! ------- CREATION DU TABLEAU DONNANT LES MAILLES POUR CHAQUE GRMPA
 !
-    do 36 ima = 1, nbmato
+    do ima = 1, nbmato
         nbre=zi(numsdm-1+ima)+1
         zi(masd-1+zi(idmasd-1+nbre)+zi(id1-1+nbre)) = zi(renum-1+ima)
         zi(id1-1+nbre) = zi(id1-1+nbre)+1
-36  end do
-
+    end do
+!
 !
 !   -- on cree un "GROUPEMA" par sous-domaine :
     nbgrsd=0
     do isd = 1, nbpart
         nbma=zi(nbmasd-1+isd)
-        if (nbma.gt.0) nbgrsd=nbgrsd+1
+        if (nbma .gt. 0) nbgrsd=nbgrsd+1
     enddo
-    call jecrec('&&FETCRF.GROUPEMA', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',nbgrsd)
-
-    do 38 isd = 1, nbpart
+    call jecrec('&&FETCRF.GROUPEMA', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
+                nbgrsd)
+!
+    do isd = 1, nbpart
         grpema=zk24(nomsdm-1+isd)
         nbma=zi(nbmasd-1+isd)
         if (nbma .gt. 0) then
@@ -132,12 +133,12 @@ subroutine creagm(nbmato, nbpart, ma, masd)
             call jeecra(jexnom('&&FETCRF.GROUPEMA', grpema), 'LONMAX', nbma)
             call jeecra(jexnom('&&FETCRF.GROUPEMA', grpema), 'LONUTI', nbma)
             call jeveuo(jexnom('&&FETCRF.GROUPEMA', grpema), 'E', idma)
-            do 41 ima = 0, nbma - 1
+            do ima = 0, nbma - 1
                 zi(idma+ima) = zi(masd+zi(idmasd-1+isd)-1+ima)
-41          continue
+            end do
         endif
-38  end do
-
+    end do
+!
     call jedetr('&&FETSKP.ID1')
 !
     if (niv .ge. 2) then

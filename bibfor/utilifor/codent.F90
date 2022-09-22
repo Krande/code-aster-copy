@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine codent(entier, cadre, chaine)
     implicit none
 #include "asterf_types.h"
@@ -90,9 +90,9 @@ subroutine codent(entier, cadre, chaine)
         if (len(cadre) .gt. 1) then
             if (cadre(2:2) .eq. '0') then
                 if (neg) chaine(il:il) = '0'
-                do 20 i = il-1, 1, -1
+                do i = il-1, 1, -1
                     chaine(i:i) = '0'
- 20             continue
+                end do
                 if (neg) chaine(1:1) = '-'
             endif
         endif
@@ -100,9 +100,9 @@ subroutine codent(entier, cadre, chaine)
     else if (cadre(1:1) .eq. 'G') then
 !        --- CADRAGE A GAUCHE ---
         il1 = il-1
-        do 30 i = 1, lg-il1
+        do i = 1, lg-il1
             chaine(i:i) = chaine(i+il1:i+il1)
- 30     continue
+        end do
         chaine(lg-il1+1:) = ' '
     else
         ier = 1
@@ -111,9 +111,9 @@ subroutine codent(entier, cadre, chaine)
 !     SORTIE -----------------------------------------------------------
 99000 continue
     if (ier .ne. 0) then
-        do 9001 i = 1, lg
+        do i = 1, lg
             chaine(i:i) = '*'
-9001     continue
+        end do
     endif
 !
 end subroutine

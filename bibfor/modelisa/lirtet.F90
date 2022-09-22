@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lirtet(ifl, ilec, inom, cnl, nom,&
                   icl, iv, rv, cv, deblig)
     implicit none
@@ -154,9 +154,9 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
 !
   9 continue
     if (nbigno .gt. 0) then
-        do 99 i = 1, nbigno-1
+        do i = 1, nbigno-1
             call lirlig(ifl, cnl, lig, ilec)
- 99     continue
+        end do
         deblig=-1
         call liritm(ifl, icl, iv, rv, cv(1:8),&
                     cnl, deblig, ilec)

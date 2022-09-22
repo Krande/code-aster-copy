@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcdpli(mod, nvi, option, materf, sigm,&
                   deps, vim, vip, sig, dsidep,&
                   iret)
-    implicit      none
+    implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dplitg.h"
@@ -103,9 +103,9 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
         call resdp1(materf, seq, i1e, pmoins, dp,&
                     plas)
         if (plas .eq. 0.0d0) then
-            do 10 ii = 1, ndt
+            do ii = 1, ndt
                 sig(ii) = sige(ii)
-10          continue
+            end do
         else
             call majsig(materf, se, seq, i1e, alpha,&
                         dp, plas, sig)

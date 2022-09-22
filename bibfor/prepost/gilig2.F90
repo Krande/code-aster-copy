@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gilig2(nfic, nbnono, niv)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -60,10 +60,10 @@ subroutine gilig2(nfic, nbnono, niv)
         nbfois = nbnono / nbnom
         nbrest = nbnono - nbnom*nbfois
         icoj = 0
-        do 10 i = 1, nbfois
+        do i = 1, nbfois
             read(nfic,1007) (zk8(iaptno-1+j),j=icoj+1,icoj+nbnom)
             icoj = icoj + nbnom
-10      continue
+        end do
         if (nbrest .gt. 0) then
             read(nfic,1007) (zk8(iaptno-1+j),j=icoj+1,icoj+nbrest)
         endif
@@ -71,7 +71,7 @@ subroutine gilig2(nfic, nbnono, niv)
         nbfois = nbnono / nbnum
         nbrest = nbnono - nbnum*nbfois
         icoj = 0
-        do 12 i = 1, nbfois
+        do i = 1, nbfois
             if (niv .eq. 3) then
                 read(nfic,1009) (zi(iaptnu-1+j),j=icoj+1,icoj+nbnum)
                 icoj = icoj + nbnum
@@ -79,7 +79,7 @@ subroutine gilig2(nfic, nbnono, niv)
                 read(nfic,1008) (zi(iaptnu-1+j),j=icoj+1,icoj+nbnum)
                 icoj = icoj + nbnum
             endif
-12      continue
+        end do
         if (nbrest .gt. 0) then
             if (niv .eq. 3) then
                 read(nfic,1009) (zi(iaptnu-1+j),j=icoj+1,icoj+nbrest)

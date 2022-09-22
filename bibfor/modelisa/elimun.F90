@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
                   compcu, nopono, nolino, lisnoe, poinoe,&
                   nnoco)
@@ -107,7 +107,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
     call wkvect(poinoe, 'V V I', nzocu+1, jpoi)
     zi(jpoi) = 1
 !
-    do 1000 izone = 1, nzocu
+    do izone = 1, nzocu
 !
 ! --- VECTEUR CONTENANT LES NOEUDS ZONE
 !
@@ -119,18 +119,18 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
 ! --- ELIMINATION DES PURS DOUBLONS
 !
-        do 10 i = 1, nbno
+        do i = 1, nbno
             numno1 = zi(jnl-2+jdebut+i)
             if (numno1 .ne. 0) then
-                do 11 j = i+1, nbno
+                do j = i+1, nbno
                     numno2 = zi(jnl-2+jdebut+j)
                     if ((numno1.eq.numno2) .and. (numno2.ne.0)) then
                         zi(jnl-2+jdebut+j) = 0
                         n1 = n1 + 1
                     endif
-11              continue
+                end do
             endif
-10      continue
+        end do
 !
 ! --- RECUPERATION INFOS SANS_NOEUD, SANS_GROUP_NO
 !
@@ -143,30 +143,30 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
         call jelira(nelim, 'LONMAX', nbelim)
         call jeveuo(nelim, 'E', jelim)
-        do 20 i = 1, nbelim
+        do i = 1, nbelim
             numno1 = zi(juelim-1+i)
             if (numno1 .ne. 0) then
-                do 21 j = 1, nbno
+                do j = 1, nbno
                     numno2 = zi(jnl-2+jdebut+j)
                     if ((numno1.eq.numno2) .and. (numno2.ne.0)) then
                         zi(jnl-2+jdebut+j) = 0
                         n2 = n2 + 1
                     endif
-21              continue
+                end do
             endif
-20      continue
+        end do
 !
 ! --- ELIMINATION DES NOEUDS NE COMPORTANT AUCUNE DES GRANDEURS
 !
         nbcmp = zi(jnbgd+izone) - zi(jnbgd+izone-1)
         jdecat = zi(jnbgd+izone-1)
 !
-        do 30 ino = 1, nbno
+        do ino = 1, nbno
             numno1 = zi(jnl-2+jdebut+ino)
             if (numno1 .ne. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', numno1), nomnoe)
                 nb = 0
-                do 31 icmp = 1, nbcmp
+                do icmp = 1, nbcmp
 !
                     cmp = zk8(jcmpg-1+jdecat+icmp-1)
                     call exiscp(cmp, k8bla, nomo, 1, 'NUM',&
@@ -174,13 +174,13 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
                     if (exist(1) .eq. 0) then
                         nb = nb + 1
                     endif
-31              continue
+                end do
                 if (nb .eq. nbcmp) then
                     zi(jnl-2+jdebut+ino) = 0
                     n3 = n3 + 1
                 endif
             endif
-30      continue
+        end do
 !
 ! --- NOMBRE DE NOEUDS A SUPPRIMER
 !
@@ -193,7 +193,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
         if (nbno .eq. nbsup) then
             call utmess('F', 'UNILATER_48')
         endif
-1000  end do
+    end do
 !
 ! --- CREATION DU VECTEUR RESULTANT
 !
@@ -203,17 +203,17 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 ! --- ELIMINATION EFFECTIVE DES NOEUDS
 !
     jdecal = 0
-    do 50 izone = 1, nzocu
+    do izone = 1, nzocu
         nbno = zi(jnp+izone) - zi(jnp+izone-1)
         jdebut = zi(jnp+izone-1)
-        do 51 ino = 1, nbno
+        do ino = 1, nbno
             numno1 = zi(jnl-2+jdebut+ino)
             if (numno1 .ne. 0) then
                 zi(jnoe+jdecal) = numno1
                 jdecal = jdecal +1
             endif
-51      continue
-50  end do
+        end do
+    end do
 !
     call jedetr(nelim)
 !

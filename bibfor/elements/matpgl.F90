@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine matpgl(nb1, xr, plg)
     implicit none
 !
@@ -27,15 +27,15 @@ subroutine matpgl(nb1, xr, plg)
 !-----------------------------------------------------------------------
     integer :: i, ib, j, k, l
 !-----------------------------------------------------------------------
-    do 30 ib = 1, nb1
+    do ib = 1, nb1
         l=9*(ib-1)
-        do 40 j = 1, 3
-            do 50 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k=l+(j-1)*3+i
                 plg(ib,i,j)=xr(1090+k)
-50          end do
-40      end do
+            end do
+        end do
 !
-30  end do
+    end do
 !
 end subroutine

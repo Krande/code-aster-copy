@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfmajc(resoco, neq, nbliac)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "blas/daxpy.h"
+!
     character(len=24) :: resoco
     integer :: neq
     integer :: nbliac
@@ -72,13 +72,13 @@ subroutine cfmajc(resoco, neq, nbliac)
 !
 ! --- AJOUT DES LIAISONS DE CONTACT ACTIVES
 !
-    do 10 iliac = 1, nbliac
+    do iliac = 1, nbliac
         iliai = zi(jliac-1+iliac)
         call jeveuo(jexnum(cm1a, iliai), 'L', jcm1a)
         call daxpy(neq, -zr(jmu-1+iliac), zr(jcm1a), 1, vale,&
                    1)
         call jelibe(jexnum(cm1a, iliai))
-10  end do
+    end do
 !
     call jedema()
 !

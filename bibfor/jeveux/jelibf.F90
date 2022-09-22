@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jelibf(cond, clas, info)
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
@@ -177,32 +177,34 @@ subroutine jelibf(cond, clas, info)
 ! --- MODIFIEES LORS DE L'APPEL A jjagod (REDIMENSIONNEMENT DU NOMBRE MAXIMUM D'ENREGISTREMENT) LEUR
 ! --- PEUT ETRE NULLE
 !
-        call jxecro(ic, iadadi, iaddad, ladi, 0, lideff-1)
+        call jxecro(ic, iadadi, iaddad, ladi, 0,&
+                    lideff-1)
         iadd (jiadd(ic) + 2*(lideff-1)-1) = iaddad(1)
         iadd (jiadd(ic) + 2*(lideff-1) )  = iaddad(2)
 !
         iadad2 = iadm (jiadm(ic) + 2*lideff-1)
         ladi2 = lono (jlono(ic) + lideff)* ltyp(jltyp(ic)+lideff)
-        call jxecro(ic, iadad2, iaddac, ladi2, 0, lideff)
+        call jxecro(ic, iadad2, iaddac, ladi2, 0,&
+                    lideff)
         iadd (jiadd(ic) + 2*lideff-1) = iaddac(1)
         iadd (jiadd(ic) + 2*lideff )  = iaddac(2)
-
+!
         idb = idebug
         idebug = 0
 !
-        do 30 i = lideff-2, 2, -1
+        do i = lideff-2, 2, -1
             iadmi = iadm( jiadm(ic) + 2*i-1 )
             if (iadmi .ne. 0) then
                 idatos = i
                 nomos = rnom ( jrnom(ic) + i )
                 call jjlide('SYSTEM', nomos, 1)
             endif
- 30     continue
-        do 33 i = lidbas+1, nreuti(ic)
+        end do
+        do i = lidbas+1, nreuti(ic)
             iadmi = iadm( jiadm(ic) + 2*i-1 )
             iadyn = iadm( jiadm(ic) + 2*i )
             call jjlidy(iadyn, iadmi)
- 33     continue
+        end do
         idebug = idb
     endif
 !
@@ -228,11 +230,11 @@ subroutine jelibf(cond, clas, info)
 !    $$LONO , $$DATE , $$LUTI , $$HCOD
 !
     if (kcond .ne. 'LIBERE  ') then
-        do 32 i = 3, lideff-2
+        do i = 3, lideff-2
             iadmi = iadm( jiadm(ic) + 2*i-1 )
             iadyn = iadm( jiadm(ic) + 2*i )
             call jjlidy(iadyn, iadmi)
- 32     continue
+        end do
     endif
 !
 !
@@ -240,30 +242,36 @@ subroutine jelibf(cond, clas, info)
 !       ----------- DECHARGER TAMPON D'ECRITURE ( PETITS OBJETS )
         lgbl = 1024*longbl(ic)*lois
         if (iitecr(ic) .gt. 0) then
-            call jxecrb(ic, iitecr(ic), kitecr(ic)+1, lgbl, 0, 0)
+            call jxecrb(ic, iitecr(ic), kitecr(ic)+1, lgbl, 0,&
+                        0)
         endif
         if (litlec(ic)) then
-            call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, 0)
+            call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0,&
+                        0)
             litlec(ic) = .false.
             iitlec(ic) = 0
         endif
 !       ---- ON DECHARGE MAINTENANT LES STATISTIQUES SUR LES ACCES
         idatos = lideff
         iacce (jiacce(ic)+iaddac(1)) = iacce (jiacce(ic)+iaddac(1))+1
-        call jxecro(ic, iadacc, iaddac, lacc, 0, lideff)
+        call jxecro(ic, iadacc, iaddac, lacc, 0,&
+                    lideff)
         iitecr(ic) = 0
         if (litlec(ic)) then
-            call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, 0)
+            call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0,&
+                        0)
         endif
     endif
     if (kcond .eq. 'SAUVE   ' .or. kcond .eq. 'DETRUIT  ') then
 !       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
         lgbl = 1024*longbl(ic)*lois
         idatos = lideff-1
-        call jxecro(ic, iadadi, iaddad, ladi, 0, lideff-1)
+        call jxecro(ic, iadadi, iaddad, ladi, 0,&
+                    lideff-1)
         iitecr(ic) = 0
         if (litlec(ic)) then
-            call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, 0)
+            call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0,&
+                        0)
         endif
         call jjlidy(iadady, iadadi)
         iadady = 0
@@ -280,15 +288,16 @@ subroutine jelibf(cond, clas, info)
     vali(3) = 1024*longbl(ic)*lois
     vali(4) = nbacce(2*ic-1)
     valr(1) = nbacce(2*ic-1)*longbl(ic)*lois/1024.d0
-    vali(5) = nbacce(2*ic  )
-    valr(2) = nbacce(2*ic  )*longbl(ic)*lois/1024.d0
+    vali(5) = nbacce(2*ic )
+    valr(2) = nbacce(2*ic )*longbl(ic)*lois/1024.d0
     vali(6) = nreuti(ic)
     vali(7) = nremax(ic)
     vali(8) = (nreuti(ic)*100)/nremax(ic)
     vali(9) = nbenrg(ic)
 !
     if (info .ge. 1) then
-        call utmess('I', 'JEVEUX_22', sk=valk(1), ni=9, vali=vali, nr=2, valr=valr)
+        call utmess('I', 'JEVEUX_22', sk=valk(1), ni=9, vali=vali,&
+                    nr=2, valr=valr)
     endif
 !
     if (kcond .ne. 'LIBERE  ') then

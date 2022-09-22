@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -95,10 +95,10 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 !
         nblent = lonoi / lgbl
         lrab = ( mod (lonoi , lgbl) .ne. 0 )
-        do 10 i = 1, nblent
+        do i = 1, nblent
             iusadi(jusadi(ic)+3*(kadd+i-1)-2) = -idco
             iusadi(jusadi(ic)+3*(kadd+i-1)-1) = -idos
- 10     continue
+        end do
         if (lrab) then
             iusadi(jusadi(ic)+3*(kadd+nblent)-2) = -idco
             iusadi(jusadi(ic)+3*(kadd+nblent)-1) = -idos

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
                   ndim, nddl, jnne, jnnm, nnc,&
                   jddle, jddlm, nconta, ndeple, nsinge,&
@@ -105,15 +105,15 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
     call teattr('S', 'XFEM_E', enre, ier, typel=nomte)
     call teattr('S', 'XFEM_M', enrm, ier, typel=nomte)
 !
-    do 11 i = 1, 3
+    do i = 1, 3
         jnne(i)=0
         jnnm(i)=0
-11  end do
+    end do
 !
-    do 12 i = 1, 2
+    do i = 1, 2
         jddle(i)=0
         jddlm(i)=0
-12  end do
+    end do
 !
 !
 ! --- NOMBRE DE FONCTIONS SINGULIERES
@@ -152,8 +152,8 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 !
     call elref2(nomte, 10, lielrf, ntrou)
 !
-    do 190 ilie = 1, ntrou
-        call elrefe_info(elrefe=lielrf(ilie),fami='NOEU',ndim=ndimd,nno=nnod,nnos=nnosd)
+    do ilie = 1, ntrou
+        call elrefe_info(elrefe=lielrf(ilie), fami='NOEU', ndim=ndimd, nno=nnod, nnos=nnosd)
         if (ilie .eq. 1) then
             ndim = ndimd
             jnne(1)= nnod
@@ -183,7 +183,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
             nnc = nnod
             elreco = lielrf(ilie)
         endif
-190  end do
+    end do
 !
     call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
@@ -247,9 +247,9 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 !          NDDL = NDIM * (NNE + 4*NNM)
 !        ENDIF
         nddl=0
-        do 13 i = 1, 2
+        do i = 1, 2
             nddl = nddl + jnne(i+1)*jddle(i) + jnnm(i+1)*jddlm(i)
-13      continue
+        end do
     endif
 !
     if (nconta .eq. 1 .or. nconta .eq. 3) then

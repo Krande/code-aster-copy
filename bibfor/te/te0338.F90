@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0338(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -66,8 +66,8 @@ subroutine te0338(option, nomte)
 !
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     nbvp = 3
 !
@@ -131,10 +131,10 @@ subroutine te0338(option, nomte)
     vkp = 0.d0
     vkpact = 0.d0
     sigwk = 0.d0
-    do 10,i = 1,6,1
-    sigm(i) = 0.d0
-    epsg(i) = 0.d0
-    10 end do
+    do i = 1, 6, 1
+        sigm(i) = 0.d0
+        epsg(i) = 0.d0
+    end do
 ! -CRITERE PLASTIQUE
     ppt = 0.d0
     pp = 0.d0
@@ -147,43 +147,43 @@ subroutine te0338(option, nomte)
     if ((optcal(1).eq.'SIGM_ELMOY') .and. (optcal(2).eq.'NON')) then
 !        2.1.1 INTEGRATION DE SIGM SUR LA PARTIE PLASTIFIEE
 !        --------------------------------------------------
-        do 40,kp = 1,npg,1
+        do kp = 1, npg, 1
 ! VOLUME PLASTIFIE
-        pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
-        if (pp .ge. seuil) then
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        poids)
-            dvpg = poids
-            vkp = vkp + dvpg
-            do 20,i = 1,6,1
-            sigm(i) = sigm(i) + dvpg*zr(icong+6*kp+i-7)
-20          continue
+            pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
+            if (pp .ge. seuil) then
+                call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                            poids)
+                dvpg = poids
+                vkp = vkp + dvpg
+                do i = 1, 6, 1
+                    sigm(i) = sigm(i) + dvpg*zr(icong+6*kp+i-7)
+                end do
 !           --- TEMPERATURE MOYENNE
-            call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
-                        1, tg, iret)
-            if (iret .ne. 0) tg = 0.d0
-            tmoy = tmoy + tg * dvpg
-        endif
+                call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+                            1, tg, iret)
+                if (iret .ne. 0) tg = 0.d0
+                tmoy = tmoy + tg * dvpg
+            endif
 ! VOLUME PLASTIQUE ACTIF
-        if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
-            ppt = 1.d0
-        else
-            ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
-        endif
-        if (ppt .ge. (1.d0)) then
-            dvpg = poids
-            vkpact = vkpact + dvpg
-        endif
+            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+                ppt = 1.d0
+            else
+                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+            endif
+            if (ppt .ge. (1.d0)) then
+                dvpg = poids
+                vkpact = vkpact + dvpg
+            endif
 !
-40      continue
+        end do
 !
         sig1 = 0.d0
         if ((vkp.ne.0.0d0) .and. (vkpact.ne.0.d0)) then
 !           2.1.2 CALCUL DE LA VALEUR MOYENNE DE SIGM SUR LA  MAILLE
 !           --------------------------------------------------------
-            do 50,i = 1,6,1
-            sigm(i) = sigm(i)/vkp
-50          continue
+            do i = 1, 6, 1
+                sigm(i) = sigm(i)/vkp
+            end do
 !
             tmoy = tmoy/vkp
             call rcvalb('RIGI', 1, 1, '+', zi(imate),&
@@ -215,44 +215,44 @@ subroutine te0338(option, nomte)
 !        2.2.1 INTEGRATION DE SIGM SUR LA PARTIE PLASTIFIEE
 !        --------------------------------------------------
         call jevech('PDEFORR', 'L', idefg)
-        do 80,kp = 1,npg,1
+        do kp = 1, npg, 1
 ! VOLUME PLASTIFIE
-        pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
-        if (pp .ge. seuil) then
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        poids)
-            dvpg = poids
-            vkp = vkp + dvpg
-            do 60,i = 1,6,1
-            sigm(i) = sigm(i) + dvpg*zr(icong+6*kp+i-7)
-            epsg(i) = epsg(i) + dvpg*zr(idefg+6*kp+i-7)
-60          continue
+            pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
+            if (pp .ge. seuil) then
+                call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                            poids)
+                dvpg = poids
+                vkp = vkp + dvpg
+                do i = 1, 6, 1
+                    sigm(i) = sigm(i) + dvpg*zr(icong+6*kp+i-7)
+                    epsg(i) = epsg(i) + dvpg*zr(idefg+6*kp+i-7)
+                end do
 !           --- TEMPERATURE AU PG
-            call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
-                        1, tg, iret)
-            if (iret .ne. 0) tg = 0.d0
-            tmoy = tmoy + tg * dvpg
-        endif
+                call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+                            1, tg, iret)
+                if (iret .ne. 0) tg = 0.d0
+                tmoy = tmoy + tg * dvpg
+            endif
 ! VOLUME PLASTIQUE ACTIF
-        if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
-            ppt = 1.d0
-        else
-            ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
-        endif
-        if (ppt .ge. (1.d0)) then
-            dvpg = poids
-            vkpact = vkpact + dvpg
-        endif
-80      continue
+            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+                ppt = 1.d0
+            else
+                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+            endif
+            if (ppt .ge. (1.d0)) then
+                dvpg = poids
+                vkpact = vkpact + dvpg
+            endif
+        end do
 !
         signew = 0.d0
         if ((vkp.ne.0.0d0) .and. (vkpact.ne.0.d0)) then
 !           2.2.2 CALCUL DE LA VALEUR MOYENNE DE SIGM SUR LA  MAILLE
 !           --------------------------------------------------------
-            do 90,i = 1,6,1
-            sigm(i) = sigm(i)/vkp
-            epsg(i) = epsg(i)/vkp
-90          continue
+            do i = 1, 6, 1
+                sigm(i) = sigm(i)/vkp
+                epsg(i) = epsg(i)/vkp
+            end do
 !
             tmoy = tmoy/vkp
             call rcvalb('RIGI', 1, 1, '+', zi(imate),&
@@ -281,82 +281,82 @@ subroutine te0338(option, nomte)
         else if ((optcal(1).eq.'SIGM_ELGA') .and. (optcal(2).eq.'OUI'))&
     then
         call jevech('PDEFORR', 'L', idefg)
-        do 120,kp = 1,npg,1
-        pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
-        signew = 0.d0
-        if (pp .ge. seuil) then
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        poids)
-            dvpg = poids
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
-                ppt = 1.d0
+        do kp = 1, npg, 1
+            pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
+            signew = 0.d0
+            if (pp .ge. seuil) then
+                call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                            poids)
+                dvpg = poids
+                if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+                    ppt = 1.d0
+                else
+                    ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+                endif
+                if (ppt .ge. (1.d0)) then
+                    do i = 1, 6, 1
+                        sigm(i) = zr(icong+6*kp+i-7)
+                        epsg(i) = zr(idefg+6*kp+i-7)
+                    end do
+                    call epdcp(sigm, epsg, sig1, eps1)
+                    call rcvalb(fami, kp, 1, '+', zi(imate),&
+                                ' ', phenom, 0, ' ', [0.d0],&
+                                1, nomres(4), valres(4), icodre(4), 1)
+                    sref = valres(4)
+                    signew = (sig1/sref)*exp(-eps1*0.5d0)
+                endif
+            endif
+            sigold = zr(isigie+kp-1)
+            if (signew .gt. sigold) then
+                zr(isigis+kp-1) = signew
             else
-                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+                zr(isigis+kp-1) = zr(isigie+kp-1)
             endif
-            if (ppt .ge. (1.d0)) then
-                do 100,i = 1,6,1
-                sigm(i) = zr(icong+6*kp+i-7)
-                epsg(i) = zr(idefg+6*kp+i-7)
-100              continue
-                call epdcp(sigm, epsg, sig1, eps1)
-                call rcvalb(fami, kp, 1, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', [0.d0],&
-                            1, nomres(4), valres(4), icodre(4), 1)
-                sref = valres(4)
-                signew = (sig1/sref)*exp(-eps1*0.5d0)
-            endif
-        endif
-        sigold = zr(isigie+kp-1)
-        if (signew .gt. sigold) then
-            zr(isigis+kp-1) = signew
-        else
-            zr(isigis+kp-1) = zr(isigie+kp-1)
-        endif
-        signew = zr(isigis+kp-1)
-        sigwk = sigwk + (dvpg/vref)* (signew**m)
-120      continue
+            signew = zr(isigis+kp-1)
+            sigwk = sigwk + (dvpg/vref)* (signew**m)
+        end do
 !
 !     2.4 SIGM_W A PARTIR DE SIGM ORIGINAL SANS CORRECTION
 !     ----------------------------------------------------
         else if ((optcal(1).eq.'SIGM_ELGA') .and. (optcal(2).eq.'NON'))&
     then
-        do 150,kp = 1,npg,1
-        pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
-        if (pp .ge. seuil) then
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        poids)
-            dvpg = poids
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
-                ppt = 1.d0
+        do kp = 1, npg, 1
+            pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
+            if (pp .ge. seuil) then
+                call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+                            poids)
+                dvpg = poids
+                if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+                    ppt = 1.d0
+                else
+                    ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+                endif
+                sig1 = 0.d0
+                if (ppt .ge. (1.d0)) then
+                    do i = 1, 6, 1
+                        sigm(i) = zr(icong+6*kp+i-7)
+                    end do
+                    call fgequi(sigm, 'SIGM', nbvp, equi)
+                    sig1 = max(equi(3),equi(4),equi(5))
+                    call rcvalb(fami, kp, 1, '+', zi(imate),&
+                                ' ', phenom, 0, ' ', [0.d0],&
+                                1, nomres(4), valres(4), icodre(4), 1)
+                    sref = valres(4)
+                    sig1 = sig1/sref
+                endif
             else
-                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+                sig1=0.d0
             endif
-            sig1 = 0.d0
-            if (ppt .ge. (1.d0)) then
-                do 130,i = 1,6,1
-                sigm(i) = zr(icong+6*kp+i-7)
-130              continue
-                call fgequi(sigm, 'SIGM', nbvp, equi)
-                sig1 = max(equi(3),equi(4),equi(5))
-                call rcvalb(fami, kp, 1, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', [0.d0],&
-                            1, nomres(4), valres(4), icodre(4), 1)
-                sref = valres(4)
-                sig1 = sig1/sref
+            sigold = zr(isigie+kp-1)
+            if (sig1 .gt. sigold) then
+                zr(isigis+kp-1) = sig1
+            else
+                zr(isigis+kp-1) = zr(isigie+kp-1)
             endif
-        else
-            sig1=0.d0
-        endif
-        sigold = zr(isigie+kp-1)
-        if (sig1 .gt. sigold) then
-            zr(isigis+kp-1) = sig1
-        else
-            zr(isigis+kp-1) = zr(isigie+kp-1)
-        endif
-        sig1 = zr(isigis+kp-1)
+            sig1 = zr(isigis+kp-1)
 !
-        sigwk = sigwk + (dvpg/vref)* (sig1**m)
-150      continue
+            sigwk = sigwk + (dvpg/vref)* (sig1**m)
+        end do
 !
 !     2.5 TRAITEMENT DES OPTIONS INVALIDES
 !     ------------------------------------

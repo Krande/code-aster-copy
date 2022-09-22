@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caldto(s6, fkooh, msns, dtods)
     implicit none
 !
@@ -39,12 +39,15 @@ subroutine caldto(s6, fkooh, msns, dtods)
 !     ----------------------------------------------------------------
 !     CONSTUCTION DU TENSEUR INVERSE DE HOOKE D'ORDRE 4
 !
-    do 1 i = 1, 3
-        do 1 j = 1, 3
-            do 1 k = 1, 3
-                do 1 l = 1, 3
+    do i = 1, 3
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     l4(i,j,k,l)=fkooh(ind(i,j),ind(k,l))
- 1              continue
+                end do
+            end do
+        end do
+    end do
 !
     call tnsvec(6, 3, s, s6, 1.d0)
     call dcopy(9, msns, 1, dtods, 1)
@@ -52,32 +55,42 @@ subroutine caldto(s6, fkooh, msns, dtods)
     call r8inir(9, 0.d0, mus, 1)
 !
 !     CALCUL DU TERME  2(Lambda**-1)*mu*S
-    do 2 m = 1, 3
-        do 2 n = 1, 3
-            do 2 k = 1, 3
+    do m = 1, 3
+        do n = 1, 3
+            do k = 1, 3
                 mus(m,n)=mus(m,n)+msns(m,k)*s(k,n)
- 2          continue
+            end do
+        end do
+    end do
 !
-    do 3 a = 1, 3
-        do 3 b = 1, 3
-            do 3 m = 1, 3
-                do 3 n = 1, 3
+    do a = 1, 3
+        do b = 1, 3
+            do m = 1, 3
+                do n = 1, 3
                     dtods(a,b)=dtods(a,b)+2.d0*l4(a,b,m,n)*mus(m,n)
- 3              continue
+                end do
+            end do
+        end do
+    end do
 !
 !     CALCUL DU TERME  2(LAMBDA**-1*S)*MU
     call r8inir(9, 0.d0, l4s, 1)
-    do 4 a = 1, 3
-        do 4 k = 1, 3
-            do 4 m = 1, 3
-                do 4 n = 1, 3
+    do a = 1, 3
+        do k = 1, 3
+            do m = 1, 3
+                do n = 1, 3
                     l4s(a,k)=l4s(a,k)+l4(a,k,m,n)*s(m,n)
- 4              continue
+                end do
+            end do
+        end do
+    end do
 !
-    do 5 a = 1, 3
-        do 5 b = 1, 3
-            do 5 k = 1, 3
+    do a = 1, 3
+        do b = 1, 3
+            do k = 1, 3
                 dtods(a,b)=dtods(a,b)+2.d0*l4s(a,k)*mus(k,b)
- 5          continue
+            end do
+        end do
+    end do
 !
 end subroutine

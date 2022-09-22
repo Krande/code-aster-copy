@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
                   tspaq, i, jveppr, jvsipn)
 !
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jacobi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+!
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp)
-    integer ::jveppr, jvsipn
+    integer :: jveppr, jvsipn
 !, veppr(nbordr), vsipn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA DEF PLAS PRINCIPALE ET CONT NOMRMALE ASSOCIE
@@ -68,13 +68,13 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
 ! RECUPER LES CONTRAINTES ET DEFORMATION
 !
     decal = 18
-    do 10 iordr = 1, nbordr
+    do iordr = 1, nbordr
         adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
 !
-        do 35 j = 1, 6
+        do j = 1, 6
             sig(j) = vwork(adrs + j )
             epsp(j) = vwork(adrs + j + 6 + 6)
-35      continue
+        end do
 !
         nvp = 3
         nperm = 12
@@ -114,7 +114,7 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
 !
         zr(jvsipn+iordr) = abs(sxm*nm1x + sym*nm1y + szm*nm1z)
 !
-10  end do
+    end do
 !
     call jedema()
 !

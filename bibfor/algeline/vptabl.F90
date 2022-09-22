@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
                   nfreq, effmin, effmax)
     implicit none
@@ -201,7 +201,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
         endif
 !
 ! --- VERIF DES BORNES INTERNES (INITIALES ET EFFECTIVES)
-        do 10 i = 1, nbval3-1
+        do i = 1, nbval3-1
             if (abs(zr(jobj3+i-1)) .gt. eps) then
                 rdenom=abs(zr(jobj3+i-1))
             else
@@ -210,8 +210,8 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
             if (abs(zr(jobj3+i-1)-zr(jobj2+i))/rdenom .gt. precdc) then
                 call utmess('F', 'ALGELINE2_25', sk=valk(1))
             endif
- 10     continue
-        do 15 i = 1, nbval5-1
+        end do
+        do i = 1, nbval5-1
             if (abs(zr(jobj5+i-1)) .gt. eps) then
                 rdenom=abs(zr(jobj5+i-1))
             else
@@ -220,14 +220,14 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
             if (abs(zr(jobj5+i-1)-zr(jobj4+i))/rdenom .gt. precdc) then
                 call utmess('F', 'ALGELINE2_25', sk=valk(1))
             endif
- 15     continue
+        end do
 !
 ! --- SOMME DES NB_MODES DES BANDES SELECTIONNEES
         call jeveuo(nomob1, 'L', jobj1)
         nfreq=0
-        do 20 i = 1, nbval1
+        do i = 1, nbval1
             nfreq=nfreq+zi(jobj1+i-1)
- 20     continue
+        end do
 !
 ! --- RECUPERATION DES BORNES EFFECTIVES
         effmin=zr(jobj4)

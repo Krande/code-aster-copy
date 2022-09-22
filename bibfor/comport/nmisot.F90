@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmisot(fami, kpg, ksp, ndim, typmod, l_epsi_varc,&
-                  imate, compor, crit, deps, sigm,&
-                  vim, option, sigp, vip, dsidep,&
-                  iret)
+subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
+                  l_epsi_varc, imate, compor, crit, deps,&
+                  sigm, vim, option, sigp, vip,&
+                  dsidep, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
@@ -41,14 +41,14 @@ implicit none
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
 !
-aster_logical, intent(in) :: l_epsi_varc
-integer :: ndim, imate, kpg, ksp, iret
-character(len=*) :: fami
-character(len=8) :: typmod(*)
-character(len=16) :: compor, option
-real(kind=8) :: crit(*), line, radi
-real(kind=8) :: deps(6), dx, deuxmu
-real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
+    aster_logical, intent(in) :: l_epsi_varc
+    integer :: ndim, imate, kpg, ksp, iret
+    character(len=*) :: fami
+    character(len=8) :: typmod(*)
+    character(len=16) :: compor, option
+    real(kind=8) :: crit(*), line, radi
+    real(kind=8) :: deps(6), dx, deuxmu
+    real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
 !     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
 !     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -104,7 +104,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
     real(kind=8) :: alfafa, coco, dp0, precr, rprim0, tm
     real(kind=8) :: unsurn, xap
 !-----------------------------------------------------------------------
-    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     character(len=6), parameter :: epsa(6) = (/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
                                             'EPSAYZ'/)
@@ -385,7 +385,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 !     --------------------------------
-
+!
     if (l_epsi_varc) then
         coef = epsthe - bendop*hydrp + bendom*hydrm - kdessp*(sref-sechp) + kdessm*(sref-sechm)
     else
@@ -509,10 +509,10 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
         vip(1) = vim(1) + dp
         plasti=(vip(2).ge.0.5d0)
 !
-
-
-
-
+!
+!
+!
+!
 !         -- 7.2 CALCUL DE SIGP :
 !         -----------------------
         if (cplan .and. plasti) then
@@ -562,15 +562,15 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !      S'il YA RUPTURE ALORS INTERDIRE PLASTICITE CAR LES CONTRAINTES ONT ETE MIS A ZERO
         if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
-           plasti = .false.
+            plasti = .false.
         endif
-
-
+!
+!
         a=1.d0
         if (.not.dech) then
-            if (plasti .and. (sigeps .ge. 0.d0) ) then
+            if (plasti .and. (sigeps .ge. 0.d0)) then
                 if (rp .le. 1.d-15) then
-                  call utmess('F', 'ALGORITH4_46', sk=option(1:14))
+                    call utmess('F', 'ALGORITH4_46', sk=option(1:14))
                 endif
                 a = 1.d0+1.5d0*deuxmu*dp/rp
                 coef = - (1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/rp** 2 *(1.d0 - dp*rprim/rp )/a
@@ -594,13 +594,15 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
-            do 136 k = 1, ndimsi
+            do k = 1, ndimsi
                 if (k .eq. 3) goto 136
-                do 137 l = 1, ndimsi
+                do l = 1, ndimsi
                     if (l .eq. 3) goto 137
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
-137             continue
-136         continue
+137                 continue
+                end do
+136             continue
+            end do
         endif
     endif
 !
@@ -613,7 +615,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             endif
         endif
     endif
-
+!
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine kndoub(long, lkn, nbkn, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
@@ -42,17 +42,17 @@ subroutine kndoub(long, lkn, nbkn, iret)
 !
     iret = 0
 !
-    do 10,k1 = 1,nbkn - 1
-    k2 = knindi(long,lkn(k1),lkn(k1+1),nbkn-k1)
-    if (k2 .gt. 0) then
-        iret = k1
-        goto 20
-    endif
-    10 end do
+    do k1 = 1, nbkn - 1
+        k2 = knindi(long,lkn(k1),lkn(k1+1),nbkn-k1)
+        if (k2 .gt. 0) then
+            iret = k1
+            goto 20
+        endif
+    end do
 !
 !
 !
-20  continue
+ 20 continue
 !
 !
 end subroutine

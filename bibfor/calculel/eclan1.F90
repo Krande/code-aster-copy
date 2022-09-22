@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eclan1(ipoini, mxnbpi, nsomm1, nterm1, i1,&
                   i2, i3, i4, i5, i6,&
                   i7, i8)
-    implicit   none
+    implicit none
     integer :: mxnbpi
 !
     integer :: nsomm1(mxnbpi, *)
@@ -34,8 +34,8 @@ subroutine eclan1(ipoini, mxnbpi, nsomm1, nterm1, i1,&
     work(6)=i6
     work(7)=i7
     work(8)=i8
-    do 1, k=1,nterm1(ipoini)
-    nsomm1(ipoini,k)=work(k)
-    1 end do
+    do k = 1, nterm1(ipoini)
+        nsomm1(ipoini,k)=work(k)
+    end do
 !
 end subroutine

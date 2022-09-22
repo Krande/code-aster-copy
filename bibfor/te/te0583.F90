@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0583(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterfort/assert.h"
 #include "asterfort/carcou.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -34,7 +35,6 @@ subroutine te0583(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
-#include "asterfort/assert.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DU SECOND MEMBRE : TRAVAIL DE LA
@@ -69,7 +69,7 @@ subroutine te0583(option, nomte)
 !-----------------------------------------------------------------------
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
-    character(len=8), parameter :: noms_cara1(nb_cara1) = ['R1 ','EP1']
+    character(len=8), parameter :: noms_cara1(nb_cara1) = ['R1 ', 'EP1']
 !----------------------------------------------------------------------
     r8b=0.d0
     call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
@@ -156,7 +156,7 @@ subroutine te0583(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     r1 = vale_cara1(1)
-    h  = vale_cara1(2)
+    h = vale_cara1(2)
     a = r1 - h/2.d0
     rint = a - h/2.d0
     rext = a + h/2.d0
@@ -179,9 +179,9 @@ subroutine te0583(option, nomte)
 !       -- LA PRESSION NE TRAVAILLE QUE SUR LE TERME WO
         if (option(15:16) .eq. '_R') then
             call jevecd('PPRESSR', ipres, 0.d0)
-            do 40 i = 1, nno
+            do i = 1, nno
                 presno(i) = zr(ipres-1+i)
- 40         continue
+            end do
         else if (option(15:16).eq.'_F') then
             call jevech('PPRESSF', 'L', ipres)
             call jevech('PTEMPSR', 'L', itemps)
@@ -197,26 +197,26 @@ subroutine te0583(option, nomte)
                 nbpar=4
             endif
 !
-            do 45 i = 1, nno
+            do i = 1, nno
                 valpar(1) = zr(igeom+3*(i-1) )
                 valpar(2) = zr(igeom+3*(i-1)+1)
                 valpar(3) = zr(igeom+3*(i-1)+2)
                 if (labsc .ne. 0) valpar(5) = abscn(i)
                 call fointe('FM', zk8(ipres), nbpar, nompar, valpar,&
                             presno(i), ier)
- 45         continue
+            end do
         endif
 !
-        do 60 igau = 1, npg
+        do igau = 1, npg
             prespg(igau) = 0.d0
-            do 50 k = 1, nno
+            do k = 1, nno
                 hk = zr(ivf-1+nno* (igau-1)+k)
                 prespg(igau) = hk*presno(k) + prespg(igau)
- 50         continue
- 60     continue
+            end do
+        end do
 !
         call jevech('PVECTUR', 'E', ivect)
-        do 90 k = 1, nno
+        do k = 1, nno
 !           TRAVAIL SUR UX
             indic0 = ivect - 1 + (6+6* (m-1)+3)* (k-1) + 1
 !           TRAVAIL SUR UY
@@ -229,7 +229,7 @@ subroutine te0583(option, nomte)
             indic4 = ivect - 1 + (6+6* (m-1)+3)* (k-1) + 2 + 6 + 6* ( m-1)
 !           TRAVAIL SUR W01
             indic5 = ivect - 1 + (6+6* (m-1)+3)* (k-1) + 3 + 6 + 6* ( m-1)
-            do 80 igau = 1, npg
+            do igau = 1, npg
 !               -- boucle sur les points de simpson dans l'epaisseur
                 hk = zr(ivf-1+nno* (igau-1)+k)
                 if (icoude .eq. 1) then
@@ -240,7 +240,7 @@ subroutine te0583(option, nomte)
                     sk = 0.d0
                 endif
 !               -- boucle sur les points de simpson sur la circonference
-                do 70 isect = 1, 2*nbsec + 1
+                do isect = 1, 2*nbsec + 1
                     if (icoude .eq. 0) then
                         poids = zr(ipoids-1+igau)*poisec(isect)* (l/ 2.d0)* deuxpi/ (2.d0*nbsec)*&
                                 &rint
@@ -260,9 +260,9 @@ subroutine te0583(option, nomte)
                         zr(indic4) = zr(indic4) + hk*poids*prespg( igau)*cos(te)
                         zr(indic5) = zr(indic5) + hk*poids*prespg( igau)*sin(te)
                     endif
- 70             continue
- 80         continue
- 90     continue
+                end do
+            end do
+        end do
         if (icoude .ne. 0) then
             call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                         pgl4, zr(ivect), 'LG', pass, vtemp)
@@ -274,7 +274,7 @@ subroutine te0583(option, nomte)
 !       -----------------------------------------------------------------------------
 !       CAS PESANTEUR ET FORCE LINEIQUE
         then
-        do 250 iter = 1, niter
+        do iter = 1, niter
             if (option .eq. 'CHAR_MECA_PESA_R') then
                 call jevech('PMATERC', 'L', lmater)
                 call rccoma(zi(lmater), 'ELAS', 1, phenom, codres(1))
@@ -292,12 +292,12 @@ subroutine te0583(option, nomte)
                 endif
                 call jevech('PPESANR', 'L', jpesa)
                 pesan = zr(jpesa)
-                do 100 i = 1, 3
+                do i = 1, 3
                     vpesan(i) = rho(1)*pesan*zr(jpesa+i)
-100             continue
-                do 110 i = 4, 6
+                end do
+                do i = 4, 6
                     vpesan(i) = 0.d0
-110             continue
+                end do
             else
                 if (icompx .eq. 0) then
                     call jevech('PFR1D1D', 'L', lforc)
@@ -306,26 +306,26 @@ subroutine te0583(option, nomte)
                 endif
                 if (icompx .eq. 1) then
                     if (iter .eq. 1) then
-                        do 120 i = 1, 3
+                        do i = 1, 3
                             vpesan(i) = dble(zc(lforc-1+i))/sec
-120                     continue
+                        end do
                     else
-                        do 130 i = 1, 3
+                        do i = 1, 3
                             vpesan(i) = dimag(zc(lforc-1+i))/sec
-130                     continue
+                        end do
                     endif
                 else
-                    do 140 i = 1, 3
+                    do i = 1, 3
                         vpesan(i) = zr(lforc-1+i)/sec
-140                 continue
+                    end do
                 endif
-                do 150 i = 4, 6
+                do i = 4, 6
                     vpesan(i) = 0.d0
-150             continue
+                end do
             endif
-            do 160 i = 1, nbrddl
+            do i = 1, nbrddl
                 f(i) = 0.d0
-160         continue
+            end do
             if (icoude .eq. 0) then
                 call utpvgl(1, 6, pgl, vpesan(1), fpesan(1))
             else
@@ -337,22 +337,22 @@ subroutine te0583(option, nomte)
                 endif
             endif
 !           BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
-            do 210 igau = 1, npg
+            do igau = 1, npg
 !               BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-                do 200 icou = 1, 2*nbcou + 1
+                do icou = 1, 2*nbcou + 1
                     r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
 !                   BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-                    do 190 isect = 1, 2*nbsec + 1
+                    do isect = 1, 2*nbsec + 1
                         if (icoude .eq. 0) then
                             poids = zr(ipoids-1+igau)*poicou(icou)* poisec(isect)* (l/2.d0)*h*deu&
                                     &xpi/ (4.d0* nbcou*nbsec)*r
-                            do 170 k = 1, nno
+                            do k = 1, nno
                                 hk = zr(ivf-1+nno* (igau-1)+k)
                                 ibloc = (9+6* (m-1))* (k-1)
                                 f(ibloc+1) = f(ibloc+1) + poids*hk* fpesan(1)
                                 f(ibloc+2) = f(ibloc+2) + poids*hk* fpesan(2)
                                 f(ibloc+3) = f(ibloc+3) + poids*hk* fpesan(3)
-170                         continue
+                            end do
                         else if (icoude.eq.1) then
                             fi = (isect-1)*deuxpi/ (2.d0*nbsec)
                             cosfi = cos(fi)
@@ -360,7 +360,7 @@ subroutine te0583(option, nomte)
                             l = theta* (rayon+r*sinfi)
                             poids = zr(ipoids-1+igau)*poicou(icou)* poisec(isect)* (l/2.d0)*h*deu&
                                     &xpi/ (4.d0* nbcou*nbsec)*r
-                            do 180 k = 1, 3
+                            do k = 1, 3
                                 hk = zr(ivf-1+nno* (igau-1)+1)
                                 ibloc = (9+6* (m-1))* (1-1)
                                 f(ibloc+k) = f(ibloc+k) + poids*hk* fpesa1(k)
@@ -374,11 +374,11 @@ subroutine te0583(option, nomte)
                                     ibloc = (9+6* (m-1))* (4-1)
                                     f(ibloc+k) = f(ibloc+k) + poids* hk*fpesa4(k)
                                 endif
-180                         continue
+                            end do
                         endif
-190                 continue
-200             continue
-210         continue
+                    end do
+                end do
+            end do
             if (icoude .eq. 0) then
                 call vlggl(nno, nbrddl, pgl, f, 'LG',&
                            pass, vtemp)
@@ -389,21 +389,21 @@ subroutine te0583(option, nomte)
             if (icompx .eq. 1) then
                 call jevech('PVECTUC', 'E', jout)
                 if (iter .eq. 1) then
-                    do 220 j = 1, nbrddl
+                    do j = 1, nbrddl
                         zc(jout-1+j) = f(j)
-220                 continue
+                    end do
                 else
-                    do 230 j = 1, nbrddl
+                    do j = 1, nbrddl
                         zc(jout-1+j) = dcmplx(dble(zc(jout-1+j)),dble( f(j)))
-230                 continue
+                    end do
                 endif
             else
                 call jevech('PVECTUR', 'E', jout)
-                do 240 i = 1, nbrddl
+                do i = 1, nbrddl
                     zr(jout-1+i) = f(i)
-240             continue
+                end do
             endif
-250     continue
+        end do
 !
 !
     else if ((option.eq.'CHAR_MECA_FF1D1D')) then
@@ -433,52 +433,52 @@ subroutine te0583(option, nomte)
         endif
 !        NOEUDS 1 A 3
         ino = 1
-        do 260 i = 1, 3
+        do i = 1, 3
             valpar(i) = zr(igeom-1+3* (ino-1)+i)
-260     continue
-        do 270 i = 1, 3
+        end do
+        do i = 1, 3
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
                         vpesa1(i), ier)
             vpesa1(i) = vpesa1(i)/sec
-270     continue
+        end do
         ino = 2
-        do 280 i = 1, 3
+        do i = 1, 3
             valpar(i) = zr(igeom-1+3* (ino-1)+i)
-280     continue
-        do 290 i = 1, 3
+        end do
+        do i = 1, 3
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
                         vpesa2(i), ier)
             vpesa2(i) = vpesa2(i)/sec
-290     continue
+        end do
         ino = 3
-        do 300 i = 1, 3
+        do i = 1, 3
             valpar(i) = zr(igeom-1+3* (ino-1)+i)
-300     continue
-        do 310 i = 1, 3
+        end do
+        do i = 1, 3
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
                         vpesa3(i), ier)
             vpesa3(i) = vpesa3(i)/sec
-310     continue
+        end do
         if (nno .eq. 4) then
             ino = 4
-            do 320 i = 1, 3
+            do i = 1, 3
                 valpar(i) = zr(igeom-1+3* (ino-1)+i)
-320         continue
-            do 330 i = 1, 3
+            end do
+            do i = 1, 3
                 call fointe('FM', zk8(lforc+i-1), nbpar, nompar, valpar,&
                             vpesa4(i), ier)
                 vpesa4(i) = vpesa4(i)/sec
-330         continue
+            end do
         endif
-        do 340 i = 4, 6
+        do i = 4, 6
             vpesa1(i) = 0.d0
             vpesa2(i) = 0.d0
             vpesa3(i) = 0.d0
             vpesa4(i) = 0.d0
-340     continue
-        do 350 i = 1, nbrddl
+        end do
+        do i = 1, nbrddl
             f(i) = 0.d0
-350     continue
+        end do
         if (icoude .eq. 0) then
             call utpvgl(1, 6, pgl, vpesa1(1), fpesa1(1))
             call utpvgl(1, 6, pgl, vpesa2(1), fpesa2(1))
@@ -495,16 +495,16 @@ subroutine te0583(option, nomte)
             endif
         endif
 !       BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
-        do 400 igau = 1, npg
+        do igau = 1, npg
 !           BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-            do 390 icou = 1, 2*nbcou + 1
+            do icou = 1, 2*nbcou + 1
                 r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
 !               BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
-                do 380 isect = 1, 2*nbsec + 1
+                do isect = 1, 2*nbsec + 1
                     if (icoude .eq. 0) then
                         poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/&
                                 & (4.d0*nbcou*nbsec)* r
-                        do 360 k = 1, 3
+                        do k = 1, 3
                             hk = zr(ivf-1+nno* (igau-1)+1)
                             ibloc = (9+6* (m-1))* (1-1)
                             f(ibloc+k) = f(ibloc+k) + poids*hk*fpesa1( k)
@@ -518,7 +518,7 @@ subroutine te0583(option, nomte)
                                 ibloc = (9+6* (m-1))* (4-1)
                                 f(ibloc+k) = f(ibloc+k) + poids*hk* fpesa4(k)
                             endif
-360                     continue
+                        end do
                     else if (icoude.eq.1) then
                         fi = (isect-1)*deuxpi/ (2.d0*nbsec)
                         cosfi = cos(fi)
@@ -526,7 +526,7 @@ subroutine te0583(option, nomte)
                         l = theta* (rayon+r*sinfi)
                         poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/&
                                 & (4.d0*nbcou*nbsec)* r
-                        do 370 k = 1, 3
+                        do k = 1, 3
                             hk = zr(ivf-1+nno* (igau-1)+1)
                             ibloc = (9+6* (m-1))* (1-1)
                             f(ibloc+k) = f(ibloc+k) + poids*hk*fpesa1( k)
@@ -540,11 +540,11 @@ subroutine te0583(option, nomte)
                                 ibloc = (9+6* (m-1))* (4-1)
                                 f(ibloc+k) = f(ibloc+k) + poids*hk* fpesa4(k)
                             endif
-370                     continue
+                        end do
                     endif
-380             continue
-390         continue
-400     continue
+                end do
+            end do
+        end do
 !
 !
         if (icoude .eq. 0) then
@@ -555,8 +555,8 @@ subroutine te0583(option, nomte)
                         pgl4, f, 'LG', pass, vtemp)
         endif
         call jevech('PVECTUR', 'E', jout)
-        do 410 i = 1, nbrddl
+        do i = 1, nbrddl
             zr(jout-1+i) = f(i)
-410     continue
+        end do
     endif
 end subroutine

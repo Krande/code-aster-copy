@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcverr(dy, ddy, nr, typ, err)
     implicit none
 !       MODULE DE CALCUL DE L'ERREUR DE CONVERGENCE
@@ -46,7 +46,7 @@ subroutine lcverr(dy, ddy, nr, typ, err)
 !
     if (typ .eq. 0) then
         err(1)=0.d0
-        do 1 i = 1, nr
+        do i = 1, nr
 !                IF(DY(I).EQ.ZERO) THEN
             if (abs(dy(i)) .lt. r8prem()) then
                 err(i) = abs(ddy(i))
@@ -54,7 +54,7 @@ subroutine lcverr(dy, ddy, nr, typ, err)
                 err(i) = abs(ddy(i) / dy(i))
             endif
             err(1)=max(err(1),err(i))
- 1      continue
+        end do
 !
 !       ERREUR = !!DDY!!/!!DY!! < EPS
 !
@@ -70,13 +70,13 @@ subroutine lcverr(dy, ddy, nr, typ, err)
 !       ERREUR = !!DDYI/DYI!! < EPS
 !
     else if (typ .eq. 2) then
-        do 2 i = 1, nr
+        do i = 1, nr
             if (abs(dy(i)) .lt. r8prem()) then
                 e(i) = ddy(i)
             else
                 e(i) = ddy(i) / dy(i)
             endif
- 2      continue
+        end do
         call lcnrvn(nr, e, err(1))
 !
     endif

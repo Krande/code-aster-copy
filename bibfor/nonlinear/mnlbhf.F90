@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
                   nchoc, h, hf, err)
     implicit none
@@ -40,13 +40,8 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/dnrm2.h"
-#include "blas/dscal.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -55,8 +50,13 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
 #include "asterfort/mnlcir.h"
 #include "asterfort/mnluil.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     integer :: ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, adime, xvect
     real(kind=8) :: err
@@ -68,8 +68,8 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
     real(kind=8) :: nrm
     integer :: ivect
     integer :: iadim, i, j
-    integer :: neqs,     nddlx,  nddly
-    integer ::   nt, nddl, idep1, idep2, itemp
+    integer :: neqs, nddlx, nddly
+    integer :: nt, nddl, idep1, idep2, itemp
     real(kind=8), pointer :: tep2(:) => null()
     integer, pointer :: vneqs(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
@@ -108,7 +108,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
     nt = int(2**int(dlog(2.d0*dble(3*hf)+1.d0)/dlog(2.d0)+1.d0))
     neqs=0
     err=0.d0
-    do 20 i = 1, nchoc
+    do i = 1, nchoc
 ! ---   ON RECUPERE LES PARAMETRES DE CHOCS
         alpha=raid(i)/zr(iadim)
         eta=reg(i)
@@ -142,12 +142,12 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
             nrm=dnrm2(4*(2*hf+1),zr(itemp),1)
             if (nrm .gt. 0.d0) then
                 nrm=0.d0
-                do 21 j = 1, 2
+                do j = 1, 2
                     call dscal(2*h+1, 0.d0, tep2, 1)
                     call dcopy(h+1, zr(itemp+(j-1)*(2*hf+1)), 1, tep2, 1)
                     call dcopy(h, zr(itemp+(j-1)*(2*hf+1)+hf+1), 1, tep2, 1)
                     nrm=nrm+dnrm2(2*h+1,tep2,1)
-21              continue
+                end do
                 err=err+nrm/2.d0
             endif
         else if (type(i)(1:4).eq.'PLAN') then
@@ -169,7 +169,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
             endif
         endif
         neqs=neqs+vneqs(i)
-20  continue
+    end do
 !
     err=err/dble(nchoc)
 !

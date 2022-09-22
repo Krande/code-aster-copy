@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jelibd(nomlu, ltot)
 !
 ! LIBERE DE LA MEMOIRE LE SEGMENT DE VALEURS ASSOCIES A UN OBJET
@@ -99,7 +99,7 @@ subroutine jelibd(nomlu, ltot)
 !
     if (iret .eq. 0) then
         call utmess('A', 'JEVEUX_26', sk=noml32(1:24))
-        goto 9999
+        goto 999
     else if (iret .eq. 1) then
 !
 ! ----  CAS D'UN OBJET SIMPLE
@@ -108,7 +108,7 @@ subroutine jelibd(nomlu, ltot)
         iadmi = iadm (jiadm(iclaos)+2*idatos-1)
         ltypi = ltyp (jltyp(iclaos)+idatos)
         if (iadmi .eq. 0) then
-            goto 9999
+            goto 999
         endif
         iadyn = iadm(jiadm(iclaos)+2*idatos)
 !
@@ -141,7 +141,7 @@ subroutine jelibd(nomlu, ltot)
 !
             iadmi = iadm ( jiadm(iclaco) + 2*ixdeso-1 )
             if (iadmi .eq. 0) then
-                goto 9999
+                goto 999
             endif
             iadyn = iadm ( jiadm(iclaco) + 2*ixdeso )
 !
@@ -154,7 +154,7 @@ subroutine jelibd(nomlu, ltot)
 !
             nbmax = iszon ( jiszon + ibacol + ivnmax )
             ibiadm = iadm ( jiadm(iclaco) + 2*ixiadm-1 )
-            do 10 k = 1, nbmax
+            do k = 1, nbmax
                 iadmi = iszon(jiszon + ibiadm - 1 + 2*k-1 )
                 if (iadmi .eq. 0) then
                     goto 10
@@ -164,7 +164,8 @@ subroutine jelibd(nomlu, ltot)
                 call jjlbsg(iclaco, idatco, k, ibacol, iadmi,&
                             iadyn, ltot)
 !
-10          continue
+ 10             continue
+            end do
         endif
     else if (inat .eq. 3) then
 !       ------ CAS D'UN OBJET DE COLLECTION  ------
@@ -179,7 +180,7 @@ subroutine jelibd(nomlu, ltot)
             ibiadm = iadm ( jiadm(iclaco) + 2*ixiadm-1 )
             iadmi = iszon(jiszon + ibiadm - 1 + 2*idatoc-1 )
             if (iadmi .eq. 0) then
-                goto 9999
+                goto 999
             endif
             iadyn = iszon(jiszon + ibiadm - 1 + 2*idatoc)
 !
@@ -188,6 +189,6 @@ subroutine jelibd(nomlu, ltot)
 !
         endif
     endif
-9999  continue
+999 continue
 !
 end subroutine

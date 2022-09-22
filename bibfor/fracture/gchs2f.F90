@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gchs2f(char1, char2, char3)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -33,6 +32,7 @@ subroutine gchs2f(char1, char2, char3)
 #include "asterfort/lxlgut.h"
 #include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: char1, char2, char3
 !
 !     BUT : TRANSFORME :
@@ -48,10 +48,10 @@ subroutine gchs2f(char1, char2, char3)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer ::    ncmp1, ncmp2, i,  jval3, k, izo, jfpro
+    integer :: ncmp1, ncmp2, i, jval3, k, izo, jfpro
     integer :: jfval, kk, iec, reste, code, jncmp1, jncmp2, j, nec, ior
     real(kind=8) :: epsi
-    character(len=8) ::  nocmp1, nomfon
+    character(len=8) :: nocmp1, nomfon
     character(len=19) :: nomf19
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: des1(:) => null()
@@ -86,7 +86,7 @@ subroutine gchs2f(char1, char2, char3)
 !
     k=0
     kk=0
-    do 10 i = 1, ncmp1
+    do i = 1, ncmp1
         nocmp1 = zk8(jncmp1-1+i)
         j=indik8(zk8(jncmp2),nocmp1,1,ncmp2)
         if (j .ne. 0) then
@@ -96,7 +96,7 @@ subroutine gchs2f(char1, char2, char3)
                 reste = i - 30* (iec-1)
                 code = 2**reste
             endif
-            do 20 izo = 1, des1(3)
+            do izo = 1, des1(3)
                 if (abs(vale(1+(izo-1)*ncmp1+i-1)) .gt. epsi) then
                     kk=kk+1
                     call codent(kk, 'D0', nomfon(7:8))
@@ -116,16 +116,16 @@ subroutine gchs2f(char1, char2, char3)
                 else
                     zk8(jval3+(izo-1)*ncmp2+j-1)='&FOZERO'
                 endif
-20          continue
+            end do
         endif
-10  end do
+    end do
 !
 !     DESC (MAJ 2/2)
     nec = nbec(des3(1))
-    do 30 i = 1, nec*des3(3)
+    do i = 1, nec*des3(3)
         des3(1+3+2*des3(3)+i-1)= ior(des3(1+3+2*des3(1+3-&
         1)+i-1),code)
-30  end do
+    end do
 !
     call jedema()
 !

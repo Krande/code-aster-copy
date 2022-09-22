@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine abscvl(ndim, tabar, xg, s)
     implicit none
 !
@@ -52,54 +52,55 @@ subroutine abscvl(ndim, tabar, xg, s)
 !     XE2 ETANT LE POINT D'ORIGINE
 !
 !      RECHERCHE DE LA MONOTONIE SUR CHAQUE AXE
-
+!
 !   recherche d'un axe sur lequel projete le SE3
     xgg=0.d0
-
-    do 10 k=1, ndim
-      a = tabar(k)+tabar(ndim+k)-2*tabar(2*ndim+k)
-      b = tabar(ndim+k)-tabar(k)
 !
-      if (abs(a) .le. 1.d-6) then
-        if (abs(b) .gt. 1.d-6) then
+    do k = 1, ndim
+        a = tabar(k)+tabar(ndim+k)-2*tabar(2*ndim+k)
+        b = tabar(ndim+k)-tabar(k)
+!
+        if (abs(a) .le. 1.d-6) then
+            if (abs(b) .gt. 1.d-6) then
 !         JE BALANCE SUR K
-          tabelt(1)=tabar(k)
-          tabelt(2)=tabar(ndim+k)
-          tabelt(3)=tabar(2*ndim+k)
-          xgg =xg(k)
+                tabelt(1)=tabar(k)
+                tabelt(2)=tabar(ndim+k)
+                tabelt(3)=tabar(2*ndim+k)
+                xgg =xg(k)
 !         on a trouve un axe sur lequel projete le SE3
-          exit
-        else if (abs(b).le.1.d-6) then
-          if (k .lt. ndim) then
+                exit
+            else if (abs(b).le.1.d-6) then
+                if (k .lt. ndim) then
 !           on teste l'axe suivant
-            goto 10
-          else if (k.eq.ndim) then
+                    goto 10
+                else if (k.eq.ndim) then
 !           LES 3 POINTS SONT CONFONDUS!
-            call utmess('F', 'XFEM_66')
-          endif
-        endif
-      else if (abs(a).gt.1.d-6) then
-        ksider = -b/a
-        if (ksider .gt. -1.d0 .and. ksider .lt. 1.d0) then
-          if (k .lt. ndim) then
+                    call utmess('F', 'XFEM_66')
+                endif
+            endif
+        else if (abs(a).gt.1.d-6) then
+            ksider = -b/a
+            if (ksider .gt. -1.d0 .and. ksider .lt. 1.d0) then
+                if (k .lt. ndim) then
 !           on teste l'axe suivant
-            cycle
-          else if (k.eq.ndim) then
+                    cycle
+                else if (k.eq.ndim) then
 !           L'ARETE EST TROP ARRONDIE :
 !           IL Y A 2 SOLUTIONS SUIVANT CHAQUE AXE
-            call utmess('F', 'XFEM_66')
-          endif
-        else if (ksider.gt.1.d0 .or. ksider.lt.-1.d0) then
-          tabelt(1)=tabar(k)
-          tabelt(2)=tabar(ndim+k)
-          tabelt(3)=tabar(2*ndim+k)
-          xgg =xg(k)
+                    call utmess('F', 'XFEM_66')
+                endif
+            else if (ksider.gt.1.d0 .or. ksider.lt.-1.d0) then
+                tabelt(1)=tabar(k)
+                tabelt(2)=tabar(ndim+k)
+                tabelt(3)=tabar(2*ndim+k)
+                xgg =xg(k)
 !         on a trouve un axe sur lequel projete le SE3
-          exit
+                exit
+            endif
         endif
-      endif
 !
-10  end do
+ 10     continue
+    end do
 !
 !   ALIAS DE L'ARETE (QUADRATIQUE)
     elp='SE3'

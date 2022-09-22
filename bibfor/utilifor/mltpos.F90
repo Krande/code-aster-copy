@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mltpos(nbsn, parent, fils, frere, pile,&
                   lfront, seq, flag, estim, u,&
                   w, tab, liste)
@@ -33,10 +33,10 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
 !-----------------------------------------------------------------------
 !     CALCUL DES TABLEAUX U ET W (VOIR NOTES RESP. DE  ASHCRAFT ET YANG)
 !
-    do 110 sni = 1, nbsn
+    do sni = 1, nbsn
         u(sni) = (lfront(sni)* (lfront(sni)+1))/2
-110  end do
-    do 150 sni = 1, nbsn
+    end do
+    do sni = 1, nbsn
         q1 = u(sni)
         sn = fils(sni)
         if (sn .eq. 0) then
@@ -48,7 +48,7 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
             tab(1) = u(sn)
             sn = frere(sn)
 !          DO WHILE (SN.NE.0)
-120          continue
+120         continue
             if (sn .ne. 0) then
                 m = m + 1
                 liste(m) = sn
@@ -57,19 +57,19 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
                 goto 120
 ! FIN DO WHILE
             endif
-            do 130 k = 1, m
+            do k = 1, m
                 tab(k) = tab(k) + w(liste(k))
-130          continue
+            end do
             q2 = tab(blimax(m,tab,1))
-            do 140 i = 1, m
+            do i = 1, m
                 q1 = q1 + u(liste(i))
-140          continue
+            end do
             w(sni) = max(q1,q2)
         endif
-150  end do
+    end do
 !-----------------------------------------------------------------------
 !      MODIFICATION DE FILS ET FRERE POUR MINIMISER LA PILE
-    do 180 sni = 1, nbsn
+    do sni = 1, nbsn
         sn = fils(sni)
         if (sn .ne. 0) then
             m = 1
@@ -77,7 +77,7 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
             tab(m) = w(liste(m)) - u(liste(m))
             sn = frere(sn)
 !          DO WHILE (SN.NE.0)
-160          continue
+160         continue
             if (sn .ne. 0) then
                 m = m + 1
                 liste(m) = sn
@@ -91,7 +91,7 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
             sn = fils(sni)
             k = m - 1
 !          DO WHILE (K.GE.1)
-170          continue
+170         continue
             if (k .ge. 1) then
                 frere(sn) = liste(k)
                 sn = liste(k)
@@ -101,20 +101,20 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
             endif
             frere(liste(1)) = 0
         endif
-180  end do
+    end do
 !-----------------------------------------------------------------------
 !      CALCUL DE LA SEQUENCE D'EXECUTION
 !
-    do 190 i = 1, nbsn
+    do i = 1, nbsn
         flag(i) = 0
-190  end do
+    end do
     iq = 0
-    do 240 init = 1, nbsn
+    do init = 1, nbsn
         if (parent(init) .eq. 0) then
             lp = 0
             filsi = init
 !          DO WHILE (FILSI.NE.0)
-200          continue
+200         continue
             if (filsi .ne. 0) then
 !             ND = FILSI
                 lp = lp + 1
@@ -124,13 +124,13 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
 ! FIN DO WHILE
             endif
 !          DO WHILE (LP.GT.0)
-210          continue
+210         continue
             if (lp .gt. 0) then
-220              continue
+220             continue
                 nd = pile(lp)
                 md = fils(nd)
 !            DO WHILE (MD.NE.0)
-230              continue
+230             continue
                 if (md .ne. 0) then
                     if (flag(md) .eq. 0) then
                         if (fils(md) .eq. 0) then
@@ -155,11 +155,11 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
 ! FIN DO WHILE
             endif
         endif
-240  end do
+    end do
 !      ESTIMATION DE LA PILE
     estim = 1
     itemp = 1
-    do 250 i = 1, nbsn
+    do i = 1, nbsn
         sni = seq(i)
         m = lfront(sni)
         if (fils(sni) .eq. 0) then
@@ -172,5 +172,5 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
             pile(sni) = pile(fils(sni))
             itemp = pile(fils(sni)) + (m* (m+1))/2
         endif
-250  end do
+    end do
 end subroutine

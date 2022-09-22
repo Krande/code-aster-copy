@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmchcp(tychap, vachin, vachou)
 !
 ! person_in_charge: sylvie.granet at edf.fr
@@ -52,8 +52,8 @@ subroutine nmchcp(tychap, vachin, vachou)
 !
     call nmchai(tychap, 'LONMAX', nbvar)
 !
-    do 12 i = 1, nbvar
+    do i = 1, nbvar
         vachou(i) = vachin(i)
-12  end do
+    end do
 !
 end subroutine

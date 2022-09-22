@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cgcine(ndim, nno1, vff1, wref, &
-                   dffr1, geom, tang, wg, l,&
-                   b, nornor)
+!
+subroutine cgcine(ndim, nno1, vff1, wref, dffr1,&
+                  geom, tang, wg, l, b,&
+                  nornor)
 !
     implicit none
 #include "asterfort/dfdm1b.h"
@@ -58,10 +58,10 @@ subroutine cgcine(ndim, nno1, vff1, wref, &
     call r8inir(3, 0.d0, tanloc, 1)
     call r8inir(3, 0.d0, norloc, 1)
     do n = 1, nno1
-        do 11 i = 1, 3
+        do i = 1, 3
             tanloc(i)=tanloc(i)+vff1(n)*tang(i,n)
             norloc(i)=norloc(i)+dfdx(n)*tang(i,n)
-11      continue
+        end do
     end do
     norm = sqrt((tanloc(1)**2+tanloc(2)**2+tanloc(3)**2))
     nornor = sqrt((norloc(1)**2+norloc(2)**2+norloc(3)**2))
@@ -69,9 +69,9 @@ subroutine cgcine(ndim, nno1, vff1, wref, &
 !    CONSTRUCTION DE LA MATRICE B
 !
     do n = 1, nno1
-        do 20 i = 1, ndim
+        do i = 1, ndim
             b(i,n) = tanloc(i)/norm*dfdx(n)
-20      continue
+        end do
         b(ndim+1,n) = dfdx(n)
         l(n) = vff1(n)
     end do

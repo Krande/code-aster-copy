@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
                   vnoeud, vrange, vcham)
 !
@@ -63,11 +63,11 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
     character(len=19) :: chamno, ch1s, ch2s
     character(len=24) :: vorien
 !
-    integer ::  lred, lori, lrange
+    integer :: lred, lori, lrange
     integer :: imesu, ii, imode, iret
     integer :: iposd, icmp, ino
     integer :: lnoeud, nnoema, ncmpma
-    integer ::   jcnsv, jcnsl, jcnsk
+    integer :: jcnsv, jcnsl, jcnsk
     integer :: ibid, nbcmpi, nbcham, lch, ich, lcham
 !
     real(kind=8) :: vori(3)
@@ -114,9 +114,9 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
     call wkvect(basepr, 'G V R', nnoema*ncmpma*nbmtot, lred)
 !
 !     INITIALISATION DE BASEPR
-    do 152 ii = 1, nnoema*ncmpma*nbmtot
+    do ii = 1, nnoema*ncmpma*nbmtot
         zr(lred-1 + ii) = 0.d0
-152  end do
+    end do
 !
 ! RECUPERATION SD CORRESPONDANCE ENTRE MAILLAGE MODELE/MESURE
 !
@@ -127,7 +127,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 ! POUR L'INSTANT ON NE RAJOUTE PAS DE PONDERATION SUR LES MESURE
 ! A FAIRE EVENTUELLEMENT : EN FONCTION DU TYPE DE CHAMP
 !
-    do 151 ich = 1, nbcham
+    do ich = 1, nbcham
         nomcha = zk16(lch-1 +ich)
         nomch = nomcha
 ! MEMES VECTEURS DE BASE POUR : DEPL, VITE ET ACCE
@@ -144,7 +144,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
 ! BOUCLE SUR TOUS LES MODES
 !
-        do 10 imode = 1, nbmtot
+        do imode = 1, nbmtot
 !
             call rsexch('F', basemo, nomch, ordr(imode), chamno,&
                         iret)
@@ -170,7 +170,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
 ! BOUCLE SUR LES POINTS DE MESURE
 !
-            do 20 imesu = 1, nbmesu
+            do imesu = 1, nbmesu
 !
                 nomchm = zk16(lcham-1+imesu)
 ! MEMES VECTEURS DE BASE POUR : DEPL, VITE ET ACCE
@@ -186,80 +186,73 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
                 if ((nomch(1:4) .eq. 'DEPL') .and. (nomchm(1:4) .eq. 'DEPL')) then
 !
 ! RECUPERATION DIRECTION DE MESURE (VECTEUR DIRECTEUR)
-                    do 21 ii = 1, 3
+                    do ii = 1, 3
                         vori(ii) = zr(lori-1 + (imesu-1)*3 +ii)
-21                  continue
+                    end do
 !
 ! NORMALISATION DU VECTEUR DIRECTEUR
                     val = 0.d0
-                    do 22 ii = 1, 3
+                    do ii = 1, 3
                         val = val + vori(ii)*vori(ii)
-22                  continue
+                    end do
                     val = sqrt(val)
                     if (val .lt. r8prem()) then
                         call utmess('F', 'ALGORITH6_26')
                     endif
-                    do 23 ii = 1, 3
+                    do ii = 1, 3
                         vori(ii) = vori(ii)/val
-23                  continue
+                    end do
 !
 ! RECUPERATION DU CHAMP AU NOEUD (BASE)
 !
-                    do 101 icmp = 1, nbcmpi
-                        if (cnsc(icmp) .eq. 'DX') vect(1) = zr(&
-                                                                    jcnsv-1 +(ino-1)*nbcmpi+icmp)
-                        if (cnsc(icmp) .eq. 'DY') vect(2) = zr(&
-                                                                    jcnsv-1 +(ino-1)*nbcmpi+icmp)
-                        if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(&
-                                                                    jcnsv-1 +(ino-1)*nbcmpi+icmp)
-101                  continue
+                    do icmp = 1, nbcmpi
+                        if (cnsc(icmp) .eq. 'DX') vect(1) = zr( jcnsv-1 +(ino-1)*nbcmpi+icmp)
+                        if (cnsc(icmp) .eq. 'DY') vect(2) = zr( jcnsv-1 +(ino-1)*nbcmpi+icmp)
+                        if (cnsc(icmp) .eq. 'DZ') vect(3) = zr( jcnsv-1 +(ino-1)*nbcmpi+icmp)
+                    end do
 !
 ! CALCUL DE LA BASE RESTREINTE
 !
                     iposd = (imode-1)*nbmesu + imesu
                     zr(lred-1 + iposd) = 0.d0
 !
-                    do 300 ii = 1, 3
+                    do ii = 1, 3
                         zr(lred-1 + iposd) = zr(lred-1 + iposd) + vect(ii) * vori(ii)
-300                  continue
+                    end do
 !
                     else if ( (nomch(1:14) .eq. 'EPSI_NOEU') .and.&
                 (nomchm(1:14) .eq. 'EPSI_NOEU') ) then
 !
                     iposd = (imode-1)*nbmesu + imesu
-                    do 401 icmp = 1, nbcmpi
+                    do icmp = 1, nbcmpi
                         if (cnsc(icmp) .eq. zk8(lrange-1 + imesu)) zr(lred-1 +iposd) = &
-                                                                           zr(&
-                                                                           jcnsv-1 +(ino- 1&
-                                                                           )*nbcmpi+icmp&
-                                                                           )
-401                  continue
+                                                                   zr(&
+                                                                   jcnsv-1 +(ino- 1)*nbcmpi+icmp)
+                    end do
 !
                     else if ( (nomch(1:14) .eq. 'SIGM_NOEU') .and.&
                 (nomchm(1:14) .eq. 'SIGM_NOEU') ) then
 !
                     iposd = (imode-1)*nbmesu + imesu
-                    do 501 icmp = 1, nbcmpi
+                    do icmp = 1, nbcmpi
                         if (cnsc(icmp) .eq. zk8(lrange-1 + imesu)) zr(lred-1 +iposd) = &
-                                                                           zr(&
-                                                                           jcnsv-1 +(ino- 1&
-                                                                           )*nbcmpi+icmp&
-                                                                           )
-501                  continue
+                                                                   zr(&
+                                                                   jcnsv-1 +(ino- 1)*nbcmpi+icmp)
+                    end do
 !
                 endif
 !
 ! FIN DE LA BOUCLE SUR LES POINTS DE MESURE
 !
-20          continue
+            end do
 !
 ! FIN DE LA BOUCLE SUR LES MODES
 !
-10      continue
+        end do
 !
 ! FIN BOUCLE SUR LES NOMCHA
 !
-151  end do
+    end do
 !
     call jeecra(basepr, 'LONUTI', nbmesu*nbmtot)
 !

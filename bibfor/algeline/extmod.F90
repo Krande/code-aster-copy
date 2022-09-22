@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
                   nbeq, nbnoe, iddl, nbddl)
     implicit none
@@ -54,7 +54,7 @@ subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
     call jeveuo(deeq, 'L', ideeq)
     ipm = 0
     icm = 0
-    do 10 i = 1, nbnumo
+    do i = 1, nbnumo
         inumo = nume(i)
         call rsexch('F', basemo, 'DEPL', inumo, nomcha,&
                     iret)
@@ -62,17 +62,17 @@ subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
         call jeveuo(nomcha, 'L', iadmod)
         ipm = ipm + icm
         icm = 0
-        do 20 j = 1, nbeq
-            do 21 k = 1, nbddl
+        do j = 1, nbeq
+            do k = 1, nbddl
                 if (zi(ideeq+(2*j)-1) .eq. iddl(k)) then
                     icm = icm + 1
                     dmode(ipm+icm) = zr(iadmod+j-1)
                     goto 22
                 endif
-21          continue
-22          continue
-20      continue
-10  continue
+            end do
+ 22         continue
+        end do
+    end do
 !
     call jedema()
 end subroutine

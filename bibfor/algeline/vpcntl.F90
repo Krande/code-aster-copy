@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vpcntl(cty, mode, option, omemin, omemax,&
                   seuil, nfreq, ipos, lmat, omecor,&
                   precdc, ier, vpinf, vpmax, freq,&
@@ -87,7 +87,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 !
     if (seuil .gt. 0.0d0) then
 !
-        do 100 ifreq = 1, nfreq
+        do ifreq = 1, nfreq
             if (err(ifreq) .gt. seuil) then
                 ier = ier + 1
                 valk = mode
@@ -117,7 +117,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
                 endif
 !
             endif
-100      continue
+        end do
     endif
 !     ------------------------------------------------------------------
 !     -- OPTION BANDE :                                              ---
@@ -127,8 +127,8 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
         zmax = (1.d0 + sign(precdc,omemax)) * omemax
         zmin = (1.d0 - sign(precdc,omemin)) * omemin
         if (abs(omemin) .le. omecor) zmin = - omecor
-
-        do 210 ifreq = 1, nfreq
+!
+        do ifreq = 1, nfreq
             if (typres .eq. 'DYNAMIQUE') then
                 omega = omega2(freq(ifreq))
             else
@@ -153,7 +153,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
                     call utmess(cty, 'ALGELINE5_20', nr=2, valr=valr)
                 endif
             endif
-210      continue
+        end do
     endif
 !
 !     ------------------------------------------------------------------

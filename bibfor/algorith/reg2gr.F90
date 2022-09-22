@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
                   defgep, sigp, dsde2g)
 ! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
@@ -44,27 +44,27 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
     spt=1
     poum='+'
     if (compor(1) .eq. 'ELAS') then
-        do 10 p = 1, ndim*ndim*ndim
-            do 20 q = 1, ndim*ndim*ndim
+        do p = 1, ndim*ndim*ndim
+            do q = 1, ndim*ndim*ndim
                 dsde2g(q,p)=0.0d0
-20          continue
-10      continue
-        do 30 p = 1, ndim
-            do 40 q = 1, ndim
+            end do
+        end do
+        do p = 1, ndim
+            do q = 1, ndim
                 id(q,p)=0.0d0
-40          continue
+            end do
             id(p,p)=1.0d0
-30      continue
+        end do
         call rcvalb(fami, kpg, spt, poum, imate,&
                     ' ', 'ELAS_2NDG', 0, ' ', [0.0d0],&
                     5, ncra(1), val(1), icodre(1), 1)
 !
-        do 50 p = 1, ndim
-            do 60 q = 1, ndim
-                do 70 r = 1, ndim
-                    do 80 l = 1, ndim
-                        do 90 m = 1, ndim
-                            do 100 n = 1, ndim
+        do p = 1, ndim
+            do q = 1, ndim
+                do r = 1, ndim
+                    do l = 1, ndim
+                        do m = 1, ndim
+                            do n = 1, ndim
                                 dsde2g((p-1)*ndim*ndim+(q-1)*ndim+r,&
                                 (l-1)*ndim*ndim+(m-1)*ndim+n) =&
                                 val(1)/2.0d0*(id(p,q)*(id(l,m)*id(r,n)&
@@ -79,20 +79,20 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
                                 (id(p,m)*id(q,n)+id(p,n)*id(q,m)) +&
                                 id(q,l)*(id(r,m)*id(p,n)+id(r,n)*id(p,&
                                 m)))
-100                          continue
-90                      continue
-80                  continue
-70              continue
-60          continue
-50      continue
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
         adder2 = regula(2)
 !
-        do 110 p = 1, ndim*ndim*ndim
+        do p = 1, ndim*ndim*ndim
             sigp(p)=0.0d0
-            do 120 q = 1, ndim*ndim*ndim
+            do q = 1, ndim*ndim*ndim
                 sigp(p)=sigp(p)+dsde2g(p,q)*defgep(adder2-1+q)
-120          continue
-110      continue
+            end do
+        end do
     else
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif

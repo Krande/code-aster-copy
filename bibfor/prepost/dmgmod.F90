@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
                   jordr, jcoef, nbpt, ntcmp, numcmp,&
                   impr, vdomag)
@@ -129,13 +129,13 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     call jeveuo(nommat//k11//'.VALK', 'L', ivalk)
     call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
     nbf = (nbk-nbr-nbc)/2
-    do 50 ik = 1, nbf
+    do ik = 1, nbf
         if (zk16(ivalk-1+nbr+nbc+ik) .eq. 'WOHLER') then
             nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
             call jeveuo(nomfon//'           .VALE', 'L', vr=vale)
             salt0=vale(1)
         endif
- 50 end do
+    end do
 !
     valr(1) = su
     valr(2) = salt0
@@ -158,7 +158,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     endif
     call jeveuo(chequi//'.CELV', 'L', vr=celv)
 !
-    do 11 iord = 1, nbordr
+    do iord = 1, nbordr
         numord = zi(jordr+iord-1)
         chequ2(iord) = zk24(ivch2+numord-1)(1:19)
         if (chequ2(iord) .eq. ' ') then
@@ -168,18 +168,18 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             call utmess('F', 'PREPOST_52', nk=3, valk=valk)
         endif
         call jeveuo(chequ2(iord)//'.CELV', 'L', ivord2(iord))
- 11 continue
+    end do
 !
 ! ---     BOUCLE SUR LES POINTS
 !
-    do 10 ipt = 1, nbpt
+    do ipt = 1, nbpt
 ! -    STOCKAGE CONTRAINTES
         zr(ivpt) = celv(1+(ipt-1)*ntcmp+numcmp(icmp)-1)
         zr(ivpt+1) = 0.d0
-        do 12 iord = 1, nbordr
+        do iord = 1, nbordr
             coeff = zr(jcoef+iord-1)
             zr(ivpt+1) = zr(ivpt+1) + coeff* abs(zr(ivord2(iord)+(ipt- 1)*ntcmp+numcmp(icmp)-1))
- 12     continue
+        end do
 !
         if (zr(ivpt) .gt. su) then
             if (impr .ge. 2) then
@@ -213,7 +213,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             call utmess('I', 'FATIGUE1_79', si=ipt, nr=3, valr=valr)
         endif
 !
- 10 continue
+    end do
 !
     if (crit) then
         valr (1) = smax

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
                   tau1, tau2, cohes, job, rela,&
                   alpha, dsidep, sigma, pp, dnor,&
@@ -91,21 +91,21 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
 ! --- CALCUL DU SAUT DE DEPLACEMENT AM EN BASE LOCALE
 !
-    do 218 i = 1, ndim
+    do i = 1, ndim
         dtang(i) = 0.d0
         dnor(i) = 0.d0
-        do 219 k = 1, ndim
+        do k = 1, ndim
             pp(i,k)=nd(i)*nd(k)
             dtang(i)=dtang(i)+p(i,k)*saut(k)
             dnor(i) = dnor(i) +pp(i,k)*saut(k)
-219      continue
+        end do
 !
 ! --- L'INTERPENETRATION CORRESPOND A SAUT<0 DANS LCEJEX
 !
         am(1) = am(1) - dnor(i)*nd(i)
         am(2) = am(2) - dtang(i)*tau1(i)
         am(3) = am(3) - dtang(i)*tau2(i)
-218  end do
+    end do
 !
 ! --- CALCUL VECTEUR ET MATRICE TANGENTE EN BASE LOCALE
 !

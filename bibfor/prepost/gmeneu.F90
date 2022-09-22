@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gmeneu(imod, nbnode)
 !.======================================================================
     implicit none
@@ -47,7 +47,7 @@ subroutine gmeneu(imod, nbnode)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !-----------------------------------------------------------------------
-    integer :: inode,    node
+    integer :: inode, node
     real(kind=8) :: x, y, z
     real(kind=8), pointer :: coor(:) => null()
     integer, pointer :: detr(:) => null()
@@ -80,7 +80,7 @@ subroutine gmeneu(imod, nbnode)
 !
 ! --- ECRITURE DES NUMEROS DE NOEUDS ET DE LEURS COORDONNEES :
 !     ------------------------------------------------------
-    do 20 inode = 1, nbnode
+    do inode = 1, nbnode
         node = info(inode)
 !
 !      ON N'ECRIT PAS LES NOEUDS ORPHELINS
@@ -93,7 +93,8 @@ subroutine gmeneu(imod, nbnode)
         call codent(node, 'G', chnode(2:8))
         write(imod,'(2X,A,2X,3(1PE21.14),1X)') chnode,x,y,z
 !
-20  end do
+ 20     continue
+    end do
 !
     write(imod,'(A)') 'FINSF'
     write(imod,'(A)') '%'

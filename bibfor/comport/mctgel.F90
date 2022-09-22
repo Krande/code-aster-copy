@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mctgel(dydx, rprops)
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ subroutine mctgel(dydx, rprops)
 !
     parameter (   ndim=6    ,mdim=3     )
 !
-    real(kind=8) :: foid(mdim,mdim), young, poiss
+    real(kind=8) :: foid(mdim, mdim), young, poiss
     real(kind=8) :: gmodu, bulk, factor
     real(kind=8) :: r0, r1, r2, r3, r4, r2g, r1d3
 !
@@ -73,11 +73,11 @@ subroutine mctgel(dydx, rprops)
 !
 ! Assemble matrix
 !
-    do 10 i = 1, mdim
+    do i = 1, mdim
         dydx(mdim+i,mdim+i)=r2g
-        do 11 j = 1, mdim
+        do j = 1, mdim
             dydx(i,j)=r2g*foid(i,j)+factor
-11      continue
-10  continue
+        end do
+    end do
 !
 end subroutine

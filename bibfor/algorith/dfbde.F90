@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dfbde(dim, b, e, deuxmu, lambda,&
                  dsidep)
 !
@@ -84,10 +84,10 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
 !-----CALCUL DE D(BE+EB)/DE------------------------------------
     rtemp3 = 0.d0
     rtemp4 = 0.d0
-    do 20 i = 1, dim
-        do 21 j = i, dim
-            do 22 k = 1, dim
-                do 23 l = 1, dim
+    do i = 1, dim
+        do j = i, dim
+            do k = 1, dim
+                do l = 1, dim
                     if (i .eq. j) then
                         rtemp3=1.d0
                     else
@@ -100,31 +100,31 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
                     endif
                     dbede(t(i,j),t(k,l))=dbede(t(i,j),t(k,l))+(kron(k,&
                     i)* b(t(l,j))+kron(j,l)*b(t(i,k)))*rtemp3*rtemp4
-23              continue
+                end do
                 beeb(t(i,j))=beeb(t(i,j))+ b(t(i,k))*e(t(k,j))+e(t(i,&
                 k))*b(t(k,j))
-22          continue
-21      continue
-20  end do
+            end do
+        end do
+    end do
 !
 !
     call diago3(beeb, vecbeb, valbeb)
-    do 822 i = 1, 3
+    do i = 1, 3
         if (valbeb(i) .lt. 0.d0) then
             valbeb(i)=0.d0
         endif
-822  continue
+    end do
 !
     call r8inir(6, 0.d0, beebp, 1)
 !
-    do 823 i = 1, 3
-        do 824 j = i, 3
-            do 825 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 beebp(t(i,j))=beebp(t(i,j))+vecbeb(i,k)*valbeb(k)*&
                 vecbeb(j,k)
-825          continue
-824      continue
-823  continue
+            end do
+        end do
+    end do
 !
 !
 !
@@ -136,21 +136,21 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
 !
     call dfpdf(6, beeb, mtemp)
 !
-    do 240 ik = 1, 6
-        do 241 pq = 1, 6
-            do 242 rs = 1, 6
+    do ik = 1, 6
+        do pq = 1, 6
+            do rs = 1, 6
                 a(ik,pq)=a(ik,pq)+mtemp(ik,rs)*dbede(rs,pq)
-242          continue
-241      continue
-240  end do
+            end do
+        end do
+    end do
 !
     rtemp2 = 0.d0
     rtemp3 = 0.d0
     rtemp4 = 0.d0
-    do 250 i = 1, 3
-        do 251 j = i, 3
-            do 252 k = 1, 3
-                do 253 l = 1, 6
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
+                do l = 1, 6
                     if (i .eq. j) then
                         rtemp2=1.d0
                     else
@@ -168,18 +168,18 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
                     endif
                     f2b(t(i,j),l)=f2b(t(i,j),l)+(a(t(i,k),l)*e(t(k,j))&
                     * rtemp4+e(t(i,k))*a(t(k,j),l)*rtemp3)*rtemp2
-253              continue
-252          continue
-251      continue
-250  end do
+                end do
+            end do
+        end do
+    end do
 !
 !
     rtemp2 = 0.d0
     rtemp3 = 0.d0
-    do 260 i = 1, 3
-        do 261 j = i, 3
-            do 262 p = 1, 3
-                do 263 q = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do p = 1, 3
+                do q = 1, 3
                     if (i .eq. j) then
                         rtemp2=1.d0
                     else
@@ -193,10 +193,10 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
                     f2b(t(i,j),t(p,q))=f2b(t(i,j),t(p,q)) +(kron(j,q)*&
                     beebp(t(i,p)) +kron(i,p)*beebp(t(j,q))) *rtemp2*&
                     rtemp3
-263              continue
-262          continue
-261      continue
-260  end do
+                end do
+            end do
+        end do
+    end do
 !
 !-----------------------------------------------------------------------
 !
@@ -213,10 +213,10 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
 !
     rtemp2 = 0.d0
     rtemp3 = 0.d0
-    do 120 i = 1, 3
-        do 121 j = i, 3
-            do 122 p = 1, 3
-                do 123 q = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do p = 1, 3
+                do q = 1, 3
                     if (i .eq. j) then
                         rtemp2=1.d0
                     else
@@ -229,18 +229,18 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
                     endif
                     f1b(t(i,j),t(p,q))=f1b(t(i,j),t(p,q))+trec*b(t(p,&
                     q)) *e(t(i,j))*rtemp2*rtemp3
-123              continue
-122          continue
-121      continue
-120  end do
+                end do
+            end do
+        end do
+    end do
 !
 !
     rtemp2 = 0.d0
     rtemp3 = 0.d0
-    do 160 i = 1, 3
-        do 161 j = i, 3
-            do 162 p = 1, 3
-                do 163 q = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do p = 1, 3
+                do q = 1, 3
                     if (i .eq. j) then
                         rtemp2=1.d0
                     else
@@ -253,18 +253,18 @@ subroutine dfbde(dim, b, e, deuxmu, lambda,&
                     endif
                     f1b(t(i,j),t(p,q))= f1b(t(i,j),t(p,q))+trec*treb&
                     *kron(i,p)*kron(j,q)*rtemp2*rtemp3
-163              continue
-162          continue
-161      continue
-160  end do
+                end do
+            end do
+        end do
+    end do
 !
 !
 !----CALCUL DE FB-------------------------------------------------------
 !
-    do 900 i = 1, 6
-        do 901 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             dsidep(i,j)=-lambda*f1b(i,j)-deuxmu/4.d0*f2b(i,j)
-901      continue
-900  end do
+        end do
+    end do
 !
 end subroutine

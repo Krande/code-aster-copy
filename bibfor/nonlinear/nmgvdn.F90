@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmgvdn(ndim, nno1, nno2, iu, ia)
 !
 !
@@ -37,18 +37,18 @@ subroutine nmgvdn(ndim, nno1, nno2, iu, ia)
 !
 !      ELEMENT P1 - CONTINU
 !
-    do 110 n = 1, nno2
-        do 120 i = 1, ndim
+    do n = 1, nno2
+        do i = 1, ndim
             iu(nno1*(i-1)+n) = i + (n-1)*(ndim+1)
-120      continue
+        end do
         ia(n) = 1 + ndim + (n-1)*(ndim+1)
-110  continue
+    end do
     os = (1+ndim)*nno2
-    do 140 n = 1, nno1-nno2
-        do 150 i = 1, ndim
+    do n = 1, nno1-nno2
+        do i = 1, ndim
             iu(nno1*(i-1)+n+nno2) = i + (n-1)*ndim + os
-150      continue
-140  continue
+        end do
+    end do
 !
 !
 end subroutine

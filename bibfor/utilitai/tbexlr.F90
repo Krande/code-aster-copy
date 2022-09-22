@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbexlr(nomta, listr, basout)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -26,8 +28,6 @@ subroutine tbexlr(nomta, listr, basout)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: nomta, listr, basout
 !     TRANSFORMER UNE TABLE EN LISTR8 QUE SI CETTE TABLE EST
@@ -38,10 +38,10 @@ subroutine tbexlr(nomta, listr, basout)
 ! IN  : BASOUT : BASE DE CREATION DE "LISTR"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,   nbpr, nblg, ipar, ndim
-    integer :: i, j, jvale, jlogq,  nbvale, k1, kcol, klig, ideb1, ideb2
+    integer :: iret, nbpara, nblign, nbpr, nblg, ipar, ndim
+    integer :: i, j, jvale, jlogq, nbvale, k1, kcol, klig, ideb1, ideb2
     integer :: ifin1, ifin2, nbcl, ivide, ilig, ibloc, jpas, jnbp, jbor, k
-    integer ::   kcol1, kcol2
+    integer :: kcol1, kcol2
     character(len=1) :: base
     character(len=3) :: type
     character(len=19) :: nomtab, listr8
@@ -84,7 +84,7 @@ subroutine tbexlr(nomta, listr, basout)
 !
     AS_ALLOCATE(vi=nume_para, size=nbpara)
     nbpr = 0
-    do 10 i = 1, nbpara
+    do i = 1, nbpara
         type = tblp(1+4*(i-1)+1)
         if (type(1:1) .eq. 'I') then
             nbpr = nbpr + 1
@@ -93,7 +93,7 @@ subroutine tbexlr(nomta, listr, basout)
             nbpr = nbpr + 1
             nume_para(nbpr) = i
         endif
-10  end do
+    end do
     if (nbpr .eq. 0) then
         call utmess('F', 'UTILITAI4_81')
     endif
@@ -102,19 +102,19 @@ subroutine tbexlr(nomta, listr, basout)
 !
     AS_ALLOCATE(vi=nume_lign, size=nblign)
     nblg = 0
-    do 20 i = 1, nblign
+    do i = 1, nblign
         nbcl = 0
-        do 22 j = 1, nbpr
+        do j = 1, nbpr
             ipar = nume_para(j)
             nomjvl = tblp(1+4*(ipar-1)+3)
             call jeveuo(nomjvl, 'L', jlogq)
             if (zi(jlogq+i-1) .eq. 1) nbcl = nbcl + 1
-22      continue
+        end do
         if (nbcl .ne. 0) then
             nblg = nblg + 1
             nume_lign(nblg) = i
         endif
-20  end do
+    end do
     if (nblg .eq. 0) then
         call utmess('F', 'UTILITAI4_82')
     endif
@@ -128,13 +128,13 @@ subroutine tbexlr(nomta, listr, basout)
 !
     ibloc = 1
     k1 = 0
-    do 30 i = 1, nblg
+    do i = 1, nblg
         ilig = nume_lign(i)
         ideb1 = 0
         ifin1 = nbpr
         ivide = 0
         kcol1 = 0
-        do 32 j = 1, nbpr
+        do j = 1, nbpr
             ipar = nume_para(j)
             type = tblp(1+4*(ipar-1)+1)
             nomjv = tblp(1+4*(ipar-1)+2)
@@ -161,7 +161,7 @@ subroutine tbexlr(nomta, listr, basout)
                 endif
 !               IF ( IFIN1 .EQ. 0 ) IFIN1 = ZI(KPARA+J-1-1)
             endif
-32      continue
+        end do
         if (i .eq. 1) then
             klig = 1
         else
@@ -178,18 +178,18 @@ subroutine tbexlr(nomta, listr, basout)
         ideb2 = ideb1
         ifin2 = ifin1
         kcol2 = kcol1
-30  end do
+    end do
     colonn(ibloc) = kcol2
     lignes(ibloc) = klig
 !
 !     --- ON STOCKE ---
 !
     nbvale = 1 + ( 2 * ibloc )
-    do 40 i = 1, ibloc
+    do i = 1, ibloc
         kcol = colonn(i)
         klig = lignes(i)
         nbvale = nbvale + ( kcol * klig )
-40  end do
+    end do
 !
     listr8 = listr
     ndim = max( 1 , nbvale-1 )
@@ -201,7 +201,7 @@ subroutine tbexlr(nomta, listr, basout)
     zr(jvale) = ibloc
     j = 1
     k1 = 0
-    do 50 i = 1, ibloc
+    do i = 1, ibloc
         kcol = colonn(i)
         j = j + 1
         zr(jvale+j-1) = kcol
@@ -209,18 +209,18 @@ subroutine tbexlr(nomta, listr, basout)
         j = j + 1
         zr(jvale+j-1) = klig
         ndim = kcol * klig
-        do 52 k = 1, ndim
+        do k = 1, ndim
             k1 = k1 + 1
             j = j + 1
             zr(jvale+j-1) = vale_r(k1)
-52      continue
-50  end do
+        end do
+    end do
 !
-    do 4 i = 1, nbvale-1
+    do i = 1, nbvale-1
         zr(jpas+i-1) = zr(jvale+i) - zr(jvale+i-1)
         zi(jnbp+i-1) = 1
         zr(jbor+i-1) = zr(jvale+i-1)
- 4  end do
+    end do
     zr(jbor+nbvale-1) = zr(jvale+nbvale-1)
 !
     AS_DEALLOCATE(vi=nume_para)

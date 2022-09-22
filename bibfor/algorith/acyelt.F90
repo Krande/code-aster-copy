@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
                   ideb, jdeb, x)
     implicit none
@@ -43,7 +43,6 @@ subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/ampcpr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -51,6 +50,7 @@ subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
 !
 !
     character(len=8) :: nomob
@@ -71,21 +71,22 @@ subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
     nomcol = nmcolz
 !
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), ibid)
     call jeveuo(jexnum(nomcol, ibid), 'L', llob)
 !
     iad = llob - 1
-    do 30 j = 1, nob
-        do 30 i = j, 1, -1
+    do j = 1, nob
+        do i = j, 1, -1
             iad = iad + 1
             call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
                         1, ideb-1+i, jdeb-1+j, x, 1,&
                         1)
-30      continue
+        end do
+    end do
 !
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

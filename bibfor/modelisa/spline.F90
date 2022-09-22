@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine spline(x, y, n, dy1, dyn,&
                   d2y, iret)
     implicit none
@@ -61,12 +61,12 @@ subroutine spline(x, y, n, dy1, dyn,&
 ! ---------
 #include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     real(kind=8) :: x(*), y(*), dy1, dyn, d2y(*)
     integer :: n, iret
 !
@@ -85,7 +85,7 @@ subroutine spline(x, y, n, dy1, dyn,&
     iret = 0
     if (n .lt. 3) then
         iret = 1
-        goto 9999
+        goto 999
     endif
 !
     bignum = 0.99d0 / r8miem()
@@ -98,18 +98,17 @@ subroutine spline(x, y, n, dy1, dyn,&
         work(1) = 3.0d0/(x(2)-x(1)) * ( (y(2)-y(1))/(x(2)-x(1)) - dy1 )
     endif
 !
-    do 10 i = 2, n-1
+    do i = 2, n-1
         sig = (x(i)-x(i-1))/(x(i+1)-x(i-1))
         p = sig * d2y(i-1) + 2.0d0
         d2y(i) = (sig-1.0d0) / p
         work(i) = (&
-                     6.0d0 * (&
-                     (&
-                     y(i+1)-y(i))/(x(i+1)-x(i)) - (y(i)- y(i-1))/(x(i)-x(i-1)) ) / (x(i+1)-x(i-1)&
-                     ) - sig * work(1+i-2&
-                     )&
-                     ) / p
-10  end do
+                  6.0d0 * (&
+                  (y(i+1)-y(i))/(x(i+1)-x(i)) - (y(i)- y(i-1))/(x(i)-x(i-1)) ) / (x(i+1)-x(i-1)&
+                  ) - sig * work(1+i-2&
+                  )&
+                  ) / p
+    end do
 !
     if (dble(abs(dyn)) .gt. bignum) then
         qn = 0.0d0
@@ -120,11 +119,11 @@ subroutine spline(x, y, n, dy1, dyn,&
     endif
 !
     d2y(n) = (un-qn*work(1+n-2))/(qn*d2y(n-1)+1.0d0)
-    do 20 i = n-1, 1, -1
+    do i = n-1, 1, -1
         d2y(i) = d2y(i) * d2y(i+1) + work(i)
-20  end do
+    end do
 !
-9999  continue
+999 continue
     AS_DEALLOCATE(vr=work)
     call jedema()
 !

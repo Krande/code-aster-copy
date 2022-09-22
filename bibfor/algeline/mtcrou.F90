@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtcrou(a, b, nmax, n, nbscmb,&
                   l, d)
     implicit none
@@ -38,49 +38,49 @@ subroutine mtcrou(a, b, nmax, n, nbscmb,&
 !
 !-----------------------------------------------------------------------
     zero = 0.d0
-    do 1 i = 1, n
-        do 2 j = 1, i-1
+    do i = 1, n
+        do j = 1, i-1
             s = zero
-            do 3 k = 1, j-1
+            do k = 1, j-1
                 s = s + l(i,k)*d(k)*l(j,k)
- 3          continue
+            end do
             l(i,j) = (a(i,j)-s)/d(j)
- 2      continue
+        end do
         s = zero
-        do 4 k = 1, i-1
+        do k = 1, i-1
             s = s + l(i,k)*l(i,k)*d(k)
- 4      continue
+        end do
         d(i) = a(i,i)-s
- 1  end do
+    end do
 !
 !   BOUCLE SUR LES SECONDS MEMBRES
 !
-    do 5 is = 1, nbscmb
+    do is = 1, nbscmb
 !
 !  DESCENTE
 !
-        do 6 i = 1, n
+        do i = 1, n
             s = zero
-            do 7 k = 1, i-1
+            do k = 1, i-1
                 s = s + l(i,k)*b(k,is)
- 7          continue
+            end do
             b(i,is) = b(i,is)-s
- 6      end do
+        end do
 !
 !  DIVISION PAR LA DIAGONALE
 !
-        do 10 i = 1, n
+        do i = 1, n
             b(i,is) = b(i,is)/d(i)
-10      end do
+        end do
 !
 !  REMONTEE
 !
-        do 8 i = n, 1, -1
+        do i = n, 1, -1
             s = zero
-            do 9 k = i+1, n
+            do k = i+1, n
                 s = s + l(k,i)*b(k,is)
- 9          continue
+            end do
             b(i,is) = b(i,is)-s
- 8      end do
- 5  end do
+        end do
+    end do
 end subroutine

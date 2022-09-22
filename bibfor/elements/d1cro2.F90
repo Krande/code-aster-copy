@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
                   nmprox, cnbn, cplas, rpara, cief,&
                   cdeps, cdtg, cier, cdepsp, dc,&
                   bend)
-    implicit  none
+    implicit none
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
@@ -78,32 +78,32 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !     CALCUL LE GRADIENT DU CRITERE DE PLASICITE
     call dfplgl(nmnbn, nmplas, nmdpla, bend, df)
 !
-    do 10, j = 1,6
-    tdf(1,j) = df(j)
-    10 end do
+    do j = 1, 6
+        tdf(1,j) = df(j)
+    end do
 !
     call matmul(cdtg, cdeps, 6, 6, 1,&
                 ddeps)
 !
-    do 20, j = 1,6
-    tddeps(1,j) = ddeps(j)
-    20 end do
+    do j = 1, 6
+        tddeps(1,j) = ddeps(j)
+    end do
 !
     call matmul(dc, u, 6, 6, 1,&
                 dcu)
 !
-    do 30, j = 1,6
-    tdcu(1,j) = dcu(j)
-    30 end do
+    do j = 1, 6
+        tdcu(1,j) = dcu(j)
+    end do
 !
     call matmul(h, dcu, 6, 6, 1,&
                 hdcu)
     call matmul(tddeps, h, 1, 6, 6,&
                 cp1)
 !
-    do 40, j = 1,6
-    cp1(1,j) = tdf(1,j) + 0.5d0*cp1(1,j)
-    40 end do
+    do j = 1, 6
+        cp1(1,j) = tdf(1,j) + 0.5d0*cp1(1,j)
+    end do
 !
     call matmul(cp1, ddeps, 1, 6, 1,&
                 cp0)
@@ -120,31 +120,31 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     a2(1) = 0.5d0 * cp0(1)
 !
 !     RESOLUTION DE L EQUATION DU SECOND DEGRE
-    call draac2(a2(1),a1(1),a0(1),xx(1),xx(2),&
+    call draac2(a2(1), a1(1), a0(1), xx(1), xx(2),&
                 nbxx)
 !
-    do 54, i = 1, nbxx
-    if (xx(i) .ge. 0.d0) then
-        lambda=xx(i)
+    do i = 1, nbxx
+        if (xx(i) .ge. 0.d0) then
+            lambda=xx(i)
 !
-        do 50, j = 1,6
-        cdepsp(j) = lambda * u(j)
-50      continue
+            do j = 1, 6
+                cdepsp(j) = lambda * u(j)
+            end do
 !
 !     CALCUL DE CNBN ET CDEPSP QUAND UN CRITERE PLASTIQUE EST ACTIVE
-        call nmnet1(zimat, nmnbn, cnbn, cplas, czef,&
-                    czeg, cief, cdeps, cdtg, cier,&
-                    cdepsp, dc, normm)
+            call nmnet1(zimat, nmnbn, cnbn, cplas, czef,&
+                        czeg, cief, cdeps, cdtg, cier,&
+                        cdepsp, dc, normm)
 !
-        if (cier .eq. 0) goto 60
-    endif
-    54 end do
+            if (cier .eq. 0) goto 60
+        endif
+    end do
 !
     cier=3
 !
     call r8inir(6, 0.0d0, cdepsp, 1)
 !
-60  continue
+ 60 continue
 !
     rpara(1) = czef
     rpara(2) = czeg

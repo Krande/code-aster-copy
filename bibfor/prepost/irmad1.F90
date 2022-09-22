@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                   nec, dg, ncmpmx, itype, nstat,&
                   chamno, nomcmp, nomsym, numnoe)
@@ -53,24 +53,25 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     integer :: ncmp, ncol, ndim, nrow
 !-----------------------------------------------------------------------
     call jemarq()
-    do 10 i = 1, ncmpmx
+    do i = 1, ncmpmx
         ltabl(i) = .false.
- 10 end do
+    end do
 !
     nbcmpt = 0
-    do 100 inno = 1, nbno
+    do inno = 1, nbno
         ino = numnoe(inno)
-        do 110 iec = 1, nec
+        do iec = 1, nec
             dg(iec)=prno((ino-1)*(nec+2)+2+iec)
-110     continue
+        end do
         ncmp = prno((ino-1)* (nec+2)+2)
         if (ncmp .eq. 0) goto 100
         icompt = 0
-        do 112 icmp = 1, ncmpmx
+        do icmp = 1, ncmpmx
             if (exisdg(dg,icmp)) icompt = icompt + 1
-112     continue
+        end do
         nbcmpt = max( nbcmpt , icompt )
-100 end do
+100     continue
+    end do
     nrow = nbcmpt
     ncol = nbno * nstat
     ndim = ncol * nrow
@@ -88,41 +89,41 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
 !
     call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
                 nbcmps, nomgds, ipcmps)
-    do 777 ichs = 1, 50
-        do 778 ist = 1, 50
+    do ichs = 1, 50
+        do ist = 1, 50
             ipcmps(ichs,ist)=-1
-778     end do
-777 end do
+        end do
+    end do
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
     impre = 0
-    do 20 ichs = 1, nbchs
+    do ichs = 1, nbchs
         if (ichs .gt. 1) then
             afaire = .false.
-            do 22 icp = 1, nbcmps(ichs)
+            do icp = 1, nbcmps(ichs)
                 afaire = (afaire.or.ltabl(ipcmps(ichs,icp)))
- 22         continue
+            end do
             if (.not. afaire) goto 20
         endif
         impre = impre + 1
-        do 30 ist = 1, nstat
+        do ist = 1, nstat
             chamn = chamno(ist)
             call jeveuo(chamn//'.VALE', 'L', iavale)
-            do 40 inno = 1, nbno
+            do inno = 1, nbno
                 ino = numnoe(inno)
-                do 42 iec = 1, nec
+                do iec = 1, nec
                     dg(iec) = prno((ino-1)*(nec+2)+2+iec)
- 42             continue
+                end do
                 ival = prno((ino-1)* (nec+2)+1)
                 ncmp = prno((ino-1)* (nec+2)+2)
                 if (ncmp .eq. 0) goto 40
                 icompt = 0
-                do 44 icmp = 1, ncmpmx
+                do icmp = 1, ncmpmx
                     if (exisdg(dg,icmp)) then
                         if (ichs .eq. 1) ltabl(icmp)= .true.
                         icompt = icompt + 1
                         k1 = nueq(ival-1+icompt)
-                        do 46 icms = 1, nbcmps(ichs)
+                        do icms = 1, nbcmps(ichs)
                             icmsup = ipcmps(ichs,icms)
                             if (icmp .eq. icmsup) then
                                 k2 = icms + (inno-1)*nbcmpt + (ist-1)* nbcmpt*nbno
@@ -133,12 +134,15 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                                 endif
                                 goto 44
                             endif
- 46                     continue
+                        end do
                     endif
- 44             continue
- 40         continue
- 30     continue
- 20 end do
+ 44                 continue
+                end do
+ 40             continue
+            end do
+        end do
+ 20     continue
+    end do
 !
     ASSERT(impre .le. 1)
 !

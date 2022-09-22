@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
                   ds_contact, geom, statue, mmait, amait,&
                   nmait)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -105,7 +105,7 @@ implicit none
 !
 ! --- BOUCLE SUR LES MAILLES FISSURÉES
 !
-    do 100 ima = 1, ntmae
+    do ima = 1, ntmae
 !
 ! --- SI CE N'EST PAS LA BONNE ZONE, ON SORT
 !
@@ -130,7 +130,7 @@ implicit none
 !
             do j = 1, ndim
                 call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
-                           ifiss, ndim*( ini-1)+j, iad)
+                            ifiss, ndim*( ini-1)+j, iad)
                 ASSERT(iad.gt.0)
                 coord(j)=zr(jcesv(6)-1+iad)
             end do
@@ -140,10 +140,10 @@ implicit none
             call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                         ifiss, zxain*( ini-1)+2, iad)
             if (nint(zr(jcesv(2)-1+iad)) .eq. 0 .and. ini .eq. 3 .and. ndim .eq. 2) cycle
-
+!
 !           dist est-elle egale a dmin ?
             near = abs(dist-dmin) .le. (atol + dmin*rtol)
-
+!
             if (dist .lt. dmin .and. .not. near) then
                 call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                             ifiss, zxain*(ini-1)+1, iad)
@@ -166,9 +166,10 @@ implicit none
                 endif
             endif
         end do
-100  continue
+100     continue
+    end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0193(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -45,8 +45,8 @@ subroutine te0193(option, nomte)
     integer :: itemps, ipres, ivectu, k, i, l
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PPRESSF', 'L', ipres)
@@ -58,17 +58,17 @@ subroutine te0193(option, nomte)
     nompar(3) = 'INST'
     valpar(3) = zr(itemps)
 !
-    do 30 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         z = 0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             l = (kp-1)*nno + i
             r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
             z = z + zr(igeom+2*i-1)*zr(ivf+l-1)
-10      continue
+        end do
         poids = poids*r
         valpar(1) = r
         valpar(2) = z
@@ -76,10 +76,10 @@ subroutine te0193(option, nomte)
                     press, icode)
         tx = -nx*press
         ty = -ny*press
-        do 20 i = 1, nno
+        do i = 1, nno
             zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + tx*zr(ivf+k+i-1)* poids
             zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + ty*zr(ivf+k+i-1)* poids
             zr(ivectu+3*i-1) = 0.d0
-20      continue
-30  end do
+        end do
+    end do
 end subroutine

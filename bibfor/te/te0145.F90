@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0145(option, nomte)
 !
 !
@@ -50,7 +50,7 @@ subroutine te0145(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     force(1:12) = 0.0d0
 !   recuperation des coordonnees des noeuds
-    xl =  lonele(igeom=igeom)
+    xl = lonele(igeom=igeom)
 !
 !   calcul des vecteurs elementaires
     call jevech('PFRELEC', 'L', iforc)
@@ -158,7 +158,7 @@ subroutine te0145(option, nomte)
     endif
 !   2 barres en position quelconque
     if (zcod .eq. 2.d0 .or. zcod .eq. 3.d0) then
-        do 30 i = 1, 100
+        do i = 1, 100
             alp=(dble(i)-0.5d0)/100.d0
             an1=1.d0-3.d0*alp**2+2.d0*alp**3
             an2=(alp-2.d0*alp**2+alp**3)*xl
@@ -217,14 +217,15 @@ subroutine te0145(option, nomte)
                 force(j+6)=force(j+6)+s*u(j)*an3
                 force(j+9)=force(j+9)+s*w(j)*an4
             enddo
-30      continue
+ 30         continue
+        end do
     endif
 !
-999  continue
+999 continue
 !   stockage
     ipt = 6
-    if ( (nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TG') .or. &
-         (nomte.eq.'MECA_POU_D_TGM') ) then
+    if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TG') .or.&
+        (nomte.eq.'MECA_POU_D_TGM')) then
         ipt=7
     endif
     do i = 1, 6

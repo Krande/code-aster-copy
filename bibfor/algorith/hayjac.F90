@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hayjac(mod, nmat, coefel, coeft, timed,&
                   timef, yf, deps, nr, nvi,&
                   vind, vinf, yd, dy, crit,&
                   drdy, iret)
-    implicit   none
+    implicit none
 !     --------------------------------------------------------------
 !     CALCUL DU JACOBIEN DE HAYHURST = DRDY(DY)
 !     IN  MOD    :  TYPE DE MODELISATION
@@ -122,16 +122,16 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !
 !  INITIALISATION DE LA MATRICE DRDY
     call r8inir(nr*nr, 0.d0, drdy, 1)
-    do 1 i = 1, 10
+    do i = 1, 10
         drdy(i,i)=1.d0
- 1  end do
+    end do
 !
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 !     attention FGEQUI ne prend pas en compte les SQRT(2)
-    do 11 itens = 1, ndt
+    do itens = 1, ndt
         epsef(itens)=yd(itens)+theta*dy(itens)
-11  end do
+    end do
     call lcopli('ISOTROPE', mod, coefel, hookf)
     call lcprmv(hookf, epsef, sigf)
     call lcprsv(dm1, sigf, sigf)
@@ -152,13 +152,13 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
         sequi=trsig
     endif
 !------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
-    do 10 itens = 1, ndt
+    do itens = 1, ndt
         if (itens .le. 3) then
             dev(itens)=sigf(itens)-trsig/3.d0
         else
             dev(itens)=sigf(itens)*sqrt(2.0d0)
         endif
-10  end do
+    end do
 !
     shmax=50.d0
 !
@@ -169,7 +169,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
         sinh1=sinh(terme1)
     else
         iret=1
-        goto 9999
+        goto 999
     endif
     cosh1=sqrt(1.d0+sinh1*sinh1)
 !
@@ -184,7 +184,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
         sinh2=sinh(sinn/sig0)
     else
         iret=1
-        goto 9999
+        goto 999
     endif
     cosh2=sqrt(1.d0+sinh2*sinh2)
 !
@@ -194,24 +194,25 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
         call lcprte(n, n, nxn)
         call lcprsm(1.5d0, id, dfedee)
         call lcdima(dfedee, nxn, dfedee)
-        do 12 i = 1, 6
-            do 12 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 drdy(i,j)=drdy(i,j)+deuxmu*theta*dp/seq*dm1*dfedee(i,&
                 j)
-12          continue
+            end do
+        end do
 !        dFe/dp
-        do 20 i = 1, 6
+        do i = 1, 6
             drdy(i,7)=n(i)
-20      continue
+        end do
 !        dSeq/dEel
-        do 30 i = 1, 6
+        do i = 1, 6
             dseqde(i)=deuxmu*theta*(1.d0-d)*n(i)
-30      continue
+        end do
 !        dFp/dEel=
         coef=-eps0*dt*cosh1*(1.d0-h)/pk/(1.d0-dmgmi)/(1.d0-d)
-        do 40 i = 1, 6
+        do i = 1, 6
             drdy(7,i)=coef*dseqde(i)
-40      continue
+        end do
 !        dFp/dp=
         drdy(7,7)=1.d0
 !        dFp/dH1=
@@ -222,14 +223,14 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !
 !        dFH1/dEel=
         coef=ph1*dp*(h1st-delta1*h1)/seq/seq
-        do 50 i = 1, 6
+        do i = 1, 6
             drdy(8,i)=coef*dseqde(i)
-50      continue
+        end do
 !        dFH2/ds=
         coef=ph2*dp*(h2st-delta2*h2)/seq/seq
-        do 60 i = 1, 6
+        do i = 1, 6
             drdy(9,i)=coef*dseqde(i)
-60      continue
+        end do
 !        dFH1/dp=
         drdy(8,7)=-ph1*(h1st-delta1*h1)/seq
         drdy(9,7)=-ph2*(h2st-delta2*h2)/seq
@@ -242,9 +243,9 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !
 !        dFD/dEe
         coef=-biga*dt*cosh2/sig0
-        do 70 i = 1, 6
+        do i = 1, 6
             drdy(10,i)=coef*dseqde(i)*(1.d0-alphad)
-70      continue
+        end do
 !
 !        DFD/DD
         drdy(10,10)=1.d0+biga*dt*cosh2/sig0*(1-alphad)*theta*seq0
@@ -252,17 +253,17 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
             if (trsig .gt. epsi) then
                 drdy(10,10)=drdy(10,10)+ biga*dt*cosh2/sig0*alphad*&
                 theta*trsig0
-                do 80 i = 1, 6
+                do i = 1, 6
                     drdy(10,i)=drdy(10,i)+ coef*troisk*theta*alphad*&
                     kron(i)*(1.d0-d)
-80              continue
+                end do
             endif
         endif
 !
     endif
 !
 !
-9999  continue
+999 continue
 !
 !
 end subroutine

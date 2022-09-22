@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine casurf(ndim, nno, geom, surff)
     implicit none
     integer :: ndim, nno
@@ -36,17 +36,18 @@ subroutine casurf(ndim, nno, geom, surff)
 !
 ! ----------------------------------------------------------------------
 !
-    do 2 ifa = 1, nno
+    do ifa = 1, nno
 !
         ideb=ifa
         ifin=ifa+1
         if (ifin .gt. nno) then
             ifin=ifin-nno
         endif
-        do 2 i = 1, ndim
+        do i = 1, ndim
             t(i,ifa)=geom(i,ifin)-geom(i,ideb)
 !
- 2      continue
+        end do
+    end do
 !
     if (nno .eq. 3) then
         vol=abs(t(1,1)*t(2,2)-t(2,1)*t(1,2))/2.d0

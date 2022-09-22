@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjarep(iclas, nrmax)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
@@ -116,15 +116,15 @@ subroutine jjarep(iclas, nrmax)
                 'NOINIT', irnom, jnom, kadno, knody)
     call jjecrs(kadno, ic, 7, 0, 'E',&
                 imq)
-    do 60 i = 1, nrmax
+    do i = 1, nrmax
         rnom( jnom - 1 + i ) = '?'
-60  end do
+    end do
     nuti = 0
 !
 ! --- REMPLISSAGE DU REPERTOIRE DE NOM
 !
     lorep = lhcod
-    do 100 kn = 1, nremax(ic)
+    do kn = 1, nremax(ic)
         clel = rnom(jrnom(ic)+kn)
         if (clel(1:1) .eq. '?') then
             idatin = nuti + 1
@@ -133,7 +133,7 @@ subroutine jjarep(iclas, nrmax)
         ne = 1
         iref = jxhcod (clel,lorep)
         i = iref
- 5      continue
+  5     continue
         if (hcod(jcod-1+i) .eq. 0) then
             if (nuti .ge. nrmax) then
                 call utmess('F', 'JEVEUX_58')
@@ -158,10 +158,10 @@ subroutine jjarep(iclas, nrmax)
             endif
         endif
         hcod(jcod-1+iin) = idatin
-101      continue
+101     continue
         rnom(jnom-1+idatin) = rnom(jrnom(ic)+kn)
         nuti = nuti + 1
-100  end do
+    end do
 !
 ! --- RECOPIE DES OBJETS SYSTEME APRES AGRANDISSEMENT
 !
@@ -170,7 +170,7 @@ subroutine jjarep(iclas, nrmax)
     cara(jcara(ic) ) = nremax(ic)
     cara(jcara(ic) +2 ) = nrhcod(ic)
 !
-    do 200 k = 1, nbtot
+    do k = 1, nbtot
         kl = numatt(k)
         lonoi = lono(jlono(ic)+kl)*ltyp(jltyp(ic)+kl)
         if (iadd(jiadd(ic)+2*kl-1) .gt. 0) then
@@ -178,7 +178,7 @@ subroutine jjarep(iclas, nrmax)
             iadd(jiadd(ic)+2*kl-1) = 0
             iadd(jiadd(ic)+2*kl ) = 0
         endif
-200  end do
+    end do
 !
     kat (7)            = kadno
     kdy (7)            = knody
@@ -249,7 +249,7 @@ subroutine jjarep(iclas, nrmax)
                 z, indir, iadrs(17), kat(17), kdy(17))
     call jjecrs(kat(17), ic, 17, 0, 'E',&
                 imq)
-    do 300 k = 1, nreuti(ic)
+    do k = 1, nreuti(ic)
         genr(iadrs( 3)-1+k) = genr(jgenr(ic)+k)
         type(iadrs( 4)-1+k) = type(jtype(ic)+k)
         docu(iadrs( 5)-1+k) = docu(jdocu(ic)+k)
@@ -259,20 +259,20 @@ subroutine jjarep(iclas, nrmax)
         lono(iadrs(10)-1+k) = lono(jlono(ic)+k)
         date(iadrs(11)-1+k) = date(jdate(ic)+k)
         luti(iadrs(12)-1+k) = luti(jluti(ic)+k)
-300  end do
-    do 310 k = 1, 2*nreuti(ic)
+    end do
+    do k = 1, 2*nreuti(ic)
         iadm (iadrs(20)-1+k) = iadm (jiadm(ic)+k)
         iadd (iadrs( 2)-1+k) = iadd (jiadd(ic)+k)
         imarq(iadrs(16)-1+k) = imarq(jmarq(ic)+k)
-310  end do
-    do 315 i = 1, nbtot
+    end do
+    do i = 1, nbtot
         il = numatt(i)
         idm(i) = iadm(jiadm(ic)+2*il-1)
         idy(i) = iadm(jiadm(ic)+2*il )
-315  end do
-    do 320 i = 1, nbtot
+    end do
+    do i = 1, nbtot
         call jjlidy(idy(i), idm(i))
-320  end do
+    end do
 !
     jiadd(ic) = iadrs( 2) - 1
     jgenr(ic) = iadrs( 3) - 1
@@ -292,7 +292,7 @@ subroutine jjarep(iclas, nrmax)
     jrnom(ic) = jnom - 1
     jindir(ic)= iadrs(17) - 1
 !
-    do 325 i = 1, nbtot
+    do i = 1, nbtot
         il = numatt(i)
         if (il .eq. 13) then
             long(jlong(ic)+il) = lhcod
@@ -311,9 +311,9 @@ subroutine jjarep(iclas, nrmax)
         lso(il) = lono(jlono(ic)+il) * ltyp(jltyp(ic)+il)
         iadm(jiadm(ic)+2*il-1) = kat(il)
         iadm(jiadm(ic)+2*il ) = kdy(il)
-325  end do
+    end do
 !
-    do 330 i = 1, nbtot
+    do i = 1, nbtot
         il = numatt(i)
         iaddi(1) = 0
         iaddi(2) = 0
@@ -321,12 +321,12 @@ subroutine jjarep(iclas, nrmax)
                     il)
         iadd (jiadd(ic)+2*il-1) = iaddi(1)
         iadd (jiadd(ic)+2*il ) = iaddi(2)
-330  end do
+    end do
     cara(jcara(ic)+6) = iadd(jiadd(ic) + 2*2-1 )
     cara(jcara(ic)+7) = iadd(jiadd(ic) + 2*2 )
-    do 345 ind = 1, nremax(ic)
+    do ind = 1, nremax(ic)
         indir(jindir(ic)+ind) = ind
-345  end do
+    end do
     ldyn = ldynol
     ipgc = ipgca
 ! FIN ------------------------------------------------------------------

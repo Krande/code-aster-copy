@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsred.h"
@@ -46,7 +46,7 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
 !
 !
 !
-    integer ::   jcnsl
+    integer :: jcnsl
     integer :: nbno, k, ino
     character(len=19) :: cno, cns1, cns
     real(kind=8) :: norme
@@ -71,18 +71,18 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
     nbno = cnsd(1)
-    do 10,ino = 1,nbno
-    norme=0.d0
-    do 30,k = 1,ncmp
-    if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
-        norme=norme+cnsv((ino-1)*ncmp+k)**2
-    endif
-30  continue
-    if (sqrt(norme) .ge. rmax) then
-        rmax = sqrt(norme)
-        numno = ino
-    endif
-    10 end do
+    do ino = 1, nbno
+        norme=0.d0
+        do k = 1, ncmp
+            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
+                norme=norme+cnsv((ino-1)*ncmp+k)**2
+            endif
+        end do
+        if (sqrt(norme) .ge. rmax) then
+            rmax = sqrt(norme)
+            numno = ino
+        endif
+    end do
 !
 !
     call detrsd('CHAM_NO_S', cns1)

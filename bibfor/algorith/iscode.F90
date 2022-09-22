@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine iscode(idec, icod, ndim)
 !    P. RICHARD     DATE 18/02/90
 !-----------------------------------------------------------------------
@@ -46,20 +46,20 @@ subroutine iscode(idec, icod, ndim)
 ! --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
 !     ------------------------------------
     nec = (ndim-1)/30 + 1
-    do 10 iec = 1, nec
+    do iec = 1, nec
         icod(iec)=0
         ifin(iec)=30
-10  end do
+    end do
     ifin(nec)=ndim - 30*(nec-1)
 !
     k = 0
-    do 20 iec = 1, nec
+    do iec = 1, nec
         ipui = 1
-        do 30 i = 1, ifin(iec)
+        do i = 1, ifin(iec)
             k = k+1
             ipui = ipui*2
             icod(iec)=icod(iec)+idec(k)*ipui
-30      continue
-20  end do
+        end do
+    end do
 !
 end subroutine

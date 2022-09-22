@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vecma(mv, n, mp, m)
     implicit none
 #include "asterfort/assert.h"
@@ -31,13 +31,14 @@ subroutine vecma(mv, n, mp, m)
     ASSERT(n.ge.m*(m+1)/2)
 !
     k = 0
-    do 10 i = 1, m
-        do 20 j = 1, m
+    do i = 1, m
+        do j = 1, m
             k = k + 1
             mp(i,j) = mv(k)
             mp(j,i) = mv(k)
             if (j .eq. i) goto 10
-20      continue
-10  continue
+        end do
+ 10     continue
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eclac1(ipoini, mxnbpi, csomm1, nterm1, i1,&
                   i2, i3, i4, i5, i6,&
                   i7, i8)
-    implicit   none
+    implicit none
     integer :: mxnbpi
 !
     real(kind=8) :: csomm1(mxnbpi, *)
@@ -36,12 +36,12 @@ subroutine eclac1(ipoini, mxnbpi, csomm1, nterm1, i1,&
     work(8)=i8
 !
     ptot=0
-    do 1, k=1,nterm1(ipoini)
-    ptot=ptot+work(k)
-    1 end do
+    do k = 1, nterm1(ipoini)
+        ptot=ptot+work(k)
+    end do
 !
-    do 2, k=1,nterm1(ipoini)
-    csomm1(ipoini,k)=dble(work(k))/dble(ptot)
-    2 end do
+    do k = 1, nterm1(ipoini)
+        csomm1(ipoini,k)=dble(work(k))/dble(ptot)
+    end do
 !
 end subroutine

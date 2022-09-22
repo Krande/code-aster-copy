@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine juvinn(ojb)
     implicit none
 #include "jeveux.h"
@@ -48,11 +48,11 @@ subroutine juvinn(ojb)
 !
     rvid=r8vide()
     rnan=r8nnem()
-    do 1, k=1,n1
-    if (.not.isnan(zr(jojb-1+k))) then
-        if (zr(jojb-1+k) .eq. rvid) zr(jojb-1+k)=rnan
-    endif
-    1 end do
+    do k = 1, n1
+        if (.not.isnan(zr(jojb-1+k))) then
+            if (zr(jojb-1+k) .eq. rvid) zr(jojb-1+k)=rnan
+        endif
+    end do
 !
     call jedema()
 end subroutine

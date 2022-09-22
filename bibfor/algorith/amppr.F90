@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine amppr(amat, nb1, nb2, bmat, n1,&
                  n2, i, j)
     implicit none
@@ -50,21 +50,21 @@ subroutine amppr(amat, nb1, nb2, bmat, n1,&
 !-----------------------------------------------------------------------
     jdeb=j
     jfin=min(j+n2-1,nb2)
-    if (jfin .lt. jdeb) goto 9999
+    if (jfin .lt. jdeb) goto 999
     jjdeb=jdeb-j+1
     jjfin=jfin-j+1
 !
     ideb=i
     ifin=min(i+n1-1,nb1)
-    if (ifin .lt. ideb) goto 9999
+    if (ifin .lt. ideb) goto 999
     iideb=ideb-i+1
     iifin=ifin-i+1
 !
-    do 10 ii = iideb, iifin
-        do 20 jj = jjdeb, jjfin
+    do ii = iideb, iifin
+        do jj = jjdeb, jjfin
             amat(i+ii-1,j+jj-1)=amat(i+ii-1,j+jj-1)+bmat(ii,jj)
-20      continue
-10  end do
+        end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

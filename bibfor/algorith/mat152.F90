@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mat152(option, model, moint, nocham, ivalk,&
                   nbmo, max, may, maz, num)
     implicit none
@@ -119,7 +119,7 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
 !
         call wkvect('&&MAT152.MADE', 'V V K24', nbmo, imade)
 !
-        do 6000 imode = 1, nbmo
+        do imode = 1, nbmo
             incr='BID'
             if (n7 .gt. 0) then
                 lchin(2)=zk8(ivalk+imode-1)
@@ -132,7 +132,7 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
             call ca2mam(moint, incr, ligrmo, lchin, lpain,&
                         lpaout, num, made)
             zk24(imade+imode-1)= made
-6000      continue
+        end do
 !
     endif
     call jedema()

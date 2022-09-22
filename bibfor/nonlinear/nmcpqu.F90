@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -95,7 +95,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
     call jeveuo(copm(1:19)//'.CESV', 'L', vk16=cesv)
     nbma = zi(jcesd-1+1)
 !
-    do 60 ima = 1, nbma
+    do ima = 1, nbma
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, jdecal)
         comp = cesv(jdecal)
@@ -103,7 +103,7 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
             exist = .true.
             goto 99
         endif
- 60 end do
+    end do
 !
  99 continue
 !

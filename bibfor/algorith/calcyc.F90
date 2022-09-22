@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcyc(nomres)
     implicit none
 !
@@ -127,9 +127,9 @@ subroutine calcyc(nomres)
     endif
 !
     if (nbdia2 .ne. 0) then
-        do 10 i = 1, nbdia2
+        do i = 1, nbdia2
             zi(ltnbd+nbdia1+i-1)=i-1
- 10     continue
+        end do
     endif
 !
 !
@@ -241,29 +241,29 @@ subroutine calcyc(nomres)
             call axacti(basmod, numa, 1, zi(ltlax1), nbdax1,&
                         ibid)
         endif
-        
+!
         write(6,*) ' -- Gestion des DDL d''axe --'
         write(6,*) ' '
         write(6,*) ' nbdax0=',nbdax0
         write(6,*) ' nbdax1=',nbdax1
         write(6,*) ' '
         do i = 1, nbdax0
-          write(6,*) ' axe0(',i,')=',zi(ltlax0+i-1)
+            write(6,*) ' axe0(',i,')=',zi(ltlax0+i-1)
         end do
         write(6,*) ' '
         write(6,*) ' '
-          
+!
         do i = 1, nbdax1
-          write(6,*) ' axe1(',i,')=',zi(ltlax1+i-1)
+            write(6,*) ' axe1(',i,')=',zi(ltlax1+i-1)
         end do
-        
-        
-        
+!
+!
+!
         ntt=max(nbmos,nbddr)
         call wkvect('&&'//pgc//'.LISTE.BIDON', 'V V I', ntt, ltlbid)
-        do 5 i = 1, ntt
+        do i = 1, ntt
             zi(ltlbid+i-1)=i
-  5     continue
+        end do
     endif
 !
 !
@@ -317,7 +317,7 @@ subroutine calcyc(nomres)
 !
     icone=0
 !
-    do 80 i = 1, nbdia
+    do i = 1, nbdia
 !
         nbmobt=nbmcal
         idiam=zi(ldnbd+i-1)
@@ -332,7 +332,7 @@ subroutine calcyc(nomres)
 !    DES EVENTUELS DDL AXE: AXOK,LLITMP,NBTMP
 !
 ! CAS CRAIG-BAMPTON
-        if ((typint .eq. 'CRAIGB   ') .or. (typint .eq. 'CB_HARMO') .or. &
+        if ((typint .eq. 'CRAIGB   ') .or. (typint .eq. 'CB_HARMO') .or.&
             (typint .eq. 'MNEAL   ')) then
             if (nbdax .gt. 0 .and. idiam .eq. 0) then
                 nbddef=nbmos+nbddr+nbdax0
@@ -397,21 +397,23 @@ subroutine calcyc(nomres)
                         rlome2(1), rlome2( 2), precse)
 !
         endif
-        
+!
         if (typint .eq. 'CRAIGB   ' .or. typint .eq. 'CB_HARMO') then
-        !-- correction "brutale" du mouvement des noeuds de l'axe
-        !-- moins chiant que de modifier la restitution complète
-          do i1 = 1, nbmobt
-            do j1= 1, nbdax
-              zc(iad + nbddg*(i1-1) + nbmos+nbddr+j1-1) = &
-                zc(iad + nbddg*(i1-1) + nbmos+nbddr+j1-1)/2.D0
+!-- correction "brutale" du mouvement des noeuds de l'axe
+!-- moins chiant que de modifier la restitution complète
+            do i1 = 1, nbmobt
+                do j1 = 1, nbdax
+                    zc(iad + nbddg*(i1-1) + nbmos+nbddr+j1-1) = zc(&
+                                                                iad + nbddg*(i1-1&
+                                                                ) + nbmos+nbddr+j1-1&
+                                                                )/2.D0
+                end do
             end do
-          end do
         endif
 !
 !--------------RECUPERATION DES FREQUENCES PROPRES REELLES--------------
 !
-        do 110 if = 1, nbmobt
+        do if = 1, nbmobt
             zc(lteig+if-1)=zc(lteig+if-1)-comshi
             call zconju(zc(lteig+if-1), omeg2, pima)
             if (omeg2 .ge. 0) then
@@ -419,7 +421,7 @@ subroutine calcyc(nomres)
             else
                 zr(ldfre+icone+if-1)=-((-omeg2)**0.5d0)/(2.d0*pi)
             endif
-110     continue
+        end do
 !
 !
 !--------------REORGANISATION DES DDL GENERALISEE-----------------------
@@ -432,7 +434,7 @@ subroutine calcyc(nomres)
         icone=icone+nbmobt
         zi(ldnbd+nbdia+i-1)=nbmobt
 !
- 80 end do
+    end do
 !
 !
 !   GRAND MENAGE DE PRINTEMPS !!!

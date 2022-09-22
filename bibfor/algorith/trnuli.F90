@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trnuli(itab, nblig, nbcol, icol, nures)
     implicit none
 #include "asterf_types.h"
@@ -53,21 +53,21 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
 !
     ok=.true.
 !
-    do 20 j = 1, nbcol
+    do j = 1, nbcol
         if (itab(i,j) .ne. icol(j)) ok=.false.
- 20 end do
+    end do
 !
     if (ok) then
         nures=i
-        goto 9999
+        goto 999
     else
         if (i .lt. nblig) then
             goto 10
         else
-            goto 9999
+            goto 999
         endif
     endif
 !
 !
-9999 continue
+999 continue
 end subroutine

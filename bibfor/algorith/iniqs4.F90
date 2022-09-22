@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     implicit none
 #include "jeveux.h"
@@ -47,15 +47,15 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     call elraga(elrefe, famil, ndim, nbpg, coopg,&
                 poipg)
 !
-    call elrefe_info(elrefe=elrefe,fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    do 40 i = 1, npg
+    do i = 1, npg
         k = 2*nno*(i-1)
-        do 30 j = 1, nno
+        do j = 1, nno
             sdfde(i,j) = zr(idfde+k+2*(j-1)-1+1)
             sdfdk(i,j) = zr(idfde+k+2*(j-1)-1+2)
-30      continue
-40  end do
+        end do
+    end do
 !
 end subroutine

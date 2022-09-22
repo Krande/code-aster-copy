@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
                   nmief, normm)
     implicit none
@@ -72,15 +72,15 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
         nomres(2) = 'FMEX2'
         nomres(3) = 'FMEY1'
         nomres(4) = 'FMEY2'
-        do 20, i = 1,2
-        call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 0, nmplas(1, i),&
-                    ier)
-        nmief = nmief + ier
+        do i = 1, 2
+            call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 0, nmplas(1, i),&
+                        ier)
+            nmief = nmief + ier
 !
-        call cdnfon(zimat, nomres(2*i), nmnbn(i), 0, nmplas(2, i),&
-                    ier)
-        nmief = nmief + ier
-20      continue
+            call cdnfon(zimat, nomres(2*i), nmnbn(i), 0, nmplas(2, i),&
+                        ier)
+            nmief = nmief + ier
+        end do
     endif
 !
     nmzef = zero * (normm**2)

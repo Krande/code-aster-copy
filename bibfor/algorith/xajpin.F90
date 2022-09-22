@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xajpin(ndim, list, long, ipt, cpt,&
                   newpt, longar, ainter, ia, in,&
                   al, ajout)
@@ -61,12 +61,12 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 !     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
     deja = .false.
 !
-    do 100 i = 1, ipt
-        do 99 j = 1, ndim
+    do i = 1, ipt
+        do j = 1, ndim
             p(j) = list(ndim*(i-1)+j)
- 99     continue
+        end do
         if (padist(ndim,p,newpt) .lt. (longar*cridist)) deja = .true.
-100 end do
+    end do
 !
     if (.not. deja) then
 !       CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
@@ -74,9 +74,9 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
         cpt = cpt + 1
 !       TROP DE POINTS DANS LA LISTE
         ASSERT(ipt .le. long)
-        do 101 j = 1, ndim
+        do j = 1, ndim
             list(ndim*(ipt-1)+j) = newpt(j)
-101     continue
+        end do
         ainter(zxain*(ipt-1)+1)=ia
         ainter(zxain*(ipt-1)+2)=in
         ainter(zxain*(ipt-1)+3)=longar

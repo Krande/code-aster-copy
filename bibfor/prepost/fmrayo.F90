@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
-    implicit   none
+    implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/fmdevi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rayon
 !     NBFONC  : IN  : NOMBRE DE FONCTIONS (6 EN 3D 4 EN 2D)
@@ -32,7 +32,7 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 !     RAYON   : OUT : VALEUR RAYON SPHERE CIRCONSCRITE AU CHARGEMENT
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer ::  nbr, i, j, n2
+    integer :: nbr, i, j, n2
     real(kind=8) :: eps, x, sig(6), rau(6), p, pmac, a
     real(kind=8), pointer :: deviat(:) => null()
 !     ------------------------------------------------------------------
@@ -43,31 +43,31 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 !------- CALCUL DU DEVIATEUR -------
 !
     AS_ALLOCATE(vr=deviat, size=nbfonc*nbptot)
-    call fmdevi(nbfonc, nbptot, sigm,deviat)
+    call fmdevi(nbfonc, nbptot, sigm, deviat)
 !
 !---- CALCUL DE LA SPHERE CIRCONSCRITE AU CHARGEMENT ----
 !
 !---- INITIALISATION
 !
     rayon = 0.d0
-    do 10 j = 1, nbfonc
+    do j = 1, nbfonc
         rau(j) = 0.d0
-        do 20 i = 1, nbptot
+        do i = 1, nbptot
             rau(j) = rau(j) + deviat(1+(i-1)*nbfonc+j-1)
-20      continue
+        end do
         rau(j) = rau(j) / nbptot
-10  end do
+    end do
     nbr = 0
 !
 !-----CALCUL RECURRENT
 !
     n2 = 1
-30  continue
+ 30 continue
     n2 = n2 + 1
     if (n2 .gt. nbptot) n2 = n2 - nbptot
-    do 40 j = 1, nbfonc
+    do j = 1, nbfonc
         sig(j) = deviat(1+(n2-1)*nbfonc+j-1)-rau(j)
-40  end do
+    end do
     if (nbfonc .eq. 6) then
         pmac = (&
                sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3) )/2.d0 + sig(4)*sig(4) + sig(5)*sig(5) +&
@@ -82,9 +82,9 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
         nbr = 0
         rayon = rayon + x*p
         a = ( pmac - rayon ) / pmac
-        do 50 j = 1, nbfonc
+        do j = 1, nbfonc
             rau(j) = rau(j) + a*sig(j)
-50      continue
+        end do
     else
         nbr = nbr + 1
     endif

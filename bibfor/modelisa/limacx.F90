@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine limacx(char, motfac, ndim, nzoco)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -79,10 +79,10 @@ subroutine limacx(char, motfac, ndim, nzoco)
 !
 ! --- LECTURE DES FISSURES EN CONTACT
 !
-    do 10 iocc = 1, nzoco
+    do iocc = 1, nzoco
         call getvid(motfac, 'FISS_MAIT', iocc=iocc, scal=fiss, nbret=ibid)
         zk8(jfimai-1+iocc) = fiss
-10  end do
+    end do
 !
     call jedema()
 end subroutine

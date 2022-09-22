@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0219(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -93,28 +93,29 @@ subroutine te0219(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i)=0.d0
- 10 end do
+    end do
 !
 !     BOUCLE SUR LES SOUS-ELEMENTS
-    do 100 ise = 1, nse
+    do ise = 1, nse
 !
-        do 105 i = 1, nno
-            do 105 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-105         continue
+            end do
+        end do
 !
-        do 101 kp = 1, npg
+        do kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
                         poids, dfdx, dfdy)
             x = 0.d0
             y = 0.d0
-            do 102 i = 1, nno
+            do i = 1, nno
                 x = x + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
                 y = y + coorse(2*(i-1)+2) * zr(ivf+k+i-1)
-102         continue
+            end do
 !
             if (fonc) then
                 valpar(1) = x
@@ -128,14 +129,14 @@ subroutine te0219(option, nomte)
             if (lteatt('AXIS','OUI')) poids = poids*x
             poids = poids*valres(1)
 !
-            do 103 i = 1, nno
+            do i = 1, nno
                 vectt(c(ise,i)) = vectt( c(ise,i)) + poids*( dfdx(i)* grx+dfdy(i)*gry)
-103         continue
-101     continue
-100 end do
+            end do
+        end do
+    end do
 !
-    do 200 i = 1, nnop2
+    do i = 1, nnop2
         zr(ivectt-1+i)=vectt(i)
-200 end do
+    end do
 !
 end subroutine

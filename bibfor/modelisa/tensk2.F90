@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tensk2(icabl, nbno, s, alpha, f0,&
                   delta, ea, frco, frli, sa,&
                   f)
@@ -63,12 +63,12 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 ! ---------
 #include "jeveux.h"
 #include "asterfort/ancrca.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, f(*)
 !
@@ -104,15 +104,15 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !
     long = s(nbno)
     absc2(1) = 0.0d0
-    do 10 ino = 2, nbno
+    do ino = 2, nbno
         absc2(ino) = long - s(nbno-ino+1)
-10  end do
+    end do
 !
     alphal = alpha(nbno)
     alpha2(1) = 0.0d0
-    do 20 ino = 2, nbno
+    do ino = 2, nbno
         alpha2(ino) = alphal - alpha(nbno-ino+1)
-20  end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   PRISE EN COMPTE DES PERTES DE TENSION PAR FROTTEMENT
@@ -120,22 +120,22 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !
 ! 3.1 TENSION APPLIQUEE AU PREMIER ANCRAGE ACTIF
 ! ---
-    do 30 ino = 1, nbno
+    do ino = 1, nbno
         f1(ino) = f0 * dble(exp(-frco*alpha(ino)-frli*s(ino)))
-30  end do
+    end do
 !
 ! 3.2 TENSION APPLIQUEE AU SECOND ANCRAGE ACTIF
 ! ---
-    do 40 ino = 1, nbno
+    do ino = 1, nbno
         f2(ino) = f0 * dble ( exp ( -frco*alpha2(ino) -frli*absc2(ino) ))
-40  end do
+    end do
 !
 ! 3.3 VALEUR MAXIMALE INDUITE PAR LES TENSIONS APPLIQUEES AUX DEUX
 ! --- ANCRAGES ACTIFS APRES PRISE EN COMPTE DES PERTES PAR FROTTEMENT
 !
-    do 50 ino = 1, nbno
+    do ino = 1, nbno
         fmax(ino) = dble(max(f1(ino),f2(1+nbno-ino)))
-50  end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   PRISE EN COMPTE DES PERTES DE TENSION PAR RECUL DES DEUX ANCRAGES
@@ -145,26 +145,26 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 ! ---
     call ancrca(icabl, nbno, s, alpha, f0,&
                 delta, ea, frco, frli, sa,&
-                d1,f1)
+                d1, f1)
 !
 ! 4.2 TENSION APPLIQUEE AU SECOND ANCRAGE ACTIF
 ! ---
     call ancrca(icabl, nbno, absc2, alpha2, f0,&
                 delta, ea, frco, frli, sa,&
-                d2,f2)
+                d2, f2)
 !
 ! 4.3 VALEUR FINALE INDUITE PAR LES TENSIONS APPLIQUEES AUX DEUX
 ! --- ANCRAGES ACTIFS APRES PRISE EN COMPTE DES PERTES PAR RECUL
 !     DES DEUX ANCRAGES
 !
     if (d1+d2 .lt. long) then
-        do 60 ino = 1, nbno
+        do ino = 1, nbno
             f(ino) = dble ( max ( f1(ino) , f2(1+nbno-ino) ) )
-60      continue
+        end do
     else
-        do 62 ino = 1, nbno
+        do ino = 1, nbno
             f(ino) = dble ( min ( f1(ino) , f2(1+nbno-ino) ) )
-62      continue
+        end do
     endif
 !
 ! 4.4 CORRECTION SI RECOUVREMENT DES LONGUEURS D'APPLICATION DES PERTES
@@ -172,18 +172,15 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !
     if (d1+d2 .gt. long) then
         wcr = 0.0d0
-        do 70 ino = 1, nbno-1
+        do ino = 1, nbno-1
             wcr = wcr + (&
-                  (&
-                  fmax(ino) - f(ino) ) + ( fmax(ino+1) - f(ino+1) ) ) * ( s(ino+1) - s(i&
-                  &no&
-                  )&
+                  ( fmax(ino) - f(ino) ) + ( fmax(ino+1) - f(ino+1) ) ) * ( s(ino+1) - s(ino )&
                   ) / 2.0d0
-70      continue
+        end do
         df = ( ea * sa * 2.0d0 * delta - wcr ) / long
-        do 80 ino = 1, nbno
+        do ino = 1, nbno
             f(ino) = f(ino) - df
-80      continue
+        end do
     endif
 !
 ! --- MENAGE

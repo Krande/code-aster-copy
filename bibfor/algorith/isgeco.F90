@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine isgeco(icod1, icod2, ndim, iopt, icod)
 !    P. RICHARD     DATE 19/02/91
 !-----------------------------------------------------------------------
@@ -50,25 +50,25 @@ subroutine isgeco(icod1, icod2, ndim, iopt, icod)
     call isdeco(icod2, idec2, ndim)
 !
     if (iopt .eq. 1) then
-        do 10 i = 1, ndim
+        do i = 1, ndim
             ik=idec1(i)+idec2(i)
             if (ik .gt. 0) then
                 idec(i)=1
             else
                 idec(i)=0
             endif
-10      continue
+        end do
     endif
 !
     if (iopt .eq. -1) then
-        do 20 i = 1, ndim
+        do i = 1, ndim
             ik=idec1(i)-idec2(i)
             if (ik .gt. 0) then
                 idec(i)=1
             else
                 idec(i)=0
             endif
-20      continue
+        end do
     endif
 !
     call iscode(idec, icod, ndim)

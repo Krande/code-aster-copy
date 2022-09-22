@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xdivte(elp, cnset, nse, nnose, exit)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/xpente.h"
 #include "asterfort/assert.h"
+#include "asterfort/xpente.h"
     integer :: cnset(*), nse, nnose, exit(2)
     character(len=8) :: elp
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -47,7 +47,7 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
 !       NNOSE   : NOMBRE DE NOEUDS DU SOUS TETRA (SOUS TRIA)
 !     ------------------------------------------------------------------
 !
-    integer :: ino, ise, connec(6, 10), i , n(18), bis, ter, qar, dec
+    integer :: ino, ise, connec(6, 10), i, n(18), bis, ter, qar, dec
 ! ----------------------------------------------------------------------
 !
     exit(1) = 0
@@ -140,97 +140,97 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
         connec(6,8)=23
         connec(6,9)=26
         connec(6,10)=27
-        if (exit(2).ge.1.and.exit(2).le.71) then
-           bis = mod(exit(2),18)
-           ter = floor(real(bis/3,kind=8))
-           qar = 2*mod(bis,3)+mod(ter,2)
-           dec = floor(real(exit(2)/18,kind=8))
-           n(1) = mod(3-1+dec,4)+1
-           n(2) = mod(8-1+dec,4)+5
-           n(3) = mod(4-1+dec,4)+1
-           n(4) = mod(2-1+dec,4)+1
-           n(5) = mod(5-1+dec,4)+5
-           n(6) = mod(1-1+dec,4)+1
-           n(7) = mod(24-22+dec,4)+22
-           n(8) = mod(16-13+dec,4)+13
-           n(9) = mod(11-9+dec,4)+9
-           n(10) = mod(10-9+dec,4)+9
-           n(11) = mod(20-17+dec,4)+17
-           n(12) = mod(12-9+dec,4)+9
-           n(13) = mod(22-22+dec,4)+22
-           n(14) = mod(13-13+dec,4)+13
-           n(15) = mod(9-9+dec,4)+9
-           n(16) = 27
-           n(17) = mod(25-22+dec,4)+22
-           n(18) = 21
-           call xpente(1, connec, n, ter)
-           n(1) = mod(5-1+dec,4)+5
-           n(2) = mod(2-1+dec,4)+1
-           n(3) = mod(6-1+dec,4)+5
-           n(4) = mod(8-1+dec,4)+5
-           n(5) = mod(3-1+dec,4)+1
-           n(6) = mod(7-1+dec,4)+5
-           n(7) = mod(22-22+dec,4)+22
-           n(8) = mod(14-13+dec,4)+13
-           n(9) = mod(17-17+dec,4)+17
-           n(10) = mod(20-17+dec,4)+17
-           n(11) = mod(10-9+dec,4)+9
-           n(12) = mod(18-17+dec,4)+17
-           n(13) = mod(24-22+dec,4)+22
-           n(14) = mod(15-13+dec,4)+13
-           n(15) = mod(19-17+dec,4)+17
-           n(16) = 27
-           n(17) = mod(23-22+dec,4)+22
-           n(18) = 26
-           call xpente(4, connec, n, qar)
-        elseif (exit(2).ge.1.and.exit(2).le.107) then
-           bis = mod(exit(2),18)
-           ter = floor(real(bis/3,kind=8))
-           qar = 2*mod(bis,3)+mod(ter,2)
-           dec = floor(real((exit(2)-72)/18,kind=8))
-           n(1) = mod(7-1+dec,4)+5
-           n(2) = mod(5-1+dec,4)+5
-           n(3) = mod(8-1+dec,4)+5
-           n(4) = mod(3-1+dec,4)+1
-           n(5) = mod(1-1+dec,4)+1
-           n(6) = mod(4-1+dec,4)+1
-           n(7) = 26
-           n(8) = mod(20-17+dec,4)+17
-           n(9) = mod(19-17+dec,4)+17
-           n(10) = mod(15-13+dec,4)+13
-           n(11) = mod(13-13+dec,4)+13
-           n(12) = mod(16-13+dec,4)+13
-           n(13) = 21
-           n(14) = mod(12-9+dec,4)+9
-           n(15) = mod(11-9+dec,4)+9
-           n(16) = 27
-           n(17) = mod(25-22+dec,4)+22
-           n(18) = mod(24-22+dec,4)+22
-           call xpente(1, connec, n, ter)
-           n(1) = mod(1-1+dec,4)+1
-           n(2) = mod(3-1+dec,4)+1
-           n(3) = mod(2-1+dec,4)+1
-           n(4) = mod(5-1+dec,4)+5
-           n(5) = mod(7-1+dec,4)+5
-           n(6) = mod(6-1+dec,4)+5
-           n(7) = 21
-           n(8) = mod(10-9+dec,4)+9
-           n(9) = mod(9-9+dec,4)+9
-           n(10) = mod(13-13+dec,4)+13
-           n(11) = mod(15-13+dec,4)+13
-           n(12) = mod(14-13+dec,4)+13
-           n(13) = 26
-           n(14) = mod(18-17+dec,4)+17
-           n(15) = mod(17-17+dec,4)+17
-           n(16) = 27
-           n(17) = mod(23-22+dec,4)+22
-           n(18) = mod(22-22+dec,4)+22
-           call xpente(4, connec, n, qar)
+        if (exit(2) .ge. 1 .and. exit(2) .le. 71) then
+            bis = mod(exit(2),18)
+            ter = floor(real(bis/3,kind=8))
+            qar = 2*mod(bis,3)+mod(ter,2)
+            dec = floor(real(exit(2)/18,kind=8))
+            n(1) = mod(3-1+dec,4)+1
+            n(2) = mod(8-1+dec,4)+5
+            n(3) = mod(4-1+dec,4)+1
+            n(4) = mod(2-1+dec,4)+1
+            n(5) = mod(5-1+dec,4)+5
+            n(6) = mod(1-1+dec,4)+1
+            n(7) = mod(24-22+dec,4)+22
+            n(8) = mod(16-13+dec,4)+13
+            n(9) = mod(11-9+dec,4)+9
+            n(10) = mod(10-9+dec,4)+9
+            n(11) = mod(20-17+dec,4)+17
+            n(12) = mod(12-9+dec,4)+9
+            n(13) = mod(22-22+dec,4)+22
+            n(14) = mod(13-13+dec,4)+13
+            n(15) = mod(9-9+dec,4)+9
+            n(16) = 27
+            n(17) = mod(25-22+dec,4)+22
+            n(18) = 21
+            call xpente(1, connec, n, ter)
+            n(1) = mod(5-1+dec,4)+5
+            n(2) = mod(2-1+dec,4)+1
+            n(3) = mod(6-1+dec,4)+5
+            n(4) = mod(8-1+dec,4)+5
+            n(5) = mod(3-1+dec,4)+1
+            n(6) = mod(7-1+dec,4)+5
+            n(7) = mod(22-22+dec,4)+22
+            n(8) = mod(14-13+dec,4)+13
+            n(9) = mod(17-17+dec,4)+17
+            n(10) = mod(20-17+dec,4)+17
+            n(11) = mod(10-9+dec,4)+9
+            n(12) = mod(18-17+dec,4)+17
+            n(13) = mod(24-22+dec,4)+22
+            n(14) = mod(15-13+dec,4)+13
+            n(15) = mod(19-17+dec,4)+17
+            n(16) = 27
+            n(17) = mod(23-22+dec,4)+22
+            n(18) = 26
+            call xpente(4, connec, n, qar)
+        else if (exit(2).ge.1.and.exit(2).le.107) then
+            bis = mod(exit(2),18)
+            ter = floor(real(bis/3,kind=8))
+            qar = 2*mod(bis,3)+mod(ter,2)
+            dec = floor(real((exit(2)-72)/18,kind=8))
+            n(1) = mod(7-1+dec,4)+5
+            n(2) = mod(5-1+dec,4)+5
+            n(3) = mod(8-1+dec,4)+5
+            n(4) = mod(3-1+dec,4)+1
+            n(5) = mod(1-1+dec,4)+1
+            n(6) = mod(4-1+dec,4)+1
+            n(7) = 26
+            n(8) = mod(20-17+dec,4)+17
+            n(9) = mod(19-17+dec,4)+17
+            n(10) = mod(15-13+dec,4)+13
+            n(11) = mod(13-13+dec,4)+13
+            n(12) = mod(16-13+dec,4)+13
+            n(13) = 21
+            n(14) = mod(12-9+dec,4)+9
+            n(15) = mod(11-9+dec,4)+9
+            n(16) = 27
+            n(17) = mod(25-22+dec,4)+22
+            n(18) = mod(24-22+dec,4)+22
+            call xpente(1, connec, n, ter)
+            n(1) = mod(1-1+dec,4)+1
+            n(2) = mod(3-1+dec,4)+1
+            n(3) = mod(2-1+dec,4)+1
+            n(4) = mod(5-1+dec,4)+5
+            n(5) = mod(7-1+dec,4)+5
+            n(6) = mod(6-1+dec,4)+5
+            n(7) = 21
+            n(8) = mod(10-9+dec,4)+9
+            n(9) = mod(9-9+dec,4)+9
+            n(10) = mod(13-13+dec,4)+13
+            n(11) = mod(15-13+dec,4)+13
+            n(12) = mod(14-13+dec,4)+13
+            n(13) = 26
+            n(14) = mod(18-17+dec,4)+17
+            n(15) = mod(17-17+dec,4)+17
+            n(16) = 27
+            n(17) = mod(23-22+dec,4)+22
+            n(18) = mod(22-22+dec,4)+22
+            call xpente(4, connec, n, qar)
         endif
         nse=6
         nnose=10
-        if (exit(2).eq.107) then
-           exit(1) = 2
+        if (exit(2) .eq. 107) then
+            exit(1) = 2
         endif
     else if (elp.eq.'PE6') then
         connec(1,1)=5
@@ -280,15 +280,15 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
         connec(3,9)=7
         connec(3,10)=16
         do i = 1, 18
-           n(i) = i
+            n(i) = i
         end do
-        if (exit(2).ge.1) then
-           call xpente(1, connec, n, exit(1))
+        if (exit(2) .ge. 1) then
+            call xpente(1, connec, n, exit(1))
         endif
         nse=3
         nnose=10
-        if (exit(2).eq.5) then
-           exit(1) = 2
+        if (exit(2) .eq. 5) then
+            exit(1) = 2
         endif
     else if (elp.eq.'PY5') then
 !       SOUS-TETRAS
@@ -330,8 +330,8 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
         connec(2,10)=mod(13-10+exit(2),4)+10
         nse=2
         nnose=10
-        if (exit(2).eq.1) then
-           exit(1) = 2
+        if (exit(2) .eq. 1) then
+            exit(1) = 2
         endif
     else if (elp.eq.'TE4') then
         connec(1,1)=1
@@ -377,8 +377,8 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
         connec(2,6)=9
         nse=2
         nnose=6
-        if (exit(2).eq.1) then
-           exit(1) = 2
+        if (exit(2) .eq. 1) then
+            exit(1) = 2
         endif
     else if (elp.eq.'TR3') then
         connec(1,1)=1
@@ -413,10 +413,10 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
 !
     exit(2) = exit(2)+1
 !
-    do  ise = 1, nse
-        do 20 ino = 1, nnose
+    do ise = 1, nse
+        do ino = 1, nnose
             cnset(nnose*(ise-1)+ino)=connec(ise,ino)
-20      continue
+        end do
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine reseci(carele, nummai, ai1, ai2)
 !**********************************************************************C
 !***1.****RECUPERATION DU TYPGRANDEUR, DU NOMBRE MAX DE GRANDEUR
@@ -32,7 +32,6 @@ subroutine reseci(carele, nummai, ai1, ai2)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -41,6 +40,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/veri32.h"
+!
     character(len=8) :: carele, k8bid1
     character(len=24) :: k24bi1
 !
@@ -64,7 +64,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !**********************************************************************C
 !***        BOUCLE SUR LES ASSOCIATIONS *******************************C
 !**********************************************************************C
-    do 101 iass1 = 1, inasmx
+    do iass1 = 1, inasmx
         icode1 = zi(iad1-1+3+2* (iass1-1)+1)
         if (icode1 .eq. 1) then
             inulim = 1
@@ -79,16 +79,16 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !   ON REGARDE SI LA MAILLE EST DANS LE .LIMA
         call jeveuo(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'L', ialima)
         call jelira(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'LONMAX', inbmai)
-        do 103 imai1 = 1, inbmai
+        do imai1 = 1, inbmai
             numai1 = zi(ialima-1+imai1)
             if (nummai .eq. numai1) then
                 goto 104
 !
             endif
 !
-103      continue
-101  end do
-104  continue
+        end do
+    end do
+104 continue
 !**********************************************************************C
 !***        ON RECHERCHE LE NOMBRE DE CMP DE LA GRANDEUR **************C
 !**********************************************************************C
@@ -98,7 +98,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !**********************************************************************C
     call jenonu(jexnom('&CATA.GD.NOMGD', 'CAGNPO'), numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', iad1)
-    do 105 icmp = 1, igdncm
+    do icmp = 1, igdncm
         k8bid1 = zk8(iad1-1+icmp)
         if (k8bid1(1:3) .eq. 'AI1') then
             irgai1 = icmp
@@ -107,7 +107,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
             irgai2 = icmp
         endif
 !
-105  end do
+    end do
 !**********************************************************************C
 !***        ON RECUPERE LES VALEURS ***********************************C
 !**********************************************************************C

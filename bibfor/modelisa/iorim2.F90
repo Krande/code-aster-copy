@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function iorim2(num1, n1, num2, n2, reorie)
     implicit none
 #include "asterf_types.h"
@@ -46,10 +46,10 @@ function iorim2(num1, n1, num2, n2, reorie)
     nso1 = nso(n1)
     nso2 = nso(n2)
 !     BOUCLES SUR LES ARETES
-    do 10 i1 = 1, nso1
+    do i1 = 1, nso1
         j1 = i1 + 1
         if (j1 .gt. nso1) j1 = 1
-        do 10 i2 = 1, nso2
+        do i2 = 1, nso2
             j2 = i2 + 1
             if (j2 .gt. nso2) j2 = 1
             if (egal(i1,j1,i2,j2)) then
@@ -60,7 +60,8 @@ function iorim2(num1, n1, num2, n2, reorie)
                 iorim2 = 1
                 goto 100
             endif
- 10     continue
+        end do
+    end do
     iorim2 = 0
 100 continue
 !
@@ -72,12 +73,12 @@ function iorim2(num1, n1, num2, n2, reorie)
         num2(nso2) = k
 !        ON PERMUTE LES NOEUDS INTERMEDIAIRES
         if (n2 .ne. nso2) then
-            do 200 i = 1, nso2/2
+            do i = 1, nso2/2
                 k = num2(nso2+i)
                 l = num2(2*nso2+1-i)
                 num2(nso2+i) = l
                 num2(2*nso2+1-i) = k
-200         continue
+            end do
         endif
     endif
 !

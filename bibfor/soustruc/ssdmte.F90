@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssdmte(mag)
     implicit none
 !     ARGUMENTS:
 !     ----------
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jecreo.h"
@@ -38,6 +37,7 @@ subroutine ssdmte(mag)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -103,9 +103,9 @@ subroutine ssdmte(mag)
 !     -- ON COMPTE LES NOEUDS PHYSIQUES REELLEMENT CONSERVES :
 !     -------------------------------------------------------
     ico=0
-    do 1 ino = 1, nbnoph
+    do ino = 1, nbnoph
         if (noeud_conf(ino) .eq. ino) ico=ico+1
-  1 end do
+    end do
     nbnop2=ico
     nbnot2= nbnop2+nbnola
     nbnoco= nbnoph-nbnop2
@@ -125,12 +125,12 @@ subroutine ssdmte(mag)
         nbnoe=dime_2(4*(isma-1)+1)
         nbnol=dime_2(4*(isma-1)+2)
         nbnoet= nbnoe+nbnol
-        do 21 i = 1, nbnoet
+        do i = 1, nbnoet
             ino=zi(iasupm-1+i)
             if (ino .gt. nbnoph) then
                 zi(iatypl-1+ino-nbnoph)= conx(3*(i-1)+3)
             endif
- 21     continue
+        end do
   2     continue
     endif
 !
@@ -164,9 +164,9 @@ subroutine ssdmte(mag)
         call codent(ico, 'G', nomnoe(2:8))
     endif
     call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
-    do 31 k = 1, 3
+    do k = 1, 3
         zr(iavale-1+3*(ico-1)+k)=coordo_2(3*(ino-1)+k)
- 31 continue
+    end do
     3 end do
 !     -- NOM DES NOEUDS DE LAGRANGE :
     nomnoe='&?'
@@ -216,10 +216,10 @@ subroutine ssdmte(mag)
         call jeveuo(mag//'.CONNEX', 'E', iacoex)
         call jeveuo(jexatr(mag//'.CONNEX', 'LONCUM'), 'L', ilcoex)
     endif
-    do 81 ima = 1, nbma
+    do ima = 1, nbma
         nbno= zi(ilcoex-1+ima+1)-zi(ilcoex-1+ima)
         i2coex=iacoex-1+zi(ilcoex-1+ima)
-        do 811 i = 1, nbno
+        do i = 1, nbno
             ino=zi(i2coex-1+i)
             if (ino .le. nbnoph) then
                 jno=zi(ianeno-1+ noeud_conf(ino))
@@ -227,17 +227,17 @@ subroutine ssdmte(mag)
             else
                 zi(i2coex-1+i)=ino-nbnoco
             endif
-811     continue
- 81 end do
+        end do
+    end do
 !
 !     -- MODIFICATION DE .SUPMAIL:
 !     ----------------------------
-    do 82 isma = 1, nbsma
+    do isma = 1, nbsma
         call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
         nbnoe=dime_2(4*(isma-1)+1)
         nbnol=dime_2(4*(isma-1)+2)
         nbnoet= nbnoe+nbnol
-        do 821 i = 1, nbnoet
+        do i = 1, nbnoet
             ino=zi(iasupm-1+i)
             if (ino .le. nbnoph) then
                 jno=zi(ianeno-1+ noeud_conf(ino))
@@ -245,8 +245,8 @@ subroutine ssdmte(mag)
             else
                 zi(iasupm-1+i)=ino-nbnoco
             endif
-821     continue
- 82 end do
+        end do
+    end do
 !
 !     -- MODIFICATION DE .GROUPENO:
 !     ----------------------------
@@ -256,11 +256,11 @@ subroutine ssdmte(mag)
         do 9 ,igno=1,nbgno
         call jeveuo(jexnum(mag//'.GROUPENO', igno), 'E', iagno)
         call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn)
-        do 91 i = 1, nbnogn
+        do i = 1, nbnogn
             ino=zi(iagno-1+i)
             jno=zi(ianeno-1+ noeud_conf(ino))
             zi(iagno-1+i)=jno
- 91     continue
+        end do
   9     continue
     endif
 !

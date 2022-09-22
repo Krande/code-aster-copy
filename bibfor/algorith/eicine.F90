@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eicine(ndim, axi, nno1, nno2, vff1,&
                   vff2, wref, dffr2, geom, ang,&
                   wg, b)
@@ -73,9 +73,9 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
 ! ----------------------------------------------------------------------
         if (r .eq. 0.d0) then
             rmax=geom(1,1)
-            do 11 n = 2, nno2
+            do n = 2, nno2
                 rmax=max(geom(1,n),rmax)
- 11         continue
+            end do
             wg = wg*1.d-03*rmax
         else
             wg = r*wg
@@ -87,9 +87,9 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
     if (ndim .eq. 2) nang = 1
     if (ndim .eq. 3) nang = 3
     call r8inir(3, 0.d0, angloc, 1)
-    do 10 i = 1, nang
+    do i = 1, nang
         angloc(i) = ddot(nno2,ang(i),nang,vff2,1)
- 10 end do
+    end do
 !
 !    CALCUL DE LA MATRICE DE ROTATION GLOBAL -> LOCAL
 !
@@ -97,13 +97,13 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
 !
 !    CONSTRUCTION DE LA MATRICE B
 !
-    do 20 i = 1, ndim
-        do 30 j = 1, ndim
-            do 40 n = 1, nno1
+    do i = 1, ndim
+        do j = 1, ndim
+            do n = 1, nno1
                 b(i,j,n) = - rot(i,j)*vff1(n)
                 b(i,j,n+nno1) = rot(i,j)*vff1(n)
- 40         continue
- 30     continue
- 20 end do
+            end do
+        end do
+    end do
 !
 end subroutine

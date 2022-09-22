@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dktbf(qsi, eta, carat3, bf)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, carat3(*), bf(3, 9)
 !        ORDRE DES COMPOSANTES POUR BF :
 !        DEFORMATIONS : KXX, KYY, KXY   (REP. INTRINSEQUE DE L'ELEMENT)
@@ -107,10 +107,10 @@ subroutine dktbf(qsi, eta, carat3, bf)
     bye(9) = 1.d0 - lme * su6 - qsi * su5
 !
 !     --------------------- CALCUL DE B -------------------------------
-    do 100 i = 1, 9
+    do i = 1, 9
         bf(1,i) = vj11*bxq(i) + vj12*bxe(i)
         bf(2,i) = vj21*byq(i) + vj22*bye(i)
         bf(3,i) = vj11*byq(i) + vj12*bye(i) + vj21*bxq(i) + vj22*bxe( i)
-100  end do
+    end do
 !
 end subroutine

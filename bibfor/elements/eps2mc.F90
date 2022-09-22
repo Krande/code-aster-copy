@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
                   ivf, idfde, xyz, depl, eps2)
 !.======================================================================
@@ -65,14 +65,14 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
     zero = 0.0d0
     undemi = 0.5d0
 !
-    do 10 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         eps2(i) = zero
-10  end do
+    end do
 !
 ! --- CALCUL DES DEFORMATIONS DU SECOND ORDRE AUX POINTS D'INTEGRATION
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 !      -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
         dx = zero
         rayon = zero
@@ -99,7 +99,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !
 ! ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 !         ------------------------------------
-            do 30 i = 1, nno
+            do i = 1, nno
 !
                 dudx = dudx + dfdx(i)*depl((i-1)*ndim+1)
                 dudy = dudy + dfdy(i)*depl((i-1)*ndim+1)
@@ -113,7 +113,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
                 dwdy = dwdy + dfdy(i)*depl((i-1)*ndim+3)
                 dwdz = dwdz + dfdz(i)*depl((i-1)*ndim+3)
 !
-30          continue
+            end do
 !
 ! ----    DEFORMATIONS DU SECOND ORDRE :
 !         ----------------------------
@@ -141,7 +141,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !
 ! ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 !         ------------------------------------
-            do 40 i = 1, nno
+            do i = 1, nno
 !
                 dudx = dudx + dfdx(i)*depl((i-1)*ndim+1)
                 dudy = dudy + dfdy(i)*depl((i-1)*ndim+1)
@@ -154,7 +154,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
                     rayon = rayon + zr(ivf+i+k-1)*xyz(1+idecno)
                     dx = dx + zr(ivf+i+k-1)*depl(1+idecno)
                 endif
-40          continue
+            end do
 !
 ! ----    DEFORMATIONS DU SECOND ORDRE :
 !         ----------------------------
@@ -171,7 +171,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
             call utmess('F', 'ELEMENTS_11')
         endif
 !
-20  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
                   toler, iter, r, rini, epstr,&
                   irteti)
@@ -61,22 +61,22 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
     e2=0.d0
     e1ini=0.d0
     e2ini=0.d0
-    do 101 i = 1, 6
+    do i = 1, 6
         e1 = max(e1, abs(r(i)))
 !         E1INI = MAX(E1INI, ABS(RINI(I)))
         e1ini = max(e1ini, abs(epstr(i)))
-101  end do
+    end do
 !
     errr(1)=e1
     if (e1ini .gt. r8prem()) then
         errr(1)=e1/e1ini
     endif
 !
-    do 102 i = 7, nr
+    do i = 7, nr
         e2 = max(e2, abs(r(i)))
 !         E2INI = MAX(E2INI, ABS(RINI(I)))
         e2ini = max(e2ini, abs(yd(i)+dy(i)))
-102  end do
+    end do
 !
     errr(2)=e2
     if (e2ini .gt. r8prem()) then
@@ -90,19 +90,19 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
 !
     errdy(1)=0.d0
     errdy(3)=0.d0
-    do 103 i = 1, 6
+    do i = 1, 6
         errdy(1) = max(errdy(1), abs(ddy(i)))
         errdy(3) = max(errdy(3), abs(dy(i)))
-103  end do
+    end do
     if (errdy(3) .gt. r8prem()) then
         errdy(1)=errdy(1)/errdy(3)
     endif
     errdy(2)=0.d0
     errdy(4)=0.d0
-    do 104 i = ndt+1, nr
+    do i = ndt+1, nr
         errdy(2) = max(errdy(2), abs(ddy(i)))
         errdy(4) = max(errdy(3), abs(dy(i)))
-104  end do
+    end do
     if (errdy(4) .gt. r8prem()) then
         errdy(2)=errdy(2)/errdy(4)
     endif
@@ -116,20 +116,20 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
 ! -             CONVERGENCE
         if (errr(1) .le. toler) then
             irteti = 0
-            goto 9999
+            goto 999
         endif
         if (errdy(1) .le. toler) then
             irteti = 0
-            goto 9999
+            goto 999
         endif
 !
 ! -     NON CONVERGENCE ITERATION SUIVANTE
         irteti = 1
-        goto 9999
+        goto 999
     else
 ! -     NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
         irteti=3
     endif
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                   chpres, chepsi, chpesa, chrota, lfonc,&
                   time, iord)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcG_type.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/alchml.h"
-#include "asterfort/chpver.h"
 #include "asterfort/chpchd.h"
+#include "asterfort/chpver.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/gcchar.h"
 #include "asterfort/gcfonc.h"
 #include "asterfort/gcsele.h"
@@ -35,10 +35,10 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/lisccc.h"
 #include "asterfort/lisdef.h"
 #include "asterfort/lislch.h"
@@ -104,7 +104,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     aster_logical :: lfepsi, lfpesa, lfrota
     integer, pointer :: desc(:) => null()
     character(len=8), pointer :: p_vale_epsi(:) => null()
-    character(len=8)   :: list_option(NB_MAX_OPT)
+    character(len=8) :: list_option(NB_MAX_OPT)
 !
 ! ----------------------------------------------------------------------
 !
@@ -116,7 +116,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     lfonc = .false.
     nomcmd = 'CALC_G'
     phenom = 'MECANIQUE'
-    cepsi =  '&&GCHARG.CEPSI'
+    cepsi = '&&GCHARG.CEPSI'
     epselno= '&&GCHARG.EPSELNO'
     lvolu = .false.
     l1d2d = .false.
@@ -148,7 +148,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 !
 ! - UNE DES CHARGES EST-ELLE UNE FONCTION ? -> REMPLISSAGE DE LFONC
 !
-    do 20 ichar = 1, nbchar
+    do ichar = 1, nbchar
 ! ----- NOM DE LA CHARGE
         call lislch(lischa, ichar, charge)
 ! ----- TYPE DE LA CHARGE (REELLE OU FONCTION)
@@ -157,11 +157,12 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
             lfonc = .true.
             goto 20
         endif
-20  continue
+ 20     continue
+    end do
 !
 ! ----- BOUCLE SUR LES CHARGES
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- NOM DE LA CHARGE
 !
@@ -205,7 +206,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 !
 ! --------- BOUCLE SUR LES MOTS-CLEFS
 !
-            do 15 iposit = 1, znbenc
+            do iposit = 1, znbenc
                 if (tabaut(iposit) .eq. 1) then
 !
 ! ----------------- MOT-CLEF DE LA CHARGE
@@ -226,12 +227,12 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------- Si le champ PRE_EPSI est de type CHAM_NO ou CARTE, il faut récupérer
 !                   le vrai nom du champ correspondant (voir load_neum_spec)
 !
-                    if (nomobj.eq.'.EPSIN')then
+                    if (nomobj .eq. '.EPSIN') then
                         call jeveuo(prefob(1:13)//'.EPSIN.DESC', 'L', vi=desc)
                         ig = desc(1)
                         call jenuno(jexnum('&CATA.GD.NOMGD', ig), ng)
 ! ----------------- recuperation du nom du champ stocké dans la carte "bidon"
-                        if (ng.eq.'NEUT_K8')then
+                        if (ng .eq. 'NEUT_K8') then
                             call jeveuo(prefob(1:13)//'.EPSIN.VALE', 'L', vk8=p_vale_epsi)
                             cartei = p_vale_epsi(1)
                         endif
@@ -243,8 +244,10 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                             ASSERT(occur <= 1)
 !               traitement du champ pour les elements finis classiques
                             call detrsd('CHAMP', cepsi)
-                            call alchml(ligrmo, 'CALC_G', 'PEPSINR', 'V', cepsi, iret, ' ')
-                            call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V', epselno)
+                            call alchml(ligrmo, 'CALC_G', 'PEPSINR', 'V', cepsi,&
+                                        iret, ' ')
+                            call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V',&
+                                        epselno)
                             call chpver('F', epselno(1:19), 'ELNO', 'EPSI_R', iret)
                             cartei(1:19) = epselno(1:19)
                         end if
@@ -254,45 +257,45 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 !
                     call gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
                                 chepsi, chpesa, chrota, lvolu, l1d2d,&
-                                l2d3d, lpres, lepsi, lpesa, lrota,lfchar,&
-                                lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
-                                lfpesa, lfrota, carteo, lpchar,&
+                                l2d3d, lpres, lepsi, lpesa, lrota,&
+                                lfchar, lfvolu, lf1d2d, lf2d3d, lfpres,&
+                                lfepsi, lfpesa, lfrota, carteo, lpchar,&
                                 lccomb)
-                                
+!
 !
 !------------------ Interdiction d'un chargement PRE_EPSI avec l'option G de CALC_G
 !                   (sans re-calcul de contraintes, le résultat est faux)
-!                   
-                    if (lepsi.or.lfepsi) then
+!
+                    if (lepsi .or. lfepsi) then
                         call getvtx(' ', 'OPTION', nbret=ier)
-                        if(ier == 1) then
+                        if (ier == 1) then
                             call getvtx(' ', 'OPTION', scal=list_option(1))
-                            if(list_option(1).eq.'G') then
+                            if (list_option(1) .eq. 'G') then
                                 call utmess('F', 'RUPTURE0_91')
                             endif
                         else
                             call getvtx(' ', 'OPTION', nbval=-ier, vect=list_option)
-                            do i=1, -ier
-                                if(list_option(i).eq.'G') then
+                            do i = 1, -ier
+                                if (list_option(i) .eq. 'G') then
                                     call utmess('F', 'RUPTURE0_91')
                                 endif
                             end do
                         end if
                     end if
-
-
+!
+!
 !
 ! ----------------- PREPARATION NOM DE LA FONCTION RESULTANTE
 !
                     call gcfonc(ichar, iord, cartei, lfchar, lfmult,&
                                 newfct, lformu)
-
+!
 ! ----------------- CAS PARTICULIER (CARACTERE GENERIQUE A D'AUTRE CAS A DETERMINER):
 ! ----------------- LE CHARGEMENT DE TYPE PRES_REP DOIT ETRE UNE FONCTION S'IL EXITE UN
 ! ----------------- AUTRE CAHRGEMENT FONCTION
 ! ----------------- DANS LE CAS CONTRAIRE, ON CREE UN CHAMPS FONCTION UNIFORME
-                    if(motcle.eq.'PRES_REP') then
-                        if(lfonc .and. (.not.lfpres))then
+                    if (motcle .eq. 'PRES_REP') then
+                        if (lfonc .and. (.not.lfpres)) then
                             call jeveuo(cartei//'.VALE', 'L', iret)
                             call mepres(modele, cartei, lfonc, zr(iret), 0.d0)
                             lfpres=.true.
@@ -305,13 +308,13 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                     call gcchar(ichar, iprec, time, carteo, lfchar,&
                                 lpchar, lformu, lfmult, lccomb, cartei,&
                                 nomfct, newfct, oldfon)
-
+!
 !
  12                 continue
                 endif
- 15         continue
+            end do
         endif
- 10 continue
+    end do
 !
 ! - SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
 !
@@ -327,7 +330,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     if (.not.lpres) then
         call mepres(modele, chpres, lfonc, 0.d0, 0.d0)
     endif
-
+!
 !
     call jedetr(oldfon)
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jjlidy(iadyn, iadmi)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -53,9 +53,9 @@ subroutine jjlidy(iadyn, iadmi)
         iet = iszon(jiszon+iadmi-1)
         lgs = iszon(jiszon+iadmi-4) - iadmi + 4
         lgsv= iszon(jiszon+iadmi-4) - iadmi - 4
-        do 100 k = 1, lgsv
+        do k = 1, lgsv
             iszon(jiszon+iadmi+k-1) = lundef
-100      continue
+        end do
         if (iet .eq. istat(2)) then
             svuse = svuse - lgs
             ASSERT(lgs .gt. 0)

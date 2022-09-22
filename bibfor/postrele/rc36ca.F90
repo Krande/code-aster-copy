@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36ca(carael, noma, nbma, listma, chcara)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -47,7 +47,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
 !     ------------------------------------------------------------------
 !
     integer :: nbcmp, iret, im, ima, nbpt, decal, ipt, icmp, iad, iadc, ncmp
-    integer :: jcesd,  jcesl, jcesdc, jcesvc, jceslc
+    integer :: jcesd, jcesl, jcesdc, jcesvc, jceslc
     integer :: jcesd1, jcesv1, jcesl1, jcesd2, jcesv2, jcesl2
     real(kind=8) :: vc
     character(len=8) :: nomgd
@@ -81,7 +81,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(2) = 'IZ1'
     nocmp(3) = 'IY2'
     nocmp(4) = 'IZ2'
-    call cesred(ces1,nbma,listma,nbcmp,nocmp,&
+    call cesred(ces1, nbma, listma, nbcmp, nocmp,&
                 'V', ces1)
 !
     call jeveuo(ces1//'.CESD', 'L', jcesd1)
@@ -98,20 +98,20 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(2) = 'EP1'
     nocmp(3) = 'R2'
     nocmp(4) = 'EP2'
-    call cesred(ces2,nbma,listma,nbcmp,nocmp,&
+    call cesred(ces2, nbma, listma, nbcmp, nocmp,&
                 'V', ces2)
 !
     call jeveuo(ces2//'.CESD', 'L', jcesd2)
     call jeveuo(ces2//'.CESV', 'L', jcesv2)
     call jeveuo(ces2//'.CESL', 'L', jcesl2)
 !
-    do 100 im = 1, nbma
+    do im = 1, nbma
         ima = listma(im)
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
         ncmp = zi(jcesd-1+5+4*(ima-1)+3)
         ASSERT(ncmp.eq.4 .and. nbpt.eq.2)
-        do 110 ipt = 1, nbpt
-            do 120 icmp = 1, ncmp
+        do ipt = 1, nbpt
+            do icmp = 1, ncmp
 !            POINT 1 : CMPS 1 ET 2 - POINT 2 : CMPS 3 ET 4
                 if (icmp .le. 2) then
                     if (ipt .eq. 1) then
@@ -151,9 +151,9 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
                 endif
                 cesv(iad) = vc
                 zl(jcesl-1+iad) = .true.
-120          continue
-110      continue
-100  end do
+            end do
+        end do
+    end do
 !
     call detrsd('CHAM_ELEM_S', ces1)
     call detrsd('CHAM_ELEM_S', ces2)

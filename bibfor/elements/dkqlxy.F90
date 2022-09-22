@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkqlxy(qsi, eta, hlt2, depf, codi,&
                   lcot, lambda)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, codi(*), lcot(*), hlt2(4, 6), depf(12), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE DKQ
 !     ------------------------------------------------------------------
@@ -36,13 +36,13 @@ subroutine dkqlxy(qsi, eta, hlt2, depf, codi,&
     meta = 1.d0 - eta
     pqsi = 1.d0 + qsi
     mqsi = 1.d0 - qsi
-    do 100 i = 1, nc
+    do i = 1, nc
         cl(i) = 1.50d0 * codi( i) / lcot(i)
         sl(i) = 1.50d0 * codi(nc+i) / lcot(i)
         cs(i) = 0.75d0 * codi( i) * codi(nc+i)
         cu(i) = 0.75d0 * codi( i) * codi( i)
         su(i) = 0.75d0 * codi(nc+i) * codi(nc+i)
-100  end do
+    end do
     tkq(1,1 ) = - meta * cl(1)
     tkq(1,2 ) = meta * cu(1)
     tkq(1,3 ) = meta * cs(1)
@@ -117,21 +117,21 @@ subroutine dkqlxy(qsi, eta, hlt2, depf, codi,&
     tkq(6,12) = qsi * su(3) - eta * su(4) - 0.25d0
 !
 !     ------ LAMDA = HLT2.TKT.DEPF ------------------------------------
-    do 150 i = 1, 4
-        do 140 j = 1, 3*nno
+    do i = 1, 4
+        do j = 1, 3*nno
             bl(i,j) = 0.d0
-            do 130 k = 1, 6
+            do k = 1, 6
                 bl(i,j) = bl(i,j) + hlt2(i,k) * tkq(k,j)
-130          continue
-140      continue
-150  end do
-    do 190 i = 1, 4
+            end do
+        end do
+    end do
+    do i = 1, 4
         lambda(i) = 0.d0
-190  end do
-    do 210 i = 1, 4
-        do 200 j = 1, 3*nno
+    end do
+    do i = 1, 4
+        do j = 1, 3*nno
             lambda(i) = lambda(i) + bl(i,j) * depf(j)
-200      continue
-210  end do
+        end do
+    end do
 !
 end subroutine

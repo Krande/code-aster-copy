@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
                   vinp, nvi, seqe, i1e, seqm,&
                   i1m, dp, nbre, retcom)
-    implicit      none
+    implicit none
 #include "asterfort/dpvpdf.h"
 #include "asterfort/dpvpdv.h"
 #include "asterfort/dpvpeq.h"
@@ -141,7 +141,7 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
         goto 50
     endif
 !
-    do 40 i = 1, niter
+    do i = 1, niter
 !
         if ((abs(f/seuil)) .lt. crit(3)) then
             nbre = i
@@ -182,12 +182,12 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
             goto 50
         endif
 !
-40  end do
+    end do
     retcom = 1
     goto 30
 ! =====================================================================
-50  continue
+ 50 continue
     dp=dp0
-30  continue
+ 30 continue
 ! =====================================================================
 end subroutine

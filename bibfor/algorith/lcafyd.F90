@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
                   nmat, mod, nvi, vind, vinf,&
                   sigd, nr, yd, bnews, mtrac)
@@ -85,9 +85,9 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
 !           UNE SEULE FAMILLE
             ASSERT(nbcomm(nmat, 2).eq.1)
-            do 102 i = 1, ns
+            do i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+1)
-102         continue
+            end do
             necoul=cpmono(3)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 irr=1
@@ -99,9 +99,9 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
             endif
         else
 !           AUTRES COMPORTEMENTS MONOCRISTALLINS
-            do 103 i = 1, ns
+            do i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+2)
-103         continue
+            end do
         endif
 !
 !

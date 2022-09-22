@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
                  xr, epais, vectpt, hsj1fx, btdf)
 !
@@ -41,15 +41,15 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
         l3=423
     endif
 !
-    do 16 j = 1, 5*nb1+2
-        do 15 i = 1, 9
+    do j = 1, 5*nb1+2
+        do i = 1, 9
             dnsdsf(i,j)=0.d0
-15      end do
+        end do
         do i = 1, 3
             btdf(i,j)=0.d0
         end do
-16  end do
-
+    end do
+!
 !
     intsn1=9*(intsn-1)
 !
@@ -60,7 +60,7 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
     i3=l1+intsn1
     i4=l2+intsn1
     i5=l3+intsn1
-    do 30 j = 1, nb1
+    do j = 1, nb1
         j1=5*(j-1)
         dnsdsf(1,j1+4)=-ksi3s2*xr(i4+j)*epais*vectpt(j,2,1)
         dnsdsf(1,j1+5)= ksi3s2*xr(i4+j)*epais*vectpt(j,1,1)
@@ -88,7 +88,7 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
 !
         dnsdsf(9,j1+4)=-xr(i3+j)/2*epais*vectpt(j,2,3)
         dnsdsf(9,j1+5)= xr(i3+j)/2*epais*vectpt(j,1,3)
-30  end do
+    end do
 !
     dnsdsf(1,5*nb1+1)=-ksi3s2*xr(i4+nb2)*epais*vectpt(nb2,2,1)
     dnsdsf(1,5*nb1+2)= ksi3s2*xr(i4+nb2)*epais*vectpt(nb2,1,1)
@@ -119,24 +119,24 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
 !
 !     CONSTRUCTION DE BTILDF = HFM * S * JTILD-1 * DNSDSF  : (3,5*NB1+2)
 !
-    do 40 i = 1, 3
-        do 50 jb = 1, nb1
-            do 60 j = 4, 5
+    do i = 1, 3
+        do jb = 1, nb1
+            do j = 4, 5
                 j1=j+5*(jb-1)
                 btdf(i,j1)=0.d0
-                do 70 k = 1, 9
+                do k = 1, 9
                     btdf(i,j1)=btdf(i,j1)+hsj1fx(i,k)*dnsdsf(k,j1)
-70              end do
-60          end do
-50      end do
+                end do
+            end do
+        end do
 !
-        do 80 j = 1, 2
+        do j = 1, 2
             j1=j+5*nb1
             btdf(i,j1)=0.d0
-            do 90 k = 1, 9
+            do k = 1, 9
                 btdf(i,j1)=btdf(i,j1)+hsj1fx(i,k)*dnsdsf(k,j1)
-90          end do
-80      end do
-40  end do
+            end do
+        end do
+    end do
 !
 end subroutine

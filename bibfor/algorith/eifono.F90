@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine eifono(ndim, axi, nno1, nno2, npg,&
                   wref, vff1, vff2, dffr2, geom,&
                   ang, iu, im, sigp, vect)
@@ -56,33 +56,33 @@ subroutine eifono(ndim, axi, nno1, nno2, npg,&
 !
     call r8inir(nno1*2*ndim+nno2*ndim, 0.d0, vect, 1)
 !
-    do 1000 g = 1, npg
+    do g = 1, npg
 !
         call eicine(ndim, axi, nno1, nno2, vff1(1, g),&
                     vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang,&
                     wg, b)
 !
 !      VECTEUR FINT:U
-        do 300 n = 1, 2*nno1
-            do 301 i = 1, ndim
+        do n = 1, 2*nno1
+            do i = 1, ndim
                 kk = iu(i,n)
                 t1 = 0
-                do 320 k = 1, ndim
+                do k = 1, ndim
                     t1 = t1 + b(k,i,n)*sigp(k,g)
-320             continue
+                end do
                 vect(kk) = vect(kk) + wg*t1
-301         continue
-300     continue
+            end do
+        end do
 !
 !      VECTEUR FINT:M
-        do 350 n = 1, nno2
-            do 351 i = 1, ndim
+        do n = 1, nno2
+            do i = 1, ndim
                 kk = im(i,n)
                 t1 = vff2(n,g)*sigp(ndim+i,g)
                 vect(kk) = vect(kk) + wg*t1
-351         continue
-350     continue
+            end do
+        end do
 !
-1000 end do
+    end do
 !
 end subroutine

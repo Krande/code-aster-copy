@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
                   nfreq, nfreqb, tolv, nitv, iexcl,&
                   fcorig, vec, resufi, resufr, resufk,&
@@ -71,9 +71,9 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 !     INITIALISATION A UNE VALEUR NON ATTEINTE
     iprec = -( nfreqb + 1 )
 !
-    do 10 ifreq = 1, nfreq
+    do ifreq = 1, nfreq
         valeur = resufr(ifreq,2)
-20      continue
+ 20     continue
 ! --- POUR OPTIMISER ON NE CALCULE PAS LE DET
         call vpstur(lraide, valeur, lmasse, ldynam, det,&
                     idet, place, ier, solveu, .false._1,&
@@ -106,14 +106,14 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
         resufr(ifreq,2) = valeur
         resufi(ifreq,4) = iter
         resufr(ifreq,15) = err
-10  end do
+    end do
 !
 ! RECALCUL DU NUME_MODE POUR CHAQUE FREQUENCE
 !
     if ((typres .eq. 'DYNAMIQUE') .and. (optiof.ne.'PROCHE')) then
 !
         ifreq = 1
-30      continue
+ 30     continue
         valeur = resufr(ifreq,2)
         if (abs(valeur) .le. omega2(fcorig)) then
             ifreq = ifreq + 1
@@ -129,7 +129,7 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
         else
             valeur = 1.05d0 * valeur
         endif
-40      continue
+ 40     continue
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS) ET ON NE
 ! --- CALCULE PAS LE DET.
         call vpstur(lraide, valeur, lmasse, ldynam, det,&
@@ -148,9 +148,9 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
                 goto 40
             endif
         endif
-        do 50 ifreq = 1, nfreq
+        do ifreq = 1, nfreq
             resufr(ifreq,2) = resufr(ifreq,2) - valeur
-50      end do
+        end do
 !
     endif
 !
@@ -158,14 +158,14 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 ! EN DYNAMIQUE: EN VALEUR ABSOLUE
 ! EN FLAMBEMENT: EN VALEUR ALGEBRIQUE
     eps = 1.d-7
-    do 310 i = 1, nfreq
+    do i = 1, nfreq
         iperm = i
         if (typres .eq. 'DYNAMIQUE') then
             rperm = abs(resufr(i,2))
         else
             rperm = resufr(i,2)
         endif
-        do 312 j = i+1, nfreq
+        do j = i+1, nfreq
             if (typres .eq. 'DYNAMIQUE') then
                 if (abs(resufr(j,2)) .lt. (rperm *(1.d0 -eps))) then
                     iperm = j
@@ -189,32 +189,32 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
                     rperm = resufr(iperm,2)
                 endif
             endif
-312      continue
+        end do
 !
 ! PERMUTATION DES DONNEES LIEES AUX VALEURS PROPRES
         if (iperm .ne. i) then
-            do 320 kl = 1, nbparr
+            do kl = 1, nbparr
                 rperm = resufr(iperm,kl)
                 resufr(iperm,kl) = resufr(i,kl)
                 resufr(i,kl) = rperm
-320          continue
-            do 321 kl = 1, nbpari
+            end do
+            do kl = 1, nbpari
                 irperm = resufi(iperm,kl)
                 resufi(iperm,kl) = resufi(i,kl)
                 resufi(i,kl) = irperm
-321          continue
-            do 322 kl = 1, nbpark
+            end do
+            do kl = 1, nbpark
                 kperm = resufk(iperm,kl)
                 resufk(iperm,kl) = resufk(i,kl)
                 resufk(i,kl) = kperm
-322          continue
-            do 330 j = 1, neq
+            end do
+            do j = 1, neq
                 rperm = vec(j,i)
                 vec(j,i) = vec(j,iperm)
                 vec(j,iperm) = rperm
-330          continue
+            end do
         endif
-310  end do
+    end do
 !
     if ((typres.eq.'DYNAMIQUE') .and. (optiof.ne.'PROCHE')) then
 !
@@ -222,15 +222,15 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
         call rectfr(nfreq, nfreq, valeur, place, naux,&
                     resufr(1, 2), nfreqb, resufi, resufr, nfreqb)
     else
-        do 51 ifreq = 1, nfreq
+        do ifreq = 1, nfreq
             resufi(ifreq,1) = ifreq
-51      continue
+        end do
     endif
 !
-    do 52 ifreq = 1, nfreq
+    do ifreq = 1, nfreq
         resufr(ifreq,1) = freqom(resufr(ifreq,2))
         resufk(ifreq,2) = 'INVERSE_R'
-52  end do
+    end do
 !
 !     --- DESTRUCTION ZONE DE TRAVAIL ---
     call jedetr(cmulti)

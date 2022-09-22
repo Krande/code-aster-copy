@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine peaire(resu, modele, nbocc)
     implicit none
 #include "jeveux.h"
@@ -41,7 +41,7 @@ subroutine peaire(resu, modele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR "AIRE_INTERNE"
 !     ------------------------------------------------------------------
 !
-    integer :: nbparr, ibid, iret, iocc, ng,  ngb, jgb, igb, nbb
+    integer :: nbparr, ibid, iret, iocc, ng, ngb, jgb, igb, nbb
     integer :: ifm, niv, iadgma
     parameter    ( nbparr = 3 )
     real(kind=8) :: valpar(nbparr), aire, long
@@ -73,7 +73,7 @@ subroutine peaire(resu, modele, nbocc)
     call tbcrsd(resu, 'G')
     call tbajpa(resu, nbparr, noparr, typarr)
 !
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvem(noma, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc,&
                     iarg, 0, k8b, ngb)
         if (ngb .ne. 0) then
@@ -81,7 +81,7 @@ subroutine peaire(resu, modele, nbocc)
             call wkvect('&&PEAIRE.GROUP_NO', 'V V K24', ngb, jgb)
             call getvem(noma, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc,&
                         iarg, ngb, zk24(jgb), ng)
-            do 40 igb = 1, ngb
+            do igb = 1, ngb
                 call jeexin(jexnom(grpma, zk24(jgb+igb-1)), iret)
                 if (iret .eq. 0) then
                     call utmess('A', 'UTILITAI3_46', sk=zk24(jgb+igb-1))
@@ -101,10 +101,11 @@ subroutine peaire(resu, modele, nbocc)
                 valpar(2) = long
                 call tbajli(resu, nbparr, noparr, [ibid], valpar,&
                             [c16b], zk24(jgb+igb-1), 0)
-40          continue
+ 40             continue
+            end do
             call jedetr('&&PEAIRE.GROUP_NO')
         endif
-10  end do
+    end do
 !
     call jedema()
 end subroutine

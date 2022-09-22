@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
                   lmat, xjvmax)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/caladu.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,6 +30,7 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: deficu, resocu
     integer :: nbliac
     integer :: spliai
@@ -62,8 +62,8 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
 !
     integer :: jdecal
     integer :: nbddl, jva, jvale, jpoi, neq
-    integer :: iliac, jj, lliac, lljac,  ii, dercol, bloc
-    integer ::  jouv,  nbbloc
+    integer :: iliac, jj, lliac, lljac, ii, dercol, bloc
+    integer :: jouv, nbbloc
     real(kind=8) :: val
     character(len=19) :: liac, cm1a, matr, stoc, ouvert
     integer :: jliac, jcm1a
@@ -104,7 +104,7 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
 !
     indfac = min(indfac, spliai+1)
 !
-    do 210 iliac = spliai+1, nbliac
+    do iliac = spliai+1, nbliac
         lliac = zi(jliac-1+iliac)
 !
         call jeveuo(jexnum(cm1a, lliac), 'L', jcm1a)
@@ -120,7 +120,7 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
             zl(jouv-1+ii)=.true.
         endif
         jva = jvale-1 + (iliac-1)*(iliac)/2-bloc
-        do 10 jj = 1, iliac
+        do jj = 1, iliac
             lljac = zi(jliac-1+jj)
             jdecal = zi(jpoi+lljac-1)
             nbddl = zi(jpoi+lljac) - zi(jpoi+lljac-1)
@@ -130,9 +130,9 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
                         val)
             zr(jva) = zr(jva) - val
             if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
-10      continue
+        end do
         call jelibe(jexnum(cm1a, lliac))
-210  end do
+    end do
 ! ======================================================================
     spliai = nbliac
     call jedetr(ouvert)

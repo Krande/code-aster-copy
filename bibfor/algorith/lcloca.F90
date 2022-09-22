@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcloca(coeft,nmat, nbcomm,&
-                  nphas, sigi, vini, iphas, granb,&
-                  loca, sigg)
 !
-
+subroutine lcloca(coeft, nmat, nbcomm, nphas, sigi,&
+                  vini, iphas, granb, loca, sigg)
+!
+!
     implicit none
 #include "asterc/r8miem.h"
 #include "asterfort/lcdevi.h"
@@ -74,16 +73,16 @@ subroutine lcloca(coeft,nmat, nbcomm,&
         endif
 !        EVP - EVPG(IPHAS)
         ievpg=7+6*(iphas-1)
-        do 1 i = 1, 6
+        do i = 1, 6
             sigg(i)=sigi(i)+alpha*mu*(vini(i)-vini(ievpg+i))
- 1      continue
+        end do
 !
     else if (loca.eq.'BETA') then
 !        EVP - EVPG(IPHAS)
         ievpg=7+6*(iphas-1)
-        do 2 i = 1, 6
+        do i = 1, 6
             sigg(i)=sigi(i)+mu*(granb(i)-vini(ievpg+i))
- 2      continue
+        end do
 !
 !
     else

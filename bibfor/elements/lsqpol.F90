@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lsqpol(ordre, e1, npt, xx, yy,&
                   ordok, poly, sigma)
 ! aslint: disable=W1306
@@ -70,9 +70,9 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
     integer :: i, j, ordok, ordok2, ordloo
     real(kind=8) :: a1, a2, b1, b2, poly1, d1, e1, f1, f2, v1, v2
 !
-    do 10, i = 1,ordre+1
-    poly(i) = 0.d0
-    10 end do
+    do i = 1, ordre+1
+        poly(i) = 0.d0
+    end do
     ordok = -1
 !
     if (ordre .lt. 1) then
@@ -96,127 +96,127 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
 !
 ! --- INITIALISATION ------------------------------
 !
-    do 13, i = 1,ordre+1
-    aa(i) = 0.d0
-    bb(i) = 0.d0
-    ff(i) = 0.d0
-    13 end do
-    do 16, i = 1,npt
-    vv(i) = 0.d0
-    dd(i) = 0.d0
-    16 end do
+    do i = 1, ordre+1
+        aa(i) = 0.d0
+        bb(i) = 0.d0
+        ff(i) = 0.d0
+    end do
+    do i = 1, npt
+        vv(i) = 0.d0
+        dd(i) = 0.d0
+    end do
 !
     d1 = sqrt(npt*1.0d0)
 !
-    do 18, i = 1,npt
-    ee(i) = 1.d0 / d1
-    18 end do
+    do i = 1, npt
+        ee(i) = 1.d0 / d1
+    end do
     f1 = d1
 !
     a1 = 0.d0
-    do 20, i=1, npt
-    a1 = a1 + xx(i) * ee(i) * ee(i)
-    20 end do
+    do i = 1, npt
+        a1 = a1 + xx(i) * ee(i) * ee(i)
+    end do
 !
     poly1 = 0.d0
-    do 30, i=1, npt
-    poly1 = poly1 + yy(i) * ee(i)
-    30 end do
+    do i = 1, npt
+        poly1 = poly1 + yy(i) * ee(i)
+    end do
 !
     bb(1) = 1.d0 / f1
     ff(1) = bb(1) * poly1
 !
-    do 35, i = 1,npt
-    vv(i) = vv(i) + poly1*ee(i)
-    35 end do
+    do i = 1, npt
+        vv(i) = vv(i) + poly1*ee(i)
+    end do
 !
 ! --- DEBUT BOUCLE ----------------------------------------
 !
-    do 40, ordloo=1,ordre
+    do ordloo = 1, ordre
 !
 ! SAVE LATEST RESULTS
-    do 45, i = 1,ordre+1
-    poly2(i) = poly(i)
-45  continue
-    ordok2 = ordok
-    v2 = v1
-    f2 = f1
-    a2 = a1
+        do i = 1, ordre+1
+            poly2(i) = poly(i)
+        end do
+        ordok2 = ordok
+        v2 = v1
+        f2 = f1
+        a2 = a1
 !
-    f1 = 0.d0
-    do 50, i=1, npt
-    b1 = ee(i)
-    ee(i) = (xx(i) - a2) * b1 - f2 * dd(i)
-    dd(i) = b1
-    f1 = f1 + ee(i) * ee(i)
-50  continue
+        f1 = 0.d0
+        do i = 1, npt
+            b1 = ee(i)
+            ee(i) = (xx(i) - a2) * b1 - f2 * dd(i)
+            dd(i) = b1
+            f1 = f1 + ee(i) * ee(i)
+        end do
 !
-    f1 = sqrt(f1)
-    do 55, i=1, npt
-    ee(i) = ee(i) / f1
-55  continue
-    a1 = 0.d0
-    do 60, i=1, npt
-    a1 = a1 + xx(i) * ee(i) * ee(i)
-60  continue
+        f1 = sqrt(f1)
+        do i = 1, npt
+            ee(i) = ee(i) / f1
+        end do
+        a1 = 0.d0
+        do i = 1, npt
+            a1 = a1 + xx(i) * ee(i) * ee(i)
+        end do
 !
-    poly1 = 0.d0
-    do 70, i=1, npt
-    poly1 = poly1 + yy(i) * ee(i)
-70  continue
+        poly1 = 0.d0
+        do i = 1, npt
+            poly1 = poly1 + yy(i) * ee(i)
+        end do
 !
-    do 80, i=0,ordloo
-    j = ordloo - i + 1
-    b2 = bb(j)
-    d1 = 0.d0
-    if (j .gt. 1) d1 = bb(j - 1)
-    d1 = d1 - a2 * bb(j) - f2 * aa(j)
-    bb(j) = d1 / f1
-    aa(j) = b2
-80  continue
+        do i = 0, ordloo
+            j = ordloo - i + 1
+            b2 = bb(j)
+            d1 = 0.d0
+            if (j .gt. 1) d1 = bb(j - 1)
+            d1 = d1 - a2 * bb(j) - f2 * aa(j)
+            bb(j) = d1 / f1
+            aa(j) = b2
+        end do
 !
-    do 83, i = 1,npt
-    vv(i) = vv(i) + poly1*ee(i)
-83  continue
+        do i = 1, npt
+            vv(i) = vv(i) + poly1*ee(i)
+        end do
 !
-    do 86, i = 1,ordre+1
-    ff(i) = ff(i) + poly1*bb(i)
-86  continue
+        do i = 1, ordre+1
+            ff(i) = ff(i) + poly1*bb(i)
+        end do
 !
-    do 88, i = 1,ordre+1
-    poly(i) = ff(i)
-88  continue
+        do i = 1, ordre+1
+            poly(i) = ff(i)
+        end do
 !
-    ordok = ordloo
+        ordok = ordloo
 !
-    sigma = 0.d0
-    do 90, i=1, npt
-    sigma = sigma + (vv(i) - yy(i)) * (vv(i) - yy(i))
-90  continue
+        sigma = 0.d0
+        do i = 1, npt
+            sigma = sigma + (vv(i) - yy(i)) * (vv(i) - yy(i))
+        end do
 !
 !        NOTE THE DIVISION IS BY THE NUMBER OF DEGREES OF FREEDOM
-    if (npt .gt. ordloo + 1) then
+        if (npt .gt. ordloo + 1) then
 !          SIGMA = SQRT(SIGMA / DFLOAT(NPT - ORDLOO - 1))
-        sigma = sqrt(sigma / (npt - ordloo - 1))
-    else
-        goto 999
-    endif
-!
-    if (e1 .gt. 0.d0) then
-!          TEST FOR MINIMAL IMPROVEMENT OR IF ERROR IS LARGER, QUIT
-        if (( abs(v1 - sigma) .lt. (e1*sigma) ) .or. ( e1 * sigma .gt. e1 * v1 )) then
-!           ABORTED SEQUENCE, RECOVER LAST VALUES
-            ordok = ordok2
-            sigma = v2
-            do 100, i = 1,ordre+1
-            poly(i) = poly2(i)
-100          continue
+            sigma = sqrt(sigma / (npt - ordloo - 1))
+        else
             goto 999
         endif
-    endif
 !
-    v1 = sigma
+        if (e1 .gt. 0.d0) then
+!          TEST FOR MINIMAL IMPROVEMENT OR IF ERROR IS LARGER, QUIT
+            if (( abs(v1 - sigma) .lt. (e1*sigma) ) .or. ( e1 * sigma .gt. e1 * v1 )) then
+!           ABORTED SEQUENCE, RECOVER LAST VALUES
+                ordok = ordok2
+                sigma = v2
+                do i = 1, ordre+1
+                    poly(i) = poly2(i)
+                end do
+                goto 999
+            endif
+        endif
 !
-    40 end do
-999  continue
+        v1 = sigma
+!
+    end do
+999 continue
 end subroutine

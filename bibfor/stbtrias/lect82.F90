@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lect82(iunv, node, nbnode, inum)
 ! aslint: disable=W1306
     implicit none
@@ -72,7 +72,7 @@ subroutine lect82(iunv, node, nbnode, inum)
     read (iunv,'(8I10)') (nodlu(j),j=1,nbnode)
     idro=1
     inum=1
-    do 669 i = 1, nbnode
+    do i = 1, nbnode
         if ((nodlu(i).ne.0) .and. (i.lt.nbnode)) then
             node(idro)=nodlu(i)
             node(idro+1)=nodlu(i+1)
@@ -90,5 +90,6 @@ subroutine lect82(iunv, node, nbnode, inum)
             inum = inum - 1
             goto 669
         endif
-669  end do
+669     continue
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36sn(nbm, adrm, ipt, c, cara,&
                   mati, pi, mi, matj, pj,&
                   mj, mse, nbthp, nbthq, ioc1,&
                   ioc2, snij)
-    implicit   none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rcsn01.h"
@@ -64,10 +64,10 @@ subroutine rc36sn(nbm, adrm, ipt, c, cara,&
 ! --- VARIATION DE MOMENT RESULTANT
 !
     mij = 0.d0
-    do 10 icmp = 1, 3
+    do icmp = 1, 3
         xx = mse(icmp) + abs( mi(icmp) - mj(icmp) )
         mij = mij + xx**2
-10  end do
+    end do
     mij = sqrt( mij )
 !
 ! --- LE MATERIAU

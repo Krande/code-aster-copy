@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine interp(tabx, taby, necr, x, y,&
                   iseg)
 !     AUTEUR : C. DUVAL DEPT AMV
@@ -51,8 +51,8 @@ subroutine interp(tabx, taby, necr, x, y,&
         else
             y=y1+(x-x1)*(y1-y2)/(x1-x2)
         endif
-        goto 9999
+        goto 999
     endif
     1 end do
-9999  continue
+999 continue
 end subroutine

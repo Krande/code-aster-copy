@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mrconl(oper, lmat, neq2, typev, rvect,&
                   nvect)
     implicit none
@@ -53,7 +53,7 @@ subroutine mrconl(oper, lmat, neq2, typev, rvect,&
     character(len=1) :: ftype(2), type, typecn
     character(len=24) :: conl
     complex(kind=8) :: c8cst
-    integer ::  ieq, ii, ind, iret, ive, jconl, neq
+    integer :: ieq, ii, ind, iret, ive, jconl, neq
 !     ------------------------------------------------------------------
     data ftype/'R','C'/
 !     ------------------------------------------------------------------
@@ -78,60 +78,60 @@ subroutine mrconl(oper, lmat, neq2, typev, rvect,&
 !
 !
         if (type .eq. 'R' .and. typecn .eq. 'R') then
-            do 30 ive = 1, nvect
+            do ive = 1, nvect
                 ind=neq*(ive-1)
                 if (oper .eq. 'MULT') then
-                    do 10 ieq = 1, neq
+                    do ieq = 1, neq
                         rvect(ind+ieq)=rvect(ind+ieq)*zr(jconl+ieq)
-10                  continue
+                    end do
                 else
-                    do 20 ieq = 1, neq
+                    do ieq = 1, neq
                         rvect(ind+ieq)=rvect(ind+ieq)/zr(jconl+ieq)
-20                  continue
+                    end do
                 endif
-30          continue
+            end do
 !
 !
         else if (type.eq.'C') then
             if (typecn .eq. 'R') then
-                do 60 ive = 1, nvect
+                do ive = 1, nvect
                     ind=neq*(ive-1)
                     if (oper .eq. 'MULT') then
-                        do 40 ieq = 1, neq
+                        do ieq = 1, neq
                             ii=ind+2*ieq
                             rvect(ii-1)=rvect(ii-1)*zr(jconl+ieq)
                             rvect(ii)=rvect(ii)*zr(jconl+ieq)
-40                      continue
+                        end do
                     else
-                        do 50 ieq = 1, neq
+                        do ieq = 1, neq
                             ii=ind+2*ieq
                             rvect(ii-1)=rvect(ii-1)/zr(jconl+ieq)
                             rvect(ii)=rvect(ii)/zr(jconl+ieq)
-50                      continue
+                        end do
                     endif
-60              continue
+                end do
 !
             else if (typecn.eq.'C') then
-                do 90 ive = 1, nvect
+                do ive = 1, nvect
                     ind=neq*(ive-1)
                     if (oper .eq. 'MULT') then
-                        do 70 ieq = 1, neq
+                        do ieq = 1, neq
                             ii=ind+2*ieq
                             c8cst=dcmplx(rvect(ii-1),rvect(ii))
                             c8cst=c8cst*zc(jconl+ieq)
                             rvect(ii-1)=dble(c8cst)
                             rvect(ii)=dimag(c8cst)
-70                      continue
+                        end do
                     else
-                        do 80 ieq = 1, neq
+                        do ieq = 1, neq
                             ii=ind+2*ieq
                             c8cst=dcmplx(rvect(ii-1),rvect(ii))
                             c8cst=c8cst/zc(jconl+ieq)
                             rvect(ii-1)=dble(c8cst)
                             rvect(ii)=dimag(c8cst)
-80                      continue
+                        end do
                     endif
-90              continue
+                end do
             endif
         endif
     endif

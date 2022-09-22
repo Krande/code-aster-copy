@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine moconm(dir, sigb, siga, hh, nlit,&
                   om, rr, nufsup, nufinf, nufsd1,&
                   nufid1, nufsd2, nufid2, prec)
@@ -41,29 +41,29 @@ subroutine moconm(dir, sigb, siga, hh, nlit,&
 !    POUR AVOIR: RR(TRI(I))<=RR(TRI(I+1))
 !    --> DU PLUS PETIT AU PLUS GRAND
 !
-    do 10, i = 1,nlit
-    rhol(i+1) = rr(i)
-    omm(i+1) = om(i)
-    10 end do
+    do i = 1, nlit
+        rhol(i+1) = rr(i)
+        omm(i+1) = om(i)
+    end do
     rhol(1) = -1.0d0
     rhol(nlit+2) = 1.0d0
     omm(1) = hh
     omm(nlit+2) = hh
 !
-    do 20, i=1,nlit+2
-    tri(i)=i
-    20 end do
+    do i = 1, nlit+2
+        tri(i)=i
+    end do
 !
     if (nlit .gt. 1) then
-        do 40, j=1,nlit-1
-        do 30, i=2,nlit+1-j
-        if (rr(tri(i)-1) .gt. rr(tri(i+1)-1)) then
-            ii=tri(i)
-            tri(i)=tri(i+1)
-            tri(i+1)=ii
-        endif
-30      continue
-40      continue
+        do j = 1, nlit-1
+            do i = 2, nlit+1-j
+                if (rr(tri(i)-1) .gt. rr(tri(i+1)-1)) then
+                    ii=tri(i)
+                    tri(i)=tri(i+1)
+                    tri(i+1)=ii
+                endif
+            end do
+        end do
     endif
 !
 ! --- POSITIVE BENDING
@@ -71,37 +71,37 @@ subroutine moconm(dir, sigb, siga, hh, nlit,&
 ! LE CAS DES POINTS SUPERPOSES EST TRAITE: OM=0 OU RR(I)=RR(I-1)
 !    (PAR EX LINER SI RR=-1)
 !
-    do 45, i = 1,nlit+2
-    xi(i) = -1.0d0
-    45 end do
+    do i = 1, nlit+2
+        xi(i) = -1.0d0
+    end do
     ii=0
-    do 50, ilit=0,nlit
-    i = nlit-ilit+2
-    xi(tri(i)) = 1.0d0
-    nn0=0.d0
-    mm0=0.d0
-    do 60, j=1,nlit
-    nn0=nn0+xi(j+1)*om(j)*siga(j)
-    mm0=mm0+xi(j+1)*om(j)*siga(j)*rhol(j+1)*hh/2.0d0
-60  continue
-    if (omm(tri(i)) .lt. 1.d-8*omm(1)) then
-        deb=1
-    else
-        deb=0
-    endif
-    npt = int(abs(rhol(tri(i-1))-rhol(tri(i)))/2.d0*ptmax)-1
-    npt = max(npt,0)
-    do 70, k=deb,npt
-    if (npt .eq. 0) then
-        eta=rhol(tri(i))
-    else
-        eta=rhol(tri(i))+k*(rhol(tri(i-1))-rhol(tri(i)))/npt
-    endif
-    ii=ii+1
-    nn(ii)=nn0+sigb*hh*(1+eta)/2.0d0-prec
-    mm(ii)=mm0-sigb*hh*hh*(1-eta*eta)/8.0d0
-70  continue
-    50 end do
+    do ilit = 0, nlit
+        i = nlit-ilit+2
+        xi(tri(i)) = 1.0d0
+        nn0=0.d0
+        mm0=0.d0
+        do j = 1, nlit
+            nn0=nn0+xi(j+1)*om(j)*siga(j)
+            mm0=mm0+xi(j+1)*om(j)*siga(j)*rhol(j+1)*hh/2.0d0
+        end do
+        if (omm(tri(i)) .lt. 1.d-8*omm(1)) then
+            deb=1
+        else
+            deb=0
+        endif
+        npt = int(abs(rhol(tri(i-1))-rhol(tri(i)))/2.d0*ptmax)-1
+        npt = max(npt,0)
+        do k = deb, npt
+            if (npt .eq. 0) then
+                eta=rhol(tri(i))
+            else
+                eta=rhol(tri(i))+k*(rhol(tri(i-1))-rhol(tri(i)))/npt
+            endif
+            ii=ii+1
+            nn(ii)=nn0+sigb*hh*(1+eta)/2.0d0-prec
+            mm(ii)=mm0-sigb*hh*hh*(1-eta*eta)/8.0d0
+        end do
+    end do
 !
 ! --- AJOUT DE LA FONCTION
     e1=0.d0
@@ -112,36 +112,36 @@ subroutine moconm(dir, sigb, siga, hh, nlit,&
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.VALE ---
     call wkvect(nufsup//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 72 i = 0, npt-1
+    do i = 0, npt-1
         xx = nn(1) + (nn(npt)-nn(1))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 73, j = 0,ordok
-        zr(jfon +i) = zr(jfon +i) + poly(j+1)*(xx**j)
-73      continue
-72  end do
+        do j = 0, ordok
+            zr(jfon +i) = zr(jfon +i) + poly(j+1)*(xx**j)
+        end do
+    end do
 !
     call wkvect(nufsd1//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 74 i = 0, npt-1
+    do i = 0, npt-1
         xx = nn(1) + (nn(npt)-nn(1))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 75, j = 1,ordok
-        zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
-75      continue
-74  end do
+        do j = 1, ordok
+            zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
+        end do
+    end do
 !
     call wkvect(nufsd2//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 76 i = 0, npt-1
+    do i = 0, npt-1
         xx = nn(1) + (nn(npt)-nn(1))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 77, j = 2,ordok-1
-        zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
-77      continue
-76  end do
+        do j = 2, ordok-1
+            zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
+        end do
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
     call wkvect(nufsup//'           .PROL', 'G V K24', 6, jprol)
@@ -168,32 +168,32 @@ subroutine moconm(dir, sigb, siga, hh, nlit,&
 !--- NEGATIVE BENDING
 !
     ii=0
-    do 80, i=1,nlit+1
-    nn0=0.d0
-    mm0=0.d0
-    do 90, j=1,nlit
-    nn0=nn0-xi(j+1)*om(j)*siga(j)
-    mm0=mm0-xi(j+1)*om(j)*siga(j)*rhol(j+1)*hh/2.0d0
-90  continue
-    if (omm(tri(i)) .lt. 1.d-8*omm(1)) then
-        deb=1
-    else
-        deb=0
-    endif
-    npt = int(abs(rhol(tri(i+1))-rhol(tri(i)))/2.d0*ptmax)-1
-    npt = max(npt,0)
-    do 100, k=deb,npt
-    if (npt .eq. 0) then
-        eta=rhol(tri(i))
-    else
-        eta=rhol(tri(i))+k*(rhol(tri(i+1))-rhol(tri(i)))/npt
-    endif
-    ii=ii+1
-    nn(ii)=nn0+sigb*hh*(1-eta)/2.0d0-prec
-    mm(ii)=mm0+sigb*hh*hh*(1-eta*eta)/8.0d0
-100  continue
-    xi(tri(i+1))=-1
-    80 end do
+    do i = 1, nlit+1
+        nn0=0.d0
+        mm0=0.d0
+        do j = 1, nlit
+            nn0=nn0-xi(j+1)*om(j)*siga(j)
+            mm0=mm0-xi(j+1)*om(j)*siga(j)*rhol(j+1)*hh/2.0d0
+        end do
+        if (omm(tri(i)) .lt. 1.d-8*omm(1)) then
+            deb=1
+        else
+            deb=0
+        endif
+        npt = int(abs(rhol(tri(i+1))-rhol(tri(i)))/2.d0*ptmax)-1
+        npt = max(npt,0)
+        do k = deb, npt
+            if (npt .eq. 0) then
+                eta=rhol(tri(i))
+            else
+                eta=rhol(tri(i))+k*(rhol(tri(i+1))-rhol(tri(i)))/npt
+            endif
+            ii=ii+1
+            nn(ii)=nn0+sigb*hh*(1-eta)/2.0d0-prec
+            mm(ii)=mm0+sigb*hh*hh*(1-eta*eta)/8.0d0
+        end do
+        xi(tri(i+1))=-1
+    end do
 !
 !--- AJOUT DE LA FONCTION
     e1=0.d0
@@ -204,36 +204,36 @@ subroutine moconm(dir, sigb, siga, hh, nlit,&
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
     call wkvect(nufinf//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 102 i = 0, npt-1
+    do i = 0, npt-1
         xx = nn(1) + (nn(npt)-nn(1))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 103, j = 0,ordok
-        zr(jfon +i) = zr(jfon +i) + poly(j+1)*(xx**j)
-103      continue
-102  end do
+        do j = 0, ordok
+            zr(jfon +i) = zr(jfon +i) + poly(j+1)*(xx**j)
+        end do
+    end do
 !
     call wkvect(nufid1//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 104 i = 0, npt-1
+    do i = 0, npt-1
         xx = nn(1) + (nn(npt)-nn(1))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 105, j = 1,ordok
-        zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
-105      continue
-104  end do
+        do j = 1, ordok
+            zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
+        end do
+    end do
 !
     call wkvect(nufid2//'           .VALE', 'G V R', 2*npt, jvale)
     jfon = jvale + npt
-    do 106 i = 0, npt-1
+    do i = 0, npt-1
         xx = nn(1) + (nn(npt)-nn(1))*i/(npt-1)
         zr(jvale+i) = xx
         zr(jfon +i) = 0.0d0
-        do 107, j = 2,ordok-1
-        zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
-107      continue
-106  end do
+        do j = 2, ordok-1
+            zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
+        end do
+    end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
     call wkvect(nufinf//'           .PROL', 'G V K24', 6, jprol)

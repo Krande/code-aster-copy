@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
                   n, k, dim, vectn, vectu,&
                   vectv)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -52,7 +52,7 @@ subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
 !
     call jemarq()
 !
-    do 10 i = ipre, ider
+    do i = ipre, ider
         n = n + 1
         phi = phinit + (i-k)*dphi
 !
@@ -68,7 +68,7 @@ subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
         vectv((n-1)*3 + 2) = -cos(gamma)*sin(phi)
         vectv((n-1)*3 + 3) = sin(gamma)
 !
-10  end do
+    end do
 !
     call jedema()
 !

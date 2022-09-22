@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmdrdy(dsidep, coef, cimpo, valimp, y,&
                   sigp, r, drdy)
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -43,32 +43,35 @@ subroutine pmdrdy(dsidep, coef, cimpo, valimp, y,&
     idbg=0
 !
     call r8inir(6*6, 0.d0, id, 1)
-    do 44 i = 1, 6
+    do i = 1, 6
         id(i,i)=1.d0
-44  end do
+    end do
 !
-    do 6 i = 1, 6
-        do 6 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             drdy(i,j)=id(i,j)
             drdy(i,6+j)=-dsidep(i,j)/coef
- 6      continue
-    do 7 i = 1, 6
-        do 7 j = 1, 12
+        end do
+    end do
+    do i = 1, 6
+        do j = 1, 12
             drdy(6+i,j)=cimpo(i,j)
- 7      continue
-    do 4 i = 1, 6
+        end do
+    end do
+    do i = 1, 6
         r(i)=-y(i)+sigp(i)/coef
- 4  end do
-    do 5 i = 1, 6
+    end do
+    do i = 1, 6
         r(6+i)= valimp(i)
-        do 5 j = 1, 12
+        do j = 1, 12
             r(6+i)=r(6+i)-cimpo(i,j)*y(j)
- 5      continue
+        end do
+    end do
     if (idbg .eq. 1) then
         call infniv(ifm, niv)
         write(ifm,*) 'DRDY'
-        do 45 i = 1, 12
+        do i = 1, 12
             write(ifm,'(12(1X,E12.5))')(drdy(i,j),j=1,12)
-45      continue
+        end do
     endif
 end subroutine

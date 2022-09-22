@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcds(hook, devg, devgii, dfds, dfdg,&
                   dsde)
 !
-    implicit   none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcinma.h"
@@ -56,11 +56,11 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
     call lcinma(0.d0, mat)
     call lcinma(0.d0, tmp)
     call lcinma(0.d0, num)
-    do 10 i = 1, ndt
-        do 20 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             mat(i,j) = devg(i)*dfds(j)
-20      continue
-10  end do
+        end do
+    end do
     call lglpma(ndt, hook, mat, tmp)
     call lglpma(ndt, tmp, hook, num)
 ! ======================================================================
@@ -74,11 +74,11 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
 ! --- STOCKAGE DANS MATRICE TEMPORAIRE AVANT SYMETRISATION -------------
 ! ======================================================================
     call lcinma(0.d0, tmp)
-    do 30 i = 1, ndt
-        do 40 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             dsde(i,j) = hook(i,j) + num(i,j)/denom
-40      continue
-30  end do
+        end do
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================

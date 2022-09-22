@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0462(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -26,9 +26,9 @@ subroutine te0462(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fmater.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !     CALCUL DES COORDONNEES DES SOUS POINTS DE GAUSS SUR LES FAMILLE
@@ -103,22 +103,22 @@ subroutine te0462(option, nomte)
 !
     call fmater(nfpgmx, nfpg, fami)
     decfpg = 0
-    do 200 ifpg = 1, nfpg
+    do ifpg = 1, nfpg
 !
         call elrefe_info(fami=fami(ifpg), ndim=ndim1, nno=nno, nnos=nnos, npg=npg,&
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-        do 100 ig = 1, npg
+        do ig = 1, npg
 !
 !         CALCUL DES COORDONNEES DES POINTS DE GAUSS
             xx = 0.d0
             yy = 0.d0
             zz = 0.d0
-            do 10 ino = 1, nno
+            do ino = 1, nno
                 xx = xx + zr(igeom+3* (ino-1)+0)*zr(ivf+ (ig-1)*nno+ ino-1)
                 yy = yy + zr(igeom+3* (ino-1)+1)*zr(ivf+ (ig-1)*nno+ ino-1)
                 zz = zz + zr(igeom+3* (ino-1)+2)*zr(ivf+ (ig-1)*nno+ ino-1)
- 10         continue
+            end do
 !
             if (grille) then
                 decpo=ndim*(decfpg+ig-1)
@@ -128,19 +128,19 @@ subroutine te0462(option, nomte)
                 zr(iad+2) = zz + excen*gm2(3)
             else
                 decpo=nbcou*nbniv*ndim*(decfpg+ig-1)
-                do 110 icou = 1, nbcou
-                    do 120 iniv = 1, nbniv
+                do icou = 1, nbcou
+                    do iniv = 1, nbniv
                         hh=bas+dble(icou-1)*epc+dble(iniv-1)*epc/2.d0
                         iad = icopg+decpo+(icou-1)*nbniv*ndim+(iniv-1) *ndim
                         zr(iad+0) = xx + hh*gm2(1)
                         zr(iad+1) = yy + hh*gm2(2)
                         zr(iad+2) = zz + hh*gm2(3)
-120                 continue
-110             continue
+                    end do
+                end do
             endif
-100     continue
+        end do
         decfpg = decfpg + npg
-200 end do
+    end do
 !
 !
 !

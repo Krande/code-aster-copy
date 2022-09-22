@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmfici(nno, nddl, wref, vff, dfde,&
                   geom, poids, b)
 !
@@ -69,11 +69,11 @@ subroutine nmfici(nno, nddl, wref, vff, dfde,&
 !
 !    CONSTRUCTION DE LA MATRICE B
 !
-    do 10 n = 1, nno
+    do n = 1, nno
         call dcopy(9, r, 1, b(1, 1, n), 1)
         call dscal(9, -vff(n), b(1, 1, n), 1)
         call dcopy(9, r, 1, b(1, 1, n+nno), 1)
         call dscal(9, vff(n), b(1, 1, n+nno), 1)
-10  continue
+    end do
 !
 end subroutine

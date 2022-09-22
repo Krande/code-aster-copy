@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
                   ipos, base, perm)
     implicit none
@@ -24,6 +24,8 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !     ----------
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/jedema.h"
@@ -35,8 +37,6 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 #include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=*) :: sch1, base
     integer :: ipos, niveau, unit
     aster_logical :: lattr, lcont
@@ -118,7 +118,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     nbobj= -nbval
     write(unit,*) 'NOMBRE D''OBJETS (OU COLLECTIONS) TROUVES :',nbobj
     write(unit,*) ' '
-    if (nbval .eq. 0) goto 9999
+    if (nbval .eq. 0) goto 999
 !
 !     -- RECHERCHE DES NOMS DES OBJETS VERIFIANT LE CRITERE:
 !    -------------------------------------------------------
@@ -133,19 +133,19 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !     -- SI NIVEAU = 0 ON IMPRIME LES NOMS DES OBJETS :
 !     -----------------------------------------------
     if (niveau .eq. 0) then
-        do 1 i = 1, nbobj
+        do i = 1, nbobj
             ob1 = liste(i)
             write(unit,*) '      >',ob1,'<'
-  1     continue
+        end do
 !
 !
     else if (niveau.eq.-1) then
         ASSERT(present(perm))
         ASSERT(perm.eq.'OUI' .or. perm.eq.'NON')
-        do 4 i = 1, nbobj
+        do i = 1, nbobj
             ob1 = liste(i)
             call dbgobj(ob1, perm, unit, '&&UTIMSD')
-  4     continue
+        end do
 !
 !
     else if (niveau.gt.0) then
@@ -156,12 +156,12 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
         if (lattr) then
             write(unit,'(A40,A40)') lb,lb
             write(unit,*) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
-            do 2 i = 1, nbobj
+            do i = 1, nbobj
                 ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .true._1, .false._1,&
                             xous)
-  2         continue
+            end do
         endif
 !
 !       -- IMPRESSION DES VALEURS :
@@ -169,12 +169,12 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
         if (lcont) then
             write(unit,'(A40,A40)') lb,lb
             write(unit,*) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
-            do 3 i = 1, nbobj
+            do i = 1, nbobj
                 ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .false._1, .true._1,&
                             xous)
-  3         continue
+            end do
         endif
 !
     endif
@@ -186,6 +186,6 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !
     flush(unit)
     AS_DEALLOCATE(vk24=liste)
-9999 continue
+999 continue
     call jedema()
 end subroutine

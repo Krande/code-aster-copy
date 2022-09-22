@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                   vc, vk, nume)
     implicit none
@@ -50,8 +50,8 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 !                > 0 : ON SURCHARGE UNE LIGNE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,  nbpm, nbpu
-    integer :: ndim,  i, j, jvale, jlogq, ki, kr, kc, kk
+    integer :: iret, nbpara, nblign, nbpm, nbpu
+    integer :: ndim, i, j, jvale, jlogq, ki, kr, kc, kk
     character(len=3) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
@@ -62,7 +62,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
     call jemarq()
 !
     call tbadap(nomta, nbpar, nompar, vi, vr,&
-                   vc, vk)
+                vc, vk)
 !
     nomtab = ' '
     nomtab = nomta
@@ -95,32 +95,32 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
     ndim = nbpu + 1
     if (ndim .gt. nbpm) then
         ndim = nint((ndim*3.d0)/2.d0)
-        do 10 i = 1, nbpara
+        do i = 1, nbpara
             nomjv = tblp(1+4*(i-1)+2)
             call juveca(nomjv, ndim)
             nomjv = tblp(1+4*(i-1)+3)
             call juveca(nomjv, ndim)
-10      continue
+        end do
     endif
 !
     if (nume .eq. 0) then
         nblign = nblign + 1
         tbnp(2) = nblign
 !
-        do 20 i = 1, nbpara
+        do i = 1, nbpara
             nomjv = tblp(1+4*(i-1)+2)
             call jeecra(nomjv, 'LONUTI', nblign)
-            nomjv = tblp(1+4*(i-1)+3)           
+            nomjv = tblp(1+4*(i-1)+3)
             call jeecra(nomjv, 'LONUTI', nblign)
-20      continue
+        end do
 !
         ki = 0
         kr = 0
         kc = 0
         kk = 0
-        do 30 j = 1, nbpar
+        do j = 1, nbpar
             jnpar = nompar(j)
-            do 32 i = 1, nbpara
+            do i = 1, nbpara
                 inpar = tblp(1+4*(i-1) )
                 if (jnpar .eq. inpar) then
                     type = tblp(1+4*(i-1)+1)(1:3)
@@ -195,19 +195,19 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                     endif
                     goto 34
                 endif
-32          continue
+            end do
             call utmess('F', 'TABLE0_1', sk=jnpar)
-34          continue
-30      continue
+ 34         continue
+        end do
 !
     else
         ki = 0
         kr = 0
         kc = 0
         kk = 0
-        do 40 j = 1, nbpar
+        do j = 1, nbpar
             jnpar = nompar(j)
-            do 42 i = 1, nbpara
+            do i = 1, nbpara
                 inpar = tblp(1+4*(i-1) )
                 if (jnpar .eq. inpar) then
                     type = tblp(1+4*(i-1)+1)(1:3)
@@ -282,10 +282,10 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                     endif
                     goto 44
                 endif
-42          continue
+            end do
             call utmess('F', 'TABLE0_1', sk=jnpar)
-44          continue
-40      continue
+ 44         continue
+        end do
 !
     endif
 !

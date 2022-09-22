@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ut2vgl(nn, nc, p, vg, vl)
     implicit none
     real(kind=8) :: p(3, 3), vg(*), vl(*)
@@ -33,17 +33,17 @@ subroutine ut2vgl(nn, nc, p, vg, vl)
     integer :: i, nc, nn
 !-----------------------------------------------------------------------
     if (mod(nc,2) .eq. 0) then
-        do 10 i = 1, nn * nc, 2
+        do i = 1, nn * nc, 2
             vl(i ) = p(1,1)*vg(i) + p(1,2)*vg(i+1)
             vl(i+1) = p(2,1)*vg(i) + p(2,2)*vg(i+1)
-10      continue
+        end do
 !
     else if (mod(nc,2) .eq. 1) then
-        do 20 i = 1, nn * nc, 3
+        do i = 1, nn * nc, 3
             vl(i ) = p(1,1)*vg(i) + p(1,2)*vg(i+1)
             vl(i+1) = p(2,1)*vg(i) + p(2,2)*vg(i+1)
             vl(i+2) = vg(i+2)
-20      continue
+        end do
 !
     endif
 !

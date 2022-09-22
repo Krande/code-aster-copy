@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asmpi_comm_jev(optmpi, nomjev)
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE : SUR-COUCHE MPI
@@ -36,8 +36,8 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "asterf.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
@@ -52,10 +52,10 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jxveri.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/jxveri.h"
 !
 ! DECLARATION PARAMETRES D'APPELS
     character(len=*) :: optmpi
@@ -105,7 +105,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
     bcrank=0
 !
-    do 10 iobj = 1, nbobj
+    do iobj = 1, nbobj
         if (unseul) then
             ASSERT (nbobj.eq.1)
             call jeveuo(nomjev, 'E', jnomjv)
@@ -136,7 +136,8 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         endif
 !
         if (xous .eq. 'X' .and. stock .ne. 'CONTIG') call jelibe(jexnum(nomjev, iobj))
- 10 continue
+ 10     continue
+    end do
 !
 !
 999 continue

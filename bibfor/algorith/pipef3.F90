@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
                   wref, vff, dfde, mate, geom,&
                   vim, ddepl, deplm, ddepl0, ddepl1,&
@@ -65,20 +65,20 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
 !
 ! BOUCLE SUR LES POINTS DE GAUSS :
 !
-    do 10 kpg = 1, npg
+    do kpg = 1, npg
 !
 !      SAUT AU POINT DE GAUSS : SU(ETA) = SUP + ETA * SUD
         call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
                     geom, poids, b)
 !
-        do 30 i = 1, 3
+        do i = 1, 3
             sup(i) = 0.d0
             sud(i) = 0.d0
-            do 40 j = 1, nddl
+            do j = 1, nddl
                 sup(i) = sup(i) + b(i,j)*up(j)
                 sud(i) = sud(i) + b(i,j)*ud(j)
-40          continue
-30      continue
+            end do
+        end do
 !
 !      INITIALISATION DES COEFFICIENTS DE PILOTAGE
         call r8inir(4, 0.d0, copilo(1, kpg), 1)
@@ -95,6 +95,6 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
             call utmess('F', 'MECANONLINE_59')
         endif
 !
-10  end do
+    end do
 !
 end subroutine

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED  
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -26,8 +26,8 @@
 ! WHICH STICKS TO LAPACK 2.0 VERSION 
 ! ==============================================================
 subroutine ar_dtrevc(side, howmny, select, n, t,&
-                  ldt, vl, ldvl, vr, ldvr,&
-                  mm, m, work, info)
+                     ldt, vl, ldvl, vr, ldvr,&
+                     mm, m, work, info)
 !
 !     SUBROUTINE LAPACK CALCULANT DES VECTEUR PROPRES.
 !-----------------------------------------------------------------------
@@ -253,7 +253,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
         if (somev) then
             m = 0
             pair = .false.
-            do 10 j = 1, n
+            do j = 1, n
                 if (pair) then
                     pair = .false.
                     select( j ) = .false.
@@ -272,7 +272,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         if (select( n )) m = m + 1
                     endif
                 endif
- 10         continue
+            end do
         else
             m = n
         endif
@@ -302,12 +302,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !     PART OF T TO CONTROL OVERFLOW IN TRIANGULAR SOLVER.
 !
     work( 1 ) = zero
-    do 30 j = 2, n
+    do j = 2, n
         work( j ) = zero
-        do 20 i = 1, j - 1
+        do i = 1, j - 1
             work( j ) = work( j ) + abs( t( i, j ) )
- 20     continue
- 30 end do
+        end do
+    end do
 !
 !     INDEX IP IS USED TO SPECIFY THE REAL OR COMPLEX EIGENVALUE:
 !       IP = 0, REAL EIGENVALUE,
@@ -322,7 +322,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
         ip = 0
         is = m
-        do 140 ki = n, 1, -1
+        do ki = n, 1, -1
 !
             if (ip .eq. 1) goto 130
             if (ki .eq. 1) goto 40
@@ -357,15 +357,15 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do 50 k = 1, ki - 1
+                do k = 1, ki - 1
                     work( k+n ) = -t( k, ki )
- 50             continue
+                end do
 !
 !              SOLVE THE UPPER QUASI-TRIANGULAR SYSTEM:
 !                 (T(1:KI-1,1:KI-1) - WR)*X = SCALE*WORK.
 !
                 jnxt = ki - 1
-                do 60 j = ki - 1, 1, -1
+                do j = ki - 1, 1, -1
                     if (j .gt. jnxt) goto 60
                     j1 = j
                     j2 = j
@@ -382,9 +382,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    1-BY-1 DIAGONAL BLOCK
 !
                         call ar_dlaln2(.false._1, 1, 1, smin, one,&
-                                    t( j, j ), ldt, one, one, work( j+n ),&
-                                    n, wr, zero, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j, j ), ldt, one, one, work( j+n ),&
+                                       n, wr, zero, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE X(1,1) TO AVOID OVERFLOW WHEN UPDATING
 !                    THE RIGHT-HAND SIDE.
@@ -411,9 +411,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    2-BY-2 DIAGONAL BLOCK
 !
                         call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                    t( j1, j1 ), ldt, one, one, work( j-1+n ),&
-                                    n, wr, zero, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j1, j1 ), ldt, one, one, work( j-1+n ),&
+                                       n, wr, zero, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE X(1,1) AND X(2,1) TO AVOID OVERFLOW WHEN
 !                    UPDATING THE RIGHT-HAND SIDE.
@@ -440,7 +440,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         call daxpy(j-2, -x( 2, 1 ), t( 1, j ), 1, work( 1+n ),&
                                    1)
                     endif
- 60             continue
+ 60                 continue
+                end do
 !
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
@@ -451,9 +452,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     remax = one / abs( vr( ii, is ) )
                     call dscal(ki, remax, vr( 1, is ), 1)
 !
-                    do 70 k = ki + 1, n
+                    do k = ki + 1, n
                         vr( k, is ) = zero
- 70                 continue
+                    end do
                 else
                     if (ki .gt. 1) call dgemv('N', n, ki-1, one, vr,&
                                               ldvr, work( 1+n ), 1, work( ki+n ), vr( 1, ki ),&
@@ -485,16 +486,16 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do 80 k = 1, ki - 2
+                do k = 1, ki - 2
                     work( k+n ) = -work( ki-1+n )*t( k, jnxt )
                     work( k+n2 ) = -work( ki+n2 )*t( k, ki )
- 80             continue
+                end do
 !
 !              SOLVE UPPER QUASI-TRIANGULAR SYSTEM:
 !              (T(1:KI-2,1:KI-2) - (WR+I*WI))*X = SCALE*(WORK+I*WORK2)
 !
                 jnxt = ki - 2
-                do 90 j = ki - 2, 1, -1
+                do j = ki - 2, 1, -1
                     if (j .gt. jnxt) goto 90
                     j1 = j
                     j2 = j
@@ -511,9 +512,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    1-BY-1 DIAGONAL BLOCK
 !
                         call ar_dlaln2(.false._1, 1, 2, smin, one,&
-                                    t( j, j ), ldt, one, one, work( j+n ),&
-                                    n, wr, wi, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j, j ), ldt, one, one, work( j+n ),&
+                                       n, wr, wi, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE X(1,1) AND X(1,2) TO AVOID OVERFLOW WHEN
 !                    UPDATING THE RIGHT-HAND SIDE.
@@ -547,9 +548,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    2-BY-2 DIAGONAL BLOCK
 !
                         call ar_dlaln2(.false._1, 2, 2, smin, one,&
-                                    t( j1, j1 ), ldt, one, one, work( j-1+n ),&
-                                    n, wr, wi, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j1, j1 ), ldt, one, one, work( j-1+n ),&
+                                       n, wr, wi, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE X TO AVOID OVERFLOW WHEN UPDATING
 !                    THE RIGHT-HAND SIDE.
@@ -588,7 +589,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         call daxpy(j-2, -x( 2, 2 ), t( 1, j ), 1, work( 1+n2 ),&
                                    1)
                     endif
- 90             continue
+ 90                 continue
+                end do
 !
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
@@ -597,18 +599,18 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     call dcopy(ki, work( 1+n2 ), 1, vr( 1, is ), 1)
 !
                     emax = zero
-                    do 100 k = 1, ki
+                    do k = 1, ki
                         emax = max( emax, abs( vr( k, is-1 ) )+ abs( vr( k, is ) ))
-100                 continue
+                    end do
 !
                     remax = one / emax
                     call dscal(ki, remax, vr( 1, is-1 ), 1)
                     call dscal(ki, remax, vr( 1, is ), 1)
 !
-                    do 110 k = ki + 1, n
+                    do k = ki + 1, n
                         vr( k, is-1 ) = zero
                         vr( k, is ) = zero
-110                 continue
+                    end do
 !
                 else
 !
@@ -626,9 +628,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     endif
 !
                     emax = zero
-                    do 120 k = 1, n
+                    do k = 1, n
                         emax = max( emax, abs( vr( k, jnxt ) )+ abs( vr( k, ki ) ))
-120                 continue
+                    end do
                     remax = one / emax
                     call dscal(n, remax, vr( 1, jnxt ), 1)
                     call dscal(n, remax, vr( 1, ki ), 1)
@@ -640,7 +642,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 130         continue
             if (ip .eq. 1) ip = 0
             if (ip .eq. -1) ip = 1
-140     continue
+        end do
     endif
 !
     if (leftv) then
@@ -649,7 +651,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
         ip = 0
         is = 1
-        do 260 ki = 1, n
+        do ki = 1, n
 !
             if (ip .eq. -1) goto 250
             if (ki .eq. n) goto 150
@@ -676,9 +678,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do 160 k = ki + 1, n
+                do k = ki + 1, n
                     work( k+n ) = -t( ki, k )
-160             continue
+                end do
 !
 !              SOLVE THE QUASI-TRIANGULAR SYSTEM:
 !                 (T(KI+1:N,KI+1:N) - WR)'*X = SCALE*WORK
@@ -687,7 +689,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                 vcrit = bignum
 !
                 jnxt = ki + 1
-                do 170 j = ki + 1, n
+                do j = ki + 1, n
                     if (j .lt. jnxt) goto 170
                     j1 = j
                     j2 = j
@@ -719,9 +721,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SOLVE (T(J,J)-WR)'*X = WORK
 !
                         call ar_dlaln2(.false._1, 1, 1, smin, one,&
-                                    t( j, j ), ldt, one, one, work( j+n ),&
-                                    n, wr, zero, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j, j ), ldt, one, one, work( j+n ),&
+                                       n, wr, zero, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
@@ -756,9 +758,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                      (T(J+1,J)    T(J+1,J+1)-WR)             ( WORK2 )
 !
                         call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                    t( j, j ), ldt, one, one, work( j+n ),&
-                                    n, wr, zero, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j, j ), ldt, one, one, work( j+n ),&
+                                       n, wr, zero, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
@@ -770,7 +772,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         vcrit = bignum / vmax
 !
                     endif
-170             continue
+170                 continue
+                end do
 !
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
@@ -781,9 +784,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     remax = one / abs( vl( ii, is ) )
                     call dscal(n-ki+1, remax, vl( ki, is ), 1)
 !
-                    do 180 k = 1, ki - 1
+                    do k = 1, ki - 1
                         vl( k, is ) = zero
-180                 continue
+                    end do
 !
                 else
 !
@@ -817,10 +820,10 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do 190 k = ki + 2, n
+                do k = ki + 2, n
                     work( k+n ) = -work( ki+n )*t( ki, k )
                     work( k+n2 ) = -work( ki+1+n2 )*t( ki+1, k )
-190             continue
+                end do
 !
 !              SOLVE COMPLEX QUASI-TRIANGULAR SYSTEM:
 !              ( T(KI+2,N:KI+2,N) - (WR-I*WI) )*X = WORK1+I*WORK2
@@ -829,7 +832,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                 vcrit = bignum
 !
                 jnxt = ki + 2
-                do 200 j = ki + 2, n
+                do j = ki + 2, n
                     if (j .lt. jnxt) goto 200
                     j1 = j
                     j2 = j
@@ -864,9 +867,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SOLVE (T(J,J)-(WR-I*WI))*(X11+I*X12)= WK+I*WK2
 !
                         call ar_dlaln2(.false._1, 1, 2, smin, one,&
-                                    t( j, j ), ldt, one, one, work( j+n ),&
-                                    n, wr, -wi, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j, j ), ldt, one, one, work( j+n ),&
+                                       n, wr, -wi, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
@@ -912,9 +915,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                      ((T(J+1,J) T(J+1,J+1))             )
 !
                         call ar_dlaln2(.true._1, 2, 2, smin, one,&
-                                    t( j, j ), ldt, one, one, work( j+n ),&
-                                    n, wr, -wi, x, 2,&
-                                    scale, xnorm, ierr)
+                                       t( j, j ), ldt, one, one, work( j+n ),&
+                                       n, wr, -wi, x, 2,&
+                                       scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
@@ -933,7 +936,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                         vcrit = bignum / vmax
 !
                     endif
-200             continue
+200                 continue
+                end do
 !
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
@@ -942,17 +946,17 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     call dcopy(n-ki+1, work( ki+n2 ), 1, vl( ki, is+ 1 ), 1)
 !
                     emax = zero
-                    do 220 k = ki, n
+                    do k = ki, n
                         emax = max( emax, abs( vl( k, is ) )+ abs( vl( k, is+1 ) ))
-220                 continue
+                    end do
                     remax = one / emax
                     call dscal(n-ki+1, remax, vl( ki, is ), 1)
                     call dscal(n-ki+1, remax, vl( ki, is+1 ), 1)
 !
-                    do 230 k = 1, ki - 1
+                    do k = 1, ki - 1
                         vl( k, is ) = zero
                         vl( k, is+1 ) = zero
-230                 continue
+                    end do
                 else
                     if (ki .lt. n-1) then
                         call dgemv('N', n, n-ki-1, one, vl( 1, ki+2 ),&
@@ -967,9 +971,9 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     endif
 !
                     emax = zero
-                    do 240 k = 1, n
+                    do k = 1, n
                         emax = max( emax, abs( vl( k, ki ) )+ abs( vl( k, ki+1 ) ))
-240                 continue
+                    end do
                     remax = one / emax
                     call dscal(n, remax, vl( 1, ki ), 1)
                     call dscal(n, remax, vl( 1, ki+1 ), 1)
@@ -984,7 +988,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
             if (ip .eq. -1) ip = 0
             if (ip .eq. 1) ip = -1
 !
-260     continue
+        end do
 !
     endif
 !

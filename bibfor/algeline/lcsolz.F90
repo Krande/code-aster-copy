@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcsolz(a, b, ndim, n, nbscmb,&
                   iret)
     implicit none
@@ -46,58 +46,58 @@ subroutine lcsolz(a, b, ndim, n, nbscmb,&
     iret = 0
     zero = 0.d0
     rmin = 100.d0*r8miem()
-    do 1000 i = 1, n-1
+    do i = 1, n-1
 !
 !        DETERMINATION DU MEILLEUR PIVOT SUR LA COLONNE
         apivot = dcabs2(a(i,i))
         ipivot = i
-        do 100 k = i+1, n
+        do k = i+1, n
             if (apivot - dcabs2(a(k,i)) .lt. zero) then
                 apivot = dcabs2(a(k,i))
                 ipivot = k
             endif
-100      continue
+        end do
         if (apivot .lt. rmin) then
             iret = 1
-            goto 9999
+            goto 999
         endif
 !
 !        PERMUTATION DES LIGNES DE LA MATRICE
-        do 200 j = 1, n
+        do j = 1, n
             ak = a(i,j)
             a(i,j) = a(ipivot,j)
             a(ipivot,j) = ak
-200      continue
+        end do
 !
 !        PERMUTATION DES LIGNES DES SECONDS MEMBRES
-        do 300 iscmb = 1, nbscmb
+        do iscmb = 1, nbscmb
             bk = b(i,iscmb)
             b(i,iscmb) = b(ipivot,iscmb)
             b(ipivot,iscmb) = bk
-300      continue
+        end do
 !
 !        CALCUL DES NOUVEAUX TERMES DE LA MATRICE ET DES SECONDS MEMBRES
-        do 600 il = i+1, n
-            do 400 iscmb = 1, nbscmb
+        do il = i+1, n
+            do iscmb = 1, nbscmb
                 b(il,iscmb) = b(il,iscmb) - a(il,i)*b(i,iscmb)/a(i,i)
-400          continue
-            do 500 ic = i+1, n
+            end do
+            do ic = i+1, n
                 a(il,ic) = a(il,ic) - a(il,i)*a(i,ic)/a(i,i)
-500          continue
-600      continue
+            end do
+        end do
 !
-1000  end do
+    end do
 !
 !     RESOLUTION
-    do 1100 iscmb = 1, nbscmb
+    do iscmb = 1, nbscmb
         b(n,iscmb) = b(n,iscmb)/a(n,n)
-        do 1200 i = n-1, 1, -1
-            do 1300 j = i+1, n
+        do i = n-1, 1, -1
+            do j = i+1, n
                 b(i,iscmb) = b(i,iscmb)-a(i,j)*b(j,iscmb)
-1300          continue
+            end do
             b(i,iscmb) = b(i,iscmb)/a(i,i)
-1200      continue
-1100  end do
+        end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

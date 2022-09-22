@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
                  bsigma)
     implicit none
@@ -37,13 +37,13 @@ subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
 !     OUT BSIGMA  : VECTEUR (BT)*(SIGMA)*JACGAU
 !     ------------------------------------------------------------------
 !
-    do 10 i = 1, lonlig
+    do i = 1, lonlig
         valbsi = 0.0d0
-        do 20 j = 1, loncol
+        do j = 1, loncol
             valbsi = valbsi + bmat(j,i)*sigma(j)
-20      continue
+        end do
 !
         bsigma(i) = bsigma(i) + valbsi*jacgau
-10  end do
+    end do
 !
 end subroutine

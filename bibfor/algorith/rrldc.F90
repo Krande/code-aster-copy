@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rrldc(a, nordre, x, nves)
 !    A. COMTE                                 DATE 31/07/91
 !-----------------------------------------------------------------------
@@ -47,33 +47,33 @@ subroutine rrldc(a, nordre, x, nves)
     ilign2 = nordre
 !
 !     RESOLUTION DESCENDANTE
-    do 25 nv = 1, nves
-        do 20 in = ilign1, ilign2-1
+    do nv = 1, nves
+        do in = ilign1, ilign2-1
             r8val = - x (in,nv)
-            do 21 i = in+1, ilign2
+            do i = in+1, ilign2
                 idiag=i*(i-1)/2+1
                 x(i,nv) = x(i,nv) + r8val*dconjg(a(idiag+i-in))
-21          continue
-20      continue
-25  end do
+            end do
+        end do
+    end do
 !
 !     RESOLUTION DIAGONALE
-    do 39 nv = 1, nves
-        do 33 in = ilign1, ilign2
+    do nv = 1, nves
+        do in = ilign1, ilign2
             indiag = in*(in-1)/2+1
             x ( in , nv ) = x ( in , nv ) / a(indiag)
-33      continue
-39  end do
+        end do
+    end do
 !
 !     RESOLUTION REMONTANTE
-    do 45 nv = 1, nves
-        do 40 in = ilign2, ilign1+1, -1
+    do nv = 1, nves
+        do in = ilign2, ilign1+1, -1
             indiag = in*(in-1)/2+1
             r8val = - x ( in , nv )
-            do 41 i = 1, in-1
+            do i = 1, in-1
                 x(i,nv) = x(i,nv) + r8val*a(indiag+in-i)
-41          continue
-40      continue
-45  end do
+            end do
+        end do
+    end do
 !
 end subroutine

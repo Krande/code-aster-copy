@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
                   sigi, dvin, iret)
     implicit none
@@ -96,9 +96,9 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
 !
 ! --  VARIABLES INTERNES
 !
-    do 7 itens = 1, 2
+    do itens = 1, 2
         ecrou(itens) = vini(itens+7)
- 7  end do
+    end do
 !
     dmg = vini(11)
     dmgmi = vini(10)
@@ -124,9 +124,9 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
         sequi=grj1
     endif
 !------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
-    do 10 itens = 1, ndt
+    do itens = 1, ndt
         if (itens .le. 3) smx(itens)=smx(itens)-grj1/3.d0
-10  end do
+    end do
 !
 !----- EQUATION DONNANT LA DERIVEE DU MICROENDOMMAG
     ddmgmi=(pkc/3)*((1-dmgmi)**4)
@@ -141,7 +141,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
         devcum=eps0*(sinh(terme1))
     else
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !----- EQUATION DONNANT LA DERIVEE DE H
@@ -156,7 +156,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
             decrou(2)=(h2/grj2v)*(h2st-(delta2*ecrou(2)))*devcum
         else
             iret=1
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -172,26 +172,26 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
         ddmg=biga*sinh(sinn/sig0)
     else
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !
     if (grj2v .le. epsi) then
-        do 33 itens = 1, ndt
+        do itens = 1, ndt
             devi(itens)=ze
-33      continue
+        end do
     else
-        do 12 itens = 1, ndt
+        do itens = 1, ndt
             devi(itens)=td*devcum*smx(itens)/grj2v
-12      continue
+        end do
     endif
 !
 ! --    DERIVEES DES VARIABLES INTERNES
 !
-    do 30 itens = 1, 6
+    do itens = 1, 6
         dvin(itens) = devi(itens)
-30  end do
+    end do
     dvin(7) = devcum
     dvin(8) = decrou(1)
     dvin(9) = decrou(2)
@@ -201,5 +201,5 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
 ! DANS LCDPEC
     dvin(12) = ze
 !
-9999  continue
+999 continue
 end subroutine

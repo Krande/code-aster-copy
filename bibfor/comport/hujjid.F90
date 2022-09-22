@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hujjid(mod, mater, indi, deps, prox,&
                   proxc, yd, yf, vind, r,&
                   drdy, iret)
@@ -117,19 +117,19 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 ! =====================================================================
 ! --- PROPRIETES HUJEUX MATERIAU --------------------------------------
 ! =====================================================================
-    n    = mater(1,2)
+    n = mater(1,2)
     beta = mater(2,2)
-    d    = mater(3,2)
-    b    = mater(4,2)
-    phi  = mater(5,2)
+    d = mater(3,2)
+    b = mater(4,2)
+    phi = mater(5,2)
     angdil=mater(6,2)
-    pco  = mater(7,2)
+    pco = mater(7,2)
     pref = mater(8,2)
     acyc = mater(9,2)
     amon = mater(10,2)
     ccyc = deux*mater(11,2)
     cmon = mater(12,2)
-    m    = sin(degr*phi)
+    m = sin(degr*phi)
     mdil = sin(degr*angdil)
     coef = mater(20,2)
     alpha= coef*d12
@@ -162,24 +162,24 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
     enddo
 !
     do i = 1, 9
-       sigdc(i)=zero
+        sigdc(i)=zero
     enddo
 !
     nbmeca = 0
     nbmect = 0
     do k = 1, 7
-       if (indi(k) .gt. 0) then
-           nbmect = nbmect + 1
-           if (indi(k) .le. 8) nbmeca = nbmeca + 1
-       endif
-       dlambd(k) = zero
-       ad(k) = zero
-       ksi(k) = zero
-       q(k) = zero
-       p(k) = zero
+        if (indi(k) .gt. 0) then
+            nbmect = nbmect + 1
+            if (indi(k) .le. 8) nbmeca = nbmeca + 1
+        endif
+        dlambd(k) = zero
+        ad(k) = zero
+        ksi(k) = zero
+        q(k) = zero
+        p(k) = zero
     enddo
 !
-    do 5 k = 1, nbmect
+    do k = 1, nbmect
         kk = indi(k)
 !
         dlambd(k) = yf(ndt+1+nbmeca+k)
@@ -187,7 +187,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
         if (kk .le. 8) rc(k) = yf(ndt+1+k)
 !
         call hujddd('PSI   ', indi(k), mater, indi, yf,&
-             vind, psi((k-1)*ndt+1), dpsids, iret)
+                    vind, psi((k-1)*ndt+1), dpsids, iret)
         if (iret .eq. 1) goto 1000
 !
         if (indi(k) .lt. 4) then
@@ -239,10 +239,11 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
             call utmess('F', 'COMPOR1_8')
         endif
 !
- 5  continue
+  5     continue
+    end do
 !
     epsvp= yf(ndt+1)
-    pc   = pco*exp(-beta*epsvp)
+    pc = pco*exp(-beta*epsvp)
     cmon = cmon * pc/pref
     ccyc = ccyc * pc/pref
 !
@@ -468,9 +469,9 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
                 if (i .ne. (kk-4)) then
                     if ((-q(k)/pref) .gt. tole1) then
                         delta(i) = dlambd(k)*(m*pk*(un-b*log(pk/pc))/ (2.d0*q(k))*(th(1)*si-sigdc&
-                        &(3*k-2)*si*prodc/ (2.d0*q(k)**2.d0)) -alpha* (dksidr(k)*dpsi+&
-                        & ksi(k)/2.d0*m*(un-b*log(pk/pc))*(prodm -ps*prodc/(2.d0*q(k)*&
-                        &*2.d0))/q(k)))
+                                   &(3*k-2)*si*prodc/ (2.d0*q(k)**2.d0)) -alpha* (dksidr(k)*dpsi+&
+                                   & ksi(k)/2.d0*m*(un-b*log(pk/pc))*(prodm -ps*prodc/(2.d0*q(k)*&
+                                   &*2.d0))/q(k)))
                     else
                         delta(i) = dlambd(k)*(-alpha)*dksidr(k)*mdil
                     endif
@@ -629,7 +630,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
             th(2) = vind(4*kk-8)
 !
 ! --- CALCUL DE F = M(1-BLOG((PK-PTRAC)/PC))
-            pk  = p(k) -ptrac
+            pk = p(k) -ptrac
             fac = m*b*pk*beta
 !
 ! --- CALCUL DE D(SIG-CYC)/D(EVP)
@@ -645,7 +646,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
                     sc(i) = sigdc(3*k-2)*si
                     tc(i) = th(1)*si
                     xc(i) = xh(1)*si
-                    si    = -si
+                    si = -si
                 endif
             enddo
             sc(ndt+5-kk) = sigdc(3*k)
@@ -687,7 +688,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
         dlevds(i) = zero
     enddo
 !
-    do 131 k = 1, nbmect
+    do k = 1, nbmect
         kk =indi(k)
         pk =p(k) -ptrac
         if ((kk.eq.4) .or. (kk.ge.8)) goto 1310
@@ -707,13 +708,14 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 !
             if ((-q(k)/pref) .le. tole1) goto 131
 !
-            dlevds(ndt+1-kk) = dlevds(ndt+1-kk) + dlambd(k) * ksi(k)* coef*sigd(3) /pcoh/q(k)/2.d0
+            dlevds(ndt+1-kk) = dlevds(ndt+1-kk) + dlambd(k) * ksi(k)* coef*sigd(3) /pcoh/q(k)/2.d&
+                               &0
 !
             si = un
             do i = 1, ndi
                 if (i .ne. kk .and. (.not.dila)) then
-                    dlevds(i) = dlevds(i) + dlambd(k)*ksi(k)*coef*( sigd(1)*si /p(k)/q(k)/2.d0 -&
-                                &d12*q(k) /p(k)**deux)
+                    dlevds(i) = dlevds(i) + dlambd(k)*ksi(k)*coef*( sigd(1)*si /p(k)/q(k)/2.d0 -d&
+                                &12*q(k) /p(k)**deux)
                     si = -si
                 else if (i.ne.kk .and. dila) then
                     dlevds(i) = dlevds(i) + dlambd(k)*ksi(k)*coef* sigd(1)*si /pcoh/q(k)/2.d0
@@ -761,7 +763,8 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
             dlevds(i) = dlevds(i)/ccond
         enddo
 !
-131  continue
+131     continue
+    end do
 1310 continue
 !
 ! =====================================================================
@@ -781,7 +784,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
                 th(2) = vind(4*kk-8)
                 prodc = 2.d0*sigdc(3*k-2)*(xh(1)-rc(k)*th(1)) + (sigdc(3*k)*(xh(2)-rc(k)*th(2)))
                 prodm = 2.d0*sigd(1)*(xh(1)-rc(k)*th(1)) + (sigd(3)*( xh(2)-rc(k)*th(2)))
-                ps    = 2.d0*sigd(1)*sigdc(3*k-2)+sigd(3)+sigdc(3*k)
+                ps = 2.d0*sigd(1)*sigdc(3*k-2)+sigd(3)+sigdc(3*k)
 !
                 if ((-q(k)/pref) .gt. tole1) then
                     dlevde = dlevde + dlambd(k)*coef*ksi(k)/q(k)/2.d0* m*b*beta*(prodm - ps/2.d0/&

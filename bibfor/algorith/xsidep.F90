@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                   igeom, typmod, imate, compor, jpintt,&
                   cnset, heavt, lonch, basloc, idepl,&
@@ -74,8 +74,8 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     real(kind=8) :: coorse(81)
     integer :: nse, npg, imate, ddlc, ddlm, ndim, nfh
     integer :: j, ise, in, ino, cnset(4*32), heavt(*), lonch(10)
-    integer ::  idecpg, nbsig, ig, ifiss, idebs, jpmilt, nfe, idepl
-    integer ::  jpintt, igeom, jheavn, ncompn, heavn(nnop,5)
+    integer :: idecpg, nbsig, ig, ifiss, idebs, jpmilt, nfe, idepl
+    integer :: jpintt, igeom, jheavn, ncompn, heavn(nnop, 5)
     integer :: irese, nno, jtab(7), ncomp, iret
     integer :: jstno
 !
@@ -94,7 +94,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elrefe_info(fami='RIGI',ndim=ndim)
+    call elrefe_info(fami='RIGI', ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
     if (.not.iselli(elrefp)) then
@@ -102,33 +102,32 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-    if (nfh.gt.0 .or. nfe.gt.0) then
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+    if (nfh .gt. 0 .or. nfe .gt. 0) then
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn.eq.5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            enddo
         enddo
-      enddo
     endif
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
-        do 111 in = 1, nno
+        do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
-            do 112 j = 1, ndim
+            do j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino.gt.1000 .and. ino.lt.2000) then
@@ -141,13 +140,13 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-112          continue
-111      continue
+            end do
+        end do
 !
 !       FONCTION HEAVYSIDE CSTE POUR CHAQUE FISSURE SUR LE SS-ELT
-        do 113 ifiss = 1, nfiss
+        do ifiss = 1, nfiss
             he(ifiss) = heavt(ncomp*(ifiss-1)+ise)
-113      continue
+        end do
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG CORRESPONDANTE
         idecpg = npg * (ise-1)
@@ -174,6 +173,6 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 !
         endif
 !
-110  end do
+    end do
 !
 end subroutine

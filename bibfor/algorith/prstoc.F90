@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine prstoc(vecsol, vestoc, j, k, iad,&
                   nbvale, nbrefe, nbdesc)
     implicit none
@@ -37,7 +37,7 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer ::    ivalp, idesp, irefp, j, k
+    integer :: ivalp, idesp, irefp, j, k
     integer :: nbrefe, nbvale, nbdesc, iad, nbvec
     character(len=19) :: vecsol, vestoc
     character(len=24) :: chaine
@@ -73,13 +73,13 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
 !
     call dcopy(nbvec, vale, 1, zr(ivalp), 1)
 !
-    do 13 kb = 1, nbdesc
+    do kb = 1, nbdesc
         zi(idesp+kb-1) = desc(kb)
-13  continue
+    end do
 !
-    do 14 kb = 1, nbrefe
+    do kb = 1, nbrefe
         zk24(irefp+kb-1) = refe(kb)
-14  continue
+    end do
 !
 !
     call detrsd('CHAM_NO', vecsol)

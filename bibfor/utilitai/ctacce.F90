@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                   niord, nkcha, resu)
     implicit none
@@ -157,9 +157,9 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 call jelira(nlist, 'LONMAX', nbval)
                 call jeveuo(nlist, 'L', jlist)
                 call wkvect(nival, 'V V I', nbval, jival)
-                do 10 i = 1, nbval
+                do i = 1, nbval
                     zi(jival+i-1) = zi(jlist+i-1)
-10              continue
+                end do
             endif
 !
 !    -- ACCES PAR INST, FREQ, LIST_INST, LIST_FREQ :
@@ -192,9 +192,9 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 call jelira(nlist, 'LONMAX', nbval)
                 call jeveuo(nlist, 'L', jlist)
                 call wkvect(nrval, 'V V R', nbval, jrval)
-                do 20 i = 1, nbval
+                do i = 1, nbval
                     zr(jrval+i-1)=zr(jlist+i-1)
-20              continue
+                end do
             endif
 !
 !    -- ACCES TOUT_ORDRE :
@@ -213,17 +213,16 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !         -- SI LE RESULTAT EST UN EVOL_XXX, ON FORCE TYPAC='INST'
 !            POUR QUE LES INSTANTS SOIENT IMPRIMES DANS LA TABLE :
             call gettco(resu, concep)
-            if ( (concep(1:5) .eq. 'EVOL_') .or. &
-                 (concep(1:10) .eq. 'DYNA_TRANS') ) then
+            if ((concep(1:5) .eq. 'EVOL_') .or. (concep(1:10) .eq. 'DYNA_TRANS')) then
                 typac='INST'
                 call wkvect(nrval, 'V V R', nbval, jrval)
-                do 25, kk=1,nbval
-                nuord=zi(jival-1+kk)
-                call rsadpa(resu, 'L', 1, 'INST', nuord,&
-                            0, sjv=jinst, styp=k8b)
-                rinst=zr(jinst)
-                zr(jrval-1+kk) = rinst
-25              continue
+                do kk = 1, nbval
+                    nuord=zi(jival-1+kk)
+                    call rsadpa(resu, 'L', 1, 'INST', nuord,&
+                                0, sjv=jinst, styp=k8b)
+                    rinst=zr(jinst)
+                    zr(jrval-1+kk) = rinst
+                end do
             else
                 typac = 'ORDRE'
                 call wkvect(nrval, 'V V R', 1, jrval)
@@ -245,7 +244,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !
         if (typac .eq. 'ORDRE') then
             call jeveuo(nival, 'L', jival)
-            do 30 i = 1, nbval
+            do i = 1, nbval
                 zi(jniord+i-1)=zi(jival+i-1)
                 call rsexch(' ', resu, nsymb, zi(jival+i-1), zk24(jkcha+i- 1),&
                             n1)
@@ -255,11 +254,11 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                     call utmess('I', 'TABLE0_38', sk=valk, si=vali)
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                 endif
-30          continue
+            end do
 !
         else if (typac .eq. 'MODE') then
             call jeveuo(nival, 'L', jival)
-            do 40 i = 1, nbval
+            do i = 1, nbval
                 call rsorac(resu, 'NUME_MODE', zi(jival+i-1), 0.0d0, k8b,&
                             cbid, epsi, crit, tord, 0,&
                             n1)
@@ -284,11 +283,12 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                     call utmess('I', 'TABLE0_38', sk=valk, si=vali)
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                 endif
-40          continue
+ 40             continue
+            end do
 !
         else if (typac .eq. 'INST' .or. typac .eq. 'FREQ') then
             call jeveuo(nrval, 'L', jrval)
-            do 50 i = 1, nbval
+            do i = 1, nbval
                 call rsorac(resu, typac, 0, zr(jrval+i-1), k8b,&
                             cbid, epsi, crit, tord, 0,&
                             n1)
@@ -316,7 +316,8 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                     call utmess('I', 'TABLE0_38', sk=valk, si=vali)
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                 endif
-50          continue
+ 50             continue
+            end do
         endif
     endif
 !

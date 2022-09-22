@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevol(typtab, nommat, symax, nbopt, option)
     implicit none
 #include "asterf_types.h"
@@ -111,13 +111,13 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     lamorc = .false.
     lsymm = .false.
 !
-    call getvtx(' ', 'AXIS',scal = symm, nbret = n1)
+    call getvtx(' ', 'AXIS', scal = symm, nbret = n1)
     if (symm .eq. 'OUI') then
         lsymm = .true.
         call utmess('I', 'POSTRCCM_58')
     endif
 !
-    do 10 i = 1, nbopt
+    do i = 1, nbopt
         if (option(i) .eq. 'PM_PB') then
             lpmpb = .true.
         else if (option(i) .eq. 'SN') then
@@ -128,7 +128,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
         else if (option(i) .eq. 'AMORCAGE') then
             lamorc = .true.
         endif
- 10 end do
+    end do
 !
     if (lamorc .and. (lpmpb .or. lsn .or. lfatig)) then
         call utmess('F', 'POSTRCCM_3')
@@ -144,7 +144,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
     if (lamorc) then
         call rcevoa(typtab, nommat)
-        goto 9999
+        goto 999
     endif
 !
 !     ------------------------------------------------------------------
@@ -163,9 +163,9 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
 !     ------------------------------------------------------------------
 !
-    do 100 i = 1, nbinti
+    do i = 1, nbinti
 !
-        do 110 j = 1, nbtran
+        do j = 1, nbtran
 !
             kinti = zk16(jinti-1+nbtran*(i-1)+j)
 !
@@ -252,12 +252,12 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
                 call jedetr(cspte)
             endif
 !
-110     continue
+        end do
 !
-100 end do
+    end do
 !
     call jedetr(intitu)
 !
-9999 continue
+999 continue
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asmchc(matas)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -30,8 +31,7 @@ subroutine asmchc(matas)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+!
     character(len=*) :: matas
 ! OBJET :
 !        TRAITEMENT DES CHARGES CINEMATIQUES DANS UNE MATRICE ASSEMBLEE
@@ -65,7 +65,7 @@ subroutine asmchc(matas)
     call jeexin(mat//'.CCVA', ier)
     ASSERT(ier.eq.0)
     call jeexin(mat//'.CCID', ier)
-    if (ier .eq. 0) goto 9999
+    if (ier .eq. 0) goto 999
 !
     call jelira(mat//'.REFA', 'CLAS', cval=base)
     call jeveuo(mat//'.REFA', 'E', vk24=refa)
@@ -97,7 +97,7 @@ subroutine asmchc(matas)
     AS_ALLOCATE(vi=elim, size=neq)
     call jeveuo(mat//'.CCID', 'L', vi=ccid)
     nelim=0
-    do 1 ieq = 1, neq
+    do ieq = 1, neq
         if (imatd .ne. 0) then
             keta=ccid(nulg(ieq))
         else
@@ -110,13 +110,13 @@ subroutine asmchc(matas)
         else
             elim(ieq)=0
         endif
-  1 end do
+    end do
 !
 !
 !
     if (nelim .eq. 0) then
         refa(3)='ELIMF'
-        goto 9999
+        goto 999
     endif
 !     -----------------------------------------------------------------
 !
@@ -135,27 +135,27 @@ subroutine asmchc(matas)
     call wkvect(mat//'.CCLL', base//' V I ', 3*nelim, jccll)
 !
     kfin=0
-    do 21 jcol = 1, neq
+    do jcol = 1, neq
         kdeb = kfin + 1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             zi(jccll-1+3*(jelim-1)+1) = jcol
-            do 11 k = kdeb, kfin - 1
+            do k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .eq. 0) zi( jccll-1+3*(jelim-1)+2)=zi(jccll-1+ 3*(jelim-1)+2 ) +1
- 11         continue
+            end do
 !
         else
-            do 12 k = kdeb, kfin - 1
+            do k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .ne. 0) zi( jccll-1+3*(ielim-1)+2)=zi(jccll-1+ 3*(ielim-1)+2 ) +1
- 12         continue
+            end do
         endif
- 21 end do
+    end do
 !
 !
 !     -- CALCUL DE NCCVA ET .CCLL(3*(I-1)+3) :
@@ -194,14 +194,14 @@ subroutine asmchc(matas)
 !
     AS_ALLOCATE(vi=remplis, size=nelim)
     kfin=0
-    do 121 jcol = 1, neq
+    do jcol = 1, neq
         kdeb = kfin + 1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             deciel=zi(jccll-1+3*(jelim-1)+3)
-            do 111 k = kdeb, kfin - 1
+            do k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .eq. 0) then
@@ -214,10 +214,10 @@ subroutine asmchc(matas)
                         zc(jccva-1+deciel+iremp)= zc(jvalm-1+k)
                     endif
                 endif
-111         continue
+            end do
 !
         else
-            do 112 k = kdeb, kfin - 1
+            do k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 decjel=zi(jccll-1+3*(ielim-1)+3)
@@ -239,10 +239,10 @@ subroutine asmchc(matas)
                         endif
                     endif
                 endif
-112         continue
+            end do
         endif
 !
-121 end do
+    end do
 !
 !
 !---  "SIMPLIFICATION" DE .VALM : 1. SUR LA DIAGONALE ET 0. EN DEHORS
@@ -251,7 +251,7 @@ subroutine asmchc(matas)
 !     TROUVERA SUR LA DIAGONALE ET QU'UN N L'EQUILIBRERA DANS LE
 !     SECOND MEMBRE
     kfin=0
-    do 221 jcol = 1, neq
+    do jcol = 1, neq
         kdeb = kfin + 1
         kfin = smdi(jcol)
         jelim = elim(jcol)
@@ -267,7 +267,7 @@ subroutine asmchc(matas)
         endif
 !
         if (jelim .ne. 0) then
-            do 211 k = kdeb, kfin -1
+            do k = kdeb, kfin -1
                 if (typmat .eq. 1) then
                     zr(jvalm-1+k)=0.d0
                     if (nonsym) zr(jvalm2-1+k)=0.d0
@@ -275,10 +275,10 @@ subroutine asmchc(matas)
                     zc(jvalm-1+k)=dcmplx(0.d0,0.d0)
                     if (nonsym) zc(jvalm2-1+k)=dcmplx(0.d0,0.d0)
                 endif
-211         continue
+            end do
 !
         else
-            do 212 k = kdeb, kfin -1
+            do k = kdeb, kfin -1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .ne. 0) then
@@ -290,17 +290,17 @@ subroutine asmchc(matas)
                         if (nonsym) zc(jvalm2-1+k)=dcmplx(0.d0,0.d0)
                     endif
                 endif
-212         continue
+            end do
         endif
 !
-221 end do
+    end do
 !
     refa(3)='ELIMF'
 !
 !
 !
 !
-9999 continue
+999 continue
     AS_DEALLOCATE(vi=remplis)
     AS_DEALLOCATE(vi=elim)
 !     CALL CHEKSD('sd_matr_asse',MAT,IRET)

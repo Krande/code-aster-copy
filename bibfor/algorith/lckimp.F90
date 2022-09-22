@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lckimp(BEHinteg,&
-                  ndim, typmod, option, mat, epsm,&
-                  deps, vim, sig, vip, dsidep)
 !
-use Behaviour_type
+subroutine lckimp(BEHinteg, ndim, typmod, option, mat,&
+                  epsm, deps, vim, sig, vip,&
+                  dsidep)
 !
-implicit none
+    use Behaviour_type
+!
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/r8inir.h"
@@ -130,15 +130,15 @@ implicit none
 !
 !     -- DEVIATEUR DES DEFORMATIONS
 !
-    do 2 i = 1, ndimsi
+    do i = 1, ndimsi
         epsd(i) = eps(i) - treps*kron(i)/(3.0d0)
-  2 end do
+    end do
 !
     epseps = ddot(ndimsi,eps,1,eps,1)
     w = 0.5d0 * (lambda*treps**2 + deuxmu*epseps)
-    do 5 ij = 1, ndimsi
+    do ij = 1, ndimsi
         sigel(ij) = lambda*treps*kron(ij) + deuxmu*eps(ij)
-  5 end do
+    end do
 !
 !     CORRECTION 1 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 !
@@ -168,13 +168,13 @@ implicit none
 !     FORMULATION LOI DE COMPORTMENT AVEC CORRECTION EN COMPRESSION
 !
     if (treps .lt. 0.d0) then
-        do 20 ij = 1, ndimsi
+        do ij = 1, ndimsi
             sig(ij) = kk*treps*kron(ij) + deuxmu*epsd(ij)*fd
- 20     continue
+        end do
     else
-        do 10 ij = 1, ndimsi
+        do ij = 1, ndimsi
             sig(ij) = sigel(ij)*fd
- 10     continue
+        end do
     endif
 !
 5000 continue
@@ -189,30 +189,32 @@ implicit none
 !
 !     -- CONTRIBUTION ELASTIQUE
 !
-    do 80 ij = 1, 3
-        do 90 kl = 1, 3
+    do ij = 1, 3
+        do kl = 1, 3
             if (treps .lt. 0.d0) then
                 dsidep(ij,kl,1) = lambda+deuxmu/(3.0d0)*(1.d0-fd)
             else
                 dsidep(ij,kl,1) = fd*lambda
             endif
- 90     continue
- 80 end do
-    do 100 ij = 1, ndimsi
+        end do
+    end do
+    do ij = 1, ndimsi
         dsidep(ij,ij,1) = dsidep(ij,ij,1) + fd*deuxmu
-100 end do
+    end do
 !
 !     -- CORRECTION POUR LES CONTRAINTES PLANES
 !
     if (cplan) then
-        do 130 ij = 1, ndimsi
+        do ij = 1, ndimsi
             if (ij .eq. 3) goto 130
-            do 140 kl = 1, ndimsi
+            do kl = 1, ndimsi
                 if (kl .eq. 3) goto 140
                 dsidep(ij,kl,1)=dsidep(ij,kl,1) - 1.d0/dsidep(3,3,1)*&
                 dsidep(ij,3,1)*dsidep(3,kl,1)
-140         continue
-130     continue
+140             continue
+            end do
+130         continue
+        end do
     endif
 !
 !     -- CORRECTION DISSIPATIVE
@@ -220,16 +222,16 @@ implicit none
 !     CORRECTION 2 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 !
     if (treps .lt. 0.d0) then
-        do 220 ij = 1, ndimsi
+        do ij = 1, ndimsi
             sigel(ij) = deuxmu*epsd(ij)
-220     continue
+        end do
     endif
 !
 !     DERIVEES CROISEES
 !
-    do 200 ij = 1, ndimsi
+    do ij = 1, ndimsi
         dsidep(ij,1,2) = -2.d0*(1.0d0-phi)*sigel(ij)
-200 end do
+    end do
 !
 !     DERIVEE SECONDE /ENDO
 !

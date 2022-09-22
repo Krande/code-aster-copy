@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jeundf(obj)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
@@ -95,41 +95,41 @@ subroutine jeundf(obj)
 !
 !
     if (typsca .eq. 'I') then
-        do 10,k=1,long
-        zi(iad-1+k)=i1undf
-10      continue
+        do k = 1, long
+            zi(iad-1+k)=i1undf
+        end do
     else if (typsca.eq.'L') then
-        do 20,k=1,long
-        zl(iad-1+k)=.false.
-20      continue
+        do k = 1, long
+            zl(iad-1+k)=.false.
+        end do
     else if (typsca.eq.'R') then
-        do 30,k=1,long
-        zr(iad-1+k)=r1undf
-30      continue
+        do k = 1, long
+            zr(iad-1+k)=r1undf
+        end do
     else if (typsca.eq.'C') then
-        do 40,k=1,long
-        zc(iad-1+k)=c1undf
-40      continue
+        do k = 1, long
+            zc(iad-1+k)=c1undf
+        end do
     else if (typsca.eq.'K8') then
-        do 50,k=1,long
-        zk8(iad-1+k)=k8df
-50      continue
+        do k = 1, long
+            zk8(iad-1+k)=k8df
+        end do
     else if (typsca.eq.'K16') then
-        do 60,k=1,long
-        zk16(iad-1+k)=k16df
-60      continue
+        do k = 1, long
+            zk16(iad-1+k)=k16df
+        end do
     else if (typsca.eq.'K24') then
-        do 70,k=1,long
-        zk24(iad-1+k)=k24df
-70      continue
+        do k = 1, long
+            zk24(iad-1+k)=k24df
+        end do
     else if (typsca.eq.'K32') then
-        do 80,k=1,long
-        zk32(iad-1+k)=k32df
-80      continue
+        do k = 1, long
+            zk32(iad-1+k)=k32df
+        end do
     else if (typsca.eq.'K80') then
-        do 90,k=1,long
-        zk80(iad-1+k)=k80df
-90      continue
+        do k = 1, long
+            zk80(iad-1+k)=k80df
+        end do
     else
         ASSERT(.false.)
     endif

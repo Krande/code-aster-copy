@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcpl3(compor, option, crit, deps, dsidep,&
                   ndim, sigp, vip, cpl, icp,&
                   conv)
@@ -55,15 +55,15 @@ subroutine nmcpl3(compor, option, crit, deps, dsidep,&
 !
 !       DANS LE CAS D=1 ON NE FAIT RIEN CAR LES CONTRAINTES SONT NULLES
         if (compor(1) .eq. 'ENDO_ISOT_BETON') then
-            if (vip(2) .gt. 1.5d0) goto 9999
+            if (vip(2) .gt. 1.5d0) goto 999
         endif
 !
         if (prec .gt. 0.d0) then
 ! PRECISION RELATIVE
             sigpeq=0.d0
-            do 141 k = 1, 2*ndim
+            do k = 1, 2*ndim
                 sigpeq = sigpeq + sigp(k)**2
-141         continue
+            end do
             sigpeq = sqrt(sigpeq)
             if (sigpeq .lt. signul) then
                 precr=prec
@@ -99,5 +99,5 @@ subroutine nmcpl3(compor, option, crit, deps, dsidep,&
         endif
 !
     endif
-9999 continue
+999 continue
 end subroutine

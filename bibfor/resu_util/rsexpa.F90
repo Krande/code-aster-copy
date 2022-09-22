@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsexpa(resu, icode, nompar, iret)
     implicit none
 #include "jeveux.h"
@@ -54,11 +54,11 @@ subroutine rsexpa(resu, icode, nompar, iret)
     call jeexin('&&RSEXPA.NOM_PAR', ire1)
     if (ire1 .gt. 0) call jeveuo('&&RSEXPA.NOM_PAR', 'E', vk16=nom_par)
     if ((nbac+nbpa) .ne. 0) then
-        do 10 ipa = 1, nbac+nbpa
+        do ipa = 1, nbac+nbpa
             if (nompar .eq. nom_par(ipa)) then
                 iret=100
             endif
-10      continue
+        end do
     endif
 !
     call jedetr('&&RSEXPA.NOM_PAR')

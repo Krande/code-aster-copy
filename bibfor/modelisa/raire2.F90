@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                   nbno, tabnoe, rignoe)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/compma.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
@@ -38,8 +40,6 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
@@ -144,18 +144,18 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                     nbret=nfg)
     endif
 !
-    do 20 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 22 in = 0, nb-1
+        do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 24 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 noemax = max(noemax,inoe)
- 24         continue
- 22     continue
- 20 end do
+            end do
+        end do
+    end do
     AS_ALLOCATE(vr=coeno, size=noemax)
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
@@ -168,17 +168,17 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     AS_ALLOCATE(vr=surmai, size=nbma)
     im = 0
     surtot = zero
-    do 21 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 23 in = 0, nb-1
+        do in = 0, nb-1
             im = im + 1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             xc = zero
             yc = zero
             hc = zero
-            do 25 nn = 1, nm
+            do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 parno(inoe) = parno(inoe) + 1
                 x(nn) = vale(1+3*(inoe-1)+1-1)
@@ -187,7 +187,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
- 25         continue
+            end do
             xc = xc/nm
             yc = yc/nm
             hc = hc/nm
@@ -222,29 +222,30 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
             endif
             surtot = surtot + surmai(im)
             surmai(im) = surmai(im)/nm
- 23     continue
- 21 end do
+        end do
+    end do
 !
 !     CALCUL DES PONDERATIONS ELEMENTAIRES
 !
     im = 0
-    do 31 i = 1, nbgr
+    do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
-        do 33 in = 0, nb-1
+        do in = 0, nb-1
             im = im + 1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
-            do 35 nn = 1, nm
-                do 37 ij = 1, noemax
+            do nn = 1, nm
+                do ij = 1, noemax
                     if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         coeno(ij) = coeno(ij) + surmai(im)/surtot
                     endif
- 37             continue
- 35         continue
- 33     continue
- 31 end do
+ 37                 continue
+                end do
+            end do
+        end do
+    end do
     nbma = im
 !
 !     CALCUL DES RAIDEURS DE TORSION
@@ -256,7 +257,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     rig45 = zero
     rig46 = zero
     rig56 = zero
-    do 50 ij = 1, noemax
+    do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 50
         ii = ii + 1
         xx = vale(1+3*(ij-1)+1-1) - xg
@@ -268,7 +269,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         rig45 = rig45 - rigi(3)*xx*yy*coeno(ij)
         rig46 = rig46 - rigi(2)*xx*zz*coeno(ij)
         rig56 = rig56 - rigi(1)*yy*zz*coeno(ij)
- 50 end do
+ 50     continue
+    end do
     nbno = ii
     rig4 = rigi(4) - rig4
     rig5 = rigi(5) - rig5
@@ -276,7 +278,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     write(ifr,1001) rig4,rig5,rig6
 !
     ii = 0
-    do 51 ij = 1, noemax
+    do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 51
         ii = ii + 1
         r1 = rigi(1)*coeno(ij)
@@ -292,7 +294,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = ij
- 51 end do
+ 51     continue
+    end do
 !
     1001 format(1x,'RAIDEURS DE ROTATION A REPARTIR:',/&
      &      1x,' KRX: ',1x,1pe12.5,' KRY: ',1x,1pe12.5,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
                   geom, typmod, mate, lgpg, deplm,&
-                  vim, ddepl, ddepl0, ddepl1,&
-                  dtau, copilo)
+                  vim, ddepl, ddepl0, ddepl1, dtau,&
+                  copilo)
 !
 !
     implicit none
@@ -183,7 +183,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 ! CALCUL DE SP, SD ET Q :
 ! ************************
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
         call r8inir(6, 0.d0, bup, 1)
         call r8inir(6, 0.d0, bud, 1)
@@ -205,38 +205,38 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 !       ON INCLU LE CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt
         call r8inir(8, 0.d0, rtemp, 1)
 !
-        do 32 i = 1, 4
-            do 33 j = 1, 2
+        do i = 1, 4
+            do j = 1, 2
                 drot = 0.d0
-                do 34 k = 1, 2
+                do k = 1, 2
                     drot = drot + d(i,k)*rot(j,k)
- 34             continue
+                end do
                 rtemp(i,j) = drot
- 33         continue
- 32     continue
+            end do
+        end do
 !
-        do 35 i = 1, 4
-            do 36 j = 1, 2
+        do i = 1, 4
+            do j = 1, 2
                 d(i,j) = rtemp(i,j)
- 36         continue
- 35     continue
+            end do
+        end do
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
         call r8inir(32, 0.d0, def, 1)
-        do 40 n = 1, nno
-            do 30 i = 1, 2
+        do n = 1, nno
+            do i = 1, 2
                 def(1,n,i) = f(i,1)*dfdi(n,1)
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
- 30         continue
- 40     continue
+            end do
+        end do
 !
 !       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         if (axi) then
-            do 50 n = 1, nno
+            do n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
- 50         continue
+            end do
         endif
 !
 !       CALCUL DE SP,SD ET Q AU POINT DE GAUSS COURANT :
@@ -245,25 +245,25 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
                     nno, def)
 !
 !       CALCUL DES S ET Q POUR L'ELEMENT :
-        do 64 i = 1, 2
+        do i = 1, 2
             sp(i) = sp(i) + poids*spg(i)
             sd(i) = sd(i) + poids*sdg(i)
-            do 65 j = 1, 2
+            do j = 1, 2
                 q(i,j) = q(i,j) + poids*qg(i,j)
- 65         continue
- 64     continue
+            end do
+        end do
 !
 !
-800 end do
+    end do
 !
 !
-    do 66 i = 1, 2
+    do i = 1, 2
         sigp(i) = sigp(i) + sp(i)
-        do 67 j = 1, 2
+        do j = 1, 2
             sigp(i) = sigp(i) + q(i,j)*vim(j,1)
- 67     continue
+        end do
         sigd(i) = sd(i)
- 66 end do
+    end do
 !
 !*****************************************************************
 ! CALCUL DES COPILO DANS LE CAS OU LE SEUIL EN SAUT EST NUL :
@@ -415,12 +415,12 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
         matinv(1,2) = -mat(1,2)/det
         matinv(2,1) = -mat(2,1)/det
 !
-        do 68 i = 1, 2
-            do 69 j = 1, 2
+        do i = 1, 2
+            do j = 1, 2
                 alfp(i) = alfp(i) + matinv(i,j)*sp(j)
                 alfd(i) = alfd(i) + matinv(i,j)*sd(j)
- 69         continue
- 68     continue
+            end do
+        end do
 !
 ! -------------------------------
 ! INTERSECTION DROITE / SEGMENT :
@@ -540,12 +540,12 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
         endif
     endif
 !
-    do 666 i = 2, npg
+    do i = 2, npg
         copilo(1,i) = copilo(1,1)
         copilo(2,i) = copilo(2,1)
         copilo(3,i) = copilo(3,1)
         copilo(4,i) = copilo(4,1)
         copilo(5,i) = copilo(5,1)
-666 end do
+    end do
 !
 end subroutine

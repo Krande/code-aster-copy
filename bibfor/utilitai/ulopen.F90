@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ulopen(unit, fichie, name, acces, autor)
 ! aslint: disable=
     implicit none
@@ -76,12 +76,12 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !
 !       VALEUR PAR DEFAUT POUR LES NOMS INTERNES
         if (name16 .eq. ' ') then
-            do 50 i = 1, mximpr
+            do i = 1, mximpr
                 if (unit .eq. unitpr(i)) then
                     name16 = nompr(i)
                     goto 59
                 endif
- 50         continue
+            end do
  59         continue
         endif
 !
@@ -93,7 +93,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
             namell = fichie
         endif
 !
-        do 10 i = 1, nbfile
+        do i = 1, nbfile
             if (unitfi(i) .eq. unit) then
 !
 !     --- L'UNITE EST DEJA RESERVEE DANS LA SD ---
@@ -103,7 +103,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                         if ((etatfi(i).eq.'O') .or. (etatfi(i).eq.'R')) then
                             if (accefi(i) .eq. k1acce) then
                                 if (ddname(i) .eq. name16 .or. name16 .eq. ' ') then
-                                    goto 9999
+                                    goto 999
                                 endif
                                 valk(1) = k4b
                                 valk(2) = ddname(i)
@@ -131,14 +131,14 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     call utmess('F', 'UTILITAI5_17', nk=3, valk=valk)
                 endif
             endif
- 10     continue
+        end do
 !
 !     --- VERIFICATION DE L'OUVERTURE DU FICHIER ---
 !
         if (name16 .ne. ' ') then
-            do 11 i = 1, nbfile
+            do i = 1, nbfile
                 if (ddname(i) .eq. name16) ddname(i) = ' '
- 11         continue
+            end do
         endif
         if (k1acce .eq. 'O') then
             inquire ( file=namell, exist=v11, iostat=ier1)
@@ -168,12 +168,12 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !
 !     --- ON STOCKE DANS LE COMMON ---
 !
-        do 15 i = 1, nbfile
+        do i = 1, nbfile
             if (unitfi(i) .eq. 0) then
                 ifile=i
                 goto 16
             endif
- 15     continue
+        end do
         nbfile = nbfile + 1
         if (nbfile .gt. mxf) then
             call utmess('F', 'UTILITAI5_21', si=mxf)
@@ -200,7 +200,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !
     else if (unit .lt. 0) then
         write(k4b,'(I4)') -unit
-        do 20 i = 1, nbfile
+        do i = 1, nbfile
             if (unitfi(i) .eq. -unit) then
                 if (modifi(i) .eq. 'O') then
 !              IF ( TYPEFI(I) .EQ. 'A' ) THEN
@@ -217,13 +217,13 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     accefi(i) = '?'
                     etatfi(i) = 'F'
                     modifi(i) = ' '
-                    goto 9999
+                    goto 999
                 else
                     call utmess('F', 'UTILITAI5_23', sk=k4b)
                 endif
             endif
- 20     continue
+        end do
     endif
 !
-9999 continue
+999 continue
 end subroutine

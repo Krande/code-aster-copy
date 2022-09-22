@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irparb(resu, nbin, parin, nomjv, nbout)
     implicit none
 #include "jeveux.h"
@@ -67,7 +67,7 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
         call jeexin(nomjv, iret)
         if (iret .ne. 0) call jedetr(nomjv)
         call wkvect(nomjv, 'V V K16', nbin, lpout)
-        do 225 i = 1, nbin
+        do i = 1, nbin
             call rsexpa(resu8, 2, parin(i), iret)
             if (iret .eq. 0) then
                 call getres(cbid, cbid, nomcmd)
@@ -78,7 +78,7 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
                 nbout = nbout + 1
                 zk16(lpout+nbout-1) = parin(i)
             endif
-225      continue
+        end do
     endif
 !
 !

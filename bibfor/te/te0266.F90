@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0266(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -46,8 +46,8 @@ subroutine te0266(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PHARMON', 'L', iharm)
@@ -67,29 +67,29 @@ subroutine te0266(option, nomte)
                 ' ', 'THER', 1, 'INST', [zr(itemp)],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
-    do 101 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdr, dfdz)
 !
         r = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             r = r + zr(igeom+2*i-2) * zr(ivf+k+i-1)
-102      continue
+        end do
 !
         fluxr = 0.0d0
         fluxz = 0.0d0
         fluxt = 0.0d0
-        do 110 j = 1, nno
+        do j = 1, nno
             fluxr = fluxr + zr(itempe+j-1)*dfdr(j)
             fluxz = fluxz + zr(itempe+j-1)*dfdz(j)
             fluxt = fluxt - zr(itempe+j-1)*zr(ivf+k+j-1)*xh/r
-110      continue
+        end do
 !
         zr(iflux+(kp-1)*nbcmp-1+1) = -valres(1)*fluxr
         zr(iflux+(kp-1)*nbcmp-1+2) = -valres(1)*fluxz
         zr(iflux+(kp-1)*nbcmp-1+3) = -valres(1)*fluxt
 !
-101  end do
+    end do
 !
 end subroutine

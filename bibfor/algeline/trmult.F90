@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                   pside, numddl)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/copmod.h"
@@ -42,8 +44,6 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: modsta, mailla, numddl
     integer :: numexi, neq, iddeeq
@@ -73,7 +73,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     integer :: iarg, imode
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id,   idno, ii, in
+    integer :: i, id, idno, ii, in
     integer :: iret, ldgn, nb, nbd, nbdir, nbgr, nbno
     integer :: nbtrou, nbv, tmod(1)
     real(kind=8) :: xd
@@ -136,18 +136,18 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
             magrno = mailla//'.GROUPENO'
             manono = mailla//'.NOMNOE'
             ii = -1
-            do 20 i = 1, nbgr
+            do i = 1, nbgr
                 call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
                 call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
-                do 22 in = 0, nb-1
+                do in = 0, nb-1
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                     ii = ii + 1
                     zk8(idno+ii) = nomnoe
-22              continue
-20          continue
+                end do
+            end do
         endif
     endif
-
+!
     call rsorac(modsta, 'LONUTI', 0, r8b, kbid,&
                 c16b, r8b, kbid, tmod, 1,&
                 ibid)
@@ -160,7 +160,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     do id = 1, nbdir
         xd = depl(id)
         if (abs(xd) .gt. epsi) then
-            do 40 in = 1, nbno
+            do in = 1, nbno
                 acces(1:8 ) = zk8(idno+in-1)
                 acces(9:16) = cmp(id)
 !
@@ -176,7 +176,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     goto 40
                 endif
                 imode = iordr(1)
-
+!
                 call rsvpar(modsta, imode, 'TYPE_DEFO', ibid, r8b,&
                             'DEPL_IMPO', iret)
                 if (iret .ne. 100) then
@@ -192,9 +192,10 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 !
 !              --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
                 do i = 1, neq
-                    pside(i) = pside(i)+ xd * base((imode-1)*neq+i) 
+                    pside(i) = pside(i)+ xd * base((imode-1)*neq+i)
                 end do
-40          continue
+ 40             continue
+            end do
         endif
     end do
 !

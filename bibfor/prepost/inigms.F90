@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine inigms(nomail, nbnoma, nuconn)
 !.======================================================================
 !
@@ -34,9 +34,9 @@ subroutine inigms(nomail, nbnoma, nuconn)
 ! -----  ARGUMENTS
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+!
     integer :: nuconn(19, 32), nbnoma(19)
     character(len=8) :: nomail(*)
 !
@@ -66,10 +66,10 @@ subroutine inigms(nomail, nbnoma, nuconn)
     nomail(18) = 'PENTA15'
     nomail(19) = 'PYRAM13'
 !
-    do 5 m = 1, 19
+    do m = 1, 19
         call jeveuo(jexnom('&CATA.TM.NBNO', nomail(m)), 'L', jnbno)
         nbnoma(m) = zi(jnbno)
- 5  end do
+    end do
 !
 !
 ! CORRESPONDANCE DE LA NUMEROTATION DES NOEUDS ENTRE GMSH ET ASTER
@@ -79,11 +79,11 @@ subroutine inigms(nomail, nbnoma, nuconn)
 !   ND_GMSH  : NUMERO DU NOEUD DE LA MAILLE GMSH  DE REFERENCE
 !
 !    PAR DEFAUT LES NUMEROTATIONS COINCIDENT
-    do 10 i = 1, 19
-        do 20 j = 1, 32
+    do i = 1, 19
+        do j = 1, 32
             nuconn(i,j) = j
-20      continue
-10  end do
+        end do
+    end do
 !
 !   ON DECLARE MAINTENANT LES EXCEPTIONS
 !

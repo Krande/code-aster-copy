@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
+!
+subroutine mctge2(deigy, dydx, direig, eigx, eigy,&
+                  edge, outofp)
 ! ***********************************************************************
 !
 ! OBJECT: COMPUTE THE DERIVATIVE OF A GENERAL ISOTROPIC 2D TENSOR
@@ -95,24 +96,24 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
 ! Derivative dY/dX for repeated in-plane eigenvalues of X
 ! -------------------------------------------------------
 ! In-plane component
-        do 10 i = 1, mcomp
-            do 11 j = 1, mcomp
+        do i = 1, mcomp
+            do j = 1, mcomp
                 dydx(i,j)=(deigy(1,1)-deigy(1,2))*foid(i,j)+ &
                            deigy(1,2)*sopid(i)*sopid(j)
- 11         continue
- 10     continue
+            end do
+        end do
 !
 ! out-of-plane components required
         if (outofp) then
-            do 30 i = 1, mcomp
-                do 31 j = 1, mcomp
+            do i = 1, mcomp
+                do j = 1, mcomp
                     if (i .eq. mdim .or. j .eq. mdim) then
                         dydx(i,j)= deigy(1,3)*sopid(i)*eigpr3(j)+ &
                         deigy(3,1)*eigpr3(i)*sopid(j)+ &
                         deigy(3,3)*eigpr3(i)*eigpr3(j)
                     endif
- 31             continue
- 30         continue
+                end do
+            end do
         endif
     else
 !
@@ -120,8 +121,8 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
 ! -------------------------------------------------------
 ! Assemble in-plane DYDX
         a1=(eigy(1)-eigy(2))/(eigx(1)-eigx(2))
-        do 60 i = 1, mcomp
-            do 61 j = 1, mcomp
+        do i = 1, mcomp
+            do j = 1, mcomp
                 dydx(i,j)=a1*(foid(i,j)- &
                 eigprj(i,1)*eigprj(j,1)- &
                 eigprj(i,2)*eigprj(j,2))+ &
@@ -129,13 +130,13 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
                 deigy(1,2)*eigprj(i,1)*eigprj(j,2)+ &
                 deigy(2,1)*eigprj(i,2)*eigprj(j,1)+ &
                 deigy(2,2)*eigprj(i,2)*eigprj(j,2)
- 61         continue
- 60     continue
+            end do
+        end do
 !
 ! out-of-plane components required
         if (outofp) then
-            do 80 i = 1, mcomp
-                do 81 j = 1, mcomp
+            do i = 1, mcomp
+                do j = 1, mcomp
                     if (i .eq. mdim .or. j .eq. mdim) then
                         dydx(i,j)= deigy(1,3)* eigprj(i,1)*eigpr3(j)+ &
                         deigy(2,3)*eigprj(i,2)*eigpr3(j)+ &
@@ -143,8 +144,8 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
                         deigy(3,2)*eigpr3(i)*eigprj(j,2)+ &
                         deigy(3,3)*eigpr3(i)*eigpr3(j)
                     endif
- 81             continue
- 80         continue
+                end do
+            end do
         endif
     endif
 !

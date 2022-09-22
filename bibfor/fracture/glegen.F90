@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine glegen(nbre, lobj2, xl, absgam, legen)
     implicit none
 !
@@ -54,12 +54,12 @@ subroutine glegen(nbre, lobj2, xl, absgam, legen)
 !
 !   POLYNOMES DE LEGENDRE
 !
-#define pleg2(x)   (3.d0*(x)*(x)-1.d0)/2.d0
-#define pleg3(x)   (x)*(5.d0*(x)*(x)-3.d0)/2.d0
-#define pleg4(x)   (35.d0*(x)**4-30.d0*(x)*(x)+3.d0)/8.d0
-#define pleg5(x)   (x)*(63.d0*(x)**4-70.d0*(x)*(x)+15.d0)/8.d0
-#define pleg6(x)   (231.d0*(x)**6-315.d0*(x)**4+105.d0*(x)*(x)-5.d0)/16.d0
-#define pleg7(x)   (x)*(429.d0*(x)**6-693.d0*(x)**4+315.d0*(x)*(x)-35.d0)/16.d0
+#define pleg2(x) (3.d0*(x)*(x)-1.d0)/2.d0
+#define pleg3(x) (x)*(5.d0*(x)*(x)-3.d0)/2.d0
+#define pleg4(x) (35.d0*(x)**4-30.d0*(x)*(x)+3.d0)/8.d0
+#define pleg5(x) (x)*(63.d0*(x)**4-70.d0*(x)*(x)+15.d0)/8.d0
+#define pleg6(x) (231.d0*(x)**6-315.d0*(x)**4+105.d0*(x)*(x)-5.d0)/16.d0
+#define pleg7(x) (x)*(429.d0*(x)**6-693.d0*(x)**4+315.d0*(x)*(x)-35.d0)/16.d0
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -74,61 +74,61 @@ subroutine glegen(nbre, lobj2, xl, absgam, legen)
     cof1 = sqrt(1.d0/xl)
     cof2 = sqrt(3.d0/xl)
 !
-    do 1 i = 1, lobj2
+    do i = 1, lobj2
         zr(iadpo + i - 1) = 1.d0
         legen(i) = cof1*zr(iadpo + i - 1)
         if (nbre .ne. 0) then
             zr(iadpo + lobj2 + i - 1) = -1+2*zr(iadabs + i - 1)/xl
             legen(lobj2 + i) = cof2*zr(iadpo + lobj2 + i - 1)
         endif
- 1  end do
+    end do
 !
     if (nbre .ge. 2) then
         coef = sqrt(5.d0/xl)
-        do 3 j = 1, lobj2
+        do j = 1, lobj2
             s1 = -1+2*zr(iadabs + j - 1)/xl
             legen( 2*lobj2 + j ) = coef*pleg2(s1)
- 3      continue
+        end do
     endif
 !
     if (nbre .ge. 3) then
         coef = sqrt(7.d0/xl)
-        do 4 j = 1, lobj2
+        do j = 1, lobj2
             s1 = -1+2*zr(iadabs + j - 1)/xl
             legen( 3*lobj2 + j ) = coef*pleg3(s1)
- 4      continue
+        end do
     endif
 !
     if (nbre .ge. 4) then
         coef = sqrt(9.d0/xl)
-        do 5 j = 1, lobj2
+        do j = 1, lobj2
             s1 = -1+2*zr(iadabs + j - 1)/xl
             legen( 4*lobj2 + j ) = coef*pleg4(s1)
- 5      continue
+        end do
     endif
 !
     if (nbre .ge. 5) then
         coef = sqrt(11.d0/xl)
-        do 6 j = 1, lobj2
+        do j = 1, lobj2
             s1 = -1+2*zr(iadabs + j - 1)/xl
             legen( 5*lobj2 + j ) = coef*pleg5(s1)
- 6      continue
+        end do
     endif
 !
     if (nbre .ge. 6) then
         coef = sqrt(13.d0/xl)
-        do 7 j = 1, lobj2
+        do j = 1, lobj2
             s1 = -1+2*zr(iadabs + j - 1)/xl
             legen( 6*lobj2 + j ) = coef*pleg6(s1)
- 7      continue
+        end do
     endif
 !
     if (nbre .ge. 7) then
         coef = sqrt(15.d0/xl)
-        do 8 j = 1, lobj2
+        do j = 1, lobj2
             s1 = -1+2*zr(iadabs + j - 1)/xl
             legen( 7*lobj2 + j ) = coef*pleg7(s1)
- 8      continue
+        end do
     endif
 !
     call jedetr('&&LEGEND.VALPOL')

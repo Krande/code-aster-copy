@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0447(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/lteatt.h"
+!
     character(len=16) :: option, nomte
 !
 !
@@ -58,7 +58,7 @@ subroutine te0447(option, nomte)
     call r8inir(6, 0.d0, eps, 1)
     call r8inir(36, 0.d0, vpg, 1)
 !
-    do 10 kpg = 1, npg
+    do kpg = 1, npg
 !
         call nmgeom(ndim, nno, axi, grand, zr(igeom),&
                     kpg, ipoids, ivf, idfde, zr(idepl),&
@@ -66,19 +66,19 @@ subroutine te0447(option, nomte)
                     r)
 !
 !       RECUPERATION DE LA DEFORMATION
-        do 20 ksig = 1, ncmp
+        do ksig = 1, ncmp
             if (ksig .le. 3) then
                 tmp=1.d0
             else
                 tmp = sqrt(2.d0)
             endif
             vpg(ncmp*(kpg-1)+ksig)=eps(ksig)/tmp
- 20     continue
- 10 end do
+        end do
+    end do
 !
 !     AFFECTATION DU VECTEUR EN SORTIE
-    do 30 kk = 1, npg*ncmp
+    do kk = 1, npg*ncmp
         zr(idefo+kk-1)= vpg(kk)
- 30 end do
+    end do
 !
 end subroutine

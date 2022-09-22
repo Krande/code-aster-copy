@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
-                           ino_xfem, is_xfem, nbnoxfem, ieq_loc,&
-                           scal, deca, k8cmp, tab_mloc)
+!
+subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax,&
+                          ino_xfem, is_xfem, nbnoxfem, ieq_loc, scal,&
+                          deca, k8cmp, tab_mloc)
 !
 !-----------------------------------------------------------------------
 ! BUT :
@@ -35,15 +35,15 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 !
     character(len=19) :: matass
@@ -72,10 +72,10 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
     call jelira(jexnum(matass//'.VALM', 1), 'LONMAX', nnz)
     call jelira(matass//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
-       lsym=.true.
+        lsym=.true.
     else if (nvale.eq.2) then
-       lsym=.false.
-       call jeveuo(jexnum(matass//'.VALM', 2), 'E', jval2)
+        lsym=.false.
+        call jeveuo(jexnum(matass//'.VALM', 2), 'E', jval2)
     else
         ASSERT(.false.)
     endif
@@ -85,76 +85,78 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
     jcoll=1
     nunoj=deeq(2*(jcoll-1)+1)
     jpos=ieq_loc(jcoll)
-    do 30 kterm=1,nnz
-       if (smdi(jcoll) .lt. kterm) then
-           jcoll=jcoll+1 
-           nunoj=deeq(2*(jcoll-1)+1)
-           jpos=ieq_loc(jcoll)
-       endif
-       iligl=zi4(jsmhc-1+kterm)
-       ipos=ieq_loc(iligl)
-       if (ipos.le.0) goto 30
-       nunoi=deeq(2*(iligl-1)+1)
-       if (is_xfem(nunoi).and.ipos.gt.0) then
-         tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
+    do kterm = 1, nnz
+        if (smdi(jcoll) .lt. kterm) then
+            jcoll=jcoll+1 
+            nunoj=deeq(2*(jcoll-1)+1)
+            jpos=ieq_loc(jcoll)
+        endif
+        iligl=zi4(jsmhc-1+kterm)
+        ipos=ieq_loc(iligl)
+        if (ipos .le. 0) goto 30
+        nunoi=deeq(2*(iligl-1)+1)
+        if (is_xfem(nunoi) .and. ipos .gt. 0) then
+            tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
                         tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos),&
                         abs(zr(jvale-1+kterm)))
-       endif
-       if (iligl .eq. jcoll) goto 30
-       if (jpos.le.0) goto 30
-       if (is_xfem(nunoj).and.jpos.gt.0) then
-         tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
+        endif
+        if (iligl .eq. jcoll) goto 30
+        if (jpos .le. 0) goto 30
+        if (is_xfem(nunoj) .and. jpos .gt. 0) then
+            tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
                         tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos),&
                         abs(zr(jvale-1+kterm)))
-       endif
-       if (.not.lsym) then
-         if (is_xfem(nunoi).and.ipos.gt.0) then
-           tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
+        endif
+        if (.not.lsym) then
+            if (is_xfem(nunoi) .and. ipos .gt. 0) then
+                tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
                           tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos),&
                           abs(zr(jval2-1+kterm)))
-         endif
-         if (is_xfem(nunoj).and.jpos.gt.0) then
-           tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
+            endif
+            if (is_xfem(nunoj) .and. jpos .gt. 0) then
+                tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
                           tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos),&
                           abs(zr(jval2-1+kterm)))
-         endif
-       endif
+            endif
+        endif
 !
-30  continue
+ 30     continue
+    end do
 !
-    do 60 iligl=1,neq
-      if (ieq_loc(iligl) .le. 0 ) goto 60
-      nunoi=deeq(2*(iligl-1)+1)
-      if ( .not. is_xfem(nunoi) ) goto 60
-      rcoef=sqrt(tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl)))
-      if (rcoef.le.0.d0) then
-         call utmess('F', 'XFEMPRECOND_7', nk=1, valk=k8cmp(deeq(2*(iligl-1)+2)),&
-                                           ni=2, vali=[iligl,nunoi])
-      endif
-      tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))=scal/rcoef
-60  continue
+    do iligl = 1, neq
+        if (ieq_loc(iligl) .le. 0) goto 60
+        nunoi=deeq(2*(iligl-1)+1)
+        if (.not. is_xfem(nunoi)) goto 60
+        rcoef=sqrt(tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl)))
+        if (rcoef .le. 0.d0) then
+            call utmess('F', 'XFEMPRECOND_7', nk=1, valk=k8cmp(deeq(2*(iligl-1)+2)), ni=2,&
+                        vali=[iligl, nunoi])
+        endif
+        tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))=scal/rcoef
+ 60     continue
+    end do
 !
     jcoll=1
     nunoj=deeq(2*(jcoll-1)+1)
-    do kterm=1,nnz
-       if (smdi(jcoll) .lt. kterm) then
-           jcoll=jcoll+1
-           nunoj=deeq(2*(jcoll-1)+1)
-       endif
-       if (ieq_loc(jcoll).ne.0) then
-           valej=tab_mloc(deca*(ino_xfem(nunoj)-1)+ieq_loc(jcoll))
-       else
-           valej=1.d0
-       endif
-       iligl=zi4(jsmhc-1+kterm)
-       nunoi=deeq(2*(iligl-1)+1)
-       if (ieq_loc(iligl).ne.0) then
-           valei=tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))
-       else
-           valei=1.d0
-       endif
-       zr(jvale-1+kterm)=zr(jvale-1+kterm)*valei*valej
-       if (.not. lsym) zr(jval2-1+kterm)=zr(jval2-1+kterm)*valei*valej
+    do kterm = 1, nnz
+        if (smdi(jcoll) .lt. kterm) then
+            jcoll=jcoll+1
+            nunoj=deeq(2*(jcoll-1)+1)
+        endif
+        if (ieq_loc(jcoll) .ne. 0) then
+            valej=tab_mloc(deca*(ino_xfem(nunoj)-1)+ieq_loc(jcoll))
+        else
+            valej=1.d0
+        endif
+        iligl=zi4(jsmhc-1+kterm)
+        nunoi=deeq(2*(iligl-1)+1)
+        if (ieq_loc(iligl) .ne. 0) then
+            valei=tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))
+        else
+            valei=1.d0
+        endif
+        zr(jvale-1+kterm)=zr(jvale-1+kterm)*valei*valej
+        if (.not. lsym) zr(jval2-1+kterm)=zr(jval2-1+kterm)*valei*valej
     enddo
 !
     call jedema()

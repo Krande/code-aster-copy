@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                   mail2d, nbnobe, nunobe, xflu, xret,&
                   regl)
@@ -203,10 +203,10 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         numail = zi(jnumab+imail-1)
         call jelira(jexnum(conxma, numail), 'LONMAX', nbconx)
         call jeveuo(jexnum(conxma, numail), 'L', jconx)
-        do 41 ino = 1, nbconx
+        do ino = 1, nbconx
             numnoe = zi(jconx+ino-1)
             zi(jncoch+numnoe-1) = zi(jncoch+numnoe-1) + 1
- 41     continue
+        end do
     end do
 !
 ! 2.3 DECOMPTE DES NOEUDS ET RELEVE DE LEUR NUMERO
@@ -287,7 +287,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     if (iretbb .eq. 0) then
 !       ON TESTE SI ETCC_BETON EST RENSEIGNE
         regl='ETCC'
-        call rccome(beton, 'ETCC_BETON', icodn, k11_ind_nomrc=k11b)    
+        call rccome(beton, 'ETCC_BETON', icodn, k11_ind_nomrc=k11b)
         if (icodn .eq. 0) then
             rcvalk = beton//k11b//'.VALK'
             call jeexin(rcvalk, ireteb)
@@ -305,7 +305,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         call jelira(rcvalr, 'LONMAX', nbcste)
         trouv1 = .false.
         trouv2 = .false.
-        do 150 icste = 1, nbcste
+        do icste = 1, nbcste
             if (zk16(jvalk+icste-1) .eq. bpelb(1)) then
                 trouv1 = .true.
                 xflu = zr(jvalr+icste-1)
@@ -315,7 +315,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 xret = zr(jvalr+icste-1)
             endif
             if (trouv1 .and. trouv2) goto 151
-150     continue
+        end do
 !
 !
 !
@@ -333,7 +333,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                             1, 1, iad)
                 beton=cesv(iad)
                 call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)
-                ASSERT(iret.eq.0)  
+                ASSERT(iret.eq.0) 
                 rcvalk = beton//k11a//'.VALK'
                 rcvalr = beton//k11a//'.VALR'
                 call jeveuo(rcvalk, 'L', jvalk)

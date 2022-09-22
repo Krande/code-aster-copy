@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0056()
 ! aslint: disable=W1501
     implicit none
@@ -121,11 +121,11 @@ subroutine op0056()
 !
     elas = .false.
     ther = .false.
-    do 20 icou = 1, nbcou
+    do icou = 1, nbcou
         call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
         call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', vk32=nomrc)
         call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad)
-        do 10 i = 1, nbad
+        do i = 1, nbad
             if (nomrc(i) .eq. 'ELAS_ORTH       ') then
                 elas = .true.
             else if (nomrc(i).eq.'THER_ORTH       ') then
@@ -134,8 +134,8 @@ subroutine op0056()
                 valk (1) = mater
                 call utmess('F', 'MODELISA8_71', sk=valk(1))
             endif
- 10     continue
- 20 end do
+        end do
+    end do
     if (ther .and. elas) then
         valk (1) = 'MECANIQUE'
         valk (2) = 'THERMIQUE'
@@ -172,31 +172,31 @@ subroutine op0056()
         call wkvect(multic//'.CPT.'//k6//'.VALC', 'G V C', lonobj, jobmc)
         call jeecra(multic//'.CPT.'//k6//'.VALC', 'LONUTI', 0)
         eptot = 0.d0
-        do 30 i = 1, 56
+        do i = 1, 56
             call codent(i, 'G', num)
             zk16(jmate+i-1) = 'HOM_'//num
- 30     continue
-        do 50 icou = 1, nbcou
+        end do
+        do icou = 1, nbcou
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
             call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
             call getvr8('COUCHE', 'ORIENTATION', iocc=icou, scal=orien, nbret=n)
             zk32(jrela+1+icou) = mater
             call codent(icou, 'G', num)
-            do 40 i = 1, nv
+            do i = 1, nv
                 call codent(i, 'G', val)
                 zk16(jmate+56+nv* (icou-1)+i-1) = 'C'//num//'_V'//val
- 40         continue
+            end do
             zr(jepor-1+3*icou-2) = epais
             zr(jepor-1+3*icou-1) = orien
             eptot = eptot + epais
- 50     continue
+        end do
         epais = -0.5d0*eptot
         rhohom = 0.d0
-        do 60 i = 1, 56
+        do i = 1, 56
             qm(i) = 0.d0
- 60     continue
+        end do
         iret = 0
-        do 70 i = 1, nbcou
+        do i = 1, nbcou
             nbres = 9
             nomres(1) = 'E_L'
             nomres(2) = 'E_T'
@@ -218,12 +218,12 @@ subroutine op0056()
                         3, nomres(7), valres(7), icodre(7), 0)
             call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         3, nomres(10), valres(10), icodre(10), 0)
-            do j = 10,12
-                if (icodre(j) .eq. 0 ) then
-                    call utmess('A','MODELISA8_16',sk=nomres(j), si=i)
+            do j = 10, 12
+                if (icodre(j) .eq. 0) then
+                    call utmess('A', 'MODELISA8_16', sk=nomres(j), si=i)
                 endif
             enddo
-            
+!
             el = valres(1)
             et = valres(2)
             nult = valres(3)
@@ -278,11 +278,11 @@ subroutine op0056()
             q13 = c3*s*qll - c*s3*qtt + (c*s3-c3*s)* (qlt+2.d0*glt)
             q23 = c*s3*qll - c3*s*qtt - (c*s3-c3*s)* (qlt+2.d0*glt)
             q33 = c2*s2* (qll+qtt-2.d0*qlt) + (c2-s2)*(c2-s2)*glt
-            
-            
-
-            
-            
+!
+!
+!
+!
+!
 !         COEF DE DILATATION THERMIQUE REPERE UTILISATEUR
             d11 = c2*dl + s2*dt
             d22 = s2*dl + c2*dt
@@ -470,7 +470,7 @@ subroutine op0056()
             zr(jobme+56 -1 + (i-1)*nv+81) = yt
             zr(jobme+56 -1 + (i-1)*nv+82) = yc
             zr(jobme+56 -1 + (i-1)*nv+83) = slt
- 70     continue
+        end do
         if (iret .eq. 0) then
         else if (iret.ne.nbcou) then
             call utmess('F', 'MODELISA5_63')
@@ -491,28 +491,28 @@ subroutine op0056()
         hf(2,1) = hf(1,2)
         hf(3,1) = hf(1,3)
         hf(3,2) = hf(2,3)
-        do 90 k = 1, 3
-            do 80 j = 1, 3
+        do k = 1, 3
+            do j = 1, 3
                 hfinv(k,j) = 0.d0
- 80         continue
- 90     continue
-        do 100 i = 1, 3
+            end do
+        end do
+        do i = 1, 3
             hfinv(i,i) = 1.d0
-100     continue
+        end do
         call mgauss('NFVD', hf, hfinv, 3, 3,&
                     3, det, iret)
-        do 120 k = 1, 2
-            do 110 j = 1, 2
+        do k = 1, 2
+            do j = 1, 2
                 da1i(k,j) = 0.d0
                 c11(k,j) = 0.d0
                 idi(k,j) = 0.d0
                 ezd(k,j) = 0.d0
-110         continue
-120     continue
+            end do
+        end do
         hc11 = 0.d0
         hc22 = 0.d0
         hc12 = 0.d0
-        do 220 icou = 1, nbcou
+        do icou = 1, nbcou
             epi = zr(jepor+3*icou-3)
             ordi = zr(jepor+3*icou-1)
 !          QIJ : MATRICE DE COMPORTEMENT HI DANS LE REPERE UTILISATEUR
@@ -525,18 +525,18 @@ subroutine op0056()
             hi(2,1) = hi(1,2)
             hi(3,1) = hi(1,3)
             hi(3,2) = hi(2,3)
-            do 140 k = 1, 3
-                do 130 j = 1, 3
+            do k = 1, 3
+                do j = 1, 3
                     ai(k,j) = 0.d0
-130             continue
-140         continue
-            do 170 i = 1, 3
-                do 160 j = 1, 3
-                    do 150 k = 1, 3
+                end do
+            end do
+            do i = 1, 3
+                do j = 1, 3
+                    do k = 1, 3
                         ai(i,j) = ai(i,j) + hi(i,k)*hfinv(k,j)
-150                 continue
-160             continue
-170         continue
+                    end do
+                end do
+            end do
 !         TERMES DE LA MATRICE INTERVENANT DANS D1(Z)
 !      CF. DHAT-BATOZ VOL 2 PAGE 243
 !      DAI1 MATRICE (2,2) CONSTANTE PAR COUCHE
@@ -558,12 +558,12 @@ subroutine op0056()
             zr(jobme+56+ (icou-1)*nv+23) = ai(3,3)
 !
 !          TERMES CONSTANT DANS D1(Z)
-            do 190 k = 1, 2
-                do 180 j = 1, 2
+            do k = 1, 2
+                do j = 1, 2
                     idi(k,j) = ezd(k,j) - ((ordi-epi/2.d0)**2)*da1i(k, j)/2.d0
                     ezd(k,j) = ezd(k,j) + epi*ordi*da1i(k,j)
-180             continue
-190         continue
+                end do
+            end do
 !          MATRICE DE COMPORTEMENT HTAU DANS REPERE UTILISATEUR
             hti(1,1) = zr(jobme+56+ (icou-1)*nv+12)
             hti(2,2) = zr(jobme+56+ (icou-1)*nv+13)
@@ -599,12 +599,12 @@ subroutine op0056()
             x2 = (3.d0*ordi*ordi*epi+epi**3/4.d0)/24.d0
             x3 = x2
             x4 = (5.d0*ordi**4*epi+2.5d0*ordi*ordi*epi**3+epi**5/ 16.d0)/ 80.d0
-            do 210 k = 1, 2
-                do 200 j = 1, 2
+            do k = 1, 2
+                do j = 1, 2
                     c11i(k,j) = x1*c11i1(k,j) + x2*c11i2(k,j) + x3*c11i3(k,j) + x4*c11i4(k,j)
                     c11(k,j) = c11(k,j) + c11i(k,j)
-200             continue
-210         continue
+                end do
+            end do
             hc11 = hc11 + epi*hti(1,1)
             hc22 = hc22 + epi*hti(2,2)
             hc12 = hc12 + epi*hti(1,2)
@@ -627,7 +627,7 @@ subroutine op0056()
             zr(jobme+56+ (icou-1)*nv+75) = c11inv(1,1)
             zr(jobme+56+ (icou-1)*nv+76) = c11inv(2,2)
             zr(jobme+56+ (icou-1)*nv+77) = c11inv(1,2)
-220     continue
+        end do
 ! FIN BOUCLE SUR LES COUCHES
 !        -- INVERSION DE C11 INTEGREE SUR L'EPAISSEUR
 !        -- INVERSION DE C11 GLOBALE --- HC = C11INV GLOBALE
@@ -688,13 +688,13 @@ subroutine op0056()
             write (ifr,'(5(2X,E13.6))') qm(27),qm(28),qm(29)
             write (ifr,1000)
         endif
-        do 230 i = 1, 56
+        do i = 1, 56
             zr(jobme-1+i) = qm(i)
             zc(jobmc-1+i) = 0.d0
-230     continue
-        do 240 i = 57, 56 + nv*nbcou
+        end do
+        do i = 57, 56 + nv*nbcou
             zc(jobmc-1+i) = 0.d0
-240     continue
+        end do
     endif
 !
     if (ther) then
@@ -716,34 +716,34 @@ subroutine op0056()
         call wkvect(multic//'.CPT.'//k6//'.VALC', 'G V C', lonobj, jobtc)
         call jeecra(multic//'.CPT.'//k6//'.VALC', 'LONUTI', 0)
         eptot = 0.d0
-        do 250 i = 1, 31
+        do i = 1, 31
             call codent(i, 'G', num)
             zk16(jmate+i-1) = 'HOM_'//num
-250     continue
-        do 270 icou = 1, nbcou
+        end do
+        do icou = 1, nbcou
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
             call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
             call getvr8('COUCHE', 'ORIENTATION', iocc=icou, scal=orien, nbret=n)
             zk32(jrela+1+icou) = mater
             call codent(icou, 'G', num)
-            do 260 i = 1, 3
+            do i = 1, 3
                 call codent(i, 'G', val)
                 zk16(jmate+31+3* (icou-1)+i-1) = 'C'//num//'_V'//val
-260         continue
+            end do
             zr(jepor-1+3*icou-2) = epais
             zr(jepor-1+3*icou-1) = orien
             eptot = eptot + epais
-270     continue
+        end do
 !
         epais = -0.5d0*eptot
         h = 0.5d0*eptot
         h2 = h*h
         h3 = h*h2
         h4 = h*h3
-        do 280 i = 1, 31
+        do i = 1, 31
             qt(i) = 0.d0
-280     continue
-        do 290 i = 1, nbcou
+        end do
+        do i = 1, nbcou
             nbres = 4
             nomres(1) = 'LAMBDA_L'
             nomres(2) = 'LAMBDA_T'
@@ -817,7 +817,7 @@ subroutine op0056()
             qt(28) = qt(28) + a22*cp
             qt(29) = qt(29) + a23*cp
             qt(30) = qt(30) + a33*cp
-290     continue
+        end do
         qt(31) = eptot
         if (nimpr .gt. 0) then
             write (ifr,1000)
@@ -827,10 +827,10 @@ subroutine op0056()
             write (ifr,'(5(2X,E13.6))') qt
             write (ifr,1000)
         endif
-        do 300 i = 1, 31
+        do i = 1, 31
             zr(jobth-1+i) = qt(i)
             zc(jobtc-1+i) = dcmplx(0.d0,0.d0)
-300     continue
+        end do
     endif
 !
     1000 format (/,80 ('-'))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0489(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -155,8 +155,8 @@ subroutine te0489(option, nomte)
 !
     call jevech('PCONTPR', 'L', isigtp)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     ASSERT(npg.eq.npg1)
 !
 ! ---- AFFECTATION DES VECTEURS DE TRAVAIL SIGMA1 ET SIGMA2
@@ -165,15 +165,15 @@ subroutine te0489(option, nomte)
 !      ----------------------
     k = 0
 !
-    do 40 igau = 1, npg
-        do 30 i = 1, nbsig
+    do igau = 1, npg
+        do i = 1, nbsig
             k = k + 1
             sigt1(i+ (igau-1)*nbsig) = zr(isigtm+k-1)
             sigt2(i+ (igau-1)*nbsig) = zr(isigtp+k-1)
             sigma1(i+ (igau-1)*nbsig) = zr(isigtm+k-1)
             sigma2(i+ (igau-1)*nbsig) = zr(isigtp+k-1)
-30      continue
-40  continue
+        end do
+    end do
 !
     if (compor(1:14) .ne. 'VMIS_CINE_LINE') then
 !
@@ -181,7 +181,7 @@ subroutine te0489(option, nomte)
 ! ---- SIGMA1 ET SIGMA2 :
 !      ----------------
 !
-        do 70 igau = 1, npg
+        do igau = 1, npg
 !
             trsig1 = sigma1(&
                      1+ (igau-1)*nbsig) + sigma1(2+ (igau-1)* nbsig) + sigma1(3+ (igau-1)*nbsig)
@@ -195,7 +195,7 @@ subroutine te0489(option, nomte)
             sigma2(1+ (igau-1)*nbsig) = sigma2(1+ (igau-1)*nbsig ) - untier*trsig2
             sigma2(2+ (igau-1)*nbsig) = sigma2(2+ (igau-1)*nbsig ) - untier*trsig2
             sigma2(3+ (igau-1)*nbsig) = sigma2(3+ (igau-1)*nbsig ) - untier*trsig2
-70      continue
+        end do
 !
 ! ---- DANS LE CAS D'UN ECROUISSAGE CINEMATIQUE
 ! ---- RECUPERATION DES COMPOSANTES DU TENSEUR DE RAPPEL
@@ -212,20 +212,20 @@ subroutine te0489(option, nomte)
 !        -------
         nbvarint = 8
 !
-        do 60 igau = 1, npg
-            do 50 i = 1, nbsig
+        do igau = 1, npg
+            do i = 1, nbsig
                 x1(i+ (igau-1)*nbsig) = zr(idvar1+i+ (igau-1)*nbvarint- 1)
                 x2(i+ (igau-1)*nbsig) = zr(idvar2+i+ (igau-1)*nbvarint- 1)
-50          continue
-60      continue
+            end do
+        end do
 !
 ! ---- CAS DE LA NORME TOTAL_CINE : CALCUL DES CONTRAINTES
 ! ---- (SIGMA1-X1) ET (SIGMA2-X2) :
 !      -------------------------
 !
         k = 0
-        do 100 igau = 1, npg
-            do 90 i = 1, nbsig
+        do igau = 1, npg
+            do i = 1, nbsig
                 k = k + 1
 !
                 sigt1(i+ (igau-1)*nbsig) = zr(isigtm+k-1)
@@ -234,14 +234,14 @@ subroutine te0489(option, nomte)
 !     &                                -X2(I+ (IGAU-1)*NBSIG)
                 sigma1(i+ (igau-1)*nbsig) = zr(isigtm+k-1) - x1(i+ ( igau-1)*nbsig)
                 sigma2(i+ (igau-1)*nbsig) = zr(isigtp+k-1) - x2(i+ ( igau-1)*nbsig)
-90          continue
-100      continue
+            end do
+        end do
 !
 ! ---- CAS DE LA NORME VMIS_CINE : CALCUL DES DEVIATEURS DES CONTRAINTES
 ! ---- (SIGMA1-X1) ET (SIGMA2-X2) :
 !      -------------------------
 !
-        do 80 igau = 1, npg
+        do igau = 1, npg
 !
             trsig1 = sigma1(&
                      1+ (igau-1)*nbsig) + sigma1(2+ (igau-1)* nbsig) + sigma1(3+ (igau-1)*nbsig)
@@ -270,7 +270,7 @@ subroutine te0489(option, nomte)
                 sigma2(5+ (igau-1)*nbsig) = sigma2(5+ (igau-1)*nbsig)
                 sigma2(6+ (igau-1)*nbsig) = sigma2(6+ (igau-1)*nbsig)
             endif
-80      continue
+        end do
 !
     endif
 !
@@ -317,7 +317,7 @@ subroutine te0489(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
-        do 200 igau = 1, npg
+        do igau = 1, npg
             idecal = (igau-1)*6
 ! --- DEFORMATION PLASTIQUE CUMULEE
             pm = zr(idvar1-1+(igau-1)*nbvari+1)
@@ -391,14 +391,14 @@ subroutine te0489(option, nomte)
                         endif
 ! --- CALCUL DE X
                         cst1 = (rp-rp0)/rp
-                        do 210 isig = 1, nbsig
+                        do isig = 1, nbsig
                             xrapel(idecal+isig)=sigt1(isig+(igau-1)*&
                             nbsig)*cst1
-210                      continue
+                        end do
 !
-                        do 220 isig = 1, nbsig
+                        do isig = 1, nbsig
                             sigmx(isig) = sigt1( isig+(igau-1)*nbsig ) - xrapel(idecal+isig )
-220                      continue
+                        end do
 !
                         trace=(sigmx(1)+sigmx(2)+sigmx(3))/3.d0
                         sigmx(1) = sigmx(1)-trace
@@ -413,9 +413,9 @@ subroutine te0489(option, nomte)
                             dchay(igau) = norsig(sigmx,nbsig)/rp0
                         endif
                     else if (abs(dchaxm+1.d0).le.zernor) then
-                        do 230 isig = 1, nbsig
+                        do isig = 1, nbsig
                             sigmx(isig) = sigt1(isig)- zr(idera1-1+( igau-1)*nbcmp+2+isig)
-230                      continue
+                        end do
                         trace=(sigmx(1)+sigmx(2)+sigmx(3))/3.d0
                         sigmx(1) = sigmx(1)-trace
                         sigmx(2) = sigmx(2)-trace
@@ -456,10 +456,10 @@ subroutine te0489(option, nomte)
                         else
                             dchax(igau) = -2.d0
                             dchay(igau) = norsig(sigmx,nbsig)/rp0
-                            do 240 isig = 1, nbsig
+                            do isig = 1, nbsig
                                 xrapel((igau-1)*6+isig)=zr(idera1+(&
                                 igau-1)*nbcmp +3+isig)
-240                          continue
+                            end do
                         endif
                     endif
                 endif
@@ -469,19 +469,19 @@ subroutine te0489(option, nomte)
 !        AU PAS PRECEDENT (T-DT)
                 dchax(igau) = -2.d0
                 dchay(igau) = zr(idera1+(igau-1)*nbcmp-1+4)
-                do 250 isig = 1, nbsig
+                do isig = 1, nbsig
                     xrapel((igau-1)*6+isig)=zr(idera1+(igau-1)*nbcmp+&
                     3+isig)
-250              continue
+                end do
             endif
-200      continue
+        end do
     endif
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 ! ---- AVEC LE VECTEUR DES INDICATEURS LOCAUX :
 !      --------------------------------------
     call jevech('PDERAPG', 'E', idera2)
-    do  igau = 1, npg
+    do igau = 1, npg
         zr(idera2+(igau-1)*nbcmp-1+1) = dchav(igau)
         zr(idera2+(igau-1)*nbcmp-1+2) = dchat(igau)
         zr(idera2+(igau-1)*nbcmp-1+3) = dchax(igau)

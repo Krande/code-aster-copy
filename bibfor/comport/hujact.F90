@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine hujact(mater, vind, vinf, vins, sigd,&
                   sigf, negmul, chgmec, indi)
     implicit none
@@ -35,9 +35,9 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 !       CHGMEC   = .TRUE. SI MODIFICATION DU DOMAINE POTENTIEL
 !                            DES MECANISMES ACTIFS
 !   ------------------------------------------------------------------
-#include "asterfort/assert.h"
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/hujcdc.h"
 #include "asterfort/hujcic.h"
 #include "asterfort/hujcrd.h"
@@ -70,13 +70,13 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 !
     call lceqvn(50, vind, vinm)
     do i = 1, 3
-       if ((vind(5*i+31).ne.zero) .or. (vind(5*i+32).ne.zero)) then
-           vinm(4*i+5) = vind(5*i+31)
-           vinm(4*i+6) = vind(5*i+32)
-           vinm(4*i+7) = vind(5*i+33)
-           vinm(4*i+8) = vind(5*i+34)
-           vinm(i+4) = vind(5*i+35)
-       endif
+        if ((vind(5*i+31).ne.zero) .or. (vind(5*i+32).ne.zero)) then
+            vinm(4*i+5) = vind(5*i+31)
+            vinm(4*i+6) = vind(5*i+32)
+            vinm(4*i+7) = vind(5*i+33)
+            vinm(4*i+8) = vind(5*i+34)
+            vinm(i+4) = vind(5*i+35)
+        endif
     enddo
 !
 ! ===================================================================
@@ -92,7 +92,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
         vint(i) = vind(i)
     enddo
 !
-    do 40 i = 1, 4
+    do i = 1, 4
 !
 ! ====================================================================
 ! ---------------- MECANISME MONOTONE SUPPOS  ACTIF ------------------
@@ -154,7 +154,8 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 ! --- MECANISME DEVIATOIRE
 ! ************************
             if (i .lt. 4) then
-                call hujcrd(i, mater, sigf, vinf, seuil, iret)
+                call hujcrd(i, mater, sigf, vinf, seuil,&
+                            iret)
                 ASSERT(iret .eq. 0)
                 if (seuil .gt. tole1) then
                     chgmec = .true.
@@ -211,7 +212,8 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 ! --- VERIFICATION DES SEUILS MONOTONES
 ! *************************************
             if (i .lt. 4) then
-                call hujcrd(i, mater, sigf, vinf, seuil, iret)
+                call hujcrd(i, mater, sigf, vinf, seuil,&
+                            iret)
                 ASSERT(iret .eq. 0)
             else
                 if (chgmec .and. (.not.miso)) goto 40
@@ -380,7 +382,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 !
                             if (vins(22) .eq. zero) vinf(27)=zero
                         endif
-                        elseif((vind(22).eq.-un).and.((rd-rf).lt.r8prem()))then
+                    else if ((vind(22).eq.-un).and.((rd-rf).lt.r8prem())) then
                         if (seuil .gt. tole1) then
                             chgmec = .true.
                             vind(31) = un
@@ -455,6 +457,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
             endif
         endif
 !
- 40 continue
+ 40     continue
+    end do
 !
 end subroutine

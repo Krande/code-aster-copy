@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine diatri(n, d, e, vector, evec,&
                   ldevec)
     implicit none
@@ -64,13 +64,13 @@ subroutine diatri(n, d, e, vector, evec,&
     tiny = 100.0d0*r8miem()
     tol = r8prem()
     iter = 0
-    do 60 l = 1, n
+    do l = 1, n
 !    --- RECHERCHE DE LA PLUS PETITE VALEUR DE LA DIAGONALE SUPERIEURE.
  10     continue
-        do 20 m = l, n
+        do m = l, n
             if (m .eq. n) goto 30
             if (abs(e(m)) .le. max(tol*(abs(d(m))+abs(d(m+1))), tiny)) goto 30
- 20     continue
+        end do
 !
  30     continue
         p = d(l)
@@ -89,7 +89,7 @@ subroutine diatri(n, d, e, vector, evec,&
         c = 1.0d0
         p = 0.0d0
 !
-        do 40 i = m - 1, l, -1
+        do i = m - 1, l, -1
             f = s*e(i)
             b = c*e(i)
             call r8rotg(g, f, c, s)
@@ -104,7 +104,7 @@ subroutine diatri(n, d, e, vector, evec,&
             if (vector) call drot(n, evec(1, i+1), 1, evec(1, i), 1,&
                                   c, s)
 !
- 40     continue
+        end do
 !
         d(l) = d(l) - p
         e(l) = g
@@ -115,18 +115,19 @@ subroutine diatri(n, d, e, vector, evec,&
         d(i+1) = d(i+1) - p
         e(m) = 0.0d0
         goto 10
- 60 end do
+ 60     continue
+    end do
 !    --- POSITION DES VALEURS ET VECTERUS PROPRES ---
-    do 90 i = 1, n - 1
+    do i = 1, n - 1
         k = i
         p = d(i)
 !
-        do 70 j = i + 1, n
+        do j = i + 1, n
             if (d(j) .lt. p) then
                 k = j
                 p = d(j)
             endif
- 70     continue
+        end do
 !
         if (k .ne. i) then
             d(k) = d(i)
@@ -134,14 +135,14 @@ subroutine diatri(n, d, e, vector, evec,&
             if (vector) call dswap(n, evec(1, i), 1, evec(1, k), 1)
         endif
 !
- 90 end do
+    end do
 !          --- NORMALISATION DES VECTEURS PROPRES ---
     if (vector) then
-        do 100 j = 1, n
+        do j = 1, n
             i = idamax(n,evec(1,j),1)
             scale = evec(i,j)
             call dscal(n, 1.0d0/scale, evec(1, j), 1)
-100     continue
+        end do
     endif
 !
 9000 continue

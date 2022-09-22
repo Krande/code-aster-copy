@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmeraz(sderro, typevt)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -72,7 +72,7 @@ subroutine nmeraz(sderro, typevt)
 !
 ! --- EVENEMENTS DESACTIVES
 !
-    do 15 ieven = 1, zeven
+    do ieven = 1, zeven
         teven = zk16(jeeniv-1+ieven)(1:9)
         if (typevt .eq. 'TOUS') then
             zi(jeeact-1+ieven) = 0
@@ -81,9 +81,9 @@ subroutine nmeraz(sderro, typevt)
         else
             ASSERT(.false.)
         endif
-15  end do
+    end do
 !
-99  continue
+ 99 continue
 !
     call jedema()
 end subroutine

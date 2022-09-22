@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0382(option, nomte)
 ! person_in_charge: josselin.delmas at edf.fr
 !
@@ -34,6 +34,7 @@ subroutine te0382(option, nomte)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -49,6 +50,7 @@ subroutine te0382(option, nomte)
 #include "asterfort/jenuno.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
@@ -61,8 +63,6 @@ subroutine te0382(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/xrmes2.h"
 #include "asterfort/xrmev2.h"
-#include "asterfort/assert.h"
-#include "asterfort/ltequa.h"
 !
     character(len=16) :: option, nomte
 !
@@ -143,26 +143,26 @@ subroutine te0382(option, nomte)
     endif
 !
 ! --- ELEMENT PARENT DE REFERENCE : RECUP DE NNO, NPG ET IDFDE
-
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnosp,&
-  npg=npgp,jpoids=ipoidp,jvf=ivfp,jdfde=idfde,jgano=jgano)
+!
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnosp, npg=npgp,&
+                     jpoids=ipoidp, jvf=ivfp, jdfde=idfde, jgano=jgano)
     ASSERT(ndim.eq.2)
-
+!
 !   la valeur de nomtse est utilisee uniquement pour definir
 !   le "type" du sous-element afin de calculer sa taille avec la
 !   routine uthk()
 !   2d => sous elements sont des triangles
     nomtse= 'MECPTR3'
-
+!
 ! --- SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IDFSE
     if (.not.iselli(elrefe)) then
         irese=3
     else
         irese=0
     endif
-
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg,jdfde=idfse)
+!
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg,&
+                     jdfde=idfse)
 !
 ! --- RECUPERATION DES CHAMPS IN "CLASSIQUES"
 !
@@ -183,8 +183,7 @@ subroutine te0382(option, nomte)
     call jevech('PCONTSER', 'L', jsigse)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (ibid .eq. 0 .and. ltequa(elrefe, enr))& 
-       call jevech('PPMILTO', 'L', jpmilt)
+    if (ibid .eq. 0 .and. ltequa(elrefe, enr)) call jevech('PPMILTO', 'L', jpmilt)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------- PREALABLES -----------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caldbg(inout, ncham, lcham, lparam)
     implicit none
 !
@@ -23,11 +23,11 @@ subroutine caldbg(inout, ncham, lcham, lparam)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dbgobj.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+!
     integer :: ncham, i, iret
     character(len=*) :: inout
     character(len=19) :: lcham(*)
@@ -46,19 +46,19 @@ subroutine caldbg(inout, ncham, lcham, lparam)
 !
 !     1- POUR FAIRE DU DEBUG PAR COMPARAISON DE 2 VERSIONS:
 !     -----------------------------------------------------
-    do 10,i = 1,ncham
-    champ = lcham(i)
-    call exisd('CARTE', champ, iret)
-    if (iret .gt. 0) ojb = champ//'.VALE'
-    call exisd('CHAM_NO', champ, iret)
-    if (iret .gt. 0) ojb = champ//'.VALE'
-    call exisd('CHAM_ELEM', champ, iret)
-    if (iret .gt. 0) ojb = champ//'.CELV'
-    call exisd('RESUELEM', champ, iret)
-    if (iret .gt. 0) ojb = champ//'.RESL'
+    do i = 1, ncham
+        champ = lcham(i)
+        call exisd('CARTE', champ, iret)
+        if (iret .gt. 0) ojb = champ//'.VALE'
+        call exisd('CHAM_NO', champ, iret)
+        if (iret .gt. 0) ojb = champ//'.VALE'
+        call exisd('CHAM_ELEM', champ, iret)
+        if (iret .gt. 0) ojb = champ//'.CELV'
+        call exisd('RESUELEM', champ, iret)
+        if (iret .gt. 0) ojb = champ//'.RESL'
 !
-    call dbgobj(ojb, 'OUI', 6, '&&CALCUL|'//inou2//'|'//lparam(i))
-    10 end do
+        call dbgobj(ojb, 'OUI', 6, '&&CALCUL|'//inou2//'|'//lparam(i))
+    end do
 !
     call jedema()
 !

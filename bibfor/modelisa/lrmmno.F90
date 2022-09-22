@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
                   nomnoe, coordo, coodsc, cooref, ifm,&
                   infmed)
@@ -83,7 +83,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
     character(len=15) :: saux15
     character(len=8) :: saux08
     character(len=64) :: nomamd
-
+!
     real(kind=8), pointer :: tcoord(:) => null()
     real(kind=8), pointer :: tcoorl(:) => null()
     character(len=16), pointer :: nomno(:) => null()
@@ -102,7 +102,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
     if (infmed .ge. 3) then
         write (ifm,101) nbnoeu
     endif
- 101 format('LECTURE DES',i10,' NOEUDS',/)
+    101 format('LECTURE DES',i10,' NOEUDS',/)
 !
 ! 1.1. ==> LECTURE DU NOM DANS LE FICHIER
 !          SI LE FICHIER NE CONTIENT PAS DE NOMMAGE DES NOEUDS, ON LEUR
@@ -119,13 +119,13 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
             do 11 , iaux = 1 , nbnoeu
             call codlet(iaux, 'G', saux15)
             nomno(iaux) = 'N'//saux15
-11          continue
+ 11         continue
         else
 !        MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
             do 12 , iaux = 1 , nbnoeu
             call codent(iaux, 'G', saux15)
             nomno(iaux) = 'N'//saux15
-12          continue
+ 12         continue
         endif
         codret = 0
     endif
@@ -147,7 +147,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !   Aster stocke toujours 3 coordonnees par noeud.
     call wkvect(coordo, 'G V R', nbnoeu*3, vr=tcoord)
     ndimm = ndim
-    if ( ndim.lt.2 ) ndimm = 2
+    if (ndim .lt. 2) ndimm = 2
     call codent(ndimm, 'G', dimesp)
     call jeecra(coordo, 'DOCU', cval=dimesp)
 !
@@ -187,13 +187,13 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
             tcoord(3*iaux+1) = tcoorl(2*iaux+1)
             tcoord(3*iaux+2) = tcoorl(2*iaux+2)
             tcoord(3*iaux+3) = 0.d0
-221          continue
+221         continue
         else
             do 222 , iaux = 0,nbnoeu-1
             tcoord(3*iaux+1) = tcoorl(iaux+1)
             tcoord(3*iaux+2) = 0.d0
             tcoord(3*iaux+3) = 0.d0
-222          continue
+222         continue
         endif
 !
     endif

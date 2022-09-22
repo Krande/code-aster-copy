@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lecojb(ob, unite, base, iret)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -34,6 +33,7 @@ subroutine lecojb(ob, unite, base, iret)
 #include "asterfort/jexnum.h"
 #include "asterfort/lecvec.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ob
     character(len=1) :: base
     integer :: unite, iret
@@ -78,21 +78,21 @@ subroutine lecojb(ob, unite, base, iret)
         call lecvec(jtmp, long, type, unite)
         call jeecra(ob1, 'NOMMAX', long)
         if (type .eq. 'K8') then
-            do 10, k=1,long
-            call jecroc(jexnom(ob1, zk8(jtmp-1+k)))
-10          continue
+            do k = 1, long
+                call jecroc(jexnom(ob1, zk8(jtmp-1+k)))
+            end do
         else if (type.eq.'K16') then
-            do 11, k=1,long
-            call jecroc(jexnom(ob1, zk16(jtmp-1+k)))
-11          continue
+            do k = 1, long
+                call jecroc(jexnom(ob1, zk16(jtmp-1+k)))
+            end do
         else if (type.eq.'K24') then
-            do 12, k=1,long
-            call jecroc(jexnom(ob1, zk24(jtmp-1+k)))
-12          continue
+            do k = 1, long
+                call jecroc(jexnom(ob1, zk24(jtmp-1+k)))
+            end do
         else if (type.eq.'K32') then
-            do 13, k=1,long
-            call jecroc(jexnom(ob1, zk32(jtmp-1+k)))
-13          continue
+            do k = 1, long
+                call jecroc(jexnom(ob1, zk32(jtmp-1+k)))
+            end do
         else
             ASSERT(.false.)
         endif
@@ -114,24 +114,24 @@ subroutine lecojb(ob, unite, base, iret)
 !
         if (stock .eq. 'CONTIG') call jeecra(ob1, 'LONT', lont)
         if ((modlon.eq.'CONSTANT') .and. (stock.ne.'CONTIG')) call jeecra(ob1, 'LONMAX', lonmax)
-        do 2,iobj=1,nutioc
+        do iobj = 1, nutioc
 !
-        if (acces(1:2) .eq. 'NO') then
-            read (unite,1005) mocle1,nomk8,mocle2,long
-            ASSERT(mocle1.eq.'|NOM=')
-            ASSERT(mocle2.eq.'|LONMAX=')
-            call jecroc(jexnom(ob1, nomk8))
-            if (modlon .ne. 'CONSTANT') call jeecra(jexnom(ob1, nomk8), 'LONMAX', long)
-            if (long .gt. 0) call jeveuo(jexnom(ob1, nomk8), 'E', iad)
-        else
-            read (unite,1006) mocle1,long
-            ASSERT(mocle1.eq.'|LONMAX=')
-            call jecroc(jexnum(ob1, iobj))
-            if (modlon .ne. 'CONSTANT') call jeecra(jexnum(ob1, iobj), 'LONMAX', long)
-            if (long .gt. 0) call jeveuo(jexnum(ob1, iobj), 'E', iad)
-        endif
-        call lecvec(iad, long, type, unite)
- 2      continue
+            if (acces(1:2) .eq. 'NO') then
+                read (unite,1005) mocle1,nomk8,mocle2,long
+                ASSERT(mocle1.eq.'|NOM=')
+                ASSERT(mocle2.eq.'|LONMAX=')
+                call jecroc(jexnom(ob1, nomk8))
+                if (modlon .ne. 'CONSTANT') call jeecra(jexnom(ob1, nomk8), 'LONMAX', long)
+                if (long .gt. 0) call jeveuo(jexnom(ob1, nomk8), 'E', iad)
+            else
+                read (unite,1006) mocle1,long
+                ASSERT(mocle1.eq.'|LONMAX=')
+                call jecroc(jexnum(ob1, iobj))
+                if (modlon .ne. 'CONSTANT') call jeecra(jexnum(ob1, iobj), 'LONMAX', long)
+                if (long .gt. 0) call jeveuo(jexnum(ob1, iobj), 'E', iad)
+            endif
+            call lecvec(iad, long, type, unite)
+        end do
 !
     else
         ASSERT(.false.)
@@ -140,13 +140,13 @@ subroutine lecojb(ob, unite, base, iret)
 !
     ob = ob1
     iret=0
-    goto 9999
+    goto 999
 !
-9998  continue
+9998 continue
     ob=' '
     iret=1
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

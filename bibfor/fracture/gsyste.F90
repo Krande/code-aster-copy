@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
     implicit none
 !
@@ -61,29 +61,29 @@ subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
 !
 ! INITIALISATION DES VECTEURS ET MATRICES
 !
-    do 20 i = 1, nchthe
+    do i = 1, nchthe
         gi(i) = 0.d0
-20  end do
+    end do
 !
 ! CALCUL DU PRODUIT TA*A
 !
-    do 7 i = 1, nchthe
-        do 8 j = 1, nchthe
-            do 9 k = 1, nnoff
+    do i = 1, nchthe
+        do j = 1, nchthe
+            do k = 1, nnoff
                 kk = iadra1+(i-1)*nchthe+j-1
                 zr(kk) = zr(kk)+ zr(istok +(k-1)*nchthe+i-1)*zr(istok+ (k-1)*nchthe+j-1)
 !
- 9          continue
- 8      continue
- 7  end do
+            end do
+        end do
+    end do
 !
 !  SECOND MEMBRE TAIJ <G,THETHAI>
 !
-    do 11 i = 1, nchthe
-        do 12 j = 1, nnoff
+    do i = 1, nchthe
+        do j = 1, nnoff
             gi(i) = gi(i) + zr(istok +(j-1)*nchthe+i-1)*gthi(j)
-12      continue
-11  end do
+        end do
+    end do
 !
 ! RESOLUTION DU SYSTEME LINEAIRE NON SYMETRIQUE PAR GAUSS
 !

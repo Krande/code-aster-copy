@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irmdes(idfimd, titre, nbtitr, infmed)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
@@ -107,15 +107,15 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 !
     ltit = 0
     ideb = 117
-    do 30 it = 1, nbtitr
+    do it = 1, nbtitr
         iaux = lxlgut(titre(it))
         ltit = ltit + iaux + 1
         if (ltit .gt. 84) goto 32
         descri(ideb:ideb+iaux) = titre(it)(1:iaux)//'-'
         ideb = ideb + iaux + 1
         if (ideb .gt. 200) goto 32
-30  end do
-32  continue
+    end do
+ 32 continue
 !
 ! 3.2. ==> ECRITURE
 !

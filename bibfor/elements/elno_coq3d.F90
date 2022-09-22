@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
                       npgsn, nso, nbcou, geom, cara,&
                       valpg, outno, lzr, matr, lgreen)
@@ -75,17 +75,17 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
                 vectn, vectpt)
 !
     kpgs=0
-    do 40 icou = 1, nbcou
-        do 30 inte = 1, npge
-            do 20 intsn = 1, npgsn
+    do icou = 1, nbcou
+        do inte = 1, npge
+            do intsn = 1, npgsn
                 kpgs=kpgs+1
                 k1=6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
-                do 10 i = 1, 6
+                do i = 1, 6
                     matpg(i,kpgs)=valpg(k1+i)
- 10             continue
- 20         continue
- 30     continue
- 40 continue
+                end do
+            end do
+        end do
+    end do
 !
     ncmp=6
 !
@@ -94,11 +94,11 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
 ! --- AFFECTATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
 ! --- SECONDE ESPECE :
 !     --------------
-        do 60 i = 1, 6
-            do 50 j = 1, kpgs
+        do i = 1, 6
+            do j = 1, kpgs
                 pk2(i,j)=matpg(i,j)
- 50         continue
- 60     continue
+            end do
+        end do
 !
 ! --- TRANSFORMATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
 ! --- SECONDE ESPECE PK2 EN CONTRAINTES DE CAUCHY :
@@ -110,33 +110,33 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
 ! ---  D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR
 !      --------------------------------------------------------------
     k=0
-    do 90 intsr = 1, npgsr
+    do intsr = 1, npgsr
         call vectgt(0, nb1, geom, zero, intsr,&
                     lzr, epais, vectn, vectg, vectt)
 !
-        do 80 j = 1, 3
-            do 70 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k=k+1
                 lzr(2000+k)=vectt(i,j)
- 70         continue
- 80     continue
- 90 continue
+            end do
+        end do
+    end do
 !
 !
-    do 130 icou = 1, nbcou
-        do 120 ic = 1, ncmp
-            do 110 i = 1, npge*nso
+    do icou = 1, nbcou
+        do ic = 1, ncmp
+            do i = 1, npge*nso
                 l=npge*npgsn*(i-1)
                 s=0.d0
-                do 100 j = 1, npge*npgsn
+                do j = 1, npge*npgsn
                     jj=(icou-1)*npge*npgsn+j
                     s=s+matr(l+j)*matpg(ic,jj)
-100             continue
+                end do
                 ii=(icou-1)*npge*nso+i
                 matno(ic,ii)=s
-110         continue
-120     continue
-130 continue
+            end do
+        end do
+    end do
 !
 !
 ! --- DETERMINATION DES MATRICE DE PASSAGE DES REPERES INTRINSEQUES
@@ -149,16 +149,16 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
 ! --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
 !     --------------------------------------------------------
 !
-    do 210 icou = 1, nbcou
-        do 200 nordo = -1, 1
+    do icou = 1, nbcou
+        do nordo = -1, 1
 !
             isp=npge*(icou-1)+nordo+2
 !
-            do 150 i = 1, ncmp
-                do 140 j = 1, nso
+            do i = 1, ncmp
+                do j = 1, nso
                     jj=nso*(nordo+1)+nso*npge*(icou-1)+j
                     matgn(i,j)=matno(i,jj)
-140             continue
+                end do
                 if (nomte .eq. 'MEC3QU9H') then
                     matgn(i,5)=(matgn(i,1)+matgn(i,2))/2.d0
                     matgn(i,6)=(matgn(i,2)+matgn(i,3))/2.d0
@@ -173,7 +173,7 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
                     matgn(i,7)=(matgn(i,1)+matgn(i,2)+matgn(i,3))/&
                     3.d0
                 endif
-150         continue
+            end do
 !
             if (lgreen) then
                 call vdsiro(nb2, 1, matevn, 'IU', 'N',&
@@ -185,22 +185,22 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
             endif
 !
             if (option .eq. 'EPSI_ELNO') then
-                do 170 icmp = 1, ncmp
-                    do 160 ino = 1, nb2
+                do icmp = 1, ncmp
+                    do ino = 1, nb2
                         outno ( (ino-1)*ncmp*nbcou*npge+(isp-1)* ncmp+icmp)= matgn(icmp,ino)
-160                 continue
-170             continue
+                    end do
+                end do
                 else if ((option.eq.'SIEF_ELNO') .or. (&
             option.eq.'SIGM_ELNO')) then
-                do 190 icmp = 1, ncmp
-                    do 180 ino = 1, nb2
+                do icmp = 1, ncmp
+                    do ino = 1, nb2
                         outno((ino-1)*ncmp*nbcou*npge+(isp-1)*ncmp+icmp)= signo(icmp,ino)
-180                 continue
-190             continue
+                    end do
+                end do
             else
                 ASSERT(.false.)
             endif
 !
-200     continue
-210 continue
+        end do
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssdmrc(mag)
     implicit none
 !     ARGUMENTS:
@@ -41,15 +41,15 @@ subroutine ssdmrc(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i,  iancnf, nnnoe
+    integer :: i, iancnf, nnnoe
     integer, pointer :: dime(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(mag//'.DIME', 'L', vi=dime)
     nnnoe=dime(1)
     call wkvect(mag//'.NOEUD_CONF', 'V V I', nnnoe, iancnf)
-    do 1, i=1,nnnoe
-    zi(iancnf-1+i)=i
-    1 end do
+    do i = 1, nnnoe
+        zi(iancnf-1+i)=i
+    end do
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
                   axok, liax, nbliax, zvec)
     implicit none
@@ -49,33 +49,33 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
 !
 !-----------------------------------------------------------------------
     if (axok) then
-        do 10 j = 1, nbmod
+        do j = 1, nbmod
 !
-            do 20 i = 1, nbliax
+            do i = 1, nbliax
                 zvec(i)=zmat(i+nbmob+nbddr,j)
- 20         continue
+            end do
 !
             if ((nbmob+nbddr) .lt. nbddg) then
-                do 30 i = nbmob+nbddr+1, nbddg
+                do i = nbmob+nbddr+1, nbddg
                     zmat(i,j)=dcmplx(0.d0,0.d0)
- 30             continue
+                end do
             endif
 !
-            do 40 i = 1, nbliax
+            do i = 1, nbliax
                 zmat(nbmob+nbddr+liax(i),j)=zvec(i)
- 40         continue
+            end do
 !
- 10     continue
+        end do
 !
 !  AUTRE CAS
 !
     else
         if ((nbmob+nbddr) .lt. nbddg) then
-            do 50 j = 1, nbmod
-                do 60 i = nbmob+nbddr+1, nbddg
+            do j = 1, nbmod
+                do i = nbmob+nbddr+1, nbddg
                     zmat(i,j)=dcmplx(0.d0,0.d0)
- 60             continue
- 50         continue
+                end do
+            end do
         endif
 !
     endif

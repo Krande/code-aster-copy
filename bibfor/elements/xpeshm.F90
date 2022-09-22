@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
-                  nddlm, npg, igeom, jpintt, jpmilt, jheavn,&
-                  ivf, ipoids, idfde, ivectu, ipesa,&
-                  heavt, lonch, cnset, rho, axi,&
-                  yaenrm, nfiss, nfh, jfisno)
+                  nddlm, npg, igeom, jpintt, jpmilt,&
+                  jheavn, ivf, ipoids, idfde, ivectu,&
+                  ipesa, heavt, lonch, cnset, rho,&
+                  axi, yaenrm, nfiss, nfh, jfisno)
 !
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
@@ -37,26 +37,26 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !
     implicit none
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/tecach.h"
 #include "asterfort/hmdeca.h"
 #include "asterfort/indent.h"
 #include "asterfort/reeref.h"
+#include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
-#include "jeveux.h"
+#include "asterfort/xcalc_heav.h"
     aster_logical :: axi
     integer :: nse, ise, in, ino, nno, j, ndim, nfh, nfiss, jfisno
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg, ifiss
     integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jheavn
-    integer :: ivectu, yaenrm, ifh, fisno(nnop, nfiss), iret , jtab(7)
+    integer :: ivectu, yaenrm, ifh, fisno(nnop, nfiss), iret, jtab(7)
     integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr, ncomp, dec
     integer :: heavt(*), lonch(10), cnset(*)
-    integer :: heavn(nnop,5), ig, ncompn, hea_se
+    integer :: heavn(nnop, 5), ig, ncompn, hea_se
     real(kind=8) :: xg(ndim), xe(ndim), coorse(30), dbid(nnop, ndim), he(nfiss)
     real(kind=8) :: ff(nnop), poids, rho, rx
     character(len=8) :: elrefp
@@ -71,9 +71,9 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
     ncompn = jtab(2)/jtab(3)
     ASSERT(ncompn.eq.5)
     do in = 1, nnop
-      do ig = 1 , ncompn
-        heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
-      enddo
+        do ig = 1, ncompn
+            heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
+        enddo
     enddo
 !
 !     RECUPERATION DE LA CONNECTIVITÃ~I FISSURE - DDL HEAVISIDES
@@ -125,14 +125,15 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !
         hea_se=xcalc_code(nfiss, he_real=[he])
 !
-        do 70 n = 1, nnop
+        do n = 1, nnop
             call indent(n, nddls, nddlm, nnops, dec1(n))
-            call hmdeca(n, nddls, nddlm, nnops, dec2(n), dec)
- 70     continue
+            call hmdeca(n, nddls, nddlm, nnops, dec2(n),&
+                        dec)
+        end do
 ! =====================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------
 ! =====================================================================
-        do 10 ipi = 1, npg
+        do ipi = 1, npg
 !
 !     COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
             call vecini(ndim, 0.d0, xg)
@@ -163,12 +164,12 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
             poids = poids*rho*zr(ipesa)
             if (axi) then
                 rx = 0.d0
-                do 80 ino = 1, nnop
+                do ino = 1, nnop
                     rx = rx + zr(igeom+2*ino-2)*ff(ino)
- 80             continue
+                end do
                 poids = poids*rx
 !     TERMES CLASSIQUES
-                do 90 ino = 1, nnop
+                do ino = 1, nnop
                     icla=dec1(ino)
                     ienr=dec2(ino)
 !
@@ -176,22 +177,22 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     ipesa+2)*ff(ino)
 !     TERMES HEAVISIDE
                     if (yaenrm .eq. 1) then
-                      do ifh = 1, nfh
-                        if (ino.le.nnops) then
-                           zr(ivectu+ienr+1+(ndim+1)*ifh)=zr(ivectu+ienr+1+(ndim+1)*ifh)&
+                        do ifh = 1, nfh
+                            if (ino .le. nnops) then
+                                zr(ivectu+ienr+1+(ndim+1)*ifh)=zr(ivectu+ienr+1+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*&
                            poids*zr(ipesa+2)*ff(ino)
-                        else
-                           zr(ivectu+ienr+1+ndim*ifh)=zr(ivectu+ienr+1+ndim*ifh)&
+                            else
+                                zr(ivectu+ienr+1+ndim*ifh)=zr(ivectu+ienr+1+ndim*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*&
                            poids*zr(ipesa+2)*ff(ino)
-                        endif
-                      end do
+                            endif
+                        end do
                     endif
- 90             continue
+                end do
             else
 !     TERMES CLASSIQUES
-                do 100 ino = 1, nnop
+                do ino = 1, nnop
                     icla=dec1(ino)
                     ienr=dec2(ino)
 !
@@ -207,33 +208,33 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     endif
 !     TERMES HEAVISIDE
                     if (yaenrm .eq. 1) then
-                      do ifh = 1, nfh
-                        if (ino.le.nnops) then
-                           zr(ivectu+ienr+(ndim+1)*ifh)=zr(ivectu+ienr+(ndim+1)*ifh)&
+                        do ifh = 1, nfh
+                            if (ino .le. nnops) then
+                                zr(ivectu+ienr+(ndim+1)*ifh)=zr(ivectu+ienr+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+1)*ff(ino)
-                           zr(ivectu+ienr+1+(ndim+1)*ifh)=zr(ivectu+ienr+1+(ndim+1)*ifh)&
+                                zr(ivectu+ienr+1+(ndim+1)*ifh)=zr(ivectu+ienr+1+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+2)*ff(ino)
-                           if (ndim .eq. 3) then
-                              zr(ivectu+ienr+2+(ndim+1)*ifh)=zr(ivectu+ienr+2+(ndim+1)*ifh)+&
+                                if (ndim .eq. 3) then
+                                    zr(ivectu+ienr+2+(ndim+1)*ifh)=zr(ivectu+ienr+2+(ndim+1)*ifh)+&
                               xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*&
                               zr(ipesa+3)*ff(ino)
-                           endif
-                        else
-                           zr(ivectu+ienr+ndim*ifh)=zr(ivectu+ienr+ndim*ifh)&
+                                endif
+                            else
+                                zr(ivectu+ienr+ndim*ifh)=zr(ivectu+ienr+ndim*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+1)*ff(ino)
 !
-                           zr(ivectu+ienr+ndim*ifh+1)=zr(ivectu+ienr+ndim*ifh+1)&
+                                zr(ivectu+ienr+ndim*ifh+1)=zr(ivectu+ienr+ndim*ifh+1)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+2)*ff(ino)
-                           if (ndim .eq. 3) then
-                              zr(ivectu+ienr+ndim*ifh+2)=zr(ivectu+ienr+ndim*ifh+2)+&
+                                if (ndim .eq. 3) then
+                                    zr(ivectu+ienr+ndim*ifh+2)=zr(ivectu+ienr+ndim*ifh+2)+&
                               xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*&
                               zr(ipesa+3)*ff(ino)
-                           endif
-                        endif
-                      end do
+                                endif
+                            endif
+                        end do
                     endif
-100             continue
+                end do
             endif
- 10     continue
+        end do
     end do
 end subroutine

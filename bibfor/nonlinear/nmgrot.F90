@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmgrot(iran, deldet, theta, chamaj)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -73,9 +73,9 @@ subroutine nmgrot(iran, deldet, theta, chamaj)
 !
 ! --- MISE A JOUR DE LA ROTATION
 !
-    do 15 ic = 1, 3
+    do ic = 1, 3
         chamaj(iran(ic)) = theta (ic)
-15  end do
+    end do
 !
 !
     call jedema()

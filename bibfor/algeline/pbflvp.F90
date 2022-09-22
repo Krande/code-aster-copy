@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
                   rkip, s1, s2, lambda)
     implicit none
@@ -86,11 +86,11 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
     lambda(2) = ((beta*z2-alpha)/(z2-dcmplx(1.d0)))-a/3.d0
     lambda(3) = ((beta*z3-alpha)/(z3-dcmplx(1.d0)))-a/3.d0
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         if (dcabs2(lambda(i)) .lt. eps) then
             write(k1bid,'(I1)') i
             call utmess('A', 'ALGELINE3_20', sk=k1bid)
         endif
-10  end do
+    end do
 !
 end subroutine

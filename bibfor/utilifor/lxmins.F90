@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lxmins(chaine)
 ! aslint: disable=
     implicit none
@@ -52,18 +52,18 @@ subroutine lxmins(chaine)
 !        INITIALISATION DES TABLES DE CONVERSION
 !
         first = 1
-        do 10 i = 0, mxchar
+        do i = 0, mxchar
             class(i) = char(i)
-10      continue
+        end do
 !
-        do 20 i = 1, 26
+        do i = 1, 26
             class(ichar(major(i:i))) = class(ichar(minus(i:i)))
-20      continue
+        end do
     endif
 !
     long = len(chaine)
-    do 100 ilong = 1, long
+    do ilong = 1, long
         chaine(ilong:ilong) = class(ichar(chaine(ilong:ilong)))
-100  end do
+    end do
 !     ------------------------------------------------------------------
 end subroutine

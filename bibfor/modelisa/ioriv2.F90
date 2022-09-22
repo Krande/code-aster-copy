@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function ioriv2(num, n, noeud, vect, coor)
 !.======================================================================
     implicit none
@@ -54,7 +54,7 @@ function ioriv2(num, n, noeud, vect, coor)
     nso=nsom(n)
 !     BOUCLE SUR LES SOMMETS
     ioriv2=0
-    do 10 i = 1, nso
+    do i = 1, nso
         if (num(i) .eq. noeud) then
             i1=i
             i2=i-1
@@ -92,7 +92,7 @@ function ioriv2(num, n, noeud, vect, coor)
                 call utmess('F', 'MODELISA4_76')
             endif
         endif
-10  end do
+    end do
     if (ioriv2 .lt. 0) then
 !       ON PERMUTE LES SOMMETS
         k=num(2)
@@ -101,12 +101,12 @@ function ioriv2(num, n, noeud, vect, coor)
         num(nso)=k
 !       ON PERMUTE LES NOEUDS INTERMEDIAIRES
         if (n .ne. nso) then
-            do 200 i = 1, nso/2
+            do i = 1, nso/2
                 k=num(nso+i)
                 l=num(2*nso+1-i)
                 num(nso+i)=l
                 num(2*nso+1-i)=k
-200          continue
+            end do
         endif
     endif
 !

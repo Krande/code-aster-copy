@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
                   inomax, nbnoto, coordo, iaxe, defm,&
                   nunoe0, drmax, torco)
@@ -123,7 +123,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 !
     call wkvect('&&ORDCOQ.TEMP.NOCR', 'V V I', nbno, inocr)
     nbnocr = 0
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         numnoe = numno(ino)
         zno = coordo(iaxe,numnoe)
         difz = dble(abs(zno-zcr))
@@ -131,7 +131,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
             nbnocr = nbnocr + 1
             zi(inocr+nbnocr-1) = numnoe
         endif
- 10 end do
+    end do
 !
     if (nbnocr .le. 8) then
         call utmess('F', 'ALGELINE3_12')
@@ -144,7 +144,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     call wkvect('&&ORDCOQ.TEMP.THETA', 'V V R', nbnocr, itheta)
     call wkvect('&&ORDCOQ.TEMP.DR', 'V V R', nbnocr, idr)
 !
-    do 20 ino = 1, nbnocr
+    do ino = 1, nbnocr
         numnoe = zi(inocr+ino-1)
         x1 = coordo(idir1,numnoe)
         x2 = coordo(idir2,numnoe)
@@ -170,22 +170,22 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         dr = dble(cos(theta)) * defm(1, numnoe, imod) + dble(sin(theta)) * defm(2, numnoe, imod)
         zr(itheta+ino-1) = theta
         zr(idr+ino-1) = dr
- 20 end do
+    end do
 !
 !
 ! --- 5.ON REORDONNE LA DISCRETISATION PAR VALEURS CROISSANTES DE THETA
 ! ---   SIMULTANEMENT ON REORDONNE LA DISTRIBUTION EN DR ET LA LISTE DES
 ! ---   NUMEROS DES NOEUDS
 !
-    do 30 ino = 1, nbnocr-1
+    do ino = 1, nbnocr-1
         themin = zr(itheta+ino-1)
         imin = ino
-        do 31 jno = ino+1, nbnocr
+        do jno = ino+1, nbnocr
             if (zr(itheta+jno-1) .lt. themin) then
                 themin = zr(itheta+jno-1)
                 imin = jno
             endif
- 31     continue
+        end do
         zr(itheta+imin-1) = zr(itheta+ino-1)
         zr(itheta+ino-1) = themin
         dr = zr(idr+imin-1)
@@ -194,7 +194,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         numnoe = zi(inocr+imin-1)
         zi(inocr+imin-1) = zi(inocr+ino-1)
         zi(inocr+ino-1) = numnoe
- 30 end do
+    end do
 !
 !
 ! --- 6.CONSTRUCTION D'UNE DISCRETISATION REGULIERE EN THETA SUR 0,2*PI
@@ -209,17 +209,17 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     dif = rap - dble(pui)
     if (dif .gt. tole) pui = pui + 1
     nbpt = 1
-    do 40 i = 1, pui
+    do i = 1, pui
         nbpt = nbpt*2
- 40 end do
+    end do
 !
 ! --- 6.2.CONSTRUCTION DE LA DISCRETISATION REGULIERE EN THETA
 !
     call wkvect('&&ORDCOQ.TEMP.DISC', 'V V R', nbpt, idisc)
     pas = 2.d0*pi/dble(nbpt)
-    do 50 ip = 1, nbpt
+    do ip = 1, nbpt
         zr(idisc+ip-1) = dble(ip-1)*pas
- 50 end do
+    end do
 !
 ! --- 6.3.CALCUL D'UNE NOUVELLE DISTRIBUTION EN DR PAR INTERPOLATION
 !
@@ -239,9 +239,9 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 ! --- 7.FFT SUR LA DISTRIBUTION EN DR
 !
     call wkvect('&&ORDCOQ.TEMP.FFTDR', 'V V C', nbpt, ifftdr)
-    do 60 ip = 1, nbpt
+    do ip = 1, nbpt
         zc(ifftdr+ip-1) = dcmplx(zr(idr2+ip-1),0.d0)
- 60 end do
+    end do
     call fft(zc(ifftdr), nbpt, 1)
 !
 !
@@ -255,14 +255,14 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     somm = modmax*modmax
     ipmax = 1
     nbpt2 = nbpt/2
-    do 70 ip = 2, nbpt2
+    do ip = 2, nbpt2
         module = dcabs2(zc(ifftdr+ip-1))
         somm = somm + module*module
         if (module .gt. modmax) then
             modmax = module
             ipmax = ip
         endif
- 70 end do
+    end do
     crit = 1.d0 - modmax*modmax/somm
 !
     if (ipmax .eq. 1) then
@@ -282,7 +282,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     s22 = 0.d0
     y1 = 0.d0
     y2 = 0.d0
-    do 80 ino = 1, nbnocr
+    do ino = 1, nbnocr
         theta = zr(itheta+ino-1)
         dr = zr(idr+ino-1)
         an = dble(cos(rki*theta))
@@ -292,7 +292,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         s22 = s22 + bn*bn
         y1 = y1 + dr*an
         y2 = y2 + dr*bn
- 80 end do
+    end do
 !
     delta = s11*s22 - s12*s12
     if (dble(abs(delta)) .lt. tole) then
@@ -334,13 +334,13 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     somm1 = 0.d0
     somm2 = 0.d0
 !
-    do 90 ino = 1, nbnocr
+    do ino = 1, nbnocr
         dr = zr(idr+ino-1)
         somm1 = somm1 + dr * dr
         gamma = rki*(zr(itheta+ino-1)-theta0)
         fonc = drmax*dble(cos(gamma))
         somm2 = somm2 + (dr-fonc) * (dr-fonc)
- 90 end do
+    end do
 !
     err = dble(sqrt(somm2/somm1)) * 100.d0
 !
@@ -348,10 +348,10 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 ! --- 10.RECUPERATION DU NUMERO DU NOEUD SUR LE CONTOUR DONT L'AZIMUT
 ! ---    EST LE PLUS PROCHE DE THETA0
 !
-    do 100 ino = 1, nbnocr
+    do ino = 1, nbnocr
         theta2 = zr(itheta+ino-1)
         if (theta2 .gt. theta0) goto 101
-100 end do
+    end do
 101 continue
     if (ino .eq. 1) then
         theta1 = zr(itheta+nbnocr-1) - 2.d0*pi

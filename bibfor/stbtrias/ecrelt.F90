@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
                   mint, mant, limail, nbmtot)
     implicit none
@@ -115,9 +115,9 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
     call jemarq()
     prfnoe='N'
     prfmai='M'
-    do 1 ifo = 1, 35
+    do ifo = 1, 35
         chfoma(ifo)=' '
- 1  end do
+    end do
 !
     chfoma(1)='%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
     chfoma(2)='%FORMAT=(1*NOM_DE_MAILLE,3*NOM_DE_NOEUD)'
@@ -162,11 +162,11 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
 !
     call jeveuo('&&PRESUP.INFO.MAILLE', 'L', vi=info)
     call jeveuo('&&PRESUP.CONN.MAILLE', 'L', vi=conn)
-    do 2 in = 1, maxnod
+    do in = 1, maxnod
         chtab(in) = '        '
- 2  end do
+    end do
 !
-    do 10 nte = 1, nbtyma
+    do nte = 1, nbtyma
         ipos = 0
         if (nbmail(nte) .eq. 0) goto 10
         nblie=3
@@ -193,7 +193,7 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
 !  --> ECRITURE DU FORMAT DANS LE FICHIER NEUTRE
         write(imod,'(A)') chfoma(nte)
 !
-        do 100 ima = 1, nbmtot
+        do ima = 1, nbmtot
             ityp = info((ima-1)*4+2)
             neul = info((ima-1)*4+3)
             if (ityp .eq. nte) then
@@ -202,18 +202,18 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
                 call codnop(chmail, prfmai, 1, 1)
                 call codent(inum, 'G', chmail(2:8))
 !
-                do 12 in = 1, neul
+                do in = 1, neul
                     neu2(in) = conn(ipos+in)
                     call codnop(chtab(in), prfnoe, 1, 1)
                     call codent(neu2(in), 'G', chtab(in)(2:8))
-12              continue
+                end do
 !
                 idiv=int(neul/8)
                 irest=mod(neul,8)
                 if (irest .ne. 0) then
                     write (imod,202) chmail, (chtab(i),i=1,neul)
                 else
-                    do 1000 k = 1, idiv
+                    do k = 1, idiv
                         l=8*(k-1)
                         if (idiv .eq. 1) then
                             write(imod,'(A,8(1X,A))') chmail, (chtab(&
@@ -222,14 +222,15 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
                             write(imod,'(8X,8(1X,A))') (chtab(i),i=1+&
                             l,8+l)
                         endif
-1000                  continue
+                    end do
                 endif
             endif
             ipos = ipos + neul
-100      continue
+        end do
         write (imod,'(A)') 'FINSF'
         write(imod,'(A)') '%'
-10  end do
+ 10     continue
+    end do
     202 format (a,8 (1x,a),/, (8x,8 (1x,a)))
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calkbb(nno, ndim, w, def, dsidep,&
                   kbb)
 ! person_in_charge: sebastien.fayolle at edf.fr
@@ -74,18 +74,18 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
 !
 ! - CALCUL DE LA MATRICE KBB
 ! - BOUCLE SUR LES SOUS ELEMENTS
-    do 105 na = 1, nno
-        do 104 ia = 1, ndim
-            do 102 ja = 1, ndim
+    do na = 1, nno
+        do ia = 1, ndim
+            do ja = 1, ndim
                 t1 = 0.d0
-                do 101 kl = 1, 2*ndim
-                    do 100 pq = 1, 2*ndim
+                do kl = 1, 2*ndim
+                    do pq = 1, 2*ndim
                         t1 = t1 + def(kl,na,ia)*dddev(kl,pq)*def(pq, na,ja)
-100                  continue
-101              continue
+                    end do
+                end do
                 kbb(ia,ja) = kbb(ia,ja) + pbulle*w*t1
-102          continue
-104      continue
-105  end do
+            end do
+        end do
+    end do
 !
 end subroutine

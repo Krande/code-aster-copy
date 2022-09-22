@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvrecu(mcf, iocc, champ, nomvec)
     implicit none
 #include "jeveux.h"
@@ -38,7 +38,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     character(len=24) :: vecteu
 !
     real(kind=8) :: a, b
-    integer :: i,  kval, n1, neq
+    integer :: i, kval, n1, neq
     complex(kind=8), pointer :: vale(:) => null()
 !
 !==================== CORPS DE LA ROUTINE =============================
@@ -57,21 +57,21 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     call getvtx(mcf, 'FORMAT_C', iocc=iocc, scal=form, nbret=n1)
 !
     if (form .eq. 'MODULE') then
-        do 11 i = 0, neq-1
+        do i = 0, neq-1
             a = dble( vale(1+i) )
             b = dimag( vale(1+i) )
             zr(kval+i) = sqrt( a*a + b*b )
-11      continue
+        end do
 !
     else if (form .eq. 'REEL') then
-        do 20 i = 0, neq-1
+        do i = 0, neq-1
             zr(kval+i) = dble( vale(1+i) )
-20      continue
+        end do
 !
     else if (form .eq. 'IMAG') then
-        do 30 i = 0, neq-1
+        do i = 0, neq-1
             zr(kval+i) = dimag( vale(1+i) )
-30      continue
+        end do
 !
     else
         call utmess('F', 'POSTRELE_52', sk=form)

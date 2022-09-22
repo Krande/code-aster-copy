@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssdeu1(motcle, noma, nbno, iliste)
     implicit none
 !     ARGUMENTS:
@@ -89,14 +89,14 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
                     iarg, n3, zk8( iawk1), ibid)
         nbno=nbno+n3
         if (motcle .eq. 'LISTE') then
-            do 100 i = 1, n3
+            do i = 1, n3
                 call jenonu(jexnom(noma//'.NOMNOE', zk8(iawk1-1+i)), iliste(i))
                 if (iliste(i) .eq. 0) then
                     valk(1) = zk8(iawk1-1+i)
                     valk(2) = noma
                     call utmess('F', 'SOUSTRUC_48', nk=2, valk=valk)
                 endif
-100          continue
+            end do
         endif
     endif
 !
@@ -112,7 +112,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
         call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1,&
                     iarg, n3, zk24(iawk1), ibid)
         ico=nbno
-        do 101 i = 1, n3
+        do i = 1, n3
             call jeexin(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), iret)
             if (iret .eq. 0) then
                 valk(1) = zk24(iawk1-1+i)
@@ -123,12 +123,12 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
             nbno= nbno+n4
             if (motcle .eq. 'LISTE') then
                 call jeveuo(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'L', iagpno)
-                do 102 ii = 1, n4
+                do ii = 1, n4
                     ico= ico+1
                     iliste(ico)= zi(iagpno-1+ii)
-102              continue
+                end do
             endif
-101      continue
+        end do
     endif
 !
 !

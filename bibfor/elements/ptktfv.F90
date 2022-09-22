@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ptktfv(itype, sk, e, rof, ce,&
                   a1, ai1, a2, ai2, xl,&
                   xiy1, xiy2, xiz1, xiz2, xjx1,&
@@ -107,13 +107,13 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
 !-----------------------------------------------------------------------
     data ip/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
 ! ---------------------------------------------------------------------
-    do 1,i=1,136
-    sk(i) = zero
-    1 end do
+    do i = 1, 136
+        sk(i) = zero
+    end do
 !
 !     -- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
-        if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
+        if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
     endif
 !
@@ -237,7 +237,7 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
     sk(ip(12)+11) = sk(ip( 4)+ 3)
     sk(ip(13)+12) = - sk(ip(13)+ 4)
     sk(ip(14)+12) = - sk(ip(14)+ 4)
-10  continue
+ 10 continue
 !
 !     CONTRIBUTION DU FLUIDE
 !
@@ -250,5 +250,5 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
     sk(ip( 7)+ 7) = xl * (c9*ai1 -ai2 + c12*se) / (rof * ce2 * c60)
     sk(ip(15)+ 7) = xl * (ai1 +ai2 + c8*se) / (rof * ce2 * c60)
     sk(ip(15)+15) = xl * (-ai1 +c9*ai2 + c12*se) / (rof * ce2 * c60)
-9999  continue
+999 continue
 end subroutine

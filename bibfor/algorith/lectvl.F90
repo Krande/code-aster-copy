@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                   nbmesu, labs, amin, apas, lvalc,&
                   lvalr)
@@ -65,9 +65,9 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 ! COMPLEXE EVEN SIMPLE PRECISION
                 nbli = int ( nbval / 6 )
                 rest = nbval - ( nbli * 6 )
-                do 151 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,6)
-                    do 100 incr = 1, 3
+                    do incr = 1, 3
                         iabs = iabs + 1
                         icmpr = (incr-1)*2 + 1
                         icmpi = (incr-1)*2 + 2
@@ -76,11 +76,11 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-100                 continue
-151             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
-                    do 152 incr = 1, int(rest/2)
+                    do incr = 1, int(rest/2)
                         iabs = iabs + 1
                         icmpr = (incr-1)*2 + 1
                         icmpi = (incr-1)*2 + 2
@@ -89,15 +89,15 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-152                 continue
+                    end do
                 endif
             else
 ! COMPLEXE EVEN DOUBLE PRECISION
                 nbli = int ( nbval / 4 )
                 rest = nbval - ( nbli * 4 )
-                do 154 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(4E20.12)',err=160) (val(i),i=1,4)
-                    do 153 incr = 1, 2
+                    do incr = 1, 2
                         iabs = iabs + 1
                         icmpr = (incr-1)*2 + 1
                         icmpi = (incr-1)*2 + 2
@@ -106,11 +106,11 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-153                 continue
-154             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(4E20.12)',err=160) (val(i),i=1,rest)
-                    do 155 incr = 1, int(rest/2)
+                    do incr = 1, int(rest/2)
                         iabs = iabs + 1
                         icmpr = (incr-1)*2 + 1
                         icmpi = (incr-1)*2 + 2
@@ -119,7 +119,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-155                 continue
+                    end do
                 endif
             endif
         else
@@ -129,9 +129,9 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 ! COMPLEXE UNEVEN SIMPLE PRECISION
                 nbli = int ( nbval / 6 )
                 rest = nbval - ( nbli * 6 )
-                do 161 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,6)
-                    do 162 incr = 1, 2
+                    do incr = 1, 2
                         iabs = iabs + 1
                         icmpa = (incr-1)*3 + 1
                         icmpr = (incr-1)*3 + 2
@@ -141,8 +141,8 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         endif
                         zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) =&
                         dcmplx(val(icmpr),val(icmpi))
-162                 continue
-161             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
                     iabs = iabs + 1
@@ -154,7 +154,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
             else
 ! COMPLEX UNEVEN DOUBLE PRECISION
                 nbli = int ( nbval / 3 )
-                do 164 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(E13.5,2E20.12)',err=160) (val(i),i=&
                     1,3)
                     iabs = iabs + 1
@@ -165,7 +165,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                         zr(labs-1 + iabs) = val(icmpa)
                     endif
                     zc(lvalc-1 + (nbmesu-1)*nbabs + iabs) = dcmplx( val(icmpr), val(icmpi) )
-164             continue
+                end do
             endif
         endif
 !
@@ -177,49 +177,49 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 ! REAL EVEN SIMPLE PRECISION
                 nbli = int ( nbval / 6 )
                 rest = nbval - ( nbli * 6 )
-                do 171 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,6)
-                    do 172 incr = 1, 6
+                    do incr = 1, 6
                         iabs = iabs + 1
                         if (nbmesu .le. 1) then
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-172                 continue
-171             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
-                    do 173 incr = 1, rest
+                    do incr = 1, rest
                         iabs = iabs + 1
                         if (nbmesu .le. 1) then
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-173                 continue
+                    end do
                 endif
             else
 ! REAL EVEN DOUBLE PRECISION
                 nbli = int ( nbval / 4 )
                 rest = nbval - ( nbli * 4 )
-                do 184 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(4E20.12)',err=160) (val(i),i=1,4)
-                    do 183 incr = 1, 4
+                    do incr = 1, 4
                         iabs = iabs + 1
                         if (nbmesu .le. 1) then
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-183                 continue
-184             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(4E20.12)',err=160) (val(i),i=1,rest)
-                    do 185 incr = 1, rest
+                    do incr = 1, rest
                         iabs = iabs + 1
                         if (nbmesu .le. 1) then
                             zr(labs-1 + iabs) = amin + (iabs -1)*apas
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( incr)
-185                 continue
+                    end do
                 endif
             endif
         else
@@ -229,9 +229,9 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 ! REAL UNEVEN SIMPLE PRECISION
                 nbli = int ( nbval / 6 )
                 rest = nbval - ( nbli * 6 )
-                do 191 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,6)
-                    do 190 incr = 1, 3
+                    do incr = 1, 3
                         iabs = iabs + 1
                         icmpa = (incr-1)*2 + 1
                         icmpr = (incr-1)*2 + 2
@@ -239,11 +239,11 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-190                 continue
-191             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(6E13.5)',err=160) (val(i),i=1,rest)
-                    do 192 incr = 1, int(rest/2)
+                    do incr = 1, int(rest/2)
                         iabs = iabs + 1
                         icmpa = (incr-1)*2 + 1
                         icmpr = (incr-1)*2 + 2
@@ -251,16 +251,16 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-192                 continue
+                    end do
                 endif
             else
 ! REAL UNEVEN DOUBLE PRECISION
                 nbli = int ( nbval / 4 )
                 rest = nbval - ( nbli * 4 )
-                do 144 lig = 1, nbli
+                do lig = 1, nbli
                     read (ideas,'(2(E13.5,E20.12))',err=160) (val(i),&
                     i=1,4)
-                    do 143 incr = 1, 2
+                    do incr = 1, 2
                         iabs = iabs + 1
                         icmpa = (incr-1)*2 + 1
                         icmpr = (incr-1)*2 + 2
@@ -268,12 +268,12 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-143                 continue
-144             continue
+                    end do
+                end do
                 if (rest .ge. 1) then
                     read (ideas,'(2(E13.5,E20.12))',err=160) (val(i),&
                     i=1,rest)
-                    do 145 incr = 1, int(rest/2)
+                    do incr = 1, int(rest/2)
                         iabs = iabs + 1
                         icmpa = (incr-1)*2 + 1
                         icmpr = (incr-1)*2 + 2
@@ -281,19 +281,19 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
                             zr(labs-1 + iabs) = val(icmpa)
                         endif
                         zr(lvalr-1 + (nbmesu-1)*nbabs + iabs) = val( icmpr)
-145                 continue
+                    end do
                 endif
             endif
         endif
     endif
 ! FIN LECTURE DU DATASET
-    goto 9999
+    goto 999
 !
 160 continue
 ! EN CAS D ERREUR DE LECTURE DU FICHIER UNV
     call utmess('F', 'ALGORITH5_5')
 !
-9999 continue
+999 continue
 !
     call jedema()
 !

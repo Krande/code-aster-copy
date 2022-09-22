@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dkqrge(nomte, xyzl, pgl, rig)
-    implicit  none
+    implicit none
 !
 #include "jeveux.h"
-!
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/cosiro.h"
@@ -33,11 +33,11 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 #include "asterfort/jquad4.h"
 #include "asterfort/matmul.h"
 #include "asterfort/prmama.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
+!
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*)
-    character(len=16) ::  nomte
+    character(len=16) :: nomte
 ! ======================================================================
 !
 !     matrice de rigidite geometrique de l'element de plaque dkq
@@ -76,9 +76,9 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
 ! deb ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
-  jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+                     jgano=jgano)
 !
 !     ----- mise a zero des matrices : flex ,memb et mefl :
 !
@@ -104,7 +104,7 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !     -- contraintes dans les couches :
 !     ----------------------------------
     call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
-                    itab=jtab)
+                itab=jtab)
     jsigm = jtab(1)
     npg = jtab(3)
     nbsp = jtab(7)
@@ -124,9 +124,9 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
         call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
                     itab=jtab)
         jsigm=jtab(1)
-        do 25 i = 1, nbcon*npg
+        do i = 1, nbcon*npg
             effgt(i)=zr(jsigm-1+i)
-25      continue
+        end do
         call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                     c, s)
         call dxefro(npg, t2ev, effgt, effint)
@@ -136,7 +136,7 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
     call gquad4(xyzl, caraq4)
 !
-    do 10 ipg = 1, npg
+    do ipg = 1, npg
         qsi = zr(icoopg-1+ndim*(ipg-1)+1)
         eta = zr(icoopg-1+ndim*(ipg-1)+2)
 !
@@ -155,39 +155,39 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
 !       -- boucle sur les couches :
             hb=-h/2
-            do 20,icou=1,nbcou
-            idec=((ipg-1)*nbcou+(icou-1))*npgh*nbsig
-            epi=h/nbcou
-            hm=hb+epi/2.d0
-            hh=hm+epi/2.d0
+            do icou = 1, nbcou
+                idec=((ipg-1)*nbcou+(icou-1))*npgh*nbsig
+                epi=h/nbcou
+                hm=hb+epi/2.d0
+                hh=hm+epi/2.d0
 !         -- sixxb, siyyb, ... : contraintes au bas de la couche
-            sixxb=zr(jsigm-1+idec+1)
-            siyyb=zr(jsigm-1+idec+2)
-            sixyb=zr(jsigm-1+idec+4)
+                sixxb=zr(jsigm-1+idec+1)
+                siyyb=zr(jsigm-1+idec+2)
+                sixyb=zr(jsigm-1+idec+4)
 !         -- sixxm, siyym, ... : contraintes au milieu de la couche
-            sixxm=zr(jsigm-1+idec+1+nbsig)
-            siyym=zr(jsigm-1+idec+2+nbsig)
-            sixym=zr(jsigm-1+idec+4+nbsig)
+                sixxm=zr(jsigm-1+idec+1+nbsig)
+                siyym=zr(jsigm-1+idec+2+nbsig)
+                sixym=zr(jsigm-1+idec+4+nbsig)
 !         -- sixxh, siyyh, ... : contraintes en haut de la couche
-            sixxh=zr(jsigm-1+idec+1+2*nbsig)
-            siyyh=zr(jsigm-1+idec+2+2*nbsig)
-            sixyh=zr(jsigm-1+idec+4+2*nbsig)
+                sixxh=zr(jsigm-1+idec+1+2*nbsig)
+                siyyh=zr(jsigm-1+idec+2+2*nbsig)
+                sixyh=zr(jsigm-1+idec+4+2*nbsig)
 !         -- on integre dans l'epaisseur de chaque couche
 !            avec une forrmule de newton-cotes a 3 points
 !            les coefficients sont 1/6, 4/6 et 1/6
-            cb=epi/6
-            cm=4.d0*epi/6
-            ch=epi/6
+                cb=epi/6
+                cm=4.d0*epi/6
+                ch=epi/6
 !         -- nxx, nyy, nxy = somme de sixx, siyy, sixy :
-            nxx=nxx+cb*sixxb+cm*sixxm+ch*sixxh
-            nyy=nyy+cb*siyyb+cm*siyym+ch*siyyh
-            nxy=nxy+cb*sixyb+cm*sixym+ch*sixyh
+                nxx=nxx+cb*sixxb+cm*sixxm+ch*sixxh
+                nyy=nyy+cb*siyyb+cm*siyym+ch*siyyh
+                nxy=nxy+cb*sixyb+cm*sixym+ch*sixyh
 !         -- mise a jour de hb pour la couche suivante :
-            hb=hb+epi
+                hb=hb+epi
 !
 ! --- fin de la boucle sur les couches
 !
-20          continue
+            end do
 !
         else if (nomte.eq.'MEDKQG4') then
             nxx = effint((ipg-1)*nbcon+1)
@@ -212,15 +212,15 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
 ! --- calcul de la matrice de rigidite geometrique
 !
-        do 30 i = 1, 12
-            do 35 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flex(i,j)=flex(i,j)+flexi(i,j)
-35          continue
-30      continue
+            end do
+        end do
 !
 ! --- fin de la boucle sur le points d'integration
 !
-10  continue
+    end do
 !
     call dxqloc(flex, memb, mefl, ctor, rig)
 !

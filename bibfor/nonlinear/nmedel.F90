@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmedel(ndim, typmod, imate, deps, sigm,&
                   option, sigp, dsidep)
 !
@@ -89,14 +89,14 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !
     if (cplan) deps(3)=-nu/(1.d0-nu)*(deps(1)+deps(2)) +(1.d0+nu)/(1.d0-nu)
     depsmo = (deps(1)+deps(2)+deps(3))/3.d0
-    do 115 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = deps(k) - depsmo * kron(k)
-115 end do
+    end do
 !
 !
-    do 145 k = 1, ndimsi
+    do k = 1, ndimsi
         sigp(k) = sigm(k)+deuxmu*depsdv(k)+troisk*depsmo*kron(k)
-145 end do
+    end do
 !
 !
 !      CALCUL DE DSIDEP(6,6) :
@@ -105,14 +105,14 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
         call r8inir(36, 0.d0, dsidep, 1)
 !
-        do 130 k = 1, 3
-            do 131 j = 1, 3
+        do k = 1, 3
+            do j = 1, 3
                 dsidep(k,j) = troisk/3.d0-deuxmu/(3.d0)
-131         continue
-130     continue
-        do 120 k = 1, ndimsi
+            end do
+        end do
+        do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu
-120     continue
+        end do
 !
     endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
-                  sigbet, alphacc, gammas, gammac, facier,&
-                  fbeton, clacier, uc, ht, effrts, dnsits, ierr)
-
+!
+subroutine clcplq(typcmb, typco, compress, cequi, enrobs,&
+                  enrobi, sigaci, sigbet, alphacc, gammas,&
+                  gammac, facier, fbeton, clacier, uc,&
+                  ht, effrts, dnsits, ierr)
+!
 !_____________________________________________________________________
 !
 !     CLCPLQ
@@ -64,11 +65,11 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
     implicit none
 !
 !
-#include "asterfort/cafelu.h"
 #include "asterfort/cafels.h"
-#include "asterfort/clcopt.h"
-#include "asterfort/cftelu.h"
+#include "asterfort/cafelu.h"
 #include "asterfort/cftels.h"
+#include "asterfort/cftelu.h"
+#include "asterfort/clcopt.h"
 #include "asterfort/trgfct.h"
 #include "asterfort/utmess.h"
 !
@@ -86,8 +87,8 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
     real(kind=8) :: gammac
     real(kind=8) :: facier
     real(kind=8) :: fbeton
-    integer ::  clacier
-    integer ::  uc
+    integer :: clacier
+    integer :: uc
     real(kind=8) :: ht
     real(kind=8) :: effrts(8)
     real(kind=8) :: dnsits(5)
@@ -123,14 +124,14 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
 !   INITIALISATION DES FACETTES
 !
     call trgfct(fcttab)
-    do 5 i = 1, 5
+    do i = 1, 5
         dnsits(i) = -1.d0
- 5  continue
+    end do
 !
 !   BOUCLE SUR LES FACETTES DE CAPRA ET MAURY
 !   DETERMINATION DU FERRAILLAGE POUR CHACUNE DES FACETTES
 !
-    do 10 i = 1, 36
+    do i = 1, 36
         effn = fcttab(i,1) * effrts(1) + fcttab(i,2) * effrts(2) + fcttab(i,3) * effrts(3)
         effm = fcttab(i,1) * effrts(4) + fcttab(i,2) * effrts(5) + fcttab(i,3) * effrts(6)
         efft = abs(effrts(7)*fcttab(i,4) + effrts(8)*fcttab(i,5))
@@ -139,11 +140,13 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
 !
         if (typcmb .eq. 0) then
 !           CALCUL DES ACIERS DE FLEXION A L'ELU
-            call cafelu(typco, alphacc, effm, effn, ht, enrobs, enrobi, facier,&
-                        fbeton, gammas, gammac, clacier, uc, ai(i), as(i), ierr)
+            call cafelu(typco, alphacc, effm, effn, ht,&
+                        enrobs, enrobi, facier, fbeton, gammas,&
+                        gammac, clacier, uc, ai(i), as(i),&
+                        ierr)
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELU
-            if (ierr.eq.1010) then
+            if (ierr .eq. 1010) then
 !               Facette en pivot B trop comprimée !
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 goto 999
@@ -151,27 +154,29 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
             if (ierr .eq. 1020) then
 !              Facette en pivot C sans dépassement du critère trop comprimée
 !              Alarme dans te0146 + densité = -1 pour cet élément
-               call utmess('A', 'CALCULEL_77')
+                call utmess('A', 'CALCULEL_77')
                 nb_fac_comp_elu = nb_fac_comp_elu + 1
             endif
-            if (ierr.eq.1030) then
+            if (ierr .eq. 1030) then
 !               Facette en pivot C trop comprimée !
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 goto 999
             endif
 !
 !           CALCUL DU FERRAILLAGE TRANSVERSAL A L'ELU
-            if (ierr.eq.0) then
+            if (ierr .eq. 0) then
 !               Calcul si aucune alarne émise pour les aciers de flexion
-                call cftelu(typco, effrts, effn, effm, efft, ht, enrobs, enrobi, facier,&
-                            fbeton, alphacc, gammac, gammas, uc, compress, dnstra, ierr)
+                call cftelu(typco, effrts, effn, effm, efft,&
+                            ht, enrobs, enrobi, facier, fbeton,&
+                            alphacc, gammac, gammas, uc, compress,&
+                            dnstra, ierr)
 !               Récupération de la densité d'acier d'effort tranchant maximale
-                if (dnstra.gt.dnsits(5)) then
+                if (dnstra .gt. dnsits(5)) then
                     dnsits(5) = dnstra
                 endif
 !
 !               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELU
-                if (ierr.eq.1040) then
+                if (ierr .eq. 1040) then
 !                   Béton trop cisaillé !
 !                   Alarme dans te0146 + on sort de la boucle + dnstra = -1 pour l'élément
                     goto 999
@@ -182,55 +187,57 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
 !
         else
 !           CALCUL DES ACIERS DE FLEXION A L'ELS
-            call cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci, sigbet,&
-                        uc, ai(i), as(i), ierr)
+            call cafels(cequi, effm, effn, ht, enrobs,&
+                        enrobi, sigaci, sigbet, uc, ai(i),&
+                        as(i), ierr)
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELS
-            if (ierr.eq.1050) then
+            if (ierr .eq. 1050) then
 !               Facette en pivot B trop comprimée !
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 goto 999
             endif
             if (ierr .eq. 1060) then
 !              Facette en pivot C : Alarme dans te0146 + densité = -1 pour cet élément
-               call utmess('A', 'CALCULEL_85')
+                call utmess('A', 'CALCULEL_85')
                 nb_fac_comp_els = nb_fac_comp_els + 1
             endif
-            if (ierr.eq.1070) then
+            if (ierr .eq. 1070) then
 !               Facette en pivot c trop comprimée !
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 goto 999
             endif
 !
 !           CALCUL DU FERRAILLAGE TRANSVERSAL A L'ELS
-            if (ierr.eq.0) then
+            if (ierr .eq. 0) then
 !               Calcul si aucune alarne émise pour les aciers de flexion
-                call cftels(typco, effn, effm, efft, ht, fbeton, sigbet, sigaci, enrobs,&
-                            enrobi, uc, compress, dnstra, ierr)
+                call cftels(typco, effn, effm, efft, ht,&
+                            fbeton, sigbet, sigaci, enrobs, enrobi,&
+                            uc, compress, dnstra, ierr)
 !               Récupération de la sectiond transversale maximale
-                if (dnstra.gt.dnsits(5)) then
+                if (dnstra .gt. dnsits(5)) then
                     dnsits(5) = dnstra
                 endif
             endif
 !
 !           GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
-                if (ierr.eq.1100) then
+            if (ierr .eq. 1100) then
 !                   Béton trop cisaillé !
 !                   Alarme dans te0146 + on sort de la boucle + dnstra = -1 pour l'élément
-                    goto 999
-                endif
+                goto 999
+            endif
         endif
-10  continue
+    end do
 !
 !   GESTION DES ALARMES EMISES POUR TOUTES LES FACETTES
-    if (nb_fac_comp_elu.gt.0.d0) then
+    if (nb_fac_comp_elu .gt. 0.d0) then
 !       ELU : au moins une facette est en pivot C et aucune ne dépasse le critère
 !       en compression : Alarme dans te0146 + densité de ferraillage fixée à -1
         ierr = 1080
         goto 999
     endif
 !
-    if (nb_fac_comp_els.gt.0.d0) then
+    if (nb_fac_comp_els .gt. 0.d0) then
 !       ELS : au moins une facette est en pivot C et aucune ne dépasse le critère
 !       en compression : Alarme dans te0146 + densité de ferraillage fixée à -1
         ierr = 1090
@@ -242,5 +249,5 @@ subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
     call clcopt(fcttab, ai, dnsits(1), dnsits(2))
     call clcopt(fcttab, as, dnsits(3), dnsits(4))
 !
-999  continue
+999 continue
 end subroutine

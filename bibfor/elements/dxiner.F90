@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
                   cdg, inerti)
     implicit none
@@ -68,8 +68,8 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 ! --- RECUPERATION DES DONNEES RELATIVES A L'INTEGRATION DES ELEMENTS
 ! --- DE TYPE 'FACE6' ET 'FACE8' :
 !     -------------------------
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !
     roep = rho * epais
@@ -96,42 +96,42 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 !
 ! --- NOEUDS SOMMETS :
 !     --------------
-    do 20 ino = 1, nnoe
-        do 30 k = 1, 3
+    do ino = 1, nnoe
+        do k = 1, 3
             xyzl(k,ino) = xyzl1(k,ino)
             xyzg(k,ino) = xyzg1(k,ino)
-30      end do
-20  end do
+        end do
+    end do
 !
 ! --- NOEUDS MILIEUX DES COTES , ON PREND COMME COORDONNEES
 ! --- LA DEMI-SOMME DES COORDONNEES DES NOEUDS SOMMETS PUISQU'IL
 ! --- S'AGIT D'ELEMENTS DE PLAQUE :
 !     ---------------------------
-    do 40 ino = 1, nnoe-1
-        do 50 k = 1, 3
+    do ino = 1, nnoe-1
+        do k = 1, 3
             xyzl(k,nnoe+ino) = undemi*(xyzl1(k,ino)+xyzl1(k,ino+1))
             xyzg(k,nnoe+ino) = undemi*(xyzg1(k,ino)+xyzg1(k,ino+1))
-50      continue
-40  end do
+        end do
+    end do
 !
-    do 60 k = 1, 3
+    do k = 1, 3
         xyzl(k,nnoe+nnoe) = undemi*(xyzl1(k,1)+xyzl1(k,nnoe))
         xyzg(k,nnoe+nnoe) = undemi*(xyzg1(k,1)+xyzg1(k,nnoe))
-60  end do
+    end do
 !
 ! --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ :
 !     ----------------------------------------
-    do 70 ino = 1, nno
-        do 80 jno = 1, nno
+    do ino = 1, nno
+        do jno = 1, nno
             sx(ino,jno) = xyzg(2,ino) * xyzg(3,jno) - xyzg(3,ino) * xyzg(2,jno)
             sy(ino,jno) = xyzg(3,ino) * xyzg(1,jno) - xyzg(1,ino) * xyzg(3,jno)
             sz(ino,jno) = xyzg(1,ino) * xyzg(2,jno) - xyzg(2,ino) * xyzg(1,jno)
-80      continue
-70  end do
+        end do
+    end do
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS :
 !     ------------------------------
-    do 90 ipg = 1, npg1
+    do ipg = 1, npg1
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
 !
@@ -141,16 +141,17 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 !
 ! ---   CALCUL DE LA NORMALE AU POINT DE GAUSS IPG :
 !       ------------------------------------------
-        do 100 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 100 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
 !
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
 !
-100          continue
+            end do
+        end do
 !
 ! ---   LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE :
 !       ---------------------------------------------
@@ -168,7 +169,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
         axlgau = zero
         aylgau = zero
 !
-        do 110 ino = 1, nno
+        do ino = 1, nno
 !
             axggau = axggau + zr(ivf+ldec+ino-1) * xyzg(1,ino)
             ayggau = ayggau + zr(ivf+ldec+ino-1) * xyzg(2,ino)
@@ -177,7 +178,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
             axlgau = axlgau + zr(ivf+ldec+ino-1) * xyzl(1,ino)
             aylgau = aylgau + zr(ivf+ldec+ino-1) * xyzl(2,ino)
 !
-110      continue
+        end do
 !
 ! ---     CALCUL DE  AXX, AYY, AZZ, AXY
 ! ---     = SOMME(X*X.DS, Y*Y.DS, Z*Z.DS, X*Y.DS) DANS LE REPERE LOCAL:
@@ -185,11 +186,11 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
         xgau = zero
         ygau = zero
 !
-        do 120 ino = 1, nno
+        do ino = 1, nno
 !
             xgau = xgau + zr(ivf+ldec+ino-1) * xyzl(1,ino)
             ygau = ygau + zr(ivf+ldec+ino-1) * xyzl(2,ino)
-120      continue
+        end do
 !
         axxgau = xgau * xgau
         ayygau = ygau * ygau
@@ -211,7 +212,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
         ayy = ayy + ayygau * sigau
 ! ---      AXY :
         axy = axy + axygau * sigau
-90  end do
+    end do
 !
     if (abs(aire) .lt. r8prem()) then
         call utmess('F', 'ELEMENTS_48')

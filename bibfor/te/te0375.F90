@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0375(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -23,8 +23,8 @@ subroutine te0375(option, nomte)
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/elref7.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ermeb3.h"
 #include "asterfort/ermes3.h"
 #include "asterfort/ermev3.h"

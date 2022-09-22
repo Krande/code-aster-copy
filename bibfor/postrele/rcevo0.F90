@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
     implicit none
 #include "asterf_types.h"
@@ -50,9 +50,9 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
     nbinti = 0
     motclf = 'TRANSITOIRE'
     call getfac(motclf, nbtran)
-    if (nbtran .eq. 0) goto 9999
+    if (nbtran .eq. 0) goto 999
 !
-    do 100 iocc = 1, nbtran
+    do iocc = 1, nbtran
 !
         call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=table, nbret=n1)
         call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n2)
@@ -75,28 +75,28 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
             endif
         endif
 !
-100 end do
+    end do
 !
     if (lsn .and. .not.lfatig .and. nbtran .gt. 1) then
         nbint0 = nbtran * nbinti
         intit0 = '&&RCEVO0.INTITULE'
         call jeveuo(intitu, 'L', jinti)
         call wkvect(intit0, 'V V K16', 1, jint0)
-        do 10 i = 1, nbinti
+        do i = 1, nbinti
             zk16(jint0+i-1) = zk16(jinti+i-1)
- 10     continue
+        end do
         call jedetr(intitu)
         call wkvect(intitu, 'V V K16', nbint0, jinti)
-        do 20 i = 1, nbinti
-            do 22 j = 1, nbtran
+        do i = 1, nbinti
+            do j = 1, nbtran
                 zk16(jinti-1+nbtran*(i-1)+j) = zk16(jint0+i-1)
- 22         continue
- 20     continue
+            end do
+        end do
         call jedetr(intit0)
     else
         nbtran = 1
     endif
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

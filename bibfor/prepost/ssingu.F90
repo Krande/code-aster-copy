@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
                   re, he, chelem)
     implicit none
@@ -63,10 +63,10 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
 !
 !
 !
-    integer ::  jcesd, jcesl,  iad1, iad2, iad3
+    integer :: jcesd, jcesl, iad1, iad2, iad3
     integer :: nbcmp, ncmp1, ncmp2, ncmp3
     integer :: icmp, inel, nncp, ibid
-    character(len=8) ::  nompaz, licmp(3)
+    character(len=8) :: nompaz, licmp(3)
     character(len=16) :: opti
     character(len=19) :: chsing
     character(len=8), pointer :: cesc(:) => null()
@@ -92,13 +92,13 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
     call jeveuo(chsing//'.CESL', 'E', jcesl)
     call jeveuo(chsing//'.CESV', 'E', vr=cesv)
 !
-    do 10 icmp = 1, nbcmp
+    do icmp = 1, nbcmp
         if (cesc(icmp)(1:5) .eq. 'DEGRE') ncmp1=icmp
         if (cesc(icmp)(1:7) .eq. 'RAPPORT') ncmp2=icmp
         if (cesc(icmp)(1:6) .eq. 'TAILLE') ncmp3=icmp
-10  end do
+    end do
 !
-    do 20 inel = 1, nelem
+    do inel = 1, nelem
         call cesexi('C', jcesd, jcesl, inel, 1,&
                     1, ncmp1, iad1)
         call cesexi('C', jcesd, jcesl, inel, 1,&
@@ -117,7 +117,7 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
             zl(jcesl-iad3-1)=.true.
             cesv(1-iad3-1)= he(inel)
         endif
-20  end do
+    end do
 !
 ! 3 - TRANSFORMATION DU CHAM_ELEM_S EN CHAM_ELEM
 !

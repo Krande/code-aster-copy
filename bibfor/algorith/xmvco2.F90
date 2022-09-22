@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
                   am, delta, pla, lact, nfh,&
                   ddls, ddlm, nfiss, ifiss, jheafa,&
-                  ifa, ncomph, jheavn, ncompn, jac, ffc,&
-                  ffp, singu, r, fk, vtmp,&
-                  p)
+                  ifa, ncomph, jheavn, ncompn, jac,&
+                  ffc, ffp, singu, r, fk,&
+                  vtmp, p)
 !
 ! aslint: disable=W1504
     implicit none
@@ -32,15 +32,15 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnol, jheavn, ncompn
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu
     real(kind=8) :: vtmp(400), delta(6)
     real(kind=8) :: ffp(27), jac
     real(kind=8) :: ffc(8)
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 !
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
@@ -76,16 +76,16 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
     call vecini(3, 0.d0, hfix)
     call matini(3, 3, 0.d0, ptr)
     if (.not.lmultc) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+        hea_fa(1)=xcalc_code(1,he_inte=[-1])
+        hea_fa(2)=xcalc_code(1,he_inte=[+1])
     endif
 !
 ! CALCUL DE H = R*DELTA - FORCE COHESIVE AUGMENTEE EN BASE COVARIANTE
 ! RAPPEL : AM INVERSE PAR RAPPORT AUX CONVENTIONS X-FEM
 !
-    do 1 i = 1, ndim
+    do i = 1, ndim
         h(i) = - lamb(i) - r*am(i) + r*delta(i)
-  1 end do
+    end do
 !
 ! CONVERSION DE H EN BASE FIXE : {HFIX} = [P]T {H}
 ! RAPPEL : P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
@@ -99,43 +99,44 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 ! ! IL Y A DEJA UN MOINS DU AUX CONVENTIONS POUR LE SAUT
 !
     coefi = xcalc_saut(1,0,1)
-    do 10 i = 1, nno
+    do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
-        do 11 ifh = 1, nfh
+        do ifh = 1, nfh
             if (lmultc) then
-                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
-                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
-                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
-                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+                coefi = xcalc_saut(&
+                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
+                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                        )
             else
-                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
-                                   hea_fa(1), &
-                                   hea_fa(2),&
-                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+                coefi = xcalc_saut(&
+                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
+                        zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                        )
             endif
-            do 12 j = 1, ndim
-                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) - coefi*ffp( i)*hfix(j)*jac
- 12         continue
- 11     continue
-        do 13 alp = 1, singu*ndim
             do j = 1, ndim
-                vtmp(in+ndim*(1+nfh)+alp) = vtmp( in+ndim*(1+nfh)+alp) - 2.d0&
-                                             *fk(i,alp,j)*hfix(j)*jac
+                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) - coefi*ffp( i)*hfix(j)*jac
+            end do
+        end do
+        do alp = 1, singu*ndim
+            do j = 1, ndim
+                vtmp(in+ndim*(1+nfh)+alp) = vtmp(in+ndim*(1+nfh)+alp) - 2.d0 *fk(i,alp,j)*hfix(j&
+                                            )*jac
             enddo
- 13     continue
- 10 continue
+        end do
+    end do
 !
 ! SECOND MEMBRE DE L EQUATION D INTERFACE: EXPRESSION DIRECTE
 ! ATTENTION INVERSION DE CONVENTIONS
 !
-    do 20 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
         if (nli .eq. 0) goto 20
-        do 21 k = 1, ndim
+        do k = 1, ndim
             vtmp(pli-1+k) = vtmp(pli-1+k) + (am(k)-delta(k))*ffi*jac
- 21     continue
- 20 continue
+        end do
+ 20     continue
+    end do
 !
 end subroutine

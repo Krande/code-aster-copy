@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
                   nvec, v1, v2, v3, nfh,&
                   singu, rr, ddls, ddlm, saut)
@@ -65,20 +65,20 @@ subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
     call vecini(3, 0.d0, saut)
     coefj=xcalc_saut(1,0,1)
     ASSERT(nvec.gt.0)
-    do 161 i = 1, nno
+    do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
-        do 162 j = 1, ndim
-          do ig = 1, nfh
-            saut(j) = saut(j) - coefj*ffp(i)*v1(in+ndim*(1+ig-1)+j)
-            if (nvec .ge. 2) saut(j) = saut(j) - coefj*ffp(i)*v2(in+ndim*(1+ig-1)+ j)
-            if (nvec .ge. 3) saut(j) = saut(j) - coefj*ffp(i)*v3(in+ndim*(1+ig-1)+ j)
-          enddo
-162      continue
-        do 163 j = 1, singu*ndim
+        do j = 1, ndim
+            do ig = 1, nfh
+                saut(j) = saut(j) - coefj*ffp(i)*v1(in+ndim*(1+ig-1)+j)
+                if (nvec .ge. 2) saut(j) = saut(j) - coefj*ffp(i)*v2(in+ndim*(1+ig-1)+ j)
+                if (nvec .ge. 3) saut(j) = saut(j) - coefj*ffp(i)*v3(in+ndim*(1+ig-1)+ j)
+            enddo
+        end do
+        do j = 1, singu*ndim
             saut(j) = saut(j)-2.d0*ffp(i)*rr*v1(in+ndim*(1+nfh)+j)
             if (nvec .ge. 2) saut(j) = saut(j)-2.d0*ffp(i)*rr*v2(in+ndim* (1+nfh)+j)
             if (nvec .ge. 3) saut(j) = saut(j)-2.d0*ffp(i)*rr*v3(in+ndim* (1+nfh)+j)
-163      continue
-161  end do
+        end do
+    end do
 !
 end subroutine

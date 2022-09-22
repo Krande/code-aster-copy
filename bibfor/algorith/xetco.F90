@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xetco(champ, nomcha, nomch0)
     implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -28,7 +29,6 @@ subroutine xetco(champ, nomcha, nomch0)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "jeveux.h"
 !
 !
     character(len=19) :: cescoi, cesco0
@@ -101,7 +101,7 @@ subroutine xetco(champ, nomcha, nomch0)
     ASSERT(nbma .eq. nbma0)
 !
 !   BOUCLE SUR LES MAILLES
-    do 211 ima = 1, nbma
+    do ima = 1, nbma
 !
 !       NOMBRE DE NOEUDS SUR LA MAILLE
         nbspi = zi(jcoi+5-1+4*(ima-1)+1)
@@ -118,8 +118,8 @@ subroutine xetco(champ, nomcha, nomch0)
                     1, 1, iad2)
 !
 !       BOUCLE SUR LES NOEUDS ET COMPOSANTES
-        do 212 ispt = 1, nbsp0
-            do 214 icmp = 1, nbcmp0
+        do ispt = 1, nbsp0
+            do icmp = 1, nbcmp0
                 call cesexi('C', jcoi, jcli, ima, ispt,&
                             1, icmp, iad1)
                 call cesexi('C', jco0, jcl0, ima, ispt,&
@@ -150,17 +150,23 @@ subroutine xetco(champ, nomcha, nomch0)
                     else
                         if (icmp .eq. 1) zr(jcesv0-1+iad2) = 0.d0
                         if (icmp .eq. 2) zr(jcesv0-1+iad2) = -1.d0
-                        do 220 ieq = 1, neq
+                        do ieq = 1, neq
                             if (zi(jlis-1+2*(ieq-1)+1) .eq. nuno) then
                                 nuno2 = zi(jlis-1+2*(ieq-1)+2)
-                                if (zl(jcnli-1+nbcmpi*(nuno2-1)+icmp))&
-                                     zr(jcesv0-1+iad2) = zr(jcnsvi-1+ nbcmpi*(nuno2-1)+icmp)
-                                else if(zi(jlis-1+2*(ieq-1)+2).eq.nuno) then
-                                     nuno2 = zi(jlis-1+2*(ieq-1)+1)
-                                     if (zl(jcnli-1+nbcmpi*(nuno2-1)+icmp))&
-                                     zr(jcesv0-1+iad2) = zr(jcnsvi-1+ nbcmpi*(nuno2-1)+icmp)
+                                if (zl(jcnli-1+nbcmpi*(nuno2-1)+icmp)) zr(jcesv0-1+iad2) = &
+                                                                       zr(&
+                                                                       jcnsvi-1+ nbcmpi*(nuno2-1&
+                                                                       )+icmp&
+                                                                       )
+                            else if (zi(jlis-1+2*(ieq-1)+2).eq.nuno) then
+                                nuno2 = zi(jlis-1+2*(ieq-1)+1)
+                                if (zl(jcnli-1+nbcmpi*(nuno2-1)+icmp)) zr(jcesv0-1+iad2) = &
+                                                                       zr(&
+                                                                       jcnsvi-1+ nbcmpi*(nuno2-1&
+                                                                       )+icmp&
+                                                                       )
                             endif
-220                      continue
+                        end do
                     endif
                 endif
 !
@@ -168,9 +174,10 @@ subroutine xetco(champ, nomcha, nomch0)
                 if (icmp .eq. 2 .and. iad2 .gt. 0) then
                     zr(jcesv0-1+iad2) = -abs(zr(jcesv0-1+iad2))
                 endif
-214          continue
-212      continue
-211  continue
+214             continue
+            end do
+        end do
+    end do
 !
 !   ON RETRANSFORME EN CHAM_ELEM NORMAL
 !   LES OPTIONS DE PROLONGEMENT DOIVENT ETRE EN ACCORD AVEC

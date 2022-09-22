@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function edgequ(ndimsi, tens, ani)
 !
     implicit none
@@ -46,11 +46,11 @@ function edgequ(ndimsi, tens, ani)
     data     pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/
 !
     equi = 0.d0
-    do 5 i = 1, ndimsi
-        do 10 j = 1, ndimsi
+    do i = 1, ndimsi
+        do j = 1, ndimsi
             equi=equi+pdtsca(i)*tens(i)*ani(i,j)*pdtsca(j)*tens(j)
-10      continue
- 5  end do
+        end do
+    end do
 !
     if (equi .gt. 0.d0) then
         equi = sqrt(equi)

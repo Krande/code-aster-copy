@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0413
 !
-
-subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
-                  dstrai0, stresm0, stres, vim, vip,&
-                  dsidep, codret)
+!
+subroutine lcrank(ndim, typmod, imate, option, tmpm,&
+                  tmpp, dstrai0, stresm0, stres, vim,&
+                  vip, dsidep, codret)
 ! ----------------------------------------------------------------------
 !
 !     LOI DE COMPORTEMENT DE RANKINE
@@ -60,9 +60,9 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     implicit none
 ! ======================================================================
 !
-    character(len=8)  :: typmod(*)
+    character(len=8) :: typmod(*)
     character(len=16) :: option
-    integer      :: ndim, imate, codret
+    integer :: ndim, imate, codret
     real(kind=8) :: tmpm, tmpp
     real(kind=8) :: dstrai(6), dstrai0(6)
     real(kind=8) :: stresm(6), stresm0(6), stres(6)
@@ -73,17 +73,17 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 #include "asterfort/bptobg.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
 #include "asterfort/mcpstr.h"
+#include "asterfort/mctgel.h"
+#include "asterfort/mgauss.h"
 #include "asterfort/ratg2d.h"
 #include "asterfort/ratg3d.h"
-#include "asterfort/mctgel.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/vecini.h"
-#include "asterfort/lcinma.h"
-#include "asterfort/mgauss.h"
 !
 ! Declaration of constant parameters
-    integer      :: mmax, nmax
+    integer :: mmax, nmax
     parameter    (mmax=3, nmax=6)
 !
 ! Declaration of real type variables
@@ -112,7 +112,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     aster_logical :: tridim, outofp
 !
 ! Declaration of character type variables
-    character(len=8)  :: mod
+    character(len=8) :: mod
     character(len=16) :: nomres(3)
 !
 ! Declaration of constant variables
@@ -137,7 +137,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 ! =================================================================
 ! --- NOMBRE DE COMPOSANTES ---------------------------------------
 ! =================================================================
-    if (mod(1:2) .eq. '3D' .or. mod(1:6).eq.'C_PLAN') then
+    if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'C_PLAN') then
         ndt = 6
         ndi = 3
     else if (mod(1:6).eq.'D_PLAN' .or. mod(1:4).eq.'AXIS') then
@@ -152,7 +152,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     endif
 !
     epflag=.false.
-    
+!
 !    write(6,*)
 !     write(6,'(A,6(I2))')'! * NDI,NDT =',ndi,ndt
 !
@@ -161,13 +161,15 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     nomres(1)= 'E       '
     nomres(2)= 'NU      '
     nomres(3)= 'ALPHA   '
-    call rcvala(imate, ' ', 'ELAS', 0, '   ', &
-                [tmpp], 3, nomres, rprops, icode, 2)
+    call rcvala(imate, ' ', 'ELAS', 0, '   ',&
+                [tmpp], 3, nomres, rprops, icode,&
+                2)
 !
 ! Reading material Rankine properties
     nomres(1)= 'SIGMA_T'
-    call rcvala(imate, ' ', 'RANKINE', 0, '   ', &
-                [tmpp], 1, nomres, rprops(4), icode(4), 2)
+    call rcvala(imate, ' ', 'RANKINE', 0, '   ',&
+                [tmpp], 1, nomres, rprops(4), icode(4),&
+                2)
 !
 ! Remove SQRT(2) from extradiagonal terms of input strain and stress
 ! ------------------------------------------------------------------
@@ -177,11 +179,10 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 ! Thermal deformation rate
 ! -------------------------
 !     write(6,'(4(A,E12.5))')'! * TEMP+=',tmpp,' TEMP-=',tmpm,' ALPHA=',rprops(3)
-    if ((.not.isnan(tmpm)) .and. (.not.isnan(tmpp)) &
-         .and. (rprops(3).gt.r0)) then
-        do 5 i = 1, ndi
+    if ((.not.isnan(tmpm)) .and. (.not.isnan(tmpp)) .and. (rprops(3).gt.r0)) then
+        do i = 1, ndi
             dstrai(i) = dstrai(i) - rprops(3)*(tmpp-tmpm)
- 5      continue
+        end do
     endif
 !
     dstrai(4)=dstrai(4)/sqr
@@ -258,7 +259,8 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !
 !
 ! Compute eigen-stress for prediction: pstrs1, pstrs2, pstrs3
-    call mcpstr(strest, tridim, pstrs, eigprj, ii, jj, mm, codret)
+    call mcpstr(strest, tridim, pstrs, eigprj, ii,&
+                jj, mm, codret)
 !
     pstrs1  =pstrs(ii)
     pstrs2  =pstrs(mm)
@@ -276,22 +278,22 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 ! Compute the number of active mechanisms: nbmeca
 ! --------------------------------------------------------------
     nbmeca=0
-    do 10 i = 1,3
-      smct=pstrs(indic(i))
-      phia=smct-cohe
-      res =phia
-      if (cohe .ne. r0) res=res/abs(cohe)
+    do i = 1, 3
+        smct=pstrs(indic(i))
+        phia=smct-cohe
+        res =phia
+        if (cohe .ne. r0) res=res/abs(cohe)
 !
-      if (res .gt. tol) then
-          nbmeca=nbmeca+1
-      endif
- 10 continue
+        if (res .gt. tol) then
+            nbmeca=nbmeca+1
+        endif
+    end do
 !
 !     if (epflag) then
 !         write(6,'(A,I2)')'! * NBMECA =',nbmeca
 !     endif
 !
-    if (nbmeca.eq.2) then
+    if (nbmeca .eq. 2) then
         goto 30
     else if (nbmeca.eq.3) then
         goto 50
@@ -439,7 +441,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     dgama=drvab*phia-drvbb*(phib+phic)
     dgamb=drvab*phib-drvbb*(phia+phic)
     dgamc=drvab*phic-drvbb*(phib+phia)
-!     
+!
 !     if (epflag) then
 !         write(6, '(A)') '!'
 !         write(6, '(A)') '!!! RETURN TO APEX !!!'
@@ -509,10 +511,10 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     call bptobg(tr, strain, eigprj)
 !
 ! Attention: On re-projete les contraintes dans la base de Voigt
-    do 80 i = mmax+1, nmax
+    do i = mmax+1, nmax
         stres(i) =sqr*stres(i)
         strain(i)=sqr*strain(i)
- 80 continue
+    end do
 !
 ! Update internal variables
     if (apex .eq. r1) then
@@ -532,7 +534,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !
 ! ------------------------------------------------------
  75 continue
-    if (ifplas.eq.r0) then
+    if (ifplas .eq. r0) then
 !
 !         if (epflag) then
 !             write(6,'(A)')'!'
@@ -541,23 +543,23 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !             write(6,'(A)')'!!!'
 !         endif
 !
-        do 90 i = 1, mmax
+        do i = 1, mmax
             stres(i)     =strest(i)
             stres(mmax+i)=sqr*strest(mmax+i)
- 90     continue
+        end do
 !
 ! Update internal variables
         vip(1)=vim(1)
         vip(2)=vim(2)
 !
-        do 92 i = 1, 6
+        do i = 1, 6
             vip(3+i)=vim(3+i)
- 92     continue
+        end do
     else
 !
-        do 93 i = 1, 6
+        do i = 1, 6
             vip(3+i)=vim(3+i) +strain(i)
- 93     continue
+        end do
 !
     endif
 ! ------------------------------------------------------
@@ -570,7 +572,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !
 ! recalcul du seuil en sortie
 ! ---------------------------
-    if (ifplas.gt.r0) then
+    if (ifplas .gt. r0) then
         res=s1-cohe
     else
         res=pstrs1-cohe
@@ -615,8 +617,8 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !
         if (sufail .eq. r0 .and. tridim) then
 !
-            call ratg3d(stres, strait, rprops, dsidep, ii, jj, mm, &
-                        edge, apex, codret)
+            call ratg3d(stres, strait, rprops, dsidep, ii,&
+                        jj, mm, edge, apex, codret)
 !
             if (codret .eq. 1) goto 999
 !
@@ -629,8 +631,8 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
         else if (sufail.eq.r0) then
 !
 !
-            call ratg2d(stres, strait, rprops, dsidep, ii, jj, mm, &
-                        edge, apex, outofp)
+            call ratg2d(stres, strait, rprops, dsidep, ii,&
+                        jj, mm, edge, apex, outofp)
 !
 ! Endif SUFAIL
         endif

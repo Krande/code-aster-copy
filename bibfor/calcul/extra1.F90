@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine extra1(nin, lchin, lpain)
-
-use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_,&
-     ca_iachlo_, ca_ianueq_, ca_iaoppa_, ca_iawlo2_,&
-     ca_iawloc_, ca_igd_, ca_igr_, ca_iichin_, ca_ilchlo_, ca_itypgd_,&
-     ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_,&
-     ca_nute_, ca_nuop_, ca_iachid_
-
-implicit none
-
+!
+    use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_, ca_iachlo_, ca_ianueq_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_igd_, ca_igr_, ca_iichin_, ca_ilchlo_, ca_itypgd_, ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_, ca_nute_, ca_nuop_, ca_iachid_
+!
+    implicit none
+!
 ! person_in_charge: jacques.pellet at edf.fr
-
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -39,14 +35,14 @@ implicit none
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
 #include "asterfort/utmess.h"
-
+!
     integer :: nin
     character(len=*) :: lchin(*)
     character(len=8) :: lpain(*)
 !-----------------------------------------------------------------------
 !     but: preparer les champs locaux "in"
 !-----------------------------------------------------------------------
-    integer ::    debugr, lggrel
+    integer :: debugr, lggrel
     character(len=19) :: chin
     character(len=4) :: type
     character(len=8) :: nompar
@@ -54,7 +50,7 @@ implicit none
     integer :: ipar, npin, iparin
     aster_logical :: exich
 !-------------------------------------------------------------------
-
+!
     npin=nbpara(ca_nuop_,ca_nute_,'IN ')
     do ipar = 1, npin
         nompar=nopara(ca_nuop_,ca_nute_,'IN ',ipar)
@@ -66,14 +62,14 @@ implicit none
             zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)=0
             goto 90
         endif
-
+!
         ASSERT(iparin.ne.0)
         chin=lchin(iparin)
         if (chin(1:1) .eq. ' ') then
             call utmess('E', 'CALCUL_13', sk=nompar)
         endif
-
-
+!
+!
         ca_iichin_=iparin
         ca_igd_   =zi(ca_iachii_-1+ca_iachid_*(iparin-1)+1)
         ca_nec_   =zi(ca_iachii_-1+ca_iachid_*(iparin-1)+2)
@@ -104,17 +100,17 @@ implicit none
         else
             ASSERT(.false.)
         endif
-
-
+!
+!
 !       1- mise a .false. du champ_loc.EXIS
 !       -----------------------------------------------------
         lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
         debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
-        do 30 k = 1, lggrel
+        do k = 1, lggrel
             zl(ca_ilchlo_-1+debugr-1+k)=.false.
- 30     continue
-
-
+        end do
+!
+!
 !       2- on fait l'extraction:
 !       -------------------------------------------
         if (type .eq. 'CART') call excart(imodat, iparg)
@@ -123,7 +119,7 @@ implicit none
         if (type .eq. 'RESL') call exresl(imodat, iparg, chin)
  90     continue
     end do
-
-
-
+!
+!
+!
 end subroutine

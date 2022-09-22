@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine versst(nomres)
 !    P. RICHARD     DATE 13/10/92
 !-----------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine versst(nomres)
 !
 !----------------BOUCLE SUR TOUS LES MACR_ELEM MIS EN JEU---------------
 !
-    do 10 i = 1, nbsst
+    do i = 1, nbsst
         nmsst=blanc
         call mgutdm(nomres, nmsst, i, 'NOM_MACR_ELEM', ibid,&
                     nmmcl)
@@ -97,7 +97,7 @@ subroutine versst(nomres)
             call utmess('E', 'ALGORITH14_73', nk=4, valk=valk, ni=2,&
                         vali=vali)
         endif
- 10 end do
+    end do
 !
     if (pblog) then
         call utmess('F', 'ALGORITH14_74')

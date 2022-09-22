@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine creaun(char, noma, nomo, nzocu, nnocu,&
                   lisnoe, poinoe, nbgdcu, coefcu, compcu,&
                   multcu, penacu)
@@ -23,6 +23,8 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/exiscp.h"
 #include "asterfort/infniv.h"
@@ -35,8 +37,6 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: char
     character(len=8) :: noma
@@ -83,7 +83,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     integer :: nbgau
     character(len=24) :: deficu
     integer :: jmult, jnoe, jpoi, jnbgd
-    integer ::    jcoef, jncmp
+    integer :: jcoef, jncmp
     integer :: ino, icmp, izone
     character(len=24) :: noeucu, noeuma
     character(len=24) :: valk(2)
@@ -119,19 +119,19 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     call jeveuo(compcu, 'L', jncmp)
     call jeveuo(coefcu, 'L', jcoef)
     call jeexin(penacu, jpena)
-    if (jpena.ne.0) then
+    if (jpena .ne. 0) then
         call jeveuo(penacu, 'L', jpena)
     endif
-    
+!
 !
 ! --- CALCUL DU NOMBRE TOTAL DE GRANDEURS A GAUCHE
 !
     nbgau = 0
-    do 20 izone = 1, nzocu
+    do izone = 1, nzocu
         nbno = zi(jpoi+izone) - zi(jpoi+izone-1)
         nbcmp = zi(jnbgd+izone) - zi(jnbgd+izone-1)
         nbgau = nbgau + nbno*nbcmp
-20  end do
+    end do
 !
 ! --- CREATION DES VECTEURS DEFINITIFS
 !
@@ -144,7 +144,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     AS_ALLOCATE(vk8=cmpg, size=nbgau)
     AS_ALLOCATE(vk8=coefg, size=nbgau)
     AS_ALLOCATE(vk8=coefd, size=nnocu)
-    if (jpena.ne.0) then
+    if (jpena .ne. 0) then
         AS_ALLOCATE(vr=cpena, size=nnocu)
     endif
     indir(1) = 1
@@ -197,7 +197,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
             zi(jnoeu-1+cptnd) = numnd
             coefd(cptd) = zk8(jcoef+izone-1)
             indir(cptnd+1) = indir(cptnd) + nbcmp - nbsup
-            if (jpena.ne.0) then
+            if (jpena .ne. 0) then
                 cpena(cptd) = zr(jpena+izone-1)
             endif
 !
@@ -254,7 +254,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 !
 ! --- LISTE DES COEFFICIENTS DE PENALITE
 !
-    if (jpena.ne.0) then
+    if (jpena .ne. 0) then
         call wkvect(deficu(1:16)//'.COEFPE', 'G V R', nnocu, jpena)
         zr(jpena:jpena+nnocu-1) = cpena(1:nnocu)
     endif
@@ -266,7 +266,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     AS_DEALLOCATE(vk8=coefg)
     AS_DEALLOCATE(vk8=coefd)
     AS_DEALLOCATE(vk8=coefd)
-    if (jpena.ne.0) then
+    if (jpena .ne. 0) then
         AS_DEALLOCATE(vr=cpena)
     endif
 !

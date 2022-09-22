@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0115(option, nomte)
 ! ......................................................................
     implicit none
@@ -30,7 +30,6 @@ subroutine te0115(option, nomte)
 ! ......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -38,6 +37,7 @@ subroutine te0115(option, nomte)
 #include "asterfort/ortrep.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/sigvmc.h"
+!
     character(len=16) :: option, nomte
     character(len=4) :: fami
     real(kind=8) :: sigma(54), repere(7), instan, nharm
@@ -52,8 +52,8 @@ subroutine te0115(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     dimmod = 3
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -67,9 +67,9 @@ subroutine te0115(option, nomte)
     nharm = zero
     call r8inir(9, 0.d0, r8bid1, 1)
 !
-    do 10 i = 1, nbsig*npg1
+    do i = 1, nbsig*npg1
         sigma(i) = zero
-10  end do
+    end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -86,11 +86,11 @@ subroutine te0115(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(ndim, bary, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
@@ -118,8 +118,8 @@ subroutine te0115(option, nomte)
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES CONTRAINTES AUX
 ! ---- POINTS D'INTEGRATION
 !      --------------------
-    do 20 i = 1, nbsig*npg1
+    do i = 1, nbsig*npg1
         zr(icont+i-1) = sigma(i)
-20  end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
                   cnbn, cplas, rpara, cief, cdeps,&
                   cdtg, cier, cdepsp, dc, bend)
-    implicit  none
+    implicit none
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
@@ -64,9 +64,9 @@ subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
 !     CALCUL LE GRADIENT DU CRITERE DE PLASICITE
     call dfplgl(nmnbn, nmplas, nmdpla, bend, df)
 !
-    do 10, j = 1,6
-    tdf(1,j) = df(j)
-    10 end do
+    do j = 1, 6
+        tdf(1,j) = df(j)
+    end do
 !
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend,&
@@ -84,9 +84,9 @@ subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
     lambda = (fplass(nmnbn,nmplas,bend) + a(1)) / b(1)
 !
-    do 20, j = 1,6
-    cdepsp(j) = lambda * dfu(j)
-    20 end do
+    do j = 1, 6
+        cdepsp(j) = lambda * dfu(j)
+    end do
 !
 !     CALCUL DE CNBN ET CDEPSP QUAND UN CRITERE PLASTIQUE EST ACTIVE
     call nmnet1(zimat, nmnbn, cnbn, cplas, czef,&

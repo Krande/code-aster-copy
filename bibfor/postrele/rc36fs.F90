@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                   sit2, saltij, ns, nscy, matse,&
                   mse, sn, nommat, c, k,&
@@ -52,13 +52,13 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
         write(ifm,*) 'MATRICE SALT INITIALE (SEISME)'
         write(ifm,1012) ( sit2(2*(l-1)+1),sit2(2*(l-1)+2),l=1,nbsig2 )
         write(ifm,1010) ( noc2(2*(l-1)+1),noc2(2*(l-1)+2),l=1,nbsig2 )
-        do 100 i = 1, nbsig1
+        do i = 1, nbsig1
             i1 = 4*nbsig2*(i-1)
             write(ifm,1000) sit1(2*(i-1)+1), noc1(2*(i-1)+1), (saltij(&
             i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,nbsig2)
             write(ifm,1002) sit1(2*(i-1)+2), noc1(2*(i-1)+2), (saltij(&
             i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,nbsig2)
-100     continue
+        end do
     endif
 !
     ug = 0.d0
@@ -66,9 +66,9 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
     icomp = 0
 !
     mij = 0.d0
-    do 50 icmp = 1, 3
+    do icmp = 1, 3
         mij = mij + mse(icmp)**2
- 50 end do
+    end do
     mij = sqrt( mij )
 !
     sp = k(2)*c(2)*cara(2)*mij / 4 / cara(1)
@@ -77,17 +77,17 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
     saltm = 0.d0
     trouve = .false.
     icomp = icomp + 1
-    if (icomp .gt. ns2) goto 9999
+    if (icomp .gt. ns2) goto 999
 !
-    do 20 i1 = 1, nbsig1
+    do i1 = 1, nbsig1
 !
         ind1 = 4*nbsig2*(i1-1)
 !
-        do 22 i2 = 1, nbsig2
+        do i2 = 1, nbsig2
 !
             ind2 = 4*(i2-1)
 !
-            do 24 i = 1, 4
+            do i = 1, 4
                 salt = saltij(ind1+ind2+i)
                 if (salt .gt. saltm) then
                     is1 = i1
@@ -96,11 +96,11 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                     saltm = salt
                     trouve = .true.
                 endif
- 24         continue
+            end do
 !
- 22     continue
+        end do
 !
- 20 end do
+    end do
 !
     if (trouve) then
 !
@@ -177,7 +177,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
             nbsig2 )
             write(ifm,1010) ( noc2(2*(l-1)+1),noc2(2*(l-1)+2),l=1,&
             nbsig2 )
-            do 110 i = 1, nbsig1
+            do i = 1, nbsig1
                 i1 = 4*nbsig2*(i-1)
                 write(ifm,1000) sit1(2*(i-1)+1), noc1(2*(i-1)+1),&
                 (saltij(i1+4*(l-1)+1),saltij(i1+4*(l-1)+3), l=1,&
@@ -185,7 +185,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                 write(ifm,1002) sit1(2*(i-1)+2), noc1(2*(i-1)+2),&
                 (saltij(i1+4*(l-1)+2),saltij(i1+4*(l-1)+4), l=1,&
                 nbsig2)
-110         continue
+            end do
         endif
 !
         ug = ug + u1kl + u2kl
@@ -193,7 +193,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
 !
     endif
 !
-9999 continue
+999 continue
 !
     1000 format(1p,i7,'_A',i9,'|',40(e9.2,1x,e9.2,'|'))
     1002 format(1p,i7,'_B',i9,'|',40(e9.2,1x,e9.2,'|'))

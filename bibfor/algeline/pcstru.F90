@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pcstru(n, in, ip, icpl, icpc,&
                   icpd, icpcx, icplx, niveau, complt,&
                   lca, imp, ier)
@@ -40,15 +40,15 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !----------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/pcdiag.h"
 #include "asterfort/pcfalu.h"
 #include "asterfort/pcfull.h"
 #include "asterfort/pcinfe.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-
+!
     integer :: n, in(n)
     integer(kind=4) :: ip(*), icpc(*)
     integer :: icpl(0:n), icpd(n)
@@ -59,7 +59,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
     integer :: kk, lca, niv, niveau, nz
     integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
-
+!
 ! IN-IP---> IPL-IPC
 ! =================
     AS_ALLOCATE(vi=ind, size=n)
@@ -73,7 +73,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !
 ! BOUCLE SUR LES NIVEAUX
 ! ======================
-    do 10 niv = 1, niveau
+    do niv = 1, niveau
         nz = icpl(n)
         if (niv .lt. niveau) then
             call pcfull(n, icpl, icpc, icpd, icplx,&
@@ -91,7 +91,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
             complt = .true.
             goto 20
         endif
- 10 end do
+    end do
 !
  20 continue
 !
@@ -99,19 +99,19 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 ! ================================
     icpc(1) = 1
     kk = 1
-    do 40 i = 2, n
+    do i = 2, n
 !                  ATTENTION ICPL(0:N)
         icpl(i-2) = kk
         k1 = icpl(i-1) + 1
         k2 = icpd(i)
-        do 30 k = k1, k2
+        do k = k1, k2
             kk = kk + 1
             icpc(kk) = icpc(k)
- 30     continue
+        end do
 !   TERME DIAG
         kk = kk + 1
         icpc(kk) = int(i, 4)
- 40 end do
+    end do
     icpl(n-1) = kk
     goto 60
 !

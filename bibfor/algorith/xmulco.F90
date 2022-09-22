@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, ifiss,&
-                  jheano, vstnc, lact, lcalel, lelim,&
-                  ndim, nfh, nfiss, ninter,&
+!
+subroutine xmulco(contac, ddls, ddlc, ddlm, iaint,&
+                  ifiss, jheano, vstnc, lact, lcalel,&
+                  lelim, ndim, nfh, nfiss, ninter,&
                   nlact, nno, nnol, nnom, nnos,&
                   pla, typma)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/xlacti.h"
+#include "asterfort/xplmat.h"
 ! IN TYPMA : TYPE DE MAILLE
 ! IN NINTER : NOMBRE DE POINTS D'INTERSECTION
 ! IN IAINT : ADRESSE TOPOFAC.AI POUR LA FISSURE COURANTE
@@ -50,8 +52,6 @@ subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, ifiss,&
 !
 ! --- LISTE DES LAMBDAS ACTIFS
 !
-#include "asterfort/xlacti.h"
-#include "asterfort/xplmat.h"
     integer :: contac, ddlc, ddlm, iaint, ifiss, jheano, vstnc(*)
     integer :: lact(8), ndim, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, pla(27)
@@ -68,9 +68,9 @@ subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, ifiss,&
                 if (lact(i) .eq. 0) vstnc(i)=0
             end do
         else
-            do 60 i = 1, nnos
+            do i = 1, nnos
                 if (lact(i) .eq. 0) vstnc((i-1)*nfh+zi(jheano-1+(i-1)*nfiss+ifiss))=0
- 60         continue
+            end do
         endif
     endif
 ! --- NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
@@ -78,8 +78,8 @@ subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, ifiss,&
     if (contac .eq. 2) nnol=nno
     if (contac .eq. 3) nnol=nnos
     do i = 1, nnol
-        call xplmat(ddls, ddlc, ddlm,&
-                    nnos, nnom, i, pli)
+        call xplmat(ddls, ddlc, ddlm, nnos, nnom,&
+                    i, pli)
         if (nfiss .eq. 1) then
             pla(i) = pli
         else

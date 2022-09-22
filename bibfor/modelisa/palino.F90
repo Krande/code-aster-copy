@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc,&
                   noml)
     implicit none
@@ -65,9 +65,9 @@ subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc,&
     zi(j2)=n1
     if (n1 .gt. 0) then
         call jeveuo(liste1, 'L', j1)
-        do 1, k=1,n1
-        zi(j2+k)=zi(j1-1+k)
- 1      continue
+        do k = 1, n1
+            zi(j2+k)=zi(j1-1+k)
+        end do
     endif
 !
 !

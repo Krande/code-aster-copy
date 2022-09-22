@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
                   defgep, sigp, dsde2g)
 ! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
@@ -43,28 +43,28 @@ subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
     spt=1
     poum='+'
     if (compor(1) .eq. 'ELAS') then
-        do 10 i = 1, ndim
-            do 20 j = 1, ndim
+        do i = 1, ndim
+            do j = 1, ndim
                 dsde2g(j,i)=0.0d0
-20          continue
-10      continue
+            end do
+        end do
         call rcvalb(fami, kpg, spt, poum, imate,&
                     ' ', 'ELAS_2NDG', 0, ' ', [0.0d0],&
                     1, ncra(1), val(1), icodre(1), 1)
         call rcvalb(fami, kpg, spt, poum, imate,&
                     ' ', 'ELAS_2NDG', 0, ' ', [0.0d0],&
                     1, ncra(3), val(3), icodre(3), 1)
-        do 30 i = 1, ndim
+        do i = 1, ndim
             dsde2g(i,i)=(1+ndim)*(val(1)-val(3))
-30      continue
+        end do
 !
         adder2 = regula(2)
-        do 40 i = 1, ndim
+        do i = 1, ndim
             sigp(i)=0.0d0
-            do 50 j = 1, ndim
+            do j = 1, ndim
                 sigp(i)=sigp(i)+dsde2g(i,j)*defgep(adder2-1+j)
-50          continue
-40      continue
+            end do
+        end do
     else
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif

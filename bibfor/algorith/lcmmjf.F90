@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
                   nbcomm, dt, necoul, is, ir,&
                   nbsys, vind, dy, nfs, nsg,&
@@ -177,14 +177,14 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
             som = 0.d0
             taumu = 0.d0
             dgdal = 0.d0
-            do 1 iu = 1, nbsys
+            do iu = 1, nbsys
                 alpha = vind(3*(iu-1)+1)+dy(iu)
 !             PARTIE POSITIVE DE ALPHA
                 if (alpha .gt. 0.d0) then
                     taumu = taumu + hsr(is,iu)*alpha
                     if (iu .ne. is) som = som+alpha
                 endif
- 1          continue
+            end do
             alphas= vind(3*(is-1)+1)+dy(is)
             som=sqrt(som)
             taumu = cisa2 * taumu/tauv
@@ -193,7 +193,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
                 aux= (1.d0-(tauef/taur)**p)
                 if (aux .le. 0.d0) then
                     iret=1
-                    goto 9999
+                    goto 999
                 endif
                 tabs=tperd+273.15d0
 !              PROTECTION DE l'EXPONENTIELLE
@@ -201,7 +201,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
                 terme=-deltgg/k/tabs
                 if (terme .gt. 10.d0) then
                     iret=1
-                    goto 9999
+                    goto 999
                 endif
 !              CALCUL DE dg/dtau
                 petitg=gamma0*exp(terme)*dt
@@ -233,5 +233,5 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
             endif
         endif
     endif
-9999  continue
+999 continue
 end subroutine

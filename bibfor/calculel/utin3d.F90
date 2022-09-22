@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
                   insold, k8cart, ltheta, niv, ifm,&
                   option, valfp, valfm, noe)
@@ -70,7 +70,7 @@ subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
     nompar(4) = 'INST'
 !
 ! BOUCLE SUR LES SOMMETS DE LA FACE
-    do 100 in = 1, nsomm
+    do in = 1, nsomm
 !
 ! NUMEROTATION LOCALE DU NOEUD A INTERPOLER
         iino = noe(in,ino,ityp)
@@ -105,6 +105,6 @@ subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
             if (ltheta) write(ifm,*)'     M ',valfm(in)
         endif
 !
-100 end do
+    end do
 !
 end subroutine

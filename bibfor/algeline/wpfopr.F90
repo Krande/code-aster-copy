@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
                   sigma, matopa, matpsc, raide, lqz,&
                   solveu)
@@ -95,14 +95,14 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
 !
     if (fmin .eq. 0.d0) then
         jpomr=0
-        do 15 icomb = 1, 3
+        do icomb = 1, 3
 !           ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
             nomi=nmat(icomb)
             call jeveuo(nomi//'.REFA', 'L', jrefe)
             if (zk24(jrefe-1+9) .eq. 'MR') then
                 jpomr=icomb
             endif
- 15     continue
+        end do
 !
 !        --- DECALAGE REEL ---
         if (jpomr .eq. 0) then
@@ -114,9 +114,9 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         call mtdscr(matopa)
         nmatra=matopa(1:19)//'.&INT'
         call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
-        do 10 icomb = 1, 3
+        do icomb = 1, 3
             typcst(icomb) = 'R'
- 10     continue
+        end do
         constr(1) = ashift*ashift
         constr(2) = ashift
         constr(3) = 1.d0
@@ -126,14 +126,14 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
 !
     else
         jpomr=0
-        do 25 icomb = 1, 3
+        do icomb = 1, 3
 !           ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
             nomi=nmat(icomb)
             call jeveuo(nomi//'.REFA', 'L', jrefe)
             if (zk24(jrefe-1+9) .eq. 'MR') then
                 jpomr=icomb
             endif
- 25     continue
+        end do
 !
 !        --- DECALAGE COMPLEXE ---
         if (jpomr .eq. 0) then
@@ -145,9 +145,9 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         call mtdscr(matopa)
         nmatra=matopa(1:19)//'.&INT'
         call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
-        do 20 icomb = 1, 3
+        do icomb = 1, 3
             typcst(icomb) = 'C'
- 20     continue
+        end do
         constc(1) = dble(sigma*sigma)
         constc(2) = dimag(sigma*sigma)
         constc(3) = dble(sigma)
@@ -166,9 +166,9 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
             call mtdscr(matpsc)
             nmtpsc=matpsc(1:19)//'.&INT'
             call jeveuo(matpsc(1:19)//'.&INT', 'E', lmtpsc)
-            do 30 icomb = 1, 3
+            do icomb = 1, 3
                 typcst(icomb) = 'R'
- 30         continue
+            end do
             constr(1) = ashift*ashift
             constr(2) = ashift
             constr(3) = 1.d0

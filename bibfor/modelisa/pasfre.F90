@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pasfre(disc, freq, pasf, dim, nbm,&
                   iv, imodi, freqi, freqf, nb)
     implicit none
@@ -66,7 +66,7 @@ subroutine pasfre(disc, freq, pasf, dim, nbm,&
     disc(1,1) = freqi
     disc(2,nbz) = freqf
 !
-    do 10 im = 1, dim
+    do im = 1, dim
         numo = imodi + (im-1)
 !
         if (freq(2,numo,iv) .lt. 0.d0) then
@@ -104,30 +104,30 @@ subroutine pasfre(disc, freq, pasf, dim, nbm,&
             disc(2,(im-1)*4+3) = freq(1,numo,iv) + df
             disc(1,(im-1)*4+4) = freq(1,numo,iv) + df
         endif
-10  end do
+    end do
 !
     if = 1
-    do 20 iz = 1, nbz
+    do iz = 1, nbz
         if (iz .lt. nbz) then
             fmin = disc(1,iz)
             fmax = disc(2,iz)
             pas = (fmax - fmin) / dble(nb4)
             pasf(if) = fmin
-            do 30 ip = 1, nb4-1
+            do ip = 1, nb4-1
                 if = if+1
                 pasf(if) = fmin + pas*ip
-30          continue
+            end do
             if = if+1
         else
             fmin = disc(1,iz)
             fmax = disc(2,iz)
             pas = (fmax - fmin) / dble(nb4-1)
             pasf(if) = fmin
-            do 40 ip = 1, nb4-2
+            do ip = 1, nb4-2
                 if = if+1
                 pasf(if) = fmin + pas*ip
-40          continue
+            end do
         endif
-20  end do
+    end do
     pasf(nbpf) = fmax
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cgforc(ndim, nno1, nno2, npg, wref,&
                   vff1, dffr1, geom, mat, pesa,&
                   iu, a, tang, vect)
@@ -75,13 +75,13 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref,&
                     courb)
 !
 !        VECTEUR FINT:U ET UC
-        do 300 n = 1, nno1
-            do 301 i = 1, ndim
+        do n = 1, nno1
+            do i = 1, ndim
                 kk = iu(i,n)
                 t1 = vff1(n,g)*a*rho(1)*pesa(1)*pesa(i+1)
                 vect(kk) = vect(kk) + wg*t1
-301          continue
-300      continue
+            end do
+        end do
 !
 !
 !

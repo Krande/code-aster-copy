@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pewext(resu)
 !
     implicit none
@@ -100,7 +100,7 @@ subroutine pewext(resu)
     forcs0='&&PEWEXT.FORCS0'
     forcs1='&&PEWEXT.FORCS1'
 !
-    do 10 i = 1, nbord
+    do i = 1, nbord
         call jemarq()
         call jerecu('V')
         numord=zi(jord-1+i)
@@ -150,7 +150,7 @@ subroutine pewext(resu)
         f0u0=f1u1
 !
         call jedema()
-10  end do
+    end do
 !
     call detrsd('CHAM_NO_S', depls1)
     call detrsd('CHAM_NO_S', depls0)

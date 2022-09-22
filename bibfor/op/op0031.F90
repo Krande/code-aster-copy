@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0031()
     implicit none
 !
@@ -26,11 +26,11 @@ subroutine op0031()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterfort/amogen.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -39,8 +39,8 @@ subroutine op0031()
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
@@ -80,7 +80,7 @@ subroutine op0031()
     call getfac('CALC_AMOR_GENE', nbocag)
     if (nbocag .ne. 0) then
         call amogen(matr19)
-        goto 9999
+        goto 999
     endif
 !
     call getfac('COMB_R', nboccr)
@@ -124,7 +124,7 @@ subroutine op0031()
     cnom = '&&OP0031.LISTE_MATRICE'
     call wkvect(cnom, 'V V K8', nbocc, lnom)
     jpomr=0
-    do 10 iocc = 0, nbocc - 1
+    do iocc = 0, nbocc - 1
         call getvid(combrc, 'MATR_ASSE', iocc=iocc+1, scal=zk8(lnom+iocc), nbret=l)
 !       -- on recherche une eventuelle matrice non symetrique
         nomi=zk8(lnom+iocc)
@@ -132,7 +132,7 @@ subroutine op0031()
         if (zk24(jrefe-1+9) .eq. 'MR') then
             jpomr=iocc
         endif
- 10 end do
+    end do
 !
 !
     nomddl=' '
@@ -149,7 +149,7 @@ subroutine op0031()
     call wkvect(ctypec, 'V V K8', nbocc, ltypec)
 !
     nbcst = 0
-    do 25 iocc = 0, nbocc - 1
+    do iocc = 0, nbocc - 1
         call getvr8(combrc, 'COEF_R', iocc=iocc+1, scal=r8val(1), nbret=lr)
         if (lr .eq. 1) then
             lcoefc=.false.
@@ -177,19 +177,19 @@ subroutine op0031()
             nbcst = nbcst + 2
             zk8(ltypec+iocc) = 'C'
         endif
- 25 end do
+    end do
 !
 !
 !   --- controle des references :
 !   --------------------------------
-    do 30 iocc = 0, nbocc - 2
+    do iocc = 0, nbocc - 2
         call vrrefe(zk8(lnom+iocc), zk8(lnom+iocc+1), iret)
         if (iret .ne. 0) then
             valk(1)=zk8(lnom+iocc)
             valk(2)=zk8(lnom+iocc+1)
             call utmess('F', 'ALGELINE2_28', nk=2, valk=valk)
         endif
- 30 end do
+    end do
 !
 !
 !
@@ -244,6 +244,6 @@ subroutine op0031()
         call detrsd('MATR_ASSE', matr19)
     endif
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

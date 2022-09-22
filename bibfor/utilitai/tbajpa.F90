@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbajpa(nomta, nbpar, nompar, typpar)
     implicit none
 #include "jeveux.h"
@@ -28,8 +28,8 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/utmess.h"
 #include "asterfort/trabck.h"
+#include "asterfort/utmess.h"
     integer :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
 !      AJOUTER DES PARAMETRES A UNE TABLE.
@@ -39,7 +39,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 ! IN  : NOMPAR : NOMS DES PARAMETRES.
 ! IN  : TYPPAR : TYPES DES PARAMETRES.
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,   nbpm, nbpu, nbligu
+    integer :: iret, nbpara, nblign, nbpm, nbpu, nbligu
     integer :: ndim, jtblp, i, j, k, ideb, jnjv, nbpar1
     character(len=1) :: base
     character(len=3) :: type
@@ -84,7 +84,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         call jeecra(nomtab//'.TBLP', 'LONUTI', ndim)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
 !
-        do 10 i = 1, nbpar
+        do i = 1, nbpar
             zk24(jtblp+4*(i-1) ) = nompar(i)
             zk24(jtblp+4*(i-1)+1) = typpar(i)
             call codent(i, 'D0', knume)
@@ -101,11 +101,11 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
             call jeecra(nomjv, 'LONMAX', nblign)
             call jeecra(nomjv, 'LONUTI', 0)
             call jeveuo(nomjv, 'E', jnjv)
-            do 12 j = 1, nblign
+            do j = 1, nblign
                 zi(jnjv+j-1) = 0
-12          continue
+            end do
             zk24(jtblp+4*(i-1)+3) = nomjv
-10      continue
+        end do
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,15 +128,16 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 !
 !       -- on n'ajoute que les parametres qui n'existent pas :
         nbpar1 = 0
-        do 20 i = 1, nbpar
+        do i = 1, nbpar
             inpar = nompar(i)
-            do 22 j = 1, nbpara
+            do j = 1, nbpara
                 jnpar = zk24(jtblp+4*(j-1))
                 if (inpar .eq. jnpar) goto 20
-22          continue
+            end do
             nbpar1 = nbpar1 + 1
-20      continue
-        if (nbpar1 .eq. 0) goto 9999
+ 20         continue
+        end do
+        if (nbpar1 .eq. 0) goto 999
 !
         ideb = nbpara
         nbpara = nbpara + nbpar1
@@ -148,12 +149,12 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         endif
         call jeecra(nomtab//'.TBLP', 'LONUTI', ndim)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
-        do 30 i = 1, nbpar
+        do i = 1, nbpar
             inpar = nompar(i)
-            do 32 j = 1, nbpara
+            do j = 1, nbpara
                 jnpar = zk24(jtblp+4*(j-1))
                 if (inpar .eq. jnpar) goto 30
-32          continue
+            end do
             ideb = ideb + 1
             j = ideb
             zk24(jtblp+4*(j-1) ) = nompar(i)
@@ -172,14 +173,15 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
             call jeecra(nomjv, 'LONMAX', nblign)
             call jeecra(nomjv, 'LONUTI', nbligu)
             call jeveuo(nomjv, 'E', jnjv)
-            do 34 k = 1, nblign
+            do k = 1, nblign
                 zi(jnjv+k-1) = 0
-34          continue
+            end do
             zk24(jtblp+4*(j-1)+3) = nomjv
-30      continue
+ 30         continue
+        end do
 !
     endif
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

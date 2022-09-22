@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                   nt, nbres, indtp, nbtp, m,&
                   fc, dfc)
@@ -73,13 +73,13 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
         call utmess('F', 'UTILITAI8_23', sr=valr)
     endif
 !
-    do 10 i = 1, nrupt
+    do i = 1, nrupt
 !
         if (sigw(i) .eq. 0.d0) then
             vali = i
             valk = 'SIGW'
             call utmess('F', 'UTILITAI8_25', si=vali, sk=valk)
-        endif    
+        endif 
         if (cals) then
             slw = slw + (log ( sigw(i)/sk(1) ) ) * ( 1.d0-(sigw(i)/ sk(1))**m)
             sl2bwm = sl2bwm + (&
@@ -88,24 +88,24 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
             slw = slw + log ( sigw(i) )
         endif
 !
- 10 continue
+    end do
 !
     s1 = 0.d0
     s2 = 0.d0
-    do 210 itp = 1, nbtp
+    do itp = 1, nbtp
 !
         snt = 0.d0
 !
-        do 200 ir = 1, nbres
+        do ir = 1, nbres
 !
             if (indtp(ir) .eq. itp) snt = snt + nt(ir)
 !
-200     continue
+        end do
 !
         swm = 0.d0
         slwm = 0.d0
         sl2wm = 0.d0
-        do 300 i = 1, nrupt
+        do i = 1, nrupt
 !
             if (indtp(nur(i)) .eq. itp) then
                 swm = swm + sigw(i) ** m
@@ -113,12 +113,12 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                 sl2wm = sl2wm + ( sigw(i) ** m )* ( log ( sigw(i) ) * log ( sigw(i) ))
             endif
 !
-300     continue
+        end do
 !
         s1 = s1 + snt * slwm/swm
         s2 = s2 + snt * ( (sl2wm/swm)*swm - (slwm/swm)*slwm ) /swm
 !
-210 continue
+    end do
 !
     if (cals) then
         fc = nrupt

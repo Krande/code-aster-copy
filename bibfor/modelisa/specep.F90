@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine specep(casint, nomu, spectr, base, vite,&
                   nuor, imodi, imodf, nbm, nbpf)
     implicit none
@@ -69,7 +69,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     integer :: ibid, dim, ival(2)
     real(kind=8) :: module
     real(kind=8) :: coefac(8), coefae(8), coefdc(6), coefde(6)
-    aster_logical :: ltable,exiind
+    aster_logical :: ltable, exiind
     character(len=8) :: caelem, modele, table, noma, nomno0
     character(len=16) :: config, nopart(2)
     character(len=19) :: typflu
@@ -236,7 +236,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
         call wkvect('&&SPECEP.IIM', 'V V R', nbpf, iim)
         chtab=table//'.VALE'
         call jeveuo(table//'.DISC', 'L', vr=freq)
-        
+!
         do iex2 = 1, nbexcp
             ival(2) = iex2
             do iex1 = 1, iex2
@@ -294,7 +294,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 !
         uabs = dble(abs(vite))
 !
-        do 30 iex2 = 1, nbexcp
+        do iex2 = 1, nbexcp
             sref = coefac(4*(iex2-1)+1)
             frref = coefac(4*(iex2-1)+2)
             frc = coefac(4*(iex2-1)+3)
@@ -304,20 +304,20 @@ subroutine specep(casint, nomu, spectr, base, vite,&
             coedim = coef1 * coefd * coefd
             if (inat .eq. 0) coedim = coedim * coefd * coefd * coef2
             iex = iex2*(iex2+1)/2
-            do 31 il = 1, nbpf
+            do il = 1, nbpf
                 idec = 2*nbpf*(iex-1)+2*(il-1)
                 fr = zr(lwr+il-1)*phie/uabs
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
- 31         continue
- 30     continue
+            end do
+        end do
 !
     else if (config(1:7).eq.'ASC_EXC') then
 !
         uabs = dble(abs(vite))
 !
-        do 40 iex2 = 1, nbexcp
+        do iex2 = 1, nbexcp
             sref = coefae(4*(iex2-1)+1)
             frref = coefae(4*(iex2-1)+2)
             frc = coefae(4*(iex2-1)+3)
@@ -327,20 +327,20 @@ subroutine specep(casint, nomu, spectr, base, vite,&
             coedim = coef1 * coefd * coefd
             if (inat .eq. 0) coedim = coedim * coefd * coefd * coef2
             iex = iex2*(iex2+1)/2
-            do 41 il = 1, nbpf
+            do il = 1, nbpf
                 idec = 2*nbpf*(iex-1)+2*(il-1)
                 fr = zr(lwr+il-1)*phie/uabs
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
- 41         continue
- 40     continue
+            end do
+        end do
 !
     else if (config(1:7).eq.'DES_CEN') then
 !
         uabs = dble(abs(vite))
 !
-        do 50 iex2 = 1, nbexcp
+        do iex2 = 1, nbexcp
             s0 = coefdc(3*(iex2-1)+1)
             frc = coefdc(3*(iex2-1)+2)
             beta = coefdc(3*(iex2-1)+3)
@@ -348,20 +348,20 @@ subroutine specep(casint, nomu, spectr, base, vite,&
             coedim = coef1 * coefd * coefd
             if (inat .eq. 0) coedim = coedim * coefd * coefd * coef2
             iex = iex2*(iex2+1)/2
-            do 51 il = 1, nbpf
+            do il = 1, nbpf
                 idec = 2*nbpf*(iex-1)+2*(il-1)
                 fr = zr(lwr+il-1)*phie/uabs
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
- 51         continue
- 50     continue
+            end do
+        end do
 !
     else if (config(1:7).eq.'DES_EXC') then
 !
         uabs = dble(abs(vite))
 !
-        do 60 iex2 = 1, nbexcp
+        do iex2 = 1, nbexcp
             s0 = coefde(3*(iex2-1)+1)
             frc = coefde(3*(iex2-1)+2)
             beta = coefde(3*(iex2-1)+3)
@@ -369,14 +369,14 @@ subroutine specep(casint, nomu, spectr, base, vite,&
             coedim = coef1 * coefd * coefd
             if (inat .eq. 0) coedim = coedim * coefd * coefd * coef2
             iex = iex2*(iex2+1)/2
-            do 61 il = 1, nbpf
+            do il = 1, nbpf
                 idec = 2*nbpf*(iex-1)+2*(il-1)
                 fr = zr(lwr+il-1)*phie/uabs
                 module = 1.d0 + (fr/frc)**(beta)
                 module = s0/module
                 zr(iinte+idec) = coedim * module
- 61         continue
- 60     continue
+            end do
+        end do
 !
     endif
 !
@@ -384,10 +384,10 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 !
     ij = 0
     chvale = nomu//'.VALE'
-    do 70 im2 = imodi, imodf
+    do im2 = imodi, imodf
         ideb = im2
         if (casint) ideb = imodi
-        do 71 im1 = ideb, im2
+        do im1 = ideb, im2
             ij = ij + 1
             call jeveuo(jexnum(chvale, ij), 'E', ivale)
             call jelira(jexnum(chvale, ij), 'LONMAX', nbval)
@@ -397,9 +397,9 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 !
             if (ltable) then
 !
-                do 80 il = 1, nbpf
+                do il = 1, nbpf
 !
-                    do 81 iex2 = 1, nbexcp
+                    do iex2 = 1, nbexcp
                         scal12 = zr(iscal+nbexcp*(im1b-1)+iex2-1)
                         scal22 = zr(iscal+nbexcp*(im2b-1)+iex2-1)
                         iex = iex2*(iex2+1)/2
@@ -410,13 +410,13 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + scal12*scal22 * zr(iinte+idec)
                         endif
- 81                 continue
+                    end do
 !
                     if (nbexcp .gt. 1) then
-                        do 82 iex2 = 2, nbexcp
+                        do iex2 = 2, nbexcp
                             scal12 = zr(iscal+nbexcp*(im1b-1)+iex2-1)
                             scal22 = zr(iscal+nbexcp*(im2b-1)+iex2-1)
-                            do 83 iex1 = 1, iex2-1
+                            do iex1 = 1, iex2-1
                                 scal11 = zr(iscal+nbexcp*(im1b-1)+ iex1-1)
                                 scal21 = zr(iscal+nbexcp*(im2b-1)+ iex1-1)
                                 iex = iex2*(iex2-1)/2 + iex1
@@ -434,17 +434,17 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                                                            & scal12*scal21 ) * zr(iinte+idec+ 1&
                                                            )
                                 endif
- 83                         continue
- 82                     continue
+                            end do
+                        end do
                     endif
 !
- 80             continue
+                end do
 !
             else
 !
                 coedim = 0.25d0 * coef1*coef1 * rhof*rhof * uabs*uabs* uabs * phie*phie*phie
-                do 90 il = 1, nbpf
-                    do 91 iex2 = 1, nbexcp
+                do il = 1, nbpf
+                    do iex2 = 1, nbexcp
                         scal12 = zr(iscal+nbexcp*(im1b-1)+iex2-1)
                         scal22 = zr(iscal+nbexcp*(im2b-1)+iex2-1)
                         iex = iex2*(iex2+1)/2
@@ -458,12 +458,12 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                                                  ) + coedim * scal12*scal22 * zr(iinte+idec&
                                                  )
                         endif
- 91                 continue
- 90             continue
+                    end do
+                end do
 !
             endif
- 71     continue
- 70 continue
+        end do
+    end do
 !
     call jedetr('&&SPECEP.TEMP.MAIL')
     call jedetr('&&SPECEP.TEMP.SCAL')

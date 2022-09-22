@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmlere(sddisc, action, infz, iterat, valr)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -86,25 +86,25 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
 !
     else if (info.eq.'VRELA_TOUS') then
         if (action .eq. 'L') then
-            do 10 iter = 0, iterat
+            do iter = 0, iterat
                 valr(iter+1) = zr(jifre+3*iter+1-1)
-10          continue
+            end do
         else
             ASSERT(.false.)
         endif
     else if (info.eq.'VMAXI_TOUS') then
         if (action .eq. 'L') then
-            do 15 iter = 0, iterat
+            do iter = 0, iterat
                 valr(iter+1) = zr(jifre+3*iter+2-1)
-15          continue
+            end do
         else
             ASSERT(.false.)
         endif
     else if (info.eq.'VCHAR_TOUS') then
         if (action .eq. 'L') then
-            do 20 iter = 0, iterat
+            do iter = 0, iterat
                 valr(iter+1) = zr(jifre+3*iter+3-1)
-20          continue
+            end do
         else
             ASSERT(.false.)
         endif

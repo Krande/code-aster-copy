@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine angco4(coor, zk1, izk, icoude, zk2,&
                   rayon, theta, angl1, angl2, angl3,&
                   angl4, pgl1, pgl2, pgl3, pgl4,&
@@ -53,12 +53,12 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
 !
 !     POINTS 1 4 3
 !
-    do 1 i = 1, 3
+    do i = 1, 3
         coor3(i)=coor(i)
         coor3(3+i)=coor(9+i)
         coor3(6+i)=coor(6+i)
         zkini(i)=zk1(i)
- 1  end do
+    end do
 !
 !
     call angcou(coor3, zkini, izk, icoud1, zk4,&
@@ -68,22 +68,22 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
 !
 !     POINTS 3 2 4
 !
-    do 2 i = 1, 3
+    do i = 1, 3
         coor3(i) =coor(6+i)
         coor3(3+i)=coor(3+i)
         coor3(6+i)=coor(9+i)
         zkini(i)=zk3(i)
- 2  end do
+    end do
 !
     call angcou(coor3, zkini, izk, icoud2, zk2,&
                 rayon2, theta2, angl3, angl2, angl4,&
                 pgl3, pgl2, pgl4, omega2, dn3n2,&
                 epsi, crit, zk4)
 !
-    do 3 i = 1, 3
+    do i = 1, 3
         coo1(i) =coor(i)
         coo2(i) = coor(3+i)
- 3  end do
+    end do
     dn1n2 = sqrt( (coo1(1)-coo2(1) )**2 + ( coo1(2)-coo2(2) )**2 + ( coo1(3)-coo2(3) )**2 )
 !
     if (icoud2 .ne. icoud1) then

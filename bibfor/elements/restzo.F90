@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function restzo(zimat, nmnbn, bend, normm, normn)
     implicit none
 !
@@ -74,13 +74,13 @@ function restzo(zimat, nmnbn, bend, normm, normn)
         nomres(4) = 'FMEY2'
 !
         if (bend .eq. 1) then
-            do 10, i = 1,2
-            kpfonc(i) = nomres(2*(i-1)+1)
-10          continue
+            do i = 1, 2
+                kpfonc(i) = nomres(2*(i-1)+1)
+            end do
         else
-            do 30, i = 1,2
-            kpfonc(i) = nomres(2*i)
-30          continue
+            do i = 1, 2
+                kpfonc(i) = nomres(2*i)
+            end do
         endif
 !
         dx = distfo(zimat,kpfonc(1),nmnbn(1),nmnbn(4),normn,normm)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
     implicit none
 !
@@ -37,14 +37,14 @@ subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     aster_logical :: lcine
     integer :: imat(2), nd
     character(len=14) :: xcdl, numedd
@@ -73,16 +73,16 @@ subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
     if (lccid .gt. 0) then
 ! --- CAS AFFE_CHAR_CINE
         call jeveuo(matk//'.CCID', 'L', vi=ccid)
-        do 10 k = 1, neq
+        do k = 1, neq
             zi(iind-1+k)=ccid(k)
- 10     continue
+        end do
         nd=neq-ccid(neq+1)
         lcine = .true.
     else
 ! --- CAS AFFE_CHAR_MECA
         lcine = .false.
         call jeveuo(numedd//'.NUME.DEEQ', 'L', vi=deeq)
-        do 20 k = 1, neq
+        do k = 1, neq
             if (deeq(2*(k-1)+2) .gt. 0) then
                 zi(iind-1+k)=0
             else if (deeq(2*(k-1)+2).lt.0) then
@@ -96,13 +96,13 @@ subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
                 endif
                 zi(iind-1+j)=1
             endif
- 20     continue
+        end do
         ndlag=0
-        do 30 k = 1, neq
+        do k = 1, neq
             if (zi(iind-1+k) .eq. 1) then
                 ndlag=ndlag+1
             endif
- 30     continue
+        end do
         nd=neq-ndlag
     endif
 !

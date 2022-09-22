@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
                   nbliac, ajliai)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calatm.h"
 #include "asterfort/cudisi.h"
 #include "asterfort/jedema.h"
@@ -33,6 +32,7 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nmrldb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: deficu, resocu
     character(len=19) :: solveu, cncine
     integer :: lmat
@@ -116,15 +116,15 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
     call wkvect(chsecm, ' V V R ', neq*lgbloc, tampon)
 !
 !
-    do 10 ipas = 1, npast
+    do ipas = 1, npast
         lg = lgbloc
         if (npast .ne. npas .and. (ipas.eq.npast)) lg = nrest
 !
-        do 40 kk = 1, neq*lg
+        do kk = 1, neq*lg
             zr(tampon-1+kk) = 0.0d0
-40      continue
+        end do
 !
-        do 20 il = 1, lg
+        do il = 1, lg
             iliac = lgbloc* (ipas-1) + il + ajliai
             lliac = zi(jliac+iliac-1)
             jdecal = zi(jpoi+lliac-1)
@@ -135,7 +135,7 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
             call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+ jdecal),&
                         zr(tampon+neq*(il-1)))
 !
-20      continue
+        end do
 !
 ! --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES CINEMATIQUES)
 !
@@ -143,19 +143,19 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
 !
 ! --- RECOPIE
 !
-        do 50 il = 1, lg
+        do il = 1, lg
             iliac = lgbloc* (ipas-1) + il + ajliai
             lliac = zi(jliac+iliac-1)
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
             call jeveuo(jexnum(cm1a, lliac), 'E', jcm1a)
-            do 60 kk = 1, neq
+            do kk = 1, neq
                 zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
-60          continue
+            end do
             call jelibe(jexnum(cm1a, lliac))
-50      continue
-10  end do
+        end do
+    end do
 !
     ajliai = nbliac
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
                   noex2, nbmap, elpar, nopar, nno)
     implicit none
@@ -39,14 +39,14 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
 !-----------------------------------------------------------------------
     nbext1=0
     nbext2=0
-    do 30 ima = 1, nbtuy
+    do ima = 1, nbtuy
         iext1=0
         iext2=0
 !JMP         NI1 = NOTUY(3*IMA-2)
 !JMP         NI2 = NOTUY(3*IMA-1)
         ni1 = notuy(nno*(ima-1)+1)
         ni2 = notuy(nno*(ima-1)+2)
-        do 40 jma = 1, nbtuy
+        do jma = 1, nbtuy
             if (jma .ne. ima) then
 !JMP               NJ1 = NOTUY(NNO*JMA-2)
 !JMP               NJ2 = NOTUY(NNO*JMA-1)
@@ -59,7 +59,7 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
                     iext2=1
                 endif
             endif
-40      continue
+        end do
         if (iext1 .eq. 0) then
             nbext1=nbext1+1
             noex1(nbext1)=ni1
@@ -68,7 +68,7 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
             nbext2=nbext2+1
             noex2(nbext2)=ni2
         endif
-30  end do
+    end do
     ASSERT(nbext1.eq.nbext2)
     ASSERT(nbext1.eq.nbpart)
 !
@@ -76,10 +76,10 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
 !     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS
 !
     im1=0
-    do 10 ipa = 1, nbpart
+    do ipa = 1, nbpart
         nex1=noex1(ipa)
 ! RECHERCHE DE LA PREMIERE MAILLE
-        do 20 ima = 1, nbtuy
+        do ima = 1, nbtuy
 !JMP            NI1 = NOTUY(NNO*IMA-2)
 !JMP            NI2 = NOTUY(NNO*IMA-1)
 !JMP            NI3 = NOTUY(NNO*IMA)
@@ -100,18 +100,18 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
                 endif
                 goto 21
             endif
-20      continue
-21      continue
+        end do
+ 21     continue
         im1=ima
-41      continue
+ 41     continue
 ! SI NI2 EST UNE EXTREMIE, ON CHANGE DE PARTIE
 !JMP         NI2 = NOTUY(3*IM1-1)
         ni2 = notuy(nno*(im1-1)+2)
-        do 50 kp = 1, nbpart
+        do kp = 1, nbpart
             if (ni2 .eq. noex2(kp)) goto 11
-50      continue
+        end do
 ! RECHERCHE DE LA MAILLE ATTENANTE A IM1
-        do 42 jma = 1, nbtuy
+        do jma = 1, nbtuy
             if (im1 .eq. jma) goto 42
 !JMP            NJ1 = NOTUY(3*JMA-2)
 !JMP            NJ2 = NOTUY(3*JMA-1)
@@ -133,11 +133,12 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
                 endif
                 goto 43
             endif
-42      continue
-43      continue
+ 42         continue
+        end do
+ 43     continue
         im1=jma
         goto 41
-11      continue
+ 11     continue
         nbmap(ipa)=nbe
-10  end do
+    end do
 end subroutine

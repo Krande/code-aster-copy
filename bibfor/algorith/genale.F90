@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine genale(vec1, vec2, r, v, x,&
                   dim, long, lonv, ln)
     implicit none
@@ -39,25 +39,25 @@ subroutine genale(vec1, vec2, r, v, x,&
     integer :: ln, ln2
 !-----------------------------------------------------------------------
     ln2=ln*2
-    do 10 kf = 1, ln
+    do kf = 1, ln
         icomp = 0
-        do 20 j = 1, dim
-            do 30 i = 1, dim
+        do j = 1, dim
+            do i = 1, dim
                 icomp = icomp+1
                 ix = ln + kf + (icomp-1)*ln2
                 iy = ix + ln
                 r(i,j) = dcmplx(vec1(ix),vec1(iy))
-30          continue
-20      continue
-        
+            end do
+        end do
+!
 !
         call genere(r, dim, v, x)
 !
-        do 40 kk = 1, dim
+        do kk = 1, dim
             ix = kf + (kk-1)*ln2
             iy = ix + ln
             vec2(ix) = dble(v(kk))
             vec2(iy) = dimag(v(kk))
-40      continue
-10  end do
+        end do
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine burftm(cmp, ndim, vim, epsfm)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! ----------------------------------------------------------------------
@@ -98,10 +98,10 @@ subroutine burftm(cmp, ndim, vim, epsfm)
     integer :: ndim, i
 !
     if (cmp(1:2) .eq. 'FP') then
-        do 20 i = 1, 3
+        do i = 1, 3
             epsfm(i)=(vim(7)+vim(8))
-20      continue
-        if (ndim.eq.3) then
+        end do
+        if (ndim .eq. 3) then
             epsfm(1)=epsfm(1)+vim(10)+vim(16)
             epsfm(2)=epsfm(2)+vim(11)+vim(17)
             epsfm(3)=epsfm(3)+vim(12)+vim(18)
@@ -117,7 +117,7 @@ subroutine burftm(cmp, ndim, vim, epsfm)
             epsfm(6)=0.
         endif
     else if (cmp(1:2).eq.'FD') then
-        if (ndim.eq.3) then
+        if (ndim .eq. 3) then
             epsfm(1)=vim(22)
             epsfm(2)=vim(23)
             epsfm(3)=vim(24)
@@ -133,10 +133,10 @@ subroutine burftm(cmp, ndim, vim, epsfm)
             epsfm(6)=0.
         endif
     else if (cmp(1:2).eq.'FT') then
-        do 25 i = 1, 3
+        do i = 1, 3
             epsfm(i)=(vim(7)+vim(8))
-25      continue
-        if (ndim.eq.3) then
+        end do
+        if (ndim .eq. 3) then
             epsfm(1)=epsfm(1)+vim(10)+vim(16)+vim(22)
             epsfm(2)=epsfm(2)+vim(11)+vim(17)+vim(23)
             epsfm(3)=epsfm(3)+vim(12)+vim(18)+vim(24)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
                   jcoor, sens)
 !
@@ -107,10 +107,10 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
     call cncinv(noma, zi(jdlima), nbmaf, 'V', cnxinv)
 !
 !     LOOP ON THE LAYER NUMBER
-    do 10 layer = 1, nbmaf
+    do layer = 1, nbmaf
 !
 !        LOOP ON THE ELEMENT LIST
-        do 20 i = 1, nbmaf
+        do i = 1, nbmaf
 !
 !           SEARCH FOR THE ELEMENTS BELONGING TO THE CURRENT LAYER
             if (zi(nlayer-1+i) .eq. layer) then
@@ -154,7 +154,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
                 vnref(3) = vnref(3)*zi(jsens-1+i)
 !
 !              LOOP ON EACH NODE OF THE SELECTED ELEMENT
-                do 30 j = 1, nbnoma
+                do j = 1, nbnoma
 !
                     nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+j-1)
 !
@@ -164,7 +164,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
                     call jeveuo(jexnum(cnxinv, nuno), 'L', jelno)
 !
 !                 LOOP ON EACH ELEMENT CONNECTED TO NODE J
-                    do 40 elj = 1, nbelno
+                    do elj = 1, nbelno
 !
                         numelm=zi(jelno-1+elj)
 !
@@ -224,23 +224,23 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 !
                         endif
 !
-40                  continue
+                    end do
 !
-30              continue
+                end do
 !
             endif
 !
-20      continue
+        end do
 !
-10  end do
+    end do
 !
 !     LOOP ON THE ELEMENT LIST TO CHECK THAT EACH ELEMENT HAS BEEN
 !     PROCESSED
-    do 100 i = 1, nbmaf
+    do i = 1, nbmaf
         if (zi(nlayer-1+i) .eq. 0) then
             call utmess('F', 'XFEM_9')
         endif
-100  end do
+    end do
 !
 !     CLEAN THE TEMPORARY JEVEUX OBJECTS
     call jedetr('&&XORIMA.LAY')

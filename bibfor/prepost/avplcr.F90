@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                   kwork, somnow, vwork, tdisp, tspaq,&
                   i, nomcri, nomfor, grdvie, forvie,&
@@ -143,13 +143,13 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !
 !      IF (NBPLAN .EQ. 2) THEN
 !
-    do 901 kp = 1, 2
+    do kp = 1, 2
         nxm(kp) = vectn((vnorm(kp)-1)*3+1)
         nym(kp) = vectn((vnorm(kp)-1)*3+2)
         nzm(kp) = vectn((vnorm(kp)-1)*3+3)
-901 end do
+    end do
 !
-    do 900 kp = 1, 2
+    do kp = 1, 2
 !
         nxm(kp) = vectn((vnorm(kp)-1)*3 + 1)
         nym(kp) = vectn((vnorm(kp)-1)*3 + 2)
@@ -211,12 +211,12 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             dim = 27
             ideb = 1
             ifin = 3
-            do 430 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-k)*dgam2
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn2, vecu2,&
                             vecv2)
-430         continue
+            end do
 !
             nbvec1 = 9
 !
@@ -300,12 +300,12 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             dim = 27
             ideb = 1
             ifin = 3
-            do 440 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-k)*dgam2
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn1, vecu1,&
                             vecv1)
-440         continue
+            end do
 !
             nbvec1 = 9
 !
@@ -387,12 +387,12 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             dim = 27
             ideb = 1
             ifin = 3
-            do 460 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-k)*dgam2
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn2, vecu2,&
                             vecv2)
-460         continue
+            end do
 !
             nbvec1 = 9
 !
@@ -473,12 +473,12 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             dim = 27
             ideb = 1
             ifin = 3
-            do 480 j = 1, 3
+            do j = 1, 3
                 gamma = gammam + (j-k)*dgam2
                 call vecnuv(ideb, ifin, gamma, phim, dphi2,&
                             n, k, dim, vecn1, vecu1,&
                             vecv1)
-480         continue
+            end do
 !
             nbvec1 = 9
 !
@@ -505,7 +505,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         if (kp .eq. 1) cudom1 = cudomx
         if (kp .eq. 2) cudom2 = cudomx
 !
-900 end do
+    end do
 !
 !      ENDIF
     if (abs(cudom1-cudom2) .lt. prec) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
-subroutine lcejmr(BEHinteg,&
-                  fami, kpg, ksp, ndim, mate,&
-                  option, epsm, deps, sigmo, sigma,&
-                  dsidep, vim, vip, typmod,&
+subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
+                  mate, option, epsm, deps, sigmo,&
+                  sigma, dsidep, vim, vip, typmod,&
                   instam, instap)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8pi.h"
@@ -90,7 +89,8 @@ implicit none
 ! SAUT DE DEPLACEMENT EN T- OU T+
     call dcopy(ndim, epsm, 1, delta, 1)
     call dcopy(ndim, deps, 1, ddelta, 1)
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, delta,1)
+    if (resi) call daxpy(ndim, 1.d0, deps, 1, delta,&
+                         1)
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
     if (ifhyme) then
@@ -147,7 +147,7 @@ implicit none
     alpha= val(5)
 ! LONGUEUR CRITIQUE TANGENTIELLE
 ! ALPHA=0: LCT=0; ALPHA=1: LCT=LC; ALPHA=2;LCT=INFTY
-    if ( (alpha .ge. 0.d0) .and. (alpha .lt. 2.d0) ) then
+    if ((alpha .ge. 0.d0) .and. (alpha .lt. 2.d0)) then
         lct=lc*tan(alpha*r8pi()/4.d0)
     else
 ! PRESENTATION D'UNE INFINITE NUMERIQUE
@@ -284,13 +284,13 @@ implicit none
     offset(1) = vim(10) + doffset(1)
 ! OFFSET TANGENTIEL
     offset(2) = vim(19)
-    if (ndim.eq.3) offset(3) = vim(20)
+    if (ndim .eq. 3) offset(3) = vim(20)
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
-    do  i = 1, ndim
-       delta(i) = delta(i) - offset(i)
-    end do    
-
+    do i = 1, ndim
+        delta(i) = delta(i) - offset(i)
+    end do 
+!
 !
 ! CALCUL DES PENTES
 !------------------
@@ -334,8 +334,7 @@ implicit none
 !
     if (ifhyme) then
         do n = 1, ndim-1
-            sigma(ndim+n) = &
-                 -rhof*gp(n)*(max(amin,delta(1)+amin))**3/(12*visf)
+            sigma(ndim+n) = -rhof*gp(n)*(max(amin,delta(1)+amin))**3/(12*visf)
         end do
     endif
 !
@@ -352,16 +351,16 @@ implicit none
     endif
 !
 !    PARTIE TANGENTIELLE
-    do  i = 2, ndim
+    do i = 2, ndim
         if (rt .gt. 0.d0) then
 !           sigma(i) = sigmo(i) + rt*ddelta(i) ! version incrementale
 !          ligne de code inutile pour eviter dummy input de sigmo
-           sigma(i) = sigmo(i) 
-           sigma(i) = rt*delta(i)
+            sigma(i) = sigmo(i)
+            sigma(i) = rt*delta(i)
         else
-           sigma(i) = 0.d0
+            sigma(i) = 0.d0
 !          glissement de joint de la valeur de delta
-           offset(i) = delta(i) + offset(i) 
+            offset(i) = delta(i) + offset(i)
         endif
     end do
 !
@@ -487,10 +486,10 @@ implicit none
         vip(18) = presfl
     endif
     vip(19) = offset(2)
-    if (ndim.eq.3) then
-       vip(20) = offset(3)
+    if (ndim .eq. 3) then
+        vip(20) = offset(3)
     else
-       vip(20) = 0.d0
+        vip(20) = 0.d0
     endif
 !
 5000 continue
@@ -498,27 +497,27 @@ implicit none
 ! INITIALISATION DE LA MATRICE TANGENTE
     call r8inir(6*6, 0.d0, dsidep, 1)
 !
-    if (.not. rigi) goto 9999
+    if (.not. rigi) goto 999
 !
 ! CALCUL DE LA MATRICE TANGENTE HYDRO
 !------------------------------------
     if (ifhyme) then
 !
 !       TERME : DW/DGP  (POUR KTAN P P)
-        do 42 n = 1, ndim-1
+        do n = 1, ndim-1
             dsidep(ndim+n,ndim+n)=&
                         -rhof*(max(amin,delta(1)+amin))**3/(12*visf)
- 42     continue
+        end do
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
-        do 43 n = 1, ndim-1
+        do n = 1, ndim-1
             if (delta(1) .lt. 0.d0) then
                 dsidep(ndim+n,1) = 0.d0
             else
                 dsidep(ndim+n,1) =&
                         -3*rhof*gp(n)*(delta(1)+amin)**2/(12*visf)
             endif
- 43     continue
+        end do
 !
     endif
 !
@@ -564,5 +563,5 @@ implicit none
         endif
     endif
 !
-9999 continue
+999 continue
 end subroutine

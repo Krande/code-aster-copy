@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
                   nmost1, modsta)
 !    C. DUVAL
@@ -62,7 +62,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, i3, i3b, i4, ibid, ilamsc
-    integer :: ilamst, ilcpex, ilnoex, ilorms,  jpara, n
+    integer :: ilamst, ilcpex, ilnoex, ilorms, jpara, n
     integer :: nmost1, nmost2, nnoeex
     integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
@@ -75,7 +75,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 !
 !---------CONSTITUTION DE LA LISTE DES ADRESSES DES MODES STATIQUES
 !
-    if (graexc .ne. 'DEPL_R') goto 9999
+    if (graexc .ne. 'DEPL_R') goto 999
 !
     k24bd1=modsta//'           .NOEU'
 !     CALL JELIRA(K24BD1,'LONMAX',NMOST2,K24BD2)
@@ -83,40 +83,40 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     call jelira(modsta//'           .ORDR', 'LONMAX', nmost2)
     call jeveuo(modsta//'           .ORDR', 'L', vi=ordr)
     call wkvect('&&OP0131.LISTADORMOSTA', 'V V I', nnoeex, ilorms)
-    do 212,i1=1,nnoeex
-    zi(ilorms+i1-1)=0
-    do 213,i2=1,nmost2
-    call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', ordr(i2),&
-                0, sjv=jpara, styp=kbid)
-    if ((zk8(ilnoex+i1-1)//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
-        zi(ilorms+i1-1)=i2
-    endif
-213  continue
-    212 end do
+    do i1 = 1, nnoeex
+        zi(ilorms+i1-1)=0
+        do i2 = 1, nmost2
+            call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', ordr(i2),&
+                        0, sjv=jpara, styp=kbid)
+            if ((zk8(ilnoex+i1-1)//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
+                zi(ilorms+i1-1)=i2
+            endif
+        end do
+    end do
 !
 !---------CONSTITUTION DES ADRESSES DES MODES STATIQUES
 !
     call wkvect('&&OP0131.LISTADRMODSTA', 'V V I', nnoeex, ilamst)
     call wkvect('&&OP0131.LISTADRMODSTAC', 'V V I', nnoeex, ilamsc)
-    do 214,i1=1,nnoeex
-    i2=zi(ilorms+i1-1)
-    if (i2 .eq. 0) then
-        call utmess('F', 'ALGORITH10_33')
-    endif
-    k24bd1=modsta//'           .TACH'
-    call jenonu(jexnom(k24bd1(1:19)//'.DESC', 'DEPL'), ibid)
-    call jeveuo(jexnum(k24bd1, ibid), 'L', i3)
-    call jenonu(jexnom(k24bd1(1:19)//'.DESC', grdmod), ibid)
-    call jeveuo(jexnum(k24bd1, ibid), 'L', i3b)
-    k24bd2=zk24(i3+i2-1)
-    k24bd3=k24bd2(1:19)//'.VALE'
-    call jeveut(k24bd3, 'L', i4)
-    zi(ilamst+i1-1)=i4
-    k24bd2=zk24(i3b+i2-1)
-    k24bd3=k24bd2(1:19)//'.VALE'
-    call jeveut(k24bd3, 'L', i4)
-    zi(ilamsc+i1-1)=i4
-    214 end do
-9999  continue
+    do i1 = 1, nnoeex
+        i2=zi(ilorms+i1-1)
+        if (i2 .eq. 0) then
+            call utmess('F', 'ALGORITH10_33')
+        endif
+        k24bd1=modsta//'           .TACH'
+        call jenonu(jexnom(k24bd1(1:19)//'.DESC', 'DEPL'), ibid)
+        call jeveuo(jexnum(k24bd1, ibid), 'L', i3)
+        call jenonu(jexnom(k24bd1(1:19)//'.DESC', grdmod), ibid)
+        call jeveuo(jexnum(k24bd1, ibid), 'L', i3b)
+        k24bd2=zk24(i3+i2-1)
+        k24bd3=k24bd2(1:19)//'.VALE'
+        call jeveut(k24bd3, 'L', i4)
+        zi(ilamst+i1-1)=i4
+        k24bd2=zk24(i3b+i2-1)
+        k24bd3=k24bd2(1:19)//'.VALE'
+        call jeveut(k24bd3, 'L', i4)
+        zi(ilamsc+i1-1)=i4
+    end do
+999 continue
     call jedema()
 end subroutine

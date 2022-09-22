@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                   jmaen1, jmaen2, jmaen3, jmafon, nfon,&
-                  jfon, jnofaf, nbfond, jbas, jtail, jfonmu,&
-                  ndim, goinop)
+                  jfon, jnofaf, nbfond, jbas, jtail,&
+                  jfonmu, ndim, goinop)
 !
 !
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: fiss
     integer :: nmaen1, nmaen2, nmaen3, nmafon
     integer :: jmaen1, jmaen2, jmaen3, jmafon
@@ -95,47 +95,47 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 !
         if (nmaen1 .ne. 0) then
             call wkvect(xheav, 'G V I', nmaen1, jma1)
-            do 810 i = 1, nmaen1
+            do i = 1, nmaen1
                 zi(jma1-1+i) = zi(jmaen1-1+i)
-810         continue
+            end do
         endif
 !
 ! --- ENREGISTREMENT DES GROUP_MA 'CRACKTIP'
 !
         if (nmaen2 .ne. 0) then
             call wkvect(xctip, 'G V I', nmaen2, jma2)
-            do 820 i = 1, nmaen2
+            do i = 1, nmaen2
                 zi(jma2-1+i) = zi(jmaen2-1+i)
-820         continue
+            end do
         endif
 !
 ! --- ENREGISTREMENT DES GROUP_MA ''HEAVISIDE-CRACKTIP'
 !
         if (nmaen3 .ne. 0) then
             call wkvect(xhect, 'G V I', nmaen3, jma3)
-            do 830 i = 1, nmaen3
+            do i = 1, nmaen3
                 zi(jma3-1+i) = zi(jmaen3-1+i)
-830         continue
+            end do
         endif
 !
 ! --- ENREGISTREMENT DES MAILLES CONTENANT LE FOND DE FISSURE
 !
         if (nmafon .ne. 0) then
             call wkvect(xmafon, 'G V I', nmafon, jma4)
-            do 840 i = 1, nmafon
+            do i = 1, nmafon
                 zi(jma4-1+i) = zi(jmafon-1+i)
-840         continue
+            end do
         endif
 !
 ! --- ENREGISTREMENT DES COORD ET DES ABS CURV
 !
         if (nfon .ne. 0) then
             call wkvect(xfonfi, 'G V R', 4*nfon, jfo)
-            do 860 i = 1, nfon
-                do 850 k = 1, 4
+            do i = 1, nfon
+                do k = 1, 4
                     zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
-850             continue
-860         continue
+                end do
+            end do
 !
             call wkvect(xnofaf, 'G V I', 4*nfon, jnf)
             do i = 1, nfon
@@ -145,17 +145,17 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             enddo
 !
             call wkvect(xbasfo, 'G V R', 2*ndim*nfon, jba)
-            do 940 i = 1, nfon
-                do 950 k = 1, ndim
+            do i = 1, nfon
+                do k = 1, ndim
                     zr(jba-1+2*ndim*(i-1)+k) = zr(jbas-1+2*ndim*(i-1)+ k)
                     zr(jba-1+2*ndim*(i-1)+k+ndim) = zr( jbas-1+2*ndim*(i-1)+k+ndim)
-950             continue
-940         continue
+                end do
+            end do
 !
             call wkvect(xtailr, 'G V R', nfon, jta)
-            do 960 i = 1, nfon
+            do i = 1, nfon
                 zr(jta-1+i) = zr(jtail-1+i)
-960         continue
+            end do
 !
         endif
 !
@@ -163,10 +163,10 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 !
         if (nbfond .ne. 0) then
             call wkvect(xfonmu, 'G V I', 2*nbfond, jfomu)
-            do 870 i = 1, nbfond
+            do i = 1, nbfond
                 zi(jfomu-1+2*(i-1)+1) = zi(jfonmu-1+2*(i-1)+1)
                 zi(jfomu-1+2*(i-1)+2) = zi(jfonmu-1+2*(i-1)+2)
-870         continue
+            end do
         endif
 !
 !
@@ -179,11 +179,11 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 ! --- ENREGISTREMENT DES COORD SUR LA GRILLE
 !
         call wkvect(xfonfg, 'G V R', 4*nfon, jfo)
-        do 880 i = 1, nfon
-            do 890 k = 1, 4
+        do i = 1, nfon
+            do k = 1, 4
                 zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
-890         continue
-880     continue
+            end do
+        end do
     endif
 !
     call jedema()

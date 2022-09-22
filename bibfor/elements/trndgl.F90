@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trndgl(nbx, vectn, vectpt, deplg, depll,&
                   rotfic)
     implicit none
@@ -27,15 +27,15 @@ subroutine trndgl(nbx, vectn, vectpt, deplg, depll,&
     integer :: i, i1, i2, ib, j
 !-----------------------------------------------------------------------
 !
-    do 10 ib = 1, nbx
+    do ib = 1, nbx
 !
 !     RESTITUTION DE LA MATRICE DE PASSAGE
 !
-        do 15 i = 1, 2
-            do 20 j = 1, 3
+        do i = 1, 2
+            do j = 1, 3
                 t(i,j)=vectpt(ib,i,j)
-20          end do
-15      end do
+            end do
+        end do
         t(3,1)=vectn (ib,1)
         t(3,2)=vectn (ib,2)
         t(3,3)=vectn (ib,3)
@@ -71,6 +71,6 @@ subroutine trndgl(nbx, vectn, vectpt, deplg, depll,&
             deplg(i2+3)
         endif
 !
-10  end do
+    end do
 !
 end subroutine

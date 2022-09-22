@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                   lcoc, base, chs3)
 ! person_in_charge: jacques.pellet at edf.fr
@@ -66,13 +66,13 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     j1 = 0
     j2 = 0
-    do 10 k = 1, nbchs
+    do k = 1, nbchs
         chs = lichs(k)
         call exisd('CHAM_NO_S', chs, i1)
         call exisd('CHAM_ELEM_S', chs, i2)
         j1 = max(j1,i1)
         j2 = max(j2,i2)
- 10 end do
+    end do
     if (j1*j2 .ne. 0) then
         call utmess('F', 'CALCULEL_99')
     endif

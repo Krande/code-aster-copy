@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fovern(vecnom, nbfonc, vecpro, ier)
     implicit none
 #include "jeveux.h"
@@ -52,7 +52,7 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
 !-----------------------------------------------------------------------
     call jemarq()
     chnom(20:24) = '.PROL'
-    do 1 i = 1, nbfonc
+    do i = 1, nbfonc
         chnom(1:19) = vecnom(i)
         call jeveuo(chnom, 'L', jprof)
         call fopro1(zk24(jprof), 0, prolgd, interp)
@@ -63,12 +63,12 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
             vecpro(7)=nompf(1)
             goto 2
         endif
- 1  end do
+    end do
     vali = nbfonc
     call utmess('E', 'UTILITAI8_1', si=vali)
     ier=ier+1
- 2  continue
-    do 3 i = 1, nbfonc
+  2 continue
+    do i = 1, nbfonc
         chnom(1:19) = vecnom(i)
         call jeveuo(chnom, 'L', jprof)
         call fopro1(zk24(jprof), 0, prolgd, interp)
@@ -84,6 +84,6 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
         endif
         vecpro(7+2*i-1) = interp
         vecpro(7+2*i ) = prolgd
- 3  end do
+    end do
     call jedema()
 end subroutine

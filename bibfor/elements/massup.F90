@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine massup(option, ndim, dlns, nno, nnos,&
                   mate, phenom, npg, ipoids, idfde,&
                   geom, vff1, imatuu, icodre, igeom,&
@@ -82,68 +82,68 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
                 1, 'RHO', rho, icodre, 1)
 !
     if (ndim .eq. 2) then
-        do 90 kpg = 1, npg
+        do kpg = 1, npg
             k = (kpg-1)*nno
             call dfdm2j(nno, kpg, idfde, geom, poids)
             poids = abs(poids) * zr(ipoids+kpg-1)
 !
             if (lteatt('AXIS','OUI')) then
                 r = 0.0d0
-                do 20 i = 1, nno
+                do i = 1, nno
                     r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-20              continue
+                end do
                 poids = poids*r
             endif
 !
-            do 80 i = 1, nno
-                do 70 j = 1, i
+            do i = 1, nno
+                do j = 1, i
                     a(1,1,i,j) = a(1,1,i,j)+rho(1)*poids*vff1(i,kpg)* vff1(j,kpg)
                     a(2,2,i,j) = a(1,1,i,j)
-70              continue
-80          continue
-90      continue
+                end do
+            end do
+        end do
     else if (ndim.eq.3) then
-        do 120 kpg = 1, npg
+        do kpg = 1, npg
             call dfdm3j(nno, kpg, idfde, geom, poids)
             poids = abs(poids) * zr(ipoids+kpg-1)
 !
-            do 110 i = 1, nno
-                do 100 j = 1, i
+            do i = 1, nno
+                do j = 1, i
                     a(1,1,i,j) = a(1,1,i,j)+rho(1)*poids*vff1(i,kpg)* vff1(j,kpg)
                     a(2,2,i,j) = a(1,1,i,j)
                     a(3,3,i,j) = a(1,1,i,j)
-100              continue
-110          continue
-120      continue
+                end do
+            end do
+        end do
     else
 ! - OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
     endif
 !
 ! - PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
-    do 150 k = 1, ndim
-        do 140 l = 1, ndim
-            do 130 i = 1, nno
+    do k = 1, ndim
+        do l = 1, ndim
+            do i = 1, nno
                 ik = ((ndim*i+k-ndim-1)* (ndim*i+k-ndim))/2
-                do 125 j = 1, i
+                do j = 1, i
                     ijkl = ik + ndim* (j-1) + l
                     matv(ijkl) = a(k,l,i,j)
-125              continue
-130          continue
-140      continue
-150  end do
+                end do
+            end do
+        end do
+    end do
 !
     if (option .eq. 'MASS_MECA') then
-        do 401 k = 1, nno
-            do 402 n1 = 1, ndim
+        do k = 1, nno
+            do n1 = 1, ndim
                 i = ndim*k+n1-ndim
                 if (k .le. nnos) then
                     i2 = i+idec*(k-1)
                 else
                     i2 = i+idec*nnos
                 endif
-                do 403 l = 1, nno
-                    do 404 n2 = 1, ndim
+                do l = 1, nno
+                    do n2 = 1, ndim
                         j = ndim*l+n2-ndim
                         if (j .gt. i) goto 405
                         if (l .le. nnos) then
@@ -152,36 +152,36 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
                             j2 = j+idec*nnos
                         endif
                         zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1)/2+ j)
-404                  continue
-403              continue
-405              continue
-402          continue
-401      continue
+                    end do
+                end do
+405             continue
+            end do
+        end do
         elseif (option.eq.'MASS_MECA_DIAG' .or.&
      &        option.eq.'MASS_MECA_EXPLI' ) then
 !
 ! - CALCUL DE LA MASSE DE L'ELEMENT
         wgt = a(1,1,1,1)
-        do 170 i = 2, nno
-            do 160 j = 1, i - 1
+        do i = 2, nno
+            do j = 1, i - 1
                 wgt = wgt + 2*a(1,1,i,j)
-160          continue
+            end do
             wgt = wgt + a(1,1,i,i)
-170      continue
+        end do
 !
 ! - CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
         trace = 0.d0
-        do 180 i = 1, nno
+        do i = 1, nno
             trace = trace + a(1,1,i,i)
-180      continue
+        end do
 !
 ! - CALCUL DU FACTEUR DE DIAGONALISATION
         alpha = wgt/trace
 !
 ! - PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
         k = 0
-        do 200 j = 1, nno
-            do 190 i = 1, 3
+        do j = 1, nno
+            do i = 1, 3
                 k = k + 1
                 if (idec .eq. 0) then
                     idiag = k* (k+1)/2
@@ -194,8 +194,8 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
                     idiag = k2* (k2+1)/2
                 endif
                 zr(imatuu+idiag-1) = a(i,i,j,j)*alpha
-190          continue
-200      continue
+            end do
+        end do
     else
 ! - OPTION DE CALCUL INVALIDE
         ASSERT(.false.)

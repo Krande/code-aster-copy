@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                   nmaini, nbmap, numpaq, tspaq, nommet,&
-                  nomcri, nomfor, grdvie, forvie, forcri, cesr)
+                  nomcri, nomfor, grdvie, forvie, forcri,&
+                  cesr)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
@@ -79,11 +80,11 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: kwork, jcerd, jcerl,  jad
+    integer :: kwork, jcerd, jcerl, jad
     integer :: iret, imap, icesd, icesl, icesv, ibid
     integer :: ipg
     integer :: nbpg, sompgw, nbpgp, l
-    integer :: icmp 
+    integer :: icmp
     real(kind=8) :: vala, valb, coefpa, vresu2(24), valpar(35)
     integer :: icodwo
     character(len=8) :: chmat1, nommat
@@ -128,7 +129,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     kwork = 0
     sompgw = 0
 !
-    do 400 imap = nmaini, nmaini+(nbmap-1)
+    do imap = nmaini, nmaini+(nbmap-1)
         if (imap .gt. nmaini) then
             kwork = 1
             sompgw = sompgw + zi(jnbpg + imap-2)
@@ -160,21 +161,20 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
         endif
 !
 !
-        do 420 ipg = 1, nbpg
+        do ipg = 1, nbpg
 !
 !            call jerazo('&&DELTAU.VECTPG', tneces, 1)
 !
 ! REMPACER PAR ACMATA
-            call acgrdo(nbordr, ordini,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
-                        nommet, nommat,&
-                        nomcri, vala, coefpa, nomfor, grdvie,&
-                        forvie, forcri, valpar, vresu2)
+            call acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
+                        tspaq, ipg, nommet, nommat, nomcri,&
+                        vala, coefpa, nomfor, grdvie, forvie,&
+                        forcri, valpar, vresu2)
 !
 !
 ! C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
-            do 550 icmp = 1, 24
+            do icmp = 1, 24
                 call cesexi('C', jcerd, jcerl, imap, ipg,&
                             1, icmp, jad)
 !
@@ -188,14 +188,15 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                 zl(jcerl - 1 + jad) = .true.
                 cerv(jad) = vresu2(icmp)
 !
-550          continue
+            end do
 !
-420      continue
-400  end do
+        end do
+400     continue
+    end do
 !
 ! MENAGE
 !
-     call detrsd('CHAM_ELEM_S', cesmat)
+    call detrsd('CHAM_ELEM_S', cesmat)
 ! !
 !
     call jedema()

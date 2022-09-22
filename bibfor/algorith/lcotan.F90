@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                   kpg, ksp, loi, mod, imat,&
                   nmat, materd, materf, epsd, deps,&
@@ -109,12 +109,12 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !
     if (opt(1:9) .eq. 'RIGI_MECA') then
 !
-        if (loi.eq.'LAIGLE') then
+        if (loi .eq. 'LAIGLE') then
 !
             call lcjela(loi, mod, nmat, materd, vind,&
                         dsde)
 !
-        else if (((etatd.eq.'PLASTIC').and.(loi.eq.'MONOCRISTAL')) .or. &
+            else if (((etatd.eq.'PLASTIC').and.(loi.eq.'MONOCRISTAL')) .or. &
         ((etatd.eq.'PLASTIC').and.(loi.eq.'MONO2RISTAL'))) then
 !
             call lcjplc(loi, mod, angmas, imat, nmat,&
@@ -124,7 +124,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                         itmax, toler, sigd, vind, sigd,&
                         vind, dsde, drdy, opt, codret,&
                         fami, kpg, ksp)
-            if (codret .ne. 0) goto 9999
+            if (codret .ne. 0) goto 999
 !
         else if ((etatd.eq.'PLASTIC').and.(typma.eq.'VITESSE ')) then
             if ((loi(1:10).eq.'HOEK_BROWN') .or. (loi(1:14) .eq.'HOEK_BROWN_EFF')) then
@@ -137,7 +137,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                         deps, sigd, vind, dsde, sigd,&
                         vind, vp, vecp, theta, dt,&
                         devg, devgii, codret)
-            if (codret .ne. 0) goto 9999
+            if (codret .ne. 0) goto 999
 !
         else
 !
@@ -151,7 +151,8 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
     else if (opt(1:9) .eq. 'FULL_MECA') then
 !
         if (etatf .eq. 'ELASTIC') then
-            call lcjela(loi, mod, nmat, materf, vinf, dsde)
+            call lcjela(loi, mod, nmat, materf, vinf,&
+                        dsde)
 !
         else if (etatf .eq. 'PLASTIC') then
 !   --->    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
@@ -164,14 +165,14 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
                             itmax, toler, sigf, vinf, sigd,&
                             vind, dsde, drdy, opt, codret,&
                             fami, kpg, ksp)
-                if (codret .ne. 0) goto 9999
+                if (codret .ne. 0) goto 999
             else if (typma .eq. 'VITESSE ') then
                 call lcjpla(fami, kpg, ksp, loi, mod,&
                             nr, imat, nmat, materd, nvi,&
                             deps, sigf, vinf, dsde, sigd,&
                             vind, vp, vecp, theta, dt,&
                             devg, devgii, codret)
-                if (codret .ne. 0) goto 9999
+                if (codret .ne. 0) goto 999
             endif
         endif
 !
@@ -180,14 +181,16 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 ! -   MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
 !     SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
     if (mod(1:6) .eq. 'C_PLAN') then
-        do 136 k = 1, ndt
+        do k = 1, ndt
             if (k .eq. 3) goto 136
-            do 137 l = 1, ndt
+            do l = 1, ndt
                 if (l .eq. 3) goto 137
                 dsde(k,l) = dsde(k,l) - 1.d0/dsde(3,3)*dsde(k,3)*dsde( 3,l)
-137          continue
-136      continue
+137             continue
+            end do
+136         continue
+        end do
     endif
 !
-9999  continue
+999 continue
 end subroutine

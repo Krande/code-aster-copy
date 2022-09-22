@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mtcrog(a, b, nmax, n, nbsc,&
                   c, wks, ier)
     implicit none
@@ -70,10 +70,11 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 !
 ! --- SAUVEGARDE DE LA MATRICE B
 !
-    do 10 i = 1, n
-        do 10 j = 1, nbsc
+    do i = 1, n
+        do j = 1, nbsc
             c(i,j) = b(i,j)
-10      continue
+        end do
+    end do
 !
 ! --- A EST DECOMPOSEE EN A = LU, OU L EST UNE MATRICE TRIANGULAIRE
 ! --- INFERIEURE, ET U, UNE MATRICE TRIANGULAIRE SUPERIEURE UNITAIRE.
@@ -83,39 +84,40 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 ! --- IER = 0 SINON, ET DET EST LE DETERMINANT
 !
 !
-    do 20 i = 1, n
+    do i = 1, n
         wks(i) = 0.0d0
-20  end do
+    end do
 !
-    do 60 j = 1, n
-        do 40 i = 1, n
+    do j = 1, n
+        do i = 1, n
             wks(i) = wks(i) + a(i,j)**2
-40      continue
-60  end do
+        end do
+    end do
 !
-    do 80 i = 1, n
+    do i = 1, n
         if (wks(i) .le. 0.0d0) goto 240
         wks(i) = 1.0d0/sqrt(wks(i))
-80  end do
+    end do
 !
     det = 1.0d0
     id = 0
-    do 220 k = 1, n
+    do k = 1, n
         l = k
         x = 0.0d0
-        do 100 i = k, n
+        do i = k, n
             y = abs(a(i,k)*wks(i))
             if (y .le. x) goto 100
             x = y
             l = i
-100      continue
+100         continue
+        end do
         if (l .ne. k) then
             det = -det
-            do 120 j = 1, n
+            do j = 1, n
                 y = a(k,j)
                 a(k,j) = a(l,j)
                 a(l,j) = y
-120          continue
+            end do
             wks(l) = wks(k)
         endif
         wks(k) = l
@@ -124,24 +126,24 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
             ier = 1
             goto 240
         endif
-160      continue
+160     continue
         if (abs(det) .lt. 1.0d0) goto 180
         det = det*0.0625d0
         id = id + 4
         goto 160
-180      continue
+180     continue
         if (abs(det) .ge. 0.0625d0) goto 200
         det = det*16.0d0
         id = id - 4
         goto 180
-200      continue
+200     continue
         if (k .lt. n) then
             call mtcro1(k, a, nmax, a(1, k+1))
             call mtcro3(n-k, k, a(k+1, 1), nmax, a(1, k+1),&
                         a(k+1, k+1))
         endif
-220  end do
-240  continue
+    end do
+240 continue
 !
 !
 ! --- RESOLUTION D UN SYSTEME LINEAIRE AX = B
@@ -157,30 +159,32 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
     if (ier .eq. 0) then
 ! ---    PERMUTATION DES ELEMENTS DE B
 !
-        do 340 i = 1, n
+        do i = 1, n
             iapro = int(wks(i) + 0.5d0)
             if (iapro .eq. i) goto 340
-            do 320 k = 1, nbsc
+            do k = 1, nbsc
                 x = b(i,k)
                 b(i,k) = b(iapro,k)
                 b(iapro,k) = x
-320          continue
-340      continue
-        do 360 k = 1, nbsc
+            end do
+340         continue
+        end do
+        do k = 1, nbsc
 ! ---       RECHERCHE DE LA SOLUTION DE LY = B
             call mtcro1(n, a, nmax, b(1, k))
 ! ---       RECHERCHE DE LA SOLUTION DE UX = Y
             call mtcro2(n, a, nmax, b(1, k))
-360      continue
+        end do
 !
 ! --- RESTAURATION DE LA MATRICE B, ET DE LA SOLUTION
 !
-        do 380 i = 1, n
-            do 380 j = 1, nbsc
+        do i = 1, n
+            do j = 1, nbsc
                 x = b(i,j)
                 b(i,j) = c(i,j)
                 c(i,j) = x
-380          continue
+            end do
+        end do
 !
     else
         ier = 1

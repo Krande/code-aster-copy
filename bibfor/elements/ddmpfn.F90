@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ddmpfn(zimat, nmnbn, nmddpl)
     implicit none
 !
@@ -51,40 +51,40 @@ subroutine ddmpfn(zimat, nmnbn, nmddpl)
     ddmres(3) = 'DDFMEY1'
     ddmres(4) = 'DDFMEY2'
 !
-    do 10, i=1,2
-    call cdnfon(zimat, ddmres(2*(i-1)+1), nmnbn(i), 0, nmddpl(1, i),&
-                ier0)
+    do i = 1, 2
+        call cdnfon(zimat, ddmres(2*(i-1)+1), nmnbn(i), 0, nmddpl(1, i),&
+                    ier0)
 !
-    if (ier0 .gt. 0) then
-        call cdnfon(zimat, domres(2*(i-1)+1), nmnbn(i), 1, nmddpl(1, i),&
-                    ier1)
+        if (ier0 .gt. 0) then
+            call cdnfon(zimat, domres(2*(i-1)+1), nmnbn(i), 1, nmddpl(1, i),&
+                        ier1)
 !
-        if (ier1 .gt. 0) then
-            call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 2, nmddpl(1, i),&
-                        ier2)
+            if (ier1 .gt. 0) then
+                call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 2, nmddpl(1, i),&
+                            ier2)
 !
-            if (ier2 .eq. 3) then
-                call utmess('F', 'ELEMENTS_24')
+                if (ier2 .eq. 3) then
+                    call utmess('F', 'ELEMENTS_24')
+                endif
             endif
         endif
-    endif
 !
-    call cdnfon(zimat, ddmres(2*i), nmnbn(i), 0, nmddpl(2, i),&
-                ier0)
+        call cdnfon(zimat, ddmres(2*i), nmnbn(i), 0, nmddpl(2, i),&
+                    ier0)
 !
-    if (ier0 .gt. 0) then
-        call cdnfon(zimat, domres(2*i), nmnbn(i), 1, nmddpl(2, i),&
-                    ier1)
+        if (ier0 .gt. 0) then
+            call cdnfon(zimat, domres(2*i), nmnbn(i), 1, nmddpl(2, i),&
+                        ier1)
 !
-        if (ier1 .gt. 0) then
-            call cdnfon(zimat, nomres(2*i), nmnbn(i), 2, nmddpl(2, i),&
-                        ier2)
+            if (ier1 .gt. 0) then
+                call cdnfon(zimat, nomres(2*i), nmnbn(i), 2, nmddpl(2, i),&
+                            ier2)
 !
-            if (ier2 .eq. 3) then
-                call utmess('F', 'ELEMENTS_24')
+                if (ier2 .eq. 3) then
+                    call utmess('F', 'ELEMENTS_24')
+                endif
             endif
         endif
-    endif
-    10 end do
+    end do
 !
 end subroutine

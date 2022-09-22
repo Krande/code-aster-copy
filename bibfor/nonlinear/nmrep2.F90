@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmrep2(n, r, g, gu, rmin,&
                   rmax, rexm, rexp, posopt)
 !
@@ -62,7 +62,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
     valopt = r8gaem()
 !
 !
-    do 50 i = 1, n
+    do i = 1, n
 !
 ! --- PROPOSITION D'UN NOUVEAU POINT
 !
@@ -106,8 +106,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
             if (a .le. 0) then
                 goto 50
             else
-                b = (( g(i)-g(i+1))* (r(j)**2-r(i)**2)- (g(j)-g(i)) * (r(i)**2-r(i+1)**2 )&
-                    )/det
+                b = (( g(i)-g(i+1))* (r(j)**2-r(i)**2)- (g(j)-g(i)) * (r(i)**2-r(i+1)**2 ) )/det
                 x = -b/(2*a)
             endif
 !
@@ -147,9 +146,9 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 !
 !      X EST-IL CONFONDU AVEC UN POINT DEJA CALCULE
         c = 0
-        do 10 j = 1, n
+        do j = 1, n
             if (abs(r(j)-x) .le. diff) c = j
- 10     continue
+        end do
         if (c .eq. 0) goto 20
 !      LES CHOIX VERS LA GAUCHE OU LA DROITE SONT-ILS LICITES
         gauche = r(c) - rmin .gt. diff
@@ -194,12 +193,12 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 !
 !      RECHERCHE DE L'INTERVALLE DANS LEQUEL SE TROUVE X
         pos = n + 1
-        do 30 j = 1, n
+        do j = 1, n
             if (x .le. r(j)) then
                 pos = j
                 goto 40
             endif
- 30     continue
+        end do
  40     continue
 !
 !      SI DEUX POINTS : INTERPOLATION LINEAIRE
@@ -260,19 +259,20 @@ subroutine nmrep2(n, r, g, gu, rmin,&
             posopt = pos
         endif
 !
- 50 end do
+ 50     continue
+    end do
 !
 !
 ! --- INSERTION DU MINIMUM
 !
-    do 60 i = n, 1, -1
+    do i = n, 1, -1
         if (xopt .gt. r(i)) then
             posopt = i + 1
             goto 70
         endif
         r(i+1) = r(i)
         g(i+1) = g(i)
- 60 end do
+    end do
     posopt = 1
  70 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine refdag(resin)
 !
     implicit none
@@ -69,24 +69,24 @@ subroutine refdag(resin)
     call jeecra(resin//refd, 'LONT', (2*nbrefs)*5, k8bid)
 !
 !   Set all INDI entries to -100 (default/empty reference value)
-    do 10 ibid = 1, 2*nbrefs
+    do ibid = 1, 2*nbrefs
         zi(jindi+ibid-1) = -100
-10  continue
+    end do
 !
 !   Copy the temporary-saved information to the newly created objects
     call jeveuo(restmp//indi, 'L', jindi2)
-    do 20 ibid = 1, nbrefs
+    do ibid = 1, nbrefs
 !       INDI entry
         zi(jindi+ibid-1) = zi(jindi2+ibid-1)
 !       REFD entry
         call jeveuo(jexnum(restmp//refd, ibid), 'L', jrefe2)
         call jecroc(jexnum( resin//refd, ibid))
         call jeveuo(jexnum( resin//refd, ibid), 'E', jrefe)
-        do 30 jbid = 1, 5
+        do jbid = 1, 5
             zk24(jrefe+jbid-1) = zk24(jrefe2+jbid-1)
-30      continue 
+        end do
 !
-20  continue
+    end do
 !
 !   Cleanup the temporary objects
     call jedetr(restmp//refd)

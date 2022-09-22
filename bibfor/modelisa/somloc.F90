@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine somloc(m, adco, nbso, nusglo, nusloc)
 !
 !     DONNE LE NUMERO LOCAL : NUSLOC DU SOMMET DONT LE
@@ -34,12 +34,12 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
     integer :: vali(2)
 !
     trouve=.false.
-    do 10 is = 1, nbso
+    do is = 1, nbso
         if (zi(adco+is-1) .eq. nusglo) then
             trouve=.true.
             nusloc=is
         endif
- 10 end do
+    end do
     if (.not.trouve) then
         vali(1)=nusglo
         vali(2)=m

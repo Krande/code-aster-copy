@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0354(option, nomte)
 !
     implicit none
@@ -65,7 +65,7 @@ subroutine te0354(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PSOURNL', 'L', isour)
-    if (zk8(isour)(1:7) .eq. '&FOZERO') goto 9999
+    if (zk8(isour)(1:7) .eq. '&FOZERO') goto 999
     theta = zr(itemps+2)
 !
 !    LECTURE DES PARAMETRES SPECIFIQUES A CHAQUE OPTION
@@ -92,7 +92,7 @@ subroutine te0354(option, nomte)
                      npg=npg, jpoids=iw, jvf=ivf, jdfde=idfde, jgano=jgano)
     axi = lteatt('AXIS','OUI')
 !
-    do 100 g = 1, npg
+    do g = 1, npg
         os = (g-1)*nno
 !
 !      CALCUL DU POIDS DU POINT DE GAUSS
@@ -132,15 +132,15 @@ subroutine te0354(option, nomte)
 !
 !        CONTRIBUTION A LA MATRICE
             osm = 0
-            do 110 n = 0, nno-1
-                do 115 m = 0, n
+            do n = 0, nno-1
+                do m = 0, n
                     zr(imatr+osm)=zr(imatr+osm)+coef*zr(ivf+os+n)*zr(&
                     ivf+os+m)
                     osm = osm + 1
-115             continue
-110         continue
+                end do
+            end do
         endif
-100 end do
+    end do
 !
-9999 continue
+999 continue
 end subroutine

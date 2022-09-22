@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine angrot(v1, v2, axe, angle)
     implicit none
 !     CALCUL DE L'ANGLE ENTRE DEUX VECTEURS EN 3D, SUIVANT UN AXE (SENS)
@@ -39,14 +39,14 @@ subroutine angrot(v1, v2, axe, angle)
     epsi=1.d-10
     call angvec(v1, v2, angle)
     if (abs(angle) .le. 1.d-6) then
-        goto 9999
+        goto 999
     endif
     if (abs(angle-r8pi()) .le. 1.d-6) then
-        goto 9999
+        goto 999
     endif
-    do 10 i = 1, 3
+    do i = 1, 3
         axe2(i)=axe(i)
-10  end do
+    end do
     call normev(axe2, nv3)
     if (nv3 .lt. epsi) then
         call utmess('F', 'UTILITAI_5')
@@ -60,9 +60,9 @@ subroutine angrot(v1, v2, axe, angle)
     call normev(v1v2, nv3)
     if (nv3 .lt. epsi) then
         pscal=0.d0
-        do 30 i = 1, 3
+        do i = 1, 3
             pscal=pscal+v1(i)*v2(i)
-30      continue
+        end do
         if (pscal .gt. 0.d0) then
             angle=0.d0
         else
@@ -70,13 +70,13 @@ subroutine angrot(v1, v2, axe, angle)
         endif
     else
         pscal = 0.d0
-        do 20 i = 1, 3
+        do i = 1, 3
             pscal = pscal + axe2(i)*v1v2(i)
-20      continue
+        end do
         if (abs(abs(pscal)-1.d0) .gt. epsi) then
             call utmess('F', 'UTILITAI_7')
         endif
         angle= angle*pscal
     endif
-9999  continue
+999 continue
 end subroutine

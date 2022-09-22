@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xrelco(mesh   , model, nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
-                  nb_edge)
 !
-implicit none
+subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
+                  list_rela_line, nb_edge)
 !
-#include "jeveux.h"
+    implicit none
+!
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterfort/afrela.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -126,25 +126,25 @@ implicit none
 !
 ! - Initializations
 !
-    vale_real      = 0.d0
+    vale_real = 0.d0
     repe_type(1:8) = 0
-    nb_rela_line   = 0
-    nb_edge        = 0
+    nb_rela_line = 0
+    nb_edge = 0
     value_cplx_dumm=cmplx(0.d0,0.d0)
     coef_cplx_dumm=cmplx(0.d0,0.d0)
 !
-    do i = 1, 100 
-       fonact(i) = 0
+    do i = 1, 100
+        fonact(i) = 0
     end do
 !
 ! - Get access 
 !
 ! --- TYPE DE CONTACT ET NOMBRE DE MULTIPLICATEURS
 !
-    call jeveuo(model(1:8)//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
     contac = xfem_cont(1)
-    if(contac.eq.2) nlag = 3
-    if(contac.eq.1.or.contac.eq.3) nlag = 1
+    if (contac .eq. 2) nlag = 3
+    if (contac .eq. 1 .or. contac .eq. 3) nlag = 1
 !
 ! --- 1) RELATIONS D'EGALITE
 !
@@ -162,26 +162,26 @@ implicit none
             call jeveuo(sdline_crack(1:14)//'_LAGR', 'L', vi = v_rela_cmp)
         endif
     endif
-    
+!
 ! --- MODELE HM-XFEM ?
 !
     call dismoi('EXI_THM', model, 'MODELE', repk=repk)
     if (repk .eq. 'OUI') fonact(37) = 1
-    
+!
     lxthm = isfonc(fonact,'THM')
 !
-    if (lxthm.and.l_mult_crack) then
-       chjon = '&&XRELCO.CHJON'
-       call celces(model//'.TOPOSE.PJO', 'V', chjon)
-       call jeveuo(chjon//'.CESD', 'L', jcesd)
-       call jeveuo(chjon//'.CESV', 'L', vi=cesv)
-       call jeveuo(chjon//'.CESL', 'L', jcesl)
-       cnxinv = '&&CHXFEM.CNXINV'
-       call cncinv(mesh, [0], 0, 'V', cnxinv)
-       call jeveuo(model//'.MODELE    .LGRF', 'L', vk8=lgrf)
-       noma = lgrf(1)
-       call jeveuo(noma//'.CONNEX', 'L', vi=connex)
-       call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    if (lxthm .and. l_mult_crack) then
+        chjon = '&&XRELCO.CHJON'
+        call celces(model//'.TOPOSE.PJO', 'V', chjon)
+        call jeveuo(chjon//'.CESD', 'L', jcesd)
+        call jeveuo(chjon//'.CESV', 'L', vi=cesv)
+        call jeveuo(chjon//'.CESL', 'L', jcesl)
+        cnxinv = '&&CHXFEM.CNXINV'
+        call cncinv(mesh, [0], 0, 'V', cnxinv)
+        call jeveuo(model//'.MODELE    .LGRF', 'L', vk8=lgrf)
+        noma = lgrf(1)
+        call jeveuo(noma//'.CONNEX', 'L', vi=connex)
+        call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     endif
 !
     nb_edge = nb_edge/2
@@ -211,137 +211,139 @@ implicit none
 !
         if (lxthm) then
 !
-           if (l_mult_crack) then
+            if (l_mult_crack) then
 !        SI lxthm=.true. ON RECUPERE LA SD JONCNO
-              call jelira(jexnum(cnxinv, node_nume(1)), 'LONMAX', nbmano1)
-              call jeveuo(jexnum(cnxinv, node_nume(1)), 'L', adrma1)
-              call jelira(jexnum(cnxinv, node_nume(2)), 'LONMAX', nbmano2)
-              call jeveuo(jexnum(cnxinv, node_nume(2)), 'L', adrma2)
-              do 10 ima1 = 1, nbmano1
-                 numa1 = zi(adrma1-1 + ima1)
-                 nbnoma1 = zi(jconx2+numa1) - zi(jconx2+numa1-1)
-                 if (nbnoma1.lt.nb_dim**2) go to 10
-                 do 20 ima2 = 1, nbmano2
-                    numa2 = zi(adrma2-1 + ima2)
-                    nbnoma2 = zi(jconx2+numa2) - zi(jconx2+numa2-1)
-                    if (nbnoma2.lt.nb_dim**2) go to 20
-                    if (numa1.eq.numa2) go to 30
-20               continue
-10            continue
-30            continue
-              do i = 1, nbnoma2
-                 nuno = connex(zi(jconx2+numa1-1)+i-1)
-                 if (nuno.eq.node_nume(1)) ino1=i
-                 if (nuno.eq.node_nume(2)) ino2=i
-              end do
-              jonc1=0
-              jonc2=0
-              call cesexi('C', jcesd, jcesl, numa1, 1,&
-                          1, ino1, iad)
-              if (iad.gt.0) jonc1=cesv(iad)
-              call cesexi('C', jcesd, jcesl, numa1, 1,&
-                          1, ino2, iad)
-              if (iad.gt.0) jonc2=cesv(iad)
-           endif
+                call jelira(jexnum(cnxinv, node_nume(1)), 'LONMAX', nbmano1)
+                call jeveuo(jexnum(cnxinv, node_nume(1)), 'L', adrma1)
+                call jelira(jexnum(cnxinv, node_nume(2)), 'LONMAX', nbmano2)
+                call jeveuo(jexnum(cnxinv, node_nume(2)), 'L', adrma2)
+                do ima1 = 1, nbmano1
+                    numa1 = zi(adrma1-1 + ima1)
+                    nbnoma1 = zi(jconx2+numa1) - zi(jconx2+numa1-1)
+                    if (nbnoma1 .lt. nb_dim**2) go to 10
+                    do ima2 = 1, nbmano2
+                        numa2 = zi(adrma2-1 + ima2)
+                        nbnoma2 = zi(jconx2+numa2) - zi(jconx2+numa2-1)
+                        if (nbnoma2 .lt. nb_dim**2) go to 20
+                        if (numa1 .eq. numa2) go to 30
+ 20                     continue
+                    end do
+ 10                 continue
+                end do
+ 30             continue
+                do i = 1, nbnoma2
+                    nuno = connex(zi(jconx2+numa1-1)+i-1)
+                    if (nuno .eq. node_nume(1)) ino1=i
+                    if (nuno .eq. node_nume(2)) ino2=i
+                end do
+                jonc1=0
+                jonc2=0
+                call cesexi('C', jcesd, jcesl, numa1, 1,&
+                            1, ino1, iad)
+                if (iad .gt. 0) jonc1=cesv(iad)
+                call cesexi('C', jcesd, jcesl, numa1, 1,&
+                            1, ino2, iad)
+                if (iad .gt. 0) jonc2=cesv(iad)
+            endif
 !
-           if (nb_dim.eq.2) then
-              do i = 1, 3+2*nlag
-                  if (l_mult_crack) then
-                     cmp_name(1) = ddlc3(9*(v_rela_cmp(2*(i_edge-1)+1)-1)+i)
-                     cmp_name(2) = ddlc3(9*(v_rela_cmp(2*(i_edge-1)+2)-1)+i)
-                  else
-                     cmp_name(1) = ddlc3(i)
-                     cmp_name(2) = ddlc3(i)
-                  endif
-                  call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                              [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                              'REEL', 'REEL', 0.d0, list_rela_line)
-                  nb_rela_line = nb_rela_line + 1
-              end do
-           else
-              do i = 1, 3+3*nlag
-                  if (l_mult_crack) then
-                     cmp_name(1) = ddlc4(12*(v_rela_cmp(2*(i_edge-1)+1)-1)+i)
-                     cmp_name(2) = ddlc4(12*(v_rela_cmp(2*(i_edge-1)+2)-1)+i)
-                  else
-                     cmp_name(1) = ddlc4(i)
-                     cmp_name(2) = ddlc4(i)
-                  endif
-                  call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                              [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                              'REEL', 'REEL', 0.d0, list_rela_line)
-                  nb_rela_line = nb_rela_line + 1
-              end do
-           endif
+            if (nb_dim .eq. 2) then
+                do i = 1, 3+2*nlag
+                    if (l_mult_crack) then
+                        cmp_name(1) = ddlc3(9*(v_rela_cmp(2*(i_edge-1)+1)-1)+i)
+                        cmp_name(2) = ddlc3(9*(v_rela_cmp(2*(i_edge-1)+2)-1)+i)
+                    else
+                        cmp_name(1) = ddlc3(i)
+                        cmp_name(2) = ddlc3(i)
+                    endif
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                                'REEL', 'REEL', 0.d0, list_rela_line)
+                    nb_rela_line = nb_rela_line + 1
+                end do
+            else
+                do i = 1, 3+3*nlag
+                    if (l_mult_crack) then
+                        cmp_name(1) = ddlc4(12*(v_rela_cmp(2*(i_edge-1)+1)-1)+i)
+                        cmp_name(2) = ddlc4(12*(v_rela_cmp(2*(i_edge-1)+2)-1)+i)
+                    else
+                        cmp_name(1) = ddlc4(i)
+                        cmp_name(2) = ddlc4(i)
+                    endif
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                                'REEL', 'REEL', 0.d0, list_rela_line)
+                    nb_rela_line = nb_rela_line + 1
+                end do
+            endif
 !
-           if (l_mult_crack) then
+            if (l_mult_crack) then
 !         EN PRESENCE DE JONCTIONS POUR LES MODELES HM-XFEM, ON IMPOSE L'EGALITE
 !         DU CHAMP PRE_FLU DANS CHAQUE BRANCHE AU NIVEAU DE LA JONCTION
-              if (v_rela_cmp(2*(i_edge-1)+1).eq.2.and.jonc1.gt.0) then
-                 cmp_name(1) = ddlc3(1)
-                 cmp_name(2) = ddlc3(9*1+1)
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(1))
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
-                 call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                             [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', 0.d0, list_rela_line)
-                 nb_rela_line = nb_rela_line + 1
-              elseif (v_rela_cmp(2*i_edge).eq.2.and.jonc1.gt.0) then
-                 cmp_name(1) = ddlc3(1)
-                 cmp_name(2) = ddlc3(9*1+1)
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(1))
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
-                 call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                             [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', 0.d0, list_rela_line)
-                 nb_rela_line = nb_rela_line + 1
-              endif
-              if (v_rela_cmp(2*(i_edge-1)+1).eq.3.and.jonc1.gt.0) then
-                 cmp_name(1) = ddlc3(1)
-                 cmp_name(2) = ddlc3(9*2+1)
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(1))
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
-                 call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                             [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', 0.d0, list_rela_line)
-                 nb_rela_line = nb_rela_line + 1
-              elseif (v_rela_cmp(2*i_edge).eq.3.and.jonc1.gt.0) then
-                 cmp_name(1) = ddlc3(1)
-                 cmp_name(2) = ddlc3(9*2+1)
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(1))
-                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
-                 call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                             [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', 0.d0, list_rela_line)
-                 nb_rela_line = nb_rela_line + 1
-              endif
-           endif
+                if (v_rela_cmp(2*(i_edge-1)+1) .eq. 2 .and. jonc1 .gt. 0) then
+                    cmp_name(1) = ddlc3(1)
+                    cmp_name(2) = ddlc3(9*1+1)
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(1))
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                                'REEL', 'REEL', 0.d0, list_rela_line)
+                    nb_rela_line = nb_rela_line + 1
+                else if (v_rela_cmp(2*i_edge).eq.2.and.jonc1.gt.0) then
+                    cmp_name(1) = ddlc3(1)
+                    cmp_name(2) = ddlc3(9*1+1)
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(1))
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                                'REEL', 'REEL', 0.d0, list_rela_line)
+                    nb_rela_line = nb_rela_line + 1
+                endif
+                if (v_rela_cmp(2*(i_edge-1)+1) .eq. 3 .and. jonc1 .gt. 0) then
+                    cmp_name(1) = ddlc3(1)
+                    cmp_name(2) = ddlc3(9*2+1)
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(1))
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                                'REEL', 'REEL', 0.d0, list_rela_line)
+                    nb_rela_line = nb_rela_line + 1
+                else if (v_rela_cmp(2*i_edge).eq.3.and.jonc1.gt.0) then
+                    cmp_name(1) = ddlc3(1)
+                    cmp_name(2) = ddlc3(9*2+1)
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(1))
+                    call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                                'REEL', 'REEL', 0.d0, list_rela_line)
+                    nb_rela_line = nb_rela_line + 1
+                endif
+            endif
 !
         else
-           do i_dim = 1, nlag*nb_dim
-               if (l_mult_crack) then
-                   cmp_name(1) = ddlc1(3*(v_rela_cmp(2*(i_edge-1)+1)-1)+i_dim)
-                   cmp_name(2) = ddlc1(3*(v_rela_cmp(2*(i_edge-1)+2)-1)+i_dim)
-               else
-                   if(nb_dim.eq.3) then
-                       cmp_name(1) = ddlc1(i_dim)
-                       cmp_name(2) = ddlc1(i_dim)
-                   else
-                       cmp_name(1) = ddlc2(i_dim)
-                       cmp_name(2) = ddlc2(i_dim)
-                   endif
-               endif
-               call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                           [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                           'REEL', 'REEL', 0.d0, list_rela_line)
-               nb_rela_line = nb_rela_line + 1
-           end do
+            do i_dim = 1, nlag*nb_dim
+                if (l_mult_crack) then
+                    cmp_name(1) = ddlc1(3*(v_rela_cmp(2*(i_edge-1)+1)-1)+i_dim)
+                    cmp_name(2) = ddlc1(3*(v_rela_cmp(2*(i_edge-1)+2)-1)+i_dim)
+                else
+                    if (nb_dim .eq. 3) then
+                        cmp_name(1) = ddlc1(i_dim)
+                        cmp_name(2) = ddlc1(i_dim)
+                    else
+                        cmp_name(1) = ddlc2(i_dim)
+                        cmp_name(2) = ddlc2(i_dim)
+                    endif
+                endif
+                call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
+                            [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                            'REEL', 'REEL', 0.d0, list_rela_line)
+                nb_rela_line = nb_rela_line + 1
+            end do
         endif
     end do
 !
-    if (lxthm.and.l_mult_crack) then
-       call detrsd('CHAM_ELEM_S', chjon)
-       call jedetr(cnxinv)
+    if (lxthm .and. l_mult_crack) then
+        call detrsd('CHAM_ELEM_S', chjon)
+        call jedetr(cnxinv)
     endif
 !
     call jedema()

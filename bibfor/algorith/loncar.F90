@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine loncar(ndim, typma, coord, l)
     implicit none
 !
@@ -69,10 +69,10 @@ subroutine loncar(ndim, typma, coord, l)
     else if (typma(1:5).eq.'PYRAM') then
 !
 !       M : MILIEU DE LA FACE QUADRANGLE
-        do 5 i = 1, 3
+        do i = 1, 3
             m(i) = (coord( 3*(1-1)+i) + coord(3*(2-1)+i) + coord(3*(3- 1)+i) + coord(3*(4-1)+i )&
                    ) / 4.d0
- 5      continue
+        end do
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N3)*(M-N5))^(1/2)
         ar(1)=sqrt( (coord(3*(3-1)+1)-coord(3*(1-1)+1))**2 + (coord(3*&
@@ -85,28 +85,28 @@ subroutine loncar(ndim, typma, coord, l)
     else if (typma(1:5).eq.'TETRA') then
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
-        do 10 i = 1, 3
+        do i = 1, 3
             ar(i)=sqrt((coord(1)-coord(3*i+1))**2 + (coord(2)-coord(3*&
             i+2))**2 + (coord(3)-coord(3*i+3))**2 )
-10      continue
+        end do
         l=(ar(1)*ar(2)*ar(3))**(1.d0/3.d0)
 !
     else if (typma(1:4).eq.'QUAD') then
 !
 !     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
-        do 20 i = 1, 2
+        do i = 1, 2
             ar(i) = (coord(1)-coord(ndim*i+1))**2 + (coord(2)-coord( ndim*i+2) )**2
             if (ndim .eq. 3) ar(i) = ar(i) + (coord(3)-coord(ndim*i+3)) **2
-20      continue
+        end do
         l=(sqrt(ar(1)*ar(2)))**(1.d0/2.d0)
 !
     else if (typma(1:4).eq.'TRIA') then
 !
 !     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
-        do 30 i = 1, 2
+        do i = 1, 2
             ar(i) = (coord(1)-coord(ndim*i+1))**2 + (coord(2)-coord( ndim*i+2) )**2
             if (ndim .eq. 3) ar(i) = ar(i) + (coord(3)-coord(ndim*i+3)) **2
-30      continue
+        end do
         l=(sqrt(ar(1)*ar(2)))**(1.d0/2.d0)
 !
     else if (typma(1:3).eq.'SEG') then

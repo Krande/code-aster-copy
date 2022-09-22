@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
                   coef, xabs, lfonct, reta)
 !     PROJ_MESU_MODAL : RESOLUTION DU SYSTEME PAR SVD OU PAR LU
@@ -111,34 +111,34 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! ===============================
 ! CALCUL DE PHI_TRANSPOSEE * PHI
 ! ===============================
-    do 30 imod = 1, nbmode
-        do 20 jmod = 1, nbmode
+    do imod = 1, nbmode
+        do jmod = 1, nbmode
             zr(lphitp-1 +imod+nbmode*(jmod-1)) = 0.d0
-            do 10 imes = 1, nbmesu
+            do imes = 1, nbmesu
                 zr(lphitp-1 +imod+nbmode*(jmod-1)) = zr(&
                                                      lphitp-1 + imod+nbmode*(jmod-1)) + phi(imes,&
                                                      imod)*phi(imes, jmod&
                                                      )
- 10         continue
- 20     continue
- 30 end do
+            end do
+        end do
+    end do
 !
     if (nbmesu .lt. nbmode) then
 ! ===============================
 ! CALCUL DE PHI * PHI_TRANSPOSEE
 ! ===============================
-        do 40 imes = 1, nbmesu
-            do 50 jmes = 1, nbmesu
+        do imes = 1, nbmesu
+            do jmes = 1, nbmesu
                 zr(lphiph-1 +imes+nbmesu*(jmes-1)) = 0.d0
-                do 60 imod = 1, nbmode
+                do imod = 1, nbmode
                     zr(lphiph-1 +imes+nbmesu*(jmes-1)) = zr(&
                                                          lphiph-1 + imes+nbmesu*(jmes-1)&
                                                          ) + phi(imes,&
                                                          imod)*phi(jmes, imod&
                                                          )
- 60             continue
- 50         continue
- 40     continue
+                end do
+            end do
+        end do
     endif
 !
 ! =======================================
@@ -147,13 +147,13 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
 !
 ! DEBUT DE LA BOUCLE SUR LES ABSCISSES (FREQUENCE)
 ! *****************************
-    do 100 iabs = 1, nbabs
+    do iabs = 1, nbabs
 !
         nul = .true.
 !
 ! DEBUT DE LA BOUCLE SUR LES MODES
 ! ********************************
-        do 90 imod = 1, nbmode
+        do imod = 1, nbmode
 !
 ! RECHERCHE DU COEFFICIENT DE PONDERATION
 ! ***************************************
@@ -176,9 +176,9 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! DETERMINATION DE LA MATRICE A INVERSER :
 ! MATSYS(IABS) = PHI_T*PHI + ALPHA(IABS)
 ! ****************************************
-            do 80 jmod = 1, nbmode
+            do jmod = 1, nbmode
                 zr(lmatsy-1 +imod+nbmode*(jmod-1)) = zr( lphitp-1 + imod+nbmode*( jmod-1) )
- 80         continue
+            end do
 !
             zr(lmatsy-1 +imod+nbmode*(imod-1)) = zr( lmatsy-1 +imod+ nbmode*(imod-1 ) ) + alpha
 !
@@ -188,9 +188,9 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! ********************************************************
             zr(lsecmb-1 +imod) = 0.d0
 !
-            do 70 imes = 1, nbmesu
+            do imes = 1, nbmesu
                 zr(lsecmb-1 +imod) = zr(lsecmb-1 +imod) + phi(imes, imod)*rmesu(imes,iabs)
- 70         continue
+            end do
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
                 ibid = iabs-1
@@ -199,7 +199,7 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
 !
 ! FIN DE LA BOUCLE SUR LES MODES
 ! ******************************
- 90     continue
+        end do
 !
 !
 ! RESOLUTION DU SYSTEME :
@@ -212,20 +212,20 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
             if (regul .eq. 'NON') then
 ! CALCUL MOINDRE NORME
                 call utmess('A', 'ALGORITH15_26')
-                do 71 imes = 1, nbmesu
+                do imes = 1, nbmesu
                     zr(lsecmb-1 +imes) = rmesu(imes,iabs)
-                    do 77 jmes = 1, nbmesu
+                    do jmes = 1, nbmesu
                         zr(lmatsy-1 +imes+nbmode*(jmes-1)) = zr(lphiph-1 +imes+nbmesu*( jmes-1))
- 77                 continue
- 71             continue
+                    end do
+                end do
 !
 ! CHOIX POUR LA METHODE D INVERSION
                 if (method .eq. 'SVD') then
 ! METHODE SVD
 ! CREATION DU VECTEUR SECOND MEMBRE
-                    do 75 jmes = 1, nbmesu
+                    do jmes = 1, nbmesu
                         zr(leta-1 +jmes) = zr(lsecmb-1 +jmes)
- 75                 continue
+                    end do
 !
                     call rslsvd(nbmode, nbmesu, nbmesu, zr(lmatsy), zr( lvals),&
                                 zr(lu), zr(lv), 1, zr(leta), eps,&
@@ -248,11 +248,11 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
                 endif
 !
 ! COPIE DES RESULTATS DANS RETA
-                do 76 jmod = 1, nbmode
-                    do 74 jmes = 1, nbmesu
+                do jmod = 1, nbmode
+                    do jmes = 1, nbmesu
                         reta(jmod,iabs) = phi(jmes,jmod)*zr(leta-1 + jmes)
- 74                 continue
- 76             continue
+                    end do
+                end do
 !
                 goto 100
             endif
@@ -264,9 +264,9 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
         if (method .eq. 'SVD') then
 ! METHODE SVD
 ! CREATION DU VECTEUR SECOND MEMBRE
-            do 81 jmod = 1, nbmode
+            do jmod = 1, nbmode
                 zr(leta-1 +jmod) = zr(lsecmb-1 +jmod)
- 81         continue
+            end do
 !
             call rslsvd(nbmode, nbmode, nbmode, zr(lmatsy), zr( lvals),&
                         zr(lu), zr(lv), 1, zr(leta), eps,&
@@ -289,13 +289,14 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
         endif
 !
 ! RECUPERATION DES RESULTATS
-        do 73 jmod = 1, nbmode
+        do jmod = 1, nbmode
             reta(jmod,iabs)=zr(leta-1+jmod)
- 73     continue
+        end do
 !
 ! FIN DE LA BOUCLE SUR LES ABSCISSES (FREQUENCE)
 ! ***************************
-100 end do
+100     continue
+    end do
 !
 !
 ! DESTRUCTION DES VECTEURS DE TRAVAIL

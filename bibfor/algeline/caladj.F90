@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caladj(col, diag, xadj, adjncy, n,&
                   nnz, deb, tab, suiv, lmat,&
                   ladjn, nrl)
@@ -48,80 +48,80 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
     integer :: vali(2)
     if (nrl .eq. 0) then
 !     PAS DE RELATION LINEAIRE ENTRE PLUSIEURS DDL
-        do 110 j = 1, n
+        do j = 1, n
 !
             nnz(j) = diag(j) - diag(j-1 ) - 1
-110      continue
-        do 120 k = 1, diag(n)
+        end do
+        do k = 1, diag(n)
 !     PARTIE TRIANGULAIRE SUPERIEURE
             nnz(col(k)) = nnz(col(k)) + 1
-120      continue
+        end do
 !
         xadj(1) = 1
-        do 130 j = 1, n
+        do j = 1, n
 !     ON DIMINUE DE 1 CAR ON NE VEUT PAS LE TERME
 !     DIAGONAL DANS ADJNCY
             xadj(j+1) = xadj(j) + nnz(j) - 1
             nnz(j) = 0
-130      continue
+        end do
 !
-        do 150 j = 1, n
-            do 140 ii = diag(j-1)+1, diag(j)-1
+        do j = 1, n
+            do ii = diag(j-1)+1, diag(j)-1
                 i = col(ii)
                 adjncy(xadj(j)+nnz(j)) = i
                 nnz(j) = nnz(j) + 1
                 adjncy(xadj (i)+nnz(i)) = j
                 nnz(i) = nnz(i) + 1
-140          continue
-150      continue
+            end do
+        end do
 !
 !     ---------------------------
     else
 !     AVEC RELATION LINEAIRE
 !     CALCUL DES LISTES DE NOEUDS A AJOUTER ( FAIT DANS PREMLA)
 !
-        do 190 i = 1, n
+        do i = 1, n
 !            DEB(I) =0
             nnz(i) =0
-190      continue
+        end do
 !     INITIALISATION DE NNZ : NBRE DE TERMES A AJOUTER
 !     POUR CHAQUE LIGNE
-        do 220 j = 1, n
+        do j = 1, n
             it = deb(j)
-219          continue
+219         continue
             if (it .gt. 0) then
                 nnz(j) = nnz(j) + 1
                 it = suiv(it)
                 goto 219
             endif
-220      continue
+        end do
 !     VERIFICATION
-        do 310 j = 1, n
+        do j = 1, n
 !     TERMES A AJOUTER PARTIE INFERIEURE
             nnz(j) = nnz(j) + diag(j) - diag(j-1 ) - 1
-310      continue
-        do 320 k = 1, diag(n)
+        end do
+        do k = 1, diag(n)
 !     PARTIE TRIANGULAIRE SUPERIEURE
             nnz(col(k)) = nnz(col(k)) + 1
-320      continue
-        do 325 j = 1, n
+        end do
+        do j = 1, n
 !     TERMES A AJOUTER PARTIE SUPERIEURE
             it = deb(j)
-324          continue
+324         continue
             if (it .gt. 0) then
                 nnz(tab(it)) = nnz(tab(it)) + 1
                 it = suiv(it)
                 goto 324
             endif
-325      continue
+        end do
 !
         xadj(1) = 1
-        do 330 j = 1, n
+        do j = 1, n
 !     ON DIMINUE DE 1 CAR ON NE VEUT PAS LE TERME
 !     DIAGONAL DANS ADJNCY
             xadj(j+1) = xadj(j) + nnz(j) - 1
             nnz(j) = 0
-330      continue
+        end do
         if ((xadj(n+1)-1) .gt. ladjn) then
 !       TEST D'ESPACE SUFFISANT DANS ADJNCY
             vali (1) = ladjn
@@ -130,8 +130,8 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
         endif
 !
         iad=0
-        do 350 j = 1, n
-            do 340 ii = diag(j-1)+1, diag(j)-1
+        do j = 1, n
+            do ii = diag(j-1)+1, diag(j)-1
                 i = col(ii)
                 adjncy(xadj(j)+nnz(j)) = i
                 nnz(j) = nnz(j) + 1
@@ -139,9 +139,9 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
                 nnz(i) = nnz(i) + 1
                 iad=max(iad,(xadj (i)+nnz(i)))
                 iad=max(iad,(xadj (j)+nnz(j)))
-340          continue
+            end do
             it = deb(j)
-344          continue
+344         continue
             if (it .gt. 0) then
                 adjncy(xadj(j)+nnz(j)) = tab(it)
                 nnz(j) = nnz(j) + 1
@@ -150,7 +150,7 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
                 it = suiv(it)
                 goto 344
             endif
-350      continue
+        end do
 !
     endif
 end subroutine

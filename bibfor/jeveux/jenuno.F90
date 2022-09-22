@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jenuno(nomlu, nomo)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -108,9 +108,9 @@ subroutine jenuno(nomlu, nomo)
             ideco = (kadm - 1) * lois + idenom + lnom * (numec - 1)
             nk = min ( len(nomo) , lnom )
             nomo = ' '
-            do 10 k = 1, nk
+            do k = 1, nk
                 nomo(k:k) = k1zon ( jk1zon + ideco + k )
-10          continue
+            end do
             if (iadmex .eq. 0) then
                 call jjlide('JENUNO', noml32, iret)
             endif
@@ -135,9 +135,9 @@ subroutine jenuno(nomlu, nomo)
             lnom = iszon ( jiszon + kadm - 1 + ilnom )
             ideco = (kadm - 1) * lois + idenom + lnom*(numec - 1)
             nomo = ' '
-            do 20 k = 1, min ( len(nomo) , lnom )
+            do k = 1, min ( len(nomo) , lnom )
                 nomo(k:k) = k1zon ( jk1zon + ideco + k )
-20          continue
+            end do
             call jjlide('JENUNO', nomlu(1:24), 2)
         else
             ASSERT(.false.)

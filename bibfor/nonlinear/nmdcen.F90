@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -68,15 +68,15 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
 ! --- RECOPIE DE LA PARTIE HAUTE DE LA LISTE
 !
-    do 10 ipas = nbnew, numins+nbins, -1
+    do ipas = nbnew, numins+nbins, -1
         zi(jnivtp-1+ipas) = zi(jnivtp-1+ipas-nbins)
-10  end do
+    end do
 !
 ! --- INCREMENTATION DU NIVEAU SUR LA PARTIE DECOUPEE
 !
-    do 20 ipas = numins, numins+nbins-1
+    do ipas = numins, numins+nbins-1
         zi(jnivtp-1+ipas) = zi(jnivtp-1+ipas)+1
-20  end do
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
                   icodre, iarret)
     implicit none
@@ -62,19 +62,19 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
     imat = jmat+zi(jmat+nbmat+1)
 !
 !
-    do 130 ires = 1, nbres
+    do ires = 1, nbres
         icodre(ires) = 1
-130  end do
+    end do
     nomphe = phenom
-    do 10 icomp = 1, zi(imat+1)
+    do icomp = 1, zi(imat+1)
         if (nomphe .eq. zk32(zi(imat)+icomp-1)) then
             ipi = zi(imat+2+icomp-1)
             goto 11
         endif
-10  end do
+    end do
     call utmess('A', 'ELEMENTS2_63')
-    goto 9999
-11  continue
+    goto 999
+ 11 continue
 !
     nbobj = 0
     nbr = zi(ipi )
@@ -82,29 +82,29 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
     ivalk = zi(ipi+3)
     ivalc = zi(ipi+5)
     nbt = nbr + nbc
-    do 150 ir = 1, nbt
-        do 140 ires = 1, nbres
+    do ir = 1, nbt
+        do ires = 1, nbres
             if (nomres(ires) .eq. zk16(ivalk+ir-1)) then
                 valres(ires) = zc(ivalc-1+ir)
                 icodre(ires) = 0
                 nbobj = nbobj + 1
             endif
-140      continue
-150  end do
+        end do
+    end do
     if (nbobj .ne. nbres) then
         idf = zi(ipi)+zi(ipi+1)
         nbf = zi(ipi+2)
-        do 170 ires = 1, nbres
-            do 160 ik = 1, nbf
+        do ires = 1, nbres
+            do ik = 1, nbf
                 if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                     call utmess('F', 'MODELISA6_93')
 !              CALL FOINTA (IFON,NBPAR,NOMPAR,VALPAR,VALRES(IRES))
                     icodre(ires) = 0
                 endif
-160          continue
-170      continue
+            end do
+        end do
     endif
-9999  continue
+999 continue
 !
     call rcvals(iarret, icodre, nbres, nomres)
 !

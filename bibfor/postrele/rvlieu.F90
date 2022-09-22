@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -35,7 +36,6 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
 #include "asterfort/rvabsc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/assert.h"
 !
     character(len=24) :: nlsnac, sdlieu
     character(len=8) :: typco, mailla
@@ -70,7 +70,7 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     integer :: aabsc, arefe, adesc, acoor
     integer :: ansdl, adr, anumnd, anume
     integer :: nbsd, isd, nbpt, ipt
-    real(kind=8) ::  zero
+    real(kind=8) :: zero
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -78,13 +78,13 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     zero = 0.0d0
     lnumnd = '&&RVLIEU.LISTE.NUM.NOEUD'
     ASSERT(typco.ne.'CHEMIN')
-
-
+!
+!
     call jelira(nlsnac, 'LONMAX', nbpt)
     nbsd = 1
-
+!
     call wkvect(sdlieu, 'V V K24', nbsd, ansdl)
-    do 100 isd = 1, nbsd, 1
+    do isd = 1, nbsd, 1
         call codent(isd, 'G', iden)
         sdcour = '&&RVLIEU.'//iden
         zk24(ansdl + isd-1)(1:19) = sdcour
@@ -96,16 +96,16 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         call wkvect(nrefe, 'V V K8', 1, arefe)
         call wkvect(nnume, 'V V I', 1, anume)
         zi(anume) = isd
-
+!
         zk8(arefe) = mailla
         docu = 'LSTN'
         call jelira(nlsnac, 'LONMAX', nbpt)
         call jeveuo(nlsnac, 'L', anumnd)
         call wkvect(ndesc, 'V V K8', nbpt, adesc)
-        do 30 ipt = 1, nbpt, 1
+        do ipt = 1, nbpt, 1
             call jenuno(jexnum(mailla//'.NOMNOE', zi(anumnd+ ipt-1)), zk8(adesc + ipt-1))
- 30     continue
-
+        end do
+!
         call jecrec(nabsc, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                     1)
         call jecroc(jexnum(nabsc, 1))
@@ -121,8 +121,8 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         if (adr .ne. 0) then
             call jedetr(lnumnd)
         endif
-
+!
         call jeecra(nrefe, 'DOCU', cval=docu)
-100 end do
+    end do
     call jedema()
 end subroutine

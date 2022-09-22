@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine apchar(typcha, k24rc, nk, lambda, theta,&
                   lraide, lmasse, ldynam, solveu, lamor,&
                   lc, impr, ifapm, ind)
@@ -104,9 +104,9 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 !   --- (CF. LANGLOIS, GRAILLAT, LOUVET).                          ---
         call jeveuo(k24rc, 'L', jmatc)
         caux2=zc(jmatc+nk)
-        do 10 j = nkm1, 0, -1
+        do j = nkm1, 0, -1
             caux2=caux2*lambda+zc(jmatc+j)
- 10     continue
+        end do
 !
 !     ------------------------------------------------------------------
 !     ------------------- METHOD LDLT ----------------------------------

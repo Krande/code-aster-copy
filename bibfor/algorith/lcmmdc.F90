@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
                   is, ceff, dcdals)
     implicit none
@@ -44,11 +44,11 @@ subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
     dcdals=0.d0
     if (alpha .gt. 0.d0) then
         omegat=0.d0
-        do 10 i = 1, 12
+        do i = 1, 12
             if (alphap(i) .gt. 0.d0) then
                 omegat=omegat+alphap(i)
             endif
-10      continue
+        end do
 !        PARTIE POSITIVE
         if (omegat .gt. 0.d0) then
             ceff=0.2d0+0.8d0*log(alpha*sqrt(omegat))/ log(alpha*beta*&

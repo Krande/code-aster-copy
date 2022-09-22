@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
                   para, nbpara)
     implicit none
@@ -40,7 +40,7 @@ subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
     nbpara = 0
     ilig = iligd
     icol = icold
- 1  continue
+  1 continue
     call lxscan(donnee(ilig), icol, iclass, ival, rval,&
                 cval)
     if (iclass .eq. -1) then
@@ -52,10 +52,10 @@ subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
 !-DEL                WRITE(6,*) ' TITREC "(" '
         icold = icol
         iligd = ilig
-11      continue
+ 11     continue
         call lxscan(donnee(iligd), icold, iclass, ival, rval,&
                     cval)
-12      continue
+ 12     continue
         if (iclass .eq. -1) then
             icold = 1
             iligd = iligd + 1
@@ -82,12 +82,12 @@ subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
 !CC  PARAMETRE INCORRECT
             nbpara = 0
         endif
-20      continue
+ 20     continue
     endif
     if (nbpara .eq. 0) then
-        do 30 ipara = 1, mxpara
+        do ipara = 1, mxpara
             call getres(para(ipara), k8bid, k8bid)
             nbpara = nbpara + 1
-30      continue
+        end do
     endif
 end subroutine

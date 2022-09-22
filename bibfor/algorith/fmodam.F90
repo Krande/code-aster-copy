@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine fmodam(neq, vite, valmod, basmod, force)
 !
 !
@@ -63,19 +63,19 @@ subroutine fmodam(neq, vite, valmod, basmod, force)
 !
     call r8inir(neq, 0.d0, force, 1)
 !
-    do 10 imode = 1, nbmode
+    do imode = 1, nbmode
         masgen = zr(jvalmo+3*(imode-1)+1-1)
         puls = zr(jvalmo+3*(imode-1)+2-1)
         amor = zr(jvalmo+3*(imode-1)+3-1)
         somme = 0.d0
-        do 11 n1 = 1, neq
+        do n1 = 1, neq
             somme = somme + zr(jbasmo+(imode-1)*neq+n1-1)*vite(n1)
-11      continue
-        do 12 n1 = 1, neq
+        end do
+        do n1 = 1, neq
             force(n1) = force(n1) + 2.d0*amor/masgen/puls**3 *zr( jbasmo+(imode-1)*neq+n1-1)*somm&
                         &e
-12      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

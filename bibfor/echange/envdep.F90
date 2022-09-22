@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! person_in_charge: nicolas.greffet at edf.fr
 ! **********************************************************************
 ! **********************************************************************
@@ -316,7 +316,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !
 !     DEBUT DE LA BOUCLE SUR LES PALIERS
 !
-    do 10 ipal = 1, nbpal
+    do ipal = 1, nbpal
 !
 !      SUBROUTINE POSDDL ( TYPE, RESU, NOEUD, CMP, NUNOE, NUDDL )
 !     ------------------------------------------------------------------
@@ -348,10 +348,10 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
             posvit(11)=dtsto
 !
         else
-            do 20 ipat = 1, 6
+            do ipat = 1, 6
                 deppal(ipat)=dep(ipal,ipat)
                 vitpal(ipat)=vit(ipal,ipat)
- 20         continue
+            end do
             posvit(3)=deppal(1)
             posvit(4)=deppal(2)
             posvit(5)=vitpal(1)
@@ -403,7 +403,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
             call errcou(nomprg, npas, nomvar, info, onze,&
                         onze)
         endif
- 10 end do
+    end do
 !     FIN DE LA BOUCLE SUR LES PALIERS
     call jedema()
 !

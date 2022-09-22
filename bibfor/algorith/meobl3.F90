@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine meobl3(eps, b, d, deltab, deltad,&
                   mult, lambda, mu, ecrob, ecrod,&
                   alpha, k1, k2, bdim, dsidep)
@@ -92,10 +92,10 @@ subroutine meobl3(eps, b, d, deltab, deltad,&
     dcrit(5)=0.d0
     dcrit(6)=0.d0
 !
-    do 101 i = 4, 6
+    do i = 4, 6
         fbm(i)=rac2*fbm(i)
         deltab(i)=deltab(i)*rac2
-101  end do
+    end do
 !
     call dfdde(eps, d, 3, lambda, mu,&
                tdfdde)
@@ -121,11 +121,11 @@ subroutine meobl3(eps, b, d, deltab, deltad,&
         call r8inir(36, 0.d0, psi, 1)
         call r8inir(36, 0.d0, ksi, 1)
 !
-        do 110 i = 1, 6
+        do i = 1, 6
             interg(i)=deltab(i)/fd-alpha*fbm(i)/(un-alpha)/fd/tdfddd
             intert(i)=(un-alpha)*fd*tdfdde(i)-coupl*dcrit(i)
-            do 111 j = 1, 6
-                do 112 k = 1, 6
+            do j = 1, 6
+                do k = 1, 6
                     ksi(i,j)=ksi(i,j)+alpha*deltad*dfbmdf(i,k)*tdfbdb(&
                     k,j)
                     interd(i)=interd(i)+alpha*fbm(k)*dfbmdf(k,j)*&
@@ -134,26 +134,26 @@ subroutine meobl3(eps, b, d, deltab, deltad,&
                     k,j)
                     intert(i)=intert(i)+alpha*fbm(k)*dfbmdf(k,j)*&
                     tdfbde(j,i)
-112              continue
-111          continue
-110      end do
+                end do
+            end do
+        end do
 !
-        do 120 i = 1, 6
+        do i = 1, 6
             ksi(i,i)=ksi(i,i)-(un-alpha)*fd
-120      end do
+        end do
 !
-        do 130 i = 1, 6
-            do 131 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 ksi(i,j)=ksi(i,j)+interg(i)*interd(j)
                 psi(i,j)=psi(i,j)-interg(i)*intert(j) +(un-alpha)*&
                 deltab(i)*tdfdde(j)
-131          continue
-130      end do
+            end do
+        end do
 !
         call r8inir(36, 0.d0, iksi, 1)
-        do 140 i = 1, 6
+        do i = 1, 6
             iksi(i,i)=1.d0
-140      end do
+        end do
 !
         call mgauss('NFVP', ksi, iksi, 6, 6,&
                     6, det, iret)
@@ -163,26 +163,26 @@ subroutine meobl3(eps, b, d, deltab, deltad,&
         call r8inir(36, 0.d0, matb, 1)
         call r8inir(6, 0.d0, matd, 1)
 !
-        do 150 i = 1, 6
+        do i = 1, 6
             matd(i)=-intert(i)/(un-alpha)/fd/tdfddd
-            do 151 j = 1, 6
-                do 152 k = 1, 6
+            do j = 1, 6
+                do k = 1, 6
                     matb(i,j)=matb(i,j)+iksi(i,k)*psi(k,j)
                     matd(i)=matd(i)-interd(j)*iksi(j,k)*psi(k,i)&
                     /(un-alpha)/fd/tdfddd
-152              continue
-151          continue
-150      continue
+                end do
+            end do
+        end do
 !
-        do 201 i = 1, 6
-            do 202 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=-tdfdde(i)*matd(j)
-                do 203 k = 1, 6
+                do k = 1, 6
                     dsidep(i,j)=dsidep(i,j)-tdfbde(k,i)*matb(k,j)
-203              continue
+                end do
 !             WRITE(6,*) 'tang(',I,',',J,')=',DSIDEP(I,J)
-202          continue
-201      continue
+            end do
+        end do
 !
     else if ((fd.eq.0.d0).and.(nofbm.ne.0.d0)) then
 !
@@ -191,61 +191,61 @@ subroutine meobl3(eps, b, d, deltab, deltad,&
         call r8inir(36, 0.d0, ksi, 1)
         call r8inir(36, 0.d0, psi, 1)
 !
-        do 500 i = 1, 6
-            do 501 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 ksi(i,j)=-fbm(i)*fbm(j)/nofbm
                 psi(i,j)=psi(i,j)-fbm(i)*alpha*mult/coupl*dcrit(j)
-                do 502 k = 1, 6
+                do k = 1, 6
                     ksi(i,j)=ksi(i,j)-alpha*mult*dfbmdf(i,k)*tdfbdb(k,&
                     j)
                     psi(i,j)=psi(i,j)+alpha*mult*dfbmdf(i,k)*tdfbde(k,&
                     j)
-502              continue
-501          continue
-500      continue
+                end do
+            end do
+        end do
 !
-        do 504 i = 1, 6
+        do i = 1, 6
             ksi(i,i)=ksi(i,i)+1
-504      continue
+        end do
 !
         call r8inir(36, 0.d0, iksi, 1)
-        do 505 i = 1, 6
+        do i = 1, 6
             iksi(i,i)=1.d0
-505      continue
+        end do
 !
         call mgauss('NFVP', ksi, iksi, 6, 6,&
                     6, det, iret)
 !
         call r8inir(36, 0.d0, matb, 1)
 !
-        do 550 i = 1, 6
-            do 551 j = 1, 6
-                do 552 k = 1, 6
+        do i = 1, 6
+            do j = 1, 6
+                do k = 1, 6
                     matb(i,j)=matb(i,j)+iksi(i,k)*psi(k,j)
-552              continue
-551          continue
-550      continue
+                end do
+            end do
+        end do
 !
-        do 561 i = 1, 6
-            do 562 j = 1, 6
-                do 563 k = 1, 6
+        do i = 1, 6
+            do j = 1, 6
+                do k = 1, 6
                     dsidep(i,j)=dsidep(i,j)-tdfbde(k,i)*matb(k,j)
-563              continue
+                end do
 !             WRITE(6,*) 'tang(',I,',',J,')=',DSIDEP(I,J)
-562          continue
-561      continue
+            end do
+        end do
 !
     else if ((fd.ne.0.d0).and.(nofbm.eq.0.d0)) then
 !
 ! 568     CONTINUE
 !
-        do 661 i = 1, 6
-            do 662 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)= -tdfdde(i)*(-tdfdde(j)+coupl/(un-alpha)&
                 *dcrit(j)/fd)/tdfddd
 !             WRITE(6,*) 'tang(',I,',',J,')=',DSIDEP(I,J)
-662          continue
-661      continue
+            end do
+        end do
 !
     endif
 !

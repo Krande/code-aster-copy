@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine putcon(nomres, nbind, ind, valr, vali,&
                   num, ier)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jjvern.h"
+!
     character(len=*) :: nomres
     integer :: ier, nbind, ind(nbind), num
     real(kind=8) :: valr(nbind), vali(nbind)
@@ -66,15 +66,15 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
             ier=1
-            do 66 i = 1, nbind
+            do i = 1, nbind
                 zr(jres+ind(i)-1)=valr(i)
-66          continue
+            end do
         else if (type.eq.'C') then
 !     LES VALEURS SONT COMPLEXES
             ier=1
-            do 67 i = 1, nbind
+            do i = 1, nbind
                 zc(jres+ind(i)-1)=dcmplx(valr(i),vali(i))
-67          continue
+            end do
         else
 !     LES VALEURS SONT NI REELLES NI COMPLEXES
             ier=0
@@ -93,15 +93,15 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
             ier=1
-            do 68 i = 1, nbind
+            do i = 1, nbind
                 zr(jres+ind(i)-1)=valr(i)
-68          continue
+            end do
         else if (type.eq.'C') then
 !     LES VALEURS SONT COMPLEXES
             ier=1
-            do 69 i = 1, nbind
+            do i = 1, nbind
                 zc(jres+ind(i)-1)=dcmplx(valr(i),vali(i))
-69          continue
+            end do
         else
 !     LES VALEURS SONT NI REELLES NI COMPLEXES
             ier=0

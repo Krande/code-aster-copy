@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zneigh(rnorm, n, h, ldh, ritz,&
                   bounds, q, ldq, workl, rwork,&
                   ierr)
@@ -231,8 +231,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     %----------------------------------------------------------%
 !
     call ar_ztrevc('R', 'B', select, n, workl,&
-                n, vl, n, q, ldq,&
-                n, n, workl(n*n+1), rwork, ierr)
+                   n, vl, n, q, ldq,&
+                   n, n, workl(n*n+1), rwork, ierr)
 !
     if (ierr .ne. 0) goto 9000
 !
@@ -245,10 +245,10 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     | NUMBER (X,Y) IS TAKEN TO BE |X| + |Y|.         |
 !     %------------------------------------------------%
 !
-    do 10 j = 1, n
+    do j = 1, n
         temp = dznrm2( n, q(1,j), 1 )
         call zdscal(n, rone / temp, q(1, j), 1)
- 10 end do
+    end do
 !
     if (msglvl .gt. 1) then
         call zcopy(n, q(n, 1), ldq, workl, 1)

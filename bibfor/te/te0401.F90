@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0401(optioz, nomtz)
     implicit none
 #include "asterf_types.h"
@@ -87,12 +87,12 @@ subroutine te0401(optioz, nomtz)
 !
         kompt = 0
 !
-        do 100 j = 1, 6 * nb1 + 3
-            do 110 i = 1, j
+        do j = 1, 6 * nb1 + 3
+            do i = 1, j
                 kompt = kompt + 1
                 zr ( imatuu - 1 + kompt ) = vrs ( kompt )
-110         continue
-100     continue
+            end do
+        end do
 !
     endif
 !
@@ -118,9 +118,9 @@ subroutine te0401(optioz, nomtz)
         call bsthco(nomte, bsigth, indith)
 !
         if (indith) then
-            do 120 i = 1, 6 * nb1 + 3
+            do i = 1, 6 * nb1 + 3
                 enerth = enerth + bsigth(i)*zr(iu+i-1)
-120         continue
+            end do
             zr(jener) = zr(jener) - enerth
         endif
 !

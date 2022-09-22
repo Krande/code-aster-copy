@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mmdnum(neqns, perm, invp, qsize)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -53,26 +53,26 @@ subroutine mmdnum(neqns, perm, invp, qsize)
 !
 !***************************************************************
 !
-    do 100 node = 1, neqns
+    do node = 1, neqns
         nqsize = qsize(node)
         if (nqsize .le. 0) perm(node) = invp(node)
         if (nqsize .gt. 0) perm(node) = - invp(node)
-100  continue
+    end do
 !        ------------------------------------------------------
 !        FOR EACH NODE WHICH HAS BEEN MERGED, DO THE FOLLOWING.
 !        ------------------------------------------------------
-    do 500 node = 1, neqns
+    do node = 1, neqns
         if (perm(node) .gt. 0) goto 500
 !                -----------------------------------------
 !                TRACE THE MERGED TREE UNTIL ONE WHICH HAS
 !                NOT BEEN MERGED, CALL IT ROOT.
 !                -----------------------------------------
         father = node
-200      continue
+200     continue
         if (perm(father) .gt. 0) goto 300
         father = - perm(father)
         goto 200
-300      continue
+300     continue
 !                -----------------------
 !                NUMBER NODE AFTER ROOT.
 !                -----------------------
@@ -84,22 +84,23 @@ subroutine mmdnum(neqns, perm, invp, qsize)
 !                SHORTEN THE MERGED TREE.
 !                ------------------------
         father = node
-400      continue
+400     continue
         nextf = - perm(father)
         if (nextf .le. 0) goto 500
         perm(father) = - root
         father = nextf
         goto 400
-500  continue
+500     continue
+    end do
 !        ----------------------
 !        READY TO COMPUTE PERM.
 !        ----------------------
-    do 600 node = 1, neqns
+    do node = 1, neqns
         num = - invp(node)
         invp(node) = num
         perm(num) = node
-600  continue
-    goto 9999
+    end do
+    goto 999
 !
-9999  continue
+999 continue
 end subroutine

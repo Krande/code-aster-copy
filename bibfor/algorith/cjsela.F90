@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsela(mod, crit, materf, deps, sigd,&
                   sigf, nvi, vind, vinf, iret)
     implicit none
@@ -64,20 +64,20 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
     call cjsci1(crit, materf, deps, sigd, i1,&
                 tract, iret)
-    if (iret .eq. 1) goto 9999
+    if (iret .eq. 1) goto 999
 !
 !--->   EN CAS D'ENTREE EN TRACTION, LES CONTRAINTES SONT
 !       RAMENEES SUR L'AXE HYDROSTATIQUE A DES VALEURS FAIBLES
 !       ( EGALES A PA/100.0 SOIT -1 KPA )
 !
     if (tract) then
-        do 10 i = 1, ndi
+        do i = 1, ndi
             sigf(i) = -qinit/3.d0+pa/100.0d0
- 10     continue
-        do 20 i = ndi+1, ndt
+        end do
+        do i = ndi+1, ndt
             sigf(i) = zero
- 20     continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
 !
@@ -99,15 +99,17 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 40 i = 1, ndi
-            do 40 j = 1, ndi
+        do i = 1, ndi
+            do j = 1, ndi
                 if (i .eq. j) hook(i,j) = al
                 if (i .ne. j) hook(i,j) = la
- 40         continue
-        do 45 i = ndi+1, ndt
-            do 45 j = ndi+1, ndt
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
                 if (i .eq. j) hook(i,j) = deux* mu
- 45         continue
+            end do
+        end do
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
@@ -121,7 +123,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
     call lcsove(sigd, dsig, sigf)
 !
 !
-9999 continue
+999 continue
 !
 !--->   VINF = VIND, ETAT A T+DT = ELASTIQUE = 0
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                   co, ff)
 ! aslint: disable=W1306
@@ -61,7 +61,8 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !
 !     CAS DES ELEMENTS PRINCIPAUX : C SIMPLE, ON APPELLE REEREF
     if (ndim .eq. ndime) then
-        call reeref(elrefp, nnop, zr(igeom), co, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), co, ndim,&
+                    xe, ff)
 !
 !
 !     CAS DES ELEMENTS DE BORDS : C PLUS COMPLIQUÉ
@@ -74,13 +75,13 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !       CREATION D'UNE BASE LOCALE A LA MAILLE PARENT ABCD
         call vecini(3, 0.d0, ab)
         call vecini(3, 0.d0, ac)
-        do 113 j = 1, ndim
+        do j = 1, ndim
             a(j)=zr(igeom-1+ndim*(1-1)+j)
             b(j)=zr(igeom-1+ndim*(2-1)+j)
             if (ndim .eq. 3) c(j)=zr(igeom-1+ndim*(3-1)+j)
             ab(j)=b(j)-a(j)
             if (ndim .eq. 3) ac(j)=c(j)-a(j)
-113      continue
+        end do
 !
         if (ndime .eq. 2) then
 !         CREATION DU REPERE LOCAL LO : (AB,Y)
@@ -99,22 +100,23 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
         geomlo='&&TE0036.GEOMLO'
         call wkvect(geomlo, 'V V R', nnop*ndime, igeolo)
-        do 114 ino = 1, nnop
-            do 115 j = 1, ndim
+        do ino = 1, nnop
+            do j = 1, ndim
                 n(j)=zr(igeom-1+ndim*(ino-1)+j)
                 an(j)=n(j)-a(j)
-115          continue
+            end do
             zr(igeolo-1+ndime*(ino-1)+1)=ddot(ndim,an,1,ab,1)
             if (ndime .eq. 2) zr(igeolo-1+ndime*(ino-1)+2)=ddot(ndim,an, 1,y ,1 )
-114      continue
+        end do
 !
 !       COORDONNÉES RÉELLES LOCALES DU POINT EN QUESTION : COLOC
-        do 116 j = 1, ndim
+        do j = 1, ndim
             an(j)=co(j)-a(j)
-116      continue
+        end do
         coloc(1)=ddot(ndim,an,1,ab,1)
         if (ndime .eq. 2) coloc(2)=ddot(ndim,an,1,y,1)
-        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime, xe, ff)
+        call reeref(elrefp, nnop, zr(igeolo), coloc, ndime,&
+                    xe, ff)
 !
         call jedetr(geomlo)
 !

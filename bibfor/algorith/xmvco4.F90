@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xmvco4(ino, ndim, nnol, sigma, lamb, pla,&
-                  lact, jac, ffc, p, raug, vtmp)
+!
+subroutine xmvco4(ino, ndim, nnol, sigma, lamb,&
+                  pla, lact, jac, ffc, p,&
+                  raug, vtmp)
 !
 !
     implicit none
@@ -80,14 +81,14 @@ subroutine xmvco4(ino, ndim, nnol, sigma, lamb, pla,&
 ! mais on remplit tout avec la contribution de J
 ! vecteur w*
     pli=pla(ino)
-    do 11 k = 1, ndim
+    do k = 1, ndim
         vtmp(pli-1+ndim+k) = vtmp(pli-1+ndim+k) + sigma(k)* ffc(ino)*jac
-11  continue
+    end do
 ! vecteur lambda*
 ! attention a ne pas oublier le terme lambda/r
     pli=pla(ino)
-    do 12 k = 1, ndim
+    do k = 1, ndim
         vtmp(pli-1+k) = vtmp(pli-1+k) + (sigma(k)-lamb(k))* ffc(ino)*jac/raug
-12  continue
+    end do
 !
 end subroutine

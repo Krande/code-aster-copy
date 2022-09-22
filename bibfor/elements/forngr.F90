@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine forngr(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -225,14 +225,14 @@ subroutine forngr(option, nomte)
 !
     call r8inir(8 * 3, 0.d0, vecu, 1)
 !
-    do 101 in = 1, nb1
-        do 111 ii = 1, 3
+    do in = 1, nb1
+        do ii = 1, 3
 !
             vecu ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) + ii&
             )
 !
-111      continue
-101  continue
+        end do
+    end do
 !
 !---- ROTATION TOTALE AUX NOEUDS
 !
@@ -243,18 +243,18 @@ subroutine forngr(option, nomte)
 !
 !------- NOEUDS DE SERENDIP
 !
-    do 202 in = 1, nb1
-        do 212 ii = 1, 3
+    do in = 1, nb1
+        do ii = 1, 3
             vecthe ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) + ii +&
   3         )
-212      continue
-202  continue
+        end do
+    end do
 !
 !--------- SUPERNOEUD
 !
-    do 222 ii = 1, 3
+    do ii = 1, 3
         vecthe ( nb2, ii ) = zr ( ium - 1 + 6 * nb1 + ii )
-222  continue
+    end do
 !
 !
 !---- TRANSFORMEES NORMALES ET MATRICES DE ROTATION AUX NOEUDS
@@ -294,11 +294,11 @@ subroutine forngr(option, nomte)
 !
 !==== BOUCLE SUR LES COUCHES
 !
-    do 600 icou = 1, nbcou
+    do icou = 1, nbcou
 !
 !======= BOUCLE SUR LES POINTS D INTEGRATION SUR L EPAISSEUR
 !
-        do 610 inte = 1, npge
+        do inte = 1, npge
 !
 !---------- POSITION SUR L EPAISSEUR ET POIDS D INTEGRATION
 !
@@ -319,7 +319,7 @@ subroutine forngr(option, nomte)
 !
 !========== 1 ERE BOUCLE SUR POINTS INTEGRATION REDUITE SURFACE MOYENNE
 !
-            do 620 intsr = 1, npgsr
+            do intsr = 1, npgsr
 !
                 call vectgt(0, nb1, zr ( igeom ), ksi3s2, intsr,&
                             zr ( lzr ), epais, vectn, vectg, vectt)
@@ -369,11 +369,11 @@ subroutine forngr(option, nomte)
 !
 !========== FIN 1 ERE BOUCLE NPGSR
 !
-620          continue
+            end do
 !
 !========== BOUCLE SUR POINTS INTEGRATION NORMALE SURFACE MOYENNE
 !
-            do 630 intsn = 1, npgsn
+            do intsn = 1, npgsn
 !
 !
                 call vectgt(1, nb1, zr ( igeom ), ksi3s2, intsn,&
@@ -462,29 +462,29 @@ subroutine forngr(option, nomte)
                     call r8inir(5, 0.d0, sigtmp, 1)
                     call r8inir(51, 0.d0, effint, 1)
 !
-                    do 155 i = 1, 5
+                    do i = 1, 5
                         sigtmp(i)=sigref
                         call btsig(6 * nb1 + 3, 5, zr (lzr - 1 +127 + intsn - 1) * detj * coef,&
                                    b2su, sigtmp, effint)
                         sigtmp(i)=0.d0
-                        do 156 j = 1, 51
+                        do j = 1, 51
                             ftemp(j) = ftemp(j)+abs(effint(j))
-156                      continue
-155                  continue
+                        end do
+                    end do
                 endif
 !
 !========== FIN BOUCLE NPGSN
 !
-630          continue
+            end do
 !
 !
 !-------- FIN BOUCLE NPGE
 !
-610      continue
+        end do
 !
 !---- FIN BOUCLE NBCOU
 !
-600  continue
+    end do
 !
 !      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
 !
@@ -493,10 +493,10 @@ subroutine forngr(option, nomte)
         call daxpy(51, 1.d0/nval, ftemp, 1, zr ( ivectu ),&
                    1)
         do j = 1, 51
-            if (zr ( ivectu + j -1)  .eq. 0.) then
+            if (zr ( ivectu + j -1) .eq. 0.) then
                 kmess(1) = 'COQUE3D'
-                kmess(2) = 'SIGM_REFE' 
-                call utmess('F', 'MECANONLINE5_59', nk=2, valk=kmess) 
+                kmess(2) = 'SIGM_REFE'
+                call utmess('F', 'MECANONLINE5_59', nk=2, valk=kmess)
             endif
         end do
     endif

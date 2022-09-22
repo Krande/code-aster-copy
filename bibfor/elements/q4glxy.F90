@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine q4glxy(hlt2, depf, lambda)
-    implicit  none
+    implicit none
     real(kind=8) :: hlt2(4, 6), depf(12), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE Q4G
 !     ------------------------------------------------------------------
@@ -27,11 +27,11 @@ subroutine q4glxy(hlt2, depf, lambda)
 !     ------------------------------------------------------------------
 !
 !       ---- CALCUL DE LA MATRICE TB -------------------------------
-    do 200 k = 1, 6
-        do 201 j = 1, 12
+    do k = 1, 6
+        do j = 1, 12
             tb(k,j) = 0.d0
-201      continue
-200  end do
+        end do
+    end do
     tb(3,2) = 0.25d0
     tb(3,5) = -0.25d0
     tb(3,8) = 0.25d0
@@ -42,22 +42,22 @@ subroutine q4glxy(hlt2, depf, lambda)
     tb(6,12) = -0.25d0
 !
 !        -------------- BLB = HLT2.TB ---------------------------
-    do 234 i = 1, 4
-        do 236 j = 1, 12
+    do i = 1, 4
+        do j = 1, 12
             blb(i,j) = 0.d0
-            do 238 k = 1, 6
+            do k = 1, 6
                 blb(i,j) = blb(i,j) + hlt2(i,k)*tb(k,j)
-238          continue
-236      continue
-234  end do
+            end do
+        end do
+    end do
 !        -------- LAMBDA = BLB.DEPF -----------------------------
-    do 240 i = 1, 4
+    do i = 1, 4
         lambda(i) = 0.d0
-240  end do
-    do 242 i = 1, 4
-        do 244 j = 1, 12
+    end do
+    do i = 1, 4
+        do j = 1, 12
             lambda(i) = lambda(i) + blb(i,j)*depf(j)
-244      continue
-242  end do
+        end do
+    end do
 !
 end subroutine

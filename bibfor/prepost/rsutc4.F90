@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
                   nbch, acceno)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indk16.h"
 #include "asterfort/jedetr.h"
@@ -29,8 +31,6 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: iocc, dimlis, nbch
     aster_logical :: acceno
@@ -66,9 +66,9 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 !     --- ON REGARDE LA LISTE DES CHAMPS POSSIBLES POUR RESU:
     call jelira(resu2//'.DESC', 'NOMUTI', nbnosy)
     AS_ALLOCATE(vk16=litou, size=nbnosy)
-    do 10 isy = 1, nbnosy
+    do isy = 1, nbnosy
         call jenuno(jexnum(resu2//'.DESC', isy), litou(isy))
- 10 end do
+    end do
 !
     acceno = .false.
 !
@@ -78,23 +78,23 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
         AS_ALLOCATE(vk16=lich, size=n2)
         call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=n2, vect=lich,&
                     nbret=ibid)
-        do 20 k = 1, n2
+        do k = 1, n2
             kk = indk16(litou,lich(k),1,nbnosy)
             if (kk .eq. 0) then
                 call utmess('F', 'PREPOST4_77', sk=lich(k))
             endif
- 20     continue
+        end do
         nbch = n2
-        do 30 k = 1, min(nbch, dimlis)
+        do k = 1, min(nbch, dimlis)
             lisch(k) = lich(k)
- 30     continue
+        end do
         acceno = .true.
 !
     else
         nbch = nbnosy
-        do 40 k = 1, min(nbch, dimlis)
+        do k = 1, min(nbch, dimlis)
             lisch(k) = litou(k)
- 40     continue
+        end do
     endif
 !
     if (nbch .gt. dimlis) nbch = -nbch

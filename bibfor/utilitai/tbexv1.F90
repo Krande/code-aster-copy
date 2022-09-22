@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
                   typval)
     implicit none
@@ -42,7 +42,7 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
 ! OUT : TYPVAL : TYPE JEVEUX DES VALEURS EXTRAITES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,   ipar
+    integer :: iret, nbpara, nblign, ipar
     integer :: i, j, iv, jvale, jvall, kvale
     character(len=1) :: base
     character(len=4) :: type
@@ -83,13 +83,13 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
-    do 10 ipar = 1, nbpara
+    do ipar = 1, nbpara
         jnpar = tblp(1+4*(ipar-1))
         if (inpar .eq. jnpar) goto 12
-10  continue
+    end do
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
-12  continue
+ 12 continue
 !
     type = tblp(1+4*(ipar-1)+1)
     nomjv = tblp(1+4*(ipar-1)+2)
@@ -98,106 +98,114 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
     call jeveuo(nomjv, 'L', jvale)
     call jeveuo(nomjvl, 'L', jvall)
     nbval = 0
-    do 20 i = 1, nblign
+    do i = 1, nblign
         if (zi(jvall+i-1) .eq. 1) nbval = nbval + 1
-20  end do
+    end do
 !
     iv = 0
     if (type(1:1) .eq. 'I') then
         call wkvect(nomobj, base//' V I', nbval, kvale)
-        do 100 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 102 j = 1, iv
+                do j = 1, iv
                     if (zi(kvale+j-1) .eq. zi(jvale+i-1)) goto 100
-102              continue
+                end do
                 iv = iv + 1
                 zi(kvale+iv-1) = zi(jvale+i-1)
             endif
-100      continue
+100         continue
+        end do
 !
     else if (type(1:1) .eq. 'R') then
         call wkvect(nomobj, base//' V R', nbval, kvale)
-        do 200 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 202 j = 1, iv
+                do j = 1, iv
                     if (zr(kvale+j-1) .eq. zr(jvale+i-1)) goto 200
-202              continue
+                end do
                 iv = iv + 1
                 zr(kvale+iv-1) = zr(jvale+i-1)
             endif
-200      continue
+200         continue
+        end do
 !
     else if (type(1:1) .eq. 'C') then
         call wkvect(nomobj, base//' V C', nbval, kvale)
-        do 300 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 302 j = 1, iv
+                do j = 1, iv
                     if (zc(kvale+j-1) .eq. zc(jvale+i-1)) goto 300
-302              continue
+                end do
                 iv = iv + 1
                 zc(kvale+iv-1) = zc(jvale+i-1)
             endif
-300      continue
+300         continue
+        end do
 !
     else if (type(1:3) .eq. 'K80') then
         call wkvect(nomobj, base//' V K80', nbval, kvale)
-        do 400 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 402 j = 1, iv
+                do j = 1, iv
                     if (zk80(kvale+j-1) .eq. zk80(jvale+i-1)) goto 400
-402              continue
+                end do
                 iv = iv + 1
                 zk80(kvale+iv-1) = zk80(jvale+i-1)
             endif
-400      continue
+400         continue
+        end do
 !
     else if (type(1:3) .eq. 'K32') then
         call wkvect(nomobj, base//' V K32', nbval, kvale)
-        do 500 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 502 j = 1, iv
+                do j = 1, iv
                     if (zk32(kvale+j-1) .eq. zk32(jvale+i-1)) goto 500
-502              continue
+                end do
                 iv = iv + 1
                 zk32(kvale+iv-1) = zk32(jvale+i-1)
             endif
-500      continue
+500         continue
+        end do
 !
     else if (type(1:3) .eq. 'K24') then
         call wkvect(nomobj, base//' V K24', nbval, kvale)
-        do 600 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 602 j = 1, iv
+                do j = 1, iv
                     if (zk24(kvale+j-1) .eq. zk24(jvale+i-1)) goto 600
-602              continue
+                end do
                 iv = iv + 1
                 zk24(kvale+iv-1) = zk24(jvale+i-1)
             endif
-600      continue
+600         continue
+        end do
 !
     else if (type(1:3) .eq. 'K16') then
         call wkvect(nomobj, base//' V K16', nbval, kvale)
-        do 700 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 702 j = 1, iv
+                do j = 1, iv
                     if (zk16(kvale+j-1) .eq. zk16(jvale+i-1)) goto 700
-702              continue
+                end do
                 iv = iv + 1
                 zk16(kvale+iv-1) = zk16(jvale+i-1)
             endif
-700      continue
+700         continue
+        end do
 !
     else if (type(1:2) .eq. 'K8') then
         call wkvect(nomobj, base//' V K8', nbval, kvale)
-        do 800 i = 1, nblign
+        do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                do 802 j = 1, iv
+                do j = 1, iv
                     if (zk8(kvale+j-1) .eq. zk8(jvale+i-1)) goto 800
-802              continue
+                end do
                 iv = iv + 1
                 zk8(kvale+iv-1) = zk8(jvale+i-1)
             endif
-800      continue
+800         continue
+        end do
     endif
 !
     typval = type

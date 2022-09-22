@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcjaco(ar, valpro)
     implicit none
 #include "asterf_types.h"
@@ -31,7 +31,7 @@ subroutine rcjaco(ar, valpro)
     real(kind=8) :: aj, bj, ak, bk, rtol, dif, epsa, compa, epsb, compb
     aster_logical :: iconv
     data   nperm, tol, toldyn / 12, 1.d-10, 1.d-2 /
-    
+!
 ! ----------------------------------------------------------------------
 !
 !     ---       INITIALISATION DE LA MATRICE DE MASSE      ---
@@ -42,27 +42,27 @@ subroutine rcjaco(ar, valpro)
     br(4) = 1.d0
     br(5) = 0.d0
     br(6) = 1.d0
-
+!
 ! ----------------------------------------------------------------------
 !
 !     ---       INITIALISATION DES VALEURS PROPRES      ---
 !     --- TERME DIAGONAL RAIDEUR / TERME DIAGONAL MASSE ---
 !
-
+!
     ii = 1
-    do 10 i = 1, 3
+    do i = 1, 3
         if (br(ii) .eq. 0.0d0) then
             call utmess('F', 'ALGELINE4_19')
         endif
         valaux(i) = ar(ii) / br(ii)
         valpro(i) = valaux(i)
         ii = ii + 3 + 1 - i
- 10 end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     ------------------- ALGORITHME DE JACOBI -------------------------
 !     ------------------------------------------------------------------
-
+!
     niter = 0
 !
  30 continue
@@ -71,13 +71,13 @@ subroutine rcjaco(ar, valpro)
     eps = (toldyn**niter)**2
 !
 !     --- BOUCLE SUR LES LIGNES ---
-    do 40 j = 1, 3 - 1
+    do j = 1, 3 - 1
         jp1 = j + 1
         jm1 = j - 1
         ljk = jm1 * 3 - jm1 * j / 2
         jj = ljk + j
 !        ---- BOUCLE SUR LES COLONNES ---
-        do 41 k = jp1, 3
+        do k = jp1, 3
             kp1 = k + 1
             km1 = k - 1
             jk = ljk + k
@@ -111,7 +111,7 @@ subroutine rcjaco(ar, valpro)
             endif
 !           --- TRANSFORMATION DES MATRICES DE RAIDEUR ET DE MASSE ---
             if (jm1-1 .ge. 0) then
-                do 51 i = 1, jm1
+                do i = 1, jm1
                     im1 = i - 1
                     ij = im1 * 3 - im1 * i / 2 + j
                     ik = im1 * 3 - im1 * i / 2 + k
@@ -123,12 +123,12 @@ subroutine rcjaco(ar, valpro)
                     br(ij) = bj + cg * bk
                     ar(ik) = ak + ca * aj
                     br(ik) = bk + ca * bj
- 51             continue
+                end do
             endif
             if (kp1-3 .le. 0) then
                 lji = jm1 * 3 - jm1 * j / 2
                 lki = km1 * 3 - km1 * k / 2
-                do 52 i = kp1, 3
+                do i = kp1, 3
                     ji = lji + i
                     ki = lki + i
                     aj = ar(ji)
@@ -139,11 +139,11 @@ subroutine rcjaco(ar, valpro)
                     br(ji) = bj + cg * bk
                     ar(ki) = ak + ca * aj
                     br(ki) = bk + ca * bj
- 52             continue
+                end do
             endif
             if (jp1-km1 .le. 0) then
                 lji = jm1 * 3 - jm1 * j /2
-                do 53 i = jp1, km1
+                do i = jp1, km1
                     ji = lji + i
                     im1 = i - 1
                     ik = im1 * 3 - im1 * i / 2 + k
@@ -155,7 +155,7 @@ subroutine rcjaco(ar, valpro)
                     br(ji) = bj + cg * bk
                     ar(ik) = ak + ca * aj
                     br(ik) = bk + ca * bj
- 53             continue
+                end do
             endif
             ak = ar(kk)
             bk = br(kk)
@@ -166,42 +166,43 @@ subroutine rcjaco(ar, valpro)
             ar(jk) = 0.0d0
             br(jk) = 0.0d0
 !
- 41     continue
- 40 end do
+ 41         continue
+        end do
+    end do
 !
 !     --- CALCUL DES NOUVELLES VALEURS PROPRES ---
 !
     ii = 1
-    do 60 i = 1, 3
+    do i = 1, 3
         if (br(ii) .eq. 0.0d0) then
             call utmess('F', 'ALGELINE4_19')
         endif
         valpro(i) = ar(ii) / br(ii)
         ii = ii + 3 + 1 - i
- 60 end do
+    end do
 !
 !     --- TEST DE CONVERGENCE SUR LES VALEURS PROPRES ---
 !
     iconv = .true.
-    do 70 i = 1, 3
+    do i = 1, 3
         rtol = tol * valaux(i)
         dif = abs(valpro(i) - valaux(i))
         if (dif .gt. abs(rtol)) then
             iconv = .false.
             goto 9998
         endif
- 70 end do
+    end do
 !
 !     ---    CALCUL DES FACTEURS DE COUPLAGE   ---
 !     --- TEST DE CONVERGENCE SUR CES FACTEURS ---
 !
     eps = tol**2
-    do 80 j = 1, 3 - 1
+    do j = 1, 3 - 1
         jm1 = j - 1
         jp1 = j + 1
         ljk = jm1 * 3 - jm1 * j /2
         jj = ljk + j
-        do 81 k = jp1, 3
+        do k = jp1, 3
             km1 = k - 1
             jk = ljk + k
             kk = km1 * 3 - km1 * k /2 + k
@@ -213,8 +214,8 @@ subroutine rcjaco(ar, valpro)
                 iconv = .false.
                 goto 9998
             endif
- 81     continue
- 80 end do
+        end do
+    end do
 !
 9998 continue
 !
@@ -224,9 +225,9 @@ subroutine rcjaco(ar, valpro)
 !
 !        --- TRANSLATION DES VALEURS PROPRES ---
 !
-        do 82 i = 1, 3
+        do i = 1, 3
             valaux(i) = valpro(i)
- 82     continue
+        end do
 !
 !        --- TEST SUR LE NOMBRE D'ITERATIONS ---
 !

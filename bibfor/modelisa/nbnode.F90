@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -78,7 +78,7 @@ subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
 !
 ! --- ON COMPTE LES NOEUDS DES ZONES
 !
-    do 10 izone = 1, nzocu
+    do izone = 1, nzocu
         tymocl(1) = 'GROUP_MA'
         tymocl(2) = 'MAILLE'
         limocl(1) = 'GROUP_MA'
@@ -95,7 +95,7 @@ subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
         nbno = nbmano+nbnono
         nnocu = nnocu+nbno
         zi(jnp+izone) = zi(jnp+izone-1)+nbno
-10  end do
+    end do
 !
     call jedetr(listmn)
     call jedetr(listnn)

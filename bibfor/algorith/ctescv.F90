@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
                   xer)
     implicit none
@@ -58,20 +58,20 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
 !
 !   Produit scalaire inv(M)*X1*X0
     cprod=dcmplx(0.d0,0.d0)
-    do 10 i = 1, ndim
+    do i = 1, ndim
         call zconju(cvec1(i), prea, pima)
         cconj=dcmplx(prea,-pima)
         cprod=cprod+(cconj*cvec00(i))
-10  end do
+    end do
 !
 !
 !   Produit scalaire inv(M)*X0*X0
     cnorm=dcmplx(0.d0,0.d0)
-    do 15 i = 1, ndim
+    do i = 1, ndim
         call zconju(cvec01(i), prea, pima)
         cconj=dcmplx(prea,-pima)
         cnorm=cnorm+(cconj*cvec00(i))
-15  end do
+    end do
 !
 !    Ancien calcul d'erreur
 !
@@ -105,8 +105,8 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
 !
 !  RECOPIE DU VECTEUR COURANT DANS LE PRECEDENT
 !
-    do 30 i = 1, ndim
+    do i = 1, ndim
         cvec0(i)=cvec1(i)
-30  end do
+    end do
 !
 end subroutine

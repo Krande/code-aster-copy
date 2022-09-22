@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
                   nbtv, codret)
 !_____________________________________________________________________
@@ -179,7 +179,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     if (existc .ne. 1) then
         call as_mfdnfd(idfimd, nchmed, codret)
         call utmess('F+', 'MED_57', sk=nochmd(1:lnochm))
-        do 50 iaux = 1, nchmed
+        do iaux = 1, nchmed
             call as_mfdnfc(idfimd, iaux, nbcmp, codret)
             call wkvect('&&MDCHII.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&MDCHII.UNITCMP', 'V V K16', nbcmp, junit)
@@ -188,7 +188,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
             call utmess('F+', 'MED2_2', sk=nomcha)
             call jedetr('&&MDCHII.NOMCMP_K16')
             call jedetr('&&MDCHII.UNITCMP')
- 50     continue
+        end do
         call utmess('F', 'VIDE_1')
     endif
 !
@@ -236,7 +236,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     if (codret .eq. 0) then
         call wkvect('&&MDCHI2.'//saux08, 'V V I', 2*nbtv, jnptno)
         call wkvect('&&MDCHI3.'//saux08, 'V V R', nbtv, jpasdt)
-        do 60 iaux = 1, nbtv
+        do iaux = 1, nbtv
 !
 ! 4.1. ==> LECTURE
 !    . NUMERO, UNITE ET VALEUR DU PAS DE TEMPS : FINUPT, FIINST
@@ -252,7 +252,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
             zi(jnptno+iaux*2-2) = finupt
             zi(jnptno+iaux*2-1) = finuno
             zr(jpasdt+iaux-1) = fiinst
- 60     continue
+        end do
     else
         call jeveuo('&&MDCHI2.'//saux08, 'L', jnptno)
         call jeveuo('&&MDCHI3.'//saux08, 'L', jpasdt)

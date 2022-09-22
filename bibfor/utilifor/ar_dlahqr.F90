@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED  
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -26,8 +26,8 @@
 ! WHICH STICKS TO LAPACK 2.0 VERSION 
 ! ==============================================================
 subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
-                  h, ldh, wr, wi, iloz,&
-                  ihiz, z, ldz, info)
+                     h, ldh, wr, wi, iloz,&
+                     ihiz, z, ldz, info)
 !
 !     SUBROUTINE LAPACK DE MISE A JOUR DES VALEURS PROPRES ET DE LA
 !     DECOMPOSITION DE SCHUR DEJA CALCULEES PAR DHSEQR.
@@ -218,15 +218,15 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !     SUBMATRIX OF ORDER 1 OR 2 SPLITS OFF AT THE BOTTOM BECAUSE A
 !     SUBDIAGONAL ELEMENT HAS BECOME NEGLIGIBLE.
 !
-    do 130 its = 0, itn
+    do its = 0, itn
 !
 !        LOOK FOR A SINGLE SMALL SUBDIAGONAL ELEMENT.
 !
-        do 20 k = i, l + 1, -1
+        do k = i, l + 1, -1
             tst1 = abs( h( k-1, k-1 ) ) + abs( h( k, k ) )
             if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h( l, l ), ldh, work)
             if (abs( h( k, k-1 ) ) .le. max( ulp*tst1, smlnum )) goto 30
- 20     continue
+        end do
  30     continue
         l = k
         if (l .gt. ilo) then
@@ -268,7 +268,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !
 !        LOOK FOR TWO CONSECUTIVE SMALL SUBDIAGONAL ELEMENTS.
 !
-        do 40 m = i - 2, l, -1
+        do m = i - 2, l, -1
 !
 !           DETERMINE THE EFFECT OF STARTING THE DOUBLE-SHIFT QR
 !           ITERATION AT ROW M, AND SEE IF THIS WOULD MAKE H(M,M-1)
@@ -295,12 +295,12 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
             h10 = h( m, m-1 )
             tst1 = abs( v1 )*( abs( h00 )+abs( h11 )+abs( h22 ) )
             if (abs( h10 )*( abs( v2 )+abs( v3 ) ) .le. ulp*tst1) goto 50
- 40     continue
+        end do
  50     continue
 !
 !        DOUBLE-SHIFT QR STEP
 !
-        do 120 k = m, i - 1
+        do k = m, i - 1
 !
 !           THE FIRST ITERATION OF THIS LOOP DETERMINES A REFLECTION G
 !           FROM THE VECTOR V AND APPLIES IT FROM LEFT AND RIGHT TO H,
@@ -330,68 +330,68 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !              APPLY G FROM THE LEFT TO TRANSFORM THE ROWS OF THE MATRIX
 !              IN COLUMNS K TO I2.
 !
-                do 60 j = k, i2
+                do j = k, i2
                     sum = h( k, j ) + v2*h( k+1, j ) + v3*h( k+2, j )
                     h( k, j ) = h( k, j ) - sum*t1
                     h( k+1, j ) = h( k+1, j ) - sum*t2
                     h( k+2, j ) = h( k+2, j ) - sum*t3
- 60             continue
+                end do
 !
 !              APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF THE
 !              MATRIX IN ROWS I1 TO MIN(K+3,I).
 !
-                do 70 j = i1, min( k+3, i )
+                do j = i1, min( k+3, i )
                     sum = h( j, k ) + v2*h( j, k+1 ) + v3*h( j, k+2 )
                     h( j, k ) = h( j, k ) - sum*t1
                     h( j, k+1 ) = h( j, k+1 ) - sum*t2
                     h( j, k+2 ) = h( j, k+2 ) - sum*t3
- 70             continue
+                end do
 !
                 if (wantz) then
 !
 !                 ACCUMULATE TRANSFORMATIONS IN THE MATRIX Z
 !
-                    do 80 j = iloz, ihiz
+                    do j = iloz, ihiz
                         sum = z( j, k ) + v2*z( j, k+1 ) + v3*z( j, k+ 2 )
                         z( j, k ) = z( j, k ) - sum*t1
                         z( j, k+1 ) = z( j, k+1 ) - sum*t2
                         z( j, k+2 ) = z( j, k+2 ) - sum*t3
- 80                 continue
+                    end do
                 endif
             else if (nr.eq.2) then
 !
 !              APPLY G FROM THE LEFT TO TRANSFORM THE ROWS OF THE MATRIX
 !              IN COLUMNS K TO I2.
 !
-                do 90 j = k, i2
+                do j = k, i2
                     sum = h( k, j ) + v2*h( k+1, j )
                     h( k, j ) = h( k, j ) - sum*t1
                     h( k+1, j ) = h( k+1, j ) - sum*t2
- 90             continue
+                end do
 !
 !              APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF THE
 !              MATRIX IN ROWS I1 TO MIN(K+3,I).
 !
-                do 100 j = i1, i
+                do j = i1, i
                     sum = h( j, k ) + v2*h( j, k+1 )
                     h( j, k ) = h( j, k ) - sum*t1
                     h( j, k+1 ) = h( j, k+1 ) - sum*t2
-100             continue
+                end do
 !
                 if (wantz) then
 !
 !                 ACCUMULATE TRANSFORMATIONS IN THE MATRIX Z
 !
-                    do 110 j = iloz, ihiz
+                    do j = iloz, ihiz
                         sum = z( j, k ) + v2*z( j, k+1 )
                         z( j, k ) = z( j, k ) - sum*t1
                         z( j, k+1 ) = z( j, k+1 ) - sum*t2
-110                 continue
+                    end do
                 endif
             endif
-120     continue
+        end do
 !
-130 end do
+    end do
 !
 !     FAILURE TO CONVERGE IN REMAINING NUMBER OF ITERATIONS
 !
@@ -414,7 +414,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !        AND COMPUTE AND STORE THE EIGENVALUES.
 !
         call ar_dlanv2(h( i-1, i-1 ), h( i-1, i ), h( i, i-1 ), h( i, i ), wr( i-1 ),&
-                    wi( i-1 ), wr( i ), wi( i ), cs, sn)
+                       wi( i-1 ), wr( i ), wi( i ), cs, sn)
 !
         if (wantt) then
 !

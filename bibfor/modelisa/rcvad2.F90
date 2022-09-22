@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
                   phenom, nbres, nomres, valres, devres,&
                   icodre)
@@ -68,34 +68,34 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
     ASSERT(nbmat.eq.1)
     imat = jmat+zi(jmat+nbmat+1)
 !
-    do 30 ires = 1, nbres
+    do ires = 1, nbres
         icodre(ires) = 1
-30  end do
+    end do
 !
-    do 40 icomp = 1, zi(imat+1)
+    do icomp = 1, zi(imat+1)
         if (phen .eq. zk32(zi(imat)+icomp-1)(1:10)) then
             ipi = zi(imat+2+icomp-1)
             goto 888
         endif
-40  end do
+    end do
     call utmess('F', 'ELEMENTS2_63')
     goto 999
-888  continue
+888 continue
 !
     nbobj = 0
     nbr = zi(ipi)
     ivalk = zi(ipi+3)
     ivalr = zi(ipi+4)
-    do 150 ir = 1, nbr
-        do 140 ires = 1, nbres
+    do ir = 1, nbr
+        do ires = 1, nbres
             if (nomres(ires) .eq. zk16(ivalk+ir-1)) then
                 valres(ires) = zr(ivalr-1+ir)
                 devres(ires) = 0.d0
                 icodre(ires) = 0
                 nbobj = nbobj + 1
             endif
-140      continue
-150  end do
+        end do
+    end do
 !
     if (nbobj .ne. nbres) then
         idf = zi(ipi)+zi(ipi+1)
@@ -103,28 +103,28 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
         call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                     ksp, temp, iret)
         if (iret .eq. 0) then
-            do 170 ires = 1, nbres
-                do 160 ik = 1, nbf
+            do ires = 1, nbres
+                do ik = 1, nbf
                     if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                         ifon = ipi+lmat-1+lfct*(ik-1)
                         call rcfode(ifon, temp, valres(ires), devres( ires))
                         icodre(ires) = 0
                     endif
-160              continue
-170          continue
+                end do
+            end do
         else
-            do 180 ires = 1, nbres
-                do 190 ik = 1, nbf
+            do ires = 1, nbres
+                do ik = 1, nbf
                     if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                         ifon = ipi+lmat-1+lfct*(ik-1)
                         call rcfode(ifon, 0.d0, valres(ires), devres( ires))
                         icodre(ires) = 0
                     endif
-190              continue
-180          continue
+                end do
+            end do
         endif
     endif
 !
-999  continue
+999 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

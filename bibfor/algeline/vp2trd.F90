@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vp2trd(type, nbvect, alpha, beta, signes,&
                   vecpro, mxiter, nitqr)
     implicit none
@@ -71,9 +71,9 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
     call jemarq()
     if (type .eq. 'G') then
         symet = signes(1)
-        do 10 ivec = 2, nbvect
+        do ivec = 2, nbvect
             symet = min( signes(ivec),symet )
-10      continue
+        end do
     else
         symet = - 1.d0
     endif
@@ -83,9 +83,9 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
 !        --- CAS OU LA TRIDIAGONALE EST SYMETRIQUE ---
         call vpqlts(alpha, beta, nbvect, vecpro, nbvect,&
                     mxiter, ier, nitqr)
-        do 15 ivect = 1, nbvect
+        do ivect = 1, nbvect
             beta(ivect) = 0.0d0
-15      continue
+        end do
 !
     else
 !
@@ -124,14 +124,14 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
 !
 !     --- PASSAGE AUX VALEURS PROPRES DU SYSTEME INITIAL ---
     if (type .eq. 'G') then
-        do 30 ivect = 1, nbvect
+        do ivect = 1, nbvect
             if (alpha(ivect) .eq. 0.0d0) then
                 call utmess('A', 'ALGELINE3_56')
                 alpha(ivect) = 1.d+70
             else
                 alpha(ivect) = 1.d0 / alpha(ivect)
             endif
-30      continue
+        end do
 !        --- TRI DES ELEMENTS PROPRES PAR ORDRE CROISSANT DES VALEURS
 !            ABSOLUES DES VALEURS PROPRES
         call vpordo(1, 0, nbvect, alpha, vecpro,&

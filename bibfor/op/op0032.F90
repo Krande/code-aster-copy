@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0032()
     implicit none
 !     EIGENVALUE-COUNTING METHODS FOR GEP OR QEP
@@ -286,13 +286,13 @@ subroutine op0032()
         if (l .ne. nbmod) then
             ASSERT(.false.)
         endif
-        do 10 k = 1, nbmod-1
+        do k = 1, nbmod-1
             zi(jstu+k-1)=izero
             zr(jlmoe+k-1)=rzero
             if (zr(jlmod+k) .le. zr(jlmod+k-1)) then
                 ASSERT(.false.)
             endif
- 10     continue
+        end do
         zr(jlmoe+nbmod-1)=rzero
 !
     else if (typmod(1:13).eq.'MODE_COMPLEXE') then
@@ -321,7 +321,7 @@ subroutine op0032()
             if (l .ne. nbmod) then
                 ASSERT(.false.)
             endif
-            
+!
             do k = 1, nbmod-1
                 zi(jstu+k-1)=izero
                 zr(jlmoe+k-1)=rzero
@@ -392,12 +392,12 @@ subroutine op0032()
 !
 !      --- INFO_MODE PARALLELE: INCOMPATIBILITES FONCTIONNELLES ET
 !      --- DESEQUILIBRAGE DE CHARGE POTENTIEL.
-   if ((typpar(1:7).eq.'PARTIEL') .and. (metres(1:5).ne.'MUMPS') .and. (nbproc.gt.1)) then
-       vali(1)=nbproc
-       valk(1)=metres
-       call utmess('F', 'MODAL_14', sk=valk(1), si=vali(1))
-   endif
-   if (lcoinf) then
+    if ((typpar(1:7).eq.'PARTIEL') .and. (metres(1:5).ne.'MUMPS') .and. (nbproc.gt.1)) then
+        vali(1)=nbproc
+        valk(1)=metres
+        call utmess('F', 'MODAL_14', sk=valk(1), si=vali(1))
+    endif
+    if (lcoinf) then
         if ((nbproc.lt.(nbmod-1)) .or.&
             ((nbproc.gt.(nbmod-1)).and.( metres(1:5).ne.'MUMPS'))) then
             vali(1)=nbproc
@@ -498,12 +498,12 @@ subroutine op0032()
                 l2=nbproc-l1*nbrow
                 l21=l2+1
                 l3=l11*l2
-                do 40 k = 1, l2
+                do k = 1, l2
                     call vecint(l11, k, zi(jkpar+(k-1)*l11))
- 40             continue
-                do 41 k = l21, nbrow
+                end do
+                do k = l21, nbrow
                     call vecint(l1, k, zi(jkpar+l3+(k-l21)*l1))
- 41             continue
+                end do
             else if (typeco.eq.2) then
                 if (nbrow .ne. 1) then
                     ASSERT(.false.)
@@ -520,12 +520,12 @@ subroutine op0032()
                 endif
             endif
 !         --- ULTIME VERIF VECTEUR COULEUR
-            do 42 k = 1, nbproc
+            do k = 1, nbproc
                 l1=zi(jkpar+k-1)
                 if ((l1.lt.0) .or. (l1.gt.nbrow)) then
                     ASSERT(.false.)
                 endif
- 42         continue
+            end do
 !
 !         --- FREQUENCE COURANTE CAD FREQ A TRAITER PAR LE PROC COURANT
             frecou=zi(jkpar+rang)
@@ -601,7 +601,7 @@ subroutine op0032()
             ASSERT(.false.)
         endif
         if (lfirst) then
-        
+!
             call vpfopr(kopt1, typmod, lmasse, lraide, ldynam,&
                         omin, omax, rbid, zi(jstu), npivot,&
                         omecor, precsh, nbrss, nblagr, solveu,&
@@ -615,7 +615,7 @@ subroutine op0032()
                 zr(jlmoe+1)=-omin
             endif
         endif
-        do 20 k = k1, k2
+        do k = k1, k2
 !        --- STEP K: BANDE NUMBER K
             if (ldyna) then
                 omin=omega2(zr(jlmod+k-1))
@@ -624,26 +624,26 @@ subroutine op0032()
                 omin=-zr(jlmod+k)
                 omax=-zr(jlmod+k-1)
             endif
-            
-            if (koptn.eq.'STURMLNS' .or. koptn.eq.'STURMLNQ') then
+!
+            if (koptn .eq. 'STURMLNS' .or. koptn .eq. 'STURMLNQ') then
                 npivot(2)=npivot(1)
                 npivot(1)=k
             else
                 npivot(1)=npivot(2)
                 npivot(2)=k
             endif
-            
+!
             call vpfopr(koptn, typmod, lmasse, lraide, ldynam,&
                         omin, omax, rbid, zi(jstu+k-1), npivot,&
                         omecor, precsh, nbrss, nblagr, solveu,&
                         det, idet)
-            
+!
             if (ldyna) then
                 zr(jlmoe+k)=freqom(omax)
             else
                 zr(jlmoe+k)=-omin
             endif
- 20     continue
+        end do
 !
 !     ------------------------------------------------------------------
 !     ------- INFO_MODE // SEUL
@@ -688,7 +688,7 @@ subroutine op0032()
         nbev0=0
         nbev1=0
         nbev2=0
-        do 30 ii = 1, niterc
+        do ii = 1, niterc
             if (ii .eq. 1) then
                 if (impr .eq. 'NON') call apm345(nbtet0, typcon, rayonc, centrc, nk,&
                                                  k24rc, nbev0, ltest, typcha, lraide,&
@@ -734,7 +734,7 @@ subroutine op0032()
                 write(ifm,4020)
                 ASSERT(.false.)
             endif
- 30     continue
+        end do
  31     continue
 !
         if (pivot2 .lt. 0) then
@@ -820,7 +820,7 @@ subroutine op0032()
 !     --- NUMERICAL VALUES OF THE OTHERS ROWS ---
 !
     if (typmod(1:9) .eq. 'DYNAMIQUE') then
-        do 50 k = 1, nbrow
+        do k = 1, nbrow
             call tbajli(table, 1, nmparn, zi(jstu+k-1), [rbid],&
                         [cbid], kbid, 0)
             calpar(1)=zr(jlmod+k-1)
@@ -831,7 +831,7 @@ subroutine op0032()
             calpar(2)=zr(jlmoe+k)
             call tbajli(table, 2, nmparm, [ibid], calpar,&
                         [cbid], kbid, k)
- 50     continue
+        end do
 !
     else if (typmod(1:13).eq.'MODE_COMPLEXE') then
         call tbajli(table, 1, nmparn, [nbfreq], [rbid],&
@@ -840,7 +840,7 @@ subroutine op0032()
                     [cbid], kbid, 1)
 !
     else if (typmod(1:10).eq.'MODE_FLAMB') then
-        do 55 k = 1, nbrow
+        do k = 1, nbrow
             call tbajli(table, 1, nmparn, zi(jstu+k-1), [rbid],&
                         [cbid], kbid, 0)
             calpaf(1)=zr(jlmod+k-1)
@@ -851,7 +851,7 @@ subroutine op0032()
             calpaf(2)=zr(jlmoe+k)
             call tbajli(table, 2, nmparm, [ibid], calpaf,&
                         [cbid], kbid, k)
- 55     continue
+        end do
 !
     else
         ASSERT(.false.)

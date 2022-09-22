@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
 !
 !......................................................................C
@@ -33,7 +33,7 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
 !......................................................................C
 !......................................................................C
 !
-    implicit     none
+    implicit none
     integer :: npgxyz(3)
     real(kind=8) :: xpg(1), ypg(1), zpg(1), hpg(1)
 !----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
     real(kind=8) :: a(4), h(4), coord(3, 4), hpgxyz(3, 4)
 !----------------------------------------------------------------------
 !
-    do 10 i = 1, 3
+    do i = 1, 3
 !
         if (npgxyz(i) .eq. 2) then
 !
@@ -75,21 +75,23 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
 !
         endif
 !
-        do 20 j = 1, npari
+        do j = 1, npari
             coord(i,j) = a(j)
             hpgxyz(i,j) = h(j)
-20      continue
-10  end do
+        end do
+    end do
     npi = 0
-    do 30 i = 1, npgxyz(1)
-        do 30 j = 1, npgxyz(2)
-            do 30 k = 1, npgxyz(3)
+    do i = 1, npgxyz(1)
+        do j = 1, npgxyz(2)
+            do k = 1, npgxyz(3)
                 npi = npi + 1
                 xpg( npi ) = coord(1,i)
                 ypg( npi ) = coord(2,j)
                 zpg( npi ) = coord(3,k)
                 hpg( npi ) = hpgxyz(1,i)*hpgxyz(2,j)*hpgxyz(3,k)
-30          continue
+            end do
+        end do
+    end do
 !
 !------------------------------------------------------------
 end subroutine

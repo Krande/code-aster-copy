@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
                   ivf, idfde, xyz, nharm, sigma,&
                   bsigma)
@@ -61,14 +61,14 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
     zero = 0.0d0
     nbinco = ndim*nno
 !
-    do 10 i = 1, nbinco
+    do i = 1, nbinco
         bsigma(i) = zero
-10  end do
+    end do
 !
 ! --- CALCUL DE SOMME_ELEMENT(BT_SIGMA) :
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
@@ -81,7 +81,7 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
 !          ---------------------------------------------
         call btsig(nbinco, nbsig, jacgau, b, sigma(1+nbsig*(igau-1)),&
                    bsigma)
-20  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

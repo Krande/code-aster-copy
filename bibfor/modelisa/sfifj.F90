@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sfifj(nomres)
     implicit none
 !     CALCUL DE LA FONCTION ACCEPTANCE
@@ -29,6 +29,8 @@ subroutine sfifj(nomres)
 #include "asterfort/accep1.h"
 #include "asterfort/accep2.h"
 #include "asterfort/accept.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dspprs.h"
 #include "asterfort/evalis.h"
@@ -49,8 +51,6 @@ subroutine sfifj(nomres)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
     integer :: npoin, iff, lvale, ibid, in
@@ -232,11 +232,11 @@ subroutine sfifj(nomres)
         vecz(1)=vecx(1+1)*vecy(1+2)-vecy(1+1)*vecx(1+2)
         vecz(1+1)=vecx(1+2)*vecy(1)-vecy(1+2)*vecx(1)
         vecz(1+2)=vecx(1)*vecy(1+1)-vecy(1)*vecx(1+1)
-        do 2 in = 1, 3
+        do in = 1, 3
             dir(1,in)=vecx(in)
             dir(2,in)=vecy(in)
             dir(3,in)=vecz(in)
-  2     continue
+        end do
     else if (method(1:7).eq.'AU_YANG') then
         yang = .true.
         call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
@@ -276,26 +276,26 @@ subroutine sfifj(nomres)
     chfreq = nomres//'.DISC'
     call wkvect(chfreq, 'G V R', nbpoin, lfreq)
 !
-    do 310 iff = 0, nbpoin-1
+    do iff = 0, nbpoin-1
         f=finit+iff*df
         zr(lfreq+iff) = f
-310 end do
+    end do
 !
 !  POUR LE CAS SPEC_CORR_CONV_3
     if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
 ! TABLE CONTENANT LES FONCTIONS DE FORME
         is=vate(2)
-        do 320 iff = 0, nbpoin-1
+        do iff = 0, nbpoin-1
             f=finit+iff*df
             zr(lfreq+iff) = f
             call evalis(is, pg, phi, sphi, f,&
                         iff, nomres)
-320     continue
+        end do
     else
         ij = 0
-        do 220 im2 = 1, nbm
+        do im2 = 1, nbm
 !
-            do 210 im1 = im2, nbm
+            do im1 = im2, nbm
                 ij = ij + 1
 !
                 zi(lnumi-1+ij) = im1
@@ -316,7 +316,7 @@ subroutine sfifj(nomres)
 ! IE VALEURS DES INTERSPECTRS
 !
                 ier = 0
-                do 201 iff = 0, nbpoin-1
+                do iff = 0, nbpoin-1
                     f=finit+iff*df
                     if (f .gt. fcoup) then
                         prs = 0.d0
@@ -339,11 +339,11 @@ subroutine sfifj(nomres)
                         zr(lvale+2*iff)=prs*jc
                         zr(lvale+2*iff+1)=0.d0
                     endif
-201             continue
+                end do
 !
-210         continue
+            end do
 !
-220     end do
+        end do
 !
     endif
 !

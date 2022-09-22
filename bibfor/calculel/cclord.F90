@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                   minord, maxord, resuin, resuou, lisout)
     implicit none
 !     --- ARGUMENTS ---
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
+!
     aster_logical :: optdem
     integer :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
@@ -105,7 +105,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
         call jeveuo(noliin, 'E', jlnoin)
         curmax = maxord
         curmin = minord
-        do 10 iter = inddeb, indfin
+        do iter = inddeb, indfin
             call jeveuo(zk24(jlnoin+iter-1), 'L', jordo2)
 !
             if (zk8(jlidep+iter-1) .eq. 'NP1') then
@@ -120,10 +120,10 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
 !         ELLE EST DONC CROISSANTE
             curmax = min(curmax,zi(jordo2+2)+decal)
             curmin = max(curmin,zi(jordo2+1)+decal)
- 10     continue
+        end do
 !
         nopous = 0
-        do 30 iordr = 1, nbordr
+        do iordr = 1, nbordr
             numord = zi(jordr-1+iordr)
             if ((isodep.eq.'-') .and. (numord.eq.minord)) then
                 goto 30
@@ -148,7 +148,8 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                     zi(jordop+nopous+2) = numord
                 endif
             endif
- 30     continue
+ 30         continue
+        end do
 !
  40     continue
         zi(jordop+1) = curmin
@@ -159,7 +160,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
 !               DES NUMEROS D'ORDRE EN VERIFIANT QUE L'OPTION
 !               N'EXISTE NI DANS RESUIN NI DANS RESUOU
         nopous = 0
-        do 20 iordr = 1, nbordr
+        do iordr = 1, nbordr
             numord = zi(jordr-1+iordr)
             if ((isodep.eq.'-') .and. (numord.eq.minord)) then
                 goto 20
@@ -181,7 +182,8 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                 nopous = nopous+1
                 zi(jordop+nopous+2) = numord
             endif
- 20     continue
+ 20         continue
+        end do
         zi(jordop+1) = zi(jordr-1+1)
         zi(jordop+2) = zi(jordr-1+nbordr)
         zi(jordop) = nopous

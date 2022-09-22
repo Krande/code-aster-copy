@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0149()
     implicit none
 !
@@ -180,32 +180,32 @@ subroutine op0149()
 !         EFFECTIVEMENT A DES MODES NON COUPLES ET ON NOTE LE CAS
 !         ECHEANT LES VALEURS D'AMORTISSEMENTS FOURNIES EN REGARD
 !
-            do 10 i = 1, nbnuo1
+            do i = 1, nbnuo1
                 nocopl = .true.
                 numok = .false.
                 numode = zi(inuo1+i-1)
-                do 11 j = 1, nbmfl
+                do j = 1, nbmfl
                     if (zi(inumo+j-1) .eq. numode) then
                         nocopl = .false.
                         goto 12
                     endif
- 11             continue
+                end do
  12             continue
-                do 13 k = 1, nbmode
+                do k = 1, nbmode
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
                                 0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
                         goto 14
                     endif
- 13             continue
+                end do
  14             continue
                 if (nocopl .and. numok) then
                     nbnuo2 = nbnuo2 + 1
                     zi(inuo2+nbnuo2-1) = numode
                     if (lamor) zr(iamo2+nbnuo2-1) = zr(iamo1+i-1)
                 endif
- 10         continue
+            end do
 !
 !---------CONSTITUTION DES LISTES
 !
@@ -215,26 +215,26 @@ subroutine op0149()
                 nbnuor = nbnuo2 + nbmfl
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
-                do 20 i = 1, nbnuo2
+                do i = 1, nbnuo2
                     zi(inuor+i-1) = zi(inuo2+i-1)
                     if (lamor) then
                         zr(iamor+i-1) = zr(iamo2+i-1)
                     else if (lamoru) then
                         zr(iamor+i-1) = amorun
                     endif
- 20             continue
-                do 21 i = nbnuo2+1, nbnuor
+                end do
+                do i = nbnuo2+1, nbnuor
                     zi(inuor+i-1) = zi(inumo+i-nbnuo2-1)
- 21             continue
-                do 22 i = 1, nbnuor-1
+                end do
+                do i = 1, nbnuor-1
                     nuomin = zi(inuor+i-1)
                     imin = i
-                    do 23 j = i+1, nbnuor
+                    do j = i+1, nbnuor
                         if (zi(inuor+j-1) .lt. nuomin) then
                             nuomin = zi(inuor+j-1)
                             imin = j
                         endif
- 23                 continue
+                    end do
                     zi(inuor+imin-1) = zi(inuor+i-1)
                     zi(inuor+i-1) = nuomin
                     if (lamor .or. lamoru) then
@@ -242,7 +242,7 @@ subroutine op0149()
                         zr(iamor+imin-1) = zr(iamor+i-1)
                         zr(iamor+i-1) = rtamp
                     endif
- 22             continue
+                end do
             endif
 !
 !-------3.1.2.SINON
@@ -255,21 +255,21 @@ subroutine op0149()
                 nbnuor = nbmode
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
-                do 30 i = 1, nbnuor
+                do i = 1, nbnuor
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
                                 0, sjv=jpara, styp=kbid)
                     zi(inuor+i-1) = zi(jpara)
- 30             continue
+                end do
                 idec = 0
-                do 31 i = 1, nbnuor
+                do i = 1, nbnuor
                     nocopl = .true.
                     numode = zi(inuor+i-1)
-                    do 32 j = 1, nbmfl
+                    do j = 1, nbmfl
                         if (zi(inumo+j-1) .eq. numode) then
                             nocopl = .false.
                             goto 33
                         endif
- 32                 continue
+                    end do
  33                 continue
                     if (nocopl) then
                         if (lamor) then
@@ -279,7 +279,7 @@ subroutine op0149()
                             zr(iamor+i-1) = amorun
                         endif
                     endif
- 31             continue
+                end do
 !
 !---------SINON, SEULS LES MODES COUPLES SONT RETENUS
 !
@@ -287,9 +287,9 @@ subroutine op0149()
                 nbnuor = nbmfl
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
-                do 40 i = 1, nbmfl
+                do i = 1, nbmfl
                     zi(inuor+i-1) = zi(inumo+i-1)
- 40             continue
+                end do
             endif
 !
         endif
@@ -302,48 +302,48 @@ subroutine op0149()
         nbnuor = nbmode
         call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
         call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
-        do 50 i = 1, nbnuor
+        do i = 1, nbnuor
             call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
                         0, sjv=jpara, styp=kbid)
             zi(inuor+i-1) = zi(jpara)
- 50     continue
+        end do
         if ((lnuor.and.lamor) .or. (lnuor.and.lamoru)) then
-            do 51 i = 1, nbnuo1
+            do i = 1, nbnuo1
                 nocopl = .true.
                 numok = .false.
                 numode = zi(inuo1+i-1)
-                do 52 j = 1, nbmfl
+                do j = 1, nbmfl
                     if (zi(inumo+j-1) .eq. numode) then
                         nocopl = .false.
                         goto 53
                     endif
- 52             continue
+                end do
  53             continue
-                do 54 k = 1, nbmode
+                do k = 1, nbmode
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
                                 0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
                         goto 55
                     endif
- 54             continue
+                end do
  55             continue
                 if (nocopl .and. numok) then
                     if (lamor) zr(iamor+numode-1) = zr(iamo1+i-1)
                     if (lamoru) zr(iamor+numode-1) = amorun
                 endif
- 51         continue
+            end do
         else if (lamor .or. lamoru) then
             idec = 0
-            do 56 i = 1, nbnuor
+            do i = 1, nbnuor
                 nocopl = .true.
                 numode = zi(inuor+i-1)
-                do 57 j = 1, nbmfl
+                do j = 1, nbmfl
                     if (zi(inumo+j-1) .eq. numode) then
                         nocopl = .false.
                         goto 58
                     endif
- 57             continue
+                end do
  58             continue
                 if (nocopl) then
                     if (lamor) then
@@ -353,7 +353,7 @@ subroutine op0149()
                         zr(iamor+i-1) = amorun
                     endif
                 endif
- 56         continue
+            end do
         endif
 !
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0403(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -57,16 +57,16 @@ subroutine te0403(option, nomte)
     call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&
                 vectn, vectt)
 !
-    do 5 ib = 1, nb2
-        do 6 i = 1, 2
-            do 7 j = 1, 3
+    do ib = 1, nb2
+        do i = 1, 2
+            do j = 1, 3
                 vectpt(ib,i,j)=vectt(ib,i,j)
- 7          end do
- 6      end do
+            end do
+        end do
         vectpt(ib,3,1)=vectn(ib,1)
         vectpt(ib,3,2)=vectn(ib,2)
         vectpt(ib,3,3)=vectn(ib,3)
- 5  end do
+    end do
 !
 !
     if (option .eq. 'CHAR_MECA_FRCO3D' .or. option .eq. 'CHAR_MECA_FFCO3D') then
@@ -90,14 +90,14 @@ subroutine te0403(option, nomte)
 !
     else if (option.eq.'CHAR_MECA_PRES_F') then
         call jevech('PPRESSF', 'L', jpres)
-        if (zk8(jpres) .eq. '&FOZERO') goto 9999
+        if (zk8(jpres) .eq. '&FOZERO') goto 999
         call jevech('PTEMPSR', 'L', itemps)
         valpar(4) = zr(itemps)
         nompar(4) = 'INST'
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        do 222 j = 0, nb1-1
+        do j = 0, nb1-1
             valpar(1) = zr(jgeom+3*j )
             valpar(2) = zr(jgeom+3*j+1)
             valpar(3) = zr(jgeom+3*j+2)
@@ -109,11 +109,11 @@ subroutine te0403(option, nomte)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
             endif
-222      continue
-        goto 9999
+        end do
+        goto 999
     endif
 !
     call trnflg(nb2, vectpt, vecl, zr(jvecg))
 !
-9999  continue
+999 continue
 end subroutine

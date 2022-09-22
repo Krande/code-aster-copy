@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismct(questi, nomobz, repi, repkz, ierd)
     implicit none
 !     --     DISMOI(CATALOGUE)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
@@ -64,10 +64,10 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'NB_NO_MAX') then
         repi=0
-        do 1, ityma=1,nbtyma
-        call jeveuo(jexnum('&CATA.TM.NBNO', ityma), 'L', ianbno)
-        repi=max(repi,zi(ianbno))
- 1      continue
+        do ityma = 1, nbtyma
+            call jeveuo(jexnum('&CATA.TM.NBNO', ityma), 'L', ianbno)
+            repi=max(repi,zi(ianbno))
+        end do
 !
     else
         ierd=1

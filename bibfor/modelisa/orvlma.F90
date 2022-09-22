@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine orvlma(noma, listma, nbmail, norien, vect,&
                   noeud)
     implicit none
@@ -106,7 +106,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !     -----------------------------------
     dime1 = .false.
     dime2 = .false.
-    do 10 ima = 1, nbmail
+    do ima = 1, nbmail
         zi(lori-1+ima) = 0
         numa = listma(ima)
         zi(nori-1+ima) = zi(p2+numa)-zi(p2-1+numa)
@@ -133,7 +133,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
         endif
- 10 end do
+    end do
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
@@ -152,7 +152,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
     norieg = 0
 !
     nbmaor = 0
-    do 20 ima = 1, nbmail
+    do ima = 1, nbmail
         numa = listma(ima)
         nbnmai = zi(nori-1+ima)
         jdesm1 = zi(kori-1+ima)
@@ -188,12 +188,12 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
             endif
         endif
 !
- 20 end do
+    end do
     if (nbmaor .eq. 0) then
         call utmess('F', 'MODELISA6_1')
     endif
 !
-    do 300 ii = 1, nbmaor
+    do ii = 1, nbmaor
         lliste = 0
         iliste = 0
         zi(jori+lliste) = zi(kdeb+ii-1)
@@ -206,7 +206,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
         jdesm1 = zi(kori-1+im1)
 ! --- ON ESSAYE D'ORIENTER LES MAILLES VOISINES
         nbmavo = zi(p4+im1)-zi(p4-1+im1)
-        do 210 im3 = 1, nbmavo
+        do im3 = 1, nbmavo
             indi = zi(p3+zi(p4+im1-1)-1+im3-1)
             im2 = indiis ( listma, indi, 1, nbmail )
             if (im2 .eq. 0) goto 210
@@ -238,18 +238,19 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
                 if (ico .lt. 0) norieg = norieg + 1
 !
             endif
-210     end do
+210         continue
+        end do
         iliste = iliste + 1
         if (iliste .le. lliste) goto 200
-300 end do
+    end do
 !
 ! --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
 !
-    do 100 ima = 1, nbmail
+    do ima = 1, nbmail
         if (pasori(ima)) then
             call utmess('F', 'MODELISA6_2')
         endif
-100 end do
+    end do
 !
     norien = norien + norieg
 !

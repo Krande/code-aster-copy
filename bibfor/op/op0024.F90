@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine op0024()
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -80,12 +80,12 @@ subroutine op0024()
         call wkvect(resu//'.VALE', 'G V R', nbvale, jval)
         call wkvect('&&OP0024.VALE', 'V V R', nbvale, kval)
         call getvr8(' ', 'VALE', nbval=nbvale, vect=zr(kval), nbret=nv)
-        do 10 i = 1, nbvale - 1
+        do i = 1, nbvale - 1
             zr(jpas+i-1) = zr(kval+i) - zr(kval+i-1)
             zi(jnbp+i-1) = 1
             zr(jbor+i-1) = zr(kval+i-1)
             zr(jval+i-1) = zr(kval+i-1)
-10      continue
+        end do
         zr(jbor+nbvale-1) = zr(kval+nbvale-1)
         zr(jval+nbvale-1) = zr(kval+nbvale-1)
 !
@@ -101,7 +101,7 @@ subroutine op0024()
 !          QU'IL FAUDRA CREER DU FAIT DES ARRONDIS (MOT CLE PAS)
 !       ---------------------------------------------------------
         nsup = 0
-        do 20 iocc = 1, nbocc
+        do iocc = 1, nbocc
             call getvr8('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=fin, nbret=n1)
             call getvr8('INTERVALLE', 'PAS', iocc=iocc, scal=pas, nbret=np)
             if (np .eq. 1) then
@@ -125,7 +125,7 @@ subroutine op0024()
                 if (abs((derpas-pas)/pas) .gt. toler) nsup = nsup + 1
             endif
             debut = fin
-20      continue
+        end do
 !
 !
 !
@@ -137,7 +137,7 @@ subroutine op0024()
         zr(jbor-1+1) = debut
         nbval = 1
         iinter = 0
-        do 30 iocc = 1, nbocc
+        do iocc = 1, nbocc
             iinter = iinter + 1
             call getvr8('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=fin, nbret=n1)
 !
@@ -148,7 +148,7 @@ subroutine op0024()
                 nbpas = nint(xxx/pas)
 !
                 derpas = fin - (debut+ (nbpas-1)*pas)
-
+!
                 if (abs((derpas-pas)/pas) .gt. toler) then
                     if ((debut+nbpas*pas) .gt. fin) nbpas = nbpas - 1
                     zi(jnbp-1+iinter) = nbpas
@@ -187,7 +187,7 @@ subroutine op0024()
                 nbval = nbval + nbpas
             endif
             debut = fin
-30      continue
+        end do
 !
 !
 !       -- CREATION DE L'OBJET .VALE :
@@ -195,19 +195,19 @@ subroutine op0024()
         call wkvect(resu//'.VALE', 'G V R', nbval, jval)
         zr(jval) = zr(jbor)
         ico = 0
-        do 50 i = 1, nbocc + nsup
+        do i = 1, nbocc + nsup
             xpdt = zr(jpas-1+i)
-
-            do 40 j = 1, zi(jnbp-1+i) - 1
-            
+!
+            do j = 1, zi(jnbp-1+i) - 1
+!
                 ico = ico + 1
                 newval = zr(jval+ico-1) + xpdt
                 if (abs(newval) .le. r8prem()) newval = 0.d0
                 zr(jval+ico) = newval
-40          continue
+            end do
             ico = ico + 1
             zr(jval+ico) = zr(jbor+i)
-50      continue
+        end do
     endif
 !
 !

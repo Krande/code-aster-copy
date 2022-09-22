@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0073(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          OPTION : 'CHAR_THER_TEXT_F/R'
@@ -29,7 +29,6 @@ subroutine te0073(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/connec.h"
@@ -40,6 +39,7 @@ subroutine te0073(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
     integer :: nbres
     parameter (nbres=3)
@@ -104,9 +104,9 @@ subroutine te0073(option, nomte)
 !====
     theta = zr(itemps+2)
     call connec(nomte, nse, nnop2, c)
-    do 10 i = 1, nnop2
+    do i = 1, nnop2
         vectt(i) = 0.d0
- 10 end do
+    end do
     nompar(1) = 'X'
     nompar(2) = 'Y'
     nompar(3) = 'INST'
@@ -117,33 +117,33 @@ subroutine te0073(option, nomte)
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-    do 160 ise = 1, nse
+    do ise = 1, nse
 !
-        do 30 i = 1, nno
-            do 20 j = 1, 2
+        do i = 1, nno
+            do j = 1, 2
                 coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
- 20         continue
- 30     continue
+            end do
+        end do
 !
-        do 150 kp = 1, npg
+        do kp = 1, npg
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         coorse, nx, ny, poids)
             r = 0.d0
             z = 0.d0
             tpg = 0.d0
             if (itemp .ne. 0) then
-                do 40 i = 1, nno
+                do i = 1, nno
 ! CALCUL DE T-
                     l = (kp-1)*nno + i
                     tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
- 40             continue
+                end do
             endif
 !
-            do 50 i = 1, nno
+            do i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
                 z = z + coorse(2* (i-1)+2)*zr(ivf+l-1)
- 50         continue
+            end do
             if (laxi) poids = poids*r
             valpar(1) = r
             valpar(2) = z
@@ -178,13 +178,13 @@ subroutine te0073(option, nomte)
                 else
                     texn = 0.d0
                 endif
-                do 80 i = 1, nno
+                do i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     vectt(c(ise,i)) = vectt(&
                                       c(ise,i)) + poids*zr(li)* (theta*coenp1*texnp1+ (1.0d0-thet&
                                       &a)*coen* (texn- tpg)&
                                       )
- 80             continue
+                end do
 !====
 ! 2.2 OPTION CHAR_THER_RAYO_F/R
 !====
@@ -227,23 +227,23 @@ subroutine te0073(option, nomte)
                 else
                     tpfn = 0.d0
                 endif
-                do 100 i = 1, nno
+                do i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     vectt(c(ise,i)) = vectt(&
                                       c(ise,i)) + poids*zr(li)* (theta*sigm1*eps1* (tpf1+tz0)**4+&
                                       & (1.0d0-theta)* sigmn* epsn* ((tpfn+tz0)**4- (tpg+tz0)**4)&
                                       )
-100             continue
+                end do
 !
 ! FIN DU IF LTEXT
             endif
 !
 ! FIN DE BOUCLE SUR LES PTS DE GAUSS
-150     continue
+        end do
 ! FIN DE BOUCLE SUR LES SOUS-ELEMENTS
-160 end do
+    end do
 !
-    do 170 i = 1, nnop2
+    do i = 1, nnop2
         zr(ivectt-1+i) = vectt(i)
-170 end do
+    end do
 end subroutine

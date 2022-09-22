@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
                   xvec2, ninc, nd, nchoc, h,&
                   hf, xqnl)
@@ -47,12 +47,8 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 !
 !
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/dscal.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -60,8 +56,12 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 #include "asterfort/mnlaft.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: xcdl, parcho, adime, xvec1, xvec2, xqnl
 ! ----------------------------------------------------------------------
@@ -69,8 +69,8 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: kk, alpha, jeu
     integer :: puismax, nt, neq, ivec1, ivec2, icdl, iqnl, k, ivtp1, ivtp2
-    integer :: ivtp3, ivtp4, ivtp5,     nddl, j, i
-    integer :: iadim, neqs,    nddlx, nddly
+    integer :: ivtp3, ivtp4, ivtp5, nddl, j, i
+    integer :: iadim, neqs, nddlx, nddly
     real(kind=8), pointer :: vtep6(:) => null()
     character(len=8), pointer :: type(:) => null()
     integer, pointer :: vneqs(:) => null()
@@ -113,50 +113,50 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
     call dcopy(nd*h, zr(ivec2+nd), 1, zr(iqnl+nd*(h+1)), 1)
 !     QNL(COS) = -K*GAMA1*XSK
     call dscal(nd*h, -zr(ivec1-1+ninc-3), zr(iqnl+nd), 1)
-    do 10 k = 1, h
+    do k = 1, h
         call dscal(nd, dble(k), zr(iqnl-1+k*nd+1), 1)
-10  continue
+    end do
 ! --- QNL(SIN) =  K*GAMA1*XCK
     call dscal(nd*h, zr(ivec1-1+ninc-3), zr(iqnl+nd*(h+1)), 1)
-    do 20 k = 1, h
+    do k = 1, h
         call dscal(nd, dble(k), zr(iqnl-1+(k+h)*nd+1), 1)
-20  continue
+    end do
 ! --- CREATION DE 2 VECTEURS TEMPORAIRES
     call wkvect('&&MNLQNL.VTEP1', 'V V R', neq*(2*h), ivtp1)
     call wkvect('&&MNLQNL.VTEP2', 'V V R', neq*(2*h), ivtp2)
 ! --- VECTEMP1 = X_K DE MEME TAILLE QUE LE NBRE D'EQUATION
-    do 30 j = 1, 2*h
+    do j = 1, 2*h
         i=0
-        do 31 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 zr(ivtp1-1+(j-1)*neq+k)=zr(ivec2-1+j*nd+i)
             endif
-31      continue
-30  continue
+        end do
+    end do
 ! --- VECTEMP2 = M*VECTEMP1
     call mrmult('ZERO', imat(2), zr(ivtp1), zr(ivtp2), 2*h,&
                 .false._1)
 ! --- VECTEMP3 = VECTEMP2 (ON ELIMINE LES DDLS NON ACTIFS)
     call wkvect('&&MNLQNL.VTEP3', 'V V R', nd*(2*h), ivtp3)
-    do 40 j = 1, 2*h
+    do j = 1, 2*h
         i=0
-        do 41 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 zr(ivtp3-1+(j-1)*nd+i)=zr(ivtp2-1+(j-1)*neq+k)/zr(&
                 iadim-1+2)
             endif
-41      continue
-40  continue
+        end do
+    end do
 ! --- QNL = QNL - (K^2)*GAMMA2*VECTEMP3
-    do 50 k = 1, h
+    do k = 1, h
         kk=dble(k)**2
         call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(k-1)*nd+1), 1, zr(iqnl-1+k*nd+1),&
                    1)
         call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(h+k-1)*nd+1), 1,&
                    zr(iqnl-1+(h+k)*nd+1), 1)
-50  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- EQUATIONS SUPPLEMENTAIRES
 ! ----------------------------------------------------------------------
@@ -165,7 +165,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
     call wkvect('&&MNLQNL.VTEP5', 'V V R', 2*hf+1, ivtp5)
     AS_ALLOCATE(vr=vtep6, size=2*hf+1)
     neqs=0
-    do 60 i = 1, nchoc
+    do i = 1, nchoc
         alpha=raid(i)/zr(iadim-1+1)
         jeu=vjeu(i)/jeumax(1)
 !        WRITE(6,*) 'JEUV',JEU
@@ -199,8 +199,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
             call daxpy(h, -1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddl), nd, zr(ivtp5+hf+1),&
                        1)
 !          WRITE(6,*) 'VECT5',ZR(IVTP5:IVTP5+2*HF)
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-                        zr(iqnl-1+nd*(2* h+1)+(neqs+1)*(2*hf+1)+1))
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl-1+nd*(2* h+1)+(neqs+1)*(2*hf+1)+1))
             call dscal(2*hf+1, -1.d0, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2* hf+1)+1), 1)
         else if (type(i)(1:6).eq.'CERCLE') then
             nddlx=vnddl(6*(i-1)+1)
@@ -215,8 +214,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
                        1)
 !           FN*(UX/JEU)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr( ivtp4), hf, nt,&
-                        zr(ivtp5))
+            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr( ivtp4), hf, nt, zr(ivtp5))
 !           FX*R
             call mnlaft(zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)),&
                         zr(ivec2+ nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt,&
@@ -233,8 +231,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
                        1)
 !           FN*(UY/JEU)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr( ivtp4), hf, nt,&
-                        zr(ivtp5))
+            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr( ivtp4), hf, nt, zr(ivtp5))
 !           FY*R
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+1)*(2*hf+1)),&
                         zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt,&
@@ -258,8 +255,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
             call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr( ivtp5+hf+1),&
                        1)
             call dscal(2*hf+1, 0.d0, vtep6, 1)
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-vtep6)
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, vtep6)
             call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
                        1)
 !         - (UX/JEU)^2
@@ -278,14 +274,13 @@ vtep6)
             call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp5+hf+1),&
                        1)
             call dscal(2*hf+1, 0.d0, vtep6, 1)
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-vtep6)
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, vtep6)
             call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
                        1)
 !          + R^2
             call dscal(2*hf+1, 0.d0, vtep6, 1)
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)),&
-                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt,vtep6)
+                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, vtep6)
             call daxpy(2*hf+1, 1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
                        1)
 ! ---     (FN/ALPHA - R)*FN
@@ -296,8 +291,7 @@ vtep6)
             call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+(neqs+3) *(2*hf+1)), 1, zr(ivtp4),&
                        1)
             call dcopy(2*hf+1, zr(ivec2+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, zr(ivtp5), 1)
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-                        zr(iqnl+nd*(2*h+ 1)+(neqs+3)*(2*hf+1)))
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+ 1)+(neqs+3)*(2*hf+1)))
         else if (type(i)(1:4).eq.'PLAN') then
             nddl=vnddl(6*(i-1)+1)
 ! ---     (F/ALPHA - XG)*F
@@ -317,12 +311,11 @@ vtep6)
             call daxpy(2*hf+1, 1.d0, zr(ivec2+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(ivtp5),&
                        1)
 !
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-                        zr(iqnl+nd*(2*h+ 1)+neqs*(2*hf+1)))
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+ 1)+neqs*(2*hf+1)))
         endif
         neqs=neqs+vneqs(i)
 !        WRITE(6,*) 'NEQS',NEQS
-60  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS
 ! ----------------------------------------------------------------------
@@ -332,9 +325,9 @@ vtep6)
     zr(iqnl+ninc-3) = -1.d0*zr(ivec1+ninc-1)*zr(ivec2+ninc-1)
 ! --- EQUATION DE PHASE
     zr(iqnl+ninc-2) = 0.d0
-    do 70 k = 1, h
+    do k = 1, h
         zr(iqnl+ninc-2) = zr(iqnl+ninc-2)+ k*zr(ivec1-1+ninc)*zr( ivec2-1+(h+k)*nd+1)
-70  continue
+    end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------

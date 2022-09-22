@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
                   geom2, corre1, corre2, jlisv1, iocc)
     implicit none
@@ -41,7 +41,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
 ! ======================================================================
 !
     real(kind=8) :: rbid, epais
-    integer :: ino2, nuno2, jgeom2, k, ncmp,   jcnsl, ibid
+    integer :: ino2, nuno2, jgeom2, k, ncmp, jcnsl, ibid
     character(len=19) :: chnorm, csnorm
     integer, pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
@@ -65,28 +65,28 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
 !
 !     -- ON REMPLIT L'OBJET &&CALIRC.LISV1 :
 !     -------------------------------------------------
-    do 20,ino2=1,nbno2
-    nuno2=lino2(ino2)
-    do 10,k=1,3
-    if (.not.zl(jcnsl-1+3*(nuno2-1)+k)) then
-        call utmess('F', 'CHAMPS_2', sk=chnorm)
-    endif
-    ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
-    zr(jlisv1-1+3*(nuno2-1)+k)=cnsv(3*(nuno2-1)+k)*&
+    do ino2 = 1, nbno2
+        nuno2=lino2(ino2)
+        do k = 1, 3
+            if (.not.zl(jcnsl-1+3*(nuno2-1)+k)) then
+                call utmess('F', 'CHAMPS_2', sk=chnorm)
+            endif
+            ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
+            zr(jlisv1-1+3*(nuno2-1)+k)=cnsv(3*(nuno2-1)+k)*&
             epais
-10  continue
-    20 end do
+        end do
+    end do
 !
 !
 !     -- ON MODIFIE GEOM2 (+H/2) POUR OBTENIR CORRE1 :
 !     -------------------------------------------------
-    do 40,ino2=1,nbno2
-    nuno2=lino2(ino2)
-    do 30,k=1,3
-    zr(jgeom2-1+(nuno2-1)*3+k)=zr(jgeom2-1+(nuno2-1)*3+k)+&
+    do ino2 = 1, nbno2
+        nuno2=lino2(ino2)
+        do k = 1, 3
+            zr(jgeom2-1+(nuno2-1)*3+k)=zr(jgeom2-1+(nuno2-1)*3+k)+&
             zr(jlisv1-1+3*(nuno2-1)+k)/2.d0
-30  continue
-    40 end do
+        end do
+    end do
     call pj3dco('PARTIE', mo, mo, nbma1, lima1,&
                 nbno2, lino2, ' ', geom2, corre1,&
                 .false._1, rbid, 0.d0)
@@ -94,26 +94,26 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
 !
 !     -- ON MODIFIE GEOM2 (-H/2) POUR OBTENIR CORRE2 :
 !     -------------------------------------------------
-    do 60,ino2=1,nbno2
-    nuno2=lino2(ino2)
-    do 50,k=1,3
-    zr(jgeom2-1+(nuno2-1)*3+k)=zr(jgeom2-1+(nuno2-1)*3+k)-&
+    do ino2 = 1, nbno2
+        nuno2=lino2(ino2)
+        do k = 1, 3
+            zr(jgeom2-1+(nuno2-1)*3+k)=zr(jgeom2-1+(nuno2-1)*3+k)-&
             zr(jlisv1-1+3*(nuno2-1)+k)
-50  continue
-    60 end do
+        end do
+    end do
     call pj3dco('PARTIE', mo, mo, nbma1, lima1,&
                 nbno2, lino2, ' ', geom2, corre2,&
                 .false._1, rbid, 0.d0)
 !
 !     -- ON RETABLIT GEOM2 :
 !     -------------------------------------------------
-    do 80,ino2=1,nbno2
-    nuno2=lino2(ino2)
-    do 70,k=1,3
-    zr(jgeom2-1+(nuno2-1)*3+k)=zr(jgeom2-1+(nuno2-1)*3+k)+&
+    do ino2 = 1, nbno2
+        nuno2=lino2(ino2)
+        do k = 1, 3
+            zr(jgeom2-1+(nuno2-1)*3+k)=zr(jgeom2-1+(nuno2-1)*3+k)+&
             zr(jlisv1-1+3*(nuno2-1)+k)/2.d0
-70  continue
-    80 end do
+        end do
+    end do
 !
 !
     call detrsd('CHAMP', csnorm)

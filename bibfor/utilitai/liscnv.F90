@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine liscnv(phenoz, base, lisold, lisnew)
 !
-    implicit      none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -85,7 +85,7 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! --- LECTURE OCCURRENCES
 !
-    do 100 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- NOM DE LA CHARGE
 !
@@ -113,16 +113,16 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! ----- RECUPERATION FONCTION MULTIPLICATRICE
 !
-        call liscn1(lisold, ichar, nomfct, typfct, phase, &
+        call liscn1(lisold, ichar, nomfct, typfct, phase,&
                     npuis)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !
-        call lissav(lisnew, ichar , nomcha, typech, genrec(1),&
+        call lissav(lisnew, ichar, nomcha, typech, genrec(1),&
                     motclc, prefob, typapp, nomfct, typfct,&
-                    phase , npuis )
+                    phase, npuis)
 !
-100 continue
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsjis(mod, mater, deps, yd, yf,&
                   r, drdy)
     implicit none
@@ -112,15 +112,17 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 10 i = 1, ndi
-            do 10 j = 1, ndi
+        do i = 1, ndi
+            do j = 1, ndi
                 if (i .eq. j) hook(i,j) = al
                 if (i .ne. j) hook(i,j) = la
-10          continue
-        do 15 i = ndi+1, ndt
-            do 15 j = ndi+1, ndt
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
                 if (i .eq. j) hook(i,j) = deux* mu
-15          continue
+            end do
+        end do
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
@@ -132,19 +134,20 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !++++++++++++++++++++++++
 !
     i1f = zero
-    do 20 i = 1, ndi
+    do i = 1, ndi
         i1f = i1f + yf(i)
-20  continue
+    end do
     if ((i1f +qinit) .eq. 0.d0) then
         i1f = -qinit+1.d-12 * pa
     endif
 !
     coef1 = ((i1f +qinit)/trois/pa)**n
 !
-    do 25 i = 1, ndt
-        do 25 j = 1, ndt
+    do i = 1, ndt
+        do j = 1, ndt
             hooknl(i,j) = coef1*hook(i,j)
-25      continue
+        end do
+    end do
 !
 !
 !
@@ -161,15 +164,15 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
     dlambi = yf(ndt+2) - yd(ndt+2)
 !
-    do 40 i = 1, ndt
+    do i = 1, ndt
         depse(i) = deps(i) + dlambi*kron(i)/trois
-40  continue
+    end do
 !
     call lcprmv(hooknl, depse, dsignl)
 !
-    do 45 i = 1, ndt
+    do i = 1, ndt
         le(i) = yf(i) - yd(i) - dsignl(i)
-45  continue
+    end do
 !
 !
 !- DERIVEE DE LA LOI D ETAT
@@ -179,20 +182,20 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
     call lcprmv(hook, depse, dsigl)
     call lcinma(zero, dleds)
 !
-    do 50 i = 1, ndt
+    do i = 1, ndt
 !
-        do 60 j = 1, ndt
+        do j = 1, ndt
             dleds(i,j) = iden6(i,j) - coef2 * dsigl(i) * kron(j)
-60      continue
+        end do
 !
         dledq(i) = zero
 !
         dledl(i) = zero
-        do 70 j = 1, ndt
+        do j = 1, ndt
             dledl(i) = dledl(i) - hooknl(i,j)*kron(j)/trois
-70      continue
+        end do
 !
-50  continue
+    end do
 !
 !
 !
@@ -230,9 +233,9 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- DERIVEE DU SEUIL ISOTROPE
 !+++++++++++++++++++++++++++
 !
-    do 80 i = 1, ndt
+    do i = 1, ndt
         dfids(i) = -kron(i)/trois
-80  continue
+    end do
 !
     dfidq = un
     dfidl = zero
@@ -254,9 +257,9 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- ASSEMBLAGE DE R
 !+++++++++++++++++
 !
-    do 90 i = 1, ndt
+    do i = 1, ndt
         r(i) = -le(i)
-90  continue
+    end do
 !
     r(ndt+1) = - lq
     r(ndt+2) = - fi

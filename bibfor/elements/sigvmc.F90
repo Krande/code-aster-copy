@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sigvmc(fami, nno, ndim, nbsig, npg,&
                   ipoids, ivf, idfde, xyz, depl,&
                   instan, repere, mater, nharm, sigma)
@@ -77,9 +77,9 @@ subroutine sigvmc(fami, nno, ndim, nbsig, npg,&
 !-----------------------------------------------------------------------
     zero = 0.0d0
 !
-    do 10 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         sigma(i) = zero
-10  end do
+    end do
 !
 !
 ! --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
@@ -112,9 +112,9 @@ subroutine sigvmc(fami, nno, ndim, nbsig, npg,&
 !
 ! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    do 20 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         sigma(i) = sigma(i) - sigth(i) - sighy(i) - sigse(i)
-20  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

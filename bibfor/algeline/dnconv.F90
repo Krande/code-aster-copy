@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dnconv(n, ritzr, ritzi, bounds, tol,&
                   nconv)
 !
@@ -133,10 +133,10 @@ subroutine dnconv(n, ritzr, ritzi, bounds, tol,&
     eps23 = (r8prem()*0.5d0)**(2.0d+0 / 3.0d+0)
 !
     nconv = 0
-    do 20 i = 1, n
+    do i = 1, n
         temp = max( eps23, dlapy2( ritzr(i), ritzi(i) ) )
         if (bounds(i) .le. tol*temp) nconv = nconv + 1
-20  end do
+    end do
 !
     call matfpe(1)
 !

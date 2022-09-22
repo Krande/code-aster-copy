@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cacono(noma, ndim, llist1, llist2, no1,&
                   no2, norm1, norm2, inoma)
     implicit none
@@ -68,23 +68,23 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
 !-----------------------------------------------------------------------
     call jemarq()
     inorm = 1
-    do 1 i = 1, 3
+    do i = 1, 3
         norm1(i) = 0.0d0
         norm2(i) = 0.0d0
- 1  end do
+    end do
     call jeveuo(llist1, 'L', ilist)
     nbma = zi(ilist)
     inoma = 0
     ipoi1 = 0
     ipoi2 = 0
 !
-    do 100 ima = 1, nbma
+    do ima = 1, nbma
         ityp = zi(ilist+2* (ima-1)+2)
         call panbno(ityp, nbnott)
         nbno = nbnott(1) + nbnott(2) + nbnott(3)
         numma = zi(ilist+2* (ima-1)+1)
         call jeveuo(jexnum(noma//'.CONNEX', numma), 'L', imad)
-        do 110 ino = 1, nbno
+        do ino = 1, nbno
             if (zi(imad-1+ino) .eq. no1) then
 !           CAS D'UNE MAILLE POI1
                 if (nbno .eq. 1) then
@@ -94,25 +94,26 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
                 inoma = 1
                 call pacoor(noma, numma, nbno, coor)
                 call canorm(coor, vecnor, ndim, ityp, inorm)
-                do 120 j = 1, 3
+                do j = 1, 3
                     norm1(j) = norm1(j) + vecnor(j)
-120              continue
+                end do
                 goto 100
 !
             endif
 !
-110      continue
-100  end do
+        end do
+100     continue
+    end do
 !
     call jeveuo(llist2, 'L', ilist)
     nbma = zi(ilist)
-    do 200 ima = 1, nbma
+    do ima = 1, nbma
         ityp = zi(ilist+2* (ima-1)+2)
         call panbno(ityp, nbnott)
         nbno = nbnott(1) + nbnott(2) + nbnott(3)
         numma = zi(ilist+2* (ima-1)+1)
         call jeveuo(jexnum(noma//'.CONNEX', numma), 'L', imad)
-        do 210 ino = 1, nbno
+        do ino = 1, nbno
             if (zi(imad-1+ino) .eq. no2) then
 !           CAS D'UNE MAILLE POI1
                 if (nbno .eq. 1) then
@@ -122,15 +123,16 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
                 inoma = 1
                 call pacoor(noma, numma, nbno, coor)
                 call canorm(coor, vecnor, ndim, ityp, inorm)
-                do 220 j = 1, 3
+                do j = 1, 3
                     norm2(j) = norm2(j) + vecnor(j)
-220              continue
+                end do
                 goto 200
 !
             endif
 !
-210      continue
-200  end do
+        end do
+200     continue
+    end do
 !
 !     ON CHERCHE LE CAS OU NO2 APPARTIENT SEULEMENT A UNE MAILLE POI1
 !     ON VERIFIE DANS CE CAS QUE NO1 N'APPARTIENT PAS A UNE MAILLE POI1

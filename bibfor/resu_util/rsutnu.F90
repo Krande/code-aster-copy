@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                   prec, crit, ier)
     implicit none
@@ -113,7 +113,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     c16b, r8b, k8b, tord, 1,&
                     ibid)
         iord=tord(1)            
-        do 40 iacc = 1, nbacc
+        do iacc = 1, nbacc
             if (getexm(motcle,zk16(jpara-1+iacc)) .eq. 0) goto 40
 !
             ctyp = '    '
@@ -153,9 +153,9 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                         call wkvect(knmod, 'V V K8', nbva2, jnch)
                         call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbva2,&
                                     vect=zk8(jnch), nbret=n2)
-                        do 10 ii = 1, nbval
+                        do ii = 1, nbval
                             zk16(jval+ii-1) = zk8( jnch+ (2*ii-1)-1)// zk8(jnch+ (2*ii)-1 )
- 10                     continue
+                        end do
                         call jedetr(knmod)
                     else
                         call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
@@ -172,7 +172,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                                 vect=zk80(jval), nbret=n2)
                 endif
                 nbordr = 1
-                do 20 ival = 1, nbval
+                do ival = 1, nbval
                     if (ctyp(1:1) .eq. 'I') then
                         call rsorac(resu, zk16(jpara-1+iacc), zi(jval-1+ ival), r8b, k8b,&
                                     c16b, prec, crit, zi(jord2), nbordt,&
@@ -286,19 +286,20 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     else if (nbtrou.lt.0) then
                         call utmess('F', 'DVP_1')
                     endif
- 20             continue
+                end do
                 nbordr = nbordr - 1
                 if (nbordr .ne. 0) then
                     call wkvect(knum, 'V V I', nbordr, jordr)
-                    do 30 iord = 0, nbordr - 1
+                    do iord = 0, nbordr - 1
                         zi(jordr+iord) = zi(jord1+iord)
- 30                 continue
+                    end do
                 endif
                 call jedetr('&&RSUTNU.N1')
                 call jedetr('&&RSUTNU.N2')
                 goto 100
             endif
- 40     continue
+ 40         continue
+        end do
     endif
 !
     linst = getexm(motcle,'LIST_INST')
@@ -315,7 +316,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
             call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
             nbordr = 1
-            do 50 iord = 0, nbinst - 1
+            do iord = 0, nbinst - 1
                 call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
                             c16b, prec, crit, zi(jord2), nbordt,&
                             nbtrou)
@@ -335,13 +336,13 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     endif
                     call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                 endif
- 50         continue
+            end do
             nbordr = nbordr - 1
             if (nbordr .ne. 0) then
                 call wkvect(knum, 'V V I', nbordr, jordr)
-                do 60 iord = 0, nbordr - 1
+                do iord = 0, nbordr - 1
                     zi(jordr+iord) = zi(jord1+iord)
- 60             continue
+                end do
             endif
             call jedetr('&&RSUTNU.N1')
             call jedetr('&&RSUTNU.N2')
@@ -363,7 +364,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
             call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
             nbordr = 1
-            do 70 iord = 0, nbfreq - 1
+            do iord = 0, nbfreq - 1
                 call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
                             c16b, prec, crit, zi(jord2), nbordt,&
                             nbtrou)
@@ -383,13 +384,13 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     endif
                     call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                 endif
- 70         continue
+            end do
             nbordr = nbordr - 1
             if (nbordr .ne. 0) then
                 call wkvect(knum, 'V V I', nbordr, jordr)
-                do 80 iord = 0, nbordr - 1
+                do iord = 0, nbordr - 1
                     zi(jordr+iord) = zi(jord1+iord)
- 80             continue
+                end do
             endif
             call jedetr('&&RSUTNU.N1')
             call jedetr('&&RSUTNU.N2')
@@ -404,9 +405,9 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             call jeveuo(listr//'.VALE', 'L', laccr)
             call jelira(listr//'.VALE', 'LONMAX', nbordr)
             call wkvect(knum, 'V V I', nbordr, jordr)
-            do 90 iord = 0, nbordr - 1
+            do iord = 0, nbordr - 1
                 zi(jordr+iord) = zi(laccr+iord)
- 90         continue
+            end do
             goto 100
         endif
     endif
@@ -436,10 +437,10 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
         call jeveuo(resuin//'.ORDR', 'L', jordr1)
         call jeveuo(knum, 'L', jordr2)
         nbtrop=0
-        do 777 i = 1, nbordr
+        do i = 1, nbordr
             itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
             if (itrou .eq. 0) nbtrop=nbtrop+1
-777     continue
+        end do
 !
         if (nbtrop .gt. 0) then
             knum2='&&RSUTNU.KNUM2'
@@ -447,16 +448,16 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                 call utmess('A', 'UTILITAI4_53')
                 goto 800
             endif
-
+!
             call wkvect(knum2, 'V V I', nbordr-nbtrop, jordr3)
             indi=0
-            do 778 i = 1, nbordr
+            do i = 1, nbordr
                 itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
                 if (itrou .gt. 0) then
                     indi=indi+1
                     zi(jordr3-1+indi)= zi(jordr2-1+i)
                 endif
-778         continue
+            end do
             call jedetr(knum)
             call jedupo(knum2, 'V', knum, .false._1)
             call jedetr(knum2)
@@ -465,11 +466,11 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
         verifi=.false.
         call jeveuo(knum, 'L', jordr2)
-        do 779 i = 1, nbordr-1
+        do i = 1, nbordr-1
             if (zi(jordr2-1+i) .gt. zi(jordr2+i)) then
                 verifi=.true.
             endif
-779     continue
+        end do
         if (verifi) then
             call ordis(zi(jordr2), nbordr)
         endif
@@ -478,7 +479,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
 !
 !
-800 continue    
+800 continue 
     call jedetr('&&RSUTNU.NOM_ACCES')
     call jedetr('&&RSUTNU.VALE_ACCES')
     call jedetr('&&RSUTNU.NOEUD_CMP')

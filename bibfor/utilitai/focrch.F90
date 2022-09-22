@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine focrch(nomfon, resu, noeud, parax, paray,&
                   base, int, intitu, ind, listr,&
                   sst, nsst, ier)
@@ -39,7 +39,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     character(len=8) :: sst, noeud
     character(len=19) :: nomfon, resu, listr
     character(len=24) :: intitu
-
+!
 !     RECUPERATION D'UNE FONCTION DANS UNE STRUCTURE "TRAN_GENE"
 !     POUR UN NOEUD DE CHOC
 !     ------------------------------------------------------------------
@@ -62,14 +62,14 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     character(len=19) :: fonct1, fonct2
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ic, inl, ie, ival,  jinst, iparax
-    integer ::   jparx, jpary, jval, jvalx, jvaly, start, nbvint, iparay
+    integer :: ic, inl, ie, ival, jinst, iparax
+    integer :: jparx, jpary, jval, jvalx, jvaly, start, nbvint, iparay
     integer :: lfon, lg, lpro, lval, nbnoli, nbinst, nbpara
     integer :: nbval, jvint
     character(len=24), pointer :: nlname(:) => null()
     integer, pointer :: desc(:) => null()
     integer, pointer :: vindx(:) => null()
-
+!
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 999
@@ -85,12 +85,12 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 !
     ic = 1
     if (int .ne. 0) then
-        do 2 inl = 1, nbnoli
+        do inl = 1, nbnoli
             if (nlname((inl-1)*5+1) .eq. intitu) goto 4
- 2      continue
+        end do
         call utmess('A', 'UTILITAI_86', sk=intitu)
         goto 999
- 4      continue
+  4     continue
         if (nsst .eq. 0) then
             if (nlname((inl-1)*5+2)(1:8) .eq. noeud) goto 16
             ic = 2
@@ -109,7 +109,8 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
                 call utmess('A', 'UTILITAI_89', sk=noeud(1:lg))
                 goto 999
             endif
-            if (nlname((inl-1)*5+2)(1:8) .eq. noeud .and. nlname((inl-1)*5+4)(1:8) .eq. sst) goto 16
+            if (nlname((inl-1)*5+2)(1:8) .eq. noeud .and. nlname((inl-1)*5+4)(1:8) .eq. sst) &
+            goto 16
             ic = 2
             if (nlname((inl-1)*5+3)(1:8) .eq. noeud .and. nlname((inl-1)*5+5)(1:8) .eq. sst) &
             goto 16
@@ -130,7 +131,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     lg = max(1,lxlgut(noeud))
     call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))
     goto 999
-16  continue
+ 16 continue
 !
     call jeveuo(resu(1:16)//'.NL.VINT', 'L', jvint)
     call jeveuo(resu(1:16)//'.NL.VIND', 'L', vi=vindx)
@@ -140,17 +141,17 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     if (parax(1:4) .eq. 'INST') then
         jvalx = jinst
         goto 20
-    else if (parax(1:2).eq.'FN' ) then 
+    else if (parax(1:2).eq.'FN') then
         jparx = jvint + start
-    else if (parax(1:3).eq.'FT1') then 
+    else if (parax(1:3).eq.'FT1') then
         jparx = jvint + start + 1
-    else if (parax(1:3).eq.'FT2') then 
+    else if (parax(1:3).eq.'FT2') then
         jparx = jvint + start + 2
-    else if (parax(1:2).eq.'VN' ) then 
+    else if (parax(1:2).eq.'VN') then
         jparx = jvint + start + 3
-    else if (parax(1:3).eq.'VT1') then 
+    else if (parax(1:3).eq.'VT1') then
         jparx = jvint + start + 4
-    else if (parax(1:3).eq.'VT2') then 
+    else if (parax(1:3).eq.'VT2') then
         jparx = jvint + start + 5
     else if (parax(1:5).eq.'DXLOC') then
         if (ic .eq. 1) then
@@ -180,18 +181,18 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     endif
     call wkvect('&&FOCRCH.PARAX', 'V V R', nbinst, jvalx)
     call dcopy(nbinst, zr(jparx), nbvint, zr(jvalx), 1)
-20  continue
+ 20 continue
 !
     if (paray(1:4) .eq. 'INST') then
         jvaly = jinst
         goto 22
-    else if (paray(1:2).eq.'FN' ) then
+    else if (paray(1:2).eq.'FN') then
         jpary = jvint + start
     else if (paray(1:3).eq.'FT1') then
         jpary = jvint + start + 1
     else if (paray(1:3).eq.'FT2') then
         jpary = jvint + start + 2
-    else if (paray(1:2).eq.'VN' ) then
+    else if (paray(1:2).eq.'VN') then
         jpary = jvint + start + 3
     else if (paray(1:3).eq.'VT1') then
         jpary = jvint + start + 4
@@ -225,7 +226,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     endif
     call wkvect('&&FOCRCH.PARAY', 'V V R', nbinst, jvaly)
     call dcopy(nbinst, zr(jpary), nbvint, zr(jvaly), 1)
-22  continue
+ 22 continue
 !
     if (ind .eq. 0) then
         ASSERT(lxlgut(nomfon).le.24)
@@ -240,10 +241,10 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         nbval = nbinst * 2
         call wkvect(nomfon//'.VALE', base//' V R', nbval, lval)
         lfon = lval + nbinst
-        do 30 ival = 0, nbinst-1
+        do ival = 0, nbinst-1
             zr(lval+ival) = zr(jvalx+ival)
             zr(lfon+ival) = zr(jvaly+ival)
-30      continue
+        end do
         ier = 0
 !
     else
@@ -259,10 +260,10 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         nbval = nbinst * 2
         call wkvect(fonct1//'.VALE', 'V V R', nbval, lval)
         lfon = lval + nbinst
-        do 100 ival = 0, nbinst-1
+        do ival = 0, nbinst-1
             zr(lval+ival) = zr(jinst+ival)
             zr(lfon+ival) = zr(jvalx+ival)
-100     continue
+        end do
 !
         fonct2 = '&&FOCRCH.FONCT2'
         ASSERT(lxlgut(fonct2).le.24)
@@ -276,10 +277,10 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         nbval = nbinst * 2
         call wkvect(fonct2//'.VALE', 'V V R', nbval, lval)
         lfon = lval + nbinst
-        do 110 ival = 0, nbinst-1
+        do ival = 0, nbinst-1
             zr(lval+ival) = zr(jinst+ival)
             zr(lfon+ival) = zr(jvaly+ival)
-110     continue
+        end do
 !
         call jeveuo(listr//'.VALE', 'L', jval)
         call jelira(listr//'.VALE', 'LONUTI', nbpara)
@@ -296,12 +297,12 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         nbval = nbpara * 2
         call wkvect(nomfon//'.VALE', base//' V R', nbval, lval)
         lfon = lval + nbpara
-        do 120 ival = 0, nbpara-1
+        do ival = 0, nbpara-1
             call fointe('F ', fonct1, 1, 'INST', zr(jval+ival),&
                         zr(lval+ ival), ie)
             call fointe('F ', fonct2, 1, 'INST', zr(jval+ival),&
                         zr(lfon+ ival), ie)
-120      continue
+        end do
 !
         call jedetr(fonct1//'.PROL')
         call jedetr(fonct1//'.VALE')
@@ -312,6 +313,6 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     if (parax(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAX')
     if (paray(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAY')
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

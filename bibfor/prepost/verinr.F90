@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function verinr(nbval, tbins1, tbins2)
 !
     implicit none
@@ -50,10 +50,10 @@ function verinr(nbval, tbins1, tbins2)
 ! ======================================================================
     somme = 0.0d0
     verinr = .false.
-    do 10 ii = 1, nbval
+    do ii = 1, nbval
         zr(jtbini-1+ii) = zr(jtbin1-1+ii) - zr(jtbin2-1+ii)
         somme = somme + zr(jtbini-1+ii)
- 10 end do
+    end do
     if (somme .gt. 0.0d0) verinr = .true.
 ! ======================================================================
 ! --- DESTRUCTION DE VECTEURS INUTILES ---------------------------------

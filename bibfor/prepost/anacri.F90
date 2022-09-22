@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                   fordef, crsigm, crepst, crepse, crepsp)
 !
@@ -117,9 +117,9 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     nparma = 35
 !
 !     INITIALISATION
-    do 15 ip = 1, nparma
+    do ip = 1, nparma
         paract(ip) = 0
- 15 end do
+    end do
 !
     fordef = .false.
 !
@@ -135,52 +135,52 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 !
 ! VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON
         if (typcha(1:14) .eq. 'NON_PERIODIQUE') then
-            do 10 id = 1, np
+            do id = 1, np
                 grdexi = .false.
-                do 40 ip = 1, nparm2
+                do ip = 1, nparm2
                     if (nompf(id) .eq. nompa2(ip)) then
                         grdexi = .true.
                         paract(ip) = 1
                     endif
- 40             continue
+                end do
                 if (.not. grdexi) then
                     call utmess('F', 'FATIGUE1_91', sk=nompf(id))
                 endif
 !
                 if (nompf(id)(1:3) .eq. 'EPS') then
                     fordef = .true.
-                    do 20 ip = 1, np
+                    do ip = 1, np
                         if (nompf(ip)(1:3) .eq. 'TAU') then
                             call utmess('F', 'FATIGUE1_92')
                         endif
- 20                 continue
+                    end do
                 endif
                 if (nompf(id)(1:3) .eq. 'TAU') then
-                    do 30 ip = 1, np
+                    do ip = 1, np
                         if (nompf(ip)(1:3) .eq. 'EPS') then
                             call utmess('F', 'FATIGUE1_92')
                         endif
- 30                 continue
+                    end do
                 endif
- 10         continue
+            end do
 !
         endif
 !
         if (typcha(1:10) .eq. 'PERIODIQUE') then
-            do 60 id = 1, np
+            do id = 1, np
                 grdexi = .false.
-                do 50 ip = 1, nparma
+                do ip = 1, nparma
                     if (nompf(id) .eq. nompa1(ip)) then
                         grdexi = .true.
                         paract(ip) = 1
                     endif
- 50             continue
+                end do
 !
                 if (.not. grdexi) then
                     call utmess('F', 'FATIGUE1_91', sk=nompf(id))
                 endif
 !
- 60         continue
+            end do
         endif
 !
     endif
@@ -245,9 +245,9 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     crepse = .false.
     crepsp = .false.
 !
-    do 80 ip = 1, nparma
+    do ip = 1, nparma
         if (paract(ip) .eq. 1) then
-            do 81 l = 1, 2
+            do l = 1, 2
                 if (typcha .eq. 'PERIODIQUE') then
                     if (nomty1(ip)(l:l) .eq. 'C') then
                         crsigm = .true.
@@ -275,16 +275,16 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                         crepsp = .true.
                     endif
                 endif
- 81         continue
+            end do
         endif
- 80 end do
+    end do
 !
 ! IMPRIMER DES INFO
     if (impgrd .eq. 'OUI') then
         write(6,*)'CRITERE AMORCAGE A UTILISER ==>',nomcri
         write(6,*)' '
         write(6,*)'LES GRANDEURS A CALCULER : '
-        do 70 ip = 1, nparma
+        do ip = 1, nparma
             if (paract(ip) .eq. 1) then
 !
                 if (typcha .eq. 'PERIODIQUE') then
@@ -296,7 +296,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                 endif
             endif
 !
- 70     continue
+        end do
 !
         write(6,*)'HISTOIRES DE CHARGEMENT DOIVENT CONSISTER :'
 !

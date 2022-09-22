@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                   noma2z, liso1z, liso2z, lonlis)
     implicit none
@@ -125,13 +125,13 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
 ! --- CRITERE : NO2 = NO DANS LISIN2 / D(NO1,NO2) = MIN D(NO1,NO)
 !
     if (lonli1 .le. lonli2) then
-        do 10 i1 = 1, lonli1
+        do i1 = 1, lonli1
             nomno1 = zk8(idlin1+i1-1)
             call jenonu(jexnom(noeum1, nomno1), nuno1)
             call pacoor(noma1, nuno1, 0, x1)
             dmin = r8gaem()
             j2 = 0
-            do 20 i2 = 1, lonli2
+            do i2 = 1, lonli2
                 nomo2 = zk8(idlin2+i2-1)
                 call jenonu(jexnom(noeum2, nomo2), ino2)
                 call pacoor(noma2, ino2, 0, x2)
@@ -142,7 +142,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                     nuno2 = ino2
                     j2 = i2
                 endif
-20          continue
+            end do
 !
             if (j2 .eq. 0) then
                 call utmess('F', 'MODELISA6_3', sk=nomno1)
@@ -158,15 +158,15 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 valk (3) = zk8(idlinv+j2-1)
                 call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
             endif
-10      continue
+        end do
     else
-        do 30 i2 = 1, lonli2
+        do i2 = 1, lonli2
             nomno2 = zk8(idlin2+i2-1)
             call jenonu(jexnom(noeum2, nomno2), nuno2)
             call pacoor(noma2, nuno2, 0, x2)
             dmin = r8gaem()
             j1 = 0
-            do 40 i1 = 1, lonli1
+            do i1 = 1, lonli1
                 nomo1 = zk8(idlin1+i1-1)
                 call jenonu(jexnom(noeum1, nomo1), ino1)
                 call pacoor(noma1, ino1, 0, x1)
@@ -178,7 +178,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                     nuno1 = ino1
                     j1 = i1
                 endif
-40          continue
+            end do
 !
             if (j1 .eq. 0) then
                 call utmess('F', 'MODELISA6_3', sk=nomno2)
@@ -194,7 +194,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 valk (3) = zk8(idlinv+j1-1)
                 call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
             endif
-30      continue
+        end do
     endif
 !
     call jedetr('&&PACOAP.LISOU3')

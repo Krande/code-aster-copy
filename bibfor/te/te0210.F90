@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0210(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 !                          OPTION : 'CHAR_THER_PARO_F'
@@ -27,7 +27,6 @@ subroutine te0210(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
@@ -35,6 +34,7 @@ subroutine te0210(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
+!
     integer :: nbres
     parameter (nbres=3)
     character(len=16) :: option, nomte
@@ -51,8 +51,8 @@ subroutine te0210(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
-                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
@@ -70,7 +70,7 @@ subroutine te0210(option, nomte)
 ! 2. CALCULS TERMES DE MASSE
 !====
 !    BOUCLE SUR LES POINTS DE GAUSS
-    do 50 kp = 1, npg
+    do kp = 1, npg
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids1)
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
@@ -80,14 +80,14 @@ subroutine te0210(option, nomte)
         z1 = 0.d0
         z2 = 0.d0
         tpg = 0.d0
-        do 10 i = 1, nno
+        do i = 1, nno
             l = (kp-1)*nno + i
             r1 = r1 + zr(igeom+2*i-2)*zr(ivf+l-1)
             r2 = r2 + zr(igeom+2* (nno+i)-2)*zr(ivf+l-1)
             z1 = z1 + zr(igeom+2*i-1)*zr(ivf+l-1)
             z2 = z2 + zr(igeom+2* (nno+i)-1)*zr(ivf+l-1)
             tpg = tpg + (zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+l-1)
- 10     continue
+        end do
         if (laxi) then
             poids1 = poids1*r1
             poids2 = poids2*r2
@@ -105,10 +105,10 @@ subroutine te0210(option, nomte)
         call fointe('FM', zk8(ihechp), 3, nompar, valpar,&
                     hechp, icode)
 !
-        do 30 i = 1, nno
+        do i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(li)*hechp* ( 1.0d0-theta)*tpg
             zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno) - poids*zr(li)* hechp* (1.0d0-theta)*tpg
- 30     continue
- 50 end do
+        end do
+    end do
 end subroutine

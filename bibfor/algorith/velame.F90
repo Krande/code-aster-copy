@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine velame(modele, charge, infcha, depmoz, vecelz)
     implicit none
 #include "asterf_types.h"
@@ -124,11 +124,11 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     paout = 'PVECTUR'
 !
     ifla = 0
-    do 30 icha = 1, nchar
+    do icha = 1, nchar
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         lchin(3) (1:17) = ligrch(1:13)//'.FL1'
-        do 10 j = 1, 99
+        do j = 1, 99
             call codent(j, 'D0', lchin(3) (18:19))
             lchin(3) = lchin(3) (1:19)//'.DESC'
             call exisd('CHAMP_GD', lchin(3), iret)
@@ -155,10 +155,10 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
             else
                 goto 20
             endif
- 10     continue
+        end do
  20     continue
 !
- 30 end do
+    end do
 !
  40 continue
     vecelz = vecele

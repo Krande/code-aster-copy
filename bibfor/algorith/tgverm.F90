@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tgverm(option, carcri, compor, nno1, nno2,&
                   nno3, geom, ndim, nddl, deplp,&
                   sdepl, vu, vg, vp, vectu,&
@@ -83,15 +83,15 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 !
     iret=0
     if (abs(carcri(2)) .lt. 0.1d0) then
-        goto 9999
+        goto 999
     else
 ! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
         if (compor(5)(1:7) .eq. 'DEBORST') then
-            goto 9999
+            goto 999
         endif
     endif
     if (option(1:9) .eq. 'RIGI_MECA') then
-        goto 9999
+        goto 999
     endif
 !
 ! --  INITIALISATION (PREMIER APPEL)
@@ -99,7 +99,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
     if (init .eq. 1) then
 !       PERTURBATION OU VERIFICATION => FULL_MECA
         if (option .ne. 'FULL_MECA') then
-            goto 9999
+            goto 999
         endif
 !
 !       CALCUL de la valeur de la perturbation
@@ -110,20 +110,20 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
         maxpre=0.d0
         maxgon=0.d0
         maxgeo=0.d0
-        do 555 i = 1, nno1
-            do 600 j = 1, ndim
+        do i = 1, nno1
+            do j = 1, ndim
                 maxdep=max(maxdep,abs(deplp(vu(j,i))))
-600         continue
-555     continue
-        do 601 i = 1, nno2
+            end do
+        end do
+        do i = 1, nno2
             maxgon=max(maxgon,abs(deplp(vg(i))))
-601     continue
-        do 602 i = 1, nno3
+        end do
+        do i = 1, nno3
             maxpre=max(maxpre,abs(deplp(vp(i))))
-602     continue
-        do 556 i = 1, nno1*ndim
+        end do
+        do i = 1, nno1*ndim
             maxgeo=max(maxgeo,abs(geom(i)))
-556     continue
+        end do
         pertu=carcri(7)
         if (maxdep .gt. pertu*maxgeo) then
             epsilo=pertu*maxdep
@@ -151,14 +151,14 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 !       ARCHIVAGE DE LA MATRICE TANGENTE COHERENTE
         if (matsym) then
             k = 0
-            do 557 i = 1, nddl
-                do 558 j = 1, i
+            do i = 1, nddl
+                do j = 1, i
                     v = matuu(k+1)
                     k = k + 1
                     smatr((i-1)*nddl+j) = v
                     smatr((j-1)*nddl+i) = v
-558             continue
-557         continue
+                end do
+            end do
         else
             call dcopy(nddl*nddl, matuu, 1, smatr, 1)
         endif
@@ -188,67 +188,67 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 !
     if (nvar .le. nddl) then
         call dcopy(nddl, sdepl, 1, deplp, 1)
-        do 700 i = 1, nno1
-            do 710 j = 1, ndim
+        do i = 1, nno1
+            do j = 1, ndim
                 if (nvar .eq. vu(j,i)) then
                     deplp(nvar) = sdepl(nvar) + indi*epsilo
                     goto 800
                 endif
-710         continue
-700     continue
+            end do
+        end do
 !
-        do 720 i = 1, nno2
+        do i = 1, nno2
             if (nvar .eq. vg(i)) then
                 deplp(nvar) = sdepl(nvar) + indi*epsilg
                 goto 800
             endif
-720     continue
+        end do
 !
-        do 730 i = 1, nno3
+        do i = 1, nno3
             if (nvar .eq. vp(i)) then
                 deplp(nvar) = sdepl(nvar) + indi*epsilp
                 goto 800
             endif
-730     continue
+        end do
 !
 800     continue
 !      INITIALISATION DES CHAMPS 'E'
         call r8inir(ncont, 0.d0, contp, 1)
         call r8inir(nddl, 0.d0, vectu, 1)
         iret=1
-        goto 9999
+        goto 999
     endif
 !
 !    CALCUL DE LA MATRICE TANGENTE
 !
-    do 559 i = 1, nddl
-        do 560 j = 1, nddl
+    do i = 1, nddl
+        do j = 1, nddl
             fm = varia((2*j-2)*nddl+i)
             fp = varia((2*j-1)*nddl+i)
-            do 910 k = 1, nno1
-                do 920 l = 1, ndim
+            do k = 1, nno1
+                do l = 1, ndim
                     if (j .eq. vu(l,k)) then
                         v = (fp-fm)/(2*epsilo)
                         goto 900
                     endif
-920             continue
-910         continue
-            do 930 k = 1, nno2
+                end do
+            end do
+            do k = 1, nno2
                 if (j .eq. vg(k)) then
                     v = (fp-fm)/(2*epsilg)
                     goto 900
                 endif
-930         continue
-            do 940 k = 1, nno3
+            end do
+            do k = 1, nno3
                 if (j .eq. vp(k)) then
                     v = (fp-fm)/(2*epsilp)
                     goto 900
                 endif
-940         continue
+            end do
 900         continue
             matper((i-1)*nddl+j) = v
-560     continue
-559 end do
+        end do
+    end do
 !
 !    MENAGE POUR ARRET DE LA ROUTINE
 !
@@ -298,7 +298,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
         call dcopy(nddl*nddl, matper, 1, zr(ematrc), 1)
     endif
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

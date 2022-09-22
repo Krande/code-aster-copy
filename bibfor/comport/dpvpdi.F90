@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dpvpdi(nbmat, mater, td, tf, tr,&
                   depst, deps)
 ! --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER VISCOPLASTIQUE -
@@ -46,18 +46,18 @@ subroutine dpvpdi(nbmat, mater, td, tf, tr,&
     alpha = mater(3,1)
 ! INITIALISATION DE DEPS A DEPST
 !
-    do 5 ii = 1, ndt
+    do ii = 1, ndt
         deps(ii) = depst(ii)
- 5  continue
+    end do
 !
 !
     if ((.not.isnan(tr)) .and. (.not.isnan(tf)) .and. (.not.isnan(td))) then
-        do 10 ii = 1, ndi
+        do ii = 1, ndi
             deps(ii) = depst(ii) - ( alpha*(tf-tr) - alpha*(td-tr))
-10      continue
-        do 20 ii = ndi+1, ndt
+        end do
+        do ii = ndi+1, ndt
             deps(ii) = depst(ii)
-20      continue
+        end do
         elseif (((.not.isnan(tr)).or.(.not.isnan(td)).or. (.not.isnan(tf))) &
                   .and.(alpha.ne.0.d0)) then
         call utmess('F', 'CALCULEL_15')

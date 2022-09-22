@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cffpfo(resoco, nbliai, nbliac, ndim)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cfcglt.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     character(len=24) :: resoco
     integer :: nbliai, nbliac, ndim
 !
@@ -72,7 +72,7 @@ subroutine cffpfo(resoco, nbliai, nbliac, ndim)
 !
 ! --- CALCUL DES COEFFICIENTS DE LAGRANGE MU
 !
-    do 100 iliac = 1, nbliac
+    do iliac = 1, nbliac
 !
 ! ----- REPERAGE DE LA LIAISON
 !
@@ -107,7 +107,7 @@ subroutine cffpfo(resoco, nbliai, nbliac, ndim)
         else
             zr(jmu+3*nbliai+iliai-1) = 0.d0
         endif
-100  end do
+    end do
 !
     call jedema()
 !

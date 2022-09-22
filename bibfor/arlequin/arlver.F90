@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine arlver(modele, lgma, nbgma, nomsd, model,&
                   cine)
 !
@@ -25,20 +25,20 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/tri.h"
 #include "asterfort/arlelt.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/utmess.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tri.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
     character(len=8) :: modele
     character(len=8) :: lgma(*)
@@ -134,7 +134,7 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
 ! --- VERIFICATION COHERENCE MODELISATION / CINEMATIQUE
 !
     ntot = 0
-    do 30 iligr = 1, nbligr
+    do iligr = 1, nbligr
         if (zi(jcompt-1+iligr) /= 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', zi(jte-1+iligr)), nomte)
             eltok = arlelt(nomte,modte,cinte)
@@ -156,7 +156,8 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
                 ntot = ntot + zi(jcompt-1+iligr)
             endif
         endif
- 30 end do
+ 30     continue
+    end do
 !
 ! --- AUCUNE MAILLE DU GROUPE N'EST UTILISABLE
 !

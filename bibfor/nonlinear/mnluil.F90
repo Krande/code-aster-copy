@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnluil(x, omega, alpha, eta, h,&
                   hf, nt, sort)
     implicit none
@@ -24,8 +24,8 @@ subroutine mnluil(x, omega, alpha, eta, h,&
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/mnlfft.h"
 #include "asterfort/wkvect.h"
 ! ----------------------------------------------------------------------
@@ -46,20 +46,21 @@ subroutine mnluil(x, omega, alpha, eta, h,&
     call wkvect('&&mnluil.f', 'V V R', nt, iif)
     depi=r8depi()
     zr(it)=0.d0
-    do 10 k = 2, nt
+    do k = 2, nt
         zr(it-1+k)=zr(it-1+k-1)+(depi/omega)/nt
-10  continue
+    end do
 !
-    do 20 k = 1, nt
+    do k = 1, nt
         xt=x(1)
-        do 21 j = 1, h
+        do j = 1, h
             xt=xt+x(1+j)*dcos(dble(j)*omega*zr(it-1+k))
             xt=xt+x(1+h+j)*dsin(dble(j)*omega*zr(it-1+k))
-21      continue
+        end do
         zr(iif-1+k)=((xt-1.d0)+sqrt((xt-1.d0)**2+4.d0*eta/alpha))/(2.d0/alpha)
-20  continue
+    end do
 !
-    call mnlfft(1, sort(1), zr(iif), hf, nt,1)
+    call mnlfft(1, sort(1), zr(iif), hf, nt,&
+                1)
 !
     call jedetr('&&mnluil.t')
     call jedetr('&&mnluil.f')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xcgfvo(option, ndim, nnop, fno)
 !
     implicit none
@@ -68,7 +68,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
     if (option .eq. 'CALC_G_XFEM' .or. option .eq. 'CALC_K_G_XFEM') then
         fonc=.false.
         call jevech('PFRVOLU', 'L', iforc)
-        else if (option.eq.'CALC_G_XFEM_F'.or. option.eq.'CALC_K_G_XFEM_F') then
+    else if (option.eq.'CALC_G_XFEM_F'.or. option.eq.'CALC_K_G_XFEM_F') then
         fonc=.true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -100,25 +100,25 @@ subroutine xcgfvo(option, ndim, nnop, fno)
         endif
 !
 !       INTERPOLATION DE LA FORCE (FONCTION PAR ELEMENT) AUX NOEUDS
-        do 30 ino = 1, nnop
-            do 31 j = 1, ndim
+        do ino = 1, nnop
+            do j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(ino-1)+j-1)
- 31         continue
-            do 32 j = 1, ndim
+            end do
+            do j = 1, ndim
                 kk = ndim*(ino-1)+j
                 call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
                             fno(kk), iret)
- 32         continue
- 30     continue
+            end do
+        end do
 !
 !     FORCES VOLUMIQUES CONSTANTES (AUX NOEUDS)
     else
 !
-        do 33 ino = 1, nnop
-            do 34 j = 1, ndim
+        do ino = 1, nnop
+            do j = 1, ndim
                 fno(ndim*(ino-1)+j) = zr(iforc+ndim*(ino-1)+j-1)
- 34         continue
- 33     continue
+            end do
+        end do
 !
     endif
 !
@@ -136,27 +136,27 @@ subroutine xcgfvo(option, ndim, nnop, fno)
         rhocst=val(1)
 !
         if (ipesa .ne. 0) then
-            do 60 ino = 1, nnop
-                do 61 j = 1, ndim
+            do ino = 1, nnop
+                do j = 1, ndim
                     kk = ndim*(ino-1)+j
                     fno(kk) = fno(kk) + rhocst*zr(ipesa)*zr(ipesa+j)
- 61             continue
- 60         continue
+                end do
+            end do
         endif
 !
         if (irota .ne. 0) then
             om = zr(irota)
-            do 62 ino = 1, nnop
+            do ino = 1, nnop
                 omo = 0.d0
-                do 63 j = 1, ndim
+                do j = 1, ndim
                     omo = omo + zr(irota+j)* zr(igeom+ndim*(ino-1)+j- 1)
- 63             continue
-                do 64 j = 1, ndim
+                end do
+                do j = 1, ndim
                     kk = ndim*(ino-1)+j
                     fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
- 64             continue
- 62         continue
+                end do
+            end do
         endif
 !
     endif

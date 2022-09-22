@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmveso(rb, nb, rp, np, drbdb,&
                   drbdp, drpdb, drpdp, dp, dbeta,&
                   nr, cplan)
@@ -75,10 +75,10 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 !
     if (cplan) then
         r(3) = zero
-        do 110 i = 1, nr
+        do i = 1, nr
             drdy(i,3) = zero
             drdy(3,i) = zero
-110     continue
+        end do
         drdy(3,3) = un
     endif
 !

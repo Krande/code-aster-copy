@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
-                  nmafon, listpt, goinop, jfon, jnofaf, jbas,&
-                  jtail, fonmul, nbfond)
+                  nmafon, listpt, goinop, jfon, jnofaf,&
+                  jbas, jtail, fonmul, nbfond)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -102,8 +102,8 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
     nbfond = 1
 !
-    do 10 ipt = 1, nfon-1
-        do 11 ima = 1, nmafon
+    do ipt = 1, nfon-1
+        do ima = 1, nmafon
 !
             if (zi(jlistp-1+2*(ima-1)+2) .eq. 0) goto 11
 !
@@ -123,15 +123,15 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !           CALCUL DE L'ABSCISSE CURVILIGNE
                 indipt = zi(jtabpt-1+ipt+1)
                 indicm = zi(jtabpt-1+ipt)
-                do 700 k = 1, 3
+                do k = 1, 3
                     p(k)=zr(jfono-1+11*(indipt-1)+k)
                     m(k)=zr(jfono-1+11*(indicm-1)+k)
-700             continue
+                end do
                 absc = zr(jfono-1+11*(indicm-1)+4)
                 zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
 !
 !---      LE DEUXIEME INDICE CORRESPOND A CELUI RECHERCHE
-           elseif (zi(jlistp-1+2*(ima-1)+2).eq.zi(jtabpt-1+ipt))&
+                elseif (zi(jlistp-1+2*(ima-1)+2).eq.zi(jtabpt-1+ipt))&
             then
                 if (ipt .gt. 2) then
                     if (zi(jtabpt-1+ipt-2) .eq. zi(jlistp-1+2*(ima-1)+1)) then
@@ -147,15 +147,16 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !           CALCUL DE L'ABSCISSE CURVILIGNE
                 indipt = zi(jtabpt-1+ipt+1)
                 indicm = zi(jtabpt-1+ipt)
-                do 800 k = 1, 3
+                do k = 1, 3
                     p(k)=zr(jfono-1+11*(indipt-1)+k)
                     m(k)=zr(jfono-1+11*(indicm-1)+k)
-800             continue
+                end do
                 absc = zr(jfono-1+11*(indicm-1)+4)
                 zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
 !
             endif
- 11     continue
+ 11         continue
+        end do
 !
 !       ON N'A PAS TROUVE DE POINT A ASSOCIER A IPT: C'EST UN POINT
 !       EXTREMITE ( CAS DES FONDS MULTIPLES )
@@ -167,13 +168,13 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
             indice = 0
 !
 !         VERIFICATION QUE LE DERNIER POINT EST UNE EXTREMITE DU FOND
-            do 12 iptext = 1, nbptex
+            do iptext = 1, nbptex
                 if (zi(jptext-1+iptext) .eq. zi(jtabpt-1+ipt)) then
                     zi(jfonmu-1+2*(nbfond-1)+2) = ipt
                     indice = 1
                     goto 13
                 endif
- 12         continue
+            end do
  13         continue
 !
             ASSERT(indice.ne.0)
@@ -181,7 +182,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
 !         RECHERCHE D'UN NOUVEAU POINT D'EXTREMITE POUR DEBUTER LE
 !         NOUVEAU FOND DE FISSURE
-            do 14 iptext = 1, nbptex
+            do iptext = 1, nbptex
                 if (zi(jptext-1+iptext) .ne. 0) then
 !
                     indipt = zi(jptext-1+iptext)
@@ -194,14 +195,14 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
                     goto 15
                 endif
- 14         continue
+            end do
 !
 !         PRESENCE DE FONDS OUVERTS ET DE FONDS FERMES INTERDIT
             call utmess('F', 'XFEM_21')
 !
         endif
  15     continue
- 10 continue
+    end do
 !
     zi(jfonmu-1+2*(nbfond-1)+2) = nfon
 !

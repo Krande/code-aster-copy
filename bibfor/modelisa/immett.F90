@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
                   immer)
     implicit none
@@ -101,14 +101,14 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
     if (ii .lt. 4) then
 !
         immer=-1
-        goto 9999
+        goto 999
 !
     else
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         ktest=0
-        do 10 j = 1, 4
+        do j = 1, 4
             ktest=ktest+id(j)
-10      continue
+        end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD IMMERGE DANS LE VOLUME DE LA MAILLE
@@ -118,16 +118,16 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
         if (ktest .gt. 1) then
 !
             if (nbcnx .eq. 10) then
-                do 20 j = 5, 10, 1
+                do j = 5, 10, 1
                     dx = xyzma(1,j) - x3dca(1)
                     dy = xyzma(2,j) - x3dca(2)
                     dz = xyzma(3,j) - x3dca(3)
                     d = dx*dx + dy*dy + dz*dz
                     if (d .lt. r8prem()) then
                         immer=2
-                        goto 9999
+                        goto 999
                     endif
-20              continue
+                end do
             endif
 !
 !     TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE PAR DETERMINATION
@@ -138,7 +138,7 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
             itetra = 1
             call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4),&
                         x3dca(1), xbar(1), immer)
-            if (immer .ge. 0) goto 9999
+            if (immer .ge. 0) goto 999
 !
             if (immer .lt. 0) then
                 call utmess('F', 'MODELISA4_72')
@@ -152,13 +152,13 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
         else
 !
             immer=2
-            goto 9999
+            goto 999
 !
         endif
     endif
 !
 !
-9999  continue
+999 continue
 !
 ! --- FIN DE IMMETT.
 end subroutine

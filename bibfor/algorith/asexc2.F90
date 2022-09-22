@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                   corfre, noma, ndir, nomsup, nomspe,&
                   dirspe, echspe, nature, nbsupm, nsupp,&
@@ -24,6 +24,8 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
@@ -42,14 +44,12 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, nbmode, ndir(*), nature(3, *), nsupp(*), nordr(*)
     real(kind=8) :: amort(*), dirspe(3, *), echspe(3, *)
     character(len=8) :: nomsup(3, *), nomspe(3, *), noma
     character(len=*) :: motfac, kvspe, kaspe, knoeu, momec
-    character(len=24):: nopara(*)
+    character(len=24) :: nopara(*)
     aster_logical :: corfre
 !
 !     COMMANDE : COMB_SISM_MODAL
@@ -81,7 +81,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 !
     character(len=1) :: dir(3)
     character(len=4) :: knat
-    character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2),dircopy
+    character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2), dircopy
     character(len=9) :: niveau
     character(len=24) :: obj1, obj2, valk(2), grnoeu
     integer :: iarg, ival
@@ -122,7 +122,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
     endif
 !
 !     --- NOMBRE DE SUPPORTS PAR DIRECTION ---
-    do 10 ioc = 1, nbocc
+    do ioc = 1, nbocc
 !
         echsp0(1) = un
         echsp0(2) = un
@@ -203,7 +203,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                     AS_ALLOCATE(vk8=noeud, size=nno)
                     call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc,&
                                 iarg, nno, noeud, n1)
-                    do 20 ino = 1, nno
+                    do ino = 1, nno
                         noeu = noeud(ino)
                         call jenonu(jexnom(obj2, noeu), iret)
                         if (iret .eq. 0) then
@@ -226,7 +226,8 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                         dirspe(id,nsupp(id)) = dirsp0(id)
                         echspe(id,nsupp(id)) = echsp0(id)
                         nature(id,nsupp(id)) = inat
- 20                 continue
+ 20                     continue
+                    end do
                     AS_DEALLOCATE(vk8=noeud)
 !
                 else
@@ -236,7 +237,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                     AS_ALLOCATE(vk24=group_no, size=ngr)
                     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
                                 iarg, ngr, group_no, n1)
-                    do 30 igr = 1, ngr
+                    do igr = 1, ngr
                         grnoeu = group_no(igr)
                         call jeexin(jexnom(obj1, grnoeu), iret)
                         if (iret .eq. 0) then
@@ -248,7 +249,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                         endif
                         call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                         call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
-                        do 32 ino = 1, nno
+                        do ino = 1, nno
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
                             do is = 1, nsupp(id)
                                 if (nomsup(id,is) .eq. noeu) then
@@ -263,14 +264,17 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                             dirspe(id,nsupp(id)) = dirsp0(id)
                             echspe(id,nsupp(id)) = echsp0(id)
                             nature(id,nsupp(id)) = inat
- 32                     continue
- 30                 continue
+ 32                         continue
+                        end do
+ 30                     continue
+                    end do
                     AS_DEALLOCATE(vk24=group_no)
                 endif
             endif
         end do
 !
- 10 end do
+ 10     continue
+    end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
@@ -305,7 +309,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
         freq = uns2pi * omega
         valpu(1) = amor
         valpu(2) = freq
-        if (corfre) then 
+        if (corfre) then
             correc = sqrt( un - amor*amor )
         else
             correc =1.
@@ -327,17 +331,17 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                             ii = 1
                             iii = 1
                             dircopy = dir(id)
-                            call utmess('I', 'SEISME_60',si=im, nk=2, valk=[dircopy,&
-                                        nomsup(id,is)], nr=3, valr=[freq,amor,resu])
+                            call utmess('I', 'SEISME_60', si=im, nk=2,&
+                                        valk=[dircopy, nomsup(id, is)], nr=3,&
+                                        valr=[freq, amor, resu])
                         else
                             if (iii .eq. 0) then
                                 iii = 1
                                 dircopy = dir(id)
-                                call utmess('I', 'SEISME_73',nk=2, valk=[dircopy,&
-                                        nomsup(id,is)], sr=resu)
+                                call utmess('I', 'SEISME_73', nk=2,&
+                                            valk=[dircopy, nomsup(id, is)], sr=resu)
                             else
-                                call utmess('I', 'SEISME_61', sk=nomsup(id,is),&
-                                            sr=resu)
+                                call utmess('I', 'SEISME_61', sk=nomsup(id, is), sr=resu)
                             endif
                         endif
                     endif
@@ -359,10 +363,10 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                 coef = dirspe(id,is)*echspe(id,is)
                 valpu(1) = amort(nbmode)
                 valpu(2) = fcoup
-                if (corfre) then 
+                if (corfre) then
                     correc = sqrt( un - amor*amor )
                 else
-                    correc = 1. 
+                    correc = 1.
                 endif
                 omega = deuxpi * fcoup
                 call fointe('F ', nomspe(id, is), 2, nompu, valpu,&
@@ -375,11 +379,10 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (iii .eq. 0) then
                         iii = 1
-                        call utmess('I', 'SEISME_63', nk=2,& 
-                                    valk=[dir(id),nomsup(id,is)],sr=resu)
+                        call utmess('I', 'SEISME_63', nk=2, valk=[dir(id), nomsup(id, is)],&
+                                    sr=resu)
                     else
-                        call utmess('I', 'SEISME_64',&
-                                    sk=nomsup(id,is),sr=resu)
+                        call utmess('I', 'SEISME_64', sk=nomsup(id, is), sr=resu)
                     endif
                 endif
             end do

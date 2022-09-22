@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
+!
+subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
+                  idos)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterf_types.h"
@@ -116,13 +117,13 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
 !   NI DE jjldyn POUR EVITER D'ALLOUER DE LA MEMOIRE PENDANT L'ACTION 
 !   QUI CONSISTE A EN LIBERER
 !
-        if ((100*nbluti(ic))/nblmax(ic) .gt. 50 ) then 
-          if (indiq_jjagod .eq. 0 .and. indiq_jjldyn .eq. 0) then 
-             ibc = index ( classe , 'G')
-             call jjagod (ibc, 2*nblmax(ibc) )
-             ibc = index ( classe , 'V')
-             call jjagod (ibc, 2*nblmax(ibc) )
-          endif
+        if ((100*nbluti(ic))/nblmax(ic) .gt. 50) then
+            if (indiq_jjagod .eq. 0 .and. indiq_jjldyn .eq. 0) then
+                ibc = index ( classe , 'G')
+                call jjagod(ibc, 2*nblmax(ibc))
+                ibc = index ( classe , 'V')
+                call jjagod(ibc, 2*nblmax(ibc))
+            endif
         endif
 !
 ! ----- PREMIER DECHARGEMENT
@@ -141,9 +142,10 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
                     iszon(jiecr ) = 0
                     iszon(jiecr+1) = 0
                     iszon(jiecr+2) = (lgbl-nitecr(ic))/lois-3
-                    call jxecrb(ic, iitecr(ic), kitecr(ic)+1, lgbl, 0, 0)
+                    call jxecrb(ic, iitecr(ic), kitecr(ic)+1, lgbl, 0,&
+                                0)
                 endif
-                do 101 kd = 1, nblmax(ic)
+                do kd = 1, nblmax(ic)
                     lsadi = jusadi(ic)+3*kd-2
                     iso = iusadi(lsadi)+iusadi(lsadi+1)
                     if (iso .ge. 0) goto 101
@@ -151,13 +153,14 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
                     numext = (nbluti(ic)-1)/nbenrg(ic)
                     if (numext .gt. iext(ic)-1) then
                         numdeb = iext(ic)
-                        do 103 k = numdeb, numext
+                        do k = numdeb, numext
                             call jxouvr(ic, k+1, mode=2)
                             iext(ic) = iext(ic)+1
-103                     continue
+                        end do
                     endif
                     goto 104
-101             continue
+101                 continue
+                end do
                 call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax(ic))
 104             continue
                 iitecr(ic) = kd
@@ -167,7 +170,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
                 nitecr(ic) = 0
             else
                 if (iitecr(ic) .eq. 0) then
-                    do 201 kd = 1, nblmax(ic)
+                    do kd = 1, nblmax(ic)
                         lsadi = jusadi(ic)+3*kd-2
                         iso = iusadi(lsadi)+iusadi(lsadi+1)
                         if (iso .ge. 0) goto 201
@@ -175,13 +178,14 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
                         numext = (nbluti(ic)-1)/nbenrg(ic)
                         if (numext .gt. iext(ic)-1) then
                             numdeb = iext(ic)
-                            do 203 k = numdeb, numext
+                            do k = numdeb, numext
                                 call jxouvr(ic, k+1, mode=2)
                                 iext(ic) = iext(ic)+1
-203                         continue
+                            end do
                         endif
                         goto 204
-201                 continue
+201                     continue
+                    end do
                     call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax( ic))
 204                 continue
                     iitecr(ic) = kd
@@ -212,29 +216,30 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
 301         continue
             if (kd .le. nblmax(ic)-nbl) then
                 lsadi = jusadi(ic)+3*kd-2
-                do 302 kl = 1, nbl
+                do kl = 1, nbl
                     lsa = lsadi+3*(kl-1)
                     iso = iusadi(lsa)+iusadi(lsa+1)
                     if (iso .ge. 0) then
                         kd = kd + kl
                         goto 301
                     endif
-302             continue
+                end do
                 iaddi(1) = kd
                 nbluti(ic) = max (kd+nbl-1,nbluti(ic))
                 numext = (nbluti(ic)-1)/nbenrg(ic)
                 if (numext .gt. iext(ic)-1) then
                     numdeb = iext(ic)
-                    do 303 k = numdeb, numext
+                    do k = numdeb, numext
                         call jxouvr(ic, k+1, mode=2)
                         iext(ic) = iext(ic)+1
-303                 continue
+                    end do
                 endif
                 goto 304
             endif
             call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax(ic))
 304         continue
-            call jxecrb(ic, kd, iadmo, lso2, idco, idos)
+            call jxecrb(ic, kd, iadmo, lso2, idco,&
+                        idos)
         endif
     else
 !
@@ -251,7 +256,8 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
                 call jxdeps(iadmo, kitecr(ic)+ladd+1, lso)
             else
                 if (litlec(ic)) then
-                    call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, 0)
+                    call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0,&
+                                0)
                 endif
                 call jxlirb(ic, kadd, kitlec(ic)+1, lgbl)
                 call jxdeps(iadmo, kitlec(ic)+ladd+1, lso)
@@ -262,7 +268,8 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
 !
 ! ------- GROS  OBJET
 !
-            call jxecrb(ic, kadd, iadmo, lso2, idco, idos)
+            call jxecrb(ic, kadd, iadmo, lso2, idco,&
+                        idos)
         endif
     endif
 ! FIN ------------------------------------------------------------------

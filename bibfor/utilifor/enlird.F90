@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine enlird(dateur)
 ! ......................................................................
     implicit none
@@ -46,14 +46,14 @@ subroutine enlird(dateur)
         write(date2(2)(1:2),'(I2)') date9(2)
     endif
     write(annee,'(I4)') date9(4)
-    do 1 i = 5, 7
+    do i = 5, 7
         date2(i) = '00'
         if (date9(i) .lt. 10) then
             write(date2(i)(2:2),'(I1)') date9(i)
         else
             write(date2(i)(1:2),'(I2)') date9(i)
         endif
- 1  end do
+    end do
     write (dateuz,101) jour2(date9(1)),date2(2),&
      &      mois4(date9(3)),annee,(date2(i),i=5,7)
     dateur = dateuz

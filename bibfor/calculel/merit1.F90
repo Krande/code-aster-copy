@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine merit1(modele, nchar, lchar, mate, mateco, cara,&
-                  time, matel, nh, prefch, numero,&
-                  base)
+!
+subroutine merit1(modele, nchar, lchar, mate, mateco,&
+                  cara, time, matel, nh, prefch,&
+                  numero, base)
     implicit none
 !
 !
@@ -125,7 +125,7 @@ subroutine merit1(modele, nchar, lchar, mate, mateco, cara,&
         call reajre(matel, lchout(1), base)
     endif
     if (lchar(1) (1:8) .ne. '        ') then
-        do 10 icha = 1, nchar
+        do icha = 1, nchar
             lpain(1) = 'PDDLMUR'
             lcharz = lchar(icha)
             call exisd('CHAMP_GD', lcharz//'.CHTH.CMULT', iret)
@@ -139,7 +139,8 @@ subroutine merit1(modele, nchar, lchar, mate, mateco, cara,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
             call reajre(matel, lchout(1), base)
-10      continue
+ 10         continue
+        end do
     endif
 !
     call jedema()

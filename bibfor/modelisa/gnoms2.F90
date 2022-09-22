@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gnoms2(noojb, k1, k2)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -46,16 +46,16 @@ subroutine gnoms2(noojb, k1, k2)
 !
     noojb1 = noojb
     inum = -1
-    do 10, iessai=1,nessai
-    inum = inum + 1
+    do iessai = 1, nessai
+        inum = inum + 1
 !        ASSERT(INUM.LE.9998)
-    call codent(inum, 'D0', noojb1(k1:k2))
-    call jeexin(noojb1, iret)
-    if (iret .eq. 0) goto 20
-    10 end do
+        call codent(inum, 'D0', noojb1(k1:k2))
+        call jeexin(noojb1, iret)
+        if (iret .eq. 0) goto 20
+    end do
     call utmess('F', 'MODELISA4_69')
 !
-20  continue
+ 20 continue
     noojb=noojb1
 !
 !

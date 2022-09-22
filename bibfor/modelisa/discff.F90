@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
                   vale)
     implicit none
@@ -81,13 +81,13 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
 !
     call jeveuo(fvale1, 'L', ifabs1)
     call jeveuo(fvale2, 'L', ifabs2)
-    do 10 ip = 1, nbp1
+    do ip = 1, nbp1
         disc(ip) = zr(ifabs1+ip-1)
-10  end do
+    end do
     long = disc(nbp1)
-    do 15 ip = 1, nbp2
+    do ip = 1, nbp2
         disc(nbp1+ip) = zr(ifabs2+ip-1)
-15  end do
+    end do
 !
 !-----2.VALEURS DES FONCTIONS
 !
@@ -95,18 +95,18 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
 !
     iford1 = ifabs1 + nbp1
     iford2 = ifabs2 + nbp2
-    do 20 ip = 1, nbp1
+    do ip = 1, nbp1
         vale(ip,1) = zr(iford1+ip-1)
-20  end do
-    do 25 ip = 1, nbp2
+    end do
+    do ip = 1, nbp2
         vale(nbp1+ip,1) = zr(iford2+ip-1)
-25  end do
+    end do
 !
 !-----2.2.ON INTERPOLE LES AUTRES FONCTIONS LE CAS ECHEANT
 !
     if (nbfonc .gt. 1) then
 !
-        do 30 ifo = 2, nbfonc
+        do ifo = 2, nbfonc
 !
             tbfonc = nomfon(ifo)
             tblp = tbfonc//'.TBLP'
@@ -150,14 +150,14 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
             call jelibe(fprol1)
             call jelibe(fprol2)
 !
-30      continue
+        end do
 !
 !     --- CONCATENATION DES DISCRETISATIONS DES FONCTIONS DE FORME
 !       - SUR (0,2L)
         long = disc(nbp1)
-        do 26 ip = 1, nbp2
+        do ip = 1, nbp2
             disc(nbp1+ip) = zr(ifabs2+ip-1)+long
-26      continue
+        end do
 !
     endif
 !

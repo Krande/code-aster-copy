@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                   nbtgrm, nomres, nbincr, tabsgr, tabsst,&
                   tabgma, tabnom)
@@ -76,12 +76,12 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
     call jemarq()
 !
     ngfind = 0
-    do 40 igr = 1, nbgr
+    do igr = 1, nbgr
         nomgr = tabsgr(igr)
         nomut = ' '
 !     --- RECHERCHE DES NOMS DANS NOM_GROUP_MA ---
         igrut = 0
-10      continue
+ 10     continue
         igrut = igrut + 1
         if (igrut .le. nbgrut) then
             if (tabsst(igrut) .ne. nomsst) goto 10
@@ -107,7 +107,7 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                 nomut=nomsst(1:leng1)
             endif
         endif
-        do 20 igrold = 1, nbtgrm
+        do igrold = 1, nbtgrm
             call jenuno(jexnum(nomres//'.GROUPEMA', igrold), k8bid)
             if (nomut .eq. k8bid) then
                 valk (1) = nomut
@@ -116,31 +116,32 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                 valk (4) = k8bid
                 call utmess('F', 'ALGORITH13_26', nk=4, valk=valk)
             endif
-20      continue
+        end do
         call jecroc(jexnom(nomres//'.GROUPEMA', nomut))
         call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONMAX', max(1, nbgrma))
         call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONUTI', nbgrma)
         call jeveuo(jexnom(nomres//'.GROUPEMA', nomut), 'E', ilstno)
         nbtgrm = nbtgrm+1
-        do 30 ima = 1, nbgrma
+        do ima = 1, nbgrma
             zi(ilstno-1+ima) = zi(ilstma-1+ima) + nbincr
-30      continue
-40  end do
+        end do
+ 40     continue
+    end do
 !
 ! --- ON VERIFIE SI LES GROUPES UTILISATEURS ONT TOUS ETE TROUVE
 !
     nsfind = 0
-    do 50 igrut = 1, nbgrut
+    do igrut = 1, nbgrut
         if (tabsst(igrut) .eq. nomsst) nsfind = nsfind + 1
-50  end do
+    end do
 !
     if (nsfind .gt. ngfind) then
 ! --- CERTAINS GROUPES N'ONT PAS ETE TROUVE
-        do 70 igrut = 1, nbgrut
+        do igrut = 1, nbgrut
             nomut = tabgma(igrut)
             if (tabsst(igrut) .eq. nomsst) then
                 igr = 1
-60              continue
+ 60             continue
                 if (igr .le. nbgr) then
                     if (tabsgr(igr) .ne. nomut) then
                         igr = igr + 1
@@ -154,7 +155,7 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                     call utmess('F', 'ALGORITH13_27', nk=3, valk=valk)
                 endif
             endif
-70      continue
+        end do
     endif
 !
     call jedema()

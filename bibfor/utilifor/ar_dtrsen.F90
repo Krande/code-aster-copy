@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 ! ===============================================================
 ! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
@@ -221,9 +221,9 @@
 !
 !  WHEN SEP IS SMALL, SMALL CHANGES IN T CAN CAUSE LARGE CHANGES IN
 subroutine ar_dtrsen(job, compq, select, n, t,&
-                  ldt, q, ldq, wr, wi,&
-                  m, s, sep, work, lwork,&
-                  iwork, liwork, info)
+                     ldt, q, ldq, wr, wi,&
+                     m, s, sep, work, lwork,&
+                     iwork, liwork, info)
 !  THE INVARIANT SUBSPACE. AN APPROXIMATE BOUND ON THE MAXIMUM ANGULAR
 !  ERROR IN THE COMPUTED RIGHT INVARIANT SUBSPACE IS
 !
@@ -298,7 +298,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !
         m = 0
         pair = .false.
-        do 10 k = 1, n
+        do k = 1, n
             if (pair) then
                 pair = .false.
             else
@@ -313,7 +313,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
                     if (select( n )) m = m + 1
                 endif
             endif
- 10     continue
+        end do
 !
         n1 = m
         n2 = n - m
@@ -344,7 +344,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !
     ks = 0
     pair = .false.
-    do 20 k = 1, n
+    do k = 1, n
         if (pair) then
             pair = .false.
         else
@@ -363,7 +363,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
                 ierr = 0
                 kk = k
                 if (k .ne. ks) call ar_dtrexc(compq, n, t, ldt, q,&
-                                           ldq, kk, ks, work, ierr)
+                                              ldq, kk, ks, work, ierr)
                 if (ierr .eq. 1 .or. ierr .eq. 2) then
 !
 !                 BLOCKS TOO CLOSE TO SWAP: EXIT.
@@ -376,7 +376,7 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
                 if (pair) ks = ks + 1
             endif
         endif
- 20 end do
+    end do
 !
     if (wants) then
 !
@@ -387,8 +387,8 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
         call dlacpy('F', n1, n2, t( 1, n1+1 ), ldt,&
                     work, n1)
         call ar_dlrsyl('N', 'N', -1, n1, n2,&
-                    t, ldt, t( n1+1, n1+1 ), ldt, work,&
-                    n1, scale, ierr)
+                       t, ldt, t( n1+1, n1+1 ), ldt, work,&
+                       n1, scale, ierr)
 !
 !        ESTIMATE THE RECIPROCAL OF THE CONDITION NUMBER OF THE CLUSTER
 !        OF EIGENVALUES.
@@ -409,22 +409,22 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
         kase = 0
  30     continue
         call ar_dlacon(nn, work( nn+1 ), work, iwork, est,&
-                    kase)
+                       kase)
         if (kase .ne. 0) then
             if (kase .eq. 1) then
 !
 !              SOLVE  T11*R - R*T22 = SCALE*X.
 !
                 call ar_dlrsyl('N', 'N', -1, n1, n2,&
-                            t, ldt, t( n1+1, n1+1 ), ldt, work,&
-                            n1, scale, ierr)
+                               t, ldt, t( n1+1, n1+1 ), ldt, work,&
+                               n1, scale, ierr)
             else
 !
 !              SOLVE  T11'*R - R*T22' = SCALE*X.
 !
                 call ar_dlrsyl('T', 'T', -1, n1, n2,&
-                            t, ldt, t( n1+1, n1+1 ), ldt, work,&
-                            n1, scale, ierr)
+                               t, ldt, t( n1+1, n1+1 ), ldt, work,&
+                               n1, scale, ierr)
             endif
             goto 30
         endif
@@ -436,16 +436,16 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !
 !     STORE THE OUTPUT EIGENVALUES IN WR AND WI.
 !
-    do 50 k = 1, n
+    do k = 1, n
         wr( k ) = t( k, k )
         wi( k ) = zero
- 50 end do
-    do 60 k = 1, n - 1
+    end do
+    do k = 1, n - 1
         if (t( k+1, k ) .ne. zero) then
             wi( k ) = sqrt( abs( t( k, k+1 ) ) )* sqrt( abs( t( k+1, k ) ) )
             wi( k+1 ) = -wi( k )
         endif
- 60 end do
+    end do
 1000 continue
     call matfpe(1)
 !

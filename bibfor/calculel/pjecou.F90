@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !     COMMANDE:  PROJ_CHAMP  METHODE:'COUPLAGE' (COUPLAGE IFS VIA YACS)
 ! ----------------------------------------------------------------------
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
@@ -121,7 +121,7 @@ implicit none
 !       RECHERCHE DES MAILLES1 ASSOCIEES AU NOEUD1
 !       ==========================================
         normgl = 1.d20
-        do 30 ima1 = 1, nbmag1
+        do ima1 = 1, nbmag1
             ima = zi(ialim1-1+ima1)
 !
 !  ON RECUPERE LE NOM DU TYPE DE LA MAILLE
@@ -137,26 +137,26 @@ implicit none
             elref(1:2)=ntypma(1:2)
             elref(3:3)=ntypma(ii:ii)
             elref(4:8)='     '
-
-            call elrfno(elref, nno  = nbpg, nodeCoor = crrefe)
+!
+            call elrfno(elref, nno = nbpg, nodeCoor = crrefe)
 !
 !         CAS OU LA MAILLE EST LINEIQUE (SEG)
 !         -----------------------------------
             if (ntypma(1:3) .eq. 'SEG') then
                 inom1 = zi(icxma1-1+1)
                 inom2 = zi(icxma1-1+2)
-                do 40 ii = 1, 3
+                do ii = 1, 3
                     con1m1(ii) = zr(jcoor1-1+3*(inom1-1)+ii)
                     con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
- 40             continue
+                end do
 ! VERSION ORIGINALE
 !            CALL PJ3D4C(CON1M2,CON1M1,CON2M1,INMAIL,COBARY,NORMLO)
                 call pj3da4(con1m2, con1m1, con2m1, cobary(1), cobary(2),&
                             normlo)
                 ksi(1) = 0
-                do 50 ii = 1, 2
+                do ii = 1, 2
                     ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
- 50             continue
+                end do
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (TRIA)
 !         --------------------------------------
@@ -164,11 +164,11 @@ implicit none
                 inom1 = zi(icxma1-1+1)
                 inom2 = zi(icxma1-1+2)
                 inom3 = zi(icxma1-1+3)
-                do 60 ii = 1, 3
+                do ii = 1, 3
                     con1m1(ii) = zr(jcoor1-1+3*(inom1-1)+ii)
                     con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
                     con3m1(ii) = zr(jcoor1-1+3*(inom3-1)+ii)
- 60             continue
+                end do
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
                 call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
@@ -176,10 +176,10 @@ implicit none
                 inmail = .true.
                 ksi(1) = 0
                 ksi(2) = 0
-                do 70 ii = 1, 3
+                do ii = 1, 3
                     ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
                     ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
- 70             continue
+                end do
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (QUAD)
 !         --------------------------------------
@@ -190,11 +190,11 @@ implicit none
                 inom1 = zi(icxma1-1+1)
                 inom2 = zi(icxma1-1+2)
                 inom3 = zi(icxma1-1+3)
-                do 80 ii = 1, 3
+                do ii = 1, 3
                     con1m1(ii) = zr(jcoor1-1+3*(inom1-1)+ii)
                     con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
                     con3m1(ii) = zr(jcoor1-1+3*(inom3-1)+ii)
- 80             continue
+                end do
 !  VERSION ORIGINALE
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
@@ -207,28 +207,28 @@ implicit none
                 if (.not.(inmail)) then
                     inom2 = zi(icxma1-1+3)
                     inom3 = zi(icxma1-1+4)
-                    do 90 ii = 1, 3
+                    do ii = 1, 3
                         con2m1(ii) = zr(jcoor1-1+3*(inom2-1)+ii)
                         con3m1(ii) = zr(jcoor1-1+3*(inom3-1)+ii)
- 90                 continue
+                    end do
 !  VERSION ORIGINALE
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
                     call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
                                 cobary(1), cobary(2), cobary(3), normlo)
-                    ksi(1) = cobary(1)*crrefe(1, 1) 
+                    ksi(1) = cobary(1)*crrefe(1, 1)
                     ksi(2) = cobary(1)*crrefe(2, 1)
-                    do 100 ii = 2, 3
+                    do ii = 2, 3
                         ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
-                        ksi(2) = ksi(2) + cobary(ii)*  crrefe(2, ii)
-100                 continue
+                        ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
+                    end do
                 else
                     ksi(1) = 0.d0
                     ksi(2) = 0.d0
-                    do 110 ii = 1, 3
+                    do ii = 1, 3
                         ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
                         ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
-110                 continue
+                    end do
                 endif
             else
 !            WRITE (6,*) 'TYPE DE MAILLE NON RECONNUE : ',NTYPMA
@@ -243,34 +243,34 @@ implicit none
                 call elrfvf(elref, ksi, ff, nbpg)
                 nbpgrf = nbpg
                 mailrf = ima
-                do 120 ii = 1, nbpgrf
+                do ii = 1, nbpgrf
                     listno(ii) = zi(icxma1-1+ii)
                     coefno(ii) = ff(ii)
-120             continue
+                end do
             endif
- 30     continue
+        end do
 !
 !       AFFECTATION DU NOEUD LE PLUS PROCHE EN CAS DE PROBLEME
 !       ======================================================
         if (mailrf .eq. 0) then
             normgl = 1.d20
             nodegl = 0
-            do 130 ima1 = 1, nbmag1
+            do ima1 = 1, nbmag1
                 ima = zi(ialim1-1+ima1)
                 call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog)
                 call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', icxma1)
-                do 140 inom1 = 1, nbnog
+                do inom1 = 1, nbnog
                     inol = jcoor1-1+3*(zi(icxma1-1+inom1)-1)
                     normlo = 0.d0
-                    do 150 ii = 1, 3
+                    do ii = 1, 3
                         normlo = normlo + (zr(inol+ii)-con1m2(ii))**2
-150                 continue
+                    end do
                     if (normlo .lt. normgl) then
                         normgl = normlo
                         nodegl = zi(icxma1-1+inom1)
                     endif
-140             continue
-130         continue
+                end do
+            end do
             mailrf = 0
             nbpgrf = 1
             listno(1) = nodegl
@@ -281,10 +281,10 @@ implicit none
 !       =============================================
         zi(iaconb-1+inog2) = nbpgrf
         zi(iacom1-1+inog2) = mailrf
-        do 160 ii = 1, nbpgrf
+        do ii = 1, nbpgrf
             zi(iaconu-1+flag+ii) = listno(ii)
             zr(iacocf-1+flag+ii) = coefno(ii)
-160     continue
+        end do
         flag = flag + nbpgrf
     end do
 ! ======================================================================

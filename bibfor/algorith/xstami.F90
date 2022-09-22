@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
                   jmafon, jmaen1, jmaen2, jmaen3)
 !
@@ -69,40 +69,40 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
         call utmess('I', 'XFEM_29', si=nmafon)
     endif
     if (niv .ge. 3) then
-        do 320 ima = 1, nmafon
+        do ima = 1, nmafon
             call jenuno(jexnum(nommai, zi(jmafon-1+ima)), nomail)
             write(ifm,*)'MAILLE ',nomail
-320      continue
+        end do
     endif
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_30', si=nmaen1)
     endif
     if (niv .ge. 3) then
-        do 321 ima = 1, nmaen1
+        do ima = 1, nmaen1
             call jenuno(jexnum(nommai, zi(jmaen1-1+ima)), nomail)
             write(ifm,*)'MAILLE ',nomail
-321      continue
+        end do
     endif
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_31', si=nmaen2)
     endif
     if (niv .ge. 3) then
-        do 322 ima = 1, nmaen2
+        do ima = 1, nmaen2
             call jenuno(jexnum(nommai, zi(jmaen2-1+ima)), nomail)
             write(ifm,*)'MAILLE ',nomail
-322      continue
+        end do
     endif
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_32', si=nmaen3)
     endif
     if (niv .ge. 3) then
-        do 323 ima = 1, nmaen3
+        do ima = 1, nmaen3
             call jenuno(jexnum(nommai, zi(jmaen3-1+ima)), nomail)
             write(ifm,*)'MAILLE ',nomail
-323      continue
+        end do
     endif
 !
     call jedema()

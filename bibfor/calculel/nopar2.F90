@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function nopar2(nomopt, nomgd, statut)
     implicit none
     character(len=8) :: nopar2
@@ -79,45 +79,45 @@ function nopar2(nomopt, nomgd, statut)
             itrou=1
             outrou='OUT'
         else
-            do 1,kk=1,nbout
-            gd2 = zi(iadesc-1+4+nbin+kk)
-            if (gd .eq. gd2) then
-                nbtrou=nbtrou+1
-                itrou=kk
-                outrou='OUT'
-            endif
- 1          continue
+            do kk = 1, nbout
+                gd2 = zi(iadesc-1+4+nbin+kk)
+                if (gd .eq. gd2) then
+                    nbtrou=nbtrou+1
+                    itrou=kk
+                    outrou='OUT'
+                endif
+            end do
         endif
 !
     else if (statu2.eq.'IN') then
-        do 2,kk=1,nbin
-        gd2 = zi(iadesc-1+4+kk)
-        if (gd .eq. gd2) then
-            nbtrou=nbtrou+1
-            itrou=kk
-            outrou='IN'
-        endif
- 2      continue
-!
-    else if (statu2.eq.'INOUT') then
-        do 11,kk=1,nbout
-        gd2 = zi(iadesc-1+4+nbin+kk)
-        if (gd .eq. gd2) then
-            nbtrou=nbtrou+1
-            itrou=kk
-            outrou='OUT'
-        endif
-11      continue
-!
-        if (nbtrou .eq. 0) then
-            do 12,kk=1,nbin
+        do kk = 1, nbin
             gd2 = zi(iadesc-1+4+kk)
             if (gd .eq. gd2) then
                 nbtrou=nbtrou+1
                 itrou=kk
                 outrou='IN'
             endif
-12          continue
+        end do
+!
+    else if (statu2.eq.'INOUT') then
+        do kk = 1, nbout
+            gd2 = zi(iadesc-1+4+nbin+kk)
+            if (gd .eq. gd2) then
+                nbtrou=nbtrou+1
+                itrou=kk
+                outrou='OUT'
+            endif
+        end do
+!
+        if (nbtrou .eq. 0) then
+            do kk = 1, nbin
+                gd2 = zi(iadesc-1+4+kk)
+                if (gd .eq. gd2) then
+                    nbtrou=nbtrou+1
+                    itrou=kk
+                    outrou='IN'
+                endif
+            end do
         endif
 !
     else

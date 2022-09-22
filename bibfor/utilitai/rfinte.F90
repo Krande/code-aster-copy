@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rfinte(ispec)
 !     OPERATEUR "RECU_FONCTION"   MOT CLE "INTE_SPEC"
 ! ----------------------------------------------------------------------
@@ -24,6 +24,7 @@ subroutine rfinte(ispec)
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
+#include "asterfort/foattr.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -36,7 +37,6 @@ subroutine rfinte(ispec)
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/foattr.h"
 !
     character(len=*) :: ispec
     integer :: nbval
@@ -113,13 +113,13 @@ subroutine rfinte(ispec)
         call jeveuo(chcmpi, 'L', lcmpi)
         call jeveuo(chcmpj, 'L', lcmpj)
         call jelira(chnoei, 'LONMAX', mxval)
-        do 120 i1 = 1, mxval
+        do i1 = 1, mxval
             if ((zk8(lnoei-1+i1) .eq. noei) .and. (zk8(lnoej-1+i1) .eq. noej) .and.&
                 (zk8(lcmpi-1+i1) .eq. cmpi) .and. (zk8(lcmpj-1+i1) .eq. cmpj)) then
                 indi = i1
                 indice = .true.
             endif
-120     continue
+        end do
     else if (n3 .lt. 0) then
         call getvis(' ', 'NUME_ORDRE_I', scal=numi, nbret=n4)
         call getvis(' ', 'NUME_ORDRE_J', nbval=0, nbret=n4)
@@ -133,12 +133,12 @@ subroutine rfinte(ispec)
         call jeveuo(chnumi, 'L', lnumi)
         call jeveuo(chnumj, 'L', lnumj)
         call jelira(chnumi, 'LONMAX', mxval)
-        do 110 i1 = 1, mxval
+        do i1 = 1, mxval
             if ((zi(lnumi-1+i1) .eq. numi) .and. (zi(lnumj-1+i1) .eq. numj)) then
                 indi = i1
                 indice = .true.
             endif
-110     continue
+        end do
     else if (n5 .lt. 0) then
         call getvis(' ', 'NUME_ORDRE', scal=num, nbret=n4)
         chnum = nospec//'.NUME_ORDRE'
@@ -179,18 +179,18 @@ subroutine rfinte(ispec)
     if (nbval .eq. nbfreq) then
         zk24(lpro) = 'FONCTION'
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbfreq, kvale)
-        do 31 i = 1, nbfreq
+        do i = 1, nbfreq
             zr(kvale+i-1) = zr(ifreq+i-1)
             zr(kvale+nbfreq+i-1) = zr(lvale+i-1)
- 31     continue
+        end do
     else
         zk24(lpro) = 'FONCT_C'
         call wkvect(nomfon//'.VALE', 'G V R', 3*nbfreq, kvale)
-        do 32 i = 1, nbfreq
+        do i = 1, nbfreq
             zr(kvale+i-1) = zr(ifreq+i-1)
             zr(kvale+nbfreq+2*(i-1)) = zr(lvale+2*(i-1))
             zr(kvale+nbfreq+2*(i-1)+1) = zr(lvale+2*(i-1)+1)
- 32     continue
+        end do
     endif
 !
     call jedema()

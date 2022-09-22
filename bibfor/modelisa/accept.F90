@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine accept(f, nbm, method, imode, jmode,&
                   uflui, jc, dir, uc, uct,&
                   l, lt)
@@ -57,7 +57,7 @@ subroutine accept(f, nbm, method, imode, jmode,&
     deuxpi=2*pi
     omega=deuxpi*f
 ! on commente cette ligne pour fix un bug
-    if (method(1:7) .ne. 'AU_YANG')  uc=0.65d0*uflui
+    if (method(1:7) .ne. 'AU_YANG') uc=0.65d0*uflui
     kl = 0.1d0*omega/uc
     kt = 0.55d0*omega/uc
 !
@@ -73,7 +73,7 @@ subroutine accept(f, nbm, method, imode, jmode,&
     iorig=(imode-1)*ntail2
     jorig=(jmode-1)*ntail2
     jpgfin=(jmode-1)*ntail2+ntail1-1
-    do 203 ipg = (imode-1)*ntail2, (imode-1)*ntail2+ntail1-1
+    do ipg = (imode-1)*ntail2, (imode-1)*ntail2+ntail1-1
         if (jmode .eq. imode) then
             jpgini = ipg
         else
@@ -81,7 +81,7 @@ subroutine accept(f, nbm, method, imode, jmode,&
         endif
         ispe=ipg-(imode-1)*ntail2
         iad1=itab + iorig + 6*ispe
-        do 204 jpg = jpgini, jpgfin
+        do jpg = jpgini, jpgfin
             jspe=jpg-(jmode-1)*ntail2
             iad2=itab + jorig + 6*jspe
 ! CALCUL DISTANCES INTER POINTS DE GAUSS
@@ -95,12 +95,12 @@ subroutine accept(f, nbm, method, imode, jmode,&
 !
 ! COHERENCE CORCOS
             if (method(1:6) .eq. 'CORCOS') then
-                do 205 ind = 1, 3
+                do ind = 1, 3
                     local(ind)=0.d0
-                    do 206 jnd = 1, 3
+                    do jnd = 1, 3
                         local(ind)=local(ind)+dir(ind,jnd)*mes(jnd)
-206                  continue
-205              continue
+                    end do
+                end do
 !
                 d1=abs(local(1))
                 d2=abs(local(2))
@@ -124,8 +124,8 @@ subroutine accept(f, nbm, method, imode, jmode,&
             else
                 jc = jc + coeh*zr(iad1)*zr(iad2)
             endif
-204      continue
-203  continue
+        end do
+    end do
     if (imode .eq. jmode) jc = jc + 2*jc1
 !
     call jedema()

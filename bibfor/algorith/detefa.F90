@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine detefa(nnose, pi1, pi2, it, typma,&
                   ainter, cnset, n)
     implicit none
@@ -24,7 +24,7 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#    include "asterfort/xxmmvd.h"
+# include "asterfort/xxmmvd.h"
     integer :: nnose, it, pi1, pi2, cnset(*), n(3)
     real(kind=8) :: ainter(*)
     character(len=8) :: typma
@@ -57,9 +57,9 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
 !     CAS OU LA FISSURE COINCIDE AVEC UNE ARETE NON TRAITE ICI
     ASSERT((a1.ne.0).or.(a2.ne.0))
 !
-    do 1 i=1,3
-       n(i)=0
-1   continue     
+    do i = 1, 3
+        n(i)=0
+    end do
     found=.false. 
 !
 !     CAS UN DES DEUX POINTS D'INTERSECTION EST CONFONDU AVEC UN NOEUD
@@ -81,8 +81,8 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
 !     CAS LES DEUX POINTS D'INTERSECTIONS NE SONT PAS CONFONDU AVEC
 !     LES NOEUDS SOMMETS, CALCULE LES 3 INDICES DANS L'ELEMENT ENFANT
     else if ((a1.ne.0).and.(a2.ne.0)) then
-        do 30 i = 1, 2
-            do 40 j = 1, 2
+        do i = 1, 2
+            do j = 1, 2
                 if (ar(a1,i) .eq. ar(a2,j)) then
 !                if (cnset(nnose*(it-1)+ar(a1,i)) .eq. cnset(nnose*(it-1)+ar(a2,j))) then
                     found=.true.
@@ -90,8 +90,8 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
                     n1=ar(a1,3-i)
                     n2=ar(a2,3-j)
                 endif
-40          continue
-30      continue
+            end do
+        end do
         ASSERT(found)
         n(1)=cnset(nnose*(it-1)+n1)
         n(2)=cnset(nnose*(it-1)+n2)

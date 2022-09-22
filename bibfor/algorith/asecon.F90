@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asecon(nomsy, neq, mome, resu)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -43,8 +45,6 @@ subroutine asecon(nomsy, neq, mome, resu)
 #include "asterfort/utmess.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer :: neq
     character(len=16) :: nomsy
@@ -58,8 +58,8 @@ subroutine asecon(nomsy, neq, mome, resu)
 ! IN  : RESU   : NOM UTILISATEUR DE LA COMMANDE
 !     ------------------------------------------------------------------
     integer :: iad, ibid, icas, idep, idir, ier, ii, in, ino, ioc, iocc, iordr
-    integer :: iorst, iret,   jcas,  jdir,  jno, jord
-    integer ::    jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
+    integer :: iorst, iret, jcas, jdir, jno, jord
+    integer :: jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
     integer :: ncas, ndep, nucas, nume, tordr(1)
     real(kind=8) :: r8b, epsmac, xxx, xx1, xx2, xx3
     complex(kind=8) :: cbid
@@ -125,7 +125,7 @@ subroutine asecon(nomsy, neq, mome, resu)
         call jeveuo('&&ASECON.NORD', 'E', jord)
     endif
 !
-    do 10 iocc = 1, nboc
+    do iocc = 1, nboc
 !
 ! POUR CHAQUE OCCURENCE ON STOQUE LE CHAMP
 !
@@ -147,16 +147,16 @@ subroutine asecon(nomsy, neq, mome, resu)
         endif
         call jeveuo(vale, 'E', jvale)
 !
-        do 4 in = 1, neq
+        do in = 1, neq
             quad(in)= 0.0d0
             line(in)= 0.0d0
             vabs(in)= 0.0d0
- 4      continue
+        end do
         call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
-        do 20 icas = 1, ncas
+        do icas = 1, ncas
             nucas = zi(jcas+icas-1)
-            do 40 idep = 1, ndep
+            do idep = 1, ndep
                 call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=idep, scal=nume, nbret=ibid)
                 if (nume .eq. nucas) then
                     knum = 'N       '
@@ -170,9 +170,9 @@ subroutine asecon(nomsy, neq, mome, resu)
                     call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'L', jdir)
                     call jeveuo('&&ASENAP.STAT', 'L', vk8=vstat)
                     stat = vstat(icas)
-                    do 12 ino = 1, nbno
+                    do ino = 1, nbno
                         noeu =zk8(jno+ino-1)
-                        do 14 idir = 1, 3
+                        do idir = 1, 3
                             if (zr(jdir+3*(ino-1)+idir-1) .ne. epsmac) then
                                 cmp = nomcmp(idir)
                                 monacc = noeu//cmp
@@ -189,44 +189,44 @@ subroutine asecon(nomsy, neq, mome, resu)
                                 else
                                     call jeveuo(chextr//'.CELV', 'L', jval1)
                                 endif
-                                do 16 in = 1, neq
+                                do in = 1, neq
                                     rep(in) = zr(jval1+in-1) * xx1
-16                              continue
+                                end do
                                 if (type(iocc) .eq. 1) then
 !                 --- COMBINAISON QUADRATIQUE ---
-                                    do 24 in = 1, neq
+                                    do in = 1, neq
                                         xxx = rep(in)
                                         quad(in)= quad(in)+&
                                         xxx*xxx
-24                                  continue
+                                    end do
                                 else if (type(iocc).eq.2) then
 !               --- COMBINAISON LINEAIRE ---
-                                    do 18 in = 1, neq
+                                    do in = 1, neq
                                         line(in)= line(in)+&
                                         rep(in)
-18                                  continue
+                                    end do
                                 else
 !              --- COMBINAISON VALEUR ABSOLUE ---
-                                    do 22 in = 1, neq
+                                    do in = 1, neq
                                         xx1 = abs(rep(in))
                                         vabs(in)= vabs(in)+&
                                         xx1
-22                                  continue
+                                    end do
                                 endif
                             endif
-14                      continue
-12                  continue
+                        end do
+                    end do
                 endif
-40          continue
-20      continue
-        do 26 in = 1, neq
+            end do
+        end do
+        do in = 1, neq
             xx1 = line(in)
             xx2 = vabs(in)
             xx3 = sqrt(quad(in))
             zr(jvale+in-1) = xx1 + xx2 + xx3
             ii = ii + 1
             aux(ii) = zr(jvale+in-1)
-26      continue
+        end do
 !
         call rsnoch(resu, nomsy, iordr)
         call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
@@ -240,7 +240,7 @@ subroutine asecon(nomsy, neq, mome, resu)
 !
         zi(jord+iocc-1) = iordr
         iordr = iordr + 1
-10  end do
+    end do
     zi(jord+nboc) = iordr
 !
     call rsexch(' ', resu, nomsy, iordr, champ,&
@@ -261,16 +261,16 @@ subroutine asecon(nomsy, neq, mome, resu)
     endif
     call jeveuo(vale, 'E', jvale)
 !
-    do 32 ioc = 1, nboc
-        do 30 in = 1, neq
+    do ioc = 1, nboc
+        do in = 1, neq
             xx1 = aux(1+(ioc-1)*neq+in-1)
             cumul(in) = cumul(in)+xx1*xx1
-30      continue
-32  end do
+        end do
+    end do
 ! STOCKAGE DU CUMUL QUADRATIQUE
-    do 34 in = 1, neq
+    do in = 1, neq
         zr(jvale+in-1) = sqrt( abs ( cumul(in) ) )
-34  end do
+    end do
     call jelibe(vale)
     call rsnoch(resu, nomsy, iordr)
 !

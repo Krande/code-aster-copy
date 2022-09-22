@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zerofc(func, xmin, xmax, prec, niter,&
                   dp, iret, nit)
     implicit none
@@ -57,13 +57,13 @@ subroutine zerofc(func, xmin, xmax, prec, niter,&
     x(4) = x(2)
     y(4) = y(2)
 !
-    do 20 i = 1, niter
+    do i = 1, niter
 !
 !       SOLUTION TROUVEE : ON SORT
         if (abs(y(4)) .lt. prec) then
             iret = 0
             nit=i
-            goto 9999
+            goto 999
         endif
 !
         call zeroco(x, y)
@@ -71,7 +71,7 @@ subroutine zerofc(func, xmin, xmax, prec, niter,&
         dp = x(4)
         y(4) = func(dp)
 !
-20  end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine

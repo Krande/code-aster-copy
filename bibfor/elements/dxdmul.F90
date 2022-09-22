@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
                   h, d1i, d2i, x3i, epi)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utbtab.h"
+!
     aster_logical :: lcalct
     integer :: icou
     integer :: iniv
@@ -64,10 +64,10 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
     call jevech('PMATERC', 'L', jmate)
 !     ----- RAPPEL DES CARACTERISTIQUES DU MONOCOUCHE ------------------
     call codent(icou, 'G', num)
-    do 10 i = 1, 27
+    do i = 1, 27
         call codent(i, 'G', val)
         nomres(i) = 'C'//num//'_V'//val
- 10 end do
+    end do
     r8bid = 0.d0
     call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
                 [r8bid], 9, nomres, valres, icodre,&
@@ -99,12 +99,12 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
         goto 999
     endif
 !
-    do 110 jcou = 1, icou
+    do jcou = 1, icou
         call codent(jcou, 'G', num)
-        do 60 i = 1, 27
+        do i = 1, 27
             call codent(i, 'G', val)
             nomres(i) = 'C'//num//'_V'//val
- 60     continue
+        end do
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
                     [r8bid], 1, nomres, valres, icodre,&
                     1)
@@ -160,24 +160,24 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !      TOUS CALCULS FAITS : K INDICE MAX TEL QUE ZK < X3I
 !      D1=SOMME(I=1,K-1)(-1/2*DA1I*EPI*ORDI)+DAIK(ZK**2-X3I**2)
 !
-        do 80 k = 1, 2
-            do 70 l = 1, 2
+        do k = 1, 2
+            do l = 1, 2
                 d1i(k,l) = dx1i(k,l) + ((ordi-epi/2.d0)**2-x3i*x3i)* da1i(k,l)/4.d0
                 dx1i(k,l) = dx1i(k,l) - epi*ordi*da1i(k,l)/2.d0
- 70         continue
- 80     continue
+            end do
+        end do
 !
 !      D2(Z)=SOMME(-T,Z)(-Z/2*DA2I DZ)
 !      TOUS CALCULS FAITS : K INDICE MAX TEL QUE ZK < X3I
 !      D2=SOMME(I=1,K-1)(-1/2*DA2I*EPI*ORDI)+DA2K(ZK**2-X3I**2)
 !
-        do 100 k = 1, 2
-            do 90 l = 1, 4
+        do k = 1, 2
+            do l = 1, 4
                 d2i(k,l) = dx2i(k,l) + ((ordi-epi/2.d0)**2-x3i*x3i)* da2i(k,l)/4.d0
                 dx2i(k,l) = dx2i(k,l) - epi*ordi*da2i(k,l)/2.d0
- 90         continue
-100     continue
-110 end do
+            end do
+        end do
+    end do
 !
 999 continue
 !

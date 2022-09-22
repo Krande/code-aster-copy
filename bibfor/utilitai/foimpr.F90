@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foimpr(nomf, impr, iul, ind, fonins)
     implicit none
 #include "jeveux.h"
@@ -50,17 +50,17 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ideb, ifin, ii, iret, ival, jval
-    integer :: lfon, lfon1,  lprol, lprol1, ltitr, lval
+    integer :: lfon, lfon1, lprol, lprol1, ltitr, lval
     integer :: lval1, nbfonc, nbnova, nbtitr, nbv, nbv2
     integer :: nbval
     real(kind=8) :: resuim, resure
     character(len=24), pointer :: nova(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    if (impr .le. 0) goto 9999
+    if (impr .le. 0) goto 999
     if (iul .le. 0) then
         call utmess('A', 'UTILITAI2_7')
-        goto 9999
+        goto 999
     endif
     listr = fonins
     nomf1 = '&&FOIMPR'
@@ -78,9 +78,9 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     if (iret .ne. 0) then
         call jeveuo(titr, 'L', ltitr)
         call jelira(titr, 'LONMAX', nbtitr)
-        do 10 i = 1, nbtitr
+        do i = 1, nbtitr
             write(iul,*) zk80(ltitr+i-1)
-10      continue
+        end do
     endif
 !
 !     --- CAS D'UNE FONCTION "FORMULE" ---
@@ -90,18 +90,18 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call jelira(nomfon//'.NOVA', 'LONUTI', nbnova)
         if (nbnova .ne. 1) then
             call utmess('A', 'UTILITAI2_8')
-            goto 9999
+            goto 999
         endif
         call jeveuo(listr//'.VALE', 'L', jval)
         call jelira(listr//'.VALE', 'LONUTI', nbval)
         nbv = 2 * nbval
         call wkvect(nomf1//'.VALE', 'V V R8', nbv, lval1)
         lfon1 = lval1 + nbval
-        do 100 ival = 0, nbval-1
+        do ival = 0, nbval-1
             zr(lval1+ival) = zr(jval+ival)
             call fointe('F ', nomfon, nbnova, nova, zr(lval1+ival),&
                         zr(lfon1+ival), iret)
-100      continue
+        end do
 !
         ASSERT(lxlgut(nomf1).le.24)
         call wkvect(nomf1//'.PROL', 'V V K24', 6, lprol1)
@@ -124,7 +124,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         endif
         call jedetr(nomf1//'.PROL')
         call jedetr(nomf1//'.VALE')
-        goto 9999
+        goto 999
     endif
 !
 !     --- INFORMATIONS COMPLEMENTAIRES POUR L'EDITION ---
@@ -150,11 +150,11 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
                 nbv2 = 2 * nbval
                 call wkvect(nomf1//'.VALE', 'V V R8', nbv2, lval)
                 lfon = lval + nbval
-                do 200 ival = 0, nbval-1
+                do ival = 0, nbval-1
                     zr(lval+ival) = zr(jval+ival)
                     call fointe('F ', nomfon, 1, nompar, zr(lval+ival),&
                                 zr(lfon+ival), iret)
-200              continue
+                end do
             endif
             ideb = 1
             ifin = min( 10 ,nbval )
@@ -195,7 +195,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
                 call wkvect(nomf1//'.VALE', 'V V R8', nbv2, lval)
                 lfon = lval + nbval
                 ii = 0
-                do 300 ival = 0, nbval-1
+                do ival = 0, nbval-1
                     zr(lval+ival) = zr(jval+ival)
                     call fointc('F', nomfon, nbpu, nompu, zr(lval+ival),&
                                 resure, resuim, iret)
@@ -203,7 +203,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
                     ii = ii + 1
                     zr(lfon+ii) = resuim
                     ii = ii + 1
-300              continue
+                end do
             endif
             ideb = 1
             ifin = min( 10 ,nbval )
@@ -223,6 +223,6 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call utmess('A', 'UTILITAI2_11', sk=zk24(lprol))
 !
     endif
-9999  continue
+999 continue
     call jedema()
 end subroutine

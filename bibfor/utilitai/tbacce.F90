@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tbacce(nomta, numeli, para, mode, vi,&
                   vr, vc, vk)
     implicit none
@@ -46,7 +46,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
 ! IN/OUT : VK     : VALEUR POUR LE PARAMETRE "K"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign,   j, jvale, jvall
+    integer :: iret, nbpara, nblign, j, jvale, jvall
     character(len=1) :: modacc
     character(len=4) :: type
     character(len=19) :: nomtab
@@ -89,12 +89,12 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
     inpar = para
-    do 10 j = 1, nbpara
+    do j = 1, nbpara
         if (inpar .eq. tblp(1+4*(j-1))) goto 12
-10  end do
+    end do
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
-12  continue
+ 12 continue
 !
     type = tblp(1+4*(j-1)+1)
     nomjv = tblp(1+4*(j-1)+2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
                   nstrs, isph, tdt, hini, hfin,&
                   an, bn, cn, cfps, cfpd)
@@ -80,17 +80,17 @@ subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
 !
 ! MODIFI DU 6 JANVIER 2003 6 YLP NSTRS --> 6
 !      DO 11 I=1,NSTRS
-    do 11 i = 1, 6
+    do i = 1, 6
         afd(i) = 0.d0
         afp(i) = 0.d0
 !        DO 12 J=1,NSTRS
-        do 12 j = 1, 6
+        do j = 1, 6
             bfp(i,j) = 0d0
             bfd(i,j) = 0d0
             cfp(i,j) = 0d0
             cfd(i,j) = 0d0
-12      continue
-11  end do
+        end do
+    end do
 !
 !_______________________________________________________________________
 !
@@ -119,11 +119,12 @@ subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
 !
 !  CONSTRUCTION DE LA MATRICE DE FLUAGE TOTAL : EQUATION (3.9-2)
 !
-    do 10 i = 1, nstrs
+    do i = 1, nstrs
         an(i) = afd(i) + afp(i)
-        do 10 j = 1, nstrs
+        do j = 1, nstrs
             bn(i,j) = bfd(i,j) + bfp(i,j)
             cn(i,j) = cfd(i,j) + cfp(i,j)
-10      continue
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0175(option, nomte)
 !.......................................................................
 !
@@ -48,8 +48,8 @@ subroutine te0175(option, nomte)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PPRESSC', 'L', ipres)
@@ -70,17 +70,17 @@ subroutine te0175(option, nomte)
     omerho=2.d0*pi*zr(ifreq)*rho(1)
 !
 !    BOUCLE SUR LES NOEUDS
-    do 30 ino = 1, npg
+    do ino = 1, npg
         idino=iinte+(ino-1)*4-1
         call dfdm2d(nno, ino, ipoids, idfde, zr(igeom),&
                     jac, dfdx, dfdy)
 !
         vitx=(0.0d0,0.0d0)
         vity=(0.0d0,0.0d0)
-        do 20 i = 1, nno
+        do i = 1, nno
             vitx=vitx+dfdx(i)*zc(ipres+i-1)
             vity=vity+dfdy(i)*zc(ipres+i-1)
-20      continue
+        end do
 !
         vitx=vitx*(0.d0,1.d0)/omerho
         vity=vity*(0.d0,1.d0)/omerho
@@ -89,6 +89,6 @@ subroutine te0175(option, nomte)
         zr(idino+2)=0.5d0*dble(zc(ipres+ino-1)*dconjg(vity))
         zr(idino+3)=0.5d0*dimag(zc(ipres+ino-1)*dconjg(vitx))
         zr(idino+4)=0.5d0*dimag(zc(ipres+ino-1)*dconjg(vity))
-30  end do
+    end do
 !
 end subroutine

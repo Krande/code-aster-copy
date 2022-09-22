@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caatdb(nno, a, d, b, jac,&
                   matuu)
 !     CALCUL DE TADB POUR LE HEXA8 STABILISE
@@ -27,19 +27,19 @@ subroutine caatdb(nno, a, d, b, jac,&
     real(kind=8) :: a(6, 3, 8)
     real(kind=8) :: b(6, 3, 8)
 !
-    do 1 n = 1, nno
-        do 2 i = 1, 3
-            do 3 kl = 1, 6
+    do n = 1, nno
+        do i = 1, 3
+            do kl = 1, 6
                 tmp = 0.d0
-                do 4 k = 1, 6
+                do k = 1, 6
                     tmp = tmp + a(k,i,n)*d(k,kl)
- 4              continue
+                end do
                 sig(kl) = tmp
- 3          continue
+            end do
 !
             kkd = (3* (n-1)+i-1)* (3* (n-1)+i)/2
-            do 5 j = 1, 3
-                do 6 m = 1, n
+            do j = 1, 3
+                do m = 1, n
                     if (m .eq. n) then
                         j1 = i
                     else
@@ -47,9 +47,9 @@ subroutine caatdb(nno, a, d, b, jac,&
                     endif
 !
                     tmp = 0.d0
-                    do 7 k = 1, 6
+                    do k = 1, 6
                         tmp = tmp + sig(k)*b(k,j,m)
- 7                  continue
+                    end do
 !
 !   STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
 !
@@ -58,9 +58,9 @@ subroutine caatdb(nno, a, d, b, jac,&
                         matuu(kk) = matuu(kk) + tmp*jac
                     endif
 !
- 6              continue
- 5          continue
- 2      continue
- 1  end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

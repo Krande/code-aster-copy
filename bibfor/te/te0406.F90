@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0406(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -180,7 +180,7 @@ subroutine te0406(option, nomte)
 !
 !---- BOUCLE SUR LES POINTS D INTEGRATION NORMALE SUR L EPAISSEUR
 !
-    do 600 inte = 1, npge
+    do inte = 1, npge
 !
 !------- COORDONNEE ISOPARAMETRIQUE SUR L EPAISSEUR  DIVISEE PAR DEUX
 !
@@ -188,7 +188,7 @@ subroutine te0406(option, nomte)
 !
 !------- BOUCLE SUR LES POINTS D INTEGRATION NORMALE
 !
-        do 610 intsn = 1, npgsn
+        do intsn = 1, npgsn
 !
 !---------- VECTEUR LOCAUX
 !
@@ -217,60 +217,60 @@ subroutine te0406(option, nomte)
 !
 !---------- INTEGRATION NUMERIQUE
 !
-            do 200 j = 1, 6 * nb1 + 3
-                do 210 i = 1, 6 * nb1 + 3
+            do j = 1, 6 * nb1 + 3
+                do i = 1, 6 * nb1 + 3
                     jd = ( 6 * nb1 + 3 ) * ( j - 1 ) + i
                     mas ( jd ) = mas ( jd ) + ( rho * mantn ( jd ) *&
                     zr ( lzr - 1 + 127 + intsn - 1 ) * detj * 1.d0&
                     )
-210              continue
-200          continue
+                end do
+            end do
 !
 !
 !
-610      continue
-600  end do
+        end do
+    end do
 !
 !
     xmin = 1.d0 / r8prem ( )
 !
 !---- EN CHAQUE NOEUD
 !
-    do 401 in = 1, nb2
+    do in = 1, nb2
 !
 !------- ON CONSTRUIT LAMBDA0
 !
-        do 411 ii = 1, 3
+        do ii = 1, 3
             lam0 ( ii , 1 ) = vectpt ( in , 1 , ii )
             lam0 ( ii , 2 ) = vectpt ( in , 2 , ii )
             lam0 ( ii , 3 ) = vectn ( in , ii )
-411      continue
+        end do
 !
 !------- ON CONSTRUIT MASRG
 !
         if (in .le. nb1) then
 !
 !-------------- NOEUDS DE SERENDIP
-            do 431 jj = 1, 3
-                do 441 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     j = 6 * ( in - 1 ) + jj + 3
                     i = 6 * ( in - 1 ) + ii + 3
                     imas = ( 6 * nb1 + 3 ) * ( j - 1 ) + i
                     masrg ( ii , jj ) = mas ( imas )
-441              continue
-431          continue
+                end do
+            end do
 !
         else
 !
 !-------------- SUPERNOEUD
-            do 451 jj = 1, 3
-                do 461 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     j = 6 * nb1 + jj
                     i = 6 * nb1 + ii
                     imas = ( 6 * nb1 + 3 ) * ( j - 1 ) + i
                     masrg ( ii , jj ) = mas ( imas )
-461              continue
-451          continue
+                end do
+            end do
 !
         endif
 !
@@ -286,44 +286,44 @@ subroutine te0406(option, nomte)
         if (masrl ( 1 , 1 ) .lt. xmin) xmin = masrl ( 1 , 1 )
         if (masrl ( 2 , 2 ) .lt. xmin) xmin = masrl ( 2 , 2 )
 !
-401  end do
+    end do
 !
 !CC   MNN = 1.D-3 * XMIN
     mnn = ctor * xmin
 !
 !------- AFFECTATION
 !
-    do 301 in = 1, nb2
+    do in = 1, nb2
 !
         if (in .le. nb1) then
 !
 !-------------- NOEUDS DE SERENDIP
-            do 331 jj = 1, 3
-                do 341 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     j = 6 * ( in - 1 ) + jj + 3
                     i = 6 * ( in - 1 ) + ii + 3
                     mas ( ( 6 * nb1 + 3 ) * ( j - 1 ) + i ) = mas ( (&
   6                 * nb1 + 3 ) * ( j - 1 ) + i ) + mnn * vectn (&
                     in , ii ) * vectn ( in , jj )
-341              continue
-331          continue
+                end do
+            end do
 !
         else
 !
 !-------------- SUPERNOEUD
-            do 351 jj = 1, 3
-                do 361 ii = 1, 3
+            do jj = 1, 3
+                do ii = 1, 3
                     j = 6 * nb1 + jj
                     i = 6 * nb1 + ii
                     mas ( ( 6 * nb1 + 3 ) * ( j - 1 ) + i ) = mas ( (&
   6                 * nb1 + 3 ) * ( j - 1 ) + i ) + mnn * vectn (&
                     in , ii ) * vectn ( in , jj )
-361              continue
-351          continue
+                end do
+            end do
 !
         endif
 !
-301  continue
+    end do
 !
 !
 !
@@ -341,13 +341,13 @@ subroutine te0406(option, nomte)
 !
         kompt = 0
 !
-        do 900 j = 1, 6 * nb1 + 3
-            do 910 i = 1, j
+        do j = 1, 6 * nb1 + 3
+            do i = 1, j
                 kompt = kompt + 1
                 zr ( imatuu - 1 + kompt )=mas ( ( 6 * nb1 + 3 ) * ( j&
                 - 1 ) + i )
-910          continue
-900      continue
+            end do
+        end do
 !
 !
 !--------------------------------------------

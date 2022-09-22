@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0077(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -61,10 +61,10 @@ subroutine te0077(option, nomte)
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
     endif
 !
-    call elrefe_info(elrefe=elrefe,fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
-    call elrefe_info(elrefe=elrefe,fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -89,53 +89,56 @@ subroutine te0077(option, nomte)
 !
     if (.not.lteatt('LUMPE','OUI')) then
 !
-        do 101 kp = 1, npg
+        do kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
             if (lteatt('AXIS','OUI')) then
                 r = 0.d0
-                do 102 i = 1, nno
+                do i = 1, nno
                     r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102              continue
+                end do
                 poids = poids*r
             endif
             ij = imattt - 1
-            do 103 i = 1, nno
+            do i = 1, nno
 !
-                do 103 j = 1, i
+                do j = 1, i
                     ij = ij + 1
                     zr(ij) = zr(ij) + poids * cp(1)/deltat * zr(ivf+k+i- 1) * zr(ivf+k+j-1)
-103              continue
-101      continue
+                end do
+            end do
+        end do
 !
     else
 !
         call connec(nomte, nse, nnop2, c)
 !
-        do 10 i = 1, nnop2
-            do 10 j = 1, nnop2
+        do i = 1, nnop2
+            do j = 1, nnop2
                 mt(i,j)=0.d0
-10          continue
+            end do
+        end do
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
-        do 200 ise = 1, nse
+        do ise = 1, nse
 !
-            do 205 i = 1, nno
-                do 205 j = 1, 2
+            do i = 1, nno
+                do j = 1, 2
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
-205              continue
+                end do
+            end do
 !
-            do 201 kp = 1, npg2
+            do kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
                             poids, dfdx, dfdy)
                 if (lteatt('AXIS','OUI')) then
                     r = 0.d0
-                    do 202 i = 1, nno
+                    do i = 1, nno
                         r = r + coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-202                  continue
+                    end do
 !
                     poids = poids*r
                     if (r .eq. 0.d0) then
@@ -143,24 +146,26 @@ subroutine te0077(option, nomte)
                     endif
                 endif
 !
-                do 203 i = 1, nno
-                    do 203 j = 1, nno
+                do i = 1, nno
+                    do j = 1, nno
                         mt(c(ise,i),c(ise,j)) = mt(&
                                                 c(ise, i),&
                                                 c(ise, j)) + poids * cp(1)/deltat * zr(ivf2+k+i-1&
                                                 &) * zr(ivf2+k+j-1&
                                                 )
-203                  continue
-201          continue
+                    end do
+                end do
+            end do
 !
-200      continue
+        end do
 !
         ij = imattt-1
-        do 206 i = 1, nnop2
-            do 206 j = 1, i
+        do i = 1, nnop2
+            do j = 1, i
                 ij = ij +1
                 zr(ij)=mt(i,j)
-206          continue
+            end do
+        end do
 !
     endif
 end subroutine

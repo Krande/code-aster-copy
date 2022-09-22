@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mamagi(nomte, xr, yr)
     implicit none
 #include "asterfort/mgauss.h"
@@ -109,45 +109,45 @@ subroutine mamagi(nomte, xr, yr)
 !     CREATION DE LA MATRICE BT(NPGE*NSO,NPGE*NPGSN)
 !
     ig=0
-    do 350 integ = 1, npge
+    do integ = 1, npge
         xi3=psi3(integ)
-        do 360 intsn = 1, npgsn
+        do intsn = 1, npgsn
             i1=108+intsn
             i2=108+9+intsn
             xi1=xr(i1)
             xi2=xr(i2)
             ig=ig+1
-            do 370 intef = 1, npge
-                do 380 ifon = 1, nso
+            do intef = 1, npge
+                do ifon = 1, nso
                     jf=nso*(intef-1)+ifon
                     bij= (atild(intef)*xi3**2+btild(intef)*xi3+ctild(&
                     intef))* (coefa(ifon)+coefb(ifon)*xi1+coefc(ifon)*&
                     xi2 +coefd(ifon)*xi1*xi2)
                     bt(jf,ig)=bij
-380              continue
-370          continue
-360      continue
-350  continue
+                end do
+            end do
+        end do
+    end do
 !
-    do 385 i = 1, npge*nso
-        do 390 j = 1, npge*nso
+    do i = 1, npge*nso
+        do j = 1, npge*nso
             btb(i,j)=0.d0
-            do 400 k = 1, npge*npgsn
+            do k = 1, npge*npgsn
                 btb(i,j)=btb(i,j)+bt(i,k)*bt(j,k)
-400          continue
-390      continue
-385  continue
+            end do
+        end do
+    end do
 !
 !     MATRICE DE PASSAGE = (BT*B*B)-1*BT
 !
     call mgauss('NFVP', btb, bt, 12, npge*nso,&
                 npge*npgsn, det, iret)
 !
-    do 410 i = 1, npge*nso
+    do i = 1, npge*nso
         l = npge*npgsn*(i-1)
-        do 420 kp = 1, npge*npgsn
+        do kp = 1, npge*npgsn
             yr(l+kp) = bt(i,kp)
-420     continue
-410  continue
+        end do
+    end do
 !
 end subroutine

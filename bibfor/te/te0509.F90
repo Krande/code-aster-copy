@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0509(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -136,8 +136,8 @@ subroutine te0509(option, nomte)
     real(kind=8) :: sigmxy, sigmxz, someg2, sphids, u1y, u1z, xgau
     real(kind=8) :: ygau, zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     zero = 0.0d0
     sphids = zero
     mx0y = zero
@@ -172,7 +172,7 @@ subroutine te0509(option, nomte)
 !
 !   --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
-        do 10 igau = 1, npg
+        do igau = 1, npg
             k=(igau-1)*nno
 !
 !   ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
@@ -184,10 +184,10 @@ subroutine te0509(option, nomte)
 !
 !   ---    CALCUL DE SOMME/S_ELEMENT(PHI.DS) :
 !          ---------------------------------
-            do 20 ino = 1, nno
+            do ino = 1, nno
                 sphids = sphids + zr(ivf+k+ino-1)*zr(itempe+ino-1)* poids
-20          continue
-10      continue
+            end do
+        end do
 !
 !   --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE
 !   --- A LA VALEUR LA VALEUR SOMME/S_ELEMENT(PHI.DS) :
@@ -217,7 +217,7 @@ subroutine te0509(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 30 igau = 1, npg
+        do igau = 1, npg
             k=(igau-1)*nno
 !
 ! ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
@@ -235,7 +235,7 @@ subroutine te0509(option, nomte)
             xgau = zero
             ygau = zero
 !
-            do 40 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2*(ino-1) -1
 !
                 xgau = xgau + zr(ivf+k+ino-1)*zr(i+1)
@@ -243,13 +243,13 @@ subroutine te0509(option, nomte)
 !
                 sigmxy = sigmxy + dfdx(ino)*zr(itemp1+ino-1)
                 sigmxz = sigmxz + dfdy(ino)*zr(itemp1+ino-1)
-40          continue
+            end do
 !
 ! ---    CALCUL DE SOMME/S_ELEMENT(SIGMA_XZ*X - SIGMA_XY*Y).DS)
 ! ---    (Y EST DEVENU X ET Z EST DEVENU Y) :
 !        ----------------------------------
             mx0z = mx0z + (sigmxz*xgau - sigmxy*ygau)*poids
-30      continue
+        end do
 !
 ! --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE AVEC LA COORDONNEE
 ! --- SELON Z DU CENTRE DE CISAILLEMENT/TORSION :
@@ -273,7 +273,7 @@ subroutine te0509(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 50 igau = 1, npg
+        do igau = 1, npg
             k=(igau-1)*nno
 !
 ! ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
@@ -291,7 +291,7 @@ subroutine te0509(option, nomte)
             xgau = zero
             ygau = zero
 !
-            do 60 ino = 1, nno
+            do ino = 1, nno
                 i = igeom + 2*(ino-1) -1
 !
                 xgau = xgau + zr(ivf+k+ino-1)*zr(i+1)
@@ -299,13 +299,13 @@ subroutine te0509(option, nomte)
 !
                 sigmxy = sigmxy + dfdx(ino)*zr(itemp2+ino-1)
                 sigmxz = sigmxz + dfdy(ino)*zr(itemp2+ino-1)
-60          continue
+            end do
 !
 ! ---    CALCUL DE SOMME/S_ELEMENT(SIGMA_XZ*X - SIGMA_XY*Y).DS)
 ! ---    (Y EST DEVENU X ET Z EST DEVENU Y) :
 !        ----------------------------------
             mx0y = mx0y + (sigmxz*xgau - sigmxy*ygau)*poids
-50      continue
+        end do
 !
 ! --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE AVEC LA COORDONNEE
 ! --- SELON Z DU CENTRE DE CISAILLEMENT/TORSION :
@@ -323,7 +323,7 @@ subroutine te0509(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
-        do 70 igau = 1, npg
+        do igau = 1, npg
             k=(igau-1)*nno*2
 !
 ! ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
@@ -342,20 +342,20 @@ subroutine te0509(option, nomte)
             dpszdy = zero
             dpszdz = zero
 !
-            do 80 ino = 1, nno
+            do ino = 1, nno
 !
                 dpsydy = dpsydy + dfdx(ino)*zr(itemp1+ino-1)
                 dpsydz = dpsydz + dfdy(ino)*zr(itemp1+ino-1)
 !
                 dpszdy = dpszdy + dfdx(ino)*zr(itemp2+ino-1)
                 dpszdz = dpszdz + dfdy(ino)*zr(itemp2+ino-1)
-80          continue
+            end do
 !
 ! ---    CALCUL DE U1_Y ET U1_Z :
 !        ----------------------
             u1y = u1y + (dpsydy*dpsydy + dpsydz*dpsydz)*poids
             u1z = u1z + (dpszdy*dpszdy + dpszdz*dpszdz)*poids
-70      continue
+        end do
 !
 ! --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE AVEC U1Y ET U1Z
 ! --- QUI SONT LES CONTRIBUTIONS DE L'ELEMENT AUX COEFFICIENTS DE
@@ -385,7 +385,7 @@ subroutine te0509(option, nomte)
 !
 !   --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
-        do 90 igau = 1, npg
+        do igau = 1, npg
             k=(igau-1)*nno
 !
 !   ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
@@ -397,10 +397,10 @@ subroutine te0509(option, nomte)
 !
 !   ---    CALCUL DE SOMME/S_ELEMENT(OMEGA**2.DS) :
 !          --------------------------------------
-            do 100 ino = 1, nno
+            do ino = 1, nno
                 someg2 = someg2 + zr(ivf+k+ino-1)* zr(itempe+ino-1)* zr(itempe+ino-1)*poids
-100          continue
-90      continue
+            end do
+        end do
 !
 !   --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE
 !   --- A LA VALEUR LA VALEUR SOMME/S_ELEMENT(OMEGA**2.DS) :

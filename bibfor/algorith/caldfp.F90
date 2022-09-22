@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine caldfp(msns, gamsns, dfpmdg, iret)
     implicit none
 !
@@ -65,13 +65,13 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
         amax=0.d0
         amin=100.d0
-        do 10 i = 1, 3
+        do i = 1, 3
             if (a(i,i) .gt. amax) amax=a(i,i)
             if (a(i,i) .lt. amin) amin=a(i,i)
-10      continue
+        end do
         if ((amax.gt.1.d3) .or. (amin.lt.1.d-3)) then
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call lcdetf(3, a, deta)
@@ -81,7 +81,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
             coef=deta**expo
         else
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call matinv('S', 3, a, am, det2)
@@ -102,25 +102,31 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
 ! calcul de dFp-1
         call r8inir(81, 0.d0, dfpmdf, 1)
-        do 100 i = 1, 3
-            do 100 j = 1, 3
-                do 100 k = 1, 3
-                    do 100 l = 1, 3
+        do i = 1, 3
+            do j = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         dfpmdf(i,j,k,l)=dfpmdf(i,j,k,l)+am(i,k)*amt(j,&
                         l)
-100                  continue
+                    end do
+                end do
+            end do
+        end do
         coef2= -deta**(2.d0/3.d0)
 !
         call dscal(81, coef2, dfpmdf, 1)
 !
         call r8inir(9, 0.d0, dfpmdg, 1)
-        do 200 i = 1, 3
-            do 200 j = 1, 3
-                do 200 k = 1, 3
-                    do 200 l = 1, 3
+        do i = 1, 3
+            do j = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         dfpmdg(i,j)=dfpmdg(i,j)+dfpmdf(i,j,k,l)*dfpdg(&
                         k,l)
-200                  continue
+                    end do
+                end do
+            end do
+        end do
 !
 !
     else if (iopt.eq.2) then
@@ -135,13 +141,13 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         bmax=0.d0
         bmin=100.d0
-        do 20 i = 1, 3
+        do i = 1, 3
             if (b(i,i) .gt. bmax) bmax=b(i,i)
             if (b(i,i) .lt. bmin) bmin=b(i,i)
-20      continue
+        end do
         if ((bmax.gt.1.d3) .or. (bmin.lt.1.d-3)) then
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call lcdetf(3, b, detb)
@@ -151,7 +157,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
             coef=detb**expo
         else
             iret=1
-            goto 9999
+            goto 999
         endif
 !
         call matinv('S', 3, b, bm, det2)
@@ -196,5 +202,5 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

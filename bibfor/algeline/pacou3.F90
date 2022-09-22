@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacou3(xold, fold, g, p, x,&
                   f, fvec, stpmax, check, tolx,&
                   vecr1, vecr2, typflu, vecr3, amor,&
@@ -50,50 +50,50 @@ subroutine pacou3(xold, fold, g, p, x,&
     check = .false.
 !
     sum = 0.00d0
-    do 11 i = 1, n
+    do i = 1, n
         sum = sum + p(i)*p(i)
- 11 end do
+    end do
     sum = sqrt(sum)
 !
     if (sum .gt. stpmax) then
-        do 12 i = 1, n
+        do i = 1, n
             p(i) = p(i)*stpmax/sum
- 12     continue
+        end do
     endif
 !
     slope = 0.0d0
-    do 13 i = 1, n
+    do i = 1, n
         slope = slope + g(i)*p(i)
- 13 end do
+    end do
 !
     test = 0.0d0
-    do 14 i = 1, n
+    do i = 1, n
         temp = abs(p(i))/max(abs(xold(i)),1.0d0)
         if (temp .gt. test) test = temp
- 14 end do
+    end do
 !
     alamin = tolx/test
     alam = 1.0d0
     first = .true.
 !
   1 continue
-    do 15 i = 1, n
+    do i = 1, n
         x(i) = xold(i) + alam*p(i)
- 15 end do
+    end do
 !
     f = pacou2(&
         x, fvec, vecr1, vecr2, typflu, vecr3, amor, masg, vecr4, vecr5, veci1, vg, indic, nbm,&
         nmode, n&
         )
     if (alam .lt. alamin) then
-        do 16 i = 1, n
+        do i = 1, n
             x(i) = xold(i)
- 16     continue
+        end do
         check = .true.
-        goto 9999
+        goto 999
 !
     else if (f.le.fold+alf*alam*slope) then
-        goto 9999
+        goto 999
 !
     else
         if (first) then
@@ -124,5 +124,5 @@ subroutine pacou3(xold, fold, g, p, x,&
     alam = max(tmplam,0.1d0*alam)
     goto 1
 !
-9999 continue
+999 continue
 end subroutine

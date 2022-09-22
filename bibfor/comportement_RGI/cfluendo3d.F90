@@ -15,28 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option,&
-                  sigp, vip, typmod,&
-                  dsidep, codret)
+                      compor, carcri, instam, instap, epsm,&
+                      deps, sigm, vim, option, sigp,&
+                      vip, typmod, dsidep, codret)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !      Ficher de base de FLUAGE ET ENDOMMAGEMENT
 !=====================================================================
     implicit none
 #include "asterf_types.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/rcvalb.h"
+#include "asterc/r8prem.h"
 #include "asterfort/fluendo3d.h"
 #include "asterfort/matini.h"
-#include "asterc/r8prem.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
 !
     integer :: imate, ndim, kpg, ksp, codret, iret
-    integer :: ifour,ifour11,kerre,nmatflu
+    integer :: ifour, ifour11, kerre, nmatflu
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(6)
     real(kind=8) :: epsmc(6), depsc(6)
@@ -49,70 +48,70 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     real(kind=8), intent(in) :: carcri(*)
 !
 ! DECLARATIONS LOCALES
-    character(len=8) :: nomres(56),nomres1(4)
-    real(kind=8) :: valres(56), xmat(60), rbid,valres1(4)
+    character(len=8) :: nomres(56), nomres1(4)
+    real(kind=8) :: valres(56), xmat(60), rbid, valres1(4)
     integer :: nvari, nstrs, mfr, i, j
-    integer :: retour(56),retour1(4), iteflumax
+    integer :: retour(56), retour1(4), iteflumax
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
-    real(kind=8) :: zero, un, deux, rac2,var0(6),sig0(6)
+    real(kind=8) :: zero, un, deux, rac2, var0(6), sig0(6)
 !
     real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
-    real(kind=8) :: alpham, alphap, deps(6),teta13d,teta23d, sech
-
-
+    real(kind=8) :: alpham, alphap, deps(6), teta13d, teta23d, sech
+!
+!
 !   variables de transfert de donnees ( a declarer suivant idvar4 et idvisc)
-      integer nmat3d,nstrs3d,nvari3d,ierr1,mfr11
-      integer NMATAILX,NVARFLU,NMATRAG,NVARRAG
-      
+    integer :: nmat3d, nstrs3d, nvari3d, ierr1, mfr11
+    integer :: NMATAILX, NVARFLU, NMATRAG, NVARRAG
+!
     integer :: nbelas3d
-      parameter (nbelas3d=4)
-      parameter (NMATFLU=56)
-      parameter (NMATAILX=0)
-      parameter (NVARFLU=109)
-
+    parameter (nbelas3d=4)
+    parameter (NMATFLU=56)
+    parameter (NMATAILX=0)
+    parameter (NVARFLU=109)
+!
 !   taille du pseudo vecteur des contraintes pour fluendo3d (tjrs 6
 !   en raison de son utilisation dans fludes3d qui la suppose à 6)      
-      parameter (nstrs3d=6)
-      
+    parameter (nstrs3d=6)
+!
 !   mettre a jour ici le nbre de parametres materiaux et variables
 !   interne de l option du modele      
-      parameter (NMATRAG=0)
-      parameter (NVARRAG=0)
-
-
+    parameter (NMATRAG=0)
+    parameter (NVARRAG=0)
+!
+!
 !   nombre totale de parametres et variables internes option comprise      
-      parameter (nmat3d=nbelas3d+NMATFLU+NMATRAG+NMATAILX)
-      parameter (nvari3d=NVARFLU+NVARRAG)
-
+    parameter (nmat3d=nbelas3d+NMATFLU+NMATRAG+NMATAILX)
+    parameter (nvari3d=NVARFLU+NVARRAG)
+!
 !   nbre de parametres materiaux sans les tailles des elements      
-      real(kind=8) :: xmat3d(nmat3d),sig03d(6),sigf3d(6),depst3d(6)
-      real(kind=8) :: var03d(nvari3d),varf3d(nvari3d),varf(nvari3d),sigf(6) 
+    real(kind=8) :: xmat3d(nmat3d), sig03d(6), sigf3d(6), depst3d(6)
+    real(kind=8) :: var03d(nvari3d), varf3d(nvari3d), varf(nvari3d), sigf(6)
 !   indicateur d isotropie initiale
-      aster_logical :: iso1,local11,end3d,fl3d 
+    aster_logical :: iso1, local11, end3d, fl3d
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi     
-      real(kind=8) :: dt3d,phig3d  
-     
+    real(kind=8) :: dt3d, phig3d
+!
     parameter       (nvari=109)
     integer, dimension(2) :: vali
-
-
+!
+!
     sig03d(:) = 0.d0
     sigf3d(:) = 0.d0
     var03d(:) = 0.d0
     varf3d(:) = 0.d0
-    varf(:)   = 0.d0
-    depsc(:)  = 0.d0
-    epsmc(:)  = 0.d0
-    xmat(:)   = 0.d0
-    var0(:)   = 0.d0
-    sig0(:)   = 0.d0
-    sigf(:)   = 0.d0
+    varf(:) = 0.d0
+    depsc(:) = 0.d0
+    epsmc(:) = 0.d0
+    xmat(:) = 0.d0
+    var0(:) = 0.d0
+    sig0(:) = 0.d0
+    sigf(:) = 0.d0
     depst3d(:) = 0.d0
     valres1(:)=0.d0
     valres(:)=0.d0
-    
+!
     iteflumax = int(carcri(1))
-
+!
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 !
@@ -153,7 +152,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
                 ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
-    
+!
     sech = sechp
 !
 !   le séchage de référence doit être nul
@@ -183,18 +182,18 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !   vérification que B_ENDOGE et K_DESSIC sont nuls
     nomres1(1)='B_ENDOGE'
     nomres1(2)='K_DESSIC'
-
+!
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres1, valres1, retour1, 0)
-    do i=1,2
-        if (retour1(i) .eq. 0)then
-            if (valres1(i) .ne. 0.d0)then
+    do i = 1, 2
+        if (retour1(i) .eq. 0) then
+            if (valres1(i) .ne. 0.d0) then
                 call utmess('F', 'COMPOR3_40', nk=2, valk=[compor(1), nomres1(i)])
             endif
         endif
     enddo
-    
+!
     nomres1(1)='E'
     nomres1(2)='NU'
     nomres1(3)='RHO'
@@ -208,7 +207,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !        MODULES INSTANTANES ISOTROPES
     xmat(1) = valres1(1)
     xmat(2) = valres1(2)
-    xmat(3)  = valres1(3)
+    xmat(3) = valres1(3)
     xmat(4) = valres1(4)
     alpham = valres1(4)
 !
@@ -216,10 +215,10 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 4, nomres1, valres1, retour1, 2)
-
+!
     alphap = valres1(4)
-
-
+!
+!
 !
 ! ------------------------------------------------------------------
 ! --  RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
@@ -229,7 +228,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     else
         nstrs = 6
     endif
-
+!
     if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
         do i = 1, 3
             depsc(i) = deps(i) - (alphap*(tp-tref)-alpham*(tm-tref))
@@ -303,11 +302,12 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(56)= 'TTKF'
 !
     rbid = 0.d0
-
+!
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', compor(1), 0, ' ', [rbid],&
-                56, nomres, valres, retour, 0, nan='NON')
+                56, nomres, valres, retour, 0,&
+                nan='NON')
 !
 !
 ! --- ON REMPLIT XMAT DE nbelas+1 A nbelas+56
@@ -316,136 +316,136 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     end do
 !
 !-----VALEUR FIXEE PROVISOIREMENT POUR MFR
-        mfr = 1
+    mfr = 1
 !-----------------------------------------
-
+!
     if (typmod(1)(1:2) .eq. '3D') then
         ifour = 2
     else
         if (typmod(1)(1:6) .eq. 'D_PLAN') then
             ifour = -1
         else 
-               ifour = 0
+            ifour = 0
         endif
     endif
-   if (compor(1) .eq. 'FLUA_PORO_BETON') then
+    if (compor(1) .eq. 'FLUA_PORO_BETON') then
         fl3d = .true.
-           end3d= .false.
-   else
-              if (compor(1) .eq. 'ENDO_PORO_BETON') then
+        end3d= .false.
+    else
+        if (compor(1) .eq. 'ENDO_PORO_BETON') then
             fl3d = .false.
-                  end3d= .true.
-              else
-                  fl3d = .true.
-                  end3d= .true.
-              endif
-   endif
-
+            end3d= .true.
+        else
+            fl3d = .true.
+            end3d= .true.
+        endif
+    endif
+!
 !    pas de temps
-       dt3d=instap-instam
-               
-          do i=1,nmat3d
-             xmat3d(i)=xmat(i)
-          end do       
-
+    dt3d=instap-instam
+!
+    do i = 1, nmat3d
+        xmat3d(i)=xmat(i)
+    end do 
+!
 !    variables internes       
-       if(nvari3d.ne.nvari) then
-            vali(1) = nvari3d
-            vali(2) = nvari
-            call utmess('E', 'COMPOR3_16', ni=2, vali=vali)
-            kerre=1
-       end if
-       do i=1,nvari3d
-             var03d(i)=vim(i)
-             varf3d(i)=vip(i)
-       end do
-
+    if (nvari3d .ne. nvari) then
+        vali(1) = nvari3d
+        vali(2) = nvari
+        call utmess('E', 'COMPOR3_16', ni=2, vali=vali)
+        kerre=1
+    end if
+    do i = 1, nvari3d
+        var03d(i)=vim(i)
+        varf3d(i)=vip(i)
+    end do
+!
 !   initialisation des contraintes effectives si premier pas
-      if (abs(var03d(64)-1.d0).ge.r8prem()) then
-
-         do i=1,6
+    if (abs(var03d(64)-1.d0) .ge. r8prem()) then
+!
+        do i = 1, 6
 !         initialisation de l etage elastique
-            if(i.le.3) then
+            if (i .le. 3) then
 !              on retire la pression intra poreuse au cas où
 !              elle aurait été initialisée dans les vari            
-                 var03d(18+i)=sig03d(i)-var03d(61)        
+                var03d(18+i)=sig03d(i)-var03d(61)        
             else
-                 var03d(18+i)=sig03d(i)
+                var03d(18+i)=sig03d(i)
             end if
 !         idem pour l etage de Kelvin
             var03d(49+i)=var03d(18+i)
-         end do
+        end do
 !      on met l indicateur de 1er passage a 1
-         varf3d(64)=1.        
-       else
+        varf3d(64)=1.        
+    else
 !     on reconduit l indicateur de 1er passage  
         varf3d(64)=var03d(64)
-       end if
-
+    end if
+!
 !    autres parametres a renseigner
 !    temperature moyenne sur le pas
-       teta13d=tm
-       teta23d=tp
+    teta13d=tm
+    teta23d=tp
 !    initialisation indicateur d erreur       
-       ierr1=0
+    ierr1=0
 !    indicateur isostropie elastique et de resistance
-       iso1=.true.
+    iso1=.true.
 !    numero de la formulation (33 pour poreux)
-       mfr11=mfr 
+    mfr11=mfr 
 !    type de formulation
-       ifour11=ifour  
-
-      
+    ifour11=ifour  
+!
+!
 !    controle de regularisation en cas d endommagement
-       local11=.true.       
-       rac2 = sqrt(2.d0)
-         do 70 i = 1, 3
-            depst3d(i) = depsc(i)
- 70     continue 
-         do 71 i = 4, nstrs
-           depst3d(i) = depsc(i) * rac2
- 71     continue  
-
-         do 72 i = 1, 3
-           sig03d(i) = sigm(i)
- 72     continue 
-
-         do 73 i = 4, nstrs
-           sig03d(i) = sigm(i) / rac2
- 73     continue 
-
-
-phig3d=0.d0
-       call fluendo3d(xmat3d,sig03d,sigf3d,depst3d,&
-                      nstrs3d,var03d,varf3d,nvari3d,nbelas3d,&
-                      teta13d,teta23d,dt3d,phig3d,ierr1,&
-                      iso1, mfr11,end3d,fl3d,local11,&
-                      ndim, iteflumax,sech)
-
-       do i=1,3
-            sigp(i) = sigf3d(i)
-        end do 
-        do 80 i = 4, nstrs
-            sigp(i) = sigf3d(i) * rac2
- 80     continue  
-
-        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            do i=1,nvari
-               vip(i) = varf3d(i)
-            end do
-        endif
-
-
+    local11=.true.       
+    rac2 = sqrt(2.d0)
+    do i = 1, 3
+        depst3d(i) = depsc(i)
+    end do
+    do i = 4, nstrs
+        depst3d(i) = depsc(i) * rac2
+    end do
+!
+    do i = 1, 3
+        sig03d(i) = sigm(i)
+    end do
+!
+    do i = 4, nstrs
+        sig03d(i) = sigm(i) / rac2
+    end do
+!
+!
+    phig3d=0.d0
+    call fluendo3d(xmat3d, sig03d, sigf3d, depst3d, nstrs3d,&
+                   var03d, varf3d, nvari3d, nbelas3d, teta13d,&
+                   teta23d, dt3d, phig3d, ierr1, iso1,&
+                   mfr11, end3d, fl3d, local11, ndim,&
+                   iteflumax, sech)
+!
+    do i = 1, 3
+        sigp(i) = sigf3d(i)
+    end do 
+    do i = 4, nstrs
+        sigp(i) = sigf3d(i) * rac2
+    end do
+!
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+        do i = 1, nvari
+            vip(i) = varf3d(i)
+        end do
+    endif
+!
+!
 !**********************************************************************
-        if(ierr1.eq.0)then
-            kerre=0 
-        else
-            kerre=1
-        end if
-
-      
+    if (ierr1 .eq. 0) then
+        kerre=0 
+    else
+        kerre=1
+    end if
+!
+!
 !*********************************************************************!     
-
+!
     if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
 !
         zero = 0.d0
@@ -456,33 +456,33 @@ phig3d=0.d0
 !
         e = xmat(1)
         nu = xmat(2)
-
+!
         coef = un/ ((un+nu)* (un-deux*nu))
         coef1 = e* (un-nu)*coef
         coef2 = e*nu*coef
         coef3 = e/ (un+nu)
-
+!
         d(1,1) = coef1
         d(1,2) = coef2
         d(1,3) = coef2
-
+!
         d(2,1) = coef2
         d(2,2) = coef1
         d(2,3) = coef2
-
+!
         d(3,1) = coef2
         d(3,2) = coef2
         d(3,3) = coef1
-
+!
         d(4,4) = 0.5d0*coef3
         d(5,5) = 0.5d0*coef3
         d(6,6) = 0.5d0*coef3
-
-        do 90 i = 1, nstrs
-            do 100 j = 1, nstrs
-               dsidep(i,j) = d(i,j)
-100         continue
- 90     continue
+!
+        do i = 1, nstrs
+            do j = 1, nstrs
+                dsidep(i,j) = d(i,j)
+            end do
+        end do
 !
     endif
 !

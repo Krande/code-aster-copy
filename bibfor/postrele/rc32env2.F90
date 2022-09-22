@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
+!
+subroutine rc32env2(iocc1, iocc2, ke, lieu, fen)
     implicit none
 !
     integer :: iocc1, iocc2
@@ -35,21 +35,21 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/tbexv1.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/tbliva.h"
+#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/rctres.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/lcqeqv.h"
 #include "asterfort/rcjaco.h"
+#include "asterfort/rctres.h"
 #include "asterfort/rcveri.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
     character(len=16) :: motclf, motclf2, motclf3, motclf4, valek(2)
     character(len=16) :: motclf5, val
@@ -66,17 +66,17 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
     real(kind=8) :: prinmax, e, nume(2), deno(2), epset, set, oet, tet
     real(kind=8) :: a, b, c, epsisup, epsiinf, temp, tmoy, tsup, tinf
     real(kind=8) :: valtinf, valtsup, valtmoynum, valtmoyden, epsiet
-    real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax 
+    real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax
     character(len=24) :: instan, abscur, instany, valk(4)
     complex(kind=8) :: cbid
-    
+!
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
 !  ------ POUR LES DEUX SITUATION iocc1 ET iocc2
 !  ------ ON STOCKE LE TRANSITOIRE ASSOCIE
-!    
+!
     motclf = 'RESU_THER'
     motclf2 = 'RESU_PRES'
     motclf3 = 'RESU_MECA'
@@ -128,18 +128,18 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
     call getvr8(motclf5, 'CRIT_EPSI', iocc=1, scal=critepsi, nbret=n5(13))
     critepsi = critepsi/100.d0
 !
-    call getvid(motclf5, 'TABL_YOUNG', iocc=1,scal=table5, nbret=n5(14))
+    call getvid(motclf5, 'TABL_YOUNG', iocc=1, scal=table5, nbret=n5(14))
 !
-    do 200 i = 1,14
-        if(n5(i) .eq. 0) call utmess('F', 'POSTRCCM_54')  
-200 continue
+    do i = 1, 14
+        if (n5(i) .eq. 0) call utmess('F', 'POSTRCCM_54')
+    end do
 !
     instany = '&&RC32.INSTANTYOUNG'
     call tbexv1(table5, 'TEMP', instany, 'V', nbtempy,&
                 k8b)
     call jeveuo(instany, 'L', jtempy)
 !
-    do 10 i = 1, 2
+    do i = 1, 2
 !
         contraintesth = 0.d0
         contraintespr = 0.d0
@@ -154,31 +154,31 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
         call getvis(motclf4, 'NUME_RESU_PRES', iocc=itrouve, scal=nume2, nbret=n2)
         call getvis(motclf4, 'NUME_RESU_MECA', iocc=itrouve, scal=nume3, nbret=n3)
 !
-        if (n1 .ne. 0) then 
-            do 20 ither =1, nbther, 1
+        if (n1 .ne. 0) then
+            do ither = 1, nbther, 1
                 call getvis(motclf, 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n4)
                 if (numether .eq. nume1) then
                     call getvid(motclf, 'TABL_RESU_THER', iocc=ither, scal=table1, nbret=n4)
                 endif
-20          continue
+            end do
         endif
 !
-        if (n2 .ne. 0) then 
-            do 30 ipres =1, nbpres, 1
+        if (n2 .ne. 0) then
+            do ipres = 1, nbpres, 1
                 call getvis(motclf2, 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n4)
                 if (numepres .eq. nume2) then
                     call getvid(motclf2, 'TABL_RESU_PRES', iocc=ipres, scal=table2, nbret=n4)
                 endif
-30          continue
+            end do
         endif
 !
-        if (n3 .ne. 0) then 
-            do 40 imeca =1, nbmeca, 1
+        if (n3 .ne. 0) then
+            do imeca = 1, nbmeca, 1
                 call getvis(motclf3, 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n4)
                 if (numemeca .eq. nume3) then
                     call getvid(motclf3, 'TABL_RESU_MECA', iocc=imeca, scal=table3, nbret=n4)
                 endif
-40          continue
+            end do
         endif
 !
 ! ------ RECUPERATION DES INSTANTS ET DES ABSCISSES
@@ -187,7 +187,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 !
         if (n1 .ne. 0) then
             tableok = table1
-        elseif (n2 .ne. 0) then
+        else if (n2 .ne. 0) then
             tableok = table2
         else
             tableok = table3
@@ -196,7 +196,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 ! --------- on verifie l'ordre des noeuds de la table
 !
         call rcveri(tableok)
-! 
+!
 ! --------- on recupere les instants de la table
 !
         instan = '&&RC32.INSTANT'
@@ -226,7 +226,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
         call wkvect('&&RC32.FENJ', 'V V R', nbinst2, jfen)
         call wkvect('&&RC32.TEMP', 'V V R', nbinst2, jtemp)
 !
-        do 12 j = 1, nbinst
+        do j = 1, nbinst
             vale(1) = zr(jinst+j-1)
 !
 ! --------- on recupere la temperature a l 'instant i 
@@ -241,14 +241,14 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                 valk (3) = valek(1)
                 valk (4) = valek(2)
                 call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
-                             valr=vale)
+                            valr=vale)
             endif
             zr(jtemp+j-1)=temp
 !
-            do 14 m = 1, ncmp
+            do m = 1, ncmp
 !
 ! --------- on recupere les contraintes(t) a l 'instant i
-! 
+!
                 if (n1 .ne. 0) then
                     call tbliva(table1, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(m),&
@@ -292,21 +292,23 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                                 tresca = 0.d0
 ! --------- si cette cont. princ. max est >0, la vitesse de déformation vaut ke*tresca/(E*(ti+1-ti))
                             else
-                                tresca = max ( abs(equi(1)-equi(2)),&
-                            & abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
-                            endif                             
+                                tresca = max (&
+                                         abs(equi(1)-equi(2)), abs(equi(1)-equi(3)),&
+                                         abs(equi(2)-equi(3))&
+                                         )
+                            endif 
                         endif
 ! --------- calcul de e
                         tempmin = zr(jtempy)
                         tempmax = zr(jtempy)
-                        ii = 0 
+                        ii = 0
 120                     continue
                         ii=ii+1
-                            tempii = zr(jtempy+ii)
-                            if(tmoy .ge. tempii) then
-                                tempmin = tempii
-                                goto 120 
-                            endif            
+                        tempii = zr(jtempy+ii)
+                        if (tmoy .ge. tempii) then
+                            tempmin = tempii
+                            goto 120 
+                        endif 
                         if (abs(tmoy-tempmin) .lt. 1e-6) then
                             tempmax = tmoy
                         else
@@ -316,7 +318,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                                     [cbid], k8b, crit, prec, 'YOUNG',&
                                     k8b, ibid, emin, cbid, k8b,&
                                     iret)
-                        if(iret.eq.1)then
+                        if (iret .eq. 1) then
                             valk(1)=table5
                             valk(2)='YOUNG'
                             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
@@ -336,7 +338,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                         epsiet = zr(jdepsi+j-2)/(zr(jinst+j-1)-zr(jinst+j-2))
                         if (epsiet*100 .lt. epsiinf) then
                             epset = log10(epsiinf/epsisup)/log10(exp(1.d0))
-                        elseif (epsiet*100 .gt. epsisup) then
+                        else if (epsiet*100 .gt. epsisup) then
                             epset = 0.d0
                         else
                             epset = log10(100*epsiet /epsisup)/log10(exp(1.d0))
@@ -344,24 +346,24 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 ! --------- calcul de t*
                         if (tmoy .lt. tinf) then
                             tet = valtinf
-                        elseif (tmoy .gt. tsup) then
+                        else if (tmoy .gt. tsup) then
                             tet = valtsup
                         else
                             tet = (tmoy-valtmoynum)/valtmoyden
                         endif
 !
-                       zr(jfen+j-2) = exp((a+b*epset)*set*oet*tet+c)
+                        zr(jfen+j-2) = exp((a+b*epset)*set*oet*tet+c)
                     endif
                 endif
- 14         continue
- 12     continue        
+            end do
+        end do
 !
         nume(i)= 0.d0
         deno(i)= 0.d0
-        do 18 jj = 1, nbinst-1
+        do jj = 1, nbinst-1
             nume(i)= nume(i)+(zr(jdepsi+jj-1))*(zr(jfen+jj-1))
             deno(i)= deno(i)+zr(jdepsi+jj-1)
-18      continue
+        end do
 !
         call jedetr(instan)
         call jedetr(abscur)
@@ -370,7 +372,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
         call jedetr('&&RC32.FENJ')
         call jedetr('&&RC32.TEMP')
 !
-10  continue
+    end do
 !
     call jedetr(instany)
 !

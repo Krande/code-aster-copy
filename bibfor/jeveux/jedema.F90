@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jedema()
     implicit none
 ! ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine jedema()
 !
 ! --- ON TRAITE D'ABORD LES COLLECTIONS
 !
-    do 100 k = ideb, ifin
+    do k = ideb, ifin
         iadmi = iszon(jiszon+kdesma(1)+k)
         if (iadmi .ne. 0) then
             idos = iszon(jiszon+iadmi-2)
@@ -87,12 +87,12 @@ subroutine jedema()
                 endif
             endif
         endif
-100  end do
+    end do
 !
 ! --- ON TRAITE MAINTENANT LES OBJETS SIMPLES
 ! --- ET LE $$DESO DES COLLECTIONS CONTIGUES
 !
-    do 200 k = ideb, ifin
+    do k = ideb, ifin
         iadmi = iszon(jiszon+kdesma(1)+k)
         if (iadmi .ne. 0) then
             idos = iszon(jiszon+iadmi-2)
@@ -119,7 +119,8 @@ subroutine jedema()
                 endif
             endif
         endif
-200  end do
+200     continue
+    end do
     lgputi = lgputi - 1
     lgduti = ideb
     iszon(jiszon+kposma(1)+ipgc-1) = 0

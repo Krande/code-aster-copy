@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xmoffc(lact, nlact, nno, ffe, ffc)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -46,20 +46,20 @@ subroutine xmoffc(lact, nlact, nno, ffe, ffc)
 ! ----------------------------------------------------------------------
 !
 !
-    do 10 i = 1, nno
+    do i = 1, nno
         ffc(i)=ffe(i)
-10  end do
+    end do
     if (nlact .lt. nno) then
-        do 20 i = 1, nno
+        do i = 1, nno
             if (lact(i) .eq. 0) then
-                do 30 j = 1, nno
+                do j = 1, nno
                     if (i .ne. j .and. lact(j) .ne. 0) then
                         ffc(j)=ffc(j)+ffc(i)/nlact
                     endif
-30              continue
+                end do
                 ffc(i)= 0.d0
             endif
-20      continue
+        end do
     endif
 !
     if (nno .gt. 8) then

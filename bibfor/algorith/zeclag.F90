@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zeclag(vect, nbddl, ideeq)
 !
 !  BUT: ANNULER LES DDL DE LAGRANGE DANS UN VECTEUR COMPLEXE
@@ -36,9 +36,9 @@ subroutine zeclag(vect, nbddl, ideeq)
 !-----------------------------------------------------------------------
     integer :: i, ityp, nbddl
 !-----------------------------------------------------------------------
-    do 10 i = 1, nbddl
+    do i = 1, nbddl
         ityp = ideeq(2,i)
         if (ityp .le. 0) vect(i)=dcmplx(0.d0,0.d0)
-10  end do
+    end do
 !
 end subroutine

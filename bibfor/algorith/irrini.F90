@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine irrini(fami, kpg, ksp, typess, essai,&
                   mod, nmat, materf, yd, deps,&
                   dy)
@@ -132,9 +132,9 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !        DP
         if (s .eq. 0.d0) then
             dp = 0.d0
-            do 10, i=1,6
-            dfds(i) = 0.d0
-10          continue
+            do i = 1, 6
+                dfds(i) = 0.d0
+            end do
         else
             call lcprsv(1.5d0/s, dev, dfds)
             call lcprsv(dpi, dfds, vtmp1)

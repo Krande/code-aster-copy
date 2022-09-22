@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                   basemo, typref, typbas, tousno, multap)
     implicit none
@@ -100,7 +100,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
         nbcham = -n1
         call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
 !
-        do 10 i = 1, nbcham
+        do i = 1, nbcham
             if (champ(i) .eq. 'DEPL') then
                 typea(i) = 'DEPL'
                 call jeexin(trange//'.DEPL', iret)
@@ -214,7 +214,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typbas(i) = typea(i)
 !
             endif
- 10     continue
+        end do
     endif
 !
 end subroutine

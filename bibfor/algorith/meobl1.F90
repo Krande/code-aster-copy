@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine meobl1(eps, b, d, deltab, deltad,&
                   mult, lambda, mu, ecrob, ecrod,&
                   alpha, k1, k2, bdim, dsidep)
@@ -106,9 +106,9 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
     call dfddd(eps, d, 3, lambda, mu,&
                ecrod, tdfddd)
 !
-    do 381 i = 1, 6
+    do i = 1, 6
         sdfbde(i)=tdfbde(1,i)
-381  end do
+    end do
 !
     coupl=sqrt(alpha*fbsm**deux+(un-alpha)*fd**deux)
     if ((fd.ne.0.d0) .and. (fbsm.ne.0.d0)) then
@@ -123,17 +123,17 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
         call r8inir(6, 0.d0, psi, 1)
         ksi=0.d0
 !
-        do 110 i = 1, 6
+        do i = 1, 6
             intert(i)=(un-alpha)*fd*tdfdde(i)+alpha*fbsm*dfmf*sdfbde(&
             i) -coupl*dcrit(i)
-110      end do
+        end do
 !
         interg=deltas/fd-alpha*fbsm/(un-alpha)/fd/tdfddd
         interd=alpha*fbsm*dfmf*sdfbdb
-        do 313 j = 1, 6
+        do j = 1, 6
             psi(j)=-alpha*deltad*dfmf*sdfbde(j)-interg*intert(j)&
             +(un-alpha)*deltas*tdfdde(j)
-313      end do
+        end do
 !
         ksi=alpha*deltad*dfmf*sdfbdb-(un-alpha)*fd +interg*interd
 !
@@ -148,26 +148,26 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
         call r8inir(6, 0.d0, matb, 1)
         call r8inir(6, 0.d0, matd, 1)
 !
-        do 150 i = 1, 6
+        do i = 1, 6
             matd(i)=-intert(i)/(un-alpha)/fd/tdfddd -interd*iksi*psi(&
             i)/(un-alpha)/fd/tdfddd
             matb(i)=matb(i)+iksi*psi(i)
-150      continue
+        end do
 !
-        do 201 i = 1, 6
-            do 202 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=-tdfdde(i)*matd(j)-sdfbde(i)*matb(j)
-202          continue
-201      continue
+            end do
+        end do
 !
     else if ((fd.eq.0.d0).and.(fbsm.ne.0.d0)) then
 !
         call r8inir(6, 0.d0, psi, 1)
         ksi=-alpha*mult*dfmf*sdfbdb
-        do 581 j = 1, 6
+        do j = 1, 6
             psi(j)=alpha*mult*dfmf*sdfbde(j) -fbsm*alpha*mult/coupl*&
             dcrit(j)
-581      continue
+        end do
 !
         if (ksi .ne. 0.d0) then
             iksi=un/ksi
@@ -177,24 +177,24 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
 !
         call r8inir(6, 0.d0, matb, 1)
 !
-        do 551 j = 1, 6
+        do j = 1, 6
             matb(j)=iksi*psi(j)
-551      continue
+        end do
 !
-        do 561 i = 1, 6
-            do 562 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)=dsidep(i,j)-sdfbde(i)*matb(j)
-562          continue
-561      continue
+            end do
+        end do
 !
     else if ((fd.ne.0.d0).and.(fbsm.eq.0.d0)) then
 !
-        do 661 i = 1, 6
-            do 662 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dsidep(i,j)= -tdfdde(i)*(-tdfdde(j)+coupl/(un-alpha)&
                 *dcrit(j)/fd)/tdfddd
-662          continue
-661      continue
+            end do
+        end do
 !
     endif
 !

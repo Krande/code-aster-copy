@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
                   nomnoe)
     implicit none
@@ -41,31 +41,31 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
 !     ------------------------------------------------------------------
 !
 !
-    do 10 i = 1, nbvale
+    do i = 1, nbvale
         nomnd = knom(i)
         call jenonu(jexnom(nomnoe, nomnd), numn)
 !
-        do 20 jj = 1, nbn
+        do jj = 1, nbn
             if (vec1(jj) .eq. numn) then
                 vec2(i) = jj
                 it = 1
             endif
-20      continue
+        end do
         if (it .ne. 1) then
             call utmess('F', 'UTILITAI5_59')
         endif
         it = 0
-10  end do
-    do 30 i = 1, nbvale
+    end do
+    do i = 1, nbvale
         jp = vec2(i)
         ji = i
-        do 40 jj = i, nbvale
+        do jj = i, nbvale
             if (vec2(jj) .lt. jp) then
                 ji = jj
                 jp = vec2(jj)
             endif
-40      continue
+        end do
         vec2(ji) = vec2(i)
         vec2(i) = jp
-30  end do
+    end do
 end subroutine

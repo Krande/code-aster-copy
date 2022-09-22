@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pbflso(umoy, rmoy, long, icoq, imod,&
                   nbm, rkip, tcoef, harm, lambda,&
                   kcalcu, passag, condit, gamma, d,&
@@ -81,7 +81,7 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod,&
 !
     if (umoy .lt. 1.d-5) then
 !
-        do 10 k = 1, 101
+        do k = 1, 101
             z = dble(k-1)*dz
             somm1 = dcmplx(0.d0,0.d0)
             u = (ln/long)*z
@@ -93,25 +93,25 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod,&
             harm(5) = dble(exp(v))
             v = -1.d0*(rkip/rmoy)*z
             harm(6) = dble(exp(v))
-            do 11 m1 = 1, 6
+            do m1 = 1, 6
                 somm1 = somm1 + d(m1)*harm(m1)
-11          continue
+            end do
             ysol(3,k) = somm1
-10      continue
+        end do
 !
     else
 !
-        do 20 k = 1, 101
+        do k = 1, 101
             z = dble(k-1)*dz
-            do 21 m1 = 1, 3
+            do m1 = 1, 3
                 somm2 = dcmplx(0.d0,0.d0)
-                do 22 m2 = 1, 3
+                do m2 = 1, 3
                     somm2 = somm2 + passag(m1,m2) * gamma(m2) * dcmplx(exp(lambda(m2)*(z-condit(m&
                             &2)*long)))
-22              continue
+                end do
                 ysol(m1,k) = pbflkz(m1,z,long,ln,kcalcu) + somm2
-21          continue
-20      continue
+            end do
+        end do
 !
     endif
 !

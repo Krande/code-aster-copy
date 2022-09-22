@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function jjprem(nombre, iret)
     implicit none
 #include "asterfort/utmess.h"
@@ -111,22 +111,22 @@ function jjprem(nombre, iret)
         call utmess('F', 'JEVEUX_39', ni=2, vali=vali)
     endif
     if (ipas .eq. 0) then
-        do 1 i = 1, npr1
+        do i = 1, npr1
             jprem(i) = ipr1(i)
             prem (i) = ipr1(i)
- 1      continue
-        do 2 i = 1, npr2
+        end do
+        do i = 1, npr2
             jprem(npr1+i) = ipr2(i)
             prem (npr1+i) = ipr2(i)
- 2      continue
-        do 3 i = 1, npr3
+        end do
+        do i = 1, npr3
             jprem(npr1+npr2+i) = ipr3(i)
             prem (npr1+npr2+i) = ipr3(i)
- 3      continue
-        do 4 i = 1, npr4
+        end do
+        do i = 1, npr4
             jprem(npr1+npr2+npr3+i) = ipr4(i)
             prem (npr1+npr2+npr3+i) = ipr4(i)
- 4      continue
+        end do
         ipas = 1
     endif
 !
@@ -134,7 +134,7 @@ function jjprem(nombre, iret)
 !
     i = npre / 2
     j = i
- 5  continue
+  5 continue
     if (r8nomb .eq. prem(i)) then
         iprem = i
     else

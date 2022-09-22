@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utremt(mot, liste, nbval, place)
     implicit none
     character(len=*) :: mot, liste(*)
@@ -34,11 +34,11 @@ subroutine utremt(mot, liste, nbval, place)
     integer :: i
 !-----------------------------------------------------------------------
     place = 0
-    do 10 i = 1, nbval
+    do i = 1, nbval
         if (mot .eq. liste(i)) then
             place = i
-            goto 9999
+            goto 999
         endif
-10  end do
-9999  continue
+    end do
+999 continue
 end subroutine

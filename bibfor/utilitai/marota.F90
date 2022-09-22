@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine marota(tetag, drot)
 !
 ! FONCTION: CALCULE LA MATRICE DE ROTATION 'DROT' CORRESPONDANT AU
@@ -45,30 +45,30 @@ subroutine marota(tetag, drot)
     coef = un / teta1
     call antisy(tetag, coef, amat1)
     coef = un / teta2
-    do 12 j = 1, 3
-        do 11 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             amat2(i,j) = coef * tetag(i) * tetag(j)
-11      end do
+        end do
         amat2(j,j) = amat2(j,j) - un
-12  end do
+    end do
     coef1 = sin(teta1)
     coef2 = un - cos(teta1)
-    do 22 j = 1, 3
-        do 21 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             drot(i,j) = coef1*amat1(i,j) + coef2*amat2(i,j)
-21      end do
+        end do
         drot(j,j) = drot(j,j) + un
-22  end do
+    end do
     goto 40
 !*** TETAG EST TRES PETIT ET LA MATRICE DROT EST PRATIQUEMENT L'UNITE
-30  continue
-    do 32 j = 1, 3
-        do 31 i = 1, 3
+ 30 continue
+    do j = 1, 3
+        do i = 1, 3
             drot(i,j) = zero
-31      end do
+        end do
         drot(j,j) = un
-32  end do
-40  continue
-    goto 9999
-9999  continue
+    end do
+ 40 continue
+    goto 999
+999 continue
 end subroutine

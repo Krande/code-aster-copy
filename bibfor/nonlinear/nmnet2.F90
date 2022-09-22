@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
                   czeg, cief, cdeps, cdtg, cier,&
                   dc1, dc2, depsp2, normm)
-    implicit  none
+    implicit none
 !
 !     CALCUL DE CNBN ET CDEPSP
 !     QUAND DEUX CRITERES PLASTIQUES SONT ACTIVES
@@ -54,16 +54,16 @@ subroutine nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
     call matmul(dc1, depsp2, 6, 6, 1,&
                 cp)
 !
-    do 10, j = 1,6
-    cnbn(j) = nmnbn(j) + cnbn(j) - cp(j)
-    10 end do
+    do j = 1, 6
+        cnbn(j) = nmnbn(j) + cnbn(j) - cp(j)
+    end do
 !
     call matmul(dc2, depsp2(1, 2), 6, 6, 1,&
                 cp)
 !
-    do 20, j = 1,6
-    cnbn(j) = cnbn(j) - cp(j)
-    20 end do
+    do j = 1, 6
+        cnbn(j) = cnbn(j) - cp(j)
+    end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
 !     ET DES ZEROS DES CRITERES
@@ -81,6 +81,6 @@ subroutine nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
         cier=0
     endif
 !
-30  continue
+ 30 continue
 !
 end subroutine

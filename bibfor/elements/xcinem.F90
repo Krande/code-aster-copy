@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
-                  ndim, he,&
-                  nfiss, nfh, nfe, ddls, ddlm,&
-                  fk, dkdgl, ff, dfdi, f,&
-                  eps, grad, heavn)
+!
+subroutine xcinem(axi, igeom, nnop, nnos, idepl,&
+                  grand, ndim, he, nfiss, nfh,&
+                  nfe, ddls, ddlm, fk, dkdgl,&
+                  ff, dfdi, f, eps, grad,&
+                  heavn)
 !
 !
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
-#include "asterfort/assert.h"
+#include "asterfort/xcalc_heav.h"
 !
     aster_logical, intent(in) :: axi
     integer, intent(in) :: igeom
@@ -48,8 +48,8 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
     integer, intent(in) :: ddls
     integer, intent(in) :: ddlm
     integer, intent(in) :: heavn(nnop, 5)
-    real(kind=8), intent(in)::  fk(27,3,3)
-    real(kind=8), intent(in)::  dkdgl(27,3,3,3)
+    real(kind=8), intent(in) :: fk(27, 3, 3)
+    real(kind=8), intent(in) :: dkdgl(27, 3, 3, 3)
     real(kind=8), intent(in) :: ff(nnop)
     real(kind=8), intent(in) :: dfdi(nnop, ndim)
     real(kind=8), intent(out) :: f(3, 3)
@@ -109,30 +109,30 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 ! --- MATRICE IDENTITE
 !
     call matini(3, 3, zero, kron)
-    do 10 p = 1, 3
+    do p = 1, 3
         kron(p,p) = un
- 10 continue
+    end do
 !
 ! --- CALCUL DES GRADIENTS : GRAD(U) ET F
 !
-    do 21 j = 1, 3
-        do 20 i = 1, 3
+    do j = 1, 3
+        do i = 1, 3
             f(i,j) = kron(i,j)
- 20     continue
- 21 continue
+        end do
+    end do
 !
-    do 31 j = 1, ndim
-        do 30 i = 1, ndim
+    do j = 1, ndim
+        do i = 1, ndim
             grad(i,j) = zero
- 30     continue
- 31 continue
+        end do
+    end do
 !
     ldec=.false.
     if (ddlm .eq. 0 .or. ddlm .eq. -1 .or. ddlm .eq. ddls) ldec=.true.
 !
 ! --- L'ORDRE DES DDLS DOIT ETRE 'DC' 'H1' 'E1' 'E2' 'E3' 'E4' 'LAGC'
 !
-    do 402 n = 1, nnop
+    do n = 1, nnop
         if (ldec) then
 ! --- DDLM=-1 PERMET D'EVITER D'AVOIR A FOURNIR DDLM DANS CHAQUE CAS
             nn=ddls*(n-1)
@@ -143,75 +143,75 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
         cpt=0
 !
 ! -- DDLS CLASSIQUES
-        do 403 i = 1, ndim
+        do i = 1, ndim
             cpt = cpt+1
-            do 404 j = 1, ndim
+            do j = 1, ndim
                 grad(i,j) = grad(i,j) + dfdi(n,j) * zr(idepl-1+nn+cpt)
-404         continue
-403     continue
-        if(axi) then
+            end do
+        end do
+        if (axi) then
             r = r + ff(n) * zr(igeom-1+2*(n-1)+1)
             ur = ur + ff(n) * zr(idepl-1+nn+1)
         endif
 !
 ! -- DDLS HEAVISIDE
-        do 405 ig = 1, nfh
-            do 406 i = 1, ndim
+        do ig = 1, nfh
+            do i = 1, ndim
                 cpt = cpt+1
-                do 407 j = 1, ndim
-                    grad(i,j) = grad(i,j) +  xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))&
-                            * dfdi(n, j) * zr(idepl-1+nn+cpt)
-407             continue
-406         continue
-            if(axi) then
-                ur = ur + ff(n) * zr(idepl-1+nn+ndim*ig+1) * xcalc_heav(&
-                          heavn(n,ig),hea_se,heavn(n,5))
+                do j = 1, ndim
+                    grad(i,j) = grad(i,j) + xcalc_heav(heavn(n,ig),hea_se,heavn(n,5)) * dfdi(n, j&
+                                &) * zr(idepl-1+nn+cpt)
+                end do
+            end do
+            if (axi) then
+                ur = ur + ff(n) * zr(idepl-1+nn+ndim*ig+1) * xcalc_heav( heavn(n,ig),hea_se,heavn&
+                     &(n,5))
             endif
-405     continue
+        end do
 !
 ! -- DDL ENRICHIS EN FOND DE FISSURE
-        do 408 ig = 1, nfe
-            do 409 alp = 1, ndim
+        do ig = 1, nfe
+            do alp = 1, ndim
                 cpt = cpt+1
-                do 410 i = 1, ndim
-                  do 411 j = 1, ndim
-                    grad(i,j) = grad(i,j) + zr(idepl-1+nn+cpt) * dkdgl(n,alp,i,j)
-411               continue
-410             continue
-                if(axi) then
+                do i = 1, ndim
+                    do j = 1, ndim
+                        grad(i,j) = grad(i,j) + zr(idepl-1+nn+cpt) * dkdgl(n,alp,i,j)
+                    end do
+                end do
+                if (axi) then
                     ur = ur + zr(idepl-1+nn+cpt) * fk(n,alp,1)
                 endif
-409         continue
-408     continue
+            end do
+        end do
 !
-402 continue
+    end do
 !
-    if(axi) then
+    if (axi) then
         ASSERT(r.gt.zero)
     endif
 !
     if (grand) then
-        do 421 j = 1, ndim
-            do 420 i = 1, ndim
+        do j = 1, ndim
+            do i = 1, ndim
                 f(i,j) = f(i,j) + grad(i,j)
-420          continue
-421      continue
-         if(axi) f(3,3) = 1.d0+ur/r
+            end do
+        end do
+        if (axi) f(3,3) = 1.d0+ur/r
     endif
 !
 ! --- CALCUL DES DÉFORMATIONS : EPS
 !
-    do 430 i = 1, ndim
-        do 431 j = 1, i
+    do i = 1, ndim
+        do j = 1, i
             tmp = grad(i,j) + grad(j,i)
             if (grand) then
-                do 432 k = 1, ndim
+                do k = 1, ndim
                     tmp = tmp + grad(k,i)*grad(k,j)
-432             continue
+                end do
             endif
             epstab(i,j) = 0.5d0*tmp
-431     continue
-430 continue
+        end do
+    end do
     call vecini(6, zero, eps)
     eps(1) = epstab(1,1)
     eps(2) = epstab(2,2)
@@ -222,7 +222,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
         eps(6) = epstab(3,2)*rac2
     else if (axi) then
         eps(3) = ur/r
-        if(grand) eps(3) = eps(3)+0.5d0*ur*ur/(r*r)
+        if (grand) eps(3) = eps(3)+0.5d0*ur*ur/(r*r)
     endif
 !
 end subroutine

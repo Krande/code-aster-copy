@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine gilig3(nfic, nbnono, niv, nboblu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -64,10 +64,10 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
         nbfois = nbnono / nbnom
         nbrest = nbnono - nbnom*nbfois
         icoj = 0
-        do 20 i = 1, nbfois
+        do i = 1, nbfois
             read(nfic,1007) (zk8(iaptno-1+j),j=icoj+1,icoj+nbnom)
             icoj = icoj + nbnom
-20      continue
+        end do
         if (nbrest .gt. 0) then
             read(nfic,1007) (zk8(iaptno-1+j),j=icoj+1,icoj+nbrest)
         endif
@@ -75,7 +75,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
         nbfois = nbnono / nbnum
         nbrest = nbnono - nbnum*nbfois
         icoj = 0
-        do 30 i = 1, nbfois
+        do i = 1, nbfois
             if (niv .eq. 3) then
                 read(nfic,1009) (zi(iaptnu-1+j),j=icoj+1,icoj+nbnum)
                 icoj = icoj + nbnum
@@ -83,7 +83,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
                 read(nfic,1008) (zi(iaptnu-1+j),j=icoj+1,icoj+nbnum)
                 icoj = icoj + nbnum
             endif
-30      continue
+        end do
         if (nbrest .gt. 0) then
             if (niv .eq. 3) then
                 read(nfic,1009) (zi(iaptnu-1+j),j=icoj+1,icoj+nbrest)
@@ -107,7 +107,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
     nbfois = nboblu / nbnum
     nbrest = nboblu - nbnum*nbfois
     icoj = 0
-    do 40 i = 1, nbfois
+    do i = 1, nbfois
         if (niv .eq. 3) then
             read(nfic,1009) (zi(iaptin-1+j),j=icoj+1,icoj+nbnum)
             icoj = icoj + nbnum
@@ -115,7 +115,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
             read(nfic,1008) (zi(iaptin-1+j),j=icoj+1,icoj+nbnum)
             icoj = icoj + nbnum
         endif
-40  end do
+    end do
     if (nbrest .gt. 0) then
         if (niv .eq. 3) then
             read(nfic,1009) (zi(iaptin-1+j),j=icoj+1,icoj+nbrest)
@@ -123,9 +123,9 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
             read(nfic,1008) (zi(iaptin-1+j),j=icoj+1,icoj+nbrest)
         endif
     endif
-    do 50 i = 1, nbnono
+    do i = 1, nbnono
         zi(iaptnu+i-1) = zi(iaptin+zi(iaptnu+i-1)-1)
-50  end do
+    end do
 !
 !
     1007 format( 8(1x,a8) )

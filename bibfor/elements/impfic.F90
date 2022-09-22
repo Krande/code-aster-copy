@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
-    implicit  none
+    implicit none
 #include "asterf_types.h"
 ! ......................................................................
 !
@@ -41,7 +41,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     real(kind=8) :: k11(10), k21(10), k12(10), k22(10), k1max, k1min
     real(kind=8) :: k2min, k2sup, gmax, k1dev, k2dev, gdev, fic1d, fic2d
     character(len=8) :: nomnoe
-    aster_logical ::lxfem
+    aster_logical :: lxfem
 ! ......................................................................
 !
     g = vale(1)
@@ -107,7 +107,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     k2phi= 0
     gphi= 0
 !
-    do 100 i = 1, 10
+    do i = 1, 10
         k1dev= k11(i)*k1+k12(i)*k2
         k2dev= k21(i)*k1+k22(i)*k2
         fic1d= k11(i)*fic1+k12(i)*fic2
@@ -127,8 +127,8 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
             gphi =10*(i-1)
             gmax = gdev
         endif
-100 continue
-    do 200 i = 2, 10
+    end do
+    do i = 2, 10
         k1dev= k11(i)*k1-k12(i)*k2
         k2dev= -k21(i)*k1+k22(i)*k2
         fic1d= k11(i)*fic1-k12(i)*fic2
@@ -148,7 +148,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
             gphi=-10*(i-1)
             gmax = gdev
         endif
-200  continue
+    end do
 !
     write(unit,*)
     write(unit,555)

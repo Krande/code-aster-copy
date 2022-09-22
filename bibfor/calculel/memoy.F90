@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                  nbmail, numail)
     implicit none
@@ -167,9 +167,9 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
 !     ------------------------------------
-    do 10 i = 1, 2
+    do i = 1, 2
         vr(i) = rzero
- 10 end do
+    end do
 !
 ! --- ON MOYENNE :
 !     ------------
@@ -192,9 +192,9 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
         vr(1) = vr(1)/vr(2)
     else
         call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
-        do 30 im = 1, nbmail
+        do im = 1, nbmail
             inum = 0
-            do 20 j = 1, nbgr
+            do j = 1, nbgr
                 mode1 = celd1(celd1(4+j) +2)
                 mode2 = celd2(celd2(4+j) +2)
                 nel = nbelem(ligrel,j)
@@ -204,7 +204,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                 endif
                 idecg1 = celd1(celd1(4+j)+8)
                 idecg2 = celd2(celd2(4+j)+8)
-                do 22 k = 1, nel
+                do k = 1, nel
                     iel = liel(1+inum+k-1)
                     if (iel .ne. numail(im)) goto 22
                     vr(1) =vr(1) + val1(idecg1+(k-1)*longt1+&
@@ -212,10 +212,13 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                     vr(2)= vr(2) + val2(idecg2+(k-1)*longt2+&
                     ncpb-1)
                     goto 30
- 22             continue
+ 22                 continue
+                end do
                 inum = inum + nel + 1
- 20         continue
- 30     continue
+ 20             continue
+            end do
+ 30         continue
+        end do
         vr(1) = vr(1)/vr(2)
     endif
 !

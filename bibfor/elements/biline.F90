@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function biline(nordre, vect1, amat, vect2)
     implicit none
     real(kind=8) :: vect1(*), amat(*), vect2(*)
@@ -38,12 +38,12 @@ function biline(nordre, vect1, amat, vect2)
     zero = 0.d0
     biline = zero
     k = 0
-    do 2 i = 1, nordre
+    do i = 1, nordre
         produi = zero
-        do 1 j = 1, nordre
+        do j = 1, nordre
             k = k + 1
             produi = produi + amat(k)*vect2(j)
- 1      continue
+        end do
         biline = biline + vect1(i)*produi
- 2  end do
+    end do
 end function

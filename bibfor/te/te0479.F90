@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0479(option, nomte)
     implicit none
 #include "asterf_types.h"
@@ -52,13 +52,13 @@ subroutine te0479(option, nomte)
 !
     call jevech('PCOORPG', 'E', icopg)
 !
-    do 100 kp = 1, npg
+    do kp = 1, npg
         xx=0.d0
         yy=0.d0
-        do 50 ino = 1, nno
+        do ino = 1, nno
             xx=xx+zr(igeom+2*(ino-1)+0)*zr(ivf+(kp-1)*nno+ino-1)
             yy=yy+zr(igeom+2*(ino-1)+1)*zr(ivf+(kp-1)*nno+ino-1)
- 50     continue
+        end do
 !
         zr(icopg+3*(kp-1)+0)=xx
         zr(icopg+3*(kp-1)+1)=yy
@@ -79,6 +79,6 @@ subroutine te0479(option, nomte)
         if (laxi) poids=poids*xx
 !
         zr(icopg+3*(kp-1)+2)=poids
-100 end do
+    end do
 !
 end subroutine

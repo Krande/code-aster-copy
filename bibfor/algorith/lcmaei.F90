@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                   imat, necris, necoul, nbval, valres,&
                   nmat, itbint, nfs, nsg, hsri,&
@@ -55,7 +55,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !
     nbval=0
 !
-    if (necoul .eq. 'MONO_DD_KR') goto 9999
+    if (necoul .eq. 'MONO_DD_KR') goto 999
 !
     if (necris .eq. 'MONO_ISOT1') then
         nbval=3
@@ -231,11 +231,11 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                         nmater, necris, 0, ' ', [0.d0],&
                         6, nomres, valh, icodre, 0)
 !           IL FAUT AU MOINS H1 A H4
-            do 1 i = 1, 4
+            do i = 1, 4
                 if (icodre(i) .ne. 0) then
                     ASSERT(.false.)
                 endif
-  1         continue
+            end do
 !
             if (icodre(5) .eq. 0) then
                 if (icodre(6) .eq. 0) then
@@ -269,5 +269,5 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         endif
 !
     endif
-9999 continue
+999 continue
 end subroutine

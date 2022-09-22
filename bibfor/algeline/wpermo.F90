@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
                   fr, am, excl, omecor, ernorm)
     implicit none
@@ -76,12 +76,12 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
     call wkvect('&&WPERMO.TAMPON.PROV_3', 'V V C', neq, iaux3)
     call wkvect('&&WPERMO.TYPEDDL      ', 'V V I', neq, iaux4)
 !
-    do 1 i = 1, nbprop
+    do i = 1, nbprop
 !
         ivec=(i-1)*neq+1
-        do 10 j = 0, neq-1
+        do j = 0, neq-1
             vecp(ivec+j) = vecp(ivec+j) * excl(j+1)
-10      continue
+        end do
 !
         ami = am(i)
         if (abs(ami) .eq. 1.d0) then
@@ -100,18 +100,18 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
                         .false._1)
             call mcmult('ZERO', lamor, vecp(ivec), zc(iaux3), 1,&
                         .false._1)
-            do 2 j = 0, neq-1
+            do j = 0, neq-1
                 zc(iaux2+j)=zc(iaux1+j)+freq*zc(iaux3+j)+freq2*zc(&
                 iaux2+j)
- 2          continue
+            end do
 !
 !           --- ON PREND LA NORME EUCLIDIENNE ---
             anorm1 = 0.d0
             anorm2 = 0.d0
-            do 3 j = 0, neq-1
+            do j = 0, neq-1
                 anorm1 = anorm1 + dble( dconjg(zc(iaux1+j))*zc(iaux1+j) *excl(j+1))
                 anorm2 = anorm2 + dble( dconjg(zc(iaux2+j))*zc(iaux2+j) *excl(j+1))
- 3          continue
+            end do
             if (abs(freq) .gt. xseuil) then
                 if (anorm1 .ne. 0.d0) then
                     ernorm(i)= sqrt( anorm2 / anorm1 )
@@ -123,7 +123,7 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
             endif
 !
         endif
- 1  end do
+    end do
 !
     call jedetr('&&WPERMO.TAMPON.PROV_1')
     call jedetr('&&WPERMO.TAMPON.PROV_2')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
+!
+subroutine dxmat2(pgl, icou, npg, ordi, epi,&
+                  epais, dm, indith)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -100,7 +101,8 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, c, s)
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+                    c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
         t1ve(1) = c*c
@@ -113,15 +115,15 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
         t1ve(6) = t1ve(7) + t1ve(7)
         t1ve(9) = t1ve(1) - t1ve(4)
         nbv = 56
-        do 10 i = 1, nbv
+        do i = 1, nbv
             call codent(i, 'G', num)
             nomres(i) = 'HOM_'//num
-10      continue
+        end do
         call codent(icou, 'G', num)
-        do 20 i = 1, 78
+        do i = 1, 78
             call codent(i, 'G', val)
             nomres(56+i) = 'C'//num//'_V'//val
-20      continue
+        end do
 !
     else if (phenom.eq.'ELAS') then
         nbv = 3
@@ -131,7 +133,8 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !
     else if (phenom.eq.'ELAS_COQUE') then
 !
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, c, s)
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+                    c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -166,7 +169,8 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
     call jevech('PNBSP_I', 'L', jcou)
     nbcou=zi(jcou)
-    call moytem('RIGI', npg, 3*nbcou, '+', valpar, iret)
+    call moytem('RIGI', npg, 3*nbcou, '+', valpar,&
+                iret)
     nbpar = 1
     nompar = 'TEMP'
 !===============================================================
@@ -175,9 +179,11 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !        ------ MATERIAU ISOTROPE ------------------------------------
 !
 !
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
             indith = -1
@@ -205,9 +211,11 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !        ---------------------------------------------------------------
 !
     else if (phenom.eq.'ELAS_COQUE') then
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(11), valres(11), icodre(11), 0)
         if ((icodre(11).ne.0) .or. (valres(11).eq.0.d0)) then
             indith = -1
@@ -227,22 +235,29 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
         df(2,1) = df(1,2)
         df(2,2) = valres(7)*alphat
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
+        call utbtab('ZERO', 3, 3, dm, t1ve,&
+                    xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve,&
+                    xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve,&
+                    xab1, dmf)
 !
     else if (phenom.eq.'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(19), valres(19), icodre(19), 1)
         epais = valres(19)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(57), valres(57), icodre(57), 1)
         epi = valres(57)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(59), valres(59), icodre(59), 1)
         ordi = valres(59)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     27, nomres(102), valres(102), icodre(102), 1)
         dm(1,1) = valres(102)
         dm(1,2) = valres(103)
@@ -274,10 +289,13 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 !
-        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
+        call utbtab('ZERO', 3, 3, dm, t1ve,&
+                    xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve,&
+                    xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve,&
+                    xab1, dmf)
 !
     endif
-70  continue
+ 70 continue
 end subroutine

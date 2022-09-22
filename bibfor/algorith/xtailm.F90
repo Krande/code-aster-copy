@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
                   jconx1, jconx2, ipt, jtail)
     implicit none
@@ -58,7 +58,7 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
     call conare(typma, ar, nbar)
 !
 !     BOUCLE SUR LE NOMBRE D'ARETES DE LA MAILLE NUMA
-    do 10 iar = 1, nbar
+    do iar = 1, nbar
 !
         ino1 = ar(iar,1)
         nno1 = zi(jconx1-1 + zi(jconx2+numa-1) +ino1-1)
@@ -66,9 +66,9 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
         nno2 = zi(jconx1-1 + zi(jconx2+numa-1) +ino2-1)
 !
 !       VECTEUR REPRESENTANT L'ARETE IAR
-        do 11 k = 1, ndim
+        do k = 1, ndim
             arete(k)=zr(jcoor-1+(nno1-1)*3+k)-zr(jcoor-1+(nno2-1)*3+k)
-11      continue
+        end do
 !
 !       PROJECTION DE L'ARETE IAR SUR LE VECTEUR TANGENT
         p = ddot(ndim,arete,1,vecdir,1)
@@ -76,7 +76,7 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
 !
         if (p .gt. zr(jtail-1+ipt)) zr(jtail-1+ipt) = p
 !
-10  end do
+    end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0009(option, nomte)
     implicit none
 #include "jeveux.h"
@@ -26,8 +26,8 @@ subroutine te0009(option, nomte)
 #include "asterfort/upletr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpalg.h"
-#include "asterfort/utpsgl.h"
 #include "asterfort/utppgl.h"
+#include "asterfort/utpsgl.h"
     character(len=16) :: option, nomte
 !     CALCUL DES MATRICES D'AMORTISSEMENT GYROSCOPIQUE
 !     DES ELEMENTS DISCRETS :
@@ -81,7 +81,7 @@ subroutine te0009(option, nomte)
     call matrot(zr(lorien), pgl)
 !
 !   passage dans le repère local
-    if (irep.eq.1) then
+    if (irep .eq. 1) then
         if (infodi .eq. 1) then
             call utpsgl(nno, nc, pgl, zr(jdc), vml)
             indvxx = 10
@@ -100,9 +100,9 @@ subroutine te0009(option, nomte)
     endif
     call jevech('PMATUNS', 'E', jdm)
 !
-    do 60 i = 1, nl1
+    do i = 1, nl1
         klv(i)=0.d0
- 60 end do
+    end do
 !
 !     I : LIGNE ; J : COLONNE
     i = 5

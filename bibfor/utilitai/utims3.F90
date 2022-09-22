@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utims3(comm, sch1, ipos, base)
     implicit none
 !     --
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -32,8 +34,6 @@ subroutine utims3(comm, sch1, ipos, base)
 #include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: comm, sch1, base
     integer :: ipos
@@ -55,7 +55,7 @@ subroutine utims3(comm, sch1, ipos, base)
     character(len=24) :: ob1, chain2, ficou
     character(len=8) :: kbid, comm2
     character(len=1) :: bas2
-    integer :: long, ifm, nbval, nbobj,  i, iret
+    integer :: long, ifm, nbval, nbobj, i, iret
     character(len=24), pointer :: liste(:) => null()
 !
 !
@@ -126,14 +126,14 @@ subroutine utims3(comm, sch1, ipos, base)
     write (ifm,1001) comm2,'#AJ2>','NOMOBJ','<','LONUTI',&
      &  'LONMAX','TYPE','IRET','SOMMI','RESUME','SOMMR'
 !
-    do 10 i = 1, nbobj
+    do i = 1, nbobj
         ob1 = liste(i)
         call dbgobj(ob1, 'OUI', ifm, '&&UTIMS3')
-10  end do
+    end do
 !
 !
     AS_DEALLOCATE(vk24=liste)
-20  continue
+ 20 continue
     call jedema()
 !
     1001 format (a8,a4,a5,a24,a1,a8,a8,a5,a5,a10,a10,a15)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, no_err)
+!
+subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
+                  no_err)
     implicit none
 #include "jeveux.h"
 #include "asterfort/padist.h"
@@ -77,10 +78,10 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, no_err)
         kdeb1 = 0
         kdeb2 = 3
         nno = 3
-        do 1 i = 1, 3
+        do i = 1, 3
             xn1(i) = coor1(3+i)-coor1(i)
             xn2(i) = coor2(3+i)-coor2(i)
- 1      continue
+        end do
     else if (nbsom.le.4) then
         if (nbsom .eq. 3) then
             kdeb1 = 6
@@ -91,12 +92,12 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, no_err)
             kdeb2 = 74
             nno = 8
         endif
-        do 2 i = 1, 3
+        do i = 1, 3
             x1(i) = coor1(3+i)-coor1(i)
             x2(i) = coor1(6+i)-coor1(3+i)
             x3(i) = coor2(3+i)-coor2(i)
             x4(i) = coor2(6+i)-coor2(3+i)
- 2      continue
+        end do
         xn1(1) = x1(2)*x2(3)-x1(3)*x2(2)
         xn1(2) = x1(3)*x2(1)-x1(1)*x2(3)
         xn1(3) = x1(1)*x2(2)-x1(2)*x2(1)
@@ -107,9 +108,9 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, no_err)
         call utmess('F', 'MODELISA6_7')
     endif
     s=0.d0
-    do 3 i = 1, 3
+    do i = 1, 3
         s= s+ xn1(i)*xn2(i)
- 3  end do
+    end do
     if (s .gt. 0) then
         kdeb0 = kdeb1
     else if (s.lt.0) then
@@ -125,21 +126,21 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, no_err)
     dmin = 99999999.d0
     nbperm = nbsom
     if (nbsom .eq. 2) nbperm = nbsom-1
-    do 4 n = 1, nbperm
+    do n = 1, nbperm
         kdeb =kdeb0 + (n-1)*nno
         d = 0.d0
-        do 5 j = 1, nbsom
+        do j = 1, nbsom
             k = iperm(kdeb+j)
             d = d + padist( 3, coor1(3*(j-1)+1), coor2(3*(k-1)+1) )
- 5      continue
+        end do
         if (d .lt. dmin) then
             dmin = d
             ideb = kdeb
         endif
- 4  end do
+    end do
 ! --- VIS A VIS DES NOEUDS DES ARRETES ET INTERIEURS
-    do 6 i = 1, nbno
+    do i = 1, nbno
         icoupl(i) = iperm(ideb+i)
- 6  continue
-8   continue
+    end do
+  8 continue
 end subroutine

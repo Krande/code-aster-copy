@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcsp(casint, nomu, table, freq, masg,&
                   nbm, nbmr, imod1, nuor, ivite)
     implicit none
@@ -98,18 +98,18 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     crfreq = nomu//'.DISC'
     crvale = nomu//'.VALE'
     call wkvect(crfreq, 'G V R', nbpf, lrfreq)
-    do 240 ip = 1, nbpf
+    do ip = 1, nbpf
         zr(lrfreq+ip-1) = zr(lfreq+ip-1)
-240 end do
+    end do
 !
     mrxval = 0
-    do 250 im2 = 1, nbmr
+    do im2 = 1, nbmr
         ideb = im2
         if (casint) ideb = 1
-        do 260 im1 = ideb, im2
+        do im1 = ideb, im2
             mrxval = mrxval+1
-260     continue
-250 end do
+        end do
+    end do
 !
     call wkvect(crnumi, 'G V I', mrxval, lrnumi)
     call wkvect(crnumj, 'G V I', mrxval, lrnumj)
@@ -123,7 +123,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     call wkvect('&&CALCSP.TEMP.HI  ', 'V V R8', nbmr*nbpf, ihi)
 !
     iv = ivite
-    do 25 im = imod1, imodf
+    do im = imod1, imodf
         fri = freq(2*nbm*(iv-1)+2*(im-1)+1)
         if (fri .lt. 0.d0) then
             vali(1) = nuor(im)
@@ -131,9 +131,9 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             call utmess('F', 'MODELISA2_90', ni=2, vali=vali)
             goto 20
         endif
- 25 continue
+    end do
 !
-    do 30 im = imod1, imodf
+    do im = imod1, imodf
 !
         mgi = masg(im)*4.d0*pi*pi
         fri = freq(2*nbm*(iv-1)+2*(im-1)+1)
@@ -142,33 +142,33 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 !
         imb = im - imod1 + 1
 !
-        do 40 ip = 1, nbpf
+        do ip = 1, nbpf
             fr = zr(lfreq+ip-1)
             ihr1 = ihr+nbpf*(imb-1)+ip-1
             ihi1 = ihi+nbpf*(imb-1)+ip-1
             zr(ihr1) = (mgi*(fri*fri - fr*fr))
             zr(ihi1) = (mgi*ksi*fr*fri*2.d0)
 !
- 40     continue
- 30 continue
+        end do
+    end do
 !
     ipf = 1
-    do 50 im2 = 1, nbmr
+    do im2 = 1, nbmr
 !
         ival(2) = nuor(im2)
 !
         ideb = im2
         if (casint) ideb = 1
 !
-        do 60 im1 = ideb, im2
+        do im1 = ideb, im2
 !
             ival(3) = nuor(im1)
 !
-            do 200 i1 = 1, mxval
+            do i1 = 1, mxval
                 if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+ i1) .eq. ival(3))) then
                     call jeveuo(jexnum(chvale, i1), 'L', ifonc)
                 endif
-200         continue
+            end do
 !
             call jecroc(jexnum(crvale, ipf))
             zi(lrnumi-1+ipf) = ival(2)
@@ -183,7 +183,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             call jeveuo(jexnum(crvale, ipf), 'E', lvale)
             ipf = ipf + 1
 !
-            do 80 il = 1, nbpf
+            do il = 1, nbpf
                 hir1 = zr(ihr+nbpf*(im1-1)+il-1)
                 hii1 = zr(ihi+nbpf*(im1-1)+il-1)
                 hir2 = zr(ihr+nbpf*(im2-1)+il-1)
@@ -199,10 +199,10 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
                     zr(lvale+2*(il-1)+1)= hhr*zr(ifonc+2*(il-1)+1)+&
                     hhi*zr(ifonc+2*(il-1))
                 endif
- 80         continue
+            end do
 !
- 60     continue
- 50 continue
+        end do
+    end do
  20 continue
 !
 !

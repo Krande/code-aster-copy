@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
-    implicit   none
+    implicit none
     integer :: iuni, nmatr, nfcod
     real(kind=8) :: vect1(*)
     character(len=24) :: vect2(*)
@@ -35,7 +35,7 @@ subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
     write (iuni,101)
     it1 = 1
     it2 = 0
-    do 10 if = 1, nfcod
+    do if = 1, nfcod
         if (if .eq. it1) then
             write (iuni,102) vect2(if)
             it2 = it2 + 1
@@ -43,11 +43,11 @@ subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
         else
             write (iuni,100) vect2(if)
         endif
-        do 20 ib = 1, nmatr
+        do ib = 1, nmatr
             l1 = (if-1)*nmatr + ib
             write (iuni,200) vect1(l1)
-20      continue
-10  end do
+        end do
+    end do
 !
     101 format ( 'CONVERGENCE DE LA MATRICE INTERSPECTRALE ',&
      &         'EN FONCTION DU NOMBRE DE TIRAGES ALEATOIRES')

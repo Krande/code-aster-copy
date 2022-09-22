@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pbflkc(umoy, rhof, hmoy, rmoy, long,&
                   cf0, mcf0, icoq, imod, nbm,&
                   rkip, tcoef, s1, s2, ki,&
@@ -145,17 +145,17 @@ subroutine pbflkc(umoy, rhof, hmoy, rmoy, long,&
     ki(4,2) = -1.d0*q12*f4/(dcmplx(w)+lambda(2))
     ki(4,3) = -1.d0*q13*g4/(dcmplx(w)+lambda(3))
 !
-    do 10 m2 = 1, 3
+    do m2 = 1, 3
         passag(1,m2) = dcmplx(1.d0,0.d0)
         passag(2,m2) = -1.d0 * lambda(m2) * rmoy
         passag(3,m2) = -1.d0 * lambda(m2) * (lambda(m2)-t) * (rmoy* rmoy*rhof*umoy)
-10  end do
+    end do
 !
-    do 20 m2 = 1, 4
-        do 21 m1 = 1, 3
+    do m2 = 1, 4
+        do m1 = 1, 3
             kcalcu(m1,m2) = passag(m1,1)*ki(m2,1)+passag(m1,2)*ki(m2, 2)
             kcalcu(m1,m2) = kcalcu(m1,m2) + passag(m1,3)*ki(m2,3)
-21      continue
-20  end do
+        end do
+    end do
 !
 end subroutine

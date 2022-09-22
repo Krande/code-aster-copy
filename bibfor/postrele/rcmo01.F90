@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rcmo01(chmome, ima, ipt, vale)
     implicit none
 #include "jeveux.h"
@@ -39,7 +39,7 @@ subroutine rcmo01(chmome, ima, ipt, vale)
 !     ------------------------------------------------------------------
     character(len=24) :: valk
 !
-    integer ::   jcesl, nbcmp, decal, icmp, iad
+    integer :: jcesl, nbcmp, decal, icmp, iad
     integer :: vali(2)
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: cesd(:) => null()
@@ -56,7 +56,7 @@ subroutine rcmo01(chmome, ima, ipt, vale)
 !
 ! --- LES VALEURS DES COMPOSANTES
 !
-    do 10 icmp = 1, 3
+    do icmp = 1, 3
         iad = decal + (ipt-1)*nbcmp + icmp
         if (.not. zl(jcesl-1+iad)) then
             vali (1) = ima
@@ -65,7 +65,7 @@ subroutine rcmo01(chmome, ima, ipt, vale)
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
         vale(icmp) = cesv(iad)
-10  end do
+    end do
 !
     call jedema()
 end subroutine

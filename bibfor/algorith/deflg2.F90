@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine deflg2(gn, lamb, logl, pes, feta,&
                   xi, me)
     implicit none
@@ -43,10 +43,10 @@ subroutine deflg2(gn, lamb, logl, pes, feta,&
     nbvec = 3
 !
     call r8inir(4, 0.d0, feta, 1)
-    do 14 i = 1, 3
+    do i = 1, 3
         di(i)=1.d0/lamb(i)
         feta(i)=-2.d0/lamb(i)/lamb(i)
-14  end do
+    end do
 !
     if (abs(lamb(1)-lamb(2)) .lt. r8miem()) then
         if (abs(lamb(1)-lamb(3)) .lt. r8miem()) then
@@ -79,16 +79,16 @@ subroutine deflg2(gn, lamb, logl, pes, feta,&
         xi(2,3)= (theta(2,3) - 0.5d0*di(3)) / (lamb(2)-lamb(3))
         xi(1,3)= (theta(1,3) - 0.5d0*di(3)) / (lamb(1)-lamb(3))
         xi(3,1)= (theta(3,1) - 0.5d0*di(1)) / (lamb(3)-lamb(1))
-        do 15 i = 1, 3
-            do 16 j = 1, 3
-                do 17 k = 1, 3
+        do i = 1, 3
+            do j = 1, 3
+                do k = 1, 3
                     if ((j.ne.i) .and. (j.ne.k) .and. (k.ne.i)) then
                         feta(4)=feta(4)+ logl(i)*0.5d0/(lamb(i)-lamb(&
                         j))/(lamb(i)-lamb(k))
                     endif
-17              continue
-16          continue
-15      continue
+                end do
+            end do
+        end do
     else if (icas.eq.12) then
         theta(1,2)=di(1)/2.d0
         theta(2,1)=di(1)/2.d0
@@ -151,46 +151,46 @@ subroutine deflg2(gn, lamb, logl, pes, feta,&
     call r8inir(81, 0.d0, me, 1)
 !
 !     calcul de M_E (Lagrangien) pour chaque direction propre
-    do 25 i = 1, nbvec
-        do 26 j = 1, nbvec
-            do 27 a = 1, 3
-                do 28 b = 1, 3
+    do i = 1, nbvec
+        do j = 1, nbvec
+            do a = 1, 3
+                do b = 1, 3
                     me(a,b,i,j)=gn(a,i)*gn(b,j)+gn(a,j)*gn(b,i)
-28              continue
-27          continue
-26      continue
-25  end do
+                end do
+            end do
+        end do
+    end do
 !
     call r8inir(81, 0.d0, pe, 1)
 !
-    do 29 i = 1, 3
-        do 30 k = 1, 3
-            do 31 l = 1, 3
-                do 32 a = 1, 3
-                    do 33 b = 1, 3
+    do i = 1, 3
+        do k = 1, 3
+            do l = 1, 3
+                do a = 1, 3
+                    do b = 1, 3
                         pe(k,l,a,b)=pe(k,l,a,b)+ di(i)*gn(k,i)*gn(l,i)&
                         *me(a,b,i,i)/2.d0
-33                  continue
-32              continue
-31          continue
-30      continue
-29  end do
-    do 34 i = 1, 3
-        do 35 j = 1, 3
+                    end do
+                end do
+            end do
+        end do
+    end do
+    do i = 1, 3
+        do j = 1, 3
             if (i .ne. j) then
-                do 36 k = 1, 3
-                    do 37 l = 1, 3
-                        do 38 a = 1, 3
-                            do 39 b = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
+                        do a = 1, 3
+                            do b = 1, 3
                                 pe(k,l,a,b)=pe(k,l,a,b)+ theta(i,j)*&
                                 gn(k,i)*gn(l,j)*me(a,b,i,j)
-39                          continue
-38                      continue
-37                  continue
-36              continue
+                            end do
+                        end do
+                    end do
+                end do
             endif
-35      continue
-34  end do
+        end do
+    end do
 !
     call symt46(pe, pes)
 !

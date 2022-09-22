@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
                       refi, refr, refc, epsi, crit,&
                       llab, ssigne, ignore, compare)
@@ -98,7 +98,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
         valk(1) = type
         valk(2) = typrez
         call utmess('F', 'TEST0_7', nk=2, valk=valk)
-        goto 9999
+        goto 999
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
@@ -106,9 +106,9 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     nblign = tbnp(2)
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
-    do 10 ipar = 1, nbpara
+    do ipar = 1, nbpara
         if (inpar .eq. tblp(1+4*(ipar-1))) goto 12
- 10 end do
+    end do
  12 continue
     call jeveuo(tblp(1+4*(ipar-1)+2), 'L', jvale)
     call jeveuo(tblp(1+4*(ipar-1)+3), 'L', jvall)
@@ -116,66 +116,66 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
-            do 100 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) vali = vali+abs( zi(jvale+i-1) )
-100         continue
+            end do
         else if (typtes .eq. 'SOMM') then
             vali = 0
-            do 102 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) vali = vali + zi(jvale+i-1)
-102         continue
+            end do
         else if (typtes .eq. 'MAX') then
             vali = -ismaem()
-            do 104 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) vali = max( vali,zi(jvale+i-1) )
-104         continue
+            end do
         else if (typtes .eq. 'MIN') then
             vali = ismaem()
-            do 106 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) vali = min( vali,zi(jvale+i-1) )
-106         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
-            do 200 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) valr = valr+abs( zr(jvale+i-1) )
-200         continue
+            end do
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
-            do 202 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) valr = valr + zr(jvale+i-1)
-202         continue
+            end do
         else if (typtes .eq. 'MAX') then
             valr = -r8maem()
-            do 204 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) valr = max( valr,zr(jvale+i-1) )
-204         continue
+            end do
         else if (typtes .eq. 'MIN') then
             valr = r8maem()
-            do 206 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) valr = min( valr,zr(jvale+i-1) )
-206         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
     else if (type .eq. 'C') then
         valc = ( 0.d0 , 0.d0 )
         if (typtes .eq. 'SOMM_ABS') then
-            do 300 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) valc = valc+abs( zc(jvale+i-1) )
-300         continue
+            end do
         else if (typtes .eq. 'SOMM') then
-            do 302 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+i-1) .eq. 1) valc = valc + zc(jvale+i-1)
-302         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
     endif
 !
@@ -184,7 +184,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
                          [refi], vali, [refc], valc, ignore=skip,&
                          compare=ordgrd)
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

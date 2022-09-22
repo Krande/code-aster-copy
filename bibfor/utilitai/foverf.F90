@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine foverf(v, nc, ier)
     implicit none
 #include "asterc/getres.h"
@@ -63,7 +63,7 @@ subroutine foverf(v, nc, ier)
             isens=-1
         endif
 !
-        do 10 i = 3, nc
+        do i = 3, nc
             if (v(i) .eq. v(i-1)) then
                 ilarge=0
                 if (niv .ge. 2) then
@@ -90,8 +90,8 @@ subroutine foverf(v, nc, ier)
             endif
 !         POUR SORTIE ANTICIPEE DE LA BOUCLE
             if (isens .eq. 0) goto 11
-10      continue
-11      continue
+        end do
+ 11     continue
         if (isens .eq. 99) then
 !         AU CAS OU ON NE SAIT TOUJOURS PAS
             isens=1

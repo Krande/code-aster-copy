@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ortrep(ndim, coor, repere)
 !.======================================================================
     implicit none
@@ -67,15 +67,15 @@ subroutine ortrep(ndim, coor, repere)
 ! ---- INITIALISATIONS :
 !      ----------------
 !
-    do 10 i = 1, 7
+    do i = 1, 7
         repere(i) = 0.0d0
-10  end do
+    end do
 !
 ! - RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !   -------------------------------------------------
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-
+!
     if (ndim .eq. 2 .and. phenom .eq. 'ELAS_ISTR') then
         call utmess('F', 'ELEMENTS3_2')
     endif
@@ -90,7 +90,7 @@ subroutine ortrep(ndim, coor, repere)
 !     ----
 ! ---- TRAITEMENT DU CAS 3D :
 !      ====================
-        if (ndim .eq. 3) then     
+        if (ndim .eq. 3) then
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !
@@ -119,10 +119,10 @@ subroutine ortrep(ndim, coor, repere)
                     orig(2)=zr(icamas+5)
                     orig(3)=zr(icamas+6)
                     call utrcyl(coor, dire, orig, p)
-                    do 1 i = 1, 3
+                    do i = 1, 3
                         xg(i)=p(1,i)
                         yg(i)=p(2,i)
- 1                  continue
+                    end do
                     call angvxy(xg, yg, angmas)
                     repere(1)=1.d0
                     repere(2)=angmas(1)

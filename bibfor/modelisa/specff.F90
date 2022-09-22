@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine specff(casint, nomu, spectr, base, nuor,&
                   imodi, imodf, nbm, nbpf)
     implicit none
@@ -132,9 +132,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         r8b = (-1.d0+sqrt(1.d0+8.d0*mxval))/2.d0
         nbfonc = int(r8b)
         call wkvect('&&SPECFF.TEMP.NOMF', 'V V K8', nbfonc, inomf)
-        do 10 ifo = 1, nbfonc
+        do ifo = 1, nbfonc
             zk8(inomf+ifo-1) = zk16(ispte+3+ifo)(1:8)
- 10     continue
+        end do
     else
         nbfonc = 12
         dimint = 6
@@ -247,18 +247,18 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         call wkvect('&&SPECFF.IIM', 'V V R', nbpf, iim)
         chtab=table//'.VALE'
         call jeveuo(table//'.DISC', 'L', vr=freq)
-        do 60 ifo2 = 1, nbfonc
+        do ifo2 = 1, nbfonc
             ival(2) = ifo2
-            do 61 ifo1 = 1, ifo2
+            do ifo1 = 1, ifo2
                 ifo = ifo2*(ifo2-1)/2 + ifo1
                 ival(1) = ifo1
                 exiind = .false.
-                do 320 i1 = 1, mxval
+                do i1 = 1, mxval
                     if ((zi(lnumi-1+i1) .eq. ival(1)) .and. (zi(lnumj- 1+i1) .eq. ival(2))) then
                         exiind = .true.
                         ind = i1
                     endif
-320             continue
+                end do
                 if (.not. exiind) then
                     call utmess('F', 'MODELISA2_89')
                 endif
@@ -273,9 +273,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     endif
                     call fointr(' ', zk24(iprol), nbfreq, freq, zr( itab),&
                                 nbpf, zr(lwr), zr(isre), ier2)
-                    do 210 i1 = 1, nbfreq
+                    do i1 = 1, nbfreq
                         zr(isim-1+i1) = 0.d0
-210                 continue
+                    end do
                 else
                     nbfreq = nbval/2
                     call jeexin('&&SPECFF.SRE', ibid)
@@ -283,42 +283,42 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                         call wkvect('&&SPECFF.SRE', 'V V R', nbfreq, isre)
                         call wkvect('&&SPECFF.SIM', 'V V R', nbfreq, isim)
                     endif
-                    do 310 i1 = 1, nbfreq
+                    do i1 = 1, nbfreq
                         zr(ire-1+i1) = zr(itab+2*(i1-1))
                         zr(iim-1+i1) = zr(itab+2*(i1-1)+1)
-310                 continue
+                    end do
                     call fointr(' ', zk24(iprol), nbfreq, freq, zr( ire),&
                                 nbpf, zr(lwr), zr(isre), ier2)
                     call fointr(' ', zk24(iprol), nbfreq, freq, zr( iim),&
                                 nbpf, zr(lwr), zr(isim), ier2)
                 endif
-                do 62 il = 1, nbpf
+                do il = 1, nbpf
                     idec = 2*nbpf*(ifo-1)+2*(il-1)
                     zr(iinte+idec ) = zr(isre-1+il)
                     zr(iinte+idec+1) = zr(isim-1+il)
- 62             continue
- 61         continue
- 60     continue
+                end do
+            end do
+        end do
 !
     else if (idebit.eq.180) then
 !
-        do 70 ifo2 = 1, dimint
+        do ifo2 = 1, dimint
             ifo = ifo2*(ifo2+1)/2
             s0 = pla180(ifo)
-            do 71 il = 1, nbpf
+            do il = 1, nbpf
                 idec = 2*nbpf*(ifo-1)+2*(il-1)
                 ptf = zr(lwr+il-1)
                 module = 1.d0 + (ptf/15.d0)**(4.6d0)
                 module = s0/module
                 zr(iinte+idec) = module
- 71         continue
- 70     continue
-        do 72 ifo2 = 2, dimint
-            do 73 ifo1 = 1, ifo2-1
+            end do
+        end do
+        do ifo2 = 2, dimint
+            do ifo1 = 1, ifo2-1
                 ifo = ifo2*(ifo2-1)/2 + ifo1
                 s0 = pla180(ifo)
                 ifoi = (ifo2-1)*(ifo2-2)/2 + ifo1
-                do 74 il = 1, nbpf
+                do il = 1, nbpf
                     idec = 2*nbpf*(ifo-1)+2*(il-1)
                     ptf = zr(lwr+il-1)
                     call pha180(ifoi, ptf, phase)
@@ -326,29 +326,29 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     module = s0/module
                     zr(iinte+idec) = module * dble(cos(phase))
                     zr(iinte+idec+1) = module * dble(sin(phase))
- 74             continue
- 73         continue
- 72     continue
+                end do
+            end do
+        end do
 !
     else if (idebit.eq.300) then
 !
-        do 80 ifo2 = 1, dimint
+        do ifo2 = 1, dimint
             ifo = ifo2*(ifo2+1)/2
             s0 = pla300(ifo)
-            do 81 il = 1, nbpf
+            do il = 1, nbpf
                 idec = 2*nbpf*(ifo-1)+2*(il-1)
                 ptf = zr(lwr+il-1)
                 module = 1.d0 + (ptf/15.d0)**(4.6d0)
                 module = s0/module
                 zr(iinte+idec) = module
- 81         continue
- 80     continue
-        do 82 ifo2 = 2, dimint
-            do 83 ifo1 = 1, ifo2-1
+            end do
+        end do
+        do ifo2 = 2, dimint
+            do ifo1 = 1, ifo2-1
                 ifo = ifo2*(ifo2-1)/2 + ifo1
                 s0 = pla300(ifo)
                 ifoi = (ifo2-1)*(ifo2-2)/2 + ifo1
-                do 84 il = 1, nbpf
+                do il = 1, nbpf
                     idec = 2*nbpf*(ifo-1)+2*(il-1)
                     ptf = zr(lwr+il-1)
                     call pha300(ifoi, ptf, phase)
@@ -356,9 +356,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                     module = s0/module
                     zr(iinte+idec) = module * dble(cos(phase))
                     zr(iinte+idec+1) = module * dble(sin(phase))
- 84             continue
- 83         continue
- 82     continue
+                end do
+            end do
+        end do
 !
     endif
 !
@@ -366,10 +366,10 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 !
     ij = 0
     chvale = nomu//'.VALE'
-    do 90 im2 = imodi, imodf
+    do im2 = imodi, imodf
         ideb = im2
         if (casint) ideb = imodi
-        do 91 im1 = ideb, im2
+        do im1 = ideb, im2
             ij = ij + 1
             call jeveuo(jexnum(chvale, ij), 'E', ivale)
             call jelira(jexnum(chvale, ij), 'LONMAX', nbval)
@@ -377,8 +377,8 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
             im1b = im1 - imodi + 1
 !
             if (ltable) then
-                do 100 il = 1, nbpf
-                    do 101 ifo2 = 1, nbfonc
+                do il = 1, nbpf
+                    do ifo2 = 1, nbfonc
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
                         ifo = ifo2*(ifo2+1)/2
@@ -389,12 +389,12 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + beta12*beta22 * zr(iinte+idec)
                         endif
-101                 continue
+                    end do
                     if (nbfonc .gt. 1) then
-                        do 102 ifo2 = 2, nbfonc
+                        do ifo2 = 2, nbfonc
                             beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                             beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
-                            do 103 ifo1 = 1, ifo2-1
+                            do ifo1 = 1, ifo2-1
                                 beta11 = zr(imatb+nbfonc*(im1b-1)+ ifo1-1)
                                 beta21 = zr(imatb+nbfonc*(im2b-1)+ ifo1-1)
                                 ifo = ifo2*(ifo2-1)/2 + ifo1
@@ -412,15 +412,15 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                                            &ta12* beta21)*zr(iinte+idec+1&
                                                            )
                                 endif
-103                         continue
-102                     continue
+                            end do
+                        end do
                     endif
-100             continue
+                end do
 !
             else
 !
-                do 110 il = 1, nbpf
-                    do 111 ifo2 = 1, dimint
+                do il = 1, nbpf
+                    do ifo2 = 1, dimint
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
                         ifo = ifo2*(ifo2+1)/2
@@ -431,8 +431,8 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + beta12*beta22 * zr(iinte+idec)
                         endif
-111                 continue
-                    do 112 ifo2 = dimint+1, nbfonc
+                    end do
+                    do ifo2 = dimint+1, nbfonc
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
                         ifo = (ifo2-dimint)*(ifo2-dimint+1)/2
@@ -443,11 +443,11 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                             zr(ivale+2*(il-1)) = zr(&
                                                  ivale+2*(il-1)) + beta12*beta22 * zr(iinte+idec)
                         endif
-112                 continue
-                    do 113 ifo2 = 2, dimint
+                    end do
+                    do ifo2 = 2, dimint
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
-                        do 114 ifo1 = 1, ifo2-1
+                        do ifo1 = 1, ifo2-1
                             beta11 = zr(imatb+nbfonc*(im1b-1)+ifo1-1)
                             beta21 = zr(imatb+nbfonc*(im2b-1)+ifo1-1)
                             ifo = ifo2*(ifo2-1)/2 + ifo1
@@ -465,12 +465,12 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                                        &*beta21)* zr(iinte+idec+1&
                                                        )
                             endif
-114                     continue
-113                 continue
-                    do 115 ifo2 = dimint+2, nbfonc
+                        end do
+                    end do
+                    do ifo2 = dimint+2, nbfonc
                         beta12 = zr(imatb+nbfonc*(im1b-1)+ifo2-1)
                         beta22 = zr(imatb+nbfonc*(im2b-1)+ifo2-1)
-                        do 116 ifo1 = dimint+1, ifo2-1
+                        do ifo1 = dimint+1, ifo2-1
                             beta11 = zr(imatb+nbfonc*(im1b-1)+ifo1-1)
                             beta21 = zr(imatb+nbfonc*(im2b-1)+ifo1-1)
                             ifo = (ifo2-dimint)*(ifo2-dimint-1)/2 + ifo1-dimint
@@ -488,14 +488,14 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                                                        &*beta21)* zr(iinte+idec+1&
                                                        )
                             endif
-116                     continue
-115                 continue
-110             continue
+                        end do
+                    end do
+                end do
 !
             endif
 !
- 91     continue
- 90 continue
+        end do
+    end do
 !
     call jedetr('&&SPECFF.TEMP.NOMF')
     call jedetr('&&SPECFF.TEMP.DIFF')

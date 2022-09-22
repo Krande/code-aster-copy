@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vectgt(ind, nb1, xi, ksi3s2, intsx,&
                   zr, epais, vectn, vectg, vectt)
 !
@@ -52,27 +52,27 @@ subroutine vectgt(ind, nb1, xi, ksi3s2, intsx,&
 !
     intsx1=8*(intsx-1)
     i1=l1+intsx1
-    do 15 k = 1, 3
+    do k = 1, 3
         vectt(3,k)=0
-        do 25 j = 1, nb1
+        do j = 1, nb1
             vectt(3,k)=vectt(3,k)+zr(i1+j)*vectn(j,k)
-25      end do
-15  end do
+        end do
+    end do
 !
 !     CONSTRUCTION DES VECTEURS GA AUX X PTS DE GAUSS
 !
     i1=l2+intsx1
     i2=l3+intsx1
-    do 40 k = 1, 3
+    do k = 1, 3
         vectg(1,k)=0.d0
         vectg(2,k)=0.d0
-        do 50 j = 1, nb1
+        do j = 1, nb1
             vectg(1,k)= vectg(1,k) +zr(i1+j)*(xi(k,j)+ksi3s2*epais*&
             vectn(j,k))
             vectg(2,k)= vectg(2,k) +zr(i2+j)*(xi(k,j)+ksi3s2*epais*&
             vectn(j,k))
-50      end do
-40  end do
+        end do
+    end do
 !
 !     CONSTRUCTION DES VECTEURS TA AUX X PTS DE GAUSS (T3=N)
 !
@@ -80,9 +80,9 @@ subroutine vectgt(ind, nb1, xi, ksi3s2, intsx,&
      &             +vectg(1,2)*vectg(1,2)&
      &             +vectg(1,3)*vectg(1,3))
 !
-    do 60 k = 1, 3
+    do k = 1, 3
         vectt(1,k)=vectg(1,k)/rnorm
-60  end do
+    end do
 !
     vectt(2,1)= vectt(3,2)*vectt(1,3)-vectt(3,3)*vectt(1,2)
     vectt(2,2)= vectt(3,3)*vectt(1,1)-vectt(3,1)*vectt(1,3)

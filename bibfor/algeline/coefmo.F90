@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                   x, pulsc, vgap, xsi0, veci1,&
                   vecr1, vecr2, vecr3, vecr4, vecr5,&
@@ -121,12 +121,12 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
         call wkvect(nom2, 'V V I', 3*nzone, jcompt)
         call wkvect(nom3, 'V V R', 2*nzone, jextr)
         call wkvect(nom4, 'V V R', 2*nzone, jvrzo)
-        do 5 i = 1, 3*nzone
+        do i = 1, 3*nzone
             zi(jcompt+i-1)=0
-  5     continue
+        end do
 !
         aire = 0.d0
-        do 10 i = 1, nbp
+        do i = 1, nbp
             ires = veci1(i)
 !
             if ((ipas.eq.1) .and. (ires.eq.1003) .and. (vecr1(i).ne.0.d0)) then
@@ -148,14 +148,14 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 !
 ! ---     DETERMINATION S'IL Y EN A UNE DE LA ZONE CONTENANT LE POINT I
             izone = 0
-            do 11 j = 1, nzone
+            do j = 1, nzone
                 n1 = tempo(1+2*(j-1)+1)
                 n2 = tempo(1+2*(j-1)+2)
                 if ((i.ge.n1) .and. (i.le.n2)) then
                     izone = j
                     goto 12
                 endif
- 11         continue
+            end do
  12         continue
 !
             if (izone .ne. 0) then
@@ -199,7 +199,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 !
                 endif
             endif
- 10     continue
+        end do
 !
         call jelibe(nom1)
 !
@@ -218,7 +218,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
             val1 = ck*vecr2(1)*vecr1(1)*vecr1(1)*vecr3(imode+1)* vecr3(imode+1)
             aire = 0.d0
 !
-            do 20 i = 2, nbp
+            do i = 2, nbp
                 ires = veci1(i)
                 if (ipas .eq. 1 .and. ires .eq. 1003 .and. vecr1(i) .ne. 0.d0) then
                     vred = vr*vecr1(nbp+i)
@@ -229,7 +229,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                 val2 = ck*vecr2(i)*vecr1(i)*vecr1(i)*vecr3(imode+i)* vecr3(imode+i)
                 aire = aire + (vecr5(i)-vecr5(i-1))* (val2+val1)/2.d0
                 val1 = val2
- 20         continue
+            end do
             rkf = vgap*vgap*aire/(2.d0*vecr1(2*nbp+1)*vecr1(2*nbp+1))
             xkf = dcmplx(rkf,0.d0)
         else
@@ -313,17 +313,17 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                         nbm, veci1, vecr2, vecr3, x(1),&
                         x(2), zc(imatb))
 !
-            do 30 imod = 1, nbm
-                do 31 jmod = 1, nbm
+            do imod = 1, nbm
+                do jmod = 1, nbm
                     zc(ivecc+imod-1) = zc(ivecc+imod-1) + zc(imatb+ nbm*(jmod-1)+imod-1) * poids &
                                        &* vecr5(nbm*(nmode-1) +jmod)
- 31             continue
- 30         continue
+                end do
+            end do
 !
             biie = dcmplx(0.d0,0.d0)
-            do 40 imod = 1, nbm
+            do imod = 1, nbm
                 biie = biie + vecr5(nbm*(nmode-1)+imod)*zc(ivecc+ imod-1)
- 40         continue
+            end do
 !
         endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
                   nmprox, cnbn, cplas, rpara, cief,&
                   cdeps, cdtg, cier, cdepsp, dc1,&
@@ -82,12 +82,12 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     call dfplgl(nmnbn, nmplas, nmdpla, 1, df1)
     call dfplgl(nmnbn, nmplas, nmdpla, 2, df2)
 !
-    do 10, j = 1,6
-    df(j,1) = df1(j)
-    df(j,2) = df2(j)
-    tdf(1,j) = df(j,1)
-    tdf(2,j) = df(j,2)
-    10 end do
+    do j = 1, 6
+        df(j,1) = df1(j)
+        df(j,2) = df2(j)
+        tdf(1,j) = df(j,1)
+        tdf(2,j) = df(j,2)
+    end do
 !
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 1,&
@@ -95,10 +95,10 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 2,&
                 dfu2)
 !
-    do 20, j = 1,6
-    dfu(j,1) = dfu1(j)
-    dfu(j,2) = dfu2(j)
-    20 end do
+    do j = 1, 6
+        dfu(j,1) = dfu1(j)
+        dfu(j,2) = dfu2(j)
+    end do
 !
 !     CALCUL LA MATRICE HESSIENNE DES CRITERES DE PLASTICITE
     call hplass(nmnbn, nmplas, nmdpla, nmddpl, 1,&
@@ -108,32 +108,32 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     call matmul(cdtg, cdeps, 6, 6, 1,&
                 ddeps)
 !
-    do 30, j = 1,6
-    tddeps(1,j) = ddeps(j)
-    30 end do
+    do j = 1, 6
+        tddeps(1,j) = ddeps(j)
+    end do
 !
     call matmul(tddeps, h1, 1, 6, 6,&
                 tdeph1)
     call matmul(tddeps, h2, 1, 6, 6,&
                 tdeph2)
 !
-    do 40, j = 1,6
-    tdeph(1,j) = tdeph1(1,j)
-    40 end do
+    do j = 1, 6
+        tdeph(1,j) = tdeph1(1,j)
+    end do
 !
-    do 50, j = 1,6
-    tdeph(2,j) = tdeph2(1,j)
-    50 end do
+    do j = 1, 6
+        tdeph(2,j) = tdeph2(1,j)
+    end do
 !
     call matmul(dc1, dfu1, 6, 6, 1,&
                 dcfu1)
     call matmul(dc2, dfu2, 6, 6, 1,&
                 dcfu2)
 !
-    do 60, j = 1,6
-    tdcfu1(1,j) = dcfu1(j)
-    tdcfu2(1,j) = dcfu2(j)
-    60 end do
+    do j = 1, 6
+        tdcfu1(1,j) = dcfu1(j)
+        tdcfu2(1,j) = dcfu2(j)
+    end do
 !
     call matmul(h1, dcfu2, 6, 6, 1,&
                 cp)
@@ -156,20 +156,20 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     call matmul(tdcfu2, cp, 1, 6, 1,&
                 auxf2)
 !
-    do 70, j = 1,6
-    cp2(1,j) = tdf(1,j) + 0.5d0*tdeph(1,j)
-    cp2(2,j) = tdf(2,j) + 0.5d0*tdeph(2,j)
-    70 end do
+    do j = 1, 6
+        cp2(1,j) = tdf(1,j) + 0.5d0*tdeph(1,j)
+        cp2(2,j) = tdf(2,j) + 0.5d0*tdeph(2,j)
+    end do
 !
     call matmul(cp2, ddeps, 2, 6, 1,&
                 a)
     a(1)=a(1)+fplass(nmnbn,nmplas,1)
     a(2)=a(2)+fplass(nmnbn,nmplas,2)
 !
-    do 80, j = 1,6
-    cp2(1,j) = -tdf(1,j) - tdeph(1,j)
-    cp2(2,j) = -tdf(2,j) - tdeph(2,j)
-    80 end do
+    do j = 1, 6
+        cp2(1,j) = -tdf(1,j) - tdeph(1,j)
+        cp2(2,j) = -tdf(2,j) - tdeph(2,j)
+    end do
 !
     call matmul(cp2, dcfu1, 2, 6, 1,&
                 b)
@@ -200,7 +200,7 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !     NOUVELLE ROUTINE
     call dracs2(aa, bb, cc, dd, ee,&
                 ff, nbroot, x, y)
-    !  si trop de racines on les affiche
+!  si trop de racines on les affiche
 !
     if (nbroot .eq. 0) then
         cier=4
@@ -209,9 +209,9 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     endif
 !
     if (nbroot .ge. 1) then
-        do 85, i=1,nbroot
-        normxy(i)=abs(x(i))+abs(y(i))
-85      continue
+        do i = 1, nbroot
+            normxy(i)=abs(x(i))+abs(y(i))
+        end do
 !
 !     EVALUE L ORDRE DES RACINES DANS IRAN
         call dclass(nbroot, normxy, iran)
@@ -219,35 +219,35 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !
     call r8inir(2*2, 0.0d0, lambda, 1)
 !
-    do 94, i = 1, nbroot
-    if ((x(iran(i)) .ge. 0.d0) .and. (y(iran(i)) .ge. 0.d0)) then
-        lambda(1,1)=x(iran(i))
-        lambda(2,2)=y(iran(i))
+    do i = 1, nbroot
+        if ((x(iran(i)) .ge. 0.d0) .and. (y(iran(i)) .ge. 0.d0)) then
+            lambda(1,1)=x(iran(i))
+            lambda(2,2)=y(iran(i))
 !
-        if (abs(lambda(1,1)-lambda(2,2)) .le. 1.d-12*(lambda(1,1)+ lambda(2,2))) then
-            lambda(2,2)=lambda(1,1)
-        endif
+            if (abs(lambda(1,1)-lambda(2,2)) .le. 1.d-12*(lambda(1,1)+ lambda(2,2))) then
+                lambda(2,2)=lambda(1,1)
+            endif
 !
-        call matmul(dfu, lambda, 6, 2, 2,&
-                    depsp2)
+            call matmul(dfu, lambda, 6, 2, 2,&
+                        depsp2)
 !
-        do 90, j = 1,6
-        cdepsp(j) = depsp2(j,1) + depsp2(j,2)
-90      continue
+            do j = 1, 6
+                cdepsp(j) = depsp2(j,1) + depsp2(j,2)
+            end do
 !
 !     CALCUL DE CNBN ET CDEPSP QUAND DEUX CRITERES PLAST SONT ACTIVES
-        call nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
-                    czeg, cief, cdeps, cdtg, cier,&
-                    dc1, dc2, depsp2, normm)
+            call nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
+                        czeg, cief, cdeps, cdtg, cier,&
+                        dc1, dc2, depsp2, normm)
 !
-        if (cier .eq. 0) goto 100
-    endif
-    94 end do
+            if (cier .eq. 0) goto 100
+        endif
+    end do
 !
     cier=3
     call r8inir(6, 0.0d0, cdepsp, 1)
 !
-100  continue
+100 continue
 !
     rpara(1) = czef
     rpara(2) = czeg

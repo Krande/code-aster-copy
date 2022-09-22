@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine vdefgn(nomte, nb2, epais, zic, sigma,&
                   effgtg)
 !
@@ -36,11 +36,11 @@ subroutine vdefgn(nomte, nb2, epais, zic, sigma,&
 !
 !--- INITIALISATION
 !
-    do 5 i = 1, nb2
-        do 6 j = 1, 8
+    do i = 1, nb2
+        do j = 1, 8
             effgtg(j,i)=0.d0
- 6      end do
- 5  end do
+        end do
+    end do
 !
     demiep=epais/2.d0
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pipedo(ndim, typmod, tau, mate, vim,&
                   epsm, epspc, epsdc, etamin, etamax,&
                   a0, a1, a2, a3, etas)
@@ -176,12 +176,12 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
 !
 !    ETAT MECANIQUE EN T-
-    do 3 i = 1, 3
+    do i = 1, 3
         b(i) = 1.d0-vim(i)
-  3 end do
-    do 300 i = 4, 6
+    end do
+    do i = 4, 6
         b(i) = -vim(i)
-300 end do
+    end do
     d = vim(7)
 !
 !      SEUIL=SEUIL+K0*TAU
@@ -195,7 +195,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         a2 = r8vide()
         a3 = r8vide()
         etas = r8vide()
-        goto 9999
+        goto 999
     endif
 !
 ! -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
@@ -205,19 +205,19 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         epspc(3) = coplan * (epspc(1)+epspc(2))
         epsdc(3) = coplan * (epsdc(1)+epsdc(2))
     endif
-    do 44 k = 1, 3
+    do k = 1, 3
         epsp(k) = epspc(k)
         epsd(k) = epsdc(k)
- 44 end do
-    do 45 k = 4, ndimsi
+    end do
+    do k = 4, ndimsi
         epsp(k) = epspc(k)/rac2
         epsd(k) = epsdc(k)/rac2
- 45 end do
+    end do
     if (ndimsi .lt. 6) then
-        do 46 k = ndimsi+1, 6
+        do k = ndimsi+1, 6
             epsp(k)=0.d0
             epsd(k)=0.d0
- 46     continue
+        end do
     endif
 !
 !
@@ -232,9 +232,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     call r8inir(6, 0.d0, epsdm, 1)
 !
     call diago3(b, vecb, valb)
-    do 701 i = 1, 3
+    do i = 1, 3
         br(i)=valb(i)
-701 end do
+    end do
 !
     if (abs(valb(1)) .lt. tole) then
         rec(1)=0.d0
@@ -252,32 +252,32 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         rec(6)=0.d0
     endif
 !
-    do 202 i = 1, 3
-        do 203 j = i, 3
-            do 204 k = 1, 3
-                do 205 l = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
+                do l = 1, 3
                     epsdp(t(i,j))=epsdp(t(i,j))+vecb(k,i)*epsd(t(k,l))&
                     *vecb(l,j)
                     epsdm(t(i,j))=epsdm(t(i,j))-vecb(k,i)*epsd(t(k,l))&
                     *vecb(l,j)
-205             continue
-204         continue
-203     continue
-202 continue
+                end do
+            end do
+        end do
+    end do
 !
     call r8inir(6, 0.d0, ccp, 1)
     call r8inir(6, 0.d0, ccm, 1)
 !
-    do 9 i = 1, 3
-        do 10 j = i, 3
-            do 11 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 ccp(t(i,j))=ccp(t(i,j))+br(t(i,k))*epsdp(t(k,j))+&
                 br(t(j,k))*epsdp(t(k,i))
                 ccm(t(i,j))=ccm(t(i,j))+br(t(i,k))*epsdm(t(k,j))+&
                 br(t(j,k))*epsdm(t(k,i))
- 11         continue
- 10     continue
-  9 end do
+            end do
+        end do
+    end do
     call diago3(ccp, veccp, valccp)
     call diago3(ccm, veccm, valccm)
 !
@@ -288,36 +288,36 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     call r8inir(6, 0.d0, cpem, 1)
 !
 !
-    do 12 i = 1, 3
+    do i = 1, 3
         if (valccp(i) .lt. 0.d0) then
             valccp(i)=0.d0
         endif
         if (valccm(i) .lt. 0.d0) then
             valccm(i)=0.d0
         endif
- 12 end do
+    end do
 !
-    do 13 i = 1, 3
-        do 14 j = i, 3
-            do 15 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 ccpp(t(i,j))=ccpp(t(i,j))+veccp(i,k)*valccp(k)*veccp(&
                 j,k)
                 ccpm(t(i,j))=ccpm(t(i,j))+veccm(i,k)*valccm(k)*veccm(&
                 j,k)
- 15         continue
- 14     continue
- 13 end do
+            end do
+        end do
+    end do
 !
-    do 16 i = 1, 3
-        do 17 j = i, 3
-            do 18 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 cpep(t(i,j))=cpep(t(i,j))+ ccpp(t(i,k))*epsdp(t(k,j))+&
                 ccpp(t(j,k))*epsdp(t(k,i))
                 cpem(t(i,j))=cpem(t(i,j))+ ccpm(t(i,k))*epsdm(t(k,j))+&
                 ccpm(t(j,k))*epsdm(t(k,i))
- 18         continue
- 17     continue
- 16 end do
+            end do
+        end do
+    end do
 !
     call r8inir(6, 0.d0, fbp, 1)
     call r8inir(6, 0.d0, fbm, 1)
@@ -325,26 +325,26 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     trebp=0.d0
     trebm=0.d0
 !
-    do 301 i = 1, 3
+    do i = 1, 3
         trebp=trebp+ccp(i)/2
         trebm=trebm+ccm(i)/2
-301 end do
+    end do
 !
     if (trebp .gt. 0.d0) then
-        do 19 i = 1, 6
+        do i = 1, 6
             fbp(i)=-lambda*trebp*epsdp(i)
- 19     continue
+        end do
     endif
     if (trebm .gt. 0.d0) then
-        do 21 i = 1, 6
+        do i = 1, 6
             fbm(i)=-lambda*trebm*epsdm(i)
- 21     continue
+        end do
     endif
 !
-    do 20 i = 1, 6
+    do i = 1, 6
         fbp(i)=(fbp(i)-mu/2.d0*cpep(i))
         fbm(i)=(fbm(i)-mu/2.d0*cpem(i))
- 20 end do
+    end do
 !
     call diago3(fbp, vecfbp, valfbp)
     call diago3(fbm, vecfbm, valfbm)
@@ -352,7 +352,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     rtempp=0.d0
     rtempm=0.d0
 !
-    do 29 i = 1, 3
+    do i = 1, 3
         if (valfbp(i) .gt. 0.d0) then
             valfbp(i)=0.d0
         endif
@@ -361,16 +361,16 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             valfbm(i)=0.d0
         endif
         rtempm=rtempm+valfbm(i)*valfbm(i)
- 29 end do
+    end do
 !
 !
     treps=epsdp(1)+epsdp(2)+epsdp(3)
     call diago3(epsdp, vecc, valcc)
-    do 22 i = 1, 3
+    do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
             valcc(i)=0.d0
         endif
- 22 end do
+    end do
     trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
         treps=0.d0
@@ -385,11 +385,11 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
     treps=epsdm(1)+epsdm(2)+epsdm(3)
     call diago3(epsdm, vecc, valcc)
-    do 32 i = 1, 3
+    do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
             valcc(i)=0.d0
         endif
- 32 end do
+    end do
     trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
         treps=0.d0
@@ -526,7 +526,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
         x(3)=x(1)
         y(3)=y(1)
         z(3)=z(1)
-        do 200 iter = 1, nitmax
+        do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuila*tau) goto 201
             if (mod(iter,5) .ne. 0) then
                 call zerog2(x, y, z, iter)
@@ -536,7 +536,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             call criteo(epsp, epsd, x(3), b, d,&
                         lambda, mu, alpha, ecrob, ecrod,&
                         seuil, y(3), z(3))
-200     continue
+        end do
         call utmess('F', 'UTILITAI2_53')
 201     continue
 !        write (6,*) 'ITER-3 = ',ITER
@@ -617,7 +617,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             x(3)=x(2)
             y(3)=y(2)
             z(3)=z(2)
-            do 400 iter = 1, nitmax
+            do iter = 1, nitmax
                 if (abs(y(3)) .le. epstol*seuila*tau) goto 401
                 if (mod(iter,5) .ne. 0) then
                     call zerog2(x, y, z, iter)
@@ -627,7 +627,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                 call criteo(epsp, epsd, x(3), b, d,&
                             lambda, mu, alpha, ecrob, ecrod,&
                             seuil, y(3), z(3))
-400         continue
+            end do
             call utmess('F', 'PILOTAGE_83')
 401         continue
 !          write (6,*) 'ITER-5 = ',ITER
@@ -643,7 +643,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             x(3)=x(2)
             y(3)=y(2)
             z(3)=z(2)
-            do 500 iter = 1, nitmax
+            do iter = 1, nitmax
                 if (abs(y(3)) .le. epstol*seuila*tau) goto 501
                 if (mod(iter,5) .ne. 0) then
                     call zerog2(x, y, z, iter)
@@ -656,7 +656,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                             lambda, mu, alpha, ecrob, ecrod,&
                             seuil, y(3), z(3))
 !
-500         continue
+            end do
 !          WRITE(6,*) 'ETA=',X(3)
 !          WRITE(6,*) 'CRITERE=',Y(3)
 !          WRITE(6,*) 'DCRIT=',Z(3)
@@ -721,5 +721,5 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !         WRITE(6,*) 'A2=',A2
 !         WRITE(6,*) 'A3=',A3
 !
-9999 continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine criteo(epsp, epsd, eta, ba, d,&
                   lambda, mu, alpha, ecrob, ecrod,&
                   seuil, crit, critp)
@@ -105,9 +105,9 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     call r8inir(6, 0.d0, epsdr, 1)
 !
     call diago3(ba, vecb, valb)
-    do 201 i = 1, 3
+    do i = 1, 3
         b(i)=valb(i)
-201  end do
+    end do
 !
     if (abs(valb(1)) .lt. tole) then
         rec(1)=0.d0
@@ -127,18 +127,18 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 !
 !
 !
-    do 202 i = 1, 3
-        do 203 j = i, 3
-            do 204 k = 1, 3
-                do 205 l = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
+                do l = 1, 3
                     eps(t(i,j))=eps(t(i,j))+vecb(k,i)*epsa(t(k,l))*&
                     vecb(l,j)
                     epsdr(t(i,j))=epsdr(t(i,j))+vecb(k,i)*epsd(t(k,l))&
                     *vecb(l,j)
-205              continue
-204          continue
-203      continue
-202  end do
+                end do
+            end do
+        end do
+    end do
 !
 !
 !
@@ -148,75 +148,75 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 !
     call r8inir(6, 0.d0, cc, 1)
 !
-    do 9 i = 1, 3
-        do 10 j = i, 3
-            do 11 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 cc(t(i,j))=cc(t(i,j))+b(t(i,k))*eps(t(k,j))+ b(t(j,k))&
                 *eps(t(k,i))
-11          continue
-10      continue
- 9  end do
+            end do
+        end do
+    end do
     call diago3(cc, vecc, valcc)
     call r8inir(6, 0.d0, ccp, 1)
     call r8inir(6, 0.d0, cpe, 1)
-    do 12 i = 1, 3
+    do i = 1, 3
         if (valcc(i) .lt. 0.d0) then
             valcc(i)=0.d0
         endif
-12  end do
-    do 13 i = 1, 3
-        do 14 j = i, 3
-            do 15 k = 1, 3
+    end do
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 ccp(t(i,j))=ccp(t(i,j))+vecc(i,k)*valcc(k)*vecc(j,k)
-15          continue
-14      continue
-13  end do
-    do 16 i = 1, 3
-        do 17 j = i, 3
-            do 18 k = 1, 3
+            end do
+        end do
+    end do
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 cpe(t(i,j))=cpe(t(i,j))+ ccp(t(i,k))*eps(t(k,j))+&
                 ccp(t(j,k))*eps(t(k,i))
-18          continue
-17      continue
-16  end do
+            end do
+        end do
+    end do
 !
     call r8inir(6, 0.d0, fb, 1)
     treb=0.d0
-    do 301 i = 1, 3
+    do i = 1, 3
         treb=treb+cc(i)/2
-301  end do
+    end do
     if (treb .gt. 0.d0) then
-        do 19 i = 1, 6
+        do i = 1, 6
             fb(i)=-lambda*treb*eps(i)
-19      continue
+        end do
     endif
-    do 20 i = 1, 6
+    do i = 1, 6
         fb(i)=fb(i)-mu/2.d0*cpe(i)+ecrob*(kron(i)-b(i))
-20  end do
+    end do
 !
 !
-    do 100 i = 1, 6
+    do i = 1, 6
         fbr(i)=fb(i)*rec(i)
-100  end do
+    end do
 !
 !
     call diago3(fbr, vecfb, valfb)
     rtemp=0.d0
-    do 29 i = 1, 3
+    do i = 1, 3
         if (valfb(i) .gt. 0.d0) then
             valfb(i)=0.d0
         endif
         rtemp=rtemp+valfb(i)*valfb(i)
-29  end do
+    end do
 !
     call r8inir(6, 0.d0, fbm, 1)
-    do 26 i = 1, 3
-        do 27 j = i, 3
-            do 28 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 fbm(t(i,j))=fbm(t(i,j))+vecfb(i,k)*valfb(k)*vecfb(j,k)
-28          continue
-27      continue
-26  end do
+            end do
+        end do
+    end do
 !
 !
     treps=eps(1)+eps(2)+eps(3)
@@ -224,21 +224,21 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 !
 !
     call diago3(eps, vecc, valcc)
-    do 22 i = 1, 3
+    do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
             valcc(i)=0.d0
         endif
-22  end do
+    end do
 !
     call r8inir(6, 0.d0, ccp, 1)
 !
-    do 23 i = 1, 3
-        do 24 j = i, 3
-            do 25 k = 1, 3
+    do i = 1, 3
+        do j = i, 3
+            do k = 1, 3
                 ccp(t(i,j))=ccp(t(i,j))+vecc(i,k)*valcc(k)*vecc(j,k)
-25          continue
-24      continue
-23  end do
+            end do
+        end do
+    end do
 !
     trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
@@ -273,17 +273,17 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     call r8inir(6, 0.d0, dfde, 1)
 !
     if (coupl .gt. 1.d-20) then
-        do 101 i = 1, 6
-            do 102 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 dfde(i)=dfde(i)+alpha/coupl*fbm(j)*tdfbde(j,i)*rec(j)
-102          continue
+            end do
             dfde(i)=dfde(i)+(1.d0-alpha)*fd/coupl*tdfdde(i)
-101      end do
+        end do
     endif
 !
-    do 52 i = 4, 6
+    do i = 4, 6
         epsdr(i)=epsdr(i)*rac2
-52  end do
+    end do
 !
     critp=ddot(6,dfde,1,epsdr,1)
 !

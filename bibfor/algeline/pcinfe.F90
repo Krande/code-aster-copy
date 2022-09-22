@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
                   icpcp, ind, lca, ier)
 !       S.P. PCINFE IDEM S-P PCFULL
@@ -71,9 +71,9 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
     integer :: k, k1, k2, kp1, kp2, l, lca
     integer :: nzero
 !-----------------------------------------------------------------------
-    do 10 i = 1, n
+    do i = 1, n
         ind(i) = 0
-10  end do
+    end do
     ic1 = 0
     ic2 = 0
     k1 = 1
@@ -81,25 +81,25 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !     FACTORISATION LOGIQUE : LIGNE PAR LIGNE
 !     ---------------------------------------
 !
-    do 50 i = 1, n
+    do i = 1, n
         k2 = icpl(i)
 !
 !     MISE A JOUR DU TABLEAU IND
 !
-        do 20 k = k1, k2
+        do k = k1, k2
             j = icpc(k)
             ind(j) = i
-20      continue
+        end do
         ind(i) = i
 !
 !     RECHERCHE DANS LA LIGNE I DES L(I,J) NON NULS
 !
-        do 40 k = k1, icpd(i)
+        do k = k1, icpd(i)
             j = icpc(k)
 !
 !     RECHERCHE DANS LA LIGNE J DES U(J,JJ) NON NULS
 !
-            do 30 l = icpd(j) + 1, icpl(j)
+            do l = icpd(j) + 1, icpl(j)
                 jj = icpc(l)
 !
 !     LE COEFFICIENT L(I,JJ) EXISTE-T-IL ?
@@ -129,8 +129,9 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
                     ind(jj) = i
                 endif
-30          continue
-40      continue
+ 30             continue
+            end do
+        end do
 !
 !     RECLASSEMENT DES INDICES DE COLONNE PAR ORDRE CROISSANT
 !
@@ -141,7 +142,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
         icplp(i) = ic1
         ic2 = ic1
         k1 = k2 + 1
-50  end do
+    end do
     icplp(0) = 0
 !
 !     AVANT FUSION DE ICPC ET ICPCP
@@ -161,11 +162,11 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !     ---------------------------------------------------------------
 !
     k = nzero
-    do 90 i = n, 1, -1
+    do i = n, 1, -1
         icpl(i) = k
         kp2 = icplp(i-1)
         k2 = icpl(i-1)
-60      continue
+ 60     continue
         if (k1 .gt. k2) then
             if (kp1 .gt. kp2) then
 !       -------------------
@@ -185,7 +186,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
             endif
         else
 !     ---- LIGNE DE L EPUISEE ------
-70          continue
+ 70         continue
             if (kp1 .gt. kp2) then
                 icpc(k) = int(icpcp(kp1), 4)
                 k = k - 1
@@ -197,8 +198,8 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
         endif
 !     ------
         goto 60
-80      continue
-90  end do
+ 80     continue
+    end do
 !
 !     LE NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
 !
@@ -209,17 +210,17 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
 !  DEPASSEMENT DE DIMENSION ON CALCULE IC1= PLACE A AJOUTER
 !
-100  continue
-    do 140 i = istop, n
+100 continue
+    do i = istop, n
         k2 = icpl(i)
-        do 110 k = k1, k2
+        do k = k1, k2
             j = icpc(k)
             ind(j) = i
-110      continue
+        end do
         ind(i) = i
-        do 130 k = k1, icpd(i)
+        do k = k1, icpd(i)
             j = icpc(k)
-            do 120 l = icpd(j) + 1, icpl(j)
+            do l = icpd(j) + 1, icpl(j)
                 jj = icpc(l)
                 if (jj .ge. i) goto 120
 !
@@ -228,14 +229,15 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
                     ic1 = ic1 + 1
                     ind(jj) = i
                 endif
-120          continue
-130      continue
+120             continue
+            end do
+        end do
         k1 = k2 + 1
-140  end do
+    end do
 ! NZERO=TAILLE MAT INI.+TAILLE MAT REMPLIE
     nzero = icpl(n) + ic1
 !     WRITE (6,200) NIV,LCA,NZERO
     ier = nzero
-150  continue
+150 continue
 !
 end subroutine

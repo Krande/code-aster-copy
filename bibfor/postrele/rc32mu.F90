@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine rc32mu()
     implicit none
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
@@ -25,11 +25,13 @@ subroutine rc32mu()
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterc/getfac.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc32my.h"
 #include "asterfort/rcver1.h"
@@ -39,8 +41,6 @@ subroutine rc32mu()
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
     integer :: ncmp, nb, kk
     parameter  ( ncmp = 6 )
@@ -150,12 +150,12 @@ subroutine rc32mu()
 !
 ! --- LES PROFILS DE CONTRAINTES ISSUS DES CALCULS MECANIQUES UNITAIRES
 !
-    do 5 kk = 1, ndim
+    do kk = 1, ndim
         zr(jmuno+kk-1)=0.d0
         zr(jmune+kk-1)=0.d0
-5   continue
+    end do
 !
-    do 10 i = 1, 13
+    do i = 1, 13
 !
         if (ns(i) .eq. 0) goto 10
 !
@@ -165,9 +165,9 @@ subroutine rc32mu()
             valk (2) = valek
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
         endif
-        do 12 j = 1, ncmp
+        do j = 1, ncmp
 !
-            do 14 k = 1, nbabsc
+            do k = 1, nbabsc
                 call tbliva(tbsig(i), 1, valek, [ibid], zr(jabsc+k-1),&
                             [cbid], k8b, crit, [prec], nocmp(j),&
                             k8b, ibid, contraintes(k), cbid, k8b,&
@@ -178,7 +178,7 @@ subroutine rc32mu()
                     valk (3) = valek
                     call utmess('F', 'POSTRCCM_44', nk=3, valk=valk, sr=zr( jabsc+k-1))
                 endif
- 14         continue
+            end do
 !
             l = ncmp*(i-1) + j
             zr(jmuno-1+l) = contraintes(1)
@@ -198,9 +198,10 @@ subroutine rc32mu()
             zr(jmuno-1+l) = 0.5d0*momen1
             zr(jmune-1+l) = 0.5d0*momen1
 !
- 12     continue
+        end do
 !
- 10 continue
+ 10     continue
+    end do
 !
     call jedetr(abscur)
     AS_DEALLOCATE(vr=contraintes)

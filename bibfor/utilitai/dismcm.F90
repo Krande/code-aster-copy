@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismcm(questi, nomobz, repi, repkz, ierd)
     implicit none
 !     --     DISMOI(CHAM_MATER)
@@ -93,8 +93,8 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         quest2=questi
         nbzone=zi(jdesc+2)
 !
-        do 40 izone = 1, nbzone
-            do 30 imax = 1, nbmax
+        do izone = 1, nbzone
+            do imax = 1, nbmax
                 i=(izone-1)*nbmax+imax
                 mater=zk8(iavale-1+i)
                 if (mater .eq. ' ') goto 40
@@ -105,21 +105,22 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (n .lt. 0) then
                     call utmess('F', 'UTILITAI_54')
                 endif
-                do 20 ii = 1, n
+                do ii = 1, n
                     if (nomobj(ii)(20:24) .eq. '.VALK') then
                         call jeveuo(nomobj(ii), 'L', iaobj)
                         call jelira(nomobj(ii), 'LONMAX', lonobj)
-                        do 10 iii = 1, lonobj
+                        do iii = 1, lonobj
                             if (zk16(iaobj-1+iii) .eq. quest2(5:14)) then
                                 trouve=.true.
                                 goto 50
 !
                             endif
- 10                     continue
+                        end do
                     endif
- 20             continue
- 30         continue
- 40     continue
+                end do
+            end do
+ 40         continue
+        end do
  50     continue
         repk='NON'
         if (trouve) repk='OUI'
@@ -133,8 +134,8 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         nbzone=zi(jdesc+2)
 !
-        do 80 izone = 1, nbzone
-            do 70 imax = 1, nbmax
+        do izone = 1, nbzone
+            do imax = 1, nbmax
                 i=(izone-1)*nbmax+imax
                 mater=zk8(iavale-1+i)
                 if (mater .eq. ' ') goto 80
@@ -142,7 +143,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
                 call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
-                do 60 irc = 1, nbrc
+                do irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)(1:10)
                     if (nomrc .eq. 'ELAS_COQUE') then
                         repk='OUI'
@@ -169,9 +170,10 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                         goto 90
 !
                     endif
- 60             continue
- 70         continue
- 80     continue
+                end do
+            end do
+ 80         continue
+        end do
  90     continue
 !
 !
@@ -183,8 +185,8 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         nbzone=zi(jdesc+2)
 !
-        do 140 izone = 1, nbzone
-            do 130 imax = 1, nbmax
+        do izone = 1, nbzone
+            do imax = 1, nbmax
                 i=(izone-1)*nbmax+imax
                 mater=zk8(iavale-1+i)
                 if (mater .eq. ' ') goto 140
@@ -192,20 +194,20 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
                 call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
-                do 110 irc = 1, nbrc
+                do irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)
 !
 !            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
                     if (nomrc(5:10) .eq. '_COQMU') goto 120
 !
                     if (nomrc(1:4) .ne. 'THER') goto 110
-                    call codent(irc,'D0',k6)
+                    call codent(irc, 'D0', k6)
                     call jeveuo(mater//'.CPT.'//k6//'.VALK', 'L', iavalk)
                     call jelira(mater//'.CPT.'//k6//'.VALK', 'LONUTI', n1)
                     call jelira(mater//'.CPT.'//k6//'.VALR', 'LONUTI', nr)
                     call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
-                    do 100 if = 1, nf
+                    do if = 1, nf
                         nomf=zk16(iavalk-1+nr+nc+nf+if)(1:8)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'NAPPE') then
@@ -216,11 +218,13 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !              -- CAS D'UNE FONCTION A 1 VARIABLE :
                             if (zk24(iaprol-1+3) .eq. 'INST') repk='OUI'
                         endif
-100                 continue
-110             continue
+                    end do
+110                 continue
+                end do
 120             continue
-130         continue
-140     continue
+            end do
+140         continue
+        end do
 !
 !
 !     -- CETTE QUESTION N'EXISTE PLUS. IL NE FAUT PAS L'UTILISER.
@@ -242,8 +246,8 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         nbzone=zi(jdesc+2)
 !
-        do 190 izone = 1, nbzone
-            do 180 imax = 1, nbmax
+        do izone = 1, nbzone
+            do imax = 1, nbmax
                 i=(izone-1)*nbmax+imax
                 mater=zk8(iavale-1+i)
                 if (mater .eq. ' ') goto 190
@@ -251,7 +255,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
                 call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
-                do 160 irc = 1, nbrc
+                do irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)
 !
 !                   -- Si le materiau est issu de la commande DEFI_COQU_MULT :
@@ -259,21 +263,21 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                     if (nomrc(1:4) .ne. 'ELAS') goto 160
                     if (nomrc .eq. 'ELAS_DHRC') goto 160
-
-                    call codent(irc,'D0',k6)
+!
+                    call codent(irc, 'D0', k6)
                     call jeveuo(mater//'.CPT.'//k6//'.VALK', 'L', iavalk)
                     call jelira(mater//'.CPT.'//k6//'.VALK', 'LONUTI', n1)
                     call jelira(mater//'.CPT.'//k6//'.VALR', 'LONUTI', nr)
                     call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
-
-                    ! loop over parameters for which function values were given
-                    do 150 if = 1, nf
-
-                        ! name of the parameter
+!
+! loop over parameters for which function values were given
+                    do if = 1, nf
+!
+! name of the parameter
                         nomp=zk16(iavalk-1+nr+nc+if)(1:8)
-
-                        ! name of the function
+!
+! name of the function
                         nomf=zk16(iavalk-1+nr+nc+nf+if)(1:8)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'CONSTANT') then
@@ -281,15 +285,17 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                         else
 !                           -- cas d'une fonction variable :
                             if (questi == 'ELAS_FO') repk='OUI'
-                            if (questi == 'NU_FO'.and. nomp(1:2) == 'NU') then
+                            if (questi == 'NU_FO' .and. nomp(1:2) == 'NU') then
                                 repk='OUI'
                             endif
                         endif
-150                 continue
-160             continue
+                    end do
+160                 continue
+                end do
 170             continue
-180         continue
-190     continue
+            end do
+190         continue
+        end do
 200     continue
 !
 !

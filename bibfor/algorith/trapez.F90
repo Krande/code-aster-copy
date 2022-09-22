@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine trapez(x, y, npt, aire)
 !
 ! DESCRIPTION :  INTEGRALE PAR METHODE DES TRAPEZES
@@ -36,9 +36,9 @@ subroutine trapez(x, y, npt, aire)
 !
     aire = 0.0d0
 !
-    do 100 i = 1, npt-1
+    do i = 1, npt-1
 !
         aire = aire + ((x(i+1)-x(i)) * (y(i+1)+y(i)) / 2.0d0)
 !
-100  end do
+    end do
 end subroutine

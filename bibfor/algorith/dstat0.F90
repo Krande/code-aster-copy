@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
                   dmax, dmin)
 ! CETTE ROUTINE EST EN FAIT L'ANCIENNE DSTAT RENOMMEE DSTAT0
@@ -58,7 +58,7 @@ subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
     dmax = -10.d20
     dmin = -dmax
 !
-    do 10 i = 1, nbpt
+    do i = 1, nbpt
 !
         sd = sd + d(i)
         sd2 = sd2 + d(i)**2
@@ -69,12 +69,12 @@ subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
         if (d(i) .lt. dmin) dmin = d(i)
 !
 !
-10  end do
+    end do
     dmoy = sd/nbpt
 !
-    do 20 i = 1, nbpt
+    do i = 1, nbpt
         sdd = sdd + (d(i)-dmoy)**2
-20  end do
+    end do
 !
     drms = sqrt(sd2/nbpt)
     detyp = sqrt(sdd/nbpt)

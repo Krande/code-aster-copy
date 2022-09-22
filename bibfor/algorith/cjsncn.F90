@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
                   relax, rotagd, epsd, deps, sigd,&
                   vind)
@@ -33,9 +33,9 @@ subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
     write(umess,3001)
     3001     format(&
      &       t3,' ESSAI',t10,' RELAX',t30,' ROTAGD')
-    do 400 i = 1, essmax
+    do i = 1, essmax
         write(umess,3002) i,relax(i),rotagd(i)
-400  continue
+    end do
     3002     format(&
      &       t3,i4,t10,e12.5,t30,e12.5)
     call utmess('F', 'ALGORITH2_17')

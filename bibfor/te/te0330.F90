@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0330(option, nomte)
     implicit none
 !
@@ -32,10 +32,10 @@ subroutine te0330(option, nomte)
 !
 !
 #include "jeveux.h"
-!
+#include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/assert.h"
+!
     real(kind=8) :: k(10, 10), valpar(4), result
     integer :: i, ier, j, ndl, ip, jalpha, jmat, jdimp, jdmul, jgeom, jlagr
     integer :: jvec, jtime, nbpar
@@ -51,48 +51,48 @@ subroutine te0330(option, nomte)
 !
     if (option(6:11) .eq. 'DDLM_R') then
         call jevech('PDDLMUR', 'L', jdmul)
-        do 110 i = 1, ndl + 1
-            do 100 j = 1, ndl + 1
+        do i = 1, ndl + 1
+            do j = 1, ndl + 1
                 k(i,j) = 0.d0
-100          continue
-110      continue
+            end do
+        end do
 !
-        do 120 i = 1, ndl
+        do i = 1, ndl
             k(i,ndl+1) = zr(jdmul-1+i)
-120      continue
+        end do
         if (option(1:4) .eq. 'MECA') call jevech('PMATUUR', 'E', jmat)
         if (option(1:4) .eq. 'THER') call jevech('PMATTTR', 'E', jmat)
         ip = 0
-        do 140 i = 1, ndl + 1
-            do 130 j = 1, i
+        do i = 1, ndl + 1
+            do j = 1, i
                 zr(jmat-1+ip+j) = k(j,i)
-130          continue
+            end do
             ip = ip + i
-140      continue
+        end do
 !
     else if (option(6:11) .eq. 'DDLM_C') then
         ASSERT(.false.)
         call jevech('PDDLMUC', 'L', jdmul)
-        do 115 i = 1, ndl + 2
-            do 105 j = 1, ndl + 2
+        do i = 1, ndl + 2
+            do j = 1, ndl + 2
                 kc(i,j) = (0.d0,0.d0)
-105          continue
-115      continue
+            end do
+        end do
         kc(ndl+1,ndl+1) = (-1.0d0, 0.0d0)
         kc(ndl+2,ndl+2) = (-1.0d0, 0.0d0)
         kc(ndl+1,ndl+2) = ( 1.0d0, 0.0d0)
-        do 125 i = 1, ndl
+        do i = 1, ndl
             kc(i,ndl+1) = zc(jdmul-1+i)
             kc(i,ndl+2) = zc(jdmul-1+i)
-125      continue
+        end do
         if (option(1:4) .eq. 'ACOU') call jevech('PMATTTC', 'E', jmat)
         ip = 0
-        do 145 i = 1, ndl + 2
-            do 135 j = 1, i
+        do i = 1, ndl + 2
+            do j = 1, i
                 zc(jmat-1+ip+j) = kc(j,i)
-135          continue
+            end do
             ip = ip + i
-145      continue
+        end do
 !
     else if (option(6:11) .eq. 'BTLA_R') then
         call jevech('PDDLMUR', 'L', jdmul)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0443(option, nomte)
 !
     implicit none
@@ -128,8 +128,8 @@ subroutine te0443(option, nomte)
 !
 !  appel a elrefe_info pour recuperer nno et npg
 !
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
     if (pain(4:5) .eq. 'NO') then
         np = nno
@@ -166,17 +166,17 @@ subroutine te0443(option, nomte)
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR :
 !     --------------------------------------------------------------
     k = 0
-    do 110 intsn = 1, npgsn
+    do intsn = 1, npgsn
         call vectgt(1, nb1, zr(jgeom), zero, intsn,&
                     zr(lzr), epais, vectn, vectg, vectt)
-        do 120 j = 1, 3
-            do 130 i = 1, 3
+        do j = 1, 3
+            do i = 1, 3
                 k = k + 1
                 zr(lzr+2000+k-1) = vectt(i,j)
 !
-130          continue
-120      continue
-110  end do
+            end do
+        end do
+    end do
 !
     ASSERT(ncmp.le.ncpmax)
     ASSERT(np.le.nptmax)
@@ -196,17 +196,17 @@ subroutine te0443(option, nomte)
 !
     if (rep .eq. 0.d0 .or. rep .eq. 2) then
         if (pain(4:5) .eq. 'NO') then
-            do 8 i = 1, np
+            do i = 1, np
                 s = matvn1(1,2,i)
                 matvn1(2,1,i) = s
                 matvn1(1,2,i) = -s
- 8          continue
+            end do
         else if (pain(4:5).eq.'GA') then
-            do 9 i = 1, np
+            do i = 1, np
                 s = matvg1(1,2,i)
                 matvg1(2,1,i) = s
                 matvg1(1,2,i) = -s
- 9          continue
+            end do
         endif
     endif
 !

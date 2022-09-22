@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lceobb(intmax, toler, epsm, deps, bm,&
                   dm, lambda, mu, alpha, ecrob,&
                   ecrod, rk, rk1, rk2, b,&
@@ -99,11 +99,11 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
     call r8inir(6, 0.d0, epsf, 1)
     call r8inir(6, 0.d0, epst, 1)
 !
-    do 1 k = 1, 6
+    do k = 1, 6
         epsf(k) = epsm(k)+deps(k)
         epsi(k) = epsm(k)
         epst(k) = (epsf(k)+epsi(k))/deux
-  1 end do
+    end do
 !
     reinit=.false.
 !
@@ -127,11 +127,11 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 !
         call diago3(bm, vecbm, valbm)
         bdim=3
-        do 201 i = 1, 3
+        do i = 1, 3
             if (valbm(i)-tolb .le. 0.d0) then
                 bdim=bdim-1
             endif
-201     continue
+        end do
 !
         trepsm=epst(1)+epst(2)+epst(3)
         if (trepsm .gt. 0.d0) then
@@ -151,7 +151,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             call diago3(b, vecb, valb)
             reinit=.false.
             if (compte .lt. 100) then
-                do 101 i = 1, 3
+                do i = 1, 3
                     if ((valb(i).lt.0) .or. (d.gt.1.d0)) then
                         reinit=.true.
                     else
@@ -163,60 +163,60 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                             dbloq=.true.
                         endif
                     endif
-101             continue
+                end do
 !
                 if (reinit) then
-                    do 800 i = 1, 6
+                    do i = 1, 6
                         epst(i)=(epst(i)+epsi(i))/deux
-800                 continue
+                    end do
                     goto 999
                 else
                     call r8inir(6, 0.d0, b, 1)
                     call r8inir(6, 0.d0, bm, 1)
-                    do 212 i = 1, 3
-                        do 213 j = i, 3
-                            do 214 k = 1, 3
+                    do i = 1, 3
+                        do j = i, 3
+                            do k = 1, 3
                                 b(t(i,j))=b(t(i,j))+vecb(i,k)*valb(k)*&
                                 vecb(j,k)
                                 bm(t(i,j))=bm(t(i,j))+vecb(i,k)*valb(&
                                 k)*vecb(j,k)
-214                         continue
-213                     continue
-212                 continue
+                            end do
+                        end do
+                    end do
                     dm=d
-                    do 801 i = 1, 6
+                    do i = 1, 6
                         epsi(i)=epst(i)
                         epst(i)=epsf(i)
-801                 continue
+                    end do
                     goto 999
                 endif
             else
-                do 701 i = 1, 3
+                do i = 1, 3
                     if ((valb(i).lt.0) .and. (abs(valb(i))-tolb.le. 0.d0)) then
                         valb(i)=tolb-r8prem()
                     endif
-701             continue
+                end do
                 if (abs(un-d)-tolb .le. 0.d0) then
                     d=un-tolb+r8prem()
                     dbloq=.true.
                 endif
                 call r8inir(6, 0.d0, b, 1)
                 call r8inir(6, 0.d0, bm, 1)
-                do 712 i = 1, 3
-                    do 713 j = i, 3
-                        do 714 k = 1, 3
+                do i = 1, 3
+                    do j = i, 3
+                        do k = 1, 3
                             b(t(i,j))=b(t(i,j))+vecb(i,k)*valb(k)*&
                             vecb(j,k)
                             bm(t(i,j))=bm(t(i,j))+vecb(i,k)*valb(k)*&
                             vecb(j,k)
-714                     continue
-713                 continue
-712             continue
+                        end do
+                    end do
+                end do
                 dm=d
-                do 901 i = 1, 6
+                do i = 1, 6
                     epsi(i)=epst(i)
                     epst(i)=epsf(i)
-901             continue
+                end do
 !
             endif
 !
@@ -226,17 +226,17 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 !
             call r8inir(9, 0.d0, interm, 1)
             call r8inir(6, 0.d0, epi, 1)
-            do 202 i = 1, 3
-                do 203 l = 1, 3
-                    do 204 k = 1, 3
+            do i = 1, 3
+                do l = 1, 3
+                    do k = 1, 3
                         interm(i,l)=interm(i,l)+vecbm(k,i)*epst(t(k,l)&
                         )
-204                 continue
-                    do 205 j = i, 3
+                    end do
+                    do j = i, 3
                         epi(t(i,j))=epi(t(i,j))+interm(i,l)*vecbm(l,j)
-205                 continue
-203             continue
-202         continue
+                    end do
+                end do
+            end do
             tot1=.false.
             tot2=.false.
             tot3=.false.
@@ -287,14 +287,14 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 !
             if (compte .lt. 100) then
 !
-                do 102 i = 1, 2
+                do i = 1, 2
                     if (valbr(i) .lt. 0) then
                         reinit=.true.
                     endif
                     if (valbr(i)-tolb .le. 0.d0) then
                         valbr(i)=tolb-r8prem()
                     endif
-102             continue
+                end do
                 if (d .gt. 1.d0) then
                     reinit=.true.
                 endif
@@ -305,11 +305,11 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             else
 !
                 reinit=.false.
-                do 902 i = 1, 2
+                do i = 1, 2
                     if (valbr(i)-tolb .le. 0.d0) then
                         valbr(i)=tolb-r8prem()
                     endif
-902             continue
+                end do
                 if (d-(un-tolb) .ge. 0.d0) then
                     d=un-tolb+r8prem()
                     dbloq=.true.
@@ -318,21 +318,21 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             endif
 !
             if (reinit) then
-                do 802 i = 1, 6
+                do i = 1, 6
                     epst(i)=(epst(i)+epsi(i))/2
-802             continue
+                end do
                 goto 999
             else
 !
                 call r8inir(6, 0.d0, br, 1)
-                do 222 i = 1, 3
-                    do 223 j = i, 3
-                        do 224 k = 1, 3
+                do i = 1, 3
+                    do j = i, 3
+                        do k = 1, 3
                             br(t(i,j))=br(t(i,j))+vecbr(i,k)*valbr(k)*&
                             vecbr(j,k)
-224                     continue
-223                 continue
-222             continue
+                        end do
+                    end do
+                end do
 !
                 if (tot1) then
                     binter(1)=tolb-r8prem()
@@ -360,25 +360,25 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                 call r8inir(9, 0.d0, interm, 1)
                 call r8inir(6, 0.d0, b, 1)
                 call r8inir(6, 0.d0, bm, 1)
-                do 232 i = 1, 3
-                    do 233 l = 1, 3
-                        do 234 k = 1, 3
+                do i = 1, 3
+                    do l = 1, 3
+                        do k = 1, 3
                             interm(i,l)=interm(i,l)+vecbm(i,k)*binter(&
                             t(k,l))
-234                     continue
-                        do 235 j = i, 3
+                        end do
+                        do j = i, 3
                             b(t(i,j))=b(t(i,j))+interm(i,l)*vecbm(j,l)
                             bm(t(i,j))=bm(t(i,j))+interm(i,l)*vecbm(j,&
                             l)
-235                     continue
-233                 continue
-232             continue
+                        end do
+                    end do
+                end do
                 dm=d
 !
-                do 803 i = 1, 6
+                do i = 1, 6
                     epsi(i)=epst(i)
                     epst(i)=epsf(i)
-803             continue
+                end do
                 goto 999
             endif
 !
@@ -388,17 +388,17 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 !
             call r8inir(9, 0.d0, interm, 1)
             call r8inir(6, 0.d0, epi, 1)
-            do 242 i = 1, 3
-                do 243 l = 1, 3
-                    do 244 k = 1, 3
+            do i = 1, 3
+                do l = 1, 3
+                    do k = 1, 3
                         interm(i,l)=interm(i,l)+vecbm(k,i)*epst(t(k,l)&
                         )
-244                 continue
-                    do 245 j = i, 3
+                    end do
+                    do j = i, 3
                         epi(t(i,j))=epi(t(i,j))+interm(i,l)*vecbm(l,j)
-245                 continue
-243             continue
-242         continue
+                    end do
+                end do
+            end do
 !
             tot1=.false.
             tot2=.false.
@@ -470,9 +470,9 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
             endif
 !
             if (reinit) then
-                do 804 i = 1, 6
+                do i = 1, 6
                     epst(i)=(epst(i)+epsi(i))/2
-804             continue
+                end do
                 goto 999
 !
             else
@@ -484,21 +484,21 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
                 if (tot3) valb(3)=br(1)
                 call r8inir(6, 0.d0, b, 1)
                 call r8inir(6, 0.d0, bm, 1)
-                do 252 i = 1, 3
-                    do 253 j = i, 3
-                        do 254 k = 1, 3
+                do i = 1, 3
+                    do j = i, 3
+                        do k = 1, 3
                             b(t(i,j))=b(t(i,j))+vecbm(i,k)*valb(k)*&
                             vecbm(j,k)
                             bm(t(i,j))=bm(t(i,j))+vecbm(i,k)*valbm(k)*&
                             vecbm(k,j)
-254                     continue
-253                 continue
-252             continue
+                        end do
+                    end do
+                end do
                 dm=d
-                do 805 i = 1, 6
+                do i = 1, 6
                     epsi(i)=epst(i)
                     epst(i)=epsf(i)
-805             continue
+                end do
                 goto 999
             endif
         endif

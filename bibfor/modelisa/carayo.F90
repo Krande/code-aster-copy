@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine carayo(char, ligrmo, noma, fonree)
     implicit none
 #include "jeveux.h"
@@ -44,7 +44,7 @@ subroutine carayo(char, ligrmo, noma, fonree)
 !      NOMA   : NOM DU MAILLAGE
 !      FONREE : FONC OU REEL
 !-----------------------------------------------------------------------
-    integer :: nrayo, jvalv,  ncmp, n, iocc, nbtou, nbma, jma
+    integer :: nrayo, jvalv, ncmp, n, iocc, nbtou, nbma, jma
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
@@ -94,7 +94,7 @@ subroutine carayo(char, ligrmo, noma, fonree)
 !
 ! --- STOCKAGE DANS LA CARTE
 !
-    do 10 iocc = 1, nrayo
+    do iocc = 1, nrayo
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'SIGMA', iocc=iocc, scal=zr(jvalv), nbret=n)
             call getvr8(motclf, 'EPSILON', iocc=iocc, scal=zr(jvalv+1), nbret=n)
@@ -119,7 +119,8 @@ subroutine carayo(char, ligrmo, noma, fonree)
             call jedetr(mesmai)
         endif
 !
-10  end do
+ 10     continue
+    end do
 !
     call jedema()
 !

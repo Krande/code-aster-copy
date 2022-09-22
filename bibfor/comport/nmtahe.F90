@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, epsm,&
                   deps, sigm, vim, option, sigp,&
@@ -86,9 +86,9 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
 !   DIMENSION DES TENSEURS ET MISE AUX NORMES
     ndimsi = ndim*2
     rac2 = sqrt(2.d0)
-    do 10 k = 4, ndimsi
+    do k = 4, ndimsi
         vim(2+k) = vim(2+k) * rac2
-10  end do
+    end do
 !
 !    LECTURE DES CARACTERISTIQUES
     call nmtama(fami, kpg, ksp, imate, instam,&
@@ -108,8 +108,9 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
         dp = 0.d0
         xi = 1.d0
         call nmtasp(ndimsi, crit, mat, sigel, vim,&
-                    epm, dp, sp, xi, f, iret)
-        if (iret .eq. 1) goto 9999
+                    epm, dp, sp, xi, f,&
+                    iret)
+        if (iret .eq. 1) goto 999
 !
 !      CHARGE
         if (f .gt. 0.d0) then
@@ -131,7 +132,7 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
 !          ITERATIONS DE NEWTON
                 sp = vim(2)
                 xi = 1.d0
-                do 200 niter = 1, int(crit(1))
+                do niter = 1, int(crit(1))
 !
 !            DIRECTION DE DESCENTE
                     call nmtacr(2, ndimsi, mat, sigel, vim,&
@@ -161,10 +162,10 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
                     sp = sp + rho*dirsp
 !
                     if (ener/mat(4)**2 .lt. crit(3)**2) goto 210
-200              continue
+                end do
                 iret = 1
-                goto 9999
-210              continue
+                goto 999
+210             continue
 !
                 call nmtaac(3, ndimsi, mat, sigel, vim,&
                             epm, dp, sp, xi, sigp,&
@@ -180,7 +181,8 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
             xi = 0.d0
             if (vim(9) .ne. 0.d0) then
                 call nmtasp(ndimsi, crit, mat, sigel, vim,&
-                            epm, dp, sp, xi, f, iret)
+                            epm, dp, sp, xi, f,&
+                            iret)
                 ASSERT(iret.eq.0)
             endif
 !
@@ -205,7 +207,7 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
 !
                     dp = 0.d0
                     sp = vim(2)
-                    do 300 niter = 1, int(crit(1))
+                    do niter = 1, int(crit(1))
 !
 !              DIRECTION DE DESCENTE
                         call nmtacr(3, ndimsi, mat, sigel, vim,&
@@ -236,10 +238,10 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
                         sp = sp + rho*dirsp
 !
                         if (ener/mat(4)**2 .lt. crit(3)**2) goto 310
-300                  continue
+                    end do
                     iret = 1
-                    goto 9999
-310                  continue
+                    goto 999
+310                 continue
                 endif
 !
                 call nmtaac(1, ndimsi, mat, sigel, vim,&
@@ -277,17 +279,17 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
 !
 ! REMISE AUX NORMES
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-        do 400 k = 4, ndimsi
+        do k = 4, ndimsi
             vim(2+k) = vim(2+k) / rac2
-400      continue
+        end do
     else
-        do 410 k = 4, ndimsi
+        do k = 4, ndimsi
             vim(2+k) = vim(2+k) / rac2
             vip(2+k) = vip(2+k) / rac2
-410      continue
+        end do
     endif
 !
 !
-9999  continue
+999 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

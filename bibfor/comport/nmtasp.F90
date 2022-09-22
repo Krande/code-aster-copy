@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
                   epm, dp, sp, xi, f,&
                   iret)
@@ -47,7 +47,7 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
     integer :: niter, iret
     real(kind=8) :: g, fds, gds, fdp, gdp, fdx, gdx, dpmax, sig(6), tang(6, 6)
     real(kind=8) :: x(4), y(4), ff(4)
-
+!
     iret = 0
 !
 !
@@ -58,7 +58,7 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
                 epm, dp, sp, xi, f,&
                 g, fds, gds, fdp, gdp,&
                 fdx, gdx, dpmax, sig, tang)
-    if (g .lt. mat(4)*crit(3)) goto 9999
+    if (g .lt. mat(4)*crit(3)) goto 999
     x(2) = sp
     y(2) = g
     ff(2) = f
@@ -70,7 +70,7 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
                 epm, dp, sp, xi, f,&
                 g, fds, gds, fdp, gdp,&
                 fdx, gdx, dpmax, sig, tang)
-    if (g .gt. -mat(4)*crit(3)) goto 9999
+    if (g .gt. -mat(4)*crit(3)) goto 999
     x(1) = mat(11)
     y(1) = g
     ff(1) = f
@@ -84,19 +84,19 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
     y(4) = y(2)
     ff(4) = ff(2)
 !
-    do 100 niter = 1, int(crit(1))
+    do niter = 1, int(crit(1))
         if (abs(y(4)) .lt. mat(4)*crit(3)) goto 110
         call zeroco(x, y)
         call nmtacr(1, ndimsi, mat, sigel, vim,&
                     epm, dp, x(4), xi, ff(4),&
                     y(4), fds, gds, fdp, gdp,&
                     fdx, gdx, dpmax, sig, tang)
-100  end do
+    end do
     iret = 1
-    goto 9999
-110  continue
+    goto 999
+110 continue
     sp = x(4)
     f = ff(4)
 !
-9999  continue
+999 continue
 end subroutine

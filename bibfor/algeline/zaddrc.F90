@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine zaddrc(m, n, alpha, x, incx,&
                   y, incy, a, lda)
     implicit none
@@ -43,14 +43,14 @@ subroutine zaddrc(m, n, alpha, x, incx,&
     if (incy .lt. 0) iy = (-n+1)*incy + 1
 !
     i1x = 1
-    do 130 j = 1, n
+    do j = 1, n
         call zaxpy(m, alpha*dconjg(y(iy)), x, incx, a(i1x),&
                    1)
         iy = iy + incy
         i1x = i1x + lda
-130  end do
+    end do
 !
-9000  continue
-    goto 9999
-9999  continue
+9000 continue
+    goto 999
+999 continue
 end subroutine

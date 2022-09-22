@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
                   nnol, pla, reac, reac12, tau1,&
                   tau2, nvec)
     implicit none
 #include "jeveux.h"
+#include "asterfort/vecini.h"
 !
 ! IN CFACE  : CONNECTIVITE FACETTES DE CONTACT
 ! IN FFC    : FONCTIONS DE FORME DE CONTACT
@@ -39,7 +40,6 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
 ! OUT REAC12: REACTION DE FROTTEMENT AU POINT DE GAUSS
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
-#include "asterfort/vecini.h"
     integer :: i, idepl, idepm
     integer :: j, lact(8), ndim, nli, nnol
     integer :: pla(27), pli, nvec
@@ -50,7 +50,7 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
 ! --- (DEPDEL+DEPMOI)
     reac=0.d0
     call vecini(3, 0.d0, reac12)
-    do 120 i = 1, nnol
+    do i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)
         nli=lact(i)
@@ -59,7 +59,7 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
         if (nvec .eq. 2) then
             reac = reac + ffi * zr(idepm-1+pli)
         endif
-        do 121 j = 1, ndim
+        do j = 1, ndim
             if (ndim .eq. 3) then
                 reac12(j)=reac12(j)+ffi*(zr(idepl-1+pli+1)*tau1(j)&
                 +zr(idepl-1+pli+2)*tau2(j))
@@ -73,6 +73,7 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
                     reac12(j)=reac12(j)+ffi*zr(idepm-1+pli+1)*tau1(j)
                 endif
             endif
-121      continue
-120  continue
+        end do
+120     continue
+    end do
 end subroutine

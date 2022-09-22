@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine veassc(lischa, vecele)
 !
 !
@@ -80,7 +80,7 @@ subroutine veassc(lischa, vecele)
 !
 ! --- BOUCLE SUR LES CHARGES
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
@@ -106,7 +106,7 @@ subroutine veassc(lischa, vecele)
             call copisd('CHAMP_GD', 'V', chamno, lchout)
             call reajre(vecele, lchout, 'V')
         endif
- 10 continue
+    end do
 !
  99 continue
 !

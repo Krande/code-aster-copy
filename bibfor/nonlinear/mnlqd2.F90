@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine mnlqd2(ind, imat, neq, ninc, nd,&
                   nchoc, h, hf, parcho, xcdl,&
                   adime, xvect, xtemp)
@@ -34,12 +34,6 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-! ----------------------------------------------------------------------
-! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
-! ----------------------------------------------------------------------
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/dscal.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -47,6 +41,12 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
 #include "asterfort/mnlaft.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
+! ----------------------------------------------------------------------
+! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
+! ----------------------------------------------------------------------
     integer :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, xcdl, adime, xvect, xtemp
 ! ----------------------------------------------------------------------
@@ -94,18 +94,18 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
         ih=int((ind-1)/nd)
         iddl=ind-nd*int((ind-1)/nd)
         i=0
-        do 10 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 if (i .eq. iddl) then
                     zr(itemp1-1+k)=1.d0
                 endif
             endif
- 10     continue
+        end do
         call mrmult('ZERO', imat(2), zr(itemp1), zr(itemp2), 1,&
                     .false._1)
         i=0
-        do 20 k = 1, neq
+        do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
                 if (ih .le. h) then
@@ -115,7 +115,7 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
                 endif
                 zr(iq2-1+ih*nd+i)=-zr(ivec-1+ninc-2)*coef*zr(itemp2-1+k)/zr(iadim+1)
             endif
- 20     continue
+        end do
         if (ih .le. h) then
             zr(iq2-1+(h+ih)*nd+iddl)=dble(ih)*zr(ivec-1+ninc-3)
         else
@@ -127,7 +127,7 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
     neqs=0
     deb=nd*(2*h+1)
-    do 60 i = 1, nchoc
+    do i = 1, nchoc
         alpha=raid(i)/zr(iadim-1+1)
         jeu=vjeu(i)/jeumax(1)
         if (type(i)(1:7) .eq. 'BI_PLAN') then
@@ -250,7 +250,7 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
         endif
         neqs=neqs+vneqs(i)
         deb=deb+vneqs(i)*(2*hf+1)
- 60 continue
+    end do
 !
 ! ----------------------------------------------------------------------
 ! --- GAMMA1 i.e. ND*(2*H+1)+2*NCHOC(2*HF+1)+1
@@ -263,11 +263,11 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
 ! --- EQUATION DE PHASE i.e. ND*(2*H+1)+2*NCHOC(2*HF+1)+3
 ! ----------------------------------------------------------------------
-    do 70 k = 1, h
+    do k = 1, h
         if (ind .eq. (nd*(h+k)+1)) then
             zr(iq2-1+ninc-1)=k*zr(ivec-1+ninc)
         endif
- 70 continue
+    end do
 !
     call dcopy(ninc-1, zr(iq2), 1, zr(itemp), 1)
 !

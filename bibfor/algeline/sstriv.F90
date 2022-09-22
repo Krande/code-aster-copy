@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
     implicit none
 #include "jeveux.h"
@@ -35,25 +35,25 @@ subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
     integer :: i, icont, indic, itemp, ll
 !-----------------------------------------------------------------------
     icont = 0
-    do 1 i = 1, neq
+    do i = 1, neq
         ipos(i) = i
         icont = icont + lprod(i)
- 1  end do
-10  continue
+    end do
+ 10 continue
     indic = 0
-    do 2 ll = 1, neq-1
+    do ll = 1, neq-1
         if (lprod(ipos(ll)) .eq. 0 .and. lprod(ipos(ll+1)) .eq. 1) then
             itemp = ipos(ll)
             ipos(ll) = ipos(ll+1)
             ipos(ll+1) = itemp
             indic =1
         endif
- 2  end do
+    end do
     if (indic .eq. 1) goto 10
 !
-31  continue
+ 31 continue
     indic = 0
-    do 32 ll = 1, icont-1
+    do ll = 1, icont-1
         if (rdiam(ipos(ll)) .gt. 0.0d0 .and. rdiam(ipos(ll+1)) .gt. 0.0d0) then
             if (rdiak(ipos(ll)) .gt. 0.0d0 .and. rdiak(ipos(ll+1)) .gt. 0.0d0) then
                 if (rdiak(ipos(ll))/rdiam(ipos(ll)) .gt.&
@@ -81,6 +81,6 @@ subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
             ipos(ll+1) = itemp
             indic =1
         endif
-32  end do
+    end do
     if (indic .eq. 1) goto 31
 end subroutine
