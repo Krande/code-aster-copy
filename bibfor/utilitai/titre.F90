@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine titre()
+subroutine titre(defTitle, lDefTitle)
     implicit none
 !     CREATION D'UN TITRE ATTACHE A UN CONCEPT
 !     ------------------------------------------------------------------
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/titrea.h"
+    character(len=80), optional, intent(in) :: defTitle
+    integer, optional, intent(in) :: lDefTitle
+!
     character(len=8) :: nomcon, cbid
     character(len=24) :: nomobj
 !
@@ -31,6 +35,13 @@ subroutine titre()
     nomobj = ' '
     nomobj(1:8) = nomcon
     nomobj(20:24) = '.TITR'
-    call titrea('T', nomcon, nomcon, nomobj, 'C',&
-                ' ', 0, 'G', '(1PE12.5)')
+    if (present(defTitle)) then
+        ASSERT(present(lDefTitle))
+        call titrea('T', nomcon, nomcon, nomobj, 'C',&
+                    ' ', 0, 'G', '(1PE12.5)', defTitle=defTitle,&
+                    lDefTitle=lDefTitle)
+    else
+        call titrea('T', nomcon, nomcon, nomobj, 'C',&
+                    ' ', 0, 'G', '(1PE12.5)')
+    endif
 end subroutine

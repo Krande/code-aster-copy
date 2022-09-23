@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
                       motfac, iocc, base, formr, nomsym,&
-                      iordr)
+                      iordr, defTitle, lDefTitle)
         character(len=1) :: niv
         character(len=*) :: nomcon
         character(len=*) :: nomcha
@@ -33,5 +33,7 @@ interface
         character(len=*) :: formr
         character(len=*), optional, intent(in) :: nomsym
         integer, optional, intent(in) :: iordr
+        character(len=80), optional, intent(in) :: defTitle
+        integer, optional, intent(in) :: lDefTitle
     end subroutine titrea
 end interface

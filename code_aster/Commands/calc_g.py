@@ -50,11 +50,14 @@ def calc_g_with_co(self, **args):
     """
     _result_calc_g = ComputeG.run(**args)
     _result_calc_g.build()
+    titr = _result_calc_g.getTitle()
+
     # Extraction de la table qui contient G
     _table_g = EXTR_TABLE(TYPE_RESU='TABLE_SDASTER',
             TABLE=_result_calc_g, NOM_PARA='NOM_SD',
             FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='TABLE_G'),
         )
+    _table_g.setTitle(titr)
     # On fait quoi de theta ?
     _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
                 TABLE=_result_calc_g, NOM_PARA='NOM_SD',

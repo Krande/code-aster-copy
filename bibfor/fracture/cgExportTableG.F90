@@ -64,9 +64,12 @@ use calcG_type
         'TABLE_G         ', 'CHAM_THETA      '/)
     character(len=16), parameter :: l_obje_type(l_nb_obje) = (/&
         'TABLE_SDASTER   ', 'CHAM_NO_SDASTER '/)
+    character(len=80), parameter :: def_title = &
+        'CALCUL DES FACTEURS D''INTENSITE DES CONTRAINTES PAR LA METHODE CALC_G'
+    integer, parameter :: l_def_title = 70
 !
     integer :: i_l_obj, i_obj
-    character(len=24) :: vk(3)
+    character(len=24) :: vk(3), nomobj
     character(len=16) :: obje_type
     aster_logical, parameter :: debug = ASTER_FALSE
     real(kind=8) :: start, finish
@@ -127,7 +130,7 @@ use calcG_type
 !
     call jedema()
 !
-    call titre()
+    call titre(defTitle=def_title, lDefTitle=l_def_title)
 !
     call cpu_time(finish)
     cgStat%cgExpTabl = cgStat%cgExpTabl + finish - start

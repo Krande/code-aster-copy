@@ -18,7 +18,7 @@
 !
 subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
                   motfac, iocc, base, formr, nomsym,&
-                  iordr)
+                  iordr, defTitle, lDefTitle)
 !
 implicit none
 !
@@ -26,6 +26,7 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/getltx.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -40,6 +41,8 @@ implicit none
     integer :: iocc
     character(len=*), optional, intent(in) :: nomsym
     integer, optional, intent(in) :: iordr
+    character(len=80), optional, intent(in) :: defTitle
+    integer, optional, intent(in) :: lDefTitle
 !     CREATION D'UN TITRE ATTACHE A UN CONCEPT
 !     ------------------------------------------------------------------
 ! IN  NIV    : K1  : NIVEAU DU TITRE 'T': TITRE 'S': SOUS-TITRE
@@ -53,6 +56,8 @@ implicit none
 ! IN  IOCC   : IS  : OCCURRENCE CONCERNEE SI L'ON A UN MOT CLE FACTEUR
 ! IN  BASE   : IS  : NOM DE LA BASE OU EST CREE L'OBJET
 ! IN  FORMR  : K*  : FORMAT DES REELS DANS LE TITRE
+! IN  DEFTITLE: K80: TITRE PAR DEFAUT DONNE PAR L'OPERATEUR
+! IN  LDEFTITLE: I: LONGUEUR DU TITRE PAR DEFAUT DONNE PAR L'OPERATEUR
 !     ------------------------------------------------------------------
 !
     integer :: vali
@@ -96,7 +101,18 @@ implicit none
         nbtitr = 0
     endif
 !
-    if (nbtitr .eq. 0) then
+    if (nbtitr .eq. 0 .and. present(defTitle)) then
+!        --- TITRE PAR DEFAUT FOURNI PAR L'OPERATEUR ---
+        ASSERT(present(lDefTitle))
+        nbtitr = 1
+        call wkvect('&&TITRE .TAMPON.ENTREE', 'V V K80', nbtitr, ldon)
+        call wkvect('&&TITRE .LONGUEUR     ', 'V V I  ', nbtitr, llon)
+        zk80(ldon) = defTitle
+        zi(llon) = lDefTitle
+!       on passe en négatif pour savoir que c'est un titre utilisateur
+!       et ainsi ne pas traiter les démons
+        nbtitr = - nbtitr
+    elseif (nbtitr .eq. 0) then
 !        --- TITRE PAR DEFAUT  ---
         call titred(niv, nomcon, nomcha, nbtitr)
         call jeveuo('&&TITRE .TAMPON.ENTREE', 'E', ldon)
