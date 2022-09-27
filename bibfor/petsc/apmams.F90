@@ -168,6 +168,7 @@ implicit none
 !   Preallocate the matrix
 !   -----------------------------------------------------------------------------
     unused_nz = -1
+    mm = to_petsc_int(neq2)
     call MatSeqAIJSetPreallocation(auxMat, unused_nz, v_dxi1(1:mm), ierr)
     ASSERT(ierr.eq.0)
 

@@ -2229,6 +2229,13 @@ class FieldOnNodesReal(DataField):
     def printMedFile(self, fileName, local= True):
         pass
     
+    def scale(self, vect):
+        """Scale in-place the field by a diagonal matrix stored as an array
+        
+        Arguments:
+            vect (float): diagonal matrix stored as an array
+        """
+    
     def setDescription(self, arg0):
         pass
     
@@ -2365,6 +2372,13 @@ class FieldOnNodesComplex(DataField):
     
     def printMedFile(self, arg0, arg1):
         pass
+    
+    def scale(self, vect):
+        """Scale in-place the field by a diagonal matrix stored as an array
+        
+        Arguments:
+            vect (float): diagonal matrix stored as an array
+        """
     
     def setDescription(self, arg0):
         pass
@@ -5046,6 +5060,14 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def getNumberOfElementaryMatrix(self):
         pass
     
+    def scale(self, arg0, arg1):
+        """Scale the matrix in place using right and left multiplication by diagonal matrices stored as vectors
+        
+        Arguments:
+            lvect (list[float]): List of the values.
+            rvect (list[float]): List of the values.
+        """
+    
     def setValues(self, arg0, arg1, arg2):
         """Erase the assembly matrix and set new values in it.
         
@@ -5057,6 +5079,13 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
             idx (list[int]): List of the row indices.
             jdx (list[int]): List of the column indices.
             values (list[float]): List of the values.
+        """
+    
+    def size(self, local= True):
+        """Get the size of the matrix
+        
+        Arguments:
+            local (bool) local or global size
         """
 
 # class AssemblyMatrixDisplacementComplex in libaster
@@ -5203,6 +5232,14 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     def getNumberOfElementaryMatrix(self):
         pass
     
+    def scale(self, arg0, arg1):
+        """Scale the matrix in place using right and left multiplication by diagonal matrices stored as vectors
+        
+        Arguments:
+            lvect (list[float]): List of the values.
+            rvect (list[float]): List of the values.
+        """
+    
     def setValues(self, arg0, arg1, arg2):
         """Erase the assembly matrix and set new values in it.
         
@@ -5214,6 +5251,13 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
             idx (list[int]): List of the row indices.
             jdx (list[int]): List of the column indices.
             values (list[float]): List of the values.
+        """
+    
+    def size(self, local= True):
+        """Get the size of the matrix
+        
+        Arguments:
+            local (bool) local or global size
         """
 
 # class AssemblyMatrixTemperatureComplex in libaster
@@ -10979,22 +11023,8 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             str: component names.
         """
     
-    def getComponents(self, *args, **kwargs):
-        """Overloaded function.
-        
-        1. getComponents(self: libaster.ParallelDOFNumbering) -> List[str]
-        
-        
-        Returns all the component names assigned in the numbering.
-        
-        Returns:
-            str: component names.
-                
-        
-        2. getComponents(self: libaster.ParallelDOFNumbering) -> List[str]
-        
-        
-        Returns all the component names assigned in the numbering.
+    def getComponents(self):
+        """Returns all the component names assigned in the numbering.
         
         Returns:
             str: component names.
@@ -11009,6 +11039,16 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         
         Returns:
             str: component names.
+        """
+    
+    def getGhostRows(self, local= True):
+        """Returns the indexes of the ghost DOFs.
+        
+        Arguments:
+            local (bool): local or global numbering
+        
+        Returns:
+            int: indexes of the ghost DOFs.
         """
     
     def getNodeAssociatedToRow(self, row, local= False):
@@ -11064,6 +11104,16 @@ class ParallelDOFNumbering(BaseDOFNumbering):
             int: indexes of the physical dof.
         """
     
+    def globalToLocalRow(self, glob):
+        """Returns the local number of a global DOF.
+        
+        Arguments:
+            glob (int): global DOF number
+        
+        Returns:
+            int: local number of the DOF.
+        """
+    
     def isRowAssociatedToPhysical(self, row, local= False):
         """If the row is associated to a physical DOF, return True
         
@@ -11076,6 +11126,16 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         
         Returns:
             int: index of the dof.
+        """
+    
+    def localToGlobalRow(self, loc):
+        """Returns the global number of a local DOF.
+        
+        Arguments:
+            loc (int): local DOF number
+        
+        Returns:
+            int: global number of the DOF.
         """
     
     def useLagrangeMultipliers(self):

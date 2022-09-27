@@ -498,6 +498,9 @@ implicit none
 !       Set the Neumann matrix
         call PCHPDDMSetAuxiliaryMat(pc,auxIS,auxMat,PETSC_NULL_FUNCTION,PETSC_NULL_INTEGER,ierr)
         ASSERT(ierr == 0)
+        call ISDestroy(auxIS, ierr)
+        call MatDestroy(auxMat, ierr)
+        ASSERT(ierr == 0)
 !       Set the PC definition 
         call dismoi('TYPE_MATRICE', nomat, 'MATR_ASSE', repk=syme)
         factor = 'lu'
@@ -507,7 +510,11 @@ implicit none
         myopt = '-prefix_push pc_hpddm_ ' // &
         '-prefix_push levels_1_ ' // &
         '-pc_type asm ' // &
-        '-sub_mat_mumps_icntl_14 260 ' // &
+        '-sub_mat_mumps_icntl_14 500 ' // &
+        '-sub_mat_mumps_icntl_24 1 ' // &
+        '-sub_mat_mumps_icntl_25 0 ' // &
+        '-sub_mat_mumps_cntl_3 1.e-15 ' // &
+        '-sub_mat_mumps_cntl_5 0. ' // &
         '-eps_nev 30 ' // &
         '-sub_pc_type ' // factor // ' ' //&
         '-sub_pc_factor_mat_solver_type mumps ' // &
@@ -517,7 +524,11 @@ implicit none
         '-prefix_push coarse_ ' // &
         '-pc_factor_mat_solver_type mumps ' // &
         '-sub_pc_type ' // factor // ' ' //&
-        '-mat_mumps_icntl_14 260 ' // &
+        '-mat_mumps_icntl_14 500 ' //&
+        '-mat_mumps_icntl_24 1 ' //&
+        '-mat_mumps_icntl_25 0 ' //&
+        '-mat_mumps_cntl_3 1.e-15 ' //&
+        '-mat_mumps_cntl_5 0. ' //&
         '-p ' // trim(nbproc_str) // ' ' // &
         '-prefix_pop ' // &
         '-define_subdomains ' // &
