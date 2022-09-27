@@ -18,15 +18,17 @@
 
 subroutine fluendo3d(xmat,sig0,sigf,deps,&
                      nstrs,var0,varf,nvari,nbelas3d,&
-                     teta1,teta2,dt,vrgi,ierr1,&
+                     teta1,teta2,dt,vrgi,epstf,ierr1,&
                      iso,mfr,end3d,fl3d,local,&
-                     ndim,iteflumax,sech)
+                     ndim,nmatbe2,iteflumax,sech)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
 implicit none
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/hydramat3d.h"
 #include "asterfort/thermat3d.h"
 #include "asterfort/hydravar3d.h"
@@ -36,6 +38,9 @@ implicit none
 #include "asterfort/conso3d.h"
 #include "asterfort/matfluag3d.h"
 #include "asterfort/couplagf3d.h"
+#include "asterfort/couplagpf3d.h"
+#include "asterfort/couplagfp3d.h"
+#include "asterfort/couplagpp3d.h"
 #include "asterfort/gauss3d.h"
 #include "asterfort/bgpg3d.h"
 #include "asterfort/fludes3d.h"
@@ -48,9 +53,17 @@ implicit none
 #include "asterfort/criter3d.h"
 #include "asterfort/majw3d.h"
 #include "asterfort/utmess.h"
+#include "asterfort/renfort3d.h"
+#include "asterfort/x33x6.h"
+#include "asterfort/chrep3d.h"
+#include "asterfort/indice0.h"
+#include "asterfort/goujon3d.h"
 
 !    nombre maximal de sous-itération de fluage
      integer      :: iteflumax
+     integer      :: iplalim1, iplalim2
+
+     aster_logical :: is_ba
 
 
      real(kind=8) ::  beta, beta00,bg0,biotw,biotw00,brgi,ccmin0,dim3,brgi00
@@ -61,13 +74,13 @@ implicit none
      real(kind=8) :: epc0,epc00,epc1,epleqc,epleqc0,epleqc00
      real(kind=8) ::  epleqc01,epp1,epser,epsklim1,epsklim2,epsm00
      real(kind=8) ::  epsmin,ept,ept00,ept1,epsklim,hyd00
-     integer      :: ipla2
+     integer      :: ipla2, nvaribe
      real(kind=8) :: pg0,rc00,rc1,reduc1,ref00,ref1,rt00,rt1
      real(kind=8) ::  tauk00,tauk1,taum00,teta,treps,trepspg
      real(kind=8) ::  umdt,vrgi00,vrgi1,vrgi2,vsrw,vw,vw1,vw2,we0s,xb1mg00
      real(kind=8) ::  xflu,xk00,xlim00,young00,xm00,xnsat,xnsat00,xpas1
      real(kind=8) ::  xx1,gfr,epeqpc,errgf
-
+     parameter(nvaribe=114)
      integer i,j,k,l,ndim,npas1,nt,ifour
 
 !            calcul de l ecoulement visco-elasto-plastique: Sellier mars 2014
@@ -81,16 +94,18 @@ implicit none
              integer nf0
 
 !            declaration des variables externes
-             integer nstrs,nvari,nbelas3d,ierr1,mfr
+             integer nstrs,nvari,nbelas3d,ierr1,mfr, nmatbe2
              real(kind=8) :: xmat(:),sig0(:),sigf(:),deps(:)
-             real(kind=8) ::  var0(:),varf(:)
+             real(kind=8) ::  var0(:),varf(:),epstf(6)
              real(kind=8) ::  dt,vrgi,teta1,teta2
 
 !            tableau pour la resolution des systemes lineaires
              integer ngf
-             parameter (ngf=22)
-             real(kind=8) ::  X(ngf),B(ngf),A(ngf,(ngf+1))
-             integer ipzero(ngf)
+             real(kind=8), pointer :: X(:) => null()
+             real(kind=8), pointer :: B(:) => null()
+             real(kind=8), allocatable :: A(:,:)
+             integer, pointer :: ipzero(:) => null()
+             real(kind=8) ::  XN(65),BN(65),ANN(65,65+1)
 !            variable de controle d erreur dans methode de gauss
              integer errgauss
 
@@ -264,10 +279,52 @@ implicit none
              real(kind=8) ::  wplx3(3),vwplx33(3,3),vwplx33t(3,3)
 !             taux de cisaillement
              real(kind=8) ::  tauc,depleqc3
-!             Pression gel max atteinte
+!            Pression gel max atteinte
              real(kind=8) ::  pgmax
-    real(kind=8), dimension(2) :: valr
-    integer, dimension(3) :: vali
+             real(kind=8), dimension(2) :: valr
+             integer, dimension(3) :: vali
+
+!            paramètres armatures réparties
+             integer nbrenf,nbparr,istep,numf,numr,nrenf00
+             parameter (nbrenf=5,nbparr=21)
+             ! integer nbrenf3d,nbrflu3d,nbsupp3d
+             aster_logical :: plast_seule,errr
+             real(kind=8) :: rhor(nbrenf),deqr(nbrenf),yor(nbrenf)
+             real(kind=8) :: syr(nbrenf),taur(nbrenf),vecr(nbrenf,3)
+             real(kind=8) :: hplr(nbrenf),tor(nbrenf),ekr(nbrenf)
+             real(kind=8) :: skr(nbrenf),ATRR(nbrenf),gamr(nbrenf)
+             real(kind=8) :: khir(nbrenf),sprec(nbrenf),spref(nbrenf)
+             real(kind=8) :: ttaref(nbrenf),xnr(nbrenf),xmuthr(nbrenf)
+             real(kind=8) :: tokr(nbrenf),yksyr(nbrenf)
+             real(kind=8) :: sigrm33(3,3),sigrf33(3,3),epspmf6(6),epsr0(nbrenf)
+             real(kind=8) :: eplr0(nbrenf),sigr0(nbrenf),eprm0(nbrenf),mu_r0(nbrenf)
+             real(kind=8) :: spre0(nbrenf),sigrfissp(nbrenf,3,3),sigrd33p(3,3),sigrf33p(3,3)
+             real(kind=8) :: sigrh6p(6),dti,epspmf33(3,3),epstf33(3,3),epstf6(6)
+             real(kind=8) :: rhov,sigrf6p(6),sigrh33(3,3),sigrh33p(3,3)
+             real(kind=8) :: sigrm33p(3,3),sigrm6p(6),vnorm
+             real(kind=8) :: epsrf(nbrenf),epspmf(nbrenf)
+             real(kind=8) :: sigrf(nbrenf),eprk0(nbrenf),eplrf(nbrenf)
+             real(kind=8) :: eps_nl(nbrenf),eprkf(nbrenf),eprmf(nbrenf)
+             real(kind=8) :: sigrh6(6),sigrm6(6),sigmf6(6)
+             real(kind=8) :: rc_app,eprp0(nbrenf),eprpf(nbrenf),your(nbrenf)
+             real(kind=8) :: sigfr(nbrenf),sigfd6(6)
+
+        if(nmatbe2.eq. 0)then
+            ngf = 22
+            is_ba = ASTER_FALSE
+            iplalim1 = 4
+            iplalim2 = 200
+        else
+!           RGI_BETON_BA
+            ngf = 65
+            is_ba = ASTER_TRUE
+            iplalim1 = 1000
+            iplalim2 = 3
+        endif
+        AS_ALLOCATE(vr=X, size=ngf)
+        AS_ALLOCATE(vr=B, size=ngf)
+        ALLOCATE(A(ngf,(ngf+1)))
+        AS_ALLOCATE(vi=ipzero, size=ngf)
 
         depstt6(:) = 0.d0
         deps6r2(:) = 0.d0
@@ -645,6 +702,9 @@ implicit none
      nared=0
      supr(:)=0
 
+!    pour ne pas avoir de fluage mettre plast_seule à vrai
+     plast_seule=.false. 
+    
 !***********************************************************************
 !     initialisation de matrice identité
        do i=1,3
@@ -680,10 +740,14 @@ implicit none
       hyd00=hyd0
 !     hydratation seuil
       hyds=xmat(nbelas3d+2)
-!     Module d young
-      young00=xmat(1)
-!     coefficient de Poisson
-      nu00=xmat(2)
+!     Module d'Young et coefficient de Poisson
+      if (.not. is_ba)then
+          young00=xmat(1)
+          nu00=xmat(2)
+      else
+          young00=xmat(nbelas3d+58)
+          nu00=xmat(nbelas3d+59)
+      endif
 !     resistances et pression limite     2/3
       rt00=xmat(nbelas3d+3)
 !     seuil pour la refermeture des fissures
@@ -848,25 +912,122 @@ implicit none
 !       on peut traiter le endommagement pre pic iso de traction
 !       si ept > Rt/E
         ept00=dmax1(rt00/young00,ept00)
-
+!
 !***********************************************************************
+      if (.not. is_ba) then
 !     indicateur de premier passage pour hydracomp3d
-      if (abs(var0(64)-1.d0).ge.r8prem()) then
-         ppas=.true.
+! Q : pourquoi pas en _ba ???
+          if (abs(var0(64)-1.d0).ge.r8prem()) then
+             ppas=.true.
+          else
+             ppas=.false.
+          end if
       else
-         ppas=.false.
-      end if
+!     nombre de renforts anisotropes reparties (min 0, max 6)
+        nrenf00=int(max (xmat(nbelas3d+nmatbe2+1),0.) )   
+
+!     ********** récupérer ici les NBSUPP3D paramètres rajoutés ********* 
+
+!     ********** récuperation des paramètres des renforts répartis ******
+    
+!       print*,'fluendo3d : nbre de renforts repartis:',nrenf00     
+        if( nrenf00.gt.0) then
+           if(nrenf00.gt.nbrenf) then
+!             nre maxi de renforts : NBRENF
+!             nbre de parametres par renforts : nbparr         
+              print*,'Nbre de renforts repartie imprevu ds rgi_beton_ba'           
+              print*,'Nombre de renforts souhaitable:',nrenf00
+              ierr1=1
+              go to 999
+           end if            
+           do i=1,nrenf00  
+      
+!              taux de renforts élastoplastiques dans 3 directions 
+               rhor(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+1)
+!              diamètre équivalent des renforts
+               deqr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+2)              
+!              module d Young des renforts passifs
+               yor(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+3) 
+!              limite élastique des renforts
+               syr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+4)
+!              cisaillement maxi renfort matrice
+               taur(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+5)
+!              direction projetée axe base fixe 1             
+               vecr(i,1)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+6)
+!              direction projetée axe base fixe 1             
+               vecr(i,2)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+7)
+!              direction projetée axe base fixe 1             
+               vecr(i,3)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+8)
+      
+!              vérif / normalisation vecteur direction             
+               vnorm=vecr(i,1)**2+vecr(i,2)**2+vecr(i,3)**2
+               vnorm=sqrt(vnorm)
+!               print*,'Vec1',vecr(4,1),'Vec2',vecr(4,2),'Vec3',vecr(4,3)         
+               if(vnorm.eq.0.) then
+!                  il manque la direction du renfort             
+                   print*,'Donner la direction du renfort:', i
+                   ierr1=1
+                   go to 999
+               else if (vnorm.ne.1.) then
+!                  normalisation du vecteur direction             
+                   do j=1,3
+                        vecr(i,j)=vecr(i,j)/vnorm
+                   end do
+               end if 
+!               do j=1,3
+!               print*,'fluendo3d verc(',i,j,')=',vecr(i,j) 
+!               end do 
+!              module d ecrouissage cinematique des armatures
+               hplr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+9)
+!              temps caracteristique de fluage/relaxation             
+               tor(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+10)
+!              deformation caracteristique de fluage relaxation             
+               ekr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+11)
+!              contrainte caracteristique de la loi de relaxation/ fluage             
+               skr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+12)
+!              energie d'activation de reference pour la relaxation             
+               ATRR(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+13)
+!              coeff de couplage thermo-mecanique pour la relaxation             
+               gamr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+14)
+!              coeff de non linearite mecanique de la relaxation             
+               khir(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+15)
+!              precontrainte imposee             
+               sprec(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+16)
+!              precontrainte fin de pas             
+               spref(i)=sprec(i)             
+!              temperature de reference armature
+               ttaref(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+17) 
+!              exposant de loi d'activation thermique
+               xnr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+18)
+!              taux de chargement à partir duquel l activation therm dépend du chargement
+               xmuthr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+19)
+!              temps caractéristique de kelvin pour les renforts             
+               tokr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+20)
+!              rapport Ekelvin/Eélastique pour les renforts             
+               yksyr(i)=xmat(nbelas3d+nmatbe2+1+nbparr*(i-1)+21)     
+          
+           end do       
+        end if  
 
 !***********************************************************************
+      endif
+
+
+
 !     chargement de l increment de deformation imposee
+      deps6(:)=0.d0
+      epstf6(:)=0.d0
       do i=1,nstrs
         deps6(i)=deps(i)
+        epstf6(i)=epstf(i)
       end do
-      if(nstrs.lt.6) then
-        do i=nstrs+1,6
-          deps6(i)=0.d0
-        end do
-      end if
+      if(nmatbe2.ne.0)then
+!         passage en epsilon
+          do i=4,6
+             deps6(i)=0.5d0*deps6(i)
+             epstf6(i)=0.5d0*epstf6(i) 
+         end do
+      endif
 
 !***********************************************************************
 
@@ -1312,14 +1473,14 @@ implicit none
 !       *** actualisation du compteur de boucle elasto plastique *******
 
 10 continue
-   if(ipla.lt.4) then
+   if(ipla.lt.iplalim1) then
    ipla=ipla+1
 !       compteur reduction du systeme de couplage
         ipla2=0
 !       nombre de lignes a supprimer dans le couplage
         nsupr=0
 !       nbr itermax atteint
-        if(ipla.gt.200) then
+        if(ipla.gt.iplalim2) then
             vali(1) = ipla
             call utmess('A', 'COMPOR3_27', ni=1, vali=vali)
         end if
@@ -1361,7 +1522,7 @@ implicit none
         varf(100)=M2f
         varf(101)=Atf
         varf(102)=Stf
-        varf(114)=pgmax 
+        varf(114)=pgmax
 
 !       prise en compte de l'amplification des depressions capillaires
 !       sous charge (l effet du chargement sur la pression capillaire
@@ -1524,42 +1685,13 @@ implicit none
 
 !            ************* couplage avec la plasticite *****************
 
-!            complement de la matrice de couplage pour la plasticite
-!            autres couplages : plasticite -> fluage
-             do i=1,6
-                 do j=1,na
-!                   couplage plasticite ->  kelvin
-                    a(i,12+j)=avean*dgfa_ds(j,i)
-!                   couplage plasticite -> maxwell
-!                   attention kmve66 doit être dans la bonne base...
-                    a(i+6,12+j)=dgfa_ds(j,i)*(deltam+kmve66(i,i))
-                    do k=1,6
-                      if (k.ne.i) then
-                        a(i+6,12+j)=a(i+6,12+j)+dgfa_ds(j,k)*kmve66(i,k)
-                      end if
-                    end do
-                 end do
-!                mise a zero des seconds membre de fluage (deja fait normalement)
-                 b(i)=0.d0
-                 b(i+6)=0.d0
-             end do
+!            plasticite -> fluage
+             call couplagpf3d(a, b, ngf, na, avean,&
+                              nc, dgfa_ds, deltam, kmve66)
 
-!            **** couplage  fluage -> plasticite ***********************
-
-             do i=1,na
-                do j=1,6
-!                couplage kelvin -> plasticite
-                 a(12+i,j)=0.d0
-                 do k=1,6
-                     a(12+i,j)=a(12+i,j)-dpfa_ds(i,k)*raideur66p(k,j)
-                 end do
-!                ici les deformation anelastique sont du fluage donc
-!                on prend dpg_depsa6 du cas general
-                 a(12+i,j)=a(12+i,j)+dpfa_dpg(i)*dpg_depsa6(j)
-!                couplage maxwell -> plasticite
-                 a(12+i,j+6)=a(12+i,j)
-                end do
-             end do
+!            fluage -> plasticite
+             call couplagfp3d(a, ngf, na, nc,&
+                       dpfa_ds, dpfa_dpg, dpg_depsa6, raideur66p)
           end if
 
 !         *** couplage plasticite -> plasticite ************************
@@ -1569,31 +1701,11 @@ implicit none
           else
              nf0=0
           end if
-          do i=1,na
-            do j=1,na
-                som2=0.d0
-                do k=1,6
-!                   influence des autres deformations plastiques
-                    som1=0.d0
-                    do l=1,6
-                      som1=som1-raideur66p(k,l)*dgfa_ds(j,l)
-                    end do
-                    som2=som2+dpfa_ds(i,k)*som1
-!                   influence de la pression intra poreuse
-                    if((ig(j).ge.7).and.(ig(j).le.9)) then
-                      som2=som2+dpfa_dpg(i)*dpg_depspg6(k)*dgfa_ds(j,k)
-                    else
-                      som2=som2+dpfa_dpg(i)*dpg_depsa6(k)*dgfa_ds(j,k)
-                    end if
-                end do
-                a(nf0+i,nf0+j)=som2
-                if(i.eq.j) then
-!                  prise en compte de l ecrouissage (dra_dl derivve de
-!                  la resistance par rapport au multiplicateur plastique)
-                   a(nf0+i,nf0+j)=a(nf0+i,nf0+j)+dpfa_dr(i)*dra_dl(i)
-                end if
-            end do
-          end do
+          
+          call couplagpp3d(a, ngf, na, nc, nf0, ig,&
+                           dgfa_ds, dpfa_ds, dpfa_dpg, dpg_depspg6,&
+                           raideur66p, dpfa_dr, dra_dl, dpg_depsa6)
+
 !         second membre de la plasticite : oppose des criteres actifs
           do i=1,na
             b(nf0+i)=-fa(i)
@@ -2043,17 +2155,220 @@ end if
                  ierr1=1
                  go to 999
              end if
+!            contraintes totale dans la matrice apres endommagement 
+             do i=1,6
+                 sigmf6(i)=sigf6d(i)
+             end do      
         else
 !           pas d endommagement
             do i=1,6
                  sigf6d(i)=sigf6(i)
+                 sigmf6(i)=sigf6(i)
             end do
         end if
 
+    if (is_ba) then
+!       Contrainte princales du beton
+        call x6x33(sigmf6,sig133)        
+        call b3d_valp33(sig133,sig13,vsig133)
+         varf(161)=MAX(sig13(1),sig13(2),sig13(3))
+         varf(163)=MIN(sig13(1),sig13(2),sig13(3))
+         varf(162)=(0.5*(varf(161)-varf(163)))
+
 !***********************************************************************
+!       calcul des contraintes dans les renforts
+        ! J'enlève le istep dans la ligne de dessous car pas de non local pour le moment
+        if (nrenf00.ne.0) then 
+!.and.((istep.eq.0).or.(istep.eq.2))) then
+!            calcul du taux volumique d armature
+             rhov=0.d0
+             do j=1,nrenf00
+                rhov=rhov+rhor(j)
+             end do
+             if (rhov.gt.1.d0) then
+               print*,'Taux d armature > 1 dans fluendo3d_BA !'
+               ierr1=1
+               go to 999
+             end if
+!            initialisation des tenseurs de contraintes homogeneisee        
+             do j=1,3
+                do k=1,3
+                    sigrm33(j,k)=0.d0
+                    sigrf33(j,k)=0.d0
+                end do
+             end do                          
+!            recuperation du tenseur des deformations finales
+             call x6x33(epstf6,epstf33)
+!            recuperation du tenseur des deformations localisees dans la matrice
+             do i=1,6
+                 epspmf6(i)=epspt6(i)
+             end do
+             call x6x33(epspmf6,epspmf33)
+!            calcul des contraintes axiales dans chaque renfort            
+             do i=1,nrenf00
+                 epsr0(i)=var0(nvaribe+8*(i-1)+1)
+! pas de non local pour le moment donc pas de variable +2
+                 eplr0(i)=var0(nvaribe+8*(i-1)+3)
+                 sigr0(i)=var0(nvaribe+8*(i-1)+4)
+                 eprm0(i)=var0(nvaribe+8*(i-1)+5)
+                 mu_r0(i)=var0(nvaribe+8*(i-1)+6)
+                 eprk0(i)=var0(nvaribe+8*(i-1)+7)
+                 spre0(i)=var0(nvaribe+8*(i-1)+8)
+!                 if(istep.eq.2) then
+!                  recuperation de la deformation finale non locale
+!                   eps_nl(i)=var0(NVARFLU3D+NVARSUP3D+(i-1)*NVARENF3D+2)
+!                  sinon elle est estimée dans renfort3d
+!                end if
+!                contrainte axiale dans les renforts                 
+                 call renfort3d(istep,nbrenf,i,epstf33,vecr,epsr0(i),&
+                 epsrf(i),eplr0(i),eplrf(i),yor(i),syr(i),sigr0(i),&
+                 sigrf(i),hplr(i),tor(i),ekr(i),skr(i),ATRR(i),khir(i),&
+                 gamr(i),sprec(i),teta1,teta2,dt,ppas,theta,eprm0(i),&
+                 eprmf(i),ttaref(i),rhor(i),mu_r0(i),fl3d,errr,xnr(i),&
+                 xmuthr(i),eprk0(i),eprkf(i),tokr(i),yksyr(i),&
+                 plast_seule,ann,xn,bn,ngf,ipzero,epspmf33,epspmf(i),&
+                 eps_nl(i),spre0(i),spref(i))
+                 if(errr) then
+                     print*,'erreur dans renfort3d'
+                     ierr1=1
+                     go to 999
+                 end if     
+                 varf(nvaribe+8*(i-1)+1)=epsrf(i)
+                 varf(nvaribe+8*(i-1)+2)=eps_nl(i)
+                 varf(nvaribe+8*(i-1)+3)=eplrf(i)
+                 varf(nvaribe+8*(i-1)+4)=sigrf(i)
+                 varf(nvaribe+8*(i-1)+5)=eprmf(i)
+                 varf(nvaribe+8*(i-1)+6)=mu_r0(i)
+                 varf(nvaribe+8*(i-1)+7)=eprkf(i)
+                 varf(nvaribe+8*(i-1)+8)=spref(i)                
+                 
+!                modification de la direction par effet goujon, calcul des
+!                vecteurs forces sur chaque fissure       
+                 rc_app=rc00
+
+!                vecteurs forces sur chaque fissure                         
+                 do j=1,3
+!                    on ne calcule l effet goujon que si la fissure
+!                    localisee existe
+                     if(dt3(j).gt.0.) then                 
+!                       cas du renfort i traversant la fissure j
+                         call goujon3d(end3d,nbrenf,i,j,vecr,deqr,rhor,&
+                         wpl3,vwpl33,vwpl33t,rc_app,sigrf(i),sigrfissp)
+                     else  
+                         do k=1,3
+                            sigrfissp(i,j,k)=0.d0
+                         end do
+                     end if                        
+!                         do k=1,3
+!                            print*,'sigfissp','i',i,'j',j,'=',sigrfissp(i,j,k)
+!                         end do
+!                        read*
+                 end do
+!                     end if                        
+!                 end do                 
+!                tenseur des contraintes dans la matrice dues au renfort
+                 do j=1,3
+                    do k=1,3
+                        sigrm33(j,k)=sigrm33(j,k)+rhor(i)*sigrf(i)* &
+                        vecr(i,j)*vecr(i,k)
+                    end do
+                 end do
+             end do            
+             if(end3d.and.(.not.plast_seule)) then
+!              calcul de la resultante sur chaque fissure en cas 
+!              d endommagement (on est en base principale des endommagements)
+               do numf=1,3
+                 do k=1,3
+                   sigrd33p(k,numf)=0.d0
+                   if (dt3(numf).gt.0.) then
+                       do numr=1,nrenf00
+                         sigrd33p(k,numf)=sigrd33p(k,numf) &
+                         +sigrfissp(numr,numf,k)*dt3(numf)
+                       end do
+                   end if
+                 end do
+               end do
+!              partie symetrique de la contribution des renforts 
+!              dans les fissures localisees
+               do k=1,3
+                 do l=k,3
+                   if(k.eq.l) then
+                     sigrf33p(k,l)=sigrd33p(k,l)
+                   else if(k.ne.l) then
+                     sigrf33p(k,l)=0.5d0*(sigrd33p(k,l)+sigrd33p(l,k))
+                     sigrf33p(l,k)=sigrf33p(k,l)
+                   end if
+                 end do
+               end do
+               call x33x6(sigrf33p,sigrf6p) 
+
+               call chrep3d(sigrf33,sigrf33p,vwpl33t)
+
+!               print*,'numf',numf,'numr',numr
+!               print*,'sigrf33',sigrf33
+
+  
+
+!              passage en base fixe pour verif             
+!              combinaison des contraintes dans les renforts et la matrice
+!              en presence d endommagement, reduction de la contribution des
+!              renforts dans la partie non endommagee
+!              on se place dans la base principale des endommagements de traction
+               call chrep3d(sigrm33p,sigrm33,vwpl33)
+               call x33x6(sigrm33p,sigrm6p)        
+               do i=1,6
+                 call indice0(i,k,l)
+                 dti=max(dt3(k),dt3(l))
+                 sigrh6p(i)=sigrm6p(i)*(1.d0-dti)+sigrf6p(i)
+               end do
+               call x6x33(sigrh6p,sigrh33p)
+               call chrep3d(sigrh33,sigrh33p,vwpl33t) 
+               call x33x6(sigrh33,sigrh6)
+!              combinaison avec les contraintes dans la matrice et les 
+!              contraintes dans les renforts traversant les fissures localisees
+               do i=1,6
+                 sigf6d(i)=(1.d0-rhov)*sigmf6(i)+sigrh6(i)
+               end do              
+             else
+!              combinaison des contraintes dans les renforts et la matrice
+!              en l abscence d endommagement
+               call x33x6(sigrm33,sigrm6)             
+               do i=1,6
+                 sigf6d(i)=(1.d0-rhov)*sigmf6(i)+sigrm6(i)
+               end do
+             end if  
+          else
+!            pas de renforts
+               do i=1,6
+                 sigf6d(i)=sigmf6(i)
+               end do        
+          end if    
+!tenseur des contrainte matrice seule et homogeneise  Sbei 
+          do i=1,6
+               varf(nvaribe+8*5+i)= sigmf6(i)
+          end do
+
+!***********************************************************************      
+!     indicateur de premier passage pour hydracomp3d
+      if (abs(var0(64)-1.d0).ge.r8prem()) then
+         ppas=.true.
+      else
+         ppas=.false.
+      end if         
+
+!***********************************************************************  
+!*********************************************************************** 
+    endif
+!       
 !       affectation dans le tableau de sortie des contraintes
         do i=1,nstrs
            sigf(i)=sigf6d(i)
         end do
 999    continue
+    
+    AS_DEALLOCATE(vr=X)
+    AS_DEALLOCATE(vr=B)
+    DEALLOCATE(A)
+    AS_DEALLOCATE(vi=ipzero)
+
 end subroutine

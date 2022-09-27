@@ -33,71 +33,92 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/utmess.h"
 !
 !
-    integer :: imate, ndim, kpg, ksp, codret, iret
-    integer :: ifour, ifour11, kerre, nmatflu
-    real(kind=8) :: instam, instap
-    real(kind=8) :: epsm(6)
-    real(kind=8) :: epsmc(6), depsc(6)
-    real(kind=8) :: sigm(6), sigp(6)
-    real(kind=8) :: vim(*), vip(*), tm, tp, tref
-    real(kind=8) :: dsidep(6, 6)
-    character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
     character(len=*) :: fami
+    integer :: kpg, ksp, ndim, imate
+    character(len=16) :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
+    real(kind=8) :: instam, instap
+    real(kind=8) :: epsm(6),deps(6)
+    real(kind=8) :: sigm(6), vim(*)
+    character(len=16) :: option
+    real(kind=8) :: sigp(6), vip(*)
+    character(len=8) :: typmod(*)
+    real(kind=8) :: dsidep(6, 6)
+    integer :: codret
+    
 !
 ! DECLARATIONS LOCALES
-    integer :: nvarbe, nxmat
-!   Nombre de paramtre relatif au beton uniquement
-    parameter (nvarbe=57)
-!   Nombre parametre pour xmat = 4+ nvarbe
-    parameter (nxmat=4+nvarbe)
+    integer :: nvarflumax, nmatflumax
+    parameter(nvarflumax=163, nmatflumax=165)
 !
-    character(len=8) :: nomres(nvarbe),nomres1(4)
-    real(kind=8) :: valres(nvarbe), xmat(nxmat), rbid,valres1(4)
-    integer :: nvari, nstrs, mfr, i, j
-    integer :: retour(nvarbe),retour1(4), iteflumax
+    integer :: nmatbe, nmatac, nmatflu, nvarflu, nmatbe2, nmatbe3
+!   Nombre de paramètres relatifs au beton
+    parameter (nmatbe=57, nmatbe2=59)
+!   Nombre de paramtre relatif a l'acier (1+21*5)
+    parameter (nmatac=106)
+!
+    integer :: nbelas3d
+    parameter (nbelas3d=4)
+
+    character(len=8) :: nomres(nmatflumax), nomres1(nbelas3d)
+    real(kind=8) :: valres(nmatflumax), xmat(nbelas3d+nmatflumax), valres1(nbelas3d)
+    integer :: nstrs, mfr, i, j
+    integer :: retour(nmatflumax),retour1(nbelas3d), iteflumaxi
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2, var0(6), sig0(6)
 !
     real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
-    real(kind=8) :: alpham, alphap, deps(6), teta13d, teta23d, sech
+    real(kind=8) :: alpham, alphap,  teta13d, teta23d, sech, epstf3d(6)
 !
 !
+    integer :: iret, ifour, ifour11
+    real(kind=8) :: epsmc(6), depsc(6), epsc(6)
+    real(kind=8) :: tm, tp, tref
+
 !   variables de transfert de donnees ( a declarer suivant idvar4 et idvisc)
-    integer :: nmat3d, nstrs3d, nvari3d, ierr1, mfr11
-    integer :: NMATAILX, NVARFLU, NMATRAG, NVARRAG
+    integer :: nmat3dmax, nmat3d, nstrs3d, nvari3dmax, nvari3d, ierr1, mfr11
 !
-    integer :: nbelas3d
-    parameter (nbelas3d=4)
-    parameter (NMATFLU=nvarbe)
-    parameter (NMATAILX=0)
-!   Nombre des variable totale du modele
-    parameter (NVARFLU=114)
+
 !   taille du pseudo vecteur des contraintes pour fluendo3d (tjrs 6
 !   en raison de son utilisation dans fludes3d qui la suppose à 6)
     parameter (nstrs3d=6)
 !
 !   mettre a jour ici le nbre de parametres materiaux et variables
 !   interne de l option du modele
+    integer :: NMATAILX, NMATRAG, NVARRAG
     parameter (NMATRAG=0)
     parameter (NVARRAG=0)
+    parameter (NMATAILX=0)
 !
 !
 !   nombre totale de parametres et variables internes option comprise
-    parameter (nmat3d=nbelas3d+NMATFLU+NMATRAG+NMATAILX)
-    parameter (nvari3d=NVARFLU+NVARRAG)
+    parameter (nmat3dmax = nbelas3d + nmatflumax + NMATRAG + NMATAILX)
+    parameter (nvari3dmax = nvarflumax + NVARRAG)
 !
 !   nbre de parametres materiaux sans les tailles des elements
-    real(kind=8) :: xmat3d(nmat3d), sig03d(6), sigf3d(6), depst3d(6)
-    real(kind=8) :: var03d(nvari3d), varf3d(nvari3d), varf(nvari3d), sigf(6)
+    real(kind=8) :: xmat3d(nmat3dmax), sig03d(6), sigf3d(6), depst3d(6)
+    real(kind=8) :: var03d(nvari3dmax), varf3d(nvari3dmax), varf(nvari3dmax), sigf(6)
 !   indicateur d isotropie initiale
     aster_logical :: iso1, local11, end3d, fl3d
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi
     real(kind=8) :: dt3d, phig3d
 !
-    parameter       (nvari=NVARFLU)
     integer, dimension(2) :: vali
+!
+!   --------------------------------------------------------------------
+!   Nombre de paramètres matériau et de variables internes
+    if (compor(1)(1:12) .ne. 'RGI_BETON_BA')then
+        nmatflu = nmatbe
+        nvarflu = 114
+        nmatbe3 = 0
+    else
+        nmatflu=nmatbe+2+nmatac
+        nvarflu = 163
+        nmatbe3 = nmatbe2
+    endif
+!   nombre totale de paramètres et variables internes (option comprise)
+    nmat3d = nbelas3d + nmatflu + NMATRAG + NMATAILX
+    nvari3d = nvarflu + NVARRAG 
 !
 !
     sig03d(:) = 0.d0
@@ -115,7 +136,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     valres1(:)=0.d0
     valres(:)=0.d0
 !
-    iteflumax = int(carcri(1))
+    iteflumaxi = int(carcri(1))
 !
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
@@ -238,10 +259,11 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         do i = 1, 3
             depsc(i) = deps(i) - (alphap*(tp-tref)-alpham*(tm-tref))
             epsmc(i) = epsm(i) - alpham*(tm-tref)
+            epsc(i) = epsmc(i) + depsc(i)
         end do
         do i = 4, nstrs
             depsc(i) = deps(i)
-            epsmc(i) = epsm(i)
+            epsc(i) = epsm(i) + depsc(i)
         end do
     endif
 !
@@ -306,17 +328,131 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(55)= 'TTRD'
     nomres(56)= 'TTKF'
     nomres(57)= 'HPEV'
-!
-    rbid = 0.d0
+
+    nomres(58)= 'YOUM'
+    nomres(59)= 'NUM'
+
+    nomres(nmatbe2+1)= 'NREN'
+
+    nomres(nmatbe2+2)= 'ROA1'
+    nomres(nmatbe2+3)= 'DEQ1'
+    nomres(nmatbe2+4)= 'YOR1'
+    nomres(nmatbe2+5)= 'SYR1'
+    nomres(nmatbe2+6)= 'TYR1'
+    nomres(nmatbe2+7)= 'VR11'
+    nomres(nmatbe2+8)= 'VR12'
+    nomres(nmatbe2+9)= 'VR13'
+    nomres(nmatbe2+10)= 'HPL1'
+    nomres(nmatbe2+11)= 'TMR1'
+    nomres(nmatbe2+12)= 'EKR1'
+    nomres(nmatbe2+13)= 'SKR1'
+    nomres(nmatbe2+14)= 'ATR1'
+    nomres(nmatbe2+15)= 'CTM1'
+    nomres(nmatbe2+16)= 'XFL1'
+    nomres(nmatbe2+17)= 'PRE1'
+    nomres(nmatbe2+18)= 'TTR1'
+    nomres(nmatbe2+19)= 'XNR1'
+    nomres(nmatbe2+20)= 'MUS1'
+    nomres(nmatbe2+21)= 'TKR1'
+    nomres(nmatbe2+22)= 'YKY1'
+
+    nomres(nmatbe2+23)= 'ROA2'
+    nomres(nmatbe2+24)= 'DEQ2'
+    nomres(nmatbe2+25)= 'YOR2'
+    nomres(nmatbe2+26)= 'SYR2'
+    nomres(nmatbe2+27)= 'TYR2'
+    nomres(nmatbe2+28)= 'VR21'
+    nomres(nmatbe2+29)= 'VR22'
+    nomres(nmatbe2+30)= 'VR23'
+    nomres(nmatbe2+31)= 'HPL2'
+    nomres(nmatbe2+32)= 'TMR2'
+    nomres(nmatbe2+33)= 'EKR2'
+    nomres(nmatbe2+34)= 'SKR2'
+    nomres(nmatbe2+35)= 'ATR2'
+    nomres(nmatbe2+36)= 'CTM2'
+    nomres(nmatbe2+37)= 'XFL2'
+    nomres(nmatbe2+38)= 'PRE2'
+    nomres(nmatbe2+39)= 'TTR2'
+    nomres(nmatbe2+40)= 'XNR2'
+    nomres(nmatbe2+41)= 'MUS2'
+    nomres(nmatbe2+42)= 'TKR2'
+    nomres(nmatbe2+43)= 'YKY2'
+
+    nomres(nmatbe2+44)= 'ROA3'
+    nomres(nmatbe2+45)= 'DEQ3'
+    nomres(nmatbe2+46)= 'YOR3'
+    nomres(nmatbe2+47)= 'SYR3'
+    nomres(nmatbe2+48)= 'TYR3'
+    nomres(nmatbe2+49)= 'VR31'
+    nomres(nmatbe2+50)= 'VR32'
+    nomres(nmatbe2+51)= 'VR33'
+    nomres(nmatbe2+52)= 'HPL3'
+    nomres(nmatbe2+53)= 'TMR3'
+
+
+
+    nomres(nmatbe2+54)= 'EKR3'
+    nomres(nmatbe2+55)= 'SKR3'
+    nomres(nmatbe2+56)= 'ATR3'
+    nomres(nmatbe2+57)= 'CTM3'
+    nomres(nmatbe2+58)= 'XFL3'
+    nomres(nmatbe2+59)= 'PRE3'
+    nomres(nmatbe2+60)= 'TTR3'
+    nomres(nmatbe2+61)= 'XNR3'
+    nomres(nmatbe2+62)= 'MUS3'
+    nomres(nmatbe2+63)= 'TKR3'
+    nomres(nmatbe2+64)= 'YKY3'
+
+    nomres(nmatbe2+65)='ROA4'
+    nomres(nmatbe2+66)='DEQ4'
+    nomres(nmatbe2+67)='YOR4'
+    nomres(nmatbe2+68)='SYR4'
+    nomres(nmatbe2+69)='TYR4'
+    nomres(nmatbe2+70)='VR41'
+    nomres(nmatbe2+71)='VR42'
+    nomres(nmatbe2+72)='VR43'
+    nomres(nmatbe2+73)='HPL4'
+    nomres(nmatbe2+74)='TMR4'
+    nomres(nmatbe2+75)='EKR4'
+    nomres(nmatbe2+76)='SKR4'
+    nomres(nmatbe2+77)='ATR4'
+    nomres(nmatbe2+78)='CTM4'
+    nomres(nmatbe2+79)='XFL4'
+    nomres(nmatbe2+80)='PRE4'
+    nomres(nmatbe2+81)='TTR4'
+    nomres(nmatbe2+82)='XNR4'
+    nomres(nmatbe2+83)='MUS4'
+    nomres(nmatbe2+84)='TKR4'
+    nomres(nmatbe2+85)='YKY4'
+
+    nomres(nmatbe2+86)='ROA5'
+    nomres(nmatbe2+87)='DEQ5'
+    nomres(nmatbe2+88)='YOR5'
+    nomres(nmatbe2+89)='SYR5'
+    nomres(nmatbe2+90)='TYR5'
+    nomres(nmatbe2+91)='VR51'
+    nomres(nmatbe2+92)='VR52'
+    nomres(nmatbe2+93)='VR53'
+    nomres(nmatbe2+94)='HPL5'
+    nomres(nmatbe2+95)='TMR5'
+    nomres(nmatbe2+96)='EKR5'
+    nomres(nmatbe2+97)='SKR5'
+    nomres(nmatbe2+98)='ATR5'
+    nomres(nmatbe2+99)='CTM5'
+    nomres(nmatbe2+100)='XFL5'
+    nomres(nmatbe2+101)='PRE5'
+    nomres(nmatbe2+102)='TTR5'
+    nomres(nmatbe2+103)='XNR5'
+    nomres(nmatbe2+104)='MUS5'
+    nomres(nmatbe2+105)='TKR5'
+    nomres(nmatbe2+106)='YKY5'
 !
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', compor(1), 0, ' ', [rbid],&
+                ' ', compor(1), 0, ' ', [0.d0],&
                 nmatflu, nomres, valres, retour, 0,&
                 nan='NON')
 !
-!
-! --- ON REMPLIT XMAT DE nbelas+1 A nbelas+nmatflu
     do i = (nbelas3d+1), (nbelas3d+nmatflu)
         xmat(i) = valres(i-nbelas3d)
     end do
@@ -354,13 +490,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         xmat3d(i)=xmat(i)
     end do
 !
-!    variables internes
-    if (nvari3d .ne. nvari) then
-        vali(1) = nvari3d
-        vali(2) = nvari
-        call utmess('E', 'COMPOR3_16', ni=2, vali=vali)
-        kerre=1
-    end if
     do i = 1, nvari3d
         var03d(i)=vim(i)
         varf3d(i)=vip(i)
@@ -407,9 +536,11 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     rac2 = sqrt(2.d0)
     do i = 1, 3
         depst3d(i) = depsc(i)
+        epstf3d(i) = epsc(i)
     end do
     do i = 4, nstrs
         depst3d(i) = depsc(i) * rac2
+        epstf3d(i) = epsc(i) * rac2
     end do
 !
     do i = 1, 3
@@ -422,11 +553,12 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 !
     phig3d=0.d0
+
     call fluendo3d(xmat3d, sig03d, sigf3d, depst3d, nstrs3d,&
                    var03d, varf3d, nvari3d, nbelas3d, teta13d,&
-                   teta23d, dt3d, phig3d, ierr1, iso1,&
+                   teta23d, dt3d, phig3d, epstf3d, ierr1, iso1,&
                    mfr11, end3d, fl3d, local11, ndim,&
-                   iteflumax, sech)
+                   nmatbe3, iteflumaxi, sech)
 !
     do i = 1, 3
         sigp(i) = sigf3d(i)
@@ -436,21 +568,10 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     end do
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        do i = 1, nvari
+        do i = 1, nvari3d
             vip(i) = varf3d(i)
         end do
     endif
-!
-!
-!**********************************************************************
-    if (ierr1 .eq. 0) then
-        kerre=0
-    else
-        kerre=1
-    end if
-!
-!
-!*********************************************************************!
 !
     if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
 !

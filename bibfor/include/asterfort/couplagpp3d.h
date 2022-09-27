@@ -19,29 +19,21 @@
 !
 #include "asterf_types.h"
 interface 
-subroutine cfluendo3d_ba(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option,&
-                  sigp, vip, typmod,&
-                  dsidep, codret)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8), intent(in) :: carcri(*)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: vim(*)
-        character(len=16) :: option
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(*)
-        character(len=8) :: typmod(*)
-        real(kind=8) :: dsidep(6, 6)
-        integer :: codret
-    end subroutine cfluendo3d_ba
+       subroutine couplagpp3d(a, ngf, na, nc, nf0, ig,&
+                              dgfa_ds, dpfa_ds, dpfa_dpg, dpg_depspg6,&
+                              raideur66p, dpfa_dr, dra_dl, dpg_depsa6)
+        real(kind=8), intent(inout) :: a(ngf,ngf+1)
+        integer, intent(in) :: ngf
+        integer, intent(in) :: na
+        integer, intent(in) :: nc
+        integer, intent(in) :: ig(nc)
+        real(kind=8), intent(in) :: dgfa_ds(nc, 6)
+        real(kind=8), intent(in) :: dpfa_ds(nc, 6)
+        real(kind=8), intent(in) :: dpfa_dpg(nc)
+        real(kind=8), intent(in) :: dpg_depspg6(6)
+        real(kind=8), intent(in) :: raideur66p(6, 6)
+        real(kind=8), intent(in) :: dpfa_dr(nc)
+        real(kind=8), intent(in) :: dra_dl(nc)
+        real(kind=8), intent(in) :: dpg_depsa6(nc)
+    end subroutine couplagpp3d
 end interface 

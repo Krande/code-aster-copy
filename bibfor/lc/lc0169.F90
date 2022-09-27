@@ -20,9 +20,9 @@ subroutine lc0169(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option, &
                   sigp, vip,  typmod, &
-                   dsidep, codret)
+                  dsidep, codret)
 implicit none
-#include "asterfort/cfluendo3d_ba.h"
+#include "asterfort/cfluendo3d.h"
 
 !
 ! person_in_charge: etienne.grimal at edf.fr
@@ -41,8 +41,7 @@ implicit none
     character(len=*) :: fami
     real(kind=8), intent(in) :: carcri(*)
 !
-!
-    call cfluendo3d_ba(fami, kpg, ksp, ndim, imate,&
+    call cfluendo3d(fami, kpg, ksp, ndim, imate,&
                 compor, carcri, instam, instap, epsm,&
                 deps, sigm, vim, option,&
                 sigp, vip, typmod,&
