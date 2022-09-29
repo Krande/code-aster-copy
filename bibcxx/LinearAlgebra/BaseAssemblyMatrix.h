@@ -147,6 +147,16 @@ class BaseAssemblyMatrix : public DataStructure {
     bool isMPIFull();
 
     /**
+     * @brief Get the size of the matrix
+     * @param local [bool] local or global size
+     */
+    VectorLong size(const bool local=true) const {
+        if (!_dofNum) raiseAsterError("Sizes not available");
+        ASTERINTEGER shape = _dofNum->getNumberOfDofs(local);
+        return VectorLong(2, shape);
+    };
+
+    /**
      * @brief Get the internal DOFNumbering
      * @return Internal DOFNumbering
      */
@@ -177,7 +187,17 @@ class BaseAssemblyMatrix : public DataStructure {
     /**
      * @brief Set new values
      */
-    virtual void setValues( const VectorLong idx, const VectorLong jdx, const VectorReal values ) {
+    virtual void setValues( const VectorLong& idx, const VectorLong& jdx, 
+                            const VectorReal& values ) {
+        // Template class raises error. It must be specialized in each instanciated class.
+        throw std::runtime_error( "Not implemented" );
+    };
+
+    /**
+     * @brief Scale the matrix using right and left multiplication 
+     * by diagonal matrices stored as vectors
+     */
+    virtual void scale( const VectorReal& lvect, const VectorReal& rvect  ) {
         // Template class raises error. It must be specialized in each instanciated class.
         throw std::runtime_error( "Not implemented" );
     };

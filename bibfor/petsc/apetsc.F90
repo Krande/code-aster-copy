@@ -259,7 +259,7 @@ use elg_module
         endif
 !
 !        -- elimination des ddls (affe_char_cine)
-        ASSERT(refa(3).ne.'ELIMF')
+!        ASSERT(refa(3).ne.'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(nomat_courant, 'ELIMF')
         ASSERT(refa(3).ne.'ELIML')
 

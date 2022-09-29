@@ -106,6 +106,13 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Returns:
                 int: number of element in the field
             )" )
+        .def( "scale", &FieldOnNodesReal::scale, R"(
+            Scale in-place the field by a diagonal matrix stored as an array
+
+            Arguments:
+                vect (float): diagonal matrix stored as an array
+            )",
+              py::arg( "vect" )  )
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(
             Set values of the field
@@ -180,6 +187,13 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Returns:
                 int: number of components
             )" )
+        .def( "scale", &FieldOnNodesComplex::scale, R"(
+            Scale in-place the field by a diagonal matrix stored as an array
+
+            Arguments:
+                vect (float): diagonal matrix stored as an array
+            )",
+              py::arg( "vect" )  )
         .def( "dot", &FieldOnNodesComplex::dot, R"(
             Return the dot product of two complex fields
 

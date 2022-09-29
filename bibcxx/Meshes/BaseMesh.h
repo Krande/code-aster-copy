@@ -339,6 +339,19 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
+    /**
+     * @brief Get the mapping between local and global numbering of nodes
+     * @return JeveuxVector of the indirection
+     */
+    virtual const JeveuxVectorLong getLocalToGlobalMapping() const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    /**
+     * @brief Build the mesh
+     * @return true if success
+     */
     bool build();
 };
 

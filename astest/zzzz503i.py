@@ -1,0 +1,114 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as N
+import code_aster
+from code_aster.Commands import *
+from code_aster import MPI
+
+code_aster.init("--test")
+
+import petsc4py
+
+test = code_aster.TestCase()
+
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+
+mesh=LIRE_MAILLAGE(FORMAT='MED')
+model=AFFE_MODELE(MAILLAGE=mesh,
+               AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='D_PLAN'),
+               DISTRIBUTION=_F(METHODE='SOUS_DOMAINE',NB_SOUS_DOMAINE=2),
+)
+
+material=DEFI_MATERIAU(ELAS=_F(E=100., NU=0.3))
+mat_field=AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT='OUI',  MATER=material))
+
+dirichlet=AFFE_CHAR_MECA(MODELE=model, DDL_IMPO= _F(GROUP_MA='Encast', DX=1.0 , DY=2.0))
+
+phys_pb = code_aster.PhysicalProblem(model, mat_field)
+phys_pb.addLoad(dirichlet)
+
+# Numbering of equations
+phys_pb.computeDOFNumbering()
+
+# Create behaviour
+phys_pb.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"),))
+
+# Create discrete problem
+disc_comp = code_aster.DiscreteComputation(phys_pb)
+
+# Build matrices
+matr_elem = disc_comp.elasticStiffnessMatrix()
+matr_elem_dual = disc_comp.dualStiffnessMatrix()
+
+matrAsse = code_aster.AssemblyMatrixDisplacementReal()
+matrAsse.addElementaryMatrix(matr_elem)
+matrAsse.addElementaryMatrix(matr_elem_dual)
+matrAsse.setDOFNumbering(phys_pb.getDOFNumbering())
+matrAsse.assemble()
+
+
+# ------------------------------------
+# tests in local numbering
+numeDDL = phys_pb.getDOFNumbering()
+physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
+test.assertListEqual(physicalRows, [2, 3, 8, 9, 12, 13, 14, 15, 18, 19, 24, 25, 28, 29, 30, 31])
+multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
+test.assertListEqual(multipliersRows, [0, 1, 4, 5, 6, 7, 10, 11, 16, 17, 20, 21, 22, 23, 26, 27])
+test.assertTrue(numeDDL.useLagrangeMultipliers())
+test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
+test.assertEqual(numeDDL.getComponents(), ['DX', 'DY', 'LAGR'])
+test.assertEqual(numeDDL.getComponentsAssociatedToNode(0, local=True), ['DX', 'DY'])
+test.assertEqual(numeDDL.getNodeAssociatedToRow(0, local=True), 0)
+test.assertFalse(numeDDL.isRowAssociatedToPhysical(0, local=True))
+test.assertEqual(numeDDL.getNumberOfDofs(local=True), 32)
+test.assertEqual(numeDDL.getNumberOfDofs(local=False), 32)
+test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
+
+# TODO A compléter après correction de issue32247
+# ------------------------------------
+# tests in global numbering
+"""
+physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=False)
+test.assertListEqual(physicalRows,  [numeDDL.localToGlobalRow(d)
+                                     for d in [i*2+j for i in range(mesh.getNumberOfNodes())
+                                     for j in range(2)]])
+test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], 
+                                     [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank])
+
+"""
+from code_aster.LinearAlgebra import MatrixScaler
+from code_aster.Utilities import logger
+logger.setLevel(2)
+
+S=MatrixScaler.MatrixScaler()
+nt = petsc4py.PETSc.NormType.NORM_INFINITY
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1196.5811965825433)
+
+S.computeScaling(matrAsse)
+S.scaleMatrix(matrAsse)
+
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 0.9249361189217928)
+
+logger.setLevel(0)
+
+test.printSummary()
+
+
+FIN()

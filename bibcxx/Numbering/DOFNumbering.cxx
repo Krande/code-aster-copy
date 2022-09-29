@@ -102,13 +102,18 @@ std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
         throw std::runtime_error( "Invalid row index" );
     JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
     descriptor->updateValuePointer();
-    const ASTERINTEGER cmpId = abs( ( *descriptor )[2 * row + 1] );
+    ASTERINTEGER cmpId = ( *descriptor )[2 * row + 1];
+    const bool isLagrange(cmpId<=0);
     if ( cmpId == 0 )
-        return " "; // Lagrange multiplier of a MPC - no component
+        return "LAGR:MPC"; // Lagrange multiplier associated to MPC
+    cmpId = abs(cmpId);
     JeveuxChar8 cmpName( " " );
     CALLO_NUMEDDL_GET_COMPONENT_NAME( getName(), &cmpId, cmpName );
 
-    return cmpName.rstrip();
+    if (isLagrange)
+        return "LAGR:" + cmpName.rstrip(); // Lagrange multiplier associated to Dirichlet BC
+
+    return cmpName.rstrip(); // Physical DoF
 };
 
 ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,

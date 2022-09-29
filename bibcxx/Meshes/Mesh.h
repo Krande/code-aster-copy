@@ -135,6 +135,7 @@ class Mesh : public BaseMesh {
      * @return retourne true si tout est ok
      */
     bool readGmshFile( const std::string &fileName );
+
 };
 
 /**

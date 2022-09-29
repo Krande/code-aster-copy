@@ -129,8 +129,8 @@ class ExtendedFieldOnNodesReal:
         indir = {}
         for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
             if not dofNumbering.isRowAssociatedToPhysical(row):
-                dof = dofNumbering.getComponentAssociatedToRow(row)
-                if dof != "":
+                dof = dofNumbering.getComponentAssociatedToRow(row).split(":")[-1]
+                if dof != "MPC":
                     node = dofNumbering.getNodeAssociatedToRow(row)
                     # there may be 2 Lagrange multipliers per constraint
                     indir.setdefault((node, dof), []).append(row)

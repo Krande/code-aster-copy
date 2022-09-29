@@ -32,6 +32,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Numbering/BaseDOFNumbering.h"
+#include <unordered_map>
 
 /**
  * @class ParallelDOFNumbering
@@ -58,11 +59,31 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
          */
         const JeveuxVectorLong getLocalToGlobal() const { return _localToGlobal; }
 
+        /**
+         * @brief Returns the vector of the rank owning the local dof number
+         */
+        const JeveuxVectorLong getLocalToRank() const { return _localToRank; }
+
         friend class ParallelDOFNumbering;
     };
 
     /** @brief Objet '.NUME' */
     GlobalEquationNumberingPtr _globalNumbering;
+
+
+     std::unordered_map<ASTERINTEGER, ASTERINTEGER> _global2localMap ;
+
+    /**
+     * @brief Build the mapping from global to local numbering of the dof
+     */
+     void _buildGlobal2LocalMap() {
+       getLocalToGlobalMapping()->updateValuePointer();
+       ASTERINTEGER nloc = getLocalToGlobalMapping()->size();
+
+       _global2localMap.reserve(nloc);
+       for (auto j = 0; j < nloc; j++)
+         _global2localMap[(*getLocalToGlobalMapping())[j]] = j;
+     };
 
   public:
     /**
@@ -179,6 +200,11 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const;
 
     /**
+     * @brief Get Rows Associated to all Ghost Dof
+     */
+    VectorLong getGhostRows( const bool local = false ) const;
+
+    /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
     VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const;
@@ -187,6 +213,26 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * @brief Get Assigned Components
      */
     VectorString getComponents() const;
+
+    /**
+     * @brief Get the mapping between local ang global numbering of the Dof
+     */
+    const JeveuxVectorLong getLocalToGlobalMapping() const;
+
+    /**
+     * @brief Return the local number of a global Dof
+     * @return Return the local number if the row if present on the subdomain ; otherwise 
+     * raise an exception
+     */
+    const ASTERINTEGER globalToLocalRow(const ASTERINTEGER) const;
+
+    /**
+     * @brief Return the global number of a local Dof
+     * @return Return the global number if the row if present on the subdomain ; otherwise 
+     * raise an exception
+     */
+    const ASTERINTEGER localToGlobalRow(const ASTERINTEGER);
+
 };
 
 /**

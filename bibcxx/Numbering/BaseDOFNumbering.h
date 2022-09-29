@@ -222,6 +222,14 @@ class BaseDOFNumbering : public DataStructure {
             return JeveuxVectorLong( "RIEN" );
         };
 
+        /**
+         * @brief Returns the vector of the rank owning the local dof number
+         */
+        virtual const JeveuxVectorLong getLocalToRank() const {
+            throw std::runtime_error( "Vector LocalToRank doesn't exist in sequential" );
+            return JeveuxVectorLong( "RIEN" );
+        };
+
         friend class BaseDOFNumbering;
         friend class DOFNumbering;
         friend class ParallelDOFNumbering;
@@ -264,6 +272,10 @@ class BaseDOFNumbering : public DataStructure {
          * @brief Returns the vector of global to local numbering
          */
         const JeveuxVectorLong getGlobalToLocal() const { return _globalToLocal; }
+        /**
+         * @brief Returns the vector of the rank owning the local dof number
+         */
+        const JeveuxVectorLong getLocalToRank() const { return _localToRank; }
 
         friend class BaseDOFNumbering;
         friend class DOFNumbering;
@@ -403,6 +415,11 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Get The total number of Dofs
      */
     virtual ASTERINTEGER getNumberOfDofs() const { AS_ABORT( "Not allowed" ); };
+
+    /**
+     * @brief Get The total number of Dofs
+     */
+    virtual ASTERINTEGER getNumberOfDofs(const bool local) const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief get the Row index Associated To the Component of a Node

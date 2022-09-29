@@ -132,10 +132,10 @@ Returns the component name associated to a dof index.
 
 - If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
   condition, the name of the component which is constrained by the multiplier is
-  returned.
+  returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
 
 - If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
-  implying several DOF, a blank string ' ' is returned (since no component can be
+  (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
   identified).
 
 Arguments:

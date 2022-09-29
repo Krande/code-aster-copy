@@ -164,8 +164,17 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     /**
      * @brief Set new values
      */
-    void setValues( const VectorLong idx, const VectorLong jdx,
-                    const std::vector< ValueType > values ) {
+    void setValues( const VectorLong& idx, const VectorLong& jdx,
+                    const std::vector< ValueType >& values ) {
+        // Template class raises error. It must be specialized in each instanciated class.
+        throw std::runtime_error( "Not implemented" );
+    };
+
+    /**
+     * @brief Scale the matrix using right and left multiplication 
+     * by diagonal matrices stored as vectors
+     */
+    void scale( const std::vector< ValueType >& lvect, const std::vector< ValueType >& rvect  ) {
         // Template class raises error. It must be specialized in each instanciated class.
         throw std::runtime_error( "Not implemented" );
     };
@@ -315,9 +324,12 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
 
 /** @typedef Definition d'une matrice assemblee de double */
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong idx,
-                                                             const VectorLong jdx,
-                                                             const VectorReal values );
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong& idx,
+                                                             const VectorLong& jdx,
+                                                             const VectorReal& values );
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::scale( const VectorReal& lvect,
+                                                             const VectorReal& rvect );
 typedef AssemblyMatrix< ASTERDOUBLE, Displacement > AssemblyMatrixDisplacementReal;
 
 /** @typedef Definition d'une matrice assemblee de complexe */
@@ -326,15 +338,16 @@ typedef AssemblyMatrix< ASTERCOMPLEX, Displacement > AssemblyMatrixDisplacementC
 
 /** @typedef Definition d'une matrice assemblee de double temperature */
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong idx,
-                                                            const VectorLong jdx,
-                                                            const VectorReal values );
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong& idx,
+                                                            const VectorLong& jdx,
+                                                            const VectorReal& values );
 typedef AssemblyMatrix< ASTERDOUBLE, Temperature > AssemblyMatrixTemperatureReal;
 
 /** @typedef Definition d'une matrice assemblee de double pression */
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong idx, const VectorLong jdx,
-                                                         const VectorReal values );
+void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong& idx, 
+                                                         const VectorLong& jdx,
+                                                         const VectorReal& values );
 typedef AssemblyMatrix< ASTERDOUBLE, Pressure > AssemblyMatrixPressureReal;
 
 /** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX temperature */

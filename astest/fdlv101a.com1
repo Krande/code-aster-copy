@@ -28,7 +28,7 @@ test = code_aster.TestCase()
 
 test.assertEqual( NUSTR.getComponents(), ['DX', 'DY', 'LAGR'] )
 for row in NUSTR.getRowsAssociatedToLagrangeMultipliers():
-   test.assertEqual( NUSTR.getComponentAssociatedToRow(row), 'DY' )
+   test.assertEqual( NUSTR.getComponentAssociatedToRow(row), 'LAGR:DY' )
    test.assertFalse( NUSTR.isRowAssociatedToPhysical(row) )
 for row in NUSTR.getRowsAssociatedToPhysicalDofs():
    test.assertTrue( NUSTR.getComponentAssociatedToRow(row) in ['DX','DY'])

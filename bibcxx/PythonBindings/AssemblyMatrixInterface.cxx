@@ -71,7 +71,23 @@ Arguments:
     values (list[float]): List of the values.
         )" )
         // -----------------------------------------------------------------------------------------
+        .def( "scale", &AssemblyMatrixDisplacementReal::scale, R"(
+Scale the matrix in place using right and left multiplication by diagonal matrices stored as vectors
+
+Arguments:
+    lvect (list[float]): List of the values.
+    rvect (list[float]): List of the values.
+        )" )
+        // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixDisplacementReal::defineSolver )
+        // -----------------------------------------------------------------------------------------
+        .def( "size", &AssemblyMatrixDisplacementReal::size , R"(
+Get the size of the matrix
+
+Arguments:
+    local (bool) local or global size
+        )",
+              py::arg( "local" ) = true )
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixDisplacementReal::duplicate )
         // -----------------------------------------------------------------------------------------
@@ -112,7 +128,6 @@ Arguments:
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixDisplacementComplex::setValues, R"(
 Erase the assembly matrix and set new values in it.
 
@@ -125,6 +140,7 @@ Arguments:
     jdx (list[int]): List of the column indices.
     values (list[float]): List of the values.
         )" )
+        // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixDisplacementComplex::defineSolver )
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixDisplacementComplex::duplicate )
@@ -175,7 +191,23 @@ Arguments:
     values (list[float]): List of the values.
         )" )
         // -----------------------------------------------------------------------------------------
+        .def( "scale", &AssemblyMatrixTemperatureReal::scale, R"(
+Scale the matrix in place using right and left multiplication by diagonal matrices stored as vectors
+
+Arguments:
+    lvect (list[float]): List of the values.
+    rvect (list[float]): List of the values.
+        )" )
+        // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixTemperatureReal::defineSolver )
+        // -----------------------------------------------------------------------------------------
+        .def( "size", &AssemblyMatrixTemperatureReal::size , R"(
+Get the size of the matrix
+
+Arguments:
+    local (bool) local or global size
+        )",
+              py::arg( "local" ) = true )
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixTemperatureReal::duplicate )
         // -----------------------------------------------------------------------------------------

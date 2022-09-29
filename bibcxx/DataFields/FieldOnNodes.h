@@ -293,6 +293,20 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     }
 
     /**
+     * @brief Scale a vector by a diagonal matrix stored as a vector
+     * @return Updated field
+     */
+    FieldOnNodes< ValueType > & scale( const VectorReal& vect ) {
+        _values->updateValuePointer();
+        if ( _values->size()!=vect.size() )
+            raiseAsterError( "Field and vector have incompatible shapes" );
+        for(std::size_t i = 0; i < vect.size(); ++i) {
+            (*_values)[i] = (*_values)[i] * vect[i];
+        }
+        return *this;
+    };
+
+    /**
      * @brief PlusEqual overloading
      * @return Updated field
      */

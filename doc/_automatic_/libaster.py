@@ -1404,10 +1404,10 @@ class DOFNumbering(BaseDOFNumbering):
         
         - If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
           condition, the name of the component which is constrained by the multiplier is
-          returned.
+          returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
         
         - If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
-          implying several DOF, a blank string ' ' is returned (since no component can be
+          (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
           identified).
         
         Arguments:
@@ -11013,11 +11013,21 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         """
     
     def getComponentAssociatedToRow(self, row, local= False):
-        """Returns the components name associated to a dof index.
+        """Returns the component name associated to a dof index.
+        
+        - If the row is associated to a physical DOF, the name of the component is returned.
+        
+        - If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+          condition, the name of the component which is constrained by the multiplier is
+          returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
+        
+        - If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+          (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
+          identified).
         
         Arguments:
             node (int): Index of the node.
-            local (bool): local or parallel request
+            local (bool): row in local or global numbering
         
         Returns:
             str: component names.

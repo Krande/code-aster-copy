@@ -67,17 +67,13 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: iprem, k, l, nglo, kdeb, jnequ, ierror
-    integer ::  kptsc, ibid
-    integer :: np
-    real(kind=8) :: r8, rbid
+    integer :: k, nglo, ierror
+    integer ::  ibid
+    real(kind=8) :: rbid
 !
-    logical :: bool
     character(len=24), dimension(:), pointer :: slvk  => null()
     character(len=24), pointer :: refa(:) => null()
-    character(len=19) :: solvbd, matas, vcine, kbid
-    character(len=14) :: nu
-    character(len=1) :: rouc
+    character(len=19) :: solvbd, matas
 !
 !----------------------------------------------------------------
 !
@@ -96,6 +92,10 @@ use petsc_data_module
     call jeveuo(solvbd//'.SLVK', 'L', vk24=slvk)
     slvk(2)='SANS'
 
+!   -- Effacement si déjà factorisée
+    call jeveuo(matas//'.REFA', 'E', vk24=refa)
+    refa(8) = ' '
+
 !   -- Conversion de matass vers petsc
     call apetsc('PRERES', solvbd, matas, [0.d0], ' ',&
                 0, ibid, ierror )
@@ -111,7 +111,6 @@ use petsc_data_module
     call detrsd('SOLVEUR', solvbd)
     iret = 0
 
-999 continue
     call jedema()
 #else
     petscMatz = 0

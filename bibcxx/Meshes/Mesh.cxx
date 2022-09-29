@@ -116,7 +116,7 @@ VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,
 
     CALL_JEDEMA();
     return VectorLong( nodes.begin(), nodes.end() );
-};
+}
 
 VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const ASTERINTEGER ) const {
     return getNodesFromCells( this->getCells( name ) );
@@ -140,4 +140,4 @@ bool Mesh::isQuadratic() const {
     CALL_JEDEMA();
 
     return false;
-};
+}

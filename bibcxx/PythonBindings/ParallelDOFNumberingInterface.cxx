@@ -49,6 +49,7 @@ Single Lagrange multipliers are used for BC or MPC.
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
+        // ---------------------------------------------------------------------
         .def( "getNodeAssociatedToRow", &ParallelDOFNumbering::getNodeAssociatedToRow,
               R"(
 Returns the node index associated to a dof index.
@@ -118,12 +119,6 @@ Returns:
     int: indexes of the Lagrange multipliers dof.
         )",
               py::arg( "local" ) = false )
-        .def( "getComponents", &ParallelDOFNumbering::getComponents, R"(
-Returns all the component names assigned in the numbering.
-
-Returns:
-    str: component names.
-        )" )
         // ---------------------------------------------------------------------
         .def( "getComponents", &ParallelDOFNumbering::getComponents, R"(
 Returns all the component names assigned in the numbering.
@@ -134,11 +129,21 @@ Returns:
         // ---------------------------------------------------------------------
         .def( "getComponentAssociatedToRow", &ParallelDOFNumbering::getComponentAssociatedToRow,
               R"(
- Returns the components name associated to a dof index.
+Returns the component name associated to a dof index.
+
+- If the row is associated to a physical DOF, the name of the component is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the component which is constrained by the multiplier is
+  returned, precedeed by 'LAGR:', e.g. 'LAGR:DX'.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  (MPC) implying several DOF, 'LAGR:MPC' is returned (since no component can be
+  identified).
 
 Arguments:
     node (int): Index of the node.
-    local (bool): local or parallel request
+    local (bool): row in local or global numbering
 
 Returns:
     str: component names.
@@ -168,7 +173,43 @@ Arguments:
 Returns:
     int: number of DOFs.
         )",
-              py::arg( "local" ) = false );
+              py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
+        .def( "getGhostRows", &ParallelDOFNumbering::getGhostRows,
+              R"(
+Returns the indexes of the ghost DOFs.
+
+Arguments:
+    local (bool): local or global numbering
+
+Returns:
+    int: indexes of the ghost DOFs.
+        )",
+              py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
+        .def( "localToGlobalRow", &ParallelDOFNumbering::localToGlobalRow,
+              R"(
+Returns the global number of a local DOF.
+
+Arguments:
+    loc (int): local DOF number
+
+Returns:
+    int: global number of the DOF.
+        )",
+              py::arg( "loc" ) )
+        // ---------------------------------------------------------------------
+        .def( "globalToLocalRow", &ParallelDOFNumbering::globalToLocalRow,
+              R"(
+Returns the local number of a global DOF.
+
+Arguments:
+    glob (int): global DOF number
+
+Returns:
+    int: local number of the DOF.
+        )",
+              py::arg( "glob" ) );
 };
 
 #endif /* ASTER_HAVE_MPI */

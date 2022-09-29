@@ -84,6 +84,11 @@ extern void DEFSPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, const char *, 
                       const ASTERINTEGER *, const ASTERINTEGER *, const ASTERINTEGER *,
                       const ASTERDOUBLE * );
 
+#define CALLO_MATR_ASSE_SCALE( a, b, c )                                                \
+    CALLOPP( CALLO_MATR_ASSE_SCALE, matr_asse_scale, a, b, c )
+extern void DEFSPP( MATR_ASSE_SCALE, matr_asse_scale, const char *, STRING_SIZE,
+                      const ASTERDOUBLE *, const ASTERDOUBLE * );
+
 #define CALLO_MATR_ASSE_TRANSPOSE( a ) CALLO( MATR_ASSE_TRANSPOSE, matr_asse_transpose, a )
 void DEFS( MATR_ASSE_TRANSPOSE, matr_asse_transpose, const char *, STRING_SIZE );
 

@@ -17,27 +17,30 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Utilities import logger
 import numpy as N
 import code_aster
 from code_aster.Commands import *
 
 code_aster.init("--test")
+import petsc4py
+from code_aster.LinearAlgebra import MatrixScaler
 
 test = code_aster.TestCase()
 
 rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
-MAIL = code_aster.ParallelMesh()
-MAIL.readMedFile("mesh004b/%d.med" % rank, True)
+pMesh = code_aster.ParallelMesh()
+pMesh.readMedFile("mesh004b/%d.med" % rank, True)
 # MAIL.debugPrint()
 
 MATER = DEFI_MATERIAU(THER=_F(LAMBDA=6.E9, RHO_CP=1.))
 
-affectMat = code_aster.MaterialField(MAIL)
+affectMat = code_aster.MaterialField(pMesh)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 
-MODT = AFFE_MODELE(MAILLAGE=MAIL,
+MODT = AFFE_MODELE(MAILLAGE=pMesh,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='THERMIQUE',
                            MODELISATION='PLAN',),
@@ -64,7 +67,7 @@ matr_elem = CALC_MATR_ELEM(OPTION='RIGI_THER',
                            CHAM_MATER=affectMat,
                            )
 
-monSolver = code_aster.PetscSolver( RENUM="SANS", PRE_COND="SANS" )
+monSolver = code_aster.PetscSolver(RENUM="SANS", PRE_COND="SANS")
 
 numeDDL = code_aster.ParallelDOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)
@@ -91,10 +94,10 @@ matrAsse = FACTORISER(reuse=matrAsse,
                       )
 
 resu = RESOUDRE(MATR=matrAsse,
-                  CHAM_NO=vecass,
-                  CHAM_CINE=vcine,
-                  ALGORITHME='CR',
-                  RESI_RELA=1E-9,)
+                CHAM_NO=vecass,
+                CHAM_CINE=vcine,
+                ALGORITHME='CR',
+                RESI_RELA=1E-9,)
 
 TEST_RESU(
     CHAM_NO=_F(
@@ -119,29 +122,75 @@ TEST_RESU(
     ))
 
 
+# tests in local numbering
+physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
+test.assertListEqual(physicalRows, list(
+    range(len(pMesh.getNodes(localNumbering=True)))))
+multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
+test.assertListEqual(multipliersRows, [])
+test.assertFalse(numeDDL.useLagrangeMultipliers())
+test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
+test.assertEqual(numeDDL.getComponents(), ['TEMP'])
+test.assertEqual(numeDDL.getComponentsAssociatedToNode(
+    0, local=True), ['TEMP'])
+test.assertEqual(numeDDL.getNodeAssociatedToRow(0, local=True), 0)
+test.assertTrue(numeDDL.isRowAssociatedToPhysical(0, local=True))
+test.assertEqual(numeDDL.getNumberOfDofs(local=True),
+                 len(pMesh.getNodes(localNumbering=True)))
+test.assertEqual(numeDDL.getNumberOfDofs(local=False), 8)
+test.assertEqual(numeDDL.getPhysicalQuantity(), 'TEMP_R')
+ghostRows = numeDDL.getGhostRows(local=True)
+test.assertListEqual(ghostRows, [[3, 5], [2, 4]][rank])
 
-try:
-    import petsc4py
-    A = matrAsse.toPetsc()
-except (ImportError, NotImplementedError):
-    pass
-else:
-    v = petsc4py.PETSc.Viewer()
-    A.view(v)
-    v = petsc4py.PETSc.Viewer().createASCII("test.txt")
-    v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
 
-    rank = A.getComm().getRank()
-    print('rank=', rank)
-    rs, re = A.getOwnershipRange()
-    ce, _ = A.getSize()
-    rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
-    cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
-    rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
-    cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
-    (S,) = A.createSubMatrices(rows, cols)
-    v = petsc4py.PETSc.Viewer().createASCII("mesh004c_rank"+str(rank)+".out", comm=S.getComm())
-    S.view(v)
+# tests in global numbering
+physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=False)
+test.assertListEqual(physicalRows,  [numeDDL.localToGlobalRow(
+    i) for i in range(pMesh.getNumberOfNodes())])
+test.assertListEqual(
+    physicalRows,  [[0, 1, 2, 6, 3, 7], [4, 5, 2, 6, 3, 7]][rank])
+
+ghostRows = numeDDL.getGhostRows(local=False)
+test.assertListEqual(ghostRows, [numeDDL.localToGlobalRow(i)
+                     for i in [[3, 5], [2, 4]][rank]])
+test.assertListEqual(ghostRows, [[6, 7], [2, 3]][rank])
+
+
+# Some petsc4py manipulations
+pA = matrAsse.toPetsc()
+
+v = petsc4py.PETSc.Viewer()
+pA.view(v)
+v = petsc4py.PETSc.Viewer().createASCII("test.txt")
+v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
+
+rank = pA.getComm().getRank()
+rs, re = pA.getOwnershipRange()
+ce, _ = pA.getSize()
+rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
+cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
+rows = petsc4py.PETSc.IS().createGeneral(rows, comm=pA.getComm())
+cols = petsc4py.PETSc.IS().createGeneral(cols, comm=pA.getComm())
+(S,) = pA.createSubMatrices(rows, cols)
+v = petsc4py.PETSc.Viewer().createASCII(
+    "mesh004c_rank"+str(rank)+".out", comm=S.getComm())
+S.view(v)
+
+# Scaling validation
+pA_unscaled = matrAsse.toPetsc()
+pA_unscaled.view()
+S = MatrixScaler.MatrixScaler()
+logger.setLevel(2)
+S.computeScaling(matrAsse)
+S.scaleMatrix(matrAsse)
+print(matrAsse.getDirichletBCDOFs())
+pA_scaled = matrAsse.toPetsc()
+pA_scaled.view()
+nt = petsc4py.PETSc.NormType.NORM_INFINITY
+test.assertAlmostEqual(pA_unscaled.norm(nt), 24666666666.69744)
+test.assertAlmostEqual(pA_scaled.norm(nt), 1.)
+
+logger.setLevel(0)
 
 test.printSummary()
 

@@ -19,36 +19,39 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`DOFNumbering` --- DOFNumbering definition
+:py:class:`ParallelDOFNumbering` --- Parallel DOFNumbering definition
 *****************************************
 """
 
-from libaster import DOFNumbering
+from ..Objects import ParallelDOFNumbering
 
 from ..Utilities import injector
 import functools
 
-@injector(DOFNumbering)
-class ExtendedDOFNumbering:
+@injector(ParallelDOFNumbering)
+class ExtendedParallelDOFNumbering:
     cata_sdj = "SD.sd_nume_ddl.sd_nume_ddl"
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a
-        DOFNumbering object during unpickling.
+        ParallelDOFNumbering object during unpickling.
         """
         return (self.getName(), self.getModel(),
                 self.getListOfLoads(), self.getDescription())
 
-    @property
     @functools.lru_cache()
     def __Components2Rows(self, local=True):
         """Build the dictionary from the components to the rows.
         """
-        ndofs = self.getNumberOfDofs()
+        ndofs = self.getNumberOfDofs(local=True)  # iterate on the dof of the subdomain
         dict_dof = {}
         for row in range(ndofs):
-            component = self.getComponentAssociatedToRow(int(row))
-            dict_dof.setdefault(component, []).append(row)
+            component = self.getComponentAssociatedToRow(int(row), local=True)
+            if local:
+                dict_dof.setdefault(component, []).append(row)
+            else:
+                glob_row = self.localToGlobalRow(row)
+                dict_dof.setdefault(component, []).append(glob_row)
         return dict_dof
 
     def getRowsAssociatedToComponent(self, component:str, local=True):
@@ -60,9 +63,9 @@ class ExtendedDOFNumbering:
         available_components = self.getComponents()
         if component not in available_components:
             raise ValueError(f"Component {component} is not in {available_components}")
-        return self.__Components2Rows[component]
+        return self.__Components2Rows(local)[component]
 
     def getDictComponentsToRows(self, local=True):
         """Return the dictionary with the available components as keys and the rows as values.
         """
-        return self.__Components2Rows
+        return self.__Components2Rows(local)

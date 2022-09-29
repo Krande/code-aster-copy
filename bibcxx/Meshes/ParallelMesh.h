@@ -64,6 +64,17 @@ class ParallelMesh : public BaseMesh {
     JeveuxVectorLong _listOfOppositeDomain;
     /** @brief List of joints */
     std::map< ASTERINTEGER, std::pair< JeveuxVectorLong, JeveuxVectorLong > > _joints;
+    /** @brief Global to local node number */
+    std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
+
+    void _buildGlobal2LocalMap() {
+        getLocalToGlobalMapping()->updateValuePointer();
+        ASTERINTEGER nloc = getLocalToGlobalMapping()->size();
+
+        _global2localMap.reserve( nloc );
+        for ( auto j = 0; j < nloc; j++ )
+            _global2localMap[( *getLocalToGlobalMapping() )[j]] = j;
+    };
 
   public:
     /**
@@ -151,6 +162,12 @@ class ParallelMesh : public BaseMesh {
     VectorLong getOuterCells() const;
 
     /**
+     * @brief Get the mapping between local and global numbering of nodes
+     * @return JeveuxVector of the indirection
+     */
+    const JeveuxVectorLong getLocalToGlobalMapping() const {return _globalNumbering;};
+
+    /**
      * @brief Returns the nodes indexes of a group of cells
      * @param name name of group of cells
      * @param local node id in local or global numbering
@@ -174,6 +191,13 @@ class ParallelMesh : public BaseMesh {
      * @return retourne true si tout est ok
      */
     bool readPartitionedMedFile( const std::string &fileName );
+
+    /**
+     * @brief Get the local number of a node from its local number
+     * @return Return the local number if the node if present on the subdomain ; 
+     * otherwise raise an exception
+     */
+    const ASTERINTEGER globalToLocalNodeId(const ASTERINTEGER);
 
     bool updateGlobalGroupOfNodes( void );
 

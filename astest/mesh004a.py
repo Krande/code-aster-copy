@@ -92,11 +92,7 @@ matrAsse.debugPrint(rank + 30)
 retour = matrAsse.getDOFNumbering()
 test.assertEqual(retour.isParallel(), True)
 
-test.assertRaises(RuntimeError, lambda: list(numeDDL.getRowsAssociatedToPhysicalDofs()))
-test.assertRaises(RuntimeError, lambda: list(numeDDL.getRowsAssociatedToLagrangeMultipliers()))
-test.assertRaises(RuntimeError, lambda: list(numeDDL.getComponentsAssociatedToNode(0)))
-test.assertRaises(RuntimeError, lambda: list(numeDDL.getNodeAssociatedToRow(0)))
-
+# tests in local numbering
 physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
 test.assertListEqual(physicalRows, list(range(3 * len(pMesh.getNodes(localNumbering=True)))))
 multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
