@@ -24,6 +24,7 @@ subroutine PCHPDDMDumpAuxiliaryMat(pc, is, aux)
     !
 use aster_petsc_module
 implicit none
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
     !----------------------------------------------------------------
     !
@@ -53,10 +54,7 @@ implicit none
     PetscErrorCode :: ierr
     PetscBool      :: set
     !----------------------------------------------------------------
-    call MPI_Comm_size(PETSC_COMM_WORLD, size, ierr)
-    ASSERT(ierr.eq.0)
-    call MPI_Comm_rank(PETSC_COMM_WORLD, rank, ierr)
-    ASSERT(ierr.eq.0)
+    call asmpi_info(comm=PETSC_COMM_WORLD, rank=rank, size=size)
     dir="/tmp"
     call PetscOptionsGetString(PETSC_NULL_OPTIONS,PETSC_NULL_CHARACTER,"-dump_dir",dir,set,ierr)
     ASSERT(ierr.eq.0)
