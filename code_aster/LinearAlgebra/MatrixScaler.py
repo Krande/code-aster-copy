@@ -38,7 +38,7 @@ from ..Objects import (
     FieldOnNodesReal,
 )
 from ..Utilities import logger
-
+from ..Supervis import AsterError
 
 def _busymscalinf(A:Mat, niter, atol):
     """
@@ -190,8 +190,13 @@ class MatrixScaler:
             lvect[row] = nmat_lvect[norm_dof2row[dof]]
             rvect[row] = nmat_rvect[norm_dof2row[dof]]
         # We do *not* scale the dof that have Dirichlet BC
-        # if nmbrg.hasDirichletBC():
-        if any(A.getDirichletBCDOFs()):
+        # TODO fix the dirty hack after solution of issue32296
+        has_DirichletBC = False
+        try:
+            has_DirichletBC = any(A.getDirichletBCDOFs())
+        except AsterError:
+            pass
+        if has_DirichletBC:
             lvect[np.where(np.array(A.getDirichletBCDOFs())==1)]=1.
             rvect[np.where(np.array(A.getDirichletBCDOFs())==1)]=1.
 

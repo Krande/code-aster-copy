@@ -54,8 +54,8 @@ phys_pb.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="ELAS", TOUT="OUI"),)
 disc_comp = code_aster.DiscreteComputation(phys_pb)
 
 # Build matrices
-matr_elem = disc_comp.elasticStiffnessMatrix()
-matr_elem_dual = disc_comp.dualStiffnessMatrix()
+matr_elem = disc_comp.getElasticStiffnessMatrix()
+matr_elem_dual = disc_comp.getDualStiffnessMatrix()
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.addElementaryMatrix(matr_elem)
@@ -84,27 +84,31 @@ test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
 # TODO A compléter après correction de issue32247
 # ------------------------------------
 # tests in global numbering
-"""
-physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=False)
-test.assertListEqual(physicalRows,  [numeDDL.localToGlobalRow(d)
-                                     for d in [i*2+j for i in range(mesh.getNumberOfNodes())
-                                     for j in range(2)]])
-test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], 
-                                     [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank])
+# physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=False)
+# test.assertListEqual(physicalRows,  [numeDDL.localToGlobalRow(d)
+#                                      for d in [i*2+j for i in range(mesh.getNumberOfNodes())
+#                                      for j in range(2)]])
+# test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], 
+#                                      [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank])
 
-"""
+
 from code_aster.LinearAlgebra import MatrixScaler
 from code_aster.Utilities import logger
+import numpy as np
+from scipy.linalg import norm
+
 logger.setLevel(2)
 
 S=MatrixScaler.MatrixScaler()
 nt = petsc4py.PETSc.NormType.NORM_INFINITY
-test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1196.5811965825433)
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1527.7777777794063)
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.EXTR_MATR(), np.inf))
 
 S.computeScaling(matrAsse)
 S.scaleMatrix(matrAsse)
 
-test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 0.9249361189217928)
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1.0977480819609067)
+test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.EXTR_MATR(), np.inf))
 
 logger.setLevel(0)
 

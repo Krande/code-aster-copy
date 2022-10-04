@@ -178,12 +178,12 @@ S.view(v)
 
 # Scaling validation
 pA_unscaled = matrAsse.toPetsc()
-pA_unscaled.view()
+
 S = MatrixScaler.MatrixScaler()
 logger.setLevel(2)
 S.computeScaling(matrAsse)
 S.scaleMatrix(matrAsse)
-print(matrAsse.getDirichletBCDOFs())
+
 pA_scaled = matrAsse.toPetsc()
 pA_scaled.view()
 nt = petsc4py.PETSc.NormType.NORM_INFINITY
