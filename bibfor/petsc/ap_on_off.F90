@@ -21,10 +21,6 @@ subroutine ap_on_off(action, option)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-!
-! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=C1308
-!
 use aster_petsc_module
 use petsc_data_module
 use elg_module
@@ -112,7 +108,6 @@ use elg_module
         iprem = 1
     endif
 
-999 continue
 #else
     call utmess('F', 'FERMETUR_10')
 #endif

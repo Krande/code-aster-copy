@@ -37,9 +37,6 @@ module augmented_lagrangian_context_type
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=C1308
-
 use aster_petsc_module
 use matrasse_module
 use saddle_point_context_type

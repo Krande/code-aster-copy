@@ -37,7 +37,7 @@ module saddle_point_context_type
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! aslint:disable=W1003,C1308
+! aslint:disable=W1003
 !
 use aster_petsc_module
 use matrasse_module
