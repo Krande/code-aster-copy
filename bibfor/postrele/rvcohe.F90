@@ -155,17 +155,14 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 ngrn=0
                 call jeexin(nmaich//'.GROUPENO', iexi)
                 if (iexi .eq. 0) then
-                    call utmess('A', 'POSTRELE_50', sk=nomgrn, si=i)
                     ier = 0
                 else
                     call jelira(nmaich//'.GROUPENO', 'NUTIOC', ngrn)
                     if (ngrn .eq. 0) then
-                        call utmess('A', 'POSTRELE_50', sk=nomgrn, si=i)
                         ier = 0
                     else
                         call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
                         if (n1 .eq. 0) then
-                            call utmess('A', 'POSTRELE_50', sk=nomgrn, si=i)
                             ier = 0
                         endif
                     endif

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,11 +21,12 @@
 
 from ..Objects import Table
 from ..Supervis import ExecuteCommand
+from ..Messages import UTMESS
 
 
 class PostReleveT(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "POST_RELEVE_T"
 
     def create_result(self, keywords):
@@ -35,6 +36,25 @@ class PostReleveT(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Table()
+
+    def exec_(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        for i, act in enumerate(keywords["ACTION"]):
+            mesh = (act.get("RESULTAT") or act.get("CHAM_GD")).getMesh()
+            if not mesh or not mesh.isParallel():
+                break
+            for grp in act.get("GROUP_MA", []):
+                if not mesh.hasGroupOfCells(grp):
+                    UTMESS("F", "POSTRELE_58", valk=grp, vali=i + 1)
+            for grp in act.get("GROUP_NO", []):
+                if not mesh.hasGroupOfNodes(grp):
+                    UTMESS("F", "POSTRELE_50", valk=grp, vali=i + 1)
+
+        super().exec_(keywords)
 
     def add_dependencies(self, keywords):
         """Do not keep any references to original objects.
