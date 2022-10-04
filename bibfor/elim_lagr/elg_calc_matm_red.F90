@@ -23,8 +23,6 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 use aster_petsc_module
 use elg_data_module
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
-! aslint:disable=W1003
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"

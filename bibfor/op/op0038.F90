@@ -24,7 +24,6 @@ implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
-#include "asterc/utalrm.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
