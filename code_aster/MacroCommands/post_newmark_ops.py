@@ -205,6 +205,7 @@ def post_newmark_ops(self,**args):
                   MAILLAGE = __mail_1,
                   CREA_GROUP_MA = _F(NOM = 'RUPTURE',
                                      UNION = args['GROUP_MA_GLIS'],),)
+
     else :
       __mail_1 = DEFI_GROUP(reuse = __mail_1,
                   MAILLAGE = __mail_1,
@@ -212,6 +213,11 @@ def post_newmark_ops(self,**args):
                                      TYPE_MAILLE='2D',
                                      TOUT='OUI',),)
 
+    __mail_1 = DEFI_GROUP(reuse = __mail_1,
+          MAILLAGE = __mail_1,
+          CREA_GROUP_NO = _F(NOM = 'RUPTURE',
+                             GROUP_MA = 'RUPTURE',),)
+    
     if args['GROUP_MA_LIGNE'] is not None :
 
       ma_ligne = args['GROUP_MA_LIGNE']
@@ -224,7 +230,7 @@ def post_newmark_ops(self,**args):
       if yaseg2 == 'OUI':
 
         seg.append('LIGNE_2')
-        __mail_2 = DEFI_GROUP(reuse = __mail_1,
+        __mail_1 = DEFI_GROUP(reuse = __mail_1,
                     MAILLAGE = __mail_1,
                     CREA_GROUP_MA = _F(NOM = 'LIGNE_2',
                                        TYPE_MAILLE=('SEG2'),
@@ -257,13 +263,14 @@ def post_newmark_ops(self,**args):
     # Orientation des mailles surfaciques
     __mail_1 = MODI_MAILLAGE(reuse        = __mail_1,
                        MAILLAGE     = __mail_1,
-                       ORIE_PEAU =_F(GROUP_MA_PEAU=('LIGNE_',),),);
+                       ORIE_PEAU =_F(GROUP_MA_PEAU=('LIGNE_',),
+                                    GROUP_MA_INTERNE=('RUPTURE')),);
 
     ##### ON RESTREINT LE MAILLAGE PATCH A LA ZONE COMMUNE AVEC LE MAILLAGE DU
     ##### RESULTAT A CONSIDERER
     __mail_2 = CREA_MAILLAGE(MAILLAGE=__mail_1,#INFO=2,
                              RESTREINT=_F(GROUP_MA=('LIGNE_','DOMAIN_','RUPTURE'),
-                                          GROUP_NO=('LIGNE_','DOMAIN_',),
+                                          GROUP_NO=('LIGNE_','DOMAIN_','RUPTURE'),
                             ),)
 
 
@@ -271,7 +278,7 @@ def post_newmark_ops(self,**args):
                              RESTREINT=_F(GROUP_MA=('LIGNE_',),
                                           GROUP_NO=('LIGNE_',),
                             ),)
-    IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
+    #IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
 
 ###############################################################################
 ####
@@ -279,200 +286,347 @@ def post_newmark_ops(self,**args):
 ####
 ###############################################################################
 
-  if args['RESULTAT_PESANTEUR'] is not None :
+  if TYPE=="MAILLAGE":
 
-    #### ASSERT A CREER SI MODELE D'ORIGINE PLUS COMPLEXE QUE D_PLAN
-    ##### MODELE SUR LE MAILLAGE PATCH
-    __MODST= AFFE_MODELE(MAILLAGE = __mail_2,
-                  AFFE  = (_F(TOUT='OUI',
-                              PHENOMENE    = 'MECANIQUE',
-                              MODELISATION = 'D_PLAN',),),
-                  VERI_JACOBIEN = 'NON',);
+    if args['RESULTAT_PESANTEUR'] is not None :
 
-    __MODL= AFFE_MODELE(MAILLAGE = __mail_L,
-                  AFFE  = (_F(TOUT='OUI',
-                              PHENOMENE    = 'MECANIQUE',
-                              MODELISATION = 'D_PLAN',),),
-                  VERI_JACOBIEN = 'NON',);
+      #### ASSERT A CREER SI MODELE D'ORIGINE PLUS COMPLEXE QUE D_PLAN
+      ##### MODELE SUR LE MAILLAGE PATCH
+      __MODST= AFFE_MODELE(MAILLAGE = __mail_2,
+                    AFFE  = (_F(TOUT='OUI',
+                                PHENOMENE    = 'MECANIQUE',
+                                MODELISATION = 'D_PLAN',),),
+                    VERI_JACOBIEN = 'NON',);
 
-    # CREATION D'UN MATERIAU BIDON POUR CREA_RESU
-    __MATBID = DEFI_MATERIAU(ELAS=_F(E = 1.,NU = 0.3,RHO = 1. ))
+      __MODL= AFFE_MODELE(MAILLAGE = __mail_L,
+                    AFFE  = (_F(TOUT='OUI',
+                                PHENOMENE    = 'MECANIQUE',
+                                MODELISATION = 'D_PLAN',),),
+                    VERI_JACOBIEN = 'NON',);
 
-    __MATST = AFFE_MATERIAU(MAILLAGE = __mail_2,
-                            AFFE=_F(MATER=__MATBID,TOUT='OUI',),
+      # CREATION D'UN MATERIAU BIDON POUR CREA_RESU
+      __MATBID = DEFI_MATERIAU(ELAS=_F(E = 1.,NU = 0.3,RHO = 1. ))
+
+      __MATST = AFFE_MATERIAU(MAILLAGE = __mail_2,
+                              AFFE=_F(MATER=__MATBID,TOUT='OUI',),
+                              )
+
+
+      # OBTENTION DU CHAMP DES CONTRAINTES STATIQUE SUR LE MODELE AUXILAIRE
+      # CREATION D'UN RESULTAT AVEC MATERIAU BIDON POUR CALCUL DE SIRO_ELEM
+
+      __instFS = RESULTAT_PESANTEUR.LIST_PARA()['INST'][-1]
+
+      __CSTPGO = CREA_CHAMP(OPERATION = 'EXTR',
+                          NOM_CHAM = 'SIEF_ELGA',
+                          TYPE_CHAM = 'ELGA_SIEF_R',
+                          RESULTAT = RESULTAT_PESANTEUR,
+                          INST = __instFS,
+                          )
+
+      __CSTPGF = PROJ_CHAMP(METHODE='ECLA_PG',
+                     CHAM_GD = __CSTPGO,
+                      MODELE_1 = __modST,
+                      MODELE_2 = __MODST,
+                      CAS_FIGURE='2D',
+                      PROL_ZERO='OUI',
+  #                     DISTANCE_MAX=0.1,
+                     )
+
+      #### CREATION DU RESULTAT STATIQUE  AVEC CHAMP SIEF_ELGA PROJETE SUR LE MAILLAGE PATCH
+      __recoST = CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='DYNA_TRANS',
+                    NOM_CHAM='SIEF_ELGA',
+                    AFFE=(_F(MODELE = __MODST,
+                            CHAM_MATER = __MATST,
+                            CHAM_GD=__CSTPGF,
+                            INST=0.,),),);
+
+      __recoST = CALC_CHAMP(reuse = __recoST,
+               RESULTAT = __recoST,
+               GROUP_MA = 'LIGNE_',
+               MODELE = __MODST,
+               CONTRAINTE = ('SIRO_ELEM',),
+               );
+
+      #### EXTRACTION DES COMPOSANTES DE SIRO_ELEM DU CALCUL STATIQUE
+      __CSIST = CREA_CHAMP(OPERATION = 'EXTR',
+                          NOM_CHAM = 'SIRO_ELEM',
+                          TYPE_CHAM = 'ELEM_SIEF_R',
+                          RESULTAT = __recoST,
+                          NUME_ORDRE = 1,
+                          )
+
+      SIGN_stat = __CSIST.EXTR_COMP('SIG_N',[])
+      SIGTN_stat = __CSIST.EXTR_COMP('SIG_TN',[])
+
+      ##### CHAMPS PHI ET COHESION POUR CALCUL DE STABILITE STATIQUE
+      __chPHNO = PROJ_CHAMP(METHODE='COLLOCATION',
+                     CHAM_GD=args['CHAM_PHI'],
+                     MAILLAGE_1=__mail,
+                     MAILLAGE_2=__mail_2,
+                     PROL_ZERO='OUI',
+  #                     DISTANCE_MAX=0.1,
+                     )
+
+      __chPHEL = CREA_CHAMP(OPERATION = 'DISC',
+                          CHAM_GD  = __chPHNO,
+                          MODELE = __MODST,
+                          TYPE_CHAM = 'ELEM_NEUT_R',
+                          PROL_ZERO='OUI',
+                          )
+
+      __chCONO = PROJ_CHAMP(METHODE='COLLOCATION',
+                     CHAM_GD=args['CHAM_COHESION'],
+                     MAILLAGE_1=__mail,
+                     MAILLAGE_2=__mail_2,
+                     PROL_ZERO='OUI',
+  #                     DISTANCE_MAX=0.1,
+                     )
+
+      __chCOEL = CREA_CHAMP(OPERATION = 'DISC',
+                          CHAM_GD  = __chCONO,
+                          MODELE = __MODST,
+                          TYPE_CHAM = 'ELEM_NEUT_R',
+                          PROL_ZERO='OUI',
+                          #INFO=2,
+                          )
+
+      __chCPEL = CREA_CHAMP(OPERATION ='ASSE',
+                       TYPE_CHAM ='ELEM_NEUT_R',
+                       MODELE    =__MODST,
+                       PROL_ZERO = 'OUI',
+                       ASSE=(_F(GROUP_MA='LIGNE_',
+                               CHAM_GD = __chPHEL,
+                               CUMUL   = 'OUI',
+                               COEF_R  = 1.,),
+                            _F(GROUP_MA='LIGNE_',
+                               CHAM_GD = __chCOEL,
+                               CUMUL   = 'OUI',
+                               COEF_R  = 1.,
+                              ),),
+                        )
+
+      ##### CHAMP DES VALEURS PHI ET COHESION SUR LA LIGNE DE GLISSEMENT
+      __chCPLG = PROJ_CHAMP(METHODE='COLLOCATION',
+                     CHAM_GD=__chCPEL,
+                     MODELE_1=__MODST,
+                     MODELE_2=__MODL,
+                     CAS_FIGURE='1.5D',
+                     PROL_ZERO='OUI',
+                     INFO=2,
+  #                     DISTANCE_MAX=0.1,
+                     )
+
+      ##### CALCUL DU FACTEUR DE SECURITE STATIQUE LOCAL
+
+      __FstS = FORMULE(VALE = 'get_local_FS(SIG_N,SIG_TN,X1,X2)',
+                               NOM_PARA=('SIG_N','SIG_TN','X1','X2'),get_local_FS=get_local_FS)
+
+      __chSTSF = CREA_CHAMP(OPERATION = 'AFFE',
+                            TYPE_CHAM = 'ELEM_NEUT_F',
+                            MODELE = __MODST,
+                            PROL_ZERO='OUI',
+                            AFFE = _F(GROUP_MA = 'LIGNE_',
+                                 NOM_CMP  = 'X1',
+                                 VALE_F   = __FstS,),)
+
+      __chSTSR = CREA_CHAMP(TYPE_CHAM = 'ELEM_NEUT_R',
+                 OPERATION = 'EVAL',
+                 CHAM_F    = __chSTSF,
+                 CHAM_PARA = (__CSIST,__chCPEL),
+                 INFO=1,)
+
+      __chSTSL = PROJ_CHAMP(METHODE='COLLOCATION',
+                     CHAM_GD=__chSTSR,
+                     MODELE_1=__MODST,
+                     MODELE_2=__MODL,
+                     CAS_FIGURE='1.5D',
+                     PROL_ZERO='OUI',
+                     INFO=2,
+  #                     DISTANCE_MAX=0.1,
+                     )
+
+      ####### CALCUL DU FACTEUR DE SECURITE STATIQUE GLOBAL
+
+      phiL = __chCPLG.EXTR_COMP('X1',[])
+      cohesionL = __chCPLG.EXTR_COMP('X2',[])
+
+      available_shear,static_shear = get_static_shear(SIGN_stat.valeurs,
+                                                SIGTN_stat.valeurs,phiL.valeurs,
+                                                cohesionL.valeurs)
+      available_shear_v,static_shear_v = get_static_shear_vector(SIGN_stat.valeurs,
+                                                SIGTN_stat.valeurs,phiL.valeurs,
+                                                cohesionL.valeurs)
+
+      FSp = fac_cercle * available_shear / (static_shear)
+
+      FSpL = []
+      for k in range(len(available_shear_v)):
+        try:
+          FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k] ))
+        except:
+          FSpL.append(0.)
+
+      #### PREPARATION TABLE DU FACTEUR DE SECURITE
+      if args['RESULTAT'] is None :
+        tabini = Table(para=["INST", "FS"],
+                   typ=["R", "R"])
+        if args['RESULTAT'] is None :
+          tabini.append({'INST': 0.0, 'FS': FSp})
+          self.register_result(__chSTSL, args["CHAM_FS"])
+
+        dprod = tabini.dict_CREA_TABLE()
+        tabout = CREA_TABLE(**dprod)
+
+
+################################################################################
+####
+#### CALCUL FACTEUR DE SECURITE EN DYNAMIQUE (uniquement si RESULTAT_PESANTEUR est fourni)
+#### Dans ce cas, il faut qu'une phase statique prélable au calcul dynamique soit
+#### réalisé, afin que les contraintes du résultat dynamique intégrent les
+#### contraintes statiques
+####
+################################################################################
+
+
+  ##### CETTE PARTIE MARCHE UNIQUMENT AVEC MAILLAGE PATCH POUR L'INSTANT
+      if args['RESULTAT'] is not None :
+
+      ### BOUCLE POUR CREATION DU RESULTAT DYNAMIQUE PROJETE DANS LES PG
+      ### DU MODELE AUXILIAIRE (MAILLAGE PATCH)
+
+        __MODYN= AFFE_MODELE(MAILLAGE = __mail_2,
+                    AFFE  = (_F(TOUT='OUI',
+                                PHENOMENE    = 'MECANIQUE',
+                                MODELISATION = 'D_PLAN',),),
+                    VERI_JACOBIEN = 'NON',);
+
+        # CREATION D'UN MATERIAU BIDON POUR CREA_RESU
+        __MATBIDD = DEFI_MATERIAU(ELAS=_F(E = 1.,NU = 0.3,RHO = 1. ))
+
+        __MATDYN = AFFE_MATERIAU(MAILLAGE = __mail_2,
+                                AFFE=_F(MATER=__MATBIDD,TOUT='OUI',),
+                                )
+
+
+        __instSD = RESULTAT.LIST_PARA()['INST']
+
+        __CSDPGI = CREA_CHAMP(OPERATION = 'EXTR',
+                            NOM_CHAM = 'SIEF_ELGA',
+                            TYPE_CHAM = 'ELGA_SIEF_R',
+                            RESULTAT = RESULTAT,
+                            INST = __instSD[0],
                             )
 
-
-    # OBTENTION DU CHAMP DES CONTRAINTES STATIQUE SUR LE MODELE AUXILAIRE
-    # CREATION D'UN RESULTAT AVEC MATERIAU BIDON POUR CALCUL DE SIRO_ELEM
-
-    __instFS = RESULTAT_PESANTEUR.LIST_PARA()['INST'][-1]
-
-    __CSTPGO = CREA_CHAMP(OPERATION = 'EXTR',
-                        NOM_CHAM = 'SIEF_ELGA',
-                        TYPE_CHAM = 'ELGA_SIEF_R',
-                        RESULTAT = RESULTAT_PESANTEUR,
-                        INST = __instFS,
-                        )
-
-    __CSTPGF = PROJ_CHAMP(METHODE='ECLA_PG',
-                   CHAM_GD = __CSTPGO,
-                    MODELE_1 = __modST,
-                    MODELE_2 = __MODST,
-                    CAS_FIGURE='2D',
-                    PROL_ZERO='OUI',
-#                     DISTANCE_MAX=0.1,
-                   )
-
-    #### CREATION DU RESULTAT STATIQUE  AVEC CHAMP SIEF_ELGA PROJETE SUR LE MAILLAGE PATCH
-    __recoST = CREA_RESU(OPERATION='AFFE',
-                  TYPE_RESU='DYNA_TRANS',
-                  NOM_CHAM='SIEF_ELGA',
-                  AFFE=(_F(MODELE = __MODST,
-                          CHAM_MATER = __MATST,
-                          CHAM_GD=__CSTPGF,
-                          INST=0.,),),);
-
-    __recoST = CALC_CHAMP(reuse = __recoST,
-             RESULTAT = __recoST,
-             GROUP_MA = 'LIGNE_',
-             MODELE = __MODST,
-             CONTRAINTE = ('SIRO_ELEM',),
-             );
-
-    #### EXTRACTION DES COMPOSANTES DE SIRO_ELEM DU CALCUL STATIQUE
-    __CSIST = CREA_CHAMP(OPERATION = 'EXTR',
-                        NOM_CHAM = 'SIRO_ELEM',
-                        TYPE_CHAM = 'ELEM_SIEF_R',
-                        RESULTAT = __recoST,
-                        NUME_ORDRE = 1,
-                        )
-
-    SIGN_stat = __CSIST.EXTR_COMP('SIG_N',[])
-    SIGTN_stat = __CSIST.EXTR_COMP('SIG_TN',[])
-
-    ##### CHAMPS PHI ET COHESION POUR CALCUL DE STABILITE STATIQUE
-    __chPHNO = PROJ_CHAMP(METHODE='COLLOCATION',
-                   CHAM_GD=args['CHAM_PHI'],
-                   MAILLAGE_1=__mail,
-                   MAILLAGE_2=__mail_2,
-                   PROL_ZERO='OUI',
-#                     DISTANCE_MAX=0.1,
-                   )
-
-    __chPHEL = CREA_CHAMP(OPERATION = 'DISC',
-                        CHAM_GD  = __chPHNO,
-                        MODELE = __MODST,
-                        TYPE_CHAM = 'ELEM_NEUT_R',
+        __CSDPGF = PROJ_CHAMP(METHODE='ECLA_PG',
+                       CHAM_GD = __CSDPGI,
+                        MODELE_1 = __model,
+                        MODELE_2 = __MODYN,
+                        CAS_FIGURE='2D',
                         PROL_ZERO='OUI',
-                        )
+    #                     DISTANCE_MAX=0.1,
+                       )
+        #### CREATION DU RESULTAT DYNAMIQUE AVEC CHAMP SIEF_ELGA PROJETE SUR LE MAILLAGE PATCH
+        __recoSD = CREA_RESU(OPERATION='AFFE',
+                      TYPE_RESU='DYNA_TRANS',
+                      NOM_CHAM='SIEF_ELGA',
+                      AFFE=(_F(MODELE = __MODYN,
+                              CHAM_MATER = __MATDYN,
+                              CHAM_GD=__CSDPGF,
+                              INST=__instSD[0],),),);
 
-    __chCONO = PROJ_CHAMP(METHODE='COLLOCATION',
-                   CHAM_GD=args['CHAM_COHESION'],
-                   MAILLAGE_1=__mail,
-                   MAILLAGE_2=__mail_2,
-                   PROL_ZERO='OUI',
-#                     DISTANCE_MAX=0.1,
-                   )
+        for inst in __instSD[1:]:
 
-    __chCOEL = CREA_CHAMP(OPERATION = 'DISC',
-                        CHAM_GD  = __chCONO,
-                        MODELE = __MODST,
-                        TYPE_CHAM = 'ELEM_NEUT_R',
-                        PROL_ZERO='OUI',
-                        #INFO=2,
-                        )
+          __CSDPGI = CREA_CHAMP(OPERATION = 'EXTR',
+                            NOM_CHAM = 'SIEF_ELGA',
+                            TYPE_CHAM = 'ELGA_SIEF_R',
+                            RESULTAT = RESULTAT,
+                            INST = inst,
+                            )
 
-    __chCPEL = CREA_CHAMP(OPERATION ='ASSE',
-                     TYPE_CHAM ='ELEM_NEUT_R',
-                     MODELE    =__MODST,
-                     PROL_ZERO = 'OUI',
-                     ASSE=(_F(GROUP_MA='LIGNE_',
-                             CHAM_GD = __chPHEL,
-                             CUMUL   = 'OUI',
-                             COEF_R  = 1.,),
-                          _F(GROUP_MA='LIGNE_',
-                             CHAM_GD = __chCOEL,
-                             CUMUL   = 'OUI',
-                             COEF_R  = 1.,
-                            ),),
-                      )
+          __CSDPGF = PROJ_CHAMP(METHODE='ECLA_PG',
+                           CHAM_GD = __CSDPGI,
+                            MODELE_1 = __model,
+                            MODELE_2 = __MODYN,
+                            CAS_FIGURE='2D',
+                            PROL_ZERO='OUI',
+      #                     DISTANCE_MAX=0.1,
+                           )
 
-    ##### CHAMP DES VALEURS PHI ET COHESION SUR LA LIGNE DE GLISSEMENT
-    __chCPLG = PROJ_CHAMP(METHODE='COLLOCATION',
-                   CHAM_GD=__chCPEL,
-                   MODELE_1=__MODST,
-                   MODELE_2=__MODL,
-                   CAS_FIGURE='1.5D',
-                   PROL_ZERO='OUI',
-                   INFO=2,
-#                     DISTANCE_MAX=0.1,
-                   )
+          __recoSD = CREA_RESU(reuse = __recoSD,
+                      RESULTAT = __recoSD,
+                      OPERATION='AFFE',
+                      TYPE_RESU='DYNA_TRANS',
+                      NOM_CHAM='SIEF_ELGA',
+                      AFFE=(_F(MODELE = __MODYN,
+                              CHAM_MATER = __MATDYN,
+                              CHAM_GD=__CSDPGF,
+                              INST=inst,),),);
 
-    ##### CALCUL DU FACTEUR DE SECURITE STATIQUE LOCAL
+        if args['RESULTAT_PESANTEUR'] is not None :
+        #### CALCUL DES CHAMPS SIRO_ELEM DANS LA LIGNE DE RUPTURE
+        #### UTILISE POUR ESTIMATION DES CONTRAINTES RESISTANTES ET MOBILISEES
 
-    __FstS = FORMULE(VALE = 'get_local_FS(SIG_N,SIG_TN,X1,X2)',
-                             NOM_PARA=('SIG_N','SIG_TN','X1','X2'),get_local_FS=get_local_FS)
+          __recoSD = CALC_CHAMP(reuse = __recoSD,
+                   RESULTAT = __recoSD,
+                   GROUP_MA = 'LIGNE_',
+                   MODELE = __MODYN,
+                   CONTRAINTE = ('SIRO_ELEM',),
+                   );
 
-    __chSTSF = CREA_CHAMP(OPERATION = 'AFFE',
-                          TYPE_CHAM = 'ELEM_NEUT_F',
-                          MODELE = __MODST,
-                          PROL_ZERO='OUI',
-                          AFFE = _F(GROUP_MA = 'LIGNE_',
-                               NOM_CMP  = 'X1',
-                               VALE_F   = __FstS,),)
+        #### TABLE AVEC CONTRAINTES CALCUL DYNAMIQUE DANS LA LIGNE DE RUPTURE DANS LE REPERE LOCAL
+        #### UTILISE POUR CALCUL DE LA CONTRAINTE DE CISAILLEMENT MOBILISEE
 
-    __chSTSR = CREA_CHAMP(TYPE_CHAM = 'ELEM_NEUT_R',
-               OPERATION = 'EVAL',
-               CHAM_F    = __chSTSF,
-               CHAM_PARA = (__CSIST,__chCPEL),
-               INFO=1,)
+          SIGN_dyn = []
+          SIGT_dyn = []
 
-    __chSTSL = PROJ_CHAMP(METHODE='COLLOCATION',
-                   CHAM_GD=__chSTSR,
-                   MODELE_1=__MODST,
-                   MODELE_2=__MODL,
-                   CAS_FIGURE='1.5D',
-                   PROL_ZERO='OUI',
-                   INFO=2,
-#                     DISTANCE_MAX=0.1,
-                   )
+          for inst in __instSD:
 
-    ####### CALCUL DU FACTEUR DE SECURITE STATIQUE GLOBAL
+            #print ("Instant de calcul = "+str(inst))
 
-    phiL = __chCPLG.EXTR_COMP('X1',[])
-    cohesionL = __chCPLG.EXTR_COMP('X2',[])
+            __CSISD = CREA_CHAMP(OPERATION = 'EXTR',
+                                NOM_CHAM = 'SIRO_ELEM',
+                                TYPE_CHAM = 'ELEM_SIEF_R',
+                                RESULTAT = __recoSD,
+                                INST = inst,
+                                )
 
-    available_shear,static_shear = get_static_shear(SIGN_stat.valeurs,
-                                              SIGTN_stat.valeurs,phiL.valeurs,
-                                              cohesionL.valeurs)
-    available_shear_v,static_shear_v = get_static_shear_vector(SIGN_stat.valeurs,
-                                              SIGTN_stat.valeurs,phiL.valeurs,
-                                              cohesionL.valeurs)
+            SIGN_dyna = __CSISD.EXTR_COMP('SIG_N',[])
+            SIGTN_dyna = __CSISD.EXTR_COMP('SIG_TN',[])
 
-    FSp = fac_cercle * available_shear / (static_shear)
+            SIGN_dyn.append(SIGN_dyna)
+            SIGT_dyn.append(SIGTN_dyna)
 
-    FSpL = []
-    for k in range(len(available_shear_v)):
-      try:
-        FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k] ))
-      except:
-        FSpL.append(0.)
+          #### CALCUL DE LA CONTRAINTE DE CISAILLEMENT MOBILISEE DU CALCUL DYNAMIQUE
+          dynamic_shear = get_dynamic_shear(SIGT_dyn,__instSD)
+          dynamic_shear_v = get_dynamic_shear_vector(SIGT_dyn,__instSD)
 
-    #### PREPARATION TABLE DU FACTEUR DE SECURITE
-    if args['RESULTAT'] is None :
-      tabini = Table(para=["INST", "FS"],
-                 typ=["R", "R"])
-      if args['RESULTAT'] is None :
-        tabini.append({'INST': 0.0, 'FS': FSp})
-        self.register_result(__chSTSL, args["CHAM_FS"])
+          ##### CALCUL DU FACTEUR DE SECURITE
 
-      dprod = tabini.dict_CREA_TABLE()
-      tabout = CREA_TABLE(**dprod)
+          FSp = fac_cercle * available_shear / (static_shear - dynamic_shear)
+
+          FSpL = []
+          for k in range(len(available_shear_v)):
+            try:
+              FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k] - dynamic_shear_v[k]))
+            except:
+              FSpL.append(0.)
+
+          tabini = Table(para=["INST", "FS"],
+                           typ=["R", "R"])
+
+          #### PRPARATION TABLE DU FACTEUR DE SECURITE DYNAMIQUE
+          for j in range(len(__instSD)):
+            tabini.append({'INST': __instSD[j], 'FS': FSp[j]})
+
+          dprod = tabini.dict_CREA_TABLE()
+          __TFS = CREA_TABLE(**dprod)
+
 
 ###############################################################################
 ####
-#### CALCUL POUR RESULTAT DYNAMIQUE
+#### CALCUL NEWMARK POUR RESULTAT DYNAMIQUE
 ####
 ###############################################################################
 
@@ -507,12 +661,12 @@ def post_newmark_ops(self,**args):
                 MAILLAGE = __mail,
                 CREA_GROUP_NO = _F( GROUP_MA = ('NGLISSE','GLISSE'),),)
 
-      __mail = DEFI_GROUP(reuse = __mail,
-                MAILLAGE = __mail,
-                CREA_GROUP_NO = _F( NOM = 'LIGNE',
-                                    INTERSEC = ('GLISSE','NGLISSE'),),)
+      # __mail = DEFI_GROUP(reuse = __mail,
+      #           MAILLAGE = __mail,
+      #           CREA_GROUP_NO = _F( NOM = 'LIGNE',
+      #                               INTERSEC = ('GLISSE','NGLISSE'),),)
 
-      #IMPR_RESU(RESU=_F(MAILLAGE = __mail,),FORMAT='MED',UNITE=23)
+      #IMPR_RESU(RESU=_F(MAILLAGE = __mail,),FORMAT='MED',UNITE=22)
 
     ### Si maillage de la zone de rupture fourni, il faut pouvoir trouver les mailles
     elif TYPE == 'MAILLAGE':
@@ -536,9 +690,14 @@ def post_newmark_ops(self,**args):
                                        INTERSEC = ('GLISSE_','ALL'),),)
 
       __mail = DEFI_GROUP(reuse = __mail,
+              MAILLAGE = __mail,
+              CREA_GROUP_MA = _F(NOM = 'NGLISSE',
+                                 TYPE_MAILLE = '2D',
+                                 DIFFE = ('ALL','GLISSE'),),)
+
+      __mail = DEFI_GROUP(reuse = __mail,
                 MAILLAGE = __mail,
-                CREA_GROUP_NO = _F( GROUP_MA = 'GLISSE')
-              )
+                CREA_GROUP_NO = _F( GROUP_MA = ('NGLISSE','GLISSE'),),)
 
   #### Calcul de la masse de la zone qui glisse à partir du GROUP_MA 'GLISSE'
 
@@ -548,8 +707,6 @@ def post_newmark_ops(self,**args):
     masse = __tabmas['MASSE',1]
     cdgx = __tabmas['CDG_X',1]
     cdgy = __tabmas['CDG_Y',1]
-
-
 ##############################################################################
 ##   METHODE : CALCUL DE L'ACCELERATION MOYENNE A PARTIR DE LA RESULTANTE
 ##             LE LONG DE LA SURFACE DE GLISSEMENT
@@ -559,207 +716,70 @@ def post_newmark_ops(self,**args):
 
   ##### Calcul de la résultante sur la ligne de glissement du calcul dynamique
 
+    # if TYPE == 'CERCLE':
+
     __RESU3 = CALC_CHAMP(
-                 RESULTAT = RESULTAT,
-                 MODELE = __model,
-                 CHAM_MATER = __ch_mat,
-                 FORCE = ('FORC_NODA'),
-                 GROUP_MA = ('GLISSE'),
-                 );
+         RESULTAT = RESULTAT,
+         MODELE = __model,
+         CHAM_MATER = __ch_mat,
+         FORCE = ('FORC_NODA'),
+         GROUP_MA = ('GLISSE'),
+         );
 
-    if TYPE == 'CERCLE':
+    __tabFLI = POST_RELEVE_T(ACTION=_F(INTITULE = 'RESU',
+                              OPERATION='EXTRACTION',
+                              GROUP_NO='NGLISSE',
+                              RESULTANTE=('DX','DY'),
+                              RESULTAT=__RESU3,
+                              NOM_CHAM='FORC_NODA',),)
 
-      __tabFLI = POST_RELEVE_T(ACTION=_F(INTITULE = 'RESU',
-                                OPERATION='EXTRACTION',
-                                GROUP_NO='NGLISSE',
-                                RESULTANTE=('DX','DY'),
-                                RESULTAT=__RESU3,
-                                NOM_CHAM='FORC_NODA',),)
-
-    elif TYPE == 'MAILLAGE':
+#     elif TYPE == 'MAILLAGE':
 
 
-### CHAMP FORC_NODA POUR CALCUL RESULTANTE
-      __recou = PROJ_CHAMP(METHODE='COLLOCATION',
-                     RESULTAT=__RESU3,
-                     MAILLAGE_1=__mail,
-                     MAILLAGE_2=__mail_2,
-                     TYPE_CHAM='NOEU',
-                     NOM_CHAM=('FORC_NODA'),
-                     PROL_ZERO='OUI',
-#                     DISTANCE_MAX=0.1,
-                     )
+#       # ASSEMBLAGE(MODELE    =__MODYN,
+#       #            CHAM_MATER=MATDYN,
+#       #            CHARGE    =(CHARGX,ONDELATE),
+#       #            NUME_DDL  =CO('NUMEROTA'),
+#       #            MATR_ASSE=(_F(MATRICE=CO('MATRRIGI'),
+#       #                          OPTION='RIGI_MECA',),
+#       #                       _F(MATRICE=CO('MATRMASS'),
+#       #                          OPTION='MASS_MECA',),
+#       #                       _F(MATRICE=CO('MATRAMOR'),
+#       #                          OPTION='AMOR_MECA',),),)
 
-#      IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=__RESU3),UNITE=24)
-#      IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=__recou),UNITE=25)
+#       __recoSD = CALC_CHAMP(reuse = __recoSD,
+#            RESULTAT = __recoSD,
+#            GROUP_MA = 'RUPTURE',
+#            MODELE = __MODYN,
+#            CHAM_MATER = __MATDYN,
+#            FORCE = ('FORC_NODA',),
+#          );
 
-    #### TABLE AVEC RESULTANTE CALCUL DYNAMIQUE DANS LE REPERE GLOBAL
-    #### UTILISE POUR CALCUL DE L'ACCELERATION MOYENNE
-      __tabitm = POST_RELEVE_T(ACTION=_F(
-                                        INTITULE = 'RESU',
-                                        OPERATION = 'EXTRACTION',
-                                        GROUP_NO = 'LIGNE_',
-                                        RESULTANTE   = ('DX','DY'),
-                                        RESULTAT = __recou,
-                                        NOM_CHAM = 'FORC_NODA',),
-                                        )
+# #      IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=__RESU3),UNITE=24)
+# #      IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=__recou),UNITE=25)
 
-
-      dictab = __tabitm.EXTR_TABLE()
-      if 'RESU' in dictab.para:
-          del dictab['RESU']
-      if 'NOEUD' in dictab.para:
-          del dictab['NOEUD']
-      dprod = dictab.dict_CREA_TABLE()
-
-      __tabFLI = CREA_TABLE(**dprod)
-
-    #    IMPR_TABLE(TABLE = __tabFLI,UNITE=10)
+#     #### TABLE AVEC RESULTANTE CALCUL DYNAMIQUE DANS LE REPERE GLOBAL
+#     #### UTILISE POUR CALCUL DE L'ACCELERATION MOYENNE
+#       __tabitm = POST_RELEVE_T(ACTION=_F(
+#                                         INTITULE = 'RESU',
+#                                         OPERATION = 'EXTRACTION',
+#                                         GROUP_NO = 'RUPTURE',
+#                                         RESULTANTE   = ('DX','DY'),
+#                                         RESULTAT = __recoSD,
+#                                         NOM_CHAM = 'FORC_NODA',),
+#                                         )
 
 
-################################################################################
-####
-#### CALCUL FACTEUR DE SECURITE EN DYNAMIQUE (uniquemnt si RESULTAT_PESANTEUR est fourni)
-#### Dans ce cas, il faut qu'une phase statique prélable au calcul dynamique soit
-#### réalisé, afin que les contraintes du résultat dynamique intégrent les
-#### contraintes statiques
-####
-################################################################################
+#       dictab = __tabitm.EXTR_TABLE()
+#       if 'RESU' in dictab.para:
+#           del dictab['RESU']
+#       if 'NOEUD' in dictab.para:
+#           del dictab['NOEUD']
+#       dprod = dictab.dict_CREA_TABLE()
 
+#       __tabFLI = CREA_TABLE(**dprod)
 
-##### CETTE PARTIE MARCHE UNIQUMENT AVEC MAILLAGE PATCH POUR L'INSTANT
-    if args['RESULTAT_PESANTEUR'] is not None :
-
-    ### BOUCLE POUR CREATION DU RESULTAT DYNAMIQUE PROJETE DANS LES PG
-    ### DU MODELE AUXILIAIRE (MAILLAGE PATCH)
-
-      __MODYN= AFFE_MODELE(MAILLAGE = __mail_2,
-                  AFFE  = (_F(TOUT='OUI',
-                              PHENOMENE    = 'MECANIQUE',
-                              MODELISATION = 'D_PLAN',),),
-                  VERI_JACOBIEN = 'NON',);
-
-      # CREATION D'UN MATERIAU BIDON POUR CREA_RESU
-      __MATBIDD = DEFI_MATERIAU(ELAS=_F(E = 1.,NU = 0.3,RHO = 1. ))
-
-      __MATDYN = AFFE_MATERIAU(MAILLAGE = __mail_2,
-                              AFFE=_F(MATER=__MATBIDD,TOUT='OUI',),
-                              )
-
-
-      __instSD = RESULTAT.LIST_PARA()['INST']
-
-      __CSDPGI = CREA_CHAMP(OPERATION = 'EXTR',
-                          NOM_CHAM = 'SIEF_ELGA',
-                          TYPE_CHAM = 'ELGA_SIEF_R',
-                          RESULTAT = RESULTAT,
-                          INST = __instSD[0],
-                          )
-
-      __CSDPGF = PROJ_CHAMP(METHODE='ECLA_PG',
-                     CHAM_GD = __CSDPGI,
-                      MODELE_1 = __model,
-                      MODELE_2 = __MODYN,
-                      CAS_FIGURE='2D',
-                      PROL_ZERO='OUI',
-#                     DISTANCE_MAX=0.1,
-                     )
-      #### CREATION DU RESULTAT DYNAMIQUE AVEC CHAMP SIEF_ELGA PROJETE SUR LE MAILLAGE PATCH
-      __recoSD = CREA_RESU(OPERATION='AFFE',
-                    TYPE_RESU='DYNA_TRANS',
-                    NOM_CHAM='SIEF_ELGA',
-                    AFFE=(_F(MODELE = __MODYN,
-                            CHAM_MATER = __MATDYN,
-                            CHAM_GD=__CSDPGF,
-                            INST=__instSD[0],),),);
-
-      for inst in __instSD[1:]:
-
-        __CSDPGI = CREA_CHAMP(OPERATION = 'EXTR',
-                          NOM_CHAM = 'SIEF_ELGA',
-                          TYPE_CHAM = 'ELGA_SIEF_R',
-                          RESULTAT = RESULTAT,
-                          INST = inst,
-                          )
-
-        __CSDPGF = PROJ_CHAMP(METHODE='ECLA_PG',
-                         CHAM_GD = __CSDPGI,
-                          MODELE_1 = __model,
-                          MODELE_2 = __MODYN,
-                          CAS_FIGURE='2D',
-                          PROL_ZERO='OUI',
-    #                     DISTANCE_MAX=0.1,
-                         )
-
-        __recoSD = CREA_RESU(reuse = __recoSD,
-                    RESULTAT = __recoSD,
-                    OPERATION='AFFE',
-                    TYPE_RESU='DYNA_TRANS',
-                    NOM_CHAM='SIEF_ELGA',
-                    AFFE=(_F(MODELE = __MODYN,
-                            CHAM_MATER = __MATDYN,
-                            CHAM_GD=__CSDPGF,
-                            INST=inst,),),);
-
-    #### CALCUL DES CHAMPS SIRO_ELEM DANS LA LIGNE DE RUPTURE
-    #### UTILISE POUR ESTIMATION DES CONTRAINTES RESISTANTES ET MOBILISEES
-
-      __recoSD = CALC_CHAMP(reuse = __recoSD,
-               RESULTAT = __recoSD,
-               GROUP_MA = 'LIGNE_',
-               MODELE = __MODYN,
-               CONTRAINTE = ('SIRO_ELEM',),
-               );
-
-
-    #### TABLE AVEC CONTRAINTES CALCUL DYNAMIQUE DANS LA LIGNE DE RUPTURE DANS LE REPERE LOCAL
-    #### UTILISE POUR CALCUL DE LA CONTRAINTE DE CISAILLEMENT MOBILISEE
-
-      SIGN_dyn = []
-      SIGT_dyn = []
-
-      for inst in __instSD:
-
-        #print ("Instant de calcul = "+str(inst))
-
-        __CSISD = CREA_CHAMP(OPERATION = 'EXTR',
-                            NOM_CHAM = 'SIRO_ELEM',
-                            TYPE_CHAM = 'ELEM_SIEF_R',
-                            RESULTAT = __recoSD,
-                            INST = inst,
-                            )
-
-        SIGN_dyna = __CSISD.EXTR_COMP('SIG_N',[])
-        SIGTN_dyna = __CSISD.EXTR_COMP('SIG_TN',[])
-
-        SIGN_dyn.append(SIGN_dyna)
-        SIGT_dyn.append(SIGTN_dyna)
-
-      #### CALCUL DE LA CONTRAINTE DE CISAILLEMENT MOBILISEE DU CALCUL DYNAMIQUE
-      dynamic_shear = get_dynamic_shear(SIGT_dyn,__instSD)
-      dynamic_shear_v = get_dynamic_shear_vector(SIGT_dyn,__instSD)
-
-      ##### CALCUL DU FACTEUR DE SECURITE
-
-      FSp = fac_cercle * available_shear / (static_shear - dynamic_shear)
-
-      FSpL = []
-      for k in range(len(available_shear_v)):
-        try:
-          FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k] - dynamic_shear_v[k]))
-        except:
-          FSpL.append(0.)
-
-      tabini = Table(para=["INST", "FS"],
-                       typ=["R", "R"])
-
-      #### PRPARATION TABLE DU FACTEUR DE SECURITE DYNAMIQUE
-      for j in range(len(__instSD)):
-        tabini.append({'INST': __instSD[j], 'FS': FSp[j]})
-
-      dprod = tabini.dict_CREA_TABLE()
-      __TFS = CREA_TABLE(**dprod)
-
+#     IMPR_TABLE(TABLE = __tabFLI,UNITE=12)
 
 ################################################################################
 ####
@@ -891,11 +911,11 @@ def post_newmark_ops(self,**args):
                   DETR_GROUP_MA = _F(NOM = ('GLISSE','GLISSE_'),),
                   DETR_GROUP_NO = _F(NOM = ('GLISSE',),),
                 )
-    if TYPE == 'CERCLE' :
-        __mail = DEFI_GROUP(reuse = __mail,
+        
+    __mail = DEFI_GROUP(reuse = __mail,
                   MAILLAGE = __mail,
                   DETR_GROUP_MA = _F(NOM = ('NGLISSE'),),
-                  DETR_GROUP_NO = _F(NOM = ('NGLISSE','LIGNE'),),),
+                  DETR_GROUP_NO = _F(NOM = ('NGLISSE'),),),
 
   if TYPE == 'MAILLAGE':
     __mail = DEFI_GROUP(reuse = __mail,
