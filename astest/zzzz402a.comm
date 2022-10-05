@@ -291,7 +291,8 @@ TAB_RESU = POST_NEWMARK(RESULTAT=DYNA_V,
                  CENTRE_Y=posy,
                  GROUP_MA_CALC=Tout)
 
-IMPR_TABLE(UNITE=38,TABLE=TAB_RESU)
+# IMPR_TABLE(UNITE=38,TABLE=TAB_RESU)
+# IMPR_RESU(RESU=_F(MAILLAGE = MA,),FORMAT='MED',UNITE=22)
 
 
 TEST_TABLE(  TABLE=TAB_RESU,
@@ -327,8 +328,6 @@ TAB_RES2 = POST_NEWMARK(RESULTAT=DYNA_V,
                  GROUP_MA_LIGNE = 'LIGNE',
                  GROUP_MA_CALC=Tout)
 
-IMPR_TABLE(UNITE=38,TABLE=TAB_RES2)
-
 TEST_TABLE(  TABLE=TAB_RES2,
               NOM_PARA='DEPL',
               FILTRE=_F(NOM_PARA='INST',
@@ -336,8 +335,8 @@ TEST_TABLE(  TABLE=TAB_RES2,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0002922274669936611,
-              VALE_CALC=0.0002922274669936611,
+              VALE_REFE=0.00039809480592392865,
+              VALE_CALC=0.00039809480592392865,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -349,11 +348,12 @@ TEST_TABLE(  TABLE=TAB_RES2,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0015886699716850462,
-              VALE_CALC=0.0015886699716850462,
+              VALE_REFE=0.00043886872700467616,
+              VALE_CALC=0.00043886872700467616,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
+
 
 TAB_RES3 = POST_NEWMARK(RESULTAT=DYNA_V,
                  KY=ky,
@@ -369,8 +369,8 @@ TEST_TABLE(  TABLE=TAB_RES3,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0002922274669936611,
-              VALE_CALC=0.0002922274669936611,
+              VALE_REFE=0.00039809480592392865,
+              VALE_CALC=0.00039809480592392865,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -382,8 +382,8 @@ TEST_TABLE(  TABLE=TAB_RES3,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0015886699716850462,
-              VALE_CALC=0.0015886699716850462,
+              VALE_REFE=0.00043886872700467616,
+              VALE_CALC=0.00043886872700467616,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
