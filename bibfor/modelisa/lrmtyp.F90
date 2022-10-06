@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,10 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                                          'SE2QU9  ','SE3TR3  ','SE3TR6  ',&
                                                          'SE3QU4  ','SE3QU8  ','SE3QU9  ',&
                                                          'H20H20  ','P15P15  ','T10T10  ',&
-                                                         'HEXA9   ','PENTA7  '/)
+                                                         'HEXA9   ','PENTA7  ','TR3SE2  ',&
+                                                         'TR3SE3  ','TR6SE2  ','TR6SE3  ',&
+                                                         'QU4SE2  ','QU4SE3  ','QU8SE2  ',&
+                                                         'QU8SE3  ','QU9SE2  ','QU9SE3  ' /)
     integer, parameter :: nummed(MT_NTYMAX) = (/                                        &
                                 MED_POINT1       , MED_SEG2         , MED_UNDEF_GEOTYPE,&
                                 MED_SEG3         , MED_UNDEF_GEOTYPE, MED_SEG4         ,&
@@ -119,7 +122,10 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                 MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                 MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
                                 MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE /)
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE /)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -658,6 +658,35 @@ PE7.addLocation('LOB7', 7)
 PE7.addLocation('FPG1', 1)
 PENTA7.addElrefe(PE7)
 
+#------------------------------------------------------------
+TR3SE2 = MeshType(nbno=5, dim=2, code='TS1')
+
+#------------------------------------------------------------
+TR3SE3 = MeshType(nbno=6, dim=2, code='TS2')
+
+#------------------------------------------------------------
+TR6SE2 = MeshType(nbno=8, dim=2, code='TS3')
+
+#------------------------------------------------------------
+TR6SE3 = MeshType(nbno=9, dim=2, code='TS4')
+
+#------------------------------------------------------------
+QU4SE2 = MeshType(nbno=6, dim=2, code='QS1')
+
+#------------------------------------------------------------
+QU4SE3 = MeshType(nbno=7, dim=2, code='QS2')
+
+#------------------------------------------------------------
+QU8SE2 = MeshType(nbno=10, dim=2, code='QS3')
+
+#------------------------------------------------------------
+QU8SE3 = MeshType(nbno=11, dim=2, code='QS4')
+
+#------------------------------------------------------------
+QU9SE2 = MeshType(nbno=11, dim=2, code='QS5')
+
+#------------------------------------------------------------
+QU9SE3 = MeshType(nbno=12, dim=2, code='QS6')
 
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)

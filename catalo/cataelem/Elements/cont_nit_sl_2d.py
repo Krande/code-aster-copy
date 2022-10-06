@@ -36,8 +36,19 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
                                  ('EN1', ('DX', 'DY',)),))
 
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),)
+                           )
+
+ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_F',)),)
+                           )
 
 # ------------------------------------------------------------
+
+
 class CNS22D(Element):
     """
       THE CNS22D CLASS ELEMENT : SEG2/SEG2
@@ -56,7 +67,9 @@ class CNS22D(Element):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
     )
 
@@ -81,6 +94,8 @@ class CNS32D(CNS22D):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
     )

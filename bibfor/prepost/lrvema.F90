@@ -23,6 +23,7 @@ use as_med_module, only: as_med_open
 implicit none
 !
 #include "asterf_types.h"
+#include "asterf_med.h"
 #include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterfort/as_mfdfin.h"
@@ -99,32 +100,39 @@ character(len=64) :: nochmd
                                                          'SE2QU9  ','SE3TR3  ','SE3TR6  ',&
                                                          'SE3QU4  ','SE3QU8  ','SE3QU9  ',&
                                                          'H20H20  ','P15P15  ','T10T10  ',&
-                                                         'HEXA9   ','PENTA7  '/)
-    integer, parameter :: nummed(MT_NTYMAX) = (/1  , 102, 0  ,&
-                                                103, 0  , 104,&
-                                                203, 0  , 206,&
-                                                0  , 207, 204,&
-                                                0  , 208, 0  ,&
-                                                209, 0  , 304,&
-                                                310, 306, 315,&
-                                                318, 305, 313,&
-                                                308, 320, 327,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0 /)
+                                                         'HEXA9   ','PENTA7  ','TR3SE2  ',&
+                                                         'TR3SE3  ','TR6SE2  ','TR6SE3  ',&
+                                                         'QU4SE2  ','QU4SE3  ','QU8SE2  ',&
+                                                         'QU8SE3  ','QU9SE2  ','QU9SE3  ' /)
+    integer, parameter :: nummed(MT_NTYMAX) = (/                                        &
+                            MED_POINT1       , MED_SEG2         , MED_UNDEF_GEOTYPE,&
+                            MED_SEG3         , MED_UNDEF_GEOTYPE, MED_SEG4         ,&
+                            MED_TRIA3        , MED_UNDEF_GEOTYPE, MED_TRIA6        ,&
+                            MED_UNDEF_GEOTYPE, MED_TRIA7        , MED_QUAD4        ,&
+                            MED_UNDEF_GEOTYPE, MED_QUAD8        , MED_UNDEF_GEOTYPE,&
+                            MED_QUAD9        , MED_UNDEF_GEOTYPE, MED_TETRA4       ,&
+                            MED_TETRA10      , MED_PENTA6       , MED_PENTA15      ,&
+                            MED_PENTA18      , MED_PYRA5        , MED_PYRA13       ,&
+                            MED_HEXA8        , MED_HEXA20       , MED_HEXA27       ,&
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE /)
 !
 ! --------------------------------------------------------------------------------------------------
 !

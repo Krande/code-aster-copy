@@ -21,7 +21,7 @@
 ! Maximum number of domain in HPC
 #define MT_DOMMAX  1679616
 ! Total number of cell types
-#define MT_NTYMAX  74
+#define MT_NTYMAX  84
 ! Total number of real (physical) cell types
 #define MT_NPHMAX  25
 ! Maximum number of nodes of all cells

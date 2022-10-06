@@ -38,8 +38,19 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
                                  ('EN1', ('DX', 'DY', 'DZ',)),))
 
+ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_C',)),)
+                           )
+
+ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
+                           components=(
+                               ('EN1', ('COEF_F',)),)
+                           )
 
 # ------------------------------------------------------------
+
+
 class CNT33D(Element):
     """
       THE CNT33D CLASS ELEMENT :
@@ -58,7 +69,9 @@ class CNT33D(Element):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
 
     )
@@ -84,7 +97,9 @@ class CNT63D(CNT33D):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
 
     )
@@ -110,7 +125,9 @@ class CNQ93D(CNT33D):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
 
     )
@@ -135,7 +152,9 @@ class CNQ83D(CNT33D):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
 
     )
@@ -160,7 +179,9 @@ class CNQ43D(CNT33D):
     calculs = (
 
         OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
+                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
                       ),
 
     )
