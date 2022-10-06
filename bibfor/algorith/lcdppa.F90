@@ -23,7 +23,6 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/betaps.h"
-#include "asterfort/dpmat2.h"
 #include "asterfort/dpmata.h"
 #include "asterfort/dppat2.h"
 #include "asterfort/dppatg.h"
@@ -31,7 +30,6 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/majsig.h"
-#include "asterfort/redpna.h"
 #include "asterfort/resdp2.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
@@ -112,31 +110,16 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! =====================================================================
 ! --- RESOLUTION DU SYSTEME -------------------------------------------
 ! =====================================================================
-        if (compor(1) .eq. 'DRUCK_PRAGER') then
-            calal = alpha
-            call resdp2(materf, seq, i1e, pmoins, dp,&
-                        plas)
-        else
-            calal = betaps (beta, pmoins, pult)
-            call redpna(materf, seq, i1e, pmoins, dp,&
-                        plas, iret)
-            if (iret .ne. 0) then
-                call utmess('A', 'ALGORITH4_36')
-                goto 999
-            endif
-        endif
+        calal = alpha
+        call resdp2(materf, seq, i1e, pmoins, dp,&
+                    plas)
         if (plas .eq. 0.0d0) then
             do ii = 1, ndt
                 sig(ii) = sige(ii)
             end do
 !            VIP(2) = 0.0D0
         else
-            if (compor(1) .eq. 'DRUCK_PRAGER') then
-                calal = alpha
-            else
-                pplus = vim(1) + dp
-                calal = betaps (beta, pplus, pult)
-            endif
+            calal = alpha
             call majsig(materf, se, seq, i1e, calal,&
                         dp, plas, sig)
         endif
@@ -150,21 +133,13 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! =====================================================================
 ! --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 ! =====================================================================
-        if (compor(1) .eq. 'DRUCK_PRAGER') then
-            dpdeno = dppatg( materf, vip(1), plas )
-        else
-            dpdeno = dppat2( materf, vim(1), vip(1), plas )
-        endif
+        dpdeno = dppatg( materf, vip(1), plas )
         pplus = vip(1)
     else
         plas = vim(nvi)
         dp = 0.0d0
         pplus = 0.0d0
-        if (compor(1) .eq. 'DRUCK_PRAGER') then
-            dpdeno = dppatg( materf, pmoins, plas )
-        else
-            dpdeno = dppat2( materf, pmoins, pmoins, plas )
-        endif
+        dpdeno = dppatg( materf, pmoins, plas )
     endif
 ! =====================================================================
 ! --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
@@ -173,16 +148,9 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
         if (option(10:14) .eq. '_ELAS') then
             dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
         else
-            if (compor(1) .eq. 'DRUCK_PRAGER') then
-                call dpmata(mod, materf, alpha, dp, dpdeno,&
-                            pplus, se, seq, plas, dsidep)
-            else
-                call dpmat2(mod, materf, alpha, beta, dp,&
-                            dpdeno, pplus, se, seq, plas,&
-                            dsidep)
-            endif
+            call dpmata(mod, materf, alpha, dp, dpdeno,&
+                        pplus, se, seq, plas, dsidep)
         endif
     endif
-999 continue
 ! =====================================================================
 end subroutine

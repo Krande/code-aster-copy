@@ -43,10 +43,6 @@ absente ou mal définie dans le matériau (AFFE_VARC).
 On ne peut pas calculer de déformation thermique pour les matériaux de type ELAS_HYPER.
 """),
 
-    7 : _("""
-Le comportement %(k1)s n'est pas autorisé avec un écrouissage linéaire.
-"""),
-
     8 : _("""
 Erreur utilisateur :
     - Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque la température

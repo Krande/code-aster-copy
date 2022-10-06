@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,9 +84,6 @@ implicit none
 ! ======================================================================
 ! --- CAS LINEAIRE -----------------------------------------------------
 ! ======================================================================
-        if (compor(1).eq.'DRUCK_PRAG_N_A') then
-            call utmess('F', 'COMPOR5_7', sk=compor(1))
-        endif
         call lcdpli(mod, nvi, option, materf, sigm,&
                     deps, vim, vip, sig, dsidep,&
                     iret)
