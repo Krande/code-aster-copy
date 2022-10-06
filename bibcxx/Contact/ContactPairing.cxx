@@ -181,10 +181,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     using VectorPairLong = std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >;
 
-    ASTERINTEGER nbType = 33;
-
-    std::vector< std::array< ASTERINTEGER, 5 > > listType;
-    listType.assign( nbType, std::array< ASTERINTEGER, 5 >( { 0, 0, 0, 0, 0 } ) );
+    std::map< ASTERINTEGER, ASTERINTEGER > listType;
 
     std::vector< VectorLong > listNodes;
     listNodes.reserve( nbContPairTot );
@@ -225,7 +222,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
             /*call mmelemdata_c*/
             ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0, typeElem;
-            ASTERINTEGER nbNodesCell = 0, elemIndx = 0;
+            ASTERINTEGER nbNodesCell = 0, elemIndx = 0, nbType = 0;
 
             if ( contAlgo == ContactAlgo::Lagrangian ) {
                 CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType, &nbNodesCell,
@@ -234,19 +231,17 @@ void ContactPairing::buildFiniteElementDescriptor() {
                 AS_ABORT( "Not implemented" );
             }
 
-            auto &info = listType.at( elemIndx - 1 );
-
             if ( lFrot ) {
-                info[1] += 1;
-                info[3] = typfFrotNume;
                 typeElem = typfFrotNume;
             } else {
-                info[0] += 1;
                 typeElem = typfContNume;
             }
 
-            info[2] = typfContNume;
-            info[4] = typgContNume;
+            if ( listType.count( typeElem ) == 0 ) {
+                listType[typeElem] = 0;
+            }
+
+            listType[typeElem] += 1;
 
             listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
 
@@ -323,7 +318,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
                         /*call mmelemdata_c*/
                         ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0;
-                        ASTERINTEGER nbNodesCell = 0, elemIndx = 0, typeElem;
+                        ASTERINTEGER nbNodesCell = 0, elemIndx = 0, typeElem, nbType;
 
                         if ( contAlgo == ContactAlgo::Lagrangian ) {
                             CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType,
@@ -335,19 +330,17 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
                         AS_ASSERT( nbNodesCell == 1 );
 
-                        auto &info = listType.at( elemIndx - 1 );
-
                         if ( lFrot ) {
-                            info[1] += 1;
-                            info[3] = typfFrotNume;
                             typeElem = typfFrotNume;
                         } else {
-                            info[0] += 1;
                             typeElem = typfContNume;
                         }
 
-                        info[2] = typfContNume;
-                        info[4] = typgContNume;
+                        if ( listType.count( typeElem ) == 0 ) {
+                            listType[typeElem] = 0;
+                        }
+
+                        listType[typeElem] += 1;
 
                         listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
                         listNodes.push_back( VectorLong( { nodeNume, typeElem } ) );
@@ -376,18 +369,10 @@ void ContactPairing::buildFiniteElementDescriptor() {
     /*LIEL building
     Size of LIEL object*/
     ASTERINTEGER nbGrel = 0, ligrcf_liel_lont = 0;
-    for ( auto &info : listType ) {
-        auto nbCont = info[0];
-        auto nbFrot = info[1];
+    for ( auto &[type, size] : listType ) {
 
-        ligrcf_liel_lont += nbCont + nbFrot;
-
-        if ( nbCont > 0 ) {
-            nbGrel += 1;
-        }
-        if ( nbFrot > 0 ) {
-            nbGrel += 1;
-        }
+        ligrcf_liel_lont += size;
+        nbGrel += 1;
     }
     ligrcf_liel_lont += nbGrel;
 
@@ -397,53 +382,24 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     _pair2Zone.clear();
 
-    for ( auto &info : listType ) {
-        auto nbCont = info[0];
-        auto nbFrot = info[1];
+    /* Create and add  element*/
+    for ( auto &[type, size] : listType ) {
+        VectorLong toCopy;
+        toCopy.reserve( size );
 
-        /* Create and add Contact element*/
-        if ( nbCont > 0 ) {
-            auto typfContNume = info[2];
-
-            VectorLong toCopy;
-            toCopy.reserve( nbCont );
-
-            ASTERINTEGER iZone = 0;
-            for ( auto &listContElemZone : listContElem ) {
-                /*loop on  pair of iZone*/
-                for ( auto &[typContNume, iContPair] : listContElemZone ) {
-                    if ( typContNume == typfContNume ) {
-                        toCopy.push_back( -iContPair );
-                        _pair2Zone[iContPair - 1] = iZone;
-                    }
+        ASTERINTEGER iZone = 0;
+        for ( auto &listContElemZone : listContElem ) {
+            /*loop on  pair of iZone*/
+            for ( auto &[typContNume, iContPair] : listContElemZone ) {
+                if ( typContNume == type ) {
+                    toCopy.push_back( -iContPair );
+                    _pair2Zone[iContPair - 1] = iZone;
                 }
-                iZone++;
             }
-            toCopy.push_back( typfContNume );
-            ContactResFEDLiel->push_back( toCopy );
+            iZone++;
         }
-
-        /* Create friction element*/
-        if ( nbFrot > 0 ) {
-            auto typfFrotNume = info[3];
-
-            VectorLong toCopy;
-            toCopy.reserve( nbCont );
-
-            ASTERINTEGER iZone = 0;
-            for ( auto &listContElemZone : listContElem ) {
-                /*loop on  pair of iZone*/
-                for ( auto &[typFrotNume, iContPair] : listContElemZone ) {
-                    if ( typFrotNume == typfFrotNume ) {
-                        toCopy.push_back( -iContPair );
-                        _pair2Zone[iContPair - 1] = iZone;
-                    }
-                }
-                iZone++;
-            }
-            toCopy.push_back( typfFrotNume );
-            ContactResFEDLiel->push_back( toCopy );
-        }
+        toCopy.push_back( type );
+        ContactResFEDLiel->push_back( toCopy );
     }
 
     /*Create LGRF object*/

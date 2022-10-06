@@ -2538,13 +2538,13 @@ phen.add('CONT_NIT_SL_3D', Modelisation(dim=(2, 3), code='CN3',
 # -- Define SLAVE elements for PENALISATION method (in DEFI_CONTACT) - Contact
 
 phen.add('CONT_PENA_SL_2D', Modelisation(dim=(1, 2), code='CP2',
-                                        elements=(
+                                         elements=(
     (MT.SEG2, EL.CPS22D),
     (MT.SEG3, EL.CPS32D),
 )))
 
 phen.add('CONT_PENA_SL_3D', Modelisation(dim=(2, 3), code='CP3',
-                                        elements=(
+                                         elements=(
     (MT.TRIA3, EL.CPT33D),
     (MT.TRIA6, EL.CPT63D),
     (MT.QUAD4, EL.CPQ43D),
@@ -2949,6 +2949,43 @@ phen.add('FRIC_LAG_EL_3D', Modelisation(dim=(2, 3), code='M3F',
         (MT.TRIA66, EL.FMT6T6),
         (MT.POI1,   EL.FMP1L3),
         (MT.POI1,   EL.FMP1N3),
+)))
+
+# -- Define CONTACT elements for NITSCHE method (in STAT_NON_LINE) - Contact
+
+phen.add('CONT_NIT_EL_2D', Modelisation(dim=(1, 2), code='N2C',
+                                        attrs=(
+    (AT.CONTACT, 'OUI'),
+),
+    elements=(
+        (MT.TR3SE2, EL.CNT3S2),
+        (MT.TR3SE3, EL.CNT3S3),
+        (MT.TR6SE2, EL.CNT6S2),
+        (MT.TR6SE3, EL.CNT6S3),
+        (MT.QU4SE2, EL.CNQ4S2),
+        (MT.QU4SE3, EL.CNQ4S3),
+        (MT.QU8SE2, EL.CNQ8S2),
+        (MT.QU8SE3, EL.CNQ8S3),
+        (MT.QU9SE2, EL.CNQ9S2),
+        (MT.QU9SE3, EL.CNQ9S3),
+)))
+
+phen.add('CONT_NIT_EL_2DA', Modelisation(dim=(1, 2), code='N2A',
+                                         attrs=(
+    (AT.CONTACT, 'OUI'),
+    (AT.AXIS, 'OUI'),
+),
+    elements=(
+        (MT.TR3SE2, EL.CNT3S2A),
+        (MT.TR3SE3, EL.CNT3S3A),
+        (MT.TR6SE2, EL.CNT6S2A),
+        (MT.TR6SE3, EL.CNT6S3A),
+        (MT.QU4SE2, EL.CNQ4S2A),
+        (MT.QU4SE3, EL.CNQ4S3A),
+        (MT.QU8SE2, EL.CNQ8S2A),
+        (MT.QU8SE3, EL.CNQ8S3A),
+        (MT.QU9SE2, EL.CNQ9S2A),
+        (MT.QU9SE3, EL.CNQ9S3A),
 )))
 
 # ------------------------------------------------------------------------------------
