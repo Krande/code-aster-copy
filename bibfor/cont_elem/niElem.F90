@@ -25,7 +25,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/laQuantities.h"
+#include "asterfort/niQuantities.h"
 #include "contact_module.h"
 !
 character(len=16), intent(in) :: nomte
@@ -56,24 +56,34 @@ type(ContactParameters), intent(inout) :: param
     select case (nomte(3:4))
         case ("Q4")
             geom%elem_dime      = 2
-            geom%elem_slav_code = 'QU4'
-            geom%nb_node_slav   = 4
+            geom%elem_volu_code = 'QU4'
+            geom%nb_node_volu   = 4
+            geom%elem_slav_code = 'SE2'
+            geom%nb_node_slav   = 2
         case ("Q8")
             geom%elem_dime      = 2
-            geom%elem_slav_code = 'QU8'
-            geom%nb_node_slav   = 8
+            geom%elem_volu_code = 'QU8'
+            geom%nb_node_volu   = 8
+            geom%elem_slav_code = 'SE3'
+            geom%nb_node_slav   = 3
         case ("Q9")
             geom%elem_dime      = 2
-            geom%elem_slav_code = 'QU9'
-            geom%nb_node_slav   = 9
+            geom%elem_volu_code = 'QU9'
+            geom%nb_node_volu   = 9
+            geom%elem_slav_code = 'SE3'
+            geom%nb_node_slav   = 3
         case ("T3")
             geom%elem_dime      = 2
-            geom%elem_slav_code = 'TR3'
-            geom%nb_node_slav   = 3
+            geom%elem_volu_code = 'TR3'
+            geom%nb_node_volu   = 3
+            geom%elem_slav_code = 'SE2'
+            geom%nb_node_slav   = 2
         case ("T6")
             geom%elem_dime      = 2
-            geom%elem_slav_code = 'TR6'
-            geom%nb_node_slav   = 6
+            geom%elem_volu_code = 'TR6'
+            geom%nb_node_volu   = 6
+            geom%elem_slav_code = 'SE3'
+            geom%nb_node_slav   = 3
         case default
             ASSERT(ASTER_FALSE)
     end select
@@ -109,26 +119,6 @@ type(ContactParameters), intent(inout) :: param
             ASSERT(geom%elem_dime == 3)
             geom%elem_mast_code = 'TR6'
             geom%nb_node_mast   = 6
-        case ("L2")
-            geom%elem_dime      = 2
-            geom%elem_mast_code = 'LAGR'
-            geom%nb_node_mast   = 0
-            geom%nb_lagr_c      = 1
-        case ("N2")
-            geom%elem_dime      = 2
-            geom%elem_mast_code = 'NOLAGR'
-            geom%nb_node_mast   = 0
-            geom%nb_lagr_c      = 0
-        case ("L3")
-            geom%elem_dime      = 3
-            geom%elem_mast_code = 'LAGR'
-            geom%nb_node_mast   = 0
-            geom%nb_lagr_c      = 1
-        case ("N3")
-            geom%elem_dime      = 3
-            geom%elem_mast_code = 'NOLAGR'
-            geom%nb_node_mast   = 0
-            geom%nb_lagr_c      = 0
         case default
             ASSERT(ASTER_FALSE)
     end select
@@ -139,14 +129,14 @@ type(ContactParameters), intent(inout) :: param
         end if
     end if
 !
-    geom%nb_dofs = (geom%nb_node_mast + geom%nb_node_slav) * geom%elem_dime
+    geom%nb_dofs = (geom%nb_node_mast + geom%nb_node_volu) * geom%elem_dime
 !
-    ASSERT(geom%nb_node_slav .le. 9)
+    ASSERT(geom%nb_node_slav .le. 27)
     ASSERT(geom%nb_node_mast .le. 9)
     ASSERT(geom%nb_lagr_c == 0)
-    ASSERT(geom%nb_dofs .le. MAX_LAGA_DOFS)
+    ASSERT(geom%nb_dofs .le. MAX_NITS_DOFS)
     ASSERT((geom%elem_dime .eq. 2).or.(geom%elem_dime .eq. 3))
 !
-    !call laQuantities(geom, param)
+    call niQuantities(geom, param)
 !
 end subroutine

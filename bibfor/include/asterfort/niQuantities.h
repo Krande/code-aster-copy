@@ -16,43 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! Contact module: Parameters <-> integer definitions
-! -------------------------------------------------------------------------
+#include "asterf_types.h"
 !
-#define MAX_LAGA_DOFS 66
-
-#define MAX_NITS_DOFS 108
-
-#define TOLE_BORNE 0.d0
-
-#define PROJ_TOLE 1.d-8
-
-#define THRES_STICK 10.d300
-
-! See ContactEnum.h
-! Contact
-#define CONT_ALGO_LAGR 0
-#define CONT_ALGO_NITS 1
-#define CONT_ALGO_PENA 2
-
-#define CONT_VARI_NONE 0
-#define CONT_VARI_RAPI 1
-#define CONT_VARI_ROBU 2
-
-#define CONT_TYPE_UNIL 0
-#define CONT_TYPE_BILA 1
-
-! Friction
-#define FRIC_ALGO_LAGR 0
-#define FRIC_ALGO_NITS 1
-#define FRIC_ALGO_PENA 2
-
-#define FRIC_TYPE_NONE 0
-#define FRIC_TYPE_TRES 1
-#define FRIC_TYPE_COUL 2
-#define FRIC_TYPE_STIC 3
-
-! Pairing
-#define PAIR_CONT_INTE 0
-#define FRIC_ALGO_FALSE 1
-#define FRIC_ALGO_TRUE 2
+interface
+    subroutine niQuantities(geom, param)
+        use contact_type
+        type(ContactGeom), intent(inout) :: geom
+        type(ContactParameters), intent(inout) :: param
+    end subroutine niQuantities
+end interface

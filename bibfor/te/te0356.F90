@@ -42,9 +42,9 @@ implicit none
 !
     type(ContactParameters) :: parameters
     type(ContactGeom) :: geom
-    real(kind=8) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
-    real(kind=8) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
-    real(kind=8) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
+    real(kind=8) :: matr_cont(MAX_NITS_DOFS, MAX_NITS_DOFS)
+    real(kind=8) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 !
 ! - Informations about finite element
 !

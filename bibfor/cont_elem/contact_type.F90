@@ -40,14 +40,14 @@ type ContactParameters
     integer                             :: algo_cont = 0
     integer                             :: type_cont = 0
     real(kind=8)                        :: vari_cont = 0.d0
-    real(kind=8), dimension(4)          :: coef_cont = 0.d0
+    real(kind=8), dimension(9)          :: coef_cont = 0.d0
 
     !! Friction paramaters
     aster_logical                       :: l_fric = ASTER_FALSE
     integer                             :: algo_fric = 0
     integer                             :: type_fric = 0
-    real(kind=8), dimension(4)          :: coef_fric = 0.d0
-    real(kind=8), dimension(4)          :: threshold = 0.d0
+    real(kind=8), dimension(9)          :: coef_fric = 0.d0
+    real(kind=8), dimension(9)          :: threshold = 0.d0
     real(kind=8)                        :: threshold_given = 0.d0
 
     !! Other
@@ -68,6 +68,16 @@ type ContactGeom
     real(kind=8), dimension(2,4)        :: lagf_slav_curr = 0.d0
     integer                             :: nb_lagr_c      = 0
     integer, dimension(9)               :: indi_lagc      = 0
+
+    !! Slave cell volu
+    integer                             :: nb_node_volu = 0
+    character(len=8)                    :: elem_volu_code = " "
+    real(kind=8), dimension(3,27)        :: coor_volu_init = 0.d0
+    real(kind=8), dimension(3,27)        :: coor_volu_prev = 0.d0
+    real(kind=8), dimension(3,27)        :: coor_volu_curr = 0.d0
+    real(kind=8), dimension(3,27)        :: coor_volu_pair = 0.d0
+    real(kind=8), dimension(3,27)        :: depl_volu_curr = 0.d0
+    integer, dimension(9)                :: mapVolu2Surf = 0
 
     !! Master side paramaters
     integer                             :: nb_node_mast = 0
