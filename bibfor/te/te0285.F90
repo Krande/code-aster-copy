@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,98 +15,81 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0285(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
+#include "asterfort/getDensity.h"
 !
-    character(len=16) :: option, nomte
+character(len=16) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL DES OPTIONS: 'MASS_INER' ELEMENTS 2-D AXI D-PLAN, C-PLAN
 !                         'CARA_GEOM' ELEMENTS 2-D D-PLAN
 !
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos, kp, npg, i, j, k, lcastr, jgano
+    integer :: nno, kp, npg, i, j, k, lcastr
     integer :: ipoids, ivf, idfde, igeom, imate
-    real(kind=8) :: rho(1), xg, yg, depi, zero
+    real(kind=8) :: rho, xg, yg, depi
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9)
     real(kind=8) :: matine(6), xxi, xyi, yyi, volume
     real(kind=8) :: ixrp2, iyrp2, xp(9), yp(9), xpg, ypg
-    integer :: icodre(1)
-    character(len=8) :: elrefe
-    character(len=16) :: phenom
-!     ------------------------------------------------------------------
 !
-    call elref1(elrefe)
+! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.d0
     depi = r8depi()
 !
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='MASS',nno=nno,&
+                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
     if (option .eq. 'MASS_INER') then
         call jevech('PMATERC', 'L', imate)
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-!
-        if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 0, ' ', [0.d0],&
-                        1, 'RHO', rho, icodre(1), 1)
-            if (rho(1) .le. r8prem()) then
-                call utmess('F', 'ELEMENTS5_45')
-            endif
-            call jevech('PMASSINE', 'E', lcastr)
-        else
-            call utmess('F', 'ELEMENTS_50')
-        endif
+        call jevech('PMASSINE', 'E', lcastr)
+        call getDensity(zi(imate), rho)
+
     else if (option.eq.'CARA_GEOM') then
-!
-!       POUR LE CALCUL DES CARA_GEOM DE SECTION DE POUTRE RHO=1
-        rho(1)=1.d0
+        rho = 1.d0
         call jevech('PCARAGE', 'E', lcastr)
+
     else
-!          OPTION DE CALCUL NON VALIDE
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)
     do i = 1, nno
         x(i) = zr(igeom-2+2*i)
         y(i) = zr(igeom-1+2*i)
-        xp(i) = zero
-        yp(i) = zero
+        xp(i) = 0.d0
+        yp(i) = 0.d0
     end do
 !
     do i = 0, 3
-        zr(lcastr+i) = zero
+        zr(lcastr+i) = 0.d0
     end do
-    do i = 1, 6
-        matine(i) = zero
-    end do
+    matine = 0.d0
 !
 !     --- BOUCLE SUR LES POINTS DE GAUSS ---
-    volume = zero
+    volume = 0.d0
     do kp = 1, npg
         k = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy)
         if (lteatt('AXIS','OUI')) then
-            r = zero
+            r = 0.d0
             do i = 1, nno
                 r = r + zr(igeom-2+2*i)*zr(ivf+k+i-1)
             end do
@@ -133,31 +116,31 @@ subroutine te0285(option, nomte)
     end do
 !
     if (lteatt('AXIS','OUI')) then
-        xg = zero
+        xg = 0.d0
         yg = zr(lcastr+2) / volume
-        zr(lcastr) = depi * volume * rho(1)
+        zr(lcastr) = depi * volume * rho
         zr(lcastr+3) = yg
-        zr(lcastr+1) = zero
-        zr(lcastr+2) = zero
+        zr(lcastr+1) = 0.d0
+        zr(lcastr+2) = 0.d0
 !
 !        --- ON DONNE LES INERTIES AU CDG ---
-        matine(6) = matine(3) * rho(1) * depi
-        matine(1) = matine(1) * rho(1) * depi + matine(6)/2.d0 - zr( lcastr)*yg*yg
-        matine(2) = zero
+        matine(6) = matine(3) * rho * depi
+        matine(1) = matine(1) * rho * depi + matine(6)/2.d0 - zr( lcastr)*yg*yg
+        matine(2) = 0.d0
         matine(3) = matine(1)
 !
     else
-        zr(lcastr) = volume * rho(1)
+        zr(lcastr) = volume * rho
         zr(lcastr+1) = zr(lcastr+1) / volume
         zr(lcastr+2) = zr(lcastr+2) / volume
-        zr(lcastr+3) = zero
+        zr(lcastr+3) = 0.d0
 !
 !        --- ON DONNE LES INERTIES AU CDG ---
         xg = zr(lcastr+1)
         yg = zr(lcastr+2)
-        matine(1) = matine(1)*rho(1) - zr(lcastr)*yg*yg
-        matine(2) = matine(2)*rho(1) - zr(lcastr)*xg*yg
-        matine(3) = matine(3)*rho(1) - zr(lcastr)*xg*xg
+        matine(1) = matine(1)*rho - zr(lcastr)*yg*yg
+        matine(2) = matine(2)*rho - zr(lcastr)*xg*yg
+        matine(3) = matine(3)*rho - zr(lcastr)*xg*xg
         matine(6) = matine(1) + matine(3)
     endif
     zr(lcastr+4) = matine(1)
@@ -177,16 +160,16 @@ subroutine te0285(option, nomte)
             yp(i) = y(i) - yg
         end do
 !
-        ixrp2 = zero
-        iyrp2 = zero
+        ixrp2 = 0.d0
+        iyrp2 = 0.d0
 !
         do kp = 1, npg
             k = (kp-1) * nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
 !
-            xpg = zero
-            ypg = zero
+            xpg = 0.d0
+            ypg = 0.d0
             do i = 1, nno
                 xpg = xpg + xp(i)*zr(ivf+k+i-1)
                 ypg = ypg + yp(i)*zr(ivf+k+i-1)

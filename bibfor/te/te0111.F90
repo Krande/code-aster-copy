@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine te0111(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 !
     integer ::          icodre(1)
     real(kind=8) ::     valres(1)
@@ -50,9 +49,6 @@ subroutine te0111(option, nomte)
     call rcvalb('RIGI', 1, 1, '+', zi(imater), ' ', 'ELAS',  0, '  ', [r8bid],&
                 1, nomres, valres, icodre, 1)
     rho = valres(1)
-    if ( rho.le.r8prem() ) then
-        call utmess('F', 'ELEMENTS5_45')
-    endif
 !
     call jevech('PCACABL', 'L', lsect)
     aire = zr(lsect)

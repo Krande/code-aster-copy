@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0444(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -34,15 +36,19 @@ subroutine te0444(option, nomte)
 #include "asterfort/pmavec.h"
 #include "asterfort/q4grig.h"
 #include "asterfort/t3grig.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
-    character(len=16) :: option, nomte
+!
+character(len=16) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
 !
 !   CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE POUR LA MODELISATION DKTG
 !   ET LA MODELISATION Q4GG
-!     -----------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 !                            TRIANGLE  QUADRANGLE
 !        KIRCHOFF  (MINCE)      DKT       DKQ
 !
@@ -51,33 +57,35 @@ subroutine te0444(option, nomte)
 !        OPTIONS     MASS_MECA       MASS_INER
 !                    EPOT_ELEM       ECIN_ELEM
 !
-! person_in_charge: sebastien.fayolle at edf.fr
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: nnos, ipoids, ivf, idfdx, jgano
     integer :: multic
-    integer :: i, j, ivectu, npg
+    integer :: i, j, ivectu
     integer :: nno, igeom, imatuu, jener, jfreq, iacce
     integer :: nddl, nvec, ndim, iret, n1, ni, n2
     real(kind=8) :: rho, epais
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: ener(3), matp(24, 24), matv(300)
-!
 !     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 !     ---> POUR DKQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
     real(kind=8) :: matloc(300)
 !
+! --------------------------------------------------------------------------------------------------
+!
+!
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
     if (nno .eq. 3) then
         call dxtpgl(zr(igeom), pgl)
-    else if (nno.eq.4) then
+    else if (nno .eq. 4) then
         call dxqpgl(zr(igeom), pgl, 'S', iret)
+    else
+        ASSERT(ASTER_FALSE)
     endif
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
@@ -160,11 +168,6 @@ subroutine te0444(option, nomte)
     else if (option.eq.'MASS_INER') then
         call jevech('PMASSINE', 'E', imatuu)
         call dxroep(rho, epais)
-!
-        if (rho .le. r8prem()) then
-            call utmess('F', 'ELEMENTS5_45')
-        endif
-!
         call dxiner(nno, zr(igeom), rho, epais, zr(imatuu), zr(imatuu+1), zr(imatuu+4))
     else
         ASSERT(.false.)

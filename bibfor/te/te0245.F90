@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0245(option, nomte)
 !
+implicit none
 !
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/getDensity.h"
+#include "asterfort/teattr.h"
+!
+character(len=*) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -34,54 +45,30 @@ subroutine te0245(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-implicit none
-    character(len=*) :: option, nomte
-!
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lonele.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
-!
-! --------------------------------------------------------------------------------------------------
-!
     integer :: lcastr, lmater, lsect, igeom
-    integer :: codres(1)
-    real(kind=8) :: rho(1), a, xl, r8b
-    character(len=16) :: ch16, phenom
+    integer :: dimModel, ier
+    real(kind=8) :: rho, a, xl
+    character(len=8) :: attrib
 !
 ! --------------------------------------------------------------------------------------------------
 !
-     call jevech('PMATERC', 'L', lmater)
+    call jevech('PMATERC', 'L', lmater)
+
+    call teattr('S', 'DIM_COOR_MODELI', attrib, ier)
+    read(attrib, '(I8)') dimModel
 !
-    call rccoma(zi(lmater), 'ELAS', 1, phenom, codres(1))
-!
-    r8b = 0.0d0
-    if (phenom.eq.'ELAS' .or. phenom.eq.'ELAS_ISTR' .or. phenom.eq.'ELAS_ORTH') then
-        call rcvalb('FPG1', 1, 1, '+', zi(lmater),' ', phenom, 0, ' ', [r8b],&
-                    1, 'RHO', rho, codres, 1)
-        if (rho(1) .le. r8prem()) then
-            call utmess('F', 'ELEMENTS5_45')
-        endif
-    else
-        call utmess('F', 'ELEMENTS_50')
-    endif
+    call getDensity(zi(lmater), rho)
 !
 !   recuperation des caracteristiques generales des sections
     call jevech('PCAGNBA', 'L', lsect)
     a = zr(lsect)
 !
 !   Longueur de l'élément
-    if (nomte .eq. 'MECA_BARRE') then
+    if (dimModel .eq. 3) then
         xl = lonele(igeom=igeom)
-    else if (nomte.eq.'MECA_2D_BARRE') then
+    else if (dimModel .eq. 2) then
         xl = lonele(dime=2, igeom=igeom)
     else
-        xl = 0.0d0
         ASSERT( ASTER_FALSE )
     endif
 !
@@ -90,12 +77,12 @@ implicit none
         call jevech('PMASSINE', 'E', lcastr)
 !       masse et cdg de l'element
         if (nomte .eq. 'MECA_BARRE') then
-            zr(lcastr) = rho(1) * a * xl
+            zr(lcastr) = rho * a * xl
             zr(lcastr+1) =( zr(igeom+4) + zr(igeom+1) ) / 2.d0
             zr(lcastr+2) =( zr(igeom+5) + zr(igeom+2) ) / 2.d0
             zr(lcastr+3) =( zr(igeom+6) + zr(igeom+3) ) / 2.d0
         else if (nomte.eq.'MECA_2D_BARRE') then
-            zr(lcastr) = rho(1) * a * xl
+            zr(lcastr) = rho * a * xl
             zr(lcastr+1) =( zr(igeom+3) + zr(igeom+1) ) / 2.d0
             zr(lcastr+2) =( zr(igeom+4) + zr(igeom+2) ) / 2.d0
         endif
@@ -107,8 +94,7 @@ implicit none
         zr(lcastr+8) = 0.d0
         zr(lcastr+9) = 0.d0
     else
-        ch16 = option
-        call utmess('F', 'ELEMENTS2_47', sk=ch16)
+        ASSERT(ASTER_FALSE)
     endif
 !
 end subroutine

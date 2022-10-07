@@ -17,7 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0417(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dxroep.h"
@@ -27,22 +29,23 @@ subroutine te0417(option, nomte)
 #include "asterfort/vectan.h"
 #include "asterfort/vectci.h"
 !
-    character(len=*) :: option, nomte
+character(len=*) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     OPTION : 'MASS_INER'              (ELEMENTS COQUE_3D)
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: xi(3, 9), xg(3), ix2(3), ix1x2, ix1x3, ix2x3, matine(6)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
-!
-!     RECUPERATION DES OBJETS
-!
-!-----------------------------------------------------------------------
     integer :: i, intsn, intsx, j, jgeom, k, l1
     integer :: l2, lcastr, lzi, lzr, nb1, nb2, npgsn
-!
     real(kind=8) :: epais, epais2, epais3, rho, rnormc, volume, wgt
     real(kind=8) :: xx, xy, xz, yy, yz, zz
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
     nb1  =zi(lzi-1+1)
     nb2  =zi(lzi-1+2)
@@ -58,9 +61,6 @@ subroutine te0417(option, nomte)
     end do
 !
     call dxroep(rho, epais)
-    if (rho .le. r8prem()) then
-        call utmess('F', 'ELEMENTS5_45')
-    endif
     epais2=epais*epais
     epais3=epais*epais2
 !

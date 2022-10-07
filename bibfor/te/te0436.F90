@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0436(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
@@ -25,14 +27,15 @@ subroutine te0436(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/mbcine.h"
 #include "asterfort/mbrigi.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvalb.h"
+#include "asterfort/getDensity.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 !
-    character(len=16) :: option, nomte
-! ----------------------------------------------------------------------
+character(len=16) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT :
 !                                  - SIEF_ELGA
 !                                  - EFGE_ELGA
@@ -43,33 +46,31 @@ subroutine te0436(option, nomte)
 !    - ARGUMENTS :
 !        DONNEES :      OPTION       -->  OPTION DE CALCUL
 !                       NOMTE        -->  NOM DU TYPE ELEMENT
-! ----------------------------------------------------------------------
 !
-    integer :: codres(2)
-    character(len=4) :: fami
-    integer :: nddl, nno, nnos, npg, ndim, ncomp
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=4), parameter :: fami = 'RIGI'
+    integer :: nddl, nno, npg, ncomp
     integer :: i, j, n, c, cc, kpg, j1, j2, k
-    integer :: ipoids, ivf, idfde, jgano, iret
+    integer :: ipoids, ivf, idfde, iret
     integer :: igeom, icacoq, imate, idepl, icontp, inr, idefo, imass, icompo
     real(kind=8) :: dff(2, 9), vff(9), b(3, 3, 9), jac
     real(kind=8) :: alpha, beta, epot
     real(kind=8) :: epsm(3), epsg(3, 9), epsthe, sig(3), sigg(3, 9), rig(3, 3)
-    real(kind=8) :: rho(1), rhog
+    real(kind=8) :: rho, rhog
     real(kind=8) :: x(9), y(9), z(9), surfac, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6)
     real(kind=8) :: vro
-!----------------------------------------------------------------------------------
 !
-! - NOMBRE DE COMPOSANTES DES TENSEURS
+! --------------------------------------------------------------------------------------------------
 !
     ncomp = 3
     nddl = 3
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
-    fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami,nno=nno,&
+                      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 
     if (option.eq.'EFGE_ELGA') then
 ! ---   c'est facile : il n'y a qu'a recopier :
@@ -92,7 +93,7 @@ subroutine te0436(option, nomte)
 !
     else if (option.eq.'EPSI_ELGA') then
         call jevech('PDEPLAR', 'L', idepl)
-        call r8inir(3*9, 0.d0, epsg, 1)
+        epsg = 0.d0
 !
     else if (option.eq.'MASS_INER') then
         call jevech('PMATERC', 'L', imate)
@@ -102,7 +103,7 @@ subroutine te0436(option, nomte)
 !
     if (option .eq. 'SIEF_ELGA') then
         call jevech('PCONTRR', 'E', icontp)
-        call r8inir(3*9, 0.d0, sigg, 1)
+        sigg = 0.d0
 !
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PENERDR', 'E', inr)
@@ -137,8 +138,8 @@ subroutine te0436(option, nomte)
             y(i) = zr(igeom+3*i-2)
             z(i) = zr(igeom+3*i-1)
         end do
-        call r8inir(3, 0.d0, cdg, 1)
-        call r8inir(6, 0.d0, matine, 1)
+        cdg = 0.d0
+        matine = 0.d0
         surfac = 0.d0
         rhog = 0.d0
     endif
@@ -168,7 +169,7 @@ subroutine te0436(option, nomte)
         if ((option.eq.'SIEF_ELGA') .or. (option.eq.'EPOT_ELEM')) then
 !
 ! ------    CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
-            call r8inir(3, 0.d0, epsm, 1)
+            epsm = 0.d0
             do n = 1, nno
                 do i = 1, nddl
                     do c = 1, ncomp
@@ -185,8 +186,8 @@ subroutine te0436(option, nomte)
 !
 ! ------    CALCUL DE LA CONTRAINTE AU PG
             call mbrigi(fami, kpg, imate, rig)
-!
-            call r8inir(3, 0.d0, sig, 1)
+
+            sig = 0.d0
             do c = 1, ncomp
                 do cc = 1, ncomp
                     sig(c) = sig(c) + epsm(cc)*rig(cc,c)
@@ -220,14 +221,9 @@ subroutine te0436(option, nomte)
 ! --- MASS_INER : ON SOMME LA CONTRIBUTION DU PG A LA MASSE TOTALE
 !
         else if (option.eq.'MASS_INER') then
-            call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
-                1, 'RHO', rho, codres, 1)
-            if (rho(1) .le. r8prem()) then
-                call utmess('F', 'ELEMENTS5_45')
-            endif
+            call getDensity(zi(imate), rho, 'ELAS_MEMBRANE')
             surfac = surfac + zr(ipoids+kpg-1)*jac
-            rhog = rhog + rho(1)*zr(ipoids+kpg-1)*jac
+            rhog = rhog + rho*zr(ipoids+kpg-1)*jac
             ppg = zr(ipoids+kpg-1)*jac
             do i = 1, nno
                 cdg(1) = cdg(1) + ppg*vff(i)*x(i)

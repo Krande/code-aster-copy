@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0433(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -25,15 +27,17 @@ subroutine te0433(option, nomte)
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/getDensity.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgrib.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    character(len=16) :: option, nomte
-! ......................................................................
+!
+character(len=16) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT :
 !                                  - SIEF_ELGA
 !                                  - EPOT_ELEM
@@ -43,30 +47,31 @@ subroutine te0433(option, nomte)
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: codres(2), iret
-    character(len=4) :: fami
+    character(len=4), parameter :: fami = 'RIGI'
     character(len=16) :: nomres(2)
-    integer :: nddl, nno, nnos, npg, ndim, i, j, n, kpg
-    integer :: jgano, ipoids, ivf, idfde, igeom, imate
+    integer :: nddl, nno, npg, i, j, n, kpg
+    integer :: ipoids, ivf, idfde, igeom, imate
     integer :: icontp, imass, idepl, idefo, inr
     real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
-    real(kind=8) :: epsm, epsg(9), epsthe, sig, sigg(9), rho(1), valres(2), epot
+    real(kind=8) :: epsm, epsg(9), epsthe, sig, sigg(9), rho, valres(2), epot
     real(kind=8) :: x(8), y(8), z(8), volume, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6), vro
     aster_logical :: lexc
 !
-! - BOOLEEN POUR LES GRILLES EXCENTREES
+! --------------------------------------------------------------------------------------------------
 !
+
     lexc = (lteatt('MODELI','GRC'))
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
-    fami = 'RIGI'
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami=fami, nno=nno, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! - PARAMETRES EN ENTREE
 !
@@ -78,7 +83,7 @@ subroutine te0433(option, nomte)
 !
     else if (option.eq.'EPSI_ELGA') then
         call jevech('PDEPLAR', 'L', idepl)
-        call r8inir(9, 0.d0, epsg, 1)
+        epsg = 0.d0
 !
     else if (option.eq.'MASS_INER') then
         call jevech('PMATERC', 'L', imate)
@@ -88,7 +93,7 @@ subroutine te0433(option, nomte)
 !
     if (option .eq. 'SIEF_ELGA') then
         call jevech('PCONTRR', 'E', icontp)
-        call r8inir(9, 0.d0, sigg, 1)
+        sigg = 0.d0
 !
     else if (option.eq.'EPOT_ELEM') then
         call jevech('PENERDR', 'E', inr)
@@ -99,12 +104,7 @@ subroutine te0433(option, nomte)
 !
     else if (option.eq.'MASS_INER') then
         call jevech('PMASSINE', 'E', imass)
-        call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
-                    1, 'RHO', rho, codres, 1)
-        if (rho(1) .le. r8prem()) then
-            call utmess('F', 'ELEMENTS5_45')
-        endif
+        call getDensity(zi(imate), rho)
     endif
 !
 ! - LECTURE DES CARACTERISTIQUES DE GRILLE ET
@@ -144,8 +144,8 @@ subroutine te0433(option, nomte)
             y(i) = y(i) + vecn(2)
             z(i) = z(i) + vecn(3)
         endif
-        call r8inir(3, 0.d0, cdg, 1)
-        call r8inir(6, 0.d0, matine, 1)
+        cdg = 0.d0
+        matine = 0.d0
     endif
 !
     volume = 0.d0
@@ -250,17 +250,17 @@ subroutine te0433(option, nomte)
         end do
 !
     else if (option.eq.'MASS_INER') then
-        vro = rho(1) / volume
-        zr(imass) = rho(1) * volume
+        vro = rho / volume
+        zr(imass) = rho * volume
         zr(imass+1) = cdg(1)/volume
         zr(imass+2) = cdg(2)/volume
         zr(imass+3) = cdg(3)/volume
-        zr(imass+4) = matine(1)*rho(1) - vro*(cdg(2)*cdg(2)+cdg(3)*cdg(3) )
-        zr(imass+5) = matine(3)*rho(1) - vro*(cdg(1)*cdg(1)+cdg(3)*cdg(3) )
-        zr(imass+6) = matine(6)*rho(1) - vro*(cdg(1)*cdg(1)+cdg(2)*cdg(2) )
-        zr(imass+7) = matine(2)*rho(1) - vro*(cdg(1)*cdg(2))
-        zr(imass+8) = matine(4)*rho(1) - vro*(cdg(1)*cdg(3))
-        zr(imass+9) = matine(5)*rho(1) - vro*(cdg(2)*cdg(3))
+        zr(imass+4) = matine(1)*rho - vro*(cdg(2)*cdg(2)+cdg(3)*cdg(3) )
+        zr(imass+5) = matine(3)*rho - vro*(cdg(1)*cdg(1)+cdg(3)*cdg(3) )
+        zr(imass+6) = matine(6)*rho - vro*(cdg(1)*cdg(1)+cdg(2)*cdg(2) )
+        zr(imass+7) = matine(2)*rho - vro*(cdg(1)*cdg(2))
+        zr(imass+8) = matine(4)*rho - vro*(cdg(1)*cdg(3))
+        zr(imass+9) = matine(5)*rho - vro*(cdg(2)*cdg(3))
     endif
 !
 end subroutine
