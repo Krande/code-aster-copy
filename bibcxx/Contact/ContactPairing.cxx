@@ -209,6 +209,8 @@ void ContactPairing::buildFiniteElementDescriptor() {
         VectorPairLong listContElemZone;
         listContElemZone.reserve( nbContPairZone );
 
+        auto surf2Volu = zone->getSlaveCellsSurfToVolu();
+
         /*loop on  pair of iZone*/
         for ( int iPair = 0; iPair < nbContPairZone; iPair++ ) {
 
@@ -216,8 +218,13 @@ void ContactPairing::buildFiniteElementDescriptor() {
             auto [slavCellNume, mastCellNume] = iZonePairing[iPair];
             slaveCellPaired.insert( slavCellNume );
 
+            auto slaveCellUsedNume = slavCellNume;
+            if ( contAlgo == ContactAlgo::Nitsche ) {
+                slaveCellUsedNume = surf2Volu[slavCellNume];
+            }
+
             /*get slave and master geom type*/
-            auto typgSlavName = ljust( mesh->getCellTypeName( slavCellNume ), 8, ' ' );
+            auto typgSlavName = ljust( mesh->getCellTypeName( slaveCellUsedNume ), 8, ' ' );
             auto typgMastName = ljust( mesh->getCellTypeName( mastCellNume ), 8, ' ' );
 
             /*call mmelemdata_c*/
@@ -226,6 +233,9 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
             if ( contAlgo == ContactAlgo::Lagrangian ) {
                 CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType, &nbNodesCell,
+                                        &typgContNume, &typfContNume, &typfFrotNume, &elemIndx );
+            } else if ( contAlgo == ContactAlgo::Nitsche ) {
+                CALLO_MMELEM_DATA_NITS( &lAxis, typgSlavName, typgMastName, &nbType, &nbNodesCell,
                                         &typgContNume, &typfContNume, &typfFrotNume, &elemIndx );
             } else {
                 AS_ABORT( "Not implemented" );
@@ -246,7 +256,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
             listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
 
             /* get nodes (be carefull with +1 ) */
-            auto slav_cell_con = ( *meshConnectivty )[slavCellNume + 1];
+            auto slav_cell_con = ( *meshConnectivty )[slaveCellUsedNume + 1];
             auto mast_cell_con = ( *meshConnectivty )[mastCellNume + 1];
 
             VectorLong toCopy;

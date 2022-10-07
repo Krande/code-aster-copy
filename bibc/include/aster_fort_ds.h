@@ -238,6 +238,12 @@ extern void DEFPSSPPPPPP( MMELEM_DATA_LAGA, mmelem_data_laga, ASTERLOGICAL *, co
                           STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
                           ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * );
 
+#define CALLO_MMELEM_DATA_NITS( a, b, c, d, e, f, g, h, i )                                        \
+    CALLPOOPPPPPP( MMELEM_DATA_NITS, mmelem_data_nits, a, b, c, d, e, f, g, h, i )
+extern void DEFPSSPPPPPP( MMELEM_DATA_NITS, mmelem_data_nits, ASTERLOGICAL *, const char *,
+                          STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
+                          ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * );
+
 #ifdef __cplusplus
 }
 #endif

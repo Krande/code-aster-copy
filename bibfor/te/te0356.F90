@@ -25,7 +25,8 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/utmess.h"
+#include "asterfort/niElem.h"
+#include "asterfort/laParam.h"
 #include "asterfort/writeMatrix.h"
 #include "asterfort/writeVector.h"
 #include "contact_module.h"
@@ -47,11 +48,11 @@ implicit none
 !
 ! - Informations about finite element
 !
-!    call laelem(nomte, geom, parameters)
+    call niElem(nomte, geom, parameters)
 !
 ! - Get Parameters
 !
-!    call laParam(parameters)
+    call laParam(parameters)
 !
 ! - Verif
 !
@@ -92,5 +93,4 @@ implicit none
         ASSERT(ASTER_FALSE)
     end if
 !
-    call utmess('F', 'FERMETUR_8')
 end subroutine

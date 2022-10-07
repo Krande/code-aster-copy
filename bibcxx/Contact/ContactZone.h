@@ -66,6 +66,8 @@ class ContactZone : public DataStructure {
     JeveuxCollectionLong _masterNeighbors;
     /** @brief  slave cells neighbors */
     JeveuxCollectionLong _slaveNeighbors;
+    /** @brief Map between slave surfaciv and volumic cell */
+    std::map< ASTERINTEGER, ASTERINTEGER > _slavSurf2Volu;
     /** @brief name of slave side */
     std::string _slaveGrp;
     /** @brief name of master side */
@@ -79,6 +81,11 @@ class ContactZone : public DataStructure {
      * @brief construct master/slave cells neighbors
      */
     ASTERBOOL buildCellsNeighbors();
+
+    /**
+     * @brief construct surface->volume slave cell
+     */
+    void buildSlaveCellsVolu();
 
   public:
     /**
@@ -169,6 +176,8 @@ class ContactZone : public DataStructure {
     VectorLong getMasterCellNeighbors( const ASTERINTEGER &i ) const;
 
     VectorLong getSlaveCellNeighbors( const ASTERINTEGER &i ) const;
+
+    auto getSlaveCellsSurfToVolu() const { return _slavSurf2Volu; };
 
     /**
      * @brief get master inverse connectivity as JeVeuxCollection

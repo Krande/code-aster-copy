@@ -331,7 +331,11 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     /**
      * @brief Allocation of one object at the end of a existing collection
      */
-    JeveuxCollObjValType allocateObject( const ASTERINTEGER &nbValues ) {
+    JeveuxCollObjValType allocateObject( const ASTERINTEGER &index, const ASTERINTEGER &nbValues ) {
+        if ( contains( index ) ) {
+            AS_ABORT( "Index already existing: " + std::to_string( index ) );
+        }
+
         if ( size() >= capacity() ) {
             AS_ABORT( "Out of collection bounds: " + std::to_string( size() ) + " vs " +
                       std::to_string( capacity() ) );
@@ -341,10 +345,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
             AS_ABORT( "Collection is not numeroted" );
         }
 
-        auto newIndex = getNewIndex();
-        JeveuxCollObjValType obj( _name, newIndex, nbValues );
+        JeveuxCollObjValType obj( _name, index, nbValues );
 
-        _listObjects[newIndex] = obj;
+        _listObjects[index] = obj;
 
         return obj;
     };
@@ -352,8 +355,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     /**
      * @brief Allocation of one object at the end of a existing collection
      */
-    JeveuxCollObjValType allocateObject( const std::vector< ValueType > &values ) {
-        auto obj = allocateObject( values.size() );
+    JeveuxCollObjValType allocateObject( const ASTERINTEGER &index,
+                                         const std::vector< ValueType > &values ) {
+        auto obj = allocateObject( index, values.size() );
         obj->setValues( values );
 
         return obj;
@@ -363,7 +367,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @brief Allocation of one object at the end of a existing collection
      */
     void push_back( const std::vector< ValueType > &values ) {
-        auto obj = allocateObject( values.size() );
+        auto obj = allocateObject( getNewIndex(), values.size() );
         obj->setValues( values );
     };
     /**
@@ -553,6 +557,23 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
         return *this;
     };
+
+    /** @brief overload << operator */
+    friend std::ostream &
+    operator<<( std::ostream &os, const JeveuxCollectionClass< ValueType, AccessType > &toPrint ) {
+        os << "JeveuxCollection: " << toPrint.getName() << "\n";
+        os << "Size: " << std::to_string( toPrint.size() )
+           << ", and capacity: " << std::to_string( toPrint.capacity() ) << ".\n";
+
+        const auto size = toPrint.size();
+        os << "List of objects: \n";
+        for ( auto &[key, obj] : toPrint ) {
+            obj->updateValuePointer();
+            os << *obj << " \n";
+        }
+
+        return os;
+    }
 };
 
 template < class ValueType, class AccessType >

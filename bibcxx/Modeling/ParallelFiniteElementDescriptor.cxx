@@ -204,7 +204,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                 }
             }
             toCopy.push_back( explorer[numElem - 1].getType() );
-            _delayedNumberedConstraintElementsDescriptor->allocateObject( toCopy );
+            _delayedNumberedConstraintElementsDescriptor->push_back( toCopy );
         }
 
         const auto &liel = FEDesc->getListOfGroupOfElementsExplorer();
@@ -231,7 +231,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         _listOfGroupOfCells->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
         for ( const auto &vec : toLiel ) {
             if ( vec.size() != 0 ) {
-                _listOfGroupOfCells->allocateObject( vec );
+                _listOfGroupOfCells->push_back( vec );
             }
         }
     } else

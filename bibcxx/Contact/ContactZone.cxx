@@ -144,10 +144,13 @@ bool ContactZone::build() {
     }
 
     // build inverse connvectivity
-    buildInverseConnectivity();
+    AS_ASSERT( buildInverseConnectivity() );
 
     // build master and slave  Cells Neighbors
-    buildCellsNeighbors();
+    AS_ASSERT( buildCellsNeighbors() );
+
+    // build surface to volume slave cell
+    buildSlaveCellsVolu();
 
     return true;
 }
@@ -160,7 +163,7 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
     VectorLong masterCells;
     masterCells.reserve( _masterCells.size() );
 
-    //shifting for fortran
+    // shifting for fortran
     for ( auto cell : _masterCells )
         masterCells.push_back( cell + 1 );
 
@@ -231,6 +234,45 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
 
     return true;
 }
+
+void ContactZone::buildSlaveCellsVolu() {
+    auto mesh = getMesh();
+    auto nbCells = mesh->getNumberOfCells();
+
+    auto invCon = mesh->getInverseConnectivity();
+    invCon->build();
+
+    auto exp = mesh->getConnectivityExplorer();
+
+    for ( auto &cellId : _slaveCells ) {
+        const auto cell = exp[cellId];
+        VectorLong candidat;
+        for ( const auto vertex : cell ) {
+            const auto nodeId = vertex - 1;
+            auto listCells = ( *invCon )[nodeId + 1]->toVector();
+
+            std::for_each( listCells.begin(), listCells.end(), []( ASTERINTEGER &d ) { d -= 1; } );
+
+            if ( candidat.empty() ) {
+                candidat = listCells;
+            } else {
+                auto tmp = set_intersection( candidat, listCells );
+                AS_ASSERT( !tmp.empty() );
+                candidat = tmp;
+            }
+        }
+
+        AS_ASSERT( candidat.size() == 2 );
+        ASTERINTEGER cellVolu;
+        if ( candidat[0] == cellId ) {
+            cellVolu = candidat[1];
+        } else {
+            cellVolu = candidat[0];
+        }
+
+        _slavSurf2Volu[cellId] = cellVolu;
+    }
+};
 
 VectorLong ContactZone::getMasterCellsFromNode( const ASTERINTEGER &i ) const {
     auto vct = ( *_masterInverseConnectivity )[i + 1]->toVector();

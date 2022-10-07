@@ -348,7 +348,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
 
     _listOfGroupOfCells->allocateContiguousNumbered( listOfGrel.size(), totalSize );
     for ( auto &grel : listOfGrel ) {
-        _listOfGroupOfCells->allocateObject( grel );
+        _listOfGroupOfCells->push_back( grel );
     }
 };
 
