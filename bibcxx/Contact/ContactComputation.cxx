@@ -112,6 +112,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
     ASTERINTEGER nbContPair = pairing->getNumberOfPairs();
     auto nbInter = concatenate( pairing->getNumberOfIntersectionPoints() );
     auto inter = concatenate( pairing->getSlaveIntersectionPoints() );
+    auto listPairs = pairing->getListOfPairs();
     AS_ASSERT( nbContPair == nbInter.size() );
     AS_ASSERT( 16 * nbContPair == inter.size() );
 
@@ -120,7 +121,28 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
     auto grel = fed->getListOfGroupOfElements();
     auto nbGrel = data->getNumberOfGroupOfElements();
 
+    auto meshConnectivty = pairing->getMesh()->getConnectivity();
+
     ASTERINTEGER nbPair = 0;
+
+    // create local mapping
+    auto mapping = []( const VectorLong &surf_nodes, const VectorLong &volu_nodes ) {
+        VectorLong mapping;
+        mapping.reserve( surf_nodes.size() );
+
+        for ( auto &nodeId : surf_nodes ) {
+            auto i = 1;
+            for ( auto &nId : volu_nodes ) {
+                if ( nId == nodeId ) {
+                    break;
+                }
+                i++;
+            }
+            mapping.push_back( i );
+        }
+
+        return mapping;
+    };
 
     // Loop on Grel
     for ( ASTERINTEGER iGrel = 0; iGrel < nbGrel; iGrel++ ) {
@@ -130,7 +152,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
         auto liel = ( *grel )[iGrel + 1];
         liel->updateValuePointer();
         for ( ASTERINTEGER iElem = 0; iElem < nbElem; iElem++ ) {
-            auto iPair = -(*liel)[iElem];
+            auto iPair = -( *liel )[iElem];
 
             if ( iPair <= nbContPair ) {
                 auto iZone = pair2Zone[iPair - 1];
@@ -180,6 +202,28 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                     ( *data )[shift + 41] = double( pair->getInitialState() );
                 } else {
                     ( *data )[shift + 41] = double( InitialState::Interpenetrated );
+                }
+
+                /// Nitsche
+                if ( cont->getAlgorithm() == ContactAlgo::Nitsche ) {
+                    auto [slavCellNume, mastCellNume] = listPairs[iPair - 1];
+                    auto slav_surf_con = ( *meshConnectivty )[slavCellNume + 1]->toVector();
+                    auto slavVoluNume = zone->getSlaveCellSurfToVolu( slavCellNume );
+                    auto slav_volu_con = ( *meshConnectivty )[slavVoluNume + 1]->toVector();
+                    auto mapLoc = mapping( slav_surf_con, slav_volu_con );
+                    // Number of nodes
+                    ( *data )[shift + 50] = double( mapLoc.size() );
+                    // Mapping
+                    auto i = 0;
+                    for ( auto &nodeId : mapLoc ) {
+                        ( *data )[shift + 51 + i++] = double( nodeId );
+                    }
+
+                    // Provisoire
+                    // Young modulus
+                    ( *data )[shift + 45] = 2000.;
+                    // Poisson ration
+                    ( *data )[shift + 46] = 0.3;
                 }
 
                 nbPair++;

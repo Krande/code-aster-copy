@@ -148,6 +148,25 @@ ContactPairing::getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
         tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
                                        _listOfPairs[zone_index][2 * i + 1] ) );
     }
+
+    return tmp;
+}
+
+std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > ContactPairing::getListOfPairs() const {
+
+    std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > tmp;
+    ASTERINTEGER nbPairs = getNumberOfPairs();
+    tmp.reserve( nbPairs );
+
+    for ( int zone_index = 0; zone_index < _contDefi->getNumberOfContactZones(); zone_index++ ) {
+        auto nbPairs = getNumberOfPairsOfZone( zone_index );
+
+        for ( auto i = 0; i < nbPairs; i++ ) {
+            tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
+                                           _listOfPairs[zone_index][2 * i + 1] ) );
+        }
+    }
+
     return tmp;
 }
 
@@ -293,7 +312,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
         VectorPairLong listContElemZone;
         listContElemZone.reserve( slaveCells.size() );
 
-        // Find slave cells that are not paired
+        // Find slave cells that are not paired (because of LAGR_C)
         for ( auto &slavCellNume : slaveCells ) {
             if ( slaveCellPaired.count( slavCellNume ) == 0 ) {
                 slaveCellPaired.insert( slavCellNume );
@@ -334,6 +353,8 @@ void ContactPairing::buildFiniteElementDescriptor() {
                             CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType,
                                                     &nbNodesCell, &typgContNume, &typfContNume,
                                                     &typfFrotNume, &elemIndx );
+                        } else if ( contAlgo == ContactAlgo::Nitsche ) {
+                            continue;
                         } else {
                             AS_ABORT( "Not implemented" );
                         }

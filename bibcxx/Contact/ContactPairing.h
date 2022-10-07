@@ -45,7 +45,7 @@ class ContactPairing : public DataStructure {
     /** @brief Vector of slave intersection points */
     std::vector< VectorReal > _slaveIntersectionPoints;
     /** @brief Map between pair and zone */
-    std::map<ASTERINTEGER, ASTERINTEGER> _pair2Zone;
+    std::map< ASTERINTEGER, ASTERINTEGER > _pair2Zone;
     // FED after pairing
     FiniteElementDescriptorPtr _fed;
 
@@ -70,9 +70,7 @@ class ContactPairing : public DataStructure {
     };
 
     /** @brief Update coordinates */
-    void setCoordinates( MeshCoordinatesFieldPtr &coor ) {
-        _newCoordinates = coor;
-    };
+    void setCoordinates( MeshCoordinatesFieldPtr &coor ) { _newCoordinates = coor; };
 
     /** @brief compute pairing quantities of zone i */
     ASTERBOOL computeZone( ASTERINTEGER i );
@@ -103,6 +101,11 @@ class ContactPairing : public DataStructure {
     /** @brief get list of pairs of zone associated with zone zone_index
      *  @return vector of pairs of type std::pair
      */
+    VectorLongPairs getListOfPairs() const;
+
+    /** @brief get list of pairs of zone associated with zone zone_index
+     *  @return vector of pairs of type std::pair
+     */
     VectorLongPairs getListOfPairsOfZone( ASTERINTEGER zone_index ) const;
 
     /** @brief get slave intersection points of zone zone_index
@@ -127,7 +130,7 @@ class ContactPairing : public DataStructure {
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };
 
     /** @brief Get map */
-    std::map<ASTERINTEGER, ASTERINTEGER> pairsToZones() const { return _pair2Zone; };
+    std::map< ASTERINTEGER, ASTERINTEGER > pairsToZones() const { return _pair2Zone; };
 };
 
 typedef std::shared_ptr< ContactPairing > ContactPairingPtr;

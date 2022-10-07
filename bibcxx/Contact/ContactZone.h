@@ -179,6 +179,10 @@ class ContactZone : public DataStructure {
 
     auto getSlaveCellsSurfToVolu() const { return _slavSurf2Volu; };
 
+    ASTERINTEGER getSlaveCellSurfToVolu( const ASTERINTEGER &i ) const {
+        return _slavSurf2Volu.at( i );
+    };
+
     /**
      * @brief get master inverse connectivity as JeVeuxCollection
      */

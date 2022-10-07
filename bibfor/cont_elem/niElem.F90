@@ -147,6 +147,6 @@ type(ContactParameters), intent(inout) :: param
     ASSERT(geom%nb_dofs .le. MAX_LAGA_DOFS)
     ASSERT((geom%elem_dime .eq. 2).or.(geom%elem_dime .eq. 3))
 !
-    call laQuantities(geom, param)
+    !call laQuantities(geom, param)
 !
 end subroutine
