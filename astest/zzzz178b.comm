@@ -113,6 +113,7 @@ TEMP = THER_LINEAIRE(MODELE=MODE_TL,
                      CHAM_MATER=MATE_T,
                      EXCIT=(_F(CHARGE=CLIMT,),
                             _F(CHARGE=BLOQT,),),
+                     SOLVEUR=_F(METHODE='PETSC', PRE_COND='HPDDM', RESI_RELA=1.e-9,),
                      INFO=1,
                      )
 
@@ -144,7 +145,8 @@ MATE_M = AFFE_MATERIAU(MAILLAGE=MQ,
 RESU = MECA_STATIQUE(MODELE=MODE_MQ,
                      CHAM_MATER=MATE_M,
                      EXCIT=(_F(CHARGE=CHAR,),
-                            _F(CHARGE=DIRI,),)
+                            _F(CHARGE=DIRI,),),
+                     SOLVEUR=_F(METHODE='PETSC', PRE_COND='HPDDM',),
                      )
 
 # Extract the field from the result
