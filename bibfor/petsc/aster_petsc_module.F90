@@ -34,7 +34,7 @@ use petscksp
 implicit none
 !
 interface
-    subroutine PetscObjectSetName( obj, description, ierr)
+    subroutine PetscObjectSetName(obj, description, ierr)
         use petscsysdef
         type(*) :: obj
         character(len=*) :: description
@@ -60,7 +60,7 @@ end interface
 ! Vec routines
 !
 interface
-    subroutine VecDuplicateVecs( v, m, vtab, ierr)
+    subroutine VecDuplicateVecs(v, m, vtab, ierr)
           use petscvecdef
           Vec, intent(in)  :: v
           PetscInt, intent(in) :: m
@@ -90,7 +90,7 @@ end interface
 ! VecScatter routines
 !
 interface
-    subroutine VecScatterCreate( x, ix, y, iy, newsf, ierr)
+    subroutine VecScatterCreate(x, ix, y, iy, newsf, ierr)
           use petscvecdef
           Vec, intent(in) :: x, y
           IS, intent(in) :: ix, iy
@@ -99,14 +99,14 @@ interface
     end subroutine VecScatterCreate
 end interface
 interface
-    subroutine VecScatterDestroy( v, ierr)
+    subroutine VecScatterDestroy(v, ierr)
           use petscvecdef
           VecScatter, intent(in)  :: v
           PetscErrorCode, intent(out) :: ierr
     end subroutine VecScatterDestroy
 end interface
 interface
-    subroutine VecScatterBegin( sf, x, y, addv, mode, ierr)
+    subroutine VecScatterBegin(sf, x, y, addv, mode, ierr)
           use petscvecdef
           Vec, intent(in) :: x, y
           InsertMode, intent(in) :: addv
@@ -116,7 +116,7 @@ interface
     end subroutine VecScatterBegin
 end interface
 interface
-    subroutine VecScatterEnd( sf, x, y, addv, mode, ierr)
+    subroutine VecScatterEnd(sf, x, y, addv, mode, ierr)
           use petscvecdef
           Vec, intent(in) :: x, y
           InsertMode, intent(in) :: addv
@@ -129,7 +129,7 @@ end interface
 ! Mat routines
 !
 interface
-    subroutine MatConvert( mat, newtype, reuse, matnew, ierr)
+    subroutine MatConvert(mat, newtype, reuse, matnew, ierr)
         use petscmatdef
         Mat :: mat
         character(*) :: newtype
@@ -139,7 +139,7 @@ interface
     end subroutine MatConvert
 end interface
 interface
-    subroutine PCHPDDMSetAuxiliaryMat(pc,is,mat,func,ctx,ierr)
+    subroutine PCHPDDMSetAuxiliaryMat(pc, is, mat, func, ctx, ierr)
         use petsckspdef
         PC :: pc
         Mat :: mat
@@ -163,7 +163,7 @@ interface
     end subroutine MatCreateShell
 end interface
 interface
-    subroutine MatCreateSubMatrices( mat,n,irow,icol,scall, submat, ierr)
+    subroutine MatCreateSubMatrices(mat,n,irow,icol,scall, submat, ierr)
         use petscmatdef
         Mat :: mat
         PetscInt :: n
@@ -174,7 +174,7 @@ interface
     end subroutine MatCreateSubMatrices
 end interface
 interface
-    subroutine MatCreateVecs( a, vright, vleft, ierr )
+    subroutine MatCreateVecs(a, vright, vleft, ierr )
         use petscmatdef
         Mat, intent(in) :: a
         Vec :: vright, vleft
@@ -195,7 +195,7 @@ interface
     end subroutine MatGetRowIJ
 end interface
 interface
-    subroutine MatRestoreRowIJ( mat,shift,symmetric,inodecompressed,n, ia, iia, ja, jja, done, ierr)
+    subroutine MatRestoreRowIJ(mat,shift,symmetric,inodecompressed,n, ia, iia, ja, jja, done, ierr)
         use petscmatdef
         Mat :: mat
         PetscInt :: shift
@@ -219,17 +219,8 @@ end interface
 !
 ! PC and KSP routines
 !
-! interface
-!     subroutine PCBJacobiGetSubKSP(pc, nlocal, first, subksp, ierr)
-!         use petsckspdef
-!         PC :: pc
-!         PetscInt :: nlocal, first
-!         KSP :: subksp(*)
-!         PetscErrorCode, intent(out) :: ierr
-!     end subroutine PCBJacobiGetSubKSP
-! end interface
 interface
-     subroutine PCFactorSetMatOrderingType( pc, ordering, ierr)
+     subroutine PCFactorSetMatOrderingType(pc, ordering, ierr)
          use petsckspdef
          PC :: pc
          character(*) :: ordering
@@ -309,6 +300,26 @@ interface
         external :: mykspmonitor, mydestroy
         PetscErrorCode, intent(out) :: ierr
     end subroutine KSPMonitorSet
+end interface
+!
+! Viewer routines
+!
+interface
+    subroutine PetscViewerBinaryOpen(comm,n,t,v,ierr)
+        use petscsysdef
+        PetscMPIInt, intent(in) :: comm
+        character(len=*), intent(in) :: n
+        PetscFileMode, intent(in) :: t
+        PetscViewer, intent(out) :: v
+        PetscErrorCode, intent(out):: ierr
+    end subroutine PetscViewerBinaryOpen
+end interface
+interface
+    subroutine PetscViewerDestroy(v,ierr)
+        use petscsysdef
+        PetscViewer, intent(out) :: v
+        PetscErrorCode, intent(out):: ierr
+    end subroutine PetscViewerDestroy
 end interface
 #endif
 end module aster_petsc_module

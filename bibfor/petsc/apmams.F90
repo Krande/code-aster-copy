@@ -160,9 +160,9 @@ implicit none
         do k = nzdeb, nzfin
             ilig = smhc(k)
             nbd = nbd + 1
-            v_dxi1(ilig) = v_dxi1(ilig) + 1
+            v_dxi1(ilig) = v_dxi1(ilig) + to_petsc_int(1)
         end do
-        v_dxi1(jcol2+1) = v_dxi1(jcol2+1) + nbd - 1
+        v_dxi1(jcol2+1) = v_dxi1(jcol2+1) + to_petsc_int(nbd - 1)
     end do
 
 !   Preallocate the matrix
@@ -196,12 +196,12 @@ implicit none
                 valm = zr(jvalm - 1 + k)
             end if
             zr(jdval2 + jterm - 1) = valm
-            v_dxi2(jterm) = ilig - 1
+            v_dxi2(jterm) = to_petsc_int(ilig - 1)
 
             iterm = iterm + 1
             valm = zr(jvalm - 1 + k)
             zr(jdval1 + iterm - 1) = valm
-            v_dxi1(iterm) = ilig - 1
+            v_dxi1(iterm) = to_petsc_int(ilig - 1)
         end do
 
 !       we remove the extra term computed in the algorithm

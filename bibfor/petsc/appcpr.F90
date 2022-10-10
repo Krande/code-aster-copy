@@ -58,7 +58,7 @@ implicit none
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    mpi_int :: rang, nbproc
+    integer :: rang, nbproc
     integer :: dimgeo, dimgeo_b, niremp, istat
     integer :: jnequ, jnequl
     integer :: nloc, neqg, ndprop, ieq, numno, icmp
@@ -510,10 +510,10 @@ implicit none
         myopt = '-prefix_push pc_hpddm_ ' // &
         '-prefix_push levels_1_ ' // &
         '-pc_type asm ' // &
-        '-sub_mat_mumps_icntl_14 500 ' // &
+        '-sub_mat_mumps_icntl_14 5000 ' // &
         '-sub_mat_mumps_icntl_24 1 ' // &
         '-sub_mat_mumps_icntl_25 0 ' // &
-        '-sub_mat_mumps_cntl_3 1.e-15 ' // &
+        '-sub_mat_mumps_cntl_3 1.e-50 ' // &
         '-sub_mat_mumps_cntl_5 0. ' // &
         '-eps_nev 30 ' // &
         '-sub_pc_type ' // factor // ' ' //&
@@ -524,10 +524,10 @@ implicit none
         '-prefix_push coarse_ ' // &
         '-pc_factor_mat_solver_type mumps ' // &
         '-sub_pc_type ' // factor // ' ' //&
-        '-mat_mumps_icntl_14 500 ' //&
+        '-mat_mumps_icntl_14 5000 ' //&
         '-mat_mumps_icntl_24 1 ' //&
         '-mat_mumps_icntl_25 0 ' //&
-        '-mat_mumps_cntl_3 1.e-15 ' //&
+        '-mat_mumps_cntl_3 1.e-50 ' //&
         '-mat_mumps_cntl_5 0. ' //&
         '-p ' // trim(nbproc_str) // ' ' // &
         '-prefix_pop ' // &
