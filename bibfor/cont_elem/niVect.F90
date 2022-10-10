@@ -55,7 +55,7 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
     real(kind=8) :: gap, stress_n, gamma_c, projRmVal
-    real(kind=8) :: stress_t(2), vT(2), gamma_f, projBsVal(2), term_f(2)
+    real(kind=8) :: stress_t(2), vT(2), gamma_f, projBsVal(2)
     real(kind=8) :: dGap(MAX_LAGA_DOFS)
     real(kind=8) :: jump_t(MAX_LAGA_DOFS, 3)
     integer :: dofsMap(54)

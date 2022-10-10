@@ -85,8 +85,7 @@ fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupOfElements()
 test.assertEqual(len(grel), 2)
-test.assertEqual(len(grel[0]), 7)
-print(nema)
+test.assertEqual(len(grel[0]), 3)
 test.assertSequenceEqual(nema, [[58, 59, 176, 14, 13, 116, 104], [58, 59, 176, 13, 1, 115, 104],
                                 [59, 60, 177, 14, 13, 116, 104],
                                 [59, 60, 177, 15, 14, 117, 104],
@@ -145,7 +144,7 @@ fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupOfElements()
 test.assertEqual(len(grel), 2)
-test.assertEqual(len(grel[0]), 6)
+test.assertEqual(len(grel[0]), 3)
 test.assertSequenceEqual(nema, [[14, 13, 116, 58, 59, 176, 104], [14, 13, 116, 11, 58, 175, 104],
                                 [15, 14, 117, 59, 60, 177, 104], [
                                     15, 14, 117, 60, 8, 178, 104],
