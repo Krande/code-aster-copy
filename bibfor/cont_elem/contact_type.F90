@@ -97,11 +97,19 @@ type ContactGeom
     integer                             :: nb_dofs = 0
 end type
 !
-!===================================================================================================
+type ContactNitsche
+    ! Young modulus
+    real(kind=8)                        :: E = 2000.d0
+    ! Poisson ratio
+    real(kind=8)                        :: nu = 0.3d0
+
+end type
 !
 !===================================================================================================
 !
-    public :: ContactParameters, ContactGeom
+!===================================================================================================
+!
+    public :: ContactParameters, ContactGeom, ContactNitsche
 !
 contains
 !

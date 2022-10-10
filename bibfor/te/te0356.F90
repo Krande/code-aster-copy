@@ -25,8 +25,10 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/niElem.h"
 #include "asterfort/laParam.h"
+#include "asterfort/niElem.h"
+#include "asterfort/niMatr.h"
+#include "asterfort/niVect.h"
 #include "asterfort/writeMatrix.h"
 #include "asterfort/writeVector.h"
 #include "contact_module.h"
@@ -65,7 +67,7 @@ implicit none
 !
 ! --- Compute contact residual
 !
-!        call laVect(parameters, geom, vect_cont, vect_fric)
+        call niVect(parameters, geom, vect_cont, vect_fric)
 !
 ! --- Write vector
 !
@@ -79,7 +81,7 @@ implicit none
 !
 ! --- Compute contact matrix
 !
-!        call laMatr(parameters, geom, matr_cont, matr_fric)
+        call niMatr(parameters, geom, matr_cont, matr_fric)
 !
 ! - Write matrix
 !

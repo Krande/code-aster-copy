@@ -1,0 +1,123 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+!
+subroutine niVect(parameters, geom, vect_cont, vect_fric)
+!
+use contact_module
+use contact_type
+use contact_nitsche_module
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/getQuadCont.h"
+#include "asterfort/niElemCont.h"
+#include "blas/daxpy.h"
+#include "blas/dgemv.h"
+#include "contact_module.h"
+!
+type(ContactParameters), intent(in) :: parameters
+type(ContactGeom), intent(in) :: geom
+real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Contact (Nitsche method) - Elementary computations
+!
+! Compute vector
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out  vect_cont        : vector for contact
+! Out  vect_fric        : vector for friction
+!
+! --------------------------------------------------------------------------------------------------
+!
+    aster_logical :: l_cont_qp, l_fric_qp
+    integer ::  i_qp, nb_qp
+    real(kind=8) :: weight_sl_qp, coeff, hF
+    real(kind=8) :: coor_qp_sl(2)
+    real(kind=8) :: coor_qp(2, 48), weight_qp(48)
+    real(kind=8) :: gap, stress_n, gamma_c, projRmVal
+    real(kind=8) :: stress_t(2), vT(2), gamma_f, projBsVal(2), term_f(2)
+    real(kind=8) :: dGap(MAX_LAGA_DOFS)
+    real(kind=8) :: jump_t(MAX_LAGA_DOFS, 3)
+    integer :: dofsMap(54)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    vect_cont = 0.d0
+    vect_fric = 0.d0
+!
+! - Mapping of dofs
+!
+    dofsMap = dofsMapping(geom)
+!
+! - Get quadrature (slave side)
+!
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
+                    geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
+!
+! - Diameter of slave side
+!
+    hF = diameter(geom%nb_node_slav, geom%coor_slav_init)
+!
+! - Loop on quadrature points
+!
+    do i_qp = 1, nb_qp
+!
+! ----- Get current quadrature point (slave side)
+!
+        coor_qp_sl(1:2) = coor_qp(1:2, i_qp)
+        weight_sl_qp = weight_qp(i_qp)
+!
+! ----- Compute contact quantities
+!
+        call niElemCont(parameters, geom, coor_qp_sl, hF, &
+                    stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
+                    stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
+                    dGap=dGap, jump_t=jump_t)
+!
+! ------ CONTACT PART (always computed)
+!
+        if(l_cont_qp) then
+!
+! ------ Compute displacement (slave and master side)
+!        term: (H*[stress_n + gamma_c * gap(u)]_R-, D(gap(u))[v])
+!
+            call remappingVect(geom, dofsMap, dGap, vect_cont, weight_sl_qp * projRmVal)
+            coeff = weight_sl_qp * projRmVal
+        end if
+!
+! ------ FRICTION PART (computed only if friction)
+!
+        if(parameters%l_fric) then
+!
+! ------ Compute displacement (slave and master side) (TO REMAP)
+!        term: ([stress_t - gamma_f * vT(u)]_Bs, (v^s-v^m)_tang)
+!
+            if(l_fric_qp) then
+                coeff = weight_sl_qp
+                call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, jump_t, MAX_LAGA_DOFS, &
+                            projBsVal, 1, 1.d0, vect_fric, 1)
+            end if
+        end if
+    end do
+!
+end subroutine
