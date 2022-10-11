@@ -130,6 +130,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 ),
           )
 
+#RES.printMedFile("/home/C00976/tmp/nit.rmed")
 
 FIN()
 # CHECKSUM:9f90ac18752a4c0cdfc3c56aef286888  -:FIN CHECKSUM

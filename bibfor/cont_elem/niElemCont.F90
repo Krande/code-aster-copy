@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine niElemCont(parameters, geom, coor_qp_sl, hF, &
+subroutine niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
                     stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
                     stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
                     dGap, d2Gap, jump_t)
@@ -24,6 +24,7 @@ subroutine niElemCont(parameters, geom, coor_qp_sl, hF, &
 use contact_module
 use contact_type
 use contact_algebra_module
+use contact_nitsche_module
 !
 implicit none
 !
@@ -33,6 +34,7 @@ implicit none
 !
 type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
+type(ContactNitsche), intent(in) :: nits
 real(kind=8), intent(in) :: coor_qp_sl(2), hF
 real(kind=8), intent(out) :: stress_n, gap, gamma_c, projRmVal
 real(kind=8), intent(out) :: stress_t(2), vT(2), gamma_f, projBsVal(2)
@@ -63,8 +65,9 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 !
     real(kind=8) :: shape_func_sl(9), dshape_func_sl(2,9), ddshape_func_sl(3,9)
     real(kind=8) :: shape_func_ma(9), dshape_func_ma(2,9), ddshape_func_ma(3,9)
+    real(kind=8) :: shape_func_vo(27), dshape_func_vo(3,27)
     real(kind=8) :: norm_slav(3), norm_mast(3), tau_slav(3,2), tau_mast(3,2)
-    real(kind=8) :: H, coor_qp_ma(2), sn_gap, st_v(3)
+    real(kind=8) :: H, coor_qp_ma(2), sn_gap, st_v(3), coor_qp_vo(3)
     real(kind=8) :: metricTens(2,2), invMetricTens(2,2)
     real(kind=8) :: metricTens_mast(2,2), invMetricTens_mast(2,2), H_mast(2,2)
     real(kind=8) :: thres_qp, speed(3), projBsVal3(3)
@@ -73,11 +76,16 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     real(kind=8) :: dTs_ns(MAX_LAGA_DOFS,2), dTm_nm(MAX_LAGA_DOFS,2)
     real(kind=8) :: dTs(MAX_LAGA_DOFS,3,2)
     real(kind=8) :: d2Ns_nm(MAX_LAGA_DOFS,MAX_LAGA_DOFS), dTs_nm(MAX_LAGA_DOFS,2)
+    real(kind=8) :: stress(3,3), stressn(3)
 !
 ! ----- Project quadrature point (on master side)
 !
     call projQpSl2Ma(geom, coor_qp_sl, parameters%proj_tole, &
                     coor_qp_ma, gap, tau_slav, norm_slav, tau_mast, norm_mast)
+!
+! ----- Change parametric coordinates (on slave side)
+!
+    call projQpSl2Vo(geom, coor_qp_sl, coor_qp_vo)
 !
 ! ----- Evaluate shape function for displacement (slave and master)
 !
@@ -85,10 +93,13 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
                         shape_func_sl, dshape_func_sl, ddshape_func_sl)
     call shapeFuncDisp(geom%elem_dime, geom%nb_node_mast, geom%elem_mast_code, coor_qp_ma, &
                         shape_func_ma, dshape_func_ma, ddshape_func_ma)
+    call shapeFuncDispVolu(geom%elem_volu_code, coor_qp_vo, shape_func_vo, dshape_func_vo)
 !
 ! ----- Evaluate stress_n and gamma_c at quadrature point
 !
-    stress_n = -25.d0
+    stress = evalStress(nits, geom%nb_node_slav, shape_func_sl)
+    stressn = matmul(stress, norm_slav)
+    stress_n = dot_product(stressn, norm_slav)
     gamma_c = evalPoly(geom%nb_node_slav, shape_func_sl, parameters%coef_cont) / hF
     sn_gap = stress_n + gamma_c * gap
 !

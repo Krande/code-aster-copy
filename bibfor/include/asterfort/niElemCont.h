@@ -20,13 +20,15 @@
 #include "contact_module.h"
 !
 interface
-    subroutine niElemCont(parameters, geom, coor_qp_sl, hF, &
+    subroutine niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
                     stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
                     stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
                     dGap, d2Gap, jump_t)
         use contact_type
+        use contact_nitsche_module
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
+        type(ContactNitsche), intent(in) :: nits
         real(kind=8), intent(in) :: coor_qp_sl(2), hF
         real(kind=8), intent(out) :: stress_n, gap, gamma_c, projRmVal
         real(kind=8), intent(out) :: stress_t(2), vT(2), gamma_f, projBsVal(2)

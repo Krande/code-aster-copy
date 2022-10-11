@@ -29,12 +29,15 @@ private
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/mm2onf.h"
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/mmnonf.h"
-#include "asterfort/mm2onf.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/projInsideCell.h"
+#include "asterfort/reereg.h"
 #include "asterfort/reerel.h"
 #include "asterfort/subac1.h"
 #include "asterfort/subaco.h"
@@ -55,7 +58,8 @@ private
 !
     public :: projQpSl2Ma, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: diameter, testLagrC, gapEval, testLagrF, barycenter
-    public :: speedEval, thresEval
+    public :: speedEval, thresEval, shapeFuncDispVolu, projQpSl2Vo
+    public :: gradFuncDispVolu
 !
 contains
 !
@@ -182,6 +186,42 @@ contains
         ! print*, "COOR_PJ: ", coor_qp_ma
         ! print*, "COOR_PJ_RE: ", coor_qp_ma_re
         ! print*, "GAP: ", gap
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine projQpSl2Vo(geom, coor_qp_sl, coor_qp_vo)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: coor_qp_sl(2)
+        real(kind=8), intent(out) :: coor_qp_vo(2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Change parametric coordinates from face to volume
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret
+        real(kind=8) :: coor_qp_sl_re(3)
+!
+        coor_qp_vo = 0.d0
+!
+! ----- Return in real face slave space (current configuration)
+!
+        coor_qp_sl_re = 0.d0
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_curr, coor_qp_sl, &
+                    coor_qp_sl_re)
+!
+! ----- Projection of node on volumic slave cell (volumic parametric space)
+!
+        call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr, &
+                    coor_qp_sl_re, geom%elem_dime, coor_qp_vo, iret, ndim_coor_=3)
 !
     end subroutine
 !
@@ -329,6 +369,93 @@ contains
         if(present(ddshape_)) then
             call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), ddshape_)
         end if
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine shapeFuncDispVolu(elem_code, coor_qp, &
+                             shape_, dshape_)
+!
+    implicit none
+!
+        character(len=8), intent(in) :: elem_code
+        real(kind=8), intent(in) :: coor_qp(3)
+        real(kind=8), intent(out), optional :: shape_(27)
+        real(kind=8), intent(out), optional  :: dshape_(3,27)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate shape function and derivative for displacement (volumic cell)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        if(present(shape_)) then
+            call elrfvf(elem_code, coor_qp, shape_)
+        end if
+!
+        if(present(dshape_)) then
+            call elrfdf(elem_code, coor_qp, dshape_)
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine gradFuncDispVolu(geom, dshape, gradFunc)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dshape(3, 27)
+        real(kind=8), intent(out) :: gradFunc(3,27)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate derivative for displacement (volumic cell)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: g(3,3), h(3,3), jac
+        integer :: ino, j, k
+!
+        g = 0.d0
+!
+        do ino = 1, geom%nb_node_volu
+            do j = 1, geom%elem_dime
+                g(1,j) = g(1,j) + geom%coor_volu_init(j, ino) * dshape(1, ino)
+                g(2,j) = g(2,j) + geom%coor_volu_init(j, ino) * dshape(2, ino)
+                g(3,j) = g(3,j) + geom%coor_volu_init(j, ino) * dshape(3, ino)
+            end do
+        end do
+!
+        if(geom%elem_dime == 2) g(3,3) = 1.d0
+!
+        h(1,1) = g(2,2) * g(3,3) - g(2,3) * g(3,2)
+        h(2,1) = g(3,1) * g(2,3) - g(2,1) * g(3,3)
+        h(3,1) = g(2,1) * g(3,2) - g(3,1) * g(2,2)
+        h(1,2) = g(1,3) * g(3,2) - g(1,2) * g(3,3)
+        h(2,2) = g(1,1) * g(3,3) - g(1,3) * g(3,1)
+        h(3,2) = g(1,2) * g(3,1) - g(3,2) * g(1,1)
+        h(1,3) = g(1,2) * g(2,3) - g(1,3) * g(2,2)
+        h(2,3) = g(2,1) * g(1,3) - g(2,3) * g(1,1)
+        h(3,3) = g(1,1) * g(2,2) - g(1,2) * g(2,1)
+!
+        jac = g(1,1) * h(1,1) + g(1,2) * h(2,1) + g(1,3) * h(3,1)
+!
+        gradFunc = 0.d0
+!
+        do ino = 1, geom%nb_node_volu
+            do j = 1, geom%elem_dime
+                do k = 1, geom%elem_dime
+                    gradFunc(j, ino) = gradFunc(j, ino) + h(j,k) * dshape(k, ino) / jac
+                end do
+            end do
+        enddo
+!
     end subroutine
 !
 !===================================================================================================

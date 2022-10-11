@@ -19,18 +19,17 @@
 module contact_nitsche_module
 !
 use contact_type
+use contact_algebra_module
+use contact_module
 !
 implicit none
 !
 private
 !
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/matinv.h"
-#include "blas/dgemm.h"
-#include "blas/dgemv.h"
-#include "blas/dger.h"
+#include "asterfort/reereg.h"
+#include "asterfort/trace_mat.h"
 #include "contact_module.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,7 +38,21 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
+!
+type ContactNitsche
+    ! Young modulus
+    real(kind=8)                        :: E = 2000.d0
+    ! Poisson ratio
+    real(kind=8)                        :: nu = 0.3d0
+
+    ! stress at nodes
+    real(kind=8), dimension(3,3,9) :: stress_nodes = 0.d0
+
+end type
+!
+    public ContactNitsche
     public :: dofsMapping, remappingVect, remappingMatr
+    public :: evalStressNodes, evalStress
 !
 contains
 !
@@ -143,6 +156,141 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine gradDisp(geom, dshape_func_vo, grad, eps)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dshape_func_vo(3,27)
+        real(kind=8), intent(out) :: grad(3,3), eps(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of raytracing operator
+!   (De^m(u)[v], Dgap(u)[v]) = (tau^m, -n^s )^{-1}(v^s - v^m  + g*Dn^s)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        integer :: n, i, j
+        real(kind=8) :: dfunc_dx(3, 27)
+!
+        call gradFuncDispVolu(geom, dshape_func_vo, dfunc_dx)
+!
+        grad = 0.d0
+!
+        do n = 1, geom%nb_node_volu
+            do i = 1, geom%elem_dime
+                do j = 1, geom%elem_dime
+                    grad(i,j) = grad(i,j) + dfunc_dx(j,n)*geom%depl_volu_curr(i,n)
+                end do
+            end do
+        end do
+!
+        eps = (grad + transpose(grad)) / 2.d0
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine lameCoeff(E, nu, mu, lambda)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: E, nu
+        real(kind=8), intent(out) :: mu, lambda
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Lame coefficient
+!
+! --------------------------------------------------------------------------------------------------
+!
+        lambda = E * nu / (1.d0 + nu) / (1.d0 - 2.d0 * nu)
+        mu = 0.5d0 * E / (1.d0 + nu)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine evalStressNodes(geom, nits)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        type(ContactNitsche), intent(inout) :: nits
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Remapping matrix (+= operation)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: coor_qp_vo(3), mu, lambda, rac_1div3
+        real(kind=8) :: dshape_func_vo(3,27), grad(3,3), eps(3,3)
+        integer :: i_node, iret
+!
+        call lameCoeff(nits%E, nits%nu, mu, lambda)
+!
+        do i_node = 1, geom%nb_node_slav
+!
+! ----- Projection of node on volumic slave cell (volumic parametric space)
+!
+            coor_qp_vo = 0.d0
+            call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr, &
+            geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret, ndim_coor_=3)
+!
+! ----- Eval shape function and gradient
+!
+            call shapeFuncDispVolu(geom%elem_volu_code, coor_qp_vo, dshape_= dshape_func_vo)
+            call gradDisp(geom, dshape_func_vo, grad, eps)
+!
+! ----- Eval stress
+!
+            nits%stress_nodes(1:3,1:3, i_node) = 2.d0*mu*eps + lambda * trace_mat(3, eps) * Iden3()
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function evalStress(nits, nb_node_slav, shape_func_sl)
+!
+    implicit none
+!
+        type(ContactNitsche), intent(in) :: nits
+        integer, intent(in) :: nb_node_slav
+        real(kind=8), intent(in) :: shape_func_sl(9)
+        real(kind=8) :: evalStress(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Eval stress tensor
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+!
+        evalStress = 0.d0
+!
+        do j = 1, 3
+            do i = 1, 3
+                evalStress(i,j) = evalPoly(nb_node_slav, shape_func_sl, nits%stress_nodes(i,j,:))
+            end do
+        end do
+!
+    end function
 !
 !===================================================================================================
 !

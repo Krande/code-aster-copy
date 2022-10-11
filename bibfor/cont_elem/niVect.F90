@@ -49,6 +49,7 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
     integer ::  i_qp, nb_qp
     real(kind=8) :: weight_sl_qp, coeff, hF
@@ -78,6 +79,10 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
     hF = diameter(geom%nb_node_slav, geom%coor_slav_init)
 !
+! - Eval stress at face nodes
+!
+    call evalStressNodes(geom, nits)
+!
 ! - Loop on quadrature points
 !
     do i_qp = 1, nb_qp
@@ -89,7 +94,7 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
 ! ----- Compute contact quantities
 !
-        call niElemCont(parameters, geom, coor_qp_sl, hF, &
+        call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
                     stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
                     stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
                     dGap=dGap, jump_t=jump_t)
