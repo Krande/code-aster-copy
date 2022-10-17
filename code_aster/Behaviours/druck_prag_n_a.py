@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sam.cuvilliez at edf.fr
-
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'DRUCK_PRAG_N_A',
     lc_type        = ('MECANIQUE',),
-    doc            =   """Loi de Drucker_Prager, non associée, pour la mécanique des sols (cf. [R7.01.16] pour plus de détails).
-   On suppose toutefois que le coefficient de dilatation thermique est constant. L'écrouissage peut être linéaire ou parabolique."""              ,
-    num_lc         = 16,
-    nb_vari        = 3,
-    nom_vari       = ('EPSPEQ','EPSPVOL','INDIPLAS',),
-    mc_mater       = ('ELAS','DRUCKER_PRAGER',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    doc            =   """Loi de Drucker Prager non associée, pour la mécanique des sols (cf. [R7.01.16] pour plus de détails)""",
+    num_lc         = 40,
+    nb_vari        = 9,
+    nom_vari       = ('EPSPEQ','EPSPVOL','INDIPLAS','EPSPXX','EPSPYY',
+                      'EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ',
+                      ),
+    mc_mater       = ('ELAS','DRUCKER_PRAGER'),
+    modelisation   = ('3D','AXIS','D_PLAN'),
+    deformation    = ('PETIT','GDEF_LOG'),
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
+    proprietes     = ('COMP_ELAS',),
     syme_matr_tang = ('No',),
     exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    deform_ldc     = ('MECANIQUE',),
+    regu_visc      = ('REGU_VISC_ELAS',),
 )

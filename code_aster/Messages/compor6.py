@@ -73,5 +73,10 @@ avec un coefficient de Poisson fonction.
 Cette combinaison est connue comme donnant des résultats imprécis voir faux, et sera corrigée dans les versions ultérieures.
         """
     ),
+    15: _(
+        """
+        L'intégration locale de loi de comportement DRUCK_PRAG_N_A n'admet pas une unique solution : vérifier les données matériaux. 
+        """
+    ),
 
 }

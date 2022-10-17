@@ -64,6 +64,7 @@ implicit none
 #include "asterfort/lc0036.h"
 #include "asterfort/lc0038.h"
 #include "asterfort/lc0039.h"
+#include "asterfort/lc0040.h"
 #include "asterfort/lc0042.h"
 #include "asterfort/lc0050.h"
 #include "asterfort/lc0054.h"
@@ -569,6 +570,14 @@ integer :: codret
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
+    case(40) 
+!       DRUCKER_PRAGER_NA
+        call lc0040(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, nvi, vim,&
+                    option, angmas, sigp, vip,&
+                    typmod, icomp, ndsde,&
+                    dsidep, codret)
     case (42)
         call lc0042(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -846,6 +855,7 @@ integer :: codret
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
+                    
     case (137)
 !     MONOCRISTAL, POLYCRISTAL
         call lc0137(BEHinteg,&
@@ -855,7 +865,7 @@ integer :: codret
                     angmas, sigp, vip, &
                     typmod, icomp, nvi,&
                     dsidep, codret)
-
+                
     case (145)
 !       BETON_RAG : nouvelle
         call lc0145(fami, kpg, ksp, ndim, imate,&
