@@ -22,7 +22,7 @@ subroutine meamme(optionz,&
                   time, basez,&
                   matrRigiz, matrMassz,&
                   matrElemz, listElemCalcz,&
-                  variz_, comporz_)
+                  variz, comporz)
 !
 implicit none
 !
@@ -42,6 +42,7 @@ implicit none
 #include "asterfort/lisnnl.h"
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
+#include "asterfort/mecact.h"
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
 #include "asterfort/utmess.h"
@@ -56,7 +57,7 @@ real(kind=8), intent(in) :: time
 character(len=*), intent(in) :: basez
 character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
 character(len=*), intent(in) :: listElemCalcz
-character(len=*), intent(in), optional :: variz_, comporz_
+character(len=*), intent(in) :: variz, comporz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +86,7 @@ character(len=*), intent(in), optional :: variz_, comporz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbFieldInMax = 14, nbFieldOutMax = 2
+    integer, parameter :: nbFieldInMax = 16, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
@@ -96,13 +97,13 @@ character(len=*), intent(in), optional :: variz_, comporz_
     integer, parameter :: modeFourier = 0
     character(len=16) :: option
     character(len=24), parameter :: chvarc = '&&MEAMME.CHVARC'
-    character(len=24) :: compor, listElemCalc
+    character(len=24) :: compor, listElemCalc, vari
     character(len=8) :: physQuantityName
     character(len=24) :: matrRigi, matrMass
     character(len=24) :: resuElemRigi, resuElemMass
     character(len=24) :: chgeom, chcara(18), chharm
     character(len=1) :: base
-    character(len=8) :: model, caraElem
+    character(len=8) :: model, caraElem, mesh
     character(len=24) :: mate, mateco
     character(len=19) :: matrElem, resuElem, ligrel
     integer :: iLoad, indxResuElem
@@ -114,6 +115,10 @@ character(len=*), intent(in), optional :: variz_, comporz_
     character(len=8) :: loadName
     character(len=13) :: loadDescBase
     character(len=19) :: loadMapName, loadLigrel
+    character(len=24), parameter :: nonLinearMap = "&&MEAMMA.NONLIN"
+    integer, parameter :: nbCmp = 1
+    character(len=8), parameter :: cmpName = ('X1')
+    integer, parameter :: cmpVale = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,6 +135,8 @@ character(len=*), intent(in), optional :: variz_, comporz_
     listElemCalc = listElemCalcz
     matrRigi     = matrRigiz
     matrMass     = matrMassz
+    compor       = comporz
+    vari         = variz
     hasDirichlet = option .eq. 'RIGI_MECA_HYST'
     lpain  = ' '
     lchin  = ' '
@@ -138,18 +145,16 @@ character(len=*), intent(in), optional :: variz_, comporz_
 
 ! - Prepare flags
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
-
-! - Behaviour when non-linear case, multi-behaviour (PMF) for linear case
-    compor = ' '
-    if (present(comporz_)) then
-        compor = comporz_
-    else
-        compor = mate(1:8)//'.COMPOR'
-    endif
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
 
 ! - Preparation of input fields
     call mecham(option, model, caraElem, modeFourier, chgeom,&
                 chcara, chharm, iret)
+
+! - Special map for non-linear cases
+    call jedetr(nonLinearMap)
+    call mecact('V', nonLinearMap, 'MAILLA', mesh, 'NEUT_I',&
+                ncmp=nbCmp, nomcmp=cmpName, si=cmpVale)
 
 ! - Field for external state variables
     call vrcins(model, mate, caraElem, time, chvarc, codret)
@@ -225,14 +230,11 @@ character(len=*), intent(in), optional :: variz_, comporz_
     lchin(10) = resuElemMass(1:19)
     lpain(11) = 'PCOMPOR'
     lchin(11) = compor(1:19)
-    nbFieldIn = 11
-
-! - Add internal state variables
-    if (present(variz_)) then
-        nbFieldIn = nbFieldIn + 1
-        lpain(nbFieldIn) = 'PVARIPG'
-        lchin(nbFieldIn) = variz_(1:19)
-    endif
+    lpain(12) = 'PNONLIN'
+    lchin(12) = nonLinearMap(1:19)
+    lpain(13) = 'PVARIPG'
+    lchin(13) = vari(1:19)
+    nbFieldIn = 13
 
 ! - Get symmetric or unsymmetric rigidity matrix
     if (resuElemRigi .ne. ' ') then
@@ -271,6 +273,8 @@ character(len=*), intent(in), optional :: variz_, comporz_
     nbFieldOut = 2
 
 ! - Compute
+    ASSERT(nbFieldIn .le. nbFieldInMax)
+    ASSERT(nbFieldOut .le. nbFieldOutMax)
     call calcul('S',&
                 option, listElemCalc,&
                 nbFieldIn, lchin, lpain,&
@@ -314,6 +318,8 @@ character(len=*), intent(in), optional :: variz_, comporz_
             lchout(1) = resuElem
 
 ! --------- Compute
+            ASSERT(nbFieldIn .le. nbFieldInMax)
+            ASSERT(nbFieldOut .le. nbFieldOutMax)
             call calcul('S',&
                         option, loadLigrel,&
                         nbFieldIn, lchin, lpain,&

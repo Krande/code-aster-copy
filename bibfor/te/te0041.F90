@@ -46,7 +46,6 @@ subroutine te0041(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
@@ -72,11 +71,12 @@ subroutine te0041(option, nomte)
     real(kind=8)    :: mata1(nl1), mata2(nl1), mata3(nl2), mata4(nl2)
 !
     integer         :: ibid, itype, irep, nbterm, nno, nc, ndim, nddl, i, j, iret
-    integer         :: jdr, jdm, lorien, jdc, iacce, ivect, jma
+    integer         :: jdr, jdm, lorien, jdc, iacce, ivect, jma, jVNonLin
     real(kind=8)    :: pgl(3,3), matv1(nl1), matp(nddlm, nddlm)
     real(kind=8)    :: eta, r8bid, xrota
     real(kind=8)    :: tempo(ntermx)
     complex(kind=8) :: hyst, dcmplx
+    aster_logical :: lNonLinear
 !
     character(len=8)    :: k8bid
     character(len=24)   :: valk(2)
@@ -85,8 +85,6 @@ subroutine te0041(option, nomte)
     real(kind=8)        :: valres(3)
     character(len=16)   :: nomres(3)
 ! --------------------------------------------------------------------------------------------------
-    character(len=8)    :: nomu
-    character(len=16)   :: concep,cmd
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
 !   Ce sont bien des éléments discrets
@@ -102,16 +100,22 @@ subroutine te0041(option, nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !
-    assemble_amor = (option.eq.'AMOR_MECA')
-    if ( assemble_amor ) then
-        call getres(nomu,concep,cmd)
-        call tecach('ONO','PCOMPOR', 'L', iret, iad=ibid)
-        ! Called from c++ probably
-        assemble_amor = cmd == ' ' .and. iret > 0
-        if( .not. assemble_amor) then
+    assemble_amor = ASTER_FALSE
+    if (option.eq.'AMOR_MECA') then
+        call tecach('ONO', 'PNONLIN', 'L', iret, iad=jVNonLin)
+        lNonLinear = ASTER_FALSE
+        if (iret .eq. 0) then
+            call jevech('PNONLIN', 'L',jVNonLin)
+            lNonLinear = zi(jVNonLin) .eq. 1
+        endif
+        if (lNonLinear) then
+! --------- Nonlinear cases (=> only for DIS_CHOC)
             call jevech('PCOMPOR', 'L', icompo)
-            assemble_amor = zk16(icompo).eq.'DIS_CHOC'
-        end if
+            assemble_amor = zk16(icompo) .eq. 'DIS_CHOC'
+        else
+! --------- Linear case (=> for all cases)
+            assemble_amor = ASTER_TRUE
+        endif
     endif
 !
     if      (option .eq. 'RIGI_MECA') then

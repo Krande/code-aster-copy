@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: nicolas.greffet at edf.fr
-
-
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
@@ -27,40 +24,41 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
 AMOR_MECA = Option(
     para_in=(
         SP.PCADISA,
-           PCAORIE,
+        PCAORIE,
         SP.PCINFDI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PGEOMER,
         SP.PMASSEL,
         SP.PMATERC,
         SP.PRIGIEL,
         SP.PRIGINS,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
+        SP.PNONLIN,
         SP.PVARIPG,
     ),
-    para_out=(
-        SP.PMATUNS,
-        SP.PMATUUR,
-    ),
+    para_out=(SP.PMATUNS, SP.PMATUUR),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD  ,'0'  ),)),
-      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.FORMULATION,'FSI_UP'),)),
-      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.FORMULATION,'FSI_UPPHI'),)),
-      CondCalcul('+', ((AT.FSI ,'OUI'),(AT.BORD,'-1'),(AT.FORMULATION,'FSI_UPSI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D2D'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D3D'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UP"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UPPHI"))),
+        CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "FSI_UPSI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),
     ),
 )
