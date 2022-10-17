@@ -20,13 +20,20 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""La fonctionnalité XFEM n'est pas qualifiée pour les études de sûreté. Il ne faut pas l'utiliser dans ce cadre.
+    1: _(
+        """La fonctionnalité XFEM n'est pas qualifiée pour les études de sûreté. Il ne faut pas l'utiliser dans ce cadre.
 Pour plus de détails, référez-vous à la fiche qualité de la version d’exploitation de code_aster.
-"""),
-
-    2 : _("""L'opérateur MECA_NON_LINE n'est pas qualifiée pour les études de sûreté. Il ne faut pas l'utiliser dans ce cadre.
+"""
+    ),
+    2: _(
+        """L'opérateur MECA_NON_LINE n'est pas qualifiée pour les études de sûreté. Il ne faut pas l'utiliser dans ce cadre.
 Pour plus de détails, référez-vous à la fiche qualité de la version d’exploitation de code_aster.
-"""),
-
+"""
+    ),
+    3: _(
+        """Vous utilisez une loi de comportement en mode prototype (MFront ou UMAT).
+        Ce mode de fonctionnement n'est pas qualifié pour les études de sûreté. Il ne faut pas l'utiliser dans ce cadre sans action de vérification et de validation spécifique. Pour les comportements de type MFront, la qualification est possible en suivant une procédure dédiée.
+        Pour plus de détails, référez-vous à la fiche qualité de la version d’exploitation de code_aster.
+"""
+    ),
 }

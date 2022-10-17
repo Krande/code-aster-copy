@@ -43,12 +43,13 @@ type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iFactorKeyword, nbFactorKeyword
-    aster_logical :: l_mfront_proto, l_mfront_offi
+    aster_logical :: l_mfront_proto, l_mfront_offi, l_umat, lProtoAQ
     character(len=16) :: rela_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nbFactorKeyword = behaviourPrepCrit%nb_comp
+    lProtoAQ = ASTER_FALSE
 
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword
@@ -57,6 +58,11 @@ type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_mfront_proto)
         call comp_meca_l(rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
+        call comp_meca_l(rela_comp, 'UMAT', l_umat)
+
+        if (l_mfront_proto .or. l_umat) then
+            lProtoAQ = ASTER_TRUE
+        endif
 
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
         if (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_pas .lt. 0.d0) then
@@ -65,5 +71,9 @@ type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
             end if
         end if
     enddo
+
+    if (lProtoAQ) then
+        call utmess('A', 'QUALITY1_3')
+    endif
 !
 end subroutine
