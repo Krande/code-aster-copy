@@ -48,19 +48,28 @@ contains
 !
 ! In  cellGeom         : general geometric properties of cell
 ! Out geomHexa         : geometric properties for HEXA cell
+! In  disp             : diplacement to add at initial geometry
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine initGeomCellHexa(cellGeom, geomHexa)
+subroutine initGeomCellHexa(cellGeom, geomHexa, disp_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_CELL_GEOM), intent(in)  :: cellGeom
     type(SSH_GEOM_HEXA), intent(out) :: geomHexa
+    real(kind=8), optional, intent(in) :: disp_(SSH_NBDOF_HEXA)
 !   ------------------------------------------------------------------------------------------------
 !
     if (SSH_DBG_ELEM) SSH_DBG_STRG('> initGeomCellHexa')
 
 ! - Init
     geomHexa%cellGeom = cellGeom
+
+! - Set configuration
+    geomHexa%geomCurr = geomHexa%cellGeom%geomInit
+    if (present(disp_)) then
+        geomHexa%geomCurr(1:SSH_NBDOFG_HEXA) = geomHexa%geomCurr(1:SSH_NBDOFG_HEXA) +&
+                                               disp_(1:SSH_NBDOFG_HEXA)
+    endif
 
 ! - Compute T matrix (matrix relating the covariant and cartesian frames) for HEXA cell
     call compTMatrHexa(geomHexa)

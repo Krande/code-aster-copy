@@ -76,7 +76,6 @@ subroutine compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
     type(SSH_MATE_PARA), intent(in) :: matePara
     type(SSH_BEHA_PARA), intent(in) :: behaPara
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
     integer :: nbIntePoint, nbVari
     integer :: jtab(7), iret
     integer :: jvGeom, jvMater
@@ -99,10 +98,6 @@ subroutine compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     jvVariM = jtab(1)
     nbVari  = max(jtab(6), 1)*jtab(7)
-
-! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Get output fields
     jvMatr = isnnem()
@@ -131,7 +126,7 @@ subroutine compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
 
 ! - Compute
     if (behaPara%defoComp .eq. 'PETIT') then
-        call compSmallStrainHexa(option      , elemProp      , cellGeom, geomHexa,&
+        call compSmallStrainHexa(option      , elemProp      , cellGeom,&
                                  matePara    , behaPara      ,&
                                  nbIntePoint , nbVari        ,&
                                  zr(jvTimeM) , zr(jvTimeP)   ,&
@@ -142,7 +137,7 @@ subroutine compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
                                  zi(jvCodret))
 
     elseif (behaPara%defoComp .eq. 'GDEF_LOG') then
-        call compGdefLogHexa(option      , elemProp      , cellGeom, geomHexa,&
+        call compGdefLogHexa(option      , elemProp      , cellGeom,&
                              matePara    , behaPara      ,&
                              nbIntePoint , nbVari        ,&
                              zr(jvTimeM) , zr(jvTimeP)   ,&
@@ -167,7 +162,6 @@ end subroutine
 ! In  option           : name of option to compute
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
-! In  geomHexa         : geometric properties for HEXA cell
 ! In  matePara         : parameters of material
 ! In  behaPara         : parameters of behaviour
 ! In  nbIntePoint      : number of integration points on cell
@@ -185,7 +179,7 @@ end subroutine
 ! Out codret           : error code from integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
+subroutine compSmallStrainHexa(option     , elemProp, cellGeom,&
                                matePara   , behaPara,&
                                nbIntePoint, nbVari  ,&
                                timePrev   , timeCurr,&
@@ -199,7 +193,6 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
     character(len=16), intent(in)   :: option
     type(SSH_ELEM_PROP), intent(in) :: elemProp
     type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_GEOM_HEXA), intent(in) :: geomHexa
     type(SSH_MATE_PARA), intent(in) :: matePara
     type(SSH_BEHA_PARA), intent(in) :: behaPara
     integer, intent(in)      :: nbIntePoint, nbVari
@@ -210,6 +203,7 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
     real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
     integer, intent(out) :: codret
 ! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
     integer, parameter :: ksp = 1
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     integer :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
@@ -246,12 +240,13 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
 ! - Total displacement from initial configuration
     dispCurr = dispIncr + dispPrev
 
-! - Set current configuration to initial geometry
-    call setCurrConfToInit(cellGeom, kineHexa)
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
     kineHexa%lLarge = ASTER_FALSE
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -411,7 +406,6 @@ end subroutine
 ! In  option           : name of option to compute
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
-! In  geomHexa         : geometric properties for HEXA cell
 ! In  matePara         : parameters of material
 ! In  behaPara         : parameters of behaviour
 ! In  nbIntePoint      : number of integration points on cell
@@ -429,7 +423,7 @@ end subroutine
 ! Out codret           : error code from integration of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
+subroutine compGdefLogHexa(option     , elemProp, cellGeom,&
                            matePara   , behaPara,&
                            nbIntePoint, nbVari  ,&
                            timePrev   , timeCurr,&
@@ -443,7 +437,6 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
     character(len=16), intent(in)   :: option
     type(SSH_ELEM_PROP), intent(in) :: elemProp
     type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_GEOM_HEXA), intent(in) :: geomHexa
     type(SSH_MATE_PARA), intent(in) :: matePara
     type(SSH_BEHA_PARA), intent(in) :: behaPara
     integer, intent(in)      :: nbIntePoint, nbVari
@@ -454,6 +447,7 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
     real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
     integer, intent(out) :: codret
 ! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
     integer, parameter :: ksp = 1
     integer :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
     integer :: jvCoor, jvWeight
@@ -496,12 +490,13 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
 ! - Total displacement from initial configuration
     dispCurr = dispIncr + dispPrev
 
-! - Set current configuration with current displacement
-    call setCurrConfWithDisp(cellGeom, dispCurr, kineHexa)
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa, dispCurr)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
     kineHexa%lLarge = ASTER_TRUE
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)

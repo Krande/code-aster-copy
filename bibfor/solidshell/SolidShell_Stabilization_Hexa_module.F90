@@ -129,13 +129,13 @@ subroutine compStabMatrMateHexa(geomHexa, kineHexa, Ueff, stabHexa)
     coef2 = geomHexa%cellGeom%detJac0*hexaStabCoef2
 
 ! - Compute products
-    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartXI     ,&
+    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartX     ,&
                   stabHexa%SXI)
-    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartETA    ,&
+    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartY    ,&
                   stabHexa%SETA)
-    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartETAZETA,&
+    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartYZ,&
                   stabHexa%SETAZETA)
-    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartXIZETA ,&
+    call prodBTDB(Ueff*hexaStabDMatr, SSH_SIZE_TENS, SSH_NBDOFG_HEXA, kineHexa%BCartXZ ,&
                   stabHexa%SXIZETA)
 
 ! - Compute stabilization matrix for material part
@@ -188,10 +188,10 @@ subroutine compStabSigmHexa(geomHexa, kineHexa, Ueff, disp, stabHexa, epsg_)
                matmul(geomHexa%TXI  , epsg_%ECovaZETA) +&
                matmul(geomHexa%TZETA, epsg_%ECovaXI)
     else
-        EH1  = matmul(kineHexa%BCartXI     , disp(1:SSH_NBDOFG_HEXA))
-        EH2  = matmul(kineHexa%BCartETA    , disp(1:SSH_NBDOFG_HEXA))
-        EH23 = matmul(kineHexa%BCartETAZETA, disp(1:SSH_NBDOFG_HEXA))
-        EH13 = matmul(kineHexa%BCartXIZETA , disp(1:SSH_NBDOFG_HEXA))
+        EH1  = matmul(kineHexa%BCartX     , disp(1:SSH_NBDOFG_HEXA))
+        EH2  = matmul(kineHexa%BCartY    , disp(1:SSH_NBDOFG_HEXA))
+        EH23 = matmul(kineHexa%BCartYZ, disp(1:SSH_NBDOFG_HEXA))
+        EH13 = matmul(kineHexa%BCartXZ , disp(1:SSH_NBDOFG_HEXA))
     endif
 
 ! - Compute stabilisation stresses
@@ -223,10 +223,10 @@ subroutine compStabForcHexa(kineHexa, stabHexa)
 
 ! - Compute stabilization for internal forcess
     stabHexa%forcStab =&
-        hexaStabCoef1*(matmul(transpose(kineHexa%BCartXI), stabHexa%sigmStabXI) +&
-                       matmul(transpose(kineHexa%BCartETA), stabHexa%sigmStabETA))+&
-        hexaStabCoef2*(matmul(transpose(kineHexa%BCartETAZETA), stabHexa%sigmStabETAZETA)+&
-                       matmul(transpose(kineHexa%BCartXIZETA), stabHexa%sigmStabXIZETA))
+        hexaStabCoef1*(matmul(transpose(kineHexa%BCartX), stabHexa%sigmStabXI) +&
+                       matmul(transpose(kineHexa%BCartY), stabHexa%sigmStabETA))+&
+        hexaStabCoef2*(matmul(transpose(kineHexa%BCartYZ), stabHexa%sigmStabETAZETA)+&
+                       matmul(transpose(kineHexa%BCartXZ), stabHexa%sigmStabXIZETA))
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

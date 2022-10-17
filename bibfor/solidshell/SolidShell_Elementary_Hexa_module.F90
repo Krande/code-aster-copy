@@ -98,11 +98,8 @@ subroutine compRigiMatrHexa(elemProp, cellGeom, matePara, matrRigi)
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Set current configuration to initial geometry
-    call setCurrConfToInit(cellGeom, kineHexa)
-
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -182,11 +179,8 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Set current configuration to initial geometry
-    call setCurrConfToInit(cellGeom, kineHexa)
-
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -247,10 +241,6 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
 !   ------------------------------------------------------------------------------------------------
 !
 
-! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
-
 ! - Select configuration
     call tecach('ONO', 'PCOMPOR', 'L', iretc, iad = jvCompor)
     defoComp = 'PETIT'
@@ -260,21 +250,22 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
 
 ! - Update configuration
     if (defoComp .eq. 'PETIT') then
-        call setCurrConfToInit(cellGeom, kineHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
     else
         call tecach('ONO', 'PDEPLMR', 'L', iretc, iad = jvDisp)
         if (iretc .eq. 0) then
             do iDof = 1, SSH_NBDOF_HEXA
                 disp(iDof) = zr(jvDisp-1+iDof)
             end do
-            call setCurrConfWithDisp(cellGeom, disp, kineHexa)
+            call initGeomCellHexa(cellGeom, geomHexa, disp)
         else
             call utmess('F', 'SOLIDSHELL1_4')
         endif
     endif
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -440,11 +431,8 @@ subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Set current configuration to initial geometry
-    call setCurrConfToInit(cellGeom, kineHexa)
-
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -938,11 +926,8 @@ subroutine compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Set current configuration
-    call setCurrConfToInit(cellGeom, kineHexa)
-
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -999,11 +984,8 @@ subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, option, loadNo
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Set current configuration to initial geometry
-    call setCurrConfToInit(cellGeom, kineHexa)
-
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(kineHexa)
+    call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)

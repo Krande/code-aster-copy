@@ -32,7 +32,7 @@ implicit none
 ! ==================================================================================================
 public :: compBCovaMatrHexa, compBCartMatrHexa, compBCartEASMatrHexa, compBMatrHexa, compEpsiHexa,&
           compECovaMatrHexa, compEpsgHexa,&
-          compEpslHexa, setCurrConfToInit, setCurrConfWithDisp
+          compEpslHexa
 public :: compGCovaMatrHexa, compGCovaSMatrHexa
 ! ==================================================================================================
 private
@@ -182,12 +182,14 @@ end subroutine
 !
 ! Compute gradient matrix in covariant basis for HEXA cell
 !
+! In  geomHexa         : geometric properties for HEXA cell
 ! IO  kineHexa         : kinematic quantities (HEXA cell)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compBCovaMatrHexa(kineHexa)
+subroutine compBCovaMatrHexa(geomHexa, kineHexa)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
+    type(SSH_GEOM_HEXA), intent(in) :: geomHexa
     type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 ! - Local
     integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
@@ -210,9 +212,9 @@ subroutine compBCovaMatrHexa(kineHexa)
     kineHexa%BCovaXIZETA   = 0.d0
 
 ! - Compute the decomposed derivatives of the jacobian in the covariant base
-    call decoJacoMatrHexa(kineHexa%geomCurr,&
+    call decoJacoMatrHexa(geomHexa%geomCurr,&
                           J10, J1ETA, J1ZETA, J1ETAZETA,&
-                          J20, J2XI , J2ZETA, J2XIZETA ,&
+                          J20, J2XI , J2ZETA, J2XIZETA,&
                           J30, J3ETA, J3XI  , J3XIETA)
 
 ! - Compute BCova0
@@ -423,29 +425,29 @@ subroutine compBCartMatrHexa(geomHexa, kineHexa)
     type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 !   ------------------------------------------------------------------------------------------------
 !
-    kineHexa%BCart0        = 0.d0
-    kineHexa%BCartZETA     = 0.d0
-    kineHexa%BCartZETAZETA = 0.d0
-    kineHexa%BCartXI       = 0.d0
-    kineHexa%BCartETA      = 0.d0
-    kineHexa%BCartETAZETA  = 0.d0
-    kineHexa%BCartXIZETA   = 0.d0
+    kineHexa%BCart0 = 0.d0
+    kineHexa%BCartZ = 0.d0
+    kineHexa%BCartZZ = 0.d0
+    kineHexa%BCartX = 0.d0
+    kineHexa%BCartY = 0.d0
+    kineHexa%BCartYZ = 0.d0
+    kineHexa%BCartXZ = 0.d0
 
-    kineHexa%BCart0        = matmul(geomHexa%T0, kineHexa%BCova0)
-    kineHexa%BCartZETA     = matmul(geomHexa%T0, kineHexa%BCovaZETA) + &
-                             matmul(geomHexa%TZETA, kineHexa%BCova0)
-    kineHexa%BCartZETAZETA = matmul(geomHexa%T0, kineHexa%BCovaZETAZETA) + &
-                             matmul(geomHexa%TZETA, kineHexa%BCovaZETA)
-    kineHexa%BCartXI       = matmul(geomHexa%T0, kineHexa%BCovaXI) + &
-                             matmul(geomHexa%TXI, kineHexa%BCova0)
-    kineHexa%BCartETA      = matmul(geomHexa%T0, kineHexa%BCovaETA) + &
-                             matmul(geomHexa%TETA, kineHexa%BCova0)
-    kineHexa%BCartETAZETA  = matmul(geomHexa%T0, kineHexa%BCovaETAZETA) + &
-                             matmul(geomHexa%TETA, kineHexa%BCovaZETA) + &
-                             matmul(geomHexa%TZETA, kineHexa%BCovaETA)
-    kineHexa%BCartXIZETA   = matmul(geomHexa%T0, kineHexa%BCovaXIZETA) + &
-                             matmul(geomHexa%TXI, kineHexa%BCovaZETA) + &
-                             matmul(geomHexa%TZETA, kineHexa%BCovaXI)
+    kineHexa%BCart0 = matmul(geomHexa%T0, kineHexa%BCova0)
+    kineHexa%BCartZ = matmul(geomHexa%T0, kineHexa%BCovaZETA) + &
+                      matmul(geomHexa%TZETA, kineHexa%BCova0)
+    kineHexa%BCartZZ = matmul(geomHexa%T0, kineHexa%BCovaZETAZETA) + &
+                       matmul(geomHexa%TZETA, kineHexa%BCovaZETA)
+    kineHexa%BCartX = matmul(geomHexa%T0, kineHexa%BCovaXI) + &
+                      matmul(geomHexa%TXI, kineHexa%BCova0)
+    kineHexa%BCartY = matmul(geomHexa%T0, kineHexa%BCovaETA) + &
+                      matmul(geomHexa%TETA, kineHexa%BCova0)
+    kineHexa%BCartYZ = matmul(geomHexa%T0, kineHexa%BCovaETAZETA) + &
+                       matmul(geomHexa%TETA, kineHexa%BCovaZETA) + &
+                       matmul(geomHexa%TZETA, kineHexa%BCovaETA)
+    kineHexa%BCartXZ = matmul(geomHexa%T0, kineHexa%BCovaXIZETA) + &
+                       matmul(geomHexa%TXI, kineHexa%BCovaZETA) + &
+                       matmul(geomHexa%TZETA, kineHexa%BCovaXI)
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
@@ -493,8 +495,8 @@ subroutine compBMatrHexa(zeta, kineHexa)
 !
     kineHexa%B = 0.d0
     kineHexa%B(1:SSH_SIZE_TENS, 1:SSH_NBDOFG_HEXA) = kineHexa%BCart0+&
-                                                     zeta*kineHexa%BCartZETA+&
-                                                     zeta*zeta*kineHexa%BCartZETAZETA
+                                                     zeta*kineHexa%BCartZ+&
+                                                     zeta*zeta*kineHexa%BCartZZ
     kineHexa%B(1:SSH_SIZE_TENS, SSH_NBDOF_HEXA)    = kineHexa%BCartEAS
 !
 !   ------------------------------------------------------------------------------------------------
@@ -854,51 +856,6 @@ subroutine compEpslHexa(epsg, epsl, iretLog)
     call tnsvec(3, 3, epsl33, epsl%vale, sqrt(2.d0))
 
 999 continue
-!
-!   ------------------------------------------------------------------------------------------------
-end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! setCurrConfToInit
-!
-! Set current configuration to initial geometry
-!
-! In  cellGeom         : general geometric properties of cell
-! IO  kineHexa         : kinematic quantities (HEXA cell)
-!
-! --------------------------------------------------------------------------------------------------
-subroutine setCurrConfToInit(cellGeom, kineHexa)
-!   ------------------------------------------------------------------------------------------------
-! - Parameters
-    type(SSH_CELL_GEOM), intent(in)    :: cellGeom
-    type(SSH_KINE_HEXA), intent(inout) :: kineHexa
-!   ------------------------------------------------------------------------------------------------
-!
-    kineHexa%geomCurr = cellGeom%geomInit
-!
-!   ------------------------------------------------------------------------------------------------
-end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! setCurrConfWithDisp
-!
-! Set current configuration with displacement
-!
-! In  cellGeom         : general geometric properties of cell
-! In  disp             : diplacement to add at initial geometry
-! IO  kineHexa         : kinematic quantities (HEXA cell)
-!
-! --------------------------------------------------------------------------------------------------
-subroutine setCurrConfWithDisp(cellGeom, disp, kineHexa)
-!   ------------------------------------------------------------------------------------------------
-! - Parameters
-    type(SSH_CELL_GEOM), intent(in)    :: cellGeom
-    real(kind=8), intent(in)           :: disp(SSH_NBDOF_HEXA)
-    type(SSH_KINE_HEXA), intent(inout) :: kineHexa
-!   ------------------------------------------------------------------------------------------------
-!
-    kineHexa%geomCurr(1:SSH_NBDOFG_HEXA) = cellGeom%geomInit(1:SSH_NBDOFG_HEXA) +&
-                                           disp(1:SSH_NBDOFG_HEXA)
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

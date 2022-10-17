@@ -39,7 +39,7 @@ public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
            compLoad, compMassMatr, compRigiGeomMatr,&
            compRefeForcNoda, compLoadExteStatVari, compEpvcElga
 private :: setMateOrientation, compElemElasMatrix,&
-           initCellGeom, initMateProp, initElemProp, initBehaProp
+           initGeomCell, initMatePara, initElemProp, initBehaPara
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -110,7 +110,7 @@ subroutine initElemProp(inteFami, elemProp)
 end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! initCellGeom
+! initGeomCell
 !
 ! Initialization of geometric properties of cell
 !
@@ -118,7 +118,7 @@ end subroutine
 ! Out cellGeom         : general geometric properties of cell
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine initCellGeom(elemProp, cellGeom)
+subroutine initGeomCell(elemProp, cellGeom)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_ELEM_PROP), intent(in)  :: elemProp
@@ -128,7 +128,7 @@ subroutine initCellGeom(elemProp, cellGeom)
     real(kind=8) :: detJac0
 !   ------------------------------------------------------------------------------------------------
 !
-    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initCellGeom')
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initGeomCell')
 
 ! - Access to field of coordinates
     call jevech('PGEOMER', 'L', cellGeom%jvGeom)
@@ -157,13 +157,13 @@ subroutine initCellGeom(elemProp, cellGeom)
                       detJac0)
     cellGeom%detJac0 = abs(detJac0)
 !
-    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initCellGeom')
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initGeomCell')
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! initMateProp
+! initMatePara
 !
 ! Initialization of properties of material
 !
@@ -173,7 +173,7 @@ end subroutine
 ! Out matePara         : parameters of material
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine initMateProp(elemProp, cellGeom, timeCurr, matePara)
+subroutine initMatePara(elemProp, cellGeom, timeCurr, matePara)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_ELEM_PROP), intent(in)  :: elemProp
@@ -184,7 +184,7 @@ subroutine initMateProp(elemProp, cellGeom, timeCurr, matePara)
     integer :: jvMate
 !   ------------------------------------------------------------------------------------------------
 !
-    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initMateProp')
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initMatePara')
 ! - Access to field of material parameters
     call jevech('PMATERC', 'L', jvMate)
     matePara%jvMater = zi(jvMate)
@@ -196,13 +196,13 @@ subroutine initMateProp(elemProp, cellGeom, timeCurr, matePara)
     call compElemElasMatrix(elemProp%elemInte, timeCurr, matePara)
 
 !
-    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initMateProp')
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initMatePara')
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! initBehaProp
+! initBehaPara
 !
 ! Initialization of properties of behaviour
 !
@@ -212,7 +212,7 @@ end subroutine
 ! Out behaPara         : parameters of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine initBehaProp(option, elemProp, cellGeom, behaPara)
+subroutine initBehaPara(option, elemProp, cellGeom, behaPara)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     character(len=16), intent(in)    :: option
@@ -225,7 +225,7 @@ subroutine initBehaProp(option, elemProp, cellGeom, behaPara)
     aster_logical :: lMatrSyme
 !   ------------------------------------------------------------------------------------------------
 !
-    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initBehaProp')
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initBehaPara')
 
 ! - Properties of finite element
     nno      = elemProp%nbNodeGeom
@@ -270,7 +270,7 @@ subroutine initBehaProp(option, elemProp, cellGeom, behaPara)
                                cellGeom%geomInit    ,&
                                behaPara%BEHinteg)
 !
-    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initBehaProp')
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initBehaPara')
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
@@ -367,11 +367,11 @@ subroutine compRigiMatr()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    call initMatePara(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Compute rigidity matrix
@@ -421,11 +421,11 @@ subroutine compSiefElga()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    call initMatePara(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Get displacements
@@ -471,7 +471,7 @@ subroutine compForcNoda()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get stresses
@@ -524,15 +524,15 @@ subroutine compNonLinear(option)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    call initMatePara(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Initialization of properties of behaviour
-    call initBehaProp(option, elemProp, cellGeom, behaPara)
+    call initBehaPara(option, elemProp, cellGeom, behaPara)
     if (SSH_DBG_BEHA) call dbgObjBehaPara(behaPara)
 
 ! - Compute non-linear options
@@ -568,7 +568,7 @@ subroutine compEpsiElga()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get displacements
@@ -613,7 +613,7 @@ subroutine compEpslElga()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get displacements
@@ -666,12 +666,12 @@ subroutine compLoad(option)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
     if (option .eq. 'CHAR_MECA_PESA_R') then
-        call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+        call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
     endif
 
@@ -718,11 +718,11 @@ subroutine compMassMatr()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    call initMatePara(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Compute mass matrix
@@ -770,7 +770,7 @@ subroutine compRigiGeomMatr()
     nbIntePoint = elemProp%elemInte%nbIntePoint
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get stress tensor
@@ -819,7 +819,7 @@ subroutine compRefeForcNoda()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get reference stress
@@ -872,7 +872,7 @@ subroutine compLoadExteStatVari(option)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Get current time
@@ -882,7 +882,7 @@ subroutine compLoadExteStatVari(option)
     endif
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    call initMatePara(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Compute external state variable load
@@ -931,11 +931,11 @@ subroutine compEpvcElga()
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
 ! - Initialization of geometric properties of cell
-    call initCellGeom(elemProp, cellGeom)
+    call initGeomCell(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material (to suppress, see 30888)
-    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    call initMatePara(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Compute strains

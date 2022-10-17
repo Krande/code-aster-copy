@@ -161,8 +161,14 @@ type SSH_CELL_GEOM
     real(kind=8)        :: geomInitY(SSH_NBNODEG_MAX) = 0.d0
     real(kind=8)        :: geomInitZ(SSH_NBNODEG_MAX) = 0.d0
 ! - Jacobian matrix at center of cell on initial configuration
+! - dX/dXi | dX/dEta | dX/dZeta
+! - dY/dXi | dY/dEta | dY/dZeta
+! - dZ/dXi | dZ/dEta | dZ/dZeta
     real(kind=8)        :: Jac0(3, 3)                 = 0.d0
 ! - Inverse of jacobian matrix at center of cell on initial configuration
+! - dXi/dX | dEta/dX | dZeta/dX
+! - dXi/dY | dEta/dY | dZeta/dY
+! - dXi/dZ | dEta/dZ | dZeta/dZ
     real(kind=8)        :: JacInv0(3, 3)              = 0.d0
 ! - Determinant of jacobian matrix at center of cell on initial configuration
     real(kind=8)        :: detJac0                    = 0.d0
@@ -170,7 +176,7 @@ end type SSH_CELL_GEOM
 
 ! ==================================================================================================
 !
-! Derivated types - Geometry
+! Derivated types - Geometry for HEXA
 !
 ! ==================================================================================================
 
@@ -178,6 +184,8 @@ end type SSH_CELL_GEOM
 type SSH_GEOM_HEXA
 ! - Base properties of cell
     type(SSH_CELL_GEOM) :: cellGeom
+! - Reference configuration
+    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA) = 0.d0
 ! - T matrix relating the covariant and cartesian frames
     real(kind=8) :: T0(6, 6) = 0.d0
     real(kind=8) :: TXI(6, 6) = 0.d0
@@ -187,7 +195,7 @@ end type SSH_GEOM_HEXA
 
 ! ==================================================================================================
 !
-! Derivated types - Kinematic
+! Derivated types - Kinematic for HEXA
 !
 ! ==================================================================================================
 
@@ -219,8 +227,6 @@ end type SSH_EPSL_HEXA
 type SSH_KINE_HEXA
 ! - Flag if large hypothesis for kinematic
     aster_logical :: lLarge              = ASTER_FALSE
-! - Reference configuration
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA) = 0.d0
 ! - Parts of gradient matrix (covariant/parametric frame)
     real(kind=8) :: BCova0(6, 24)        = 0.d0
     real(kind=8) :: BCovaZETA(6, 24)     = 0.d0
@@ -230,13 +236,13 @@ type SSH_KINE_HEXA
     real(kind=8) :: BCovaETAZETA(6, 24)  = 0.d0
     real(kind=8) :: BCovaXIZETA(6, 24)   = 0.d0
 ! - Parts of gradient matrix (cartesian frame)
-    real(kind=8) :: BCart0(6, 24)        = 0.d0
-    real(kind=8) :: BCartZETA(6, 24)     = 0.d0
-    real(kind=8) :: BCartZETAZETA(6, 24) = 0.d0
-    real(kind=8) :: BCartXI(6, 24)       = 0.d0
-    real(kind=8) :: BCartETA(6, 24)      = 0.d0
-    real(kind=8) :: BCartXIZETA(6, 24)   = 0.d0
-    real(kind=8) :: BCartETAZETA(6, 24)  = 0.d0
+    real(kind=8) :: BCart0(6, 24) = 0.d0
+    real(kind=8) :: BCartZ(6, 24) = 0.d0
+    real(kind=8) :: BCartZZ(6, 24) = 0.d0
+    real(kind=8) :: BCartX(6, 24) = 0.d0
+    real(kind=8) :: BCartY(6, 24) = 0.d0
+    real(kind=8) :: BCartXZ(6, 24) = 0.d0
+    real(kind=8) :: BCartYZ(6, 24) = 0.d0
 ! - Green-Lagrange strain at beginning of time step
     type(SSH_EPSG_HEXA) :: epsgPrev
 ! - Green-Lagrange strain at end of time step
@@ -246,15 +252,15 @@ type SSH_KINE_HEXA
 ! - Decomposition of Green-Lagrange strain at end of time step
     type(SSH_EPSL_HEXA) :: epslCurr
 ! - B EAS matrix
-    real(kind=8) :: BCovaEAS(6)          = 0.d0
-    real(kind=8) :: BCartEAS(6)          = 0.d0
+    real(kind=8) :: BCovaEAS(6) = 0.d0
+    real(kind=8) :: BCartEAS(6) = 0.d0
 ! - B gradient matrix
-    real(kind=8) :: B(6, 25)             = 0.d0
+    real(kind=8) :: B(6, 25) = 0.d0
 end type SSH_KINE_HEXA
 
 ! ==================================================================================================
 !
-! Derivated types - Stabilization
+! Derivated types - Stabilization for HEXA
 !
 ! ==================================================================================================
 
