@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine gdire3(coord, a, b, c, m)
+
     implicit none
-!
+
+#include "asterc/r8prem.h"
+
 ! ----------------------------------------------------------------
 !
 ! FONCTION REALISEE:
@@ -38,14 +41,12 @@ subroutine gdire3(coord, a, b, c, m)
 !-----------------------------------------------------------------
 !
     real(kind=8) :: coord(3, *), a, b, c, x1, x2, x3, y1, y2, y3, z1, z2, z3
-    real(kind=8) :: eps
-    real(kind=8) :: x12, y12, z12, x13, y13, z13, norm1, norm2, pscal, prod
+    real(kind=8) :: x12, y12, z12, x13, y13, z13, norm1, norm2, norm3, pscal, prod
 !
     integer :: m
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    eps = 1.d-06
     x1 = coord(1,1)
     y1 = coord(2,1)
     z1 = coord(3,1)
@@ -69,6 +70,7 @@ subroutine gdire3(coord, a, b, c, m)
     y13 = y3 - y1
     z13 = z3 - z1
     norm2 = x12*x12 + y12*y12 + z12*z12
+    norm3 = sqrt(x13*x13 + y13*y13 + z13*z13)
     pscal = x12*x13 + y12*y13 + z12*z13
     a = x13 - pscal*x12/norm2
     b = y13 - pscal*y12/norm2
@@ -77,11 +79,14 @@ subroutine gdire3(coord, a, b, c, m)
     a = a/norm1
     b = b/norm1
     c = c/norm1
+    x13 = x13/norm3
+    y13 = y13/norm3
+    z13 = z13/norm3
 !
 ! ORIENTATION DU VECTEUR OBTENU
 !
     prod = x13*a + y13*b + z13*c
-    if (prod .ge. eps) then
+    if (prod .ge. r8prem()) then
         a = -a
         b = -b
         c = -c
