@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,18 +43,23 @@ type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_comp, nb_comp
-    aster_logical :: l_mfront_proto, l_mfront_offi
+    aster_logical :: l_mfront_proto, l_mfront_offi, l_umat, lProtoAQ
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nb_comp = ds_compor_para%nb_comp
-!
+    lProtoAQ = ASTER_FALSE
 ! - Loop on occurrences of COMPORTEMENT
 !
     do i_comp = 1, nb_comp
 ! ----- Detection of specific cases
         call comp_meca_l(ds_compor_para%v_crit(i_comp)%rela_comp, 'MFRONT_PROTO', l_mfront_proto)
         call comp_meca_l(ds_compor_para%v_crit(i_comp)%rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
+        call comp_meca_l(ds_compor_para%v_crit(i_comp)%rela_comp, 'UMAT', l_umat)
+
+        if (l_mfront_proto .or. l_umat) then
+            lProtoAQ = ASTER_TRUE
+        endif
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
         if (ds_compor_para%v_crit(i_comp)%iter_inte_pas .lt. 0.d0) then
             if (l_mfront_offi .or. l_mfront_proto) then
@@ -62,5 +67,9 @@ type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
             end if
         end if
     enddo
+
+    if (lProtoAQ) then
+        call utmess('A', 'QUALITY1_3')
+    endif
 !
 end subroutine
