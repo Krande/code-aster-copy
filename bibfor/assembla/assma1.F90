@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+!
 subroutine assma1(matas, ldist, lmhpc)
-    implicit none
-! person_in_charge: jacques.pellet at edf.fr
+!
+implicit none
+!
 !--------------------------------------------------------------
 ! BUT : METTRE A L'ECHELLE LES LIGNES ET COLONNES D'UNE MATR_ASSE
 !       CORRESPONDANT AUX DDLS DE LAGRANGE
@@ -132,7 +134,7 @@ subroutine assma1(matas, ldist, lmhpc)
 ! -------------------------------------------------------------------
     call echmat(mat19, ldist, lmhpc, rmin, rmax)
 !     -- PARFOIS, LA MATRICE EST == 0.
-    if (rmax .eq. 0.d0) then
+    if (rmax .eq. 0.d0 .or. rmax.lt.rmin) then
         rcoef=1.d0
     else
         rcoef=0.5d0*(rmin+rmax)
