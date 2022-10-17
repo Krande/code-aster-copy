@@ -31,7 +31,7 @@ private :: varcIsGEOM, relaIsExte,&
            getListUserESVA, getESVAPtot
 public  :: behaviourInit, behaviourInitPoint,&
            behaviourPrepESVAElem, prepCoorGauss, behaviourPrepESVAGauss,&
-           behaviourPrepStrain, behaviourRestoreStrain,&
+           behaviourPrepStrain, behaviourRestoreStrain, behaviourPredictionStress, &
            behaviourPrepESVA, behaviourPrepESVAExte,&
            behaviourOption
 ! ==================================================================================================
@@ -834,6 +834,34 @@ subroutine behaviourRestoreStrain(l_czm, l_large, l_defo_meca,&
             WRITE(6,*) '<DEBUG>  Restore total strains:',&
                      neps,epsm(1:neps),deps(1:neps)
         endif
+    endif
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! behaviourPredictionStress
+!
+! Compute the contribution of the "thermal stress increment" in prediction
+!
+! in  BEHesva          : parameters for external state variables
+! in  dsidep           : tangent operator in prediction
+! IO  sig              : stress (Taylor term of order 0)
+!
+! --------------------------------------------------------------------------------------------------
+subroutine behaviourPredictionStress(BEHesva, dsidep, sig)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(Behaviour_ESVA), intent(in) :: BEHesva
+    real(kind=8),intent(in)          :: dsidep(:,:)
+    real(kind=8), intent(inout)      :: sig(:)
+! - Local
+    integer :: ndimsi
+!   ------------------------------------------------------------------------------------------------
+    if (ca_nbcvrc_ .ne. 0) then
+        ndimsi = size(sig)
+        sig = sig - matmul(dsidep,BEHesva%depsi_varc(1:ndimsi))
+
+        if (LDC_PREP_DEBUG .eq. 1) WRITE(6,*) '<DEBUG>  Prediction stress: ',sig
     endif
 !   ------------------------------------------------------------------------------------------------
 end subroutine

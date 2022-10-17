@@ -63,7 +63,11 @@ type(NL_DS_System), intent(in) :: ds_system
 !
     integer :: ifm, niv
     integer :: iRet
+    real(kind=8) :: vectCoef(2)
+    character(len=19) :: vectElem(2)
+    character(len=8) :: vevcprCurr, vevcprPrev
     aster_logical :: l_gdvarino, l_resi_comp
+    character(len=19) :: cnvcpr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,25 +75,35 @@ type(NL_DS_System), intent(in) :: ds_system
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_39')
     endif
-!
+
 ! - Active functionnalities
-!
-    l_gdvarino  = isfonc(list_func_acti, 'ENDO_NO')
+    l_gdvarino = isfonc(list_func_acti, 'ENDO_NO')
     l_resi_comp = isfonc(list_func_acti, 'RESI_COMP')
-!
+
+! - Parameters for external state variables vector
+    cnvcpr = ds_material%fvarc_pred(1:19)
+    vevcprPrev = ds_material%vevcprPrev
+    vevcprCurr = ds_material%vevcprCurr
+    vectCoef(1) = +1.d0
+    vectCoef(2) = -1.d0
+    vectElem(1) = vevcprCurr
+    vectElem(2) = vevcprPrev
+
 ! - Assemble
-!
     if (typeAsse .eq. INTE_FORCE_COMB) then
 ! ----- Assemblage special: In: cninte + cnfnod + ds_material%fvarc_pred
         call vtzero(ds_system%cnfint)
-        call vtaxpy(-1.d0, ds_material%fvarc_pred, ds_system%cnfint)
         call exisd('CHAM_ELEM', ds_constitutive%code_pred, iRet)
         if (iRet .eq. 0) then
 ! --------- Some options (RIGI_MECA_ELAS) has no CODE_PRED
             call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof)
             call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
-
+            call assvec('V', cnvcpr, 2, vectElem, vectCoef, ds_system%nume_dof)
+            call vtaxpy(-1.d0, cnvcpr, ds_system%cnfint)
         else
+            call assvec('V', cnvcpr, 2, vectElem, vectCoef, ds_system%nume_dof,&
+                        maskElem_ = ds_constitutive%code_pred,&
+                        maskInve_ = ASTER_TRUE)
             call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof,&
                         maskElem_ = ds_constitutive%code_pred,&
                         maskInve_ = ASTER_TRUE)
@@ -98,9 +112,8 @@ type(NL_DS_System), intent(in) :: ds_system
                         maskInve_ = ASTER_FALSE)
             call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
             call vtaxpy(1.d0, ds_system%cninte, ds_system%cnfint)
-
+            call vtaxpy(-1.d0, cnvcpr, ds_system%cnfint)
         endif
-
 
     elseif (typeAsse .eq. INTE_FORCE_INTE) then
 !       Assemblage que de l'intégration (RAPH_MECA / FULL_MECA / RIGI_MECA_TANG)
@@ -112,21 +125,18 @@ type(NL_DS_System), intent(in) :: ds_system
     else
         ASSERT(ASTER_FALSE)
     endif
-!
+
 ! - For GDVARINO
-!
     if (l_gdvarino .and. typeAsse .eq. INTE_FORCE_INTE) then
         call setNodalValuesGDVARINO(ds_system%nume_dof, sdnume, ds_system%cnfint)
     endif
-!
+
 ! - If RESI_COMP_RELA
-!
     if (l_resi_comp.and. typeAsse .ne. INTE_FORCE_INTE) then
         call copisd('CHAMP_GD', 'V', ds_system%cnfint, ds_system%cncomp)
     endif
-!
+
 ! - Debug
-!
     if (niv .ge. 2) then
         call nmdebg('VECT', ds_system%cnfint, 6)
     endif

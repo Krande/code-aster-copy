@@ -17,8 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
-                      instam, instap, deps, vim, option, &
+                      lSigm, lMatr, lVari, &
+                      instam, instap, deps, vim, &
                       sigp, vip, dsidep)
+
+    use  tenseur_dime_module,       only: identity, voigt
 
     implicit none
 #include "asterf_types.h"
@@ -30,20 +33,18 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
     integer,intent(in)          :: ksp
     integer,intent(in)          :: ndim
     integer,intent(in)          :: imate
+    aster_logical, intent(in)   :: lSigm
+    aster_logical, intent(in)   :: lMatr
+    aster_logical, intent(in)   :: lVari
     real(kind=8),intent(in)     :: instam
     real(kind=8),intent(in)     :: instap
     real(kind=8),intent(in)     :: deps(:)
     real(kind=8),intent(in)     :: vim(:)
-    character(len=16),intent(in):: option
     real(kind=8),intent(inout)  :: sigp(:)
     real(kind=8),intent(out)    :: vip(:)
     real(kind=8),intent(inout)  :: dsidep(:,:)
 ! ----------------------------------------------------------------------
-    real(kind=8),parameter             :: rac2 = sqrt(2.d0)
-    real(kind=8),dimension(6),parameter:: r2=[1.d0,1.d0,1.d0,rac2,rac2,rac2]
-! ----------------------------------------------------------------------
-    aster_logical:: resi,rigi
-    integer      :: nd,i, iok(2)
+    integer      :: nd,iok(2)
     real(kind=8) :: k,tau,dt,a,b
     real(kind=8) :: sivm(2*ndim),siv(2*ndim),sivi(2*ndim),enerElas, incrEnerDiss
     real(kind=8) :: valev(2)
@@ -63,9 +64,7 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
 !   Initialisation
     nd   = 2*ndim
     dt   = instap - instam
-    sivm = vim(1:nd)*r2(1:nd)
-    resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    sivm = vim(1:nd)*voigt(nd)
 
 
 !   Viscous parameters
@@ -88,18 +87,19 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
     incrEnerDiss = dot_product(sivi,sivi)/(k*tau)*dt
 
 !   Storage
-    if (resi) then
+    if (lSigm) then
         sigp      = sigp + siv
+    end if
+    
+    if (lVari) then
         vip(1:6)  = 0
-        vip(1:nd) = siv/r2(1:nd)
+        vip(1:nd) = siv/voigt(nd)
         vip(7)    = enerElas
         vip(8)    = vim(8) + incrEnerDiss
     end if
 
-    if (rigi) then
-        do i =1,nd
-            dsidep(i,i) = dsidep(i,i) + b
-        end do
+    if (lMatr) then
+        dsidep = dsidep + b*identity(nd)
     end if
 
 end subroutine

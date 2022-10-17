@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0104
+!
 module endo_loca_module
 
     use scalar_newton_module,       only: &
@@ -69,7 +70,7 @@ module endo_loca_module
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
-        aster_logical :: elas,rigi,resi,pilo
+        aster_logical :: elas,rigi,vari,pred,pilo
         integer       :: ndimsi,itemax
         real(kind=8)  :: cvuser,deltat
         type(MATERIAL):: mat
@@ -114,17 +115,15 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
 ! deltat    time increment (instap - instam)
 ! ---------------------------------------------------------------------
 
+    ! Options de calcul
     self%elas   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'FULL_MECA_ELAS'
     self%rigi   = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS' &
              .or. option.eq.'FULL_MECA' .or. option.eq.'FULL_MECA_ELAS'
-    self%resi   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
+    self%vari   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
              .or. option.eq.'RAPH_MECA'
+    self%pred   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'RIGI_MECA_TANG'
     self%pilo   = option.eq.'PILO_PRED_ELAS'
 
-    ASSERT (self%rigi .or. self%resi .or. self%pilo)
-
-    ! On force la matrice secante en prediction
-    if (self%rigi .and. .not. self%resi) self%elas=ASTER_TRUE
 
     self%ndimsi = ndimsi
     self%itemax = itemax
@@ -157,7 +156,7 @@ subroutine Integrate(self, epsm, deps, vim, sig, vip, dsde)
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ----------------------------------------------------------------------
     integer             :: state
-    real(kind=8)        :: be
+    real(kind=8)        :: bem, be
     real(kind=8)        :: eps(self%ndimsi)
     type(POST_TREATMENT):: postm, post
 ! ---------------------------------------------------------------------
@@ -167,25 +166,18 @@ subroutine Integrate(self, epsm, deps, vim, sig, vip, dsde)
 
 
 ! unpack internal variables
-    be     = vim(1)
-    state  = nint(vim(2))
+    bem    = vim(1)
     postm  = POST_TREATMENT(damsti=vim(3), welas=vim(4), wdiss=vim(5))
 
 
 ! damage behaviour integration
-    call ComputeDamage(self, eps, be, state, sig, dsde)
+    call ComputeDamage(self, eps, bem, state, be, sig, dsde)
     if (self%exception .ne. 0) goto 999
 
 
-! viscous regularisation
-
-
-! Post-treatments
-    if (self%resi) post = PostTreatment(self, eps, deps, be, postm)
-
-
-! pack internal variables
-    if (self%resi) then
+! pack internal variables and post-treatments
+    if (self%vari) then
+        post   = PostTreatment(self, eps, deps, be, postm)
         vip(1) = be
         vip(2) = state
         vip(3) = post%damsti
@@ -286,23 +278,25 @@ end function GetMaterial
 !  DAMAGE COMPUTATION AND TANGENT OPERATOR (ACCORDING TO RIGI AND RESI)
 ! =====================================================================
 
-subroutine ComputeDamage(self, eps, be, state, sig, dsde)
+subroutine ComputeDamage(self, eps, bem, state, be, sig, dsde)
 
     implicit none
 
     type(CONSTITUTIVE_LAW), intent(inout):: self
     real(kind=8), intent(in)             :: eps(:)
-    integer,intent(inout)                :: state
-    real(kind=8),intent(inout)           :: be
+    real(kind=8),intent(in)              :: bem
+    integer,intent(out)                  :: state
+    real(kind=8),intent(out)             :: be
     real(kind=8),intent(out)             :: sig(:), dsde(:,:)
 ! ---------------------------------------------------------------------
 ! eps   strain at the end of the time step
-! be    damage at the beginning (in) of the time-step then its end (out)
-! state damage state for the former (in) then the current (out) time-step
+! bem   damage at the beginning of the time-step
+! state damage state for the current time-step (0:elastic, 1:damage, 2:saturated)
+! be    damage at the end of the time-step
 ! sig   stress at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ---------------------------------------------------------------------
-    real(kind=8),parameter:: cvtole=1.d-3
+    real(kind=8):: cvtole
     integer     :: iter
     real(kind=8),dimension(self%ndimsi):: sigpos, signeg, deps_quad
     real(kind=8),dimension(self%ndimsi,self%ndimsi):: deps_sigpos, deps_signeg
@@ -314,6 +308,7 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
 ! ---------------------------------------------------------------------
 
     ! Expected accuracy for the stress and the strain
+    cvtole = self%cvuser
     cvsig = 0.5d0 * self%mat%sigc * self%cvuser
     cveps = cvsig / (self%mat%unil%lambda + self%mat%unil%deuxmu)
 
@@ -325,12 +320,12 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
 
     ! Convergence thresholds
     norpos  = sqrt(dot_product(sigpos,sigpos))
-    hn      = Fh(self,be)
-    db_hn   = Db_Fh(self,be)
+    hn      = Fh(self,bem)
+    db_hn   = Db_Fh(self,bem)
     db_hu   = Db_Fh(self,1.d0)
-    db_phin = Db_Fphi(self,be)
+    db_phin = Db_Fphi(self,bem)
 
-    majB    = 1/hn + (1-be)*db_hu/hn**2
+    majB    = 1/hn + (1-bem)*db_hu/hn**2
     majQ    = 0.5d0*db_phin
 
     if (norpos .gt. cvsig/majB/cvtole) then
@@ -338,7 +333,7 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
     else
         cvbe = cvtole
     end if
-
+    cvbe   = min(cvbe,cvtole)
     cvquad = min(majQ*cvbe, cvtole)
     cvequ  = min(majQ*cvbe, cvtole)
 
@@ -348,67 +343,71 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
     call SetQuad(crit,eps)
 
 
-    ! Damage computation (if required)
-    if (self%resi) then
 
-        ! Already saturated point
-        if (state.eq.2) then
-            goto 200
-        end if
+! --------------------------------------------------------------------------------------------------
+!  Damage computation
+! --------------------------------------------------------------------------------------------------
 
-        ! Saturated point: fast check (for large eps)
-        if (IsQuadLarger(crit,Fphi(self,1.d0))) then
-            state = 2
-            be    = 1.d0
-            goto 200
-        end if
+    ! Already saturated point
+    if (bem.ge.1.d0) then
+        state = 2
+        be    = 1.d0
+        goto 200
+    end if
 
-        quad = ComputeQuad(crit)
-        if (crit%exception .ne. 0) then
-            self%exception = crit%exception
-            goto 999
-        end if
+    ! Saturated point (avoid the computation of the quad for large values of srain)
+    if (IsQuadLarger(crit,Fphi(self,1.d0))) then
+        state = 2
+        be    = 1.d0
+        goto 200
+    end if
 
-        ! Elastic regime
-        if (quad-Fphi(self,be) .le. cvequ) then
-            state = 0
-            goto 200
-        end if
+    quad = ComputeQuad(crit)
+    if (crit%exception .ne. 0) then
+        self%exception = crit%exception
+        goto 999
+    end if
 
-        ! Saturated point
-        if (quad-Fphi(self,1.d0) .ge. -cvequ) then
-            state = 2
-            be    = 1.d0
-            goto 200
-        end if
-
-        ! Damage regime
-        state = 1
-        do iter = 1,self%itemax
-            phi = Fphi(self,be)
-            equ  = phi-quad
-            if (abs(equ).le.cvequ) exit
-            db_equ = Db_Fphi(self,be)
-            be = utnewt(be,equ,db_equ,iter,mem,xmin=be,xmax=1.d0)
-        end do
-        if (iter.gt.self%itemax) then
-            self%exception = 1
-            goto 999
-        end if
-
-
-200     continue
-
+    ! Elastic regime
+    if (quad-Fphi(self,bem) .le. 0.d0) then
+        state = 0
+        be    = bem
+        goto 200
     end if
 
 
-    ! Stress computation (even if not resi)
+    ! Damage regime
+    state = 1
+    be    = bem
+    do iter = 1,self%itemax
+        phi = Fphi(self,be)
+        equ  = phi-quad
+        if (abs(equ).le.cvequ) exit
+        db_equ = Db_Fphi(self,be)
+        be = utnewt(be,equ,db_equ,iter,mem,xmin=be,xmax=1.d0)
+    end do
+    if (iter.gt.self%itemax) then
+        self%exception = 1
+        goto 999
+    end if
+
+200 continue
+
+
+
+    ! Stress computation
     stiff = FB(self,be)
     sig   = stiff*sigpos + signeg
 
 
 
     if (self%rigi) then
+
+        ! Correction de state en phase de prediction (facteur 10 pour enveloppe)
+        if (self%pred .and. state.eq.0) then
+            if (IsQuadLarger(crit,Fphi(self,max(0.d0,bem-1.d1*cvbe)))) state = 1
+        end if
+
 
         ! Contribution elastique a endommagement fixe
         dsde = stiff*deps_sigpos + deps_signeg
@@ -460,8 +459,8 @@ subroutine PathFollowing(self,targetDamage,eps0,eps1,etamin,etamax,cvb, &
     real(kind=8),parameter:: red = 1.d-2
 ! ---------------------------------------------------------------------
 
-    !  Non controlable point (two close to the bound)
-    if (targetDamage .ge. 0.99) then
+    !  Non controlable point (too close to the bound)
+    if (targetDamage .ge. 0.99d0) then
         nsol = -1
         goto 999
     end if

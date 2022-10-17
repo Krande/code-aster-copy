@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -554,13 +554,16 @@ implicit none
 !
     type NL_DS_Material
 ! ----- Material
-        character(len=24) :: mater      = ' '
+        character(len=24) :: mater = ' '
 ! ----- Field of material parameters (coded material)
-        character(len=24) :: mateco     = ' '
+        character(len=24) :: mateco = ' '
+! ----- Elementary vectors for external state variables
+        character(len=8) :: vevcprPrev = "&&VEPREV"
+        character(len=8) :: vevcprCurr = "&&VECURR"
 ! ----- Field for reference of external state variables
-        character(len=24) :: varc_refe  = ' '
+        character(len=24) :: varc_refe = ' '
 ! ----- Field for initial value of external state variables
-        character(len=24) :: varc_init  = ' '
+        character(len=24) :: varc_init = ' '
 ! ----- Force for initial value of external state variables
         character(len=24) :: fvarc_init = ' '
 ! ----- Force from external state variables for predictor

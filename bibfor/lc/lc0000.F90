@@ -278,11 +278,11 @@ integer :: codret
 !
 
     ASSERT (neps*nsig.eq.ndsde .or. (ndsde.eq.36 .and. neps.le.6 .and. nsig.le.6))
-    
+
     read (compor(DEFO_LDC),'(A16)') defo_ldc
     read (compor(DEFO),'(A16)') defo_comp
     read (compor(REGUVISC),'(A16)') regu_visc
-    l_pred = option(1:9) .eq. 'RIGI_MECA'
+    l_pred = L_PRED(option)
     l_czm = typmod(2) .eq. 'ELEMJOIN'
     l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
     l_gdef_log  = defo_comp .eq. 'GDEF_LOG'
@@ -1230,10 +1230,10 @@ integer :: codret
         ASSERT (typmod(2).eq.' ' .or. typmod(2).eq.'GRADVARI')
         ASSERT(neps.ge.ndimsi)
         ASSERT(nsig.ge.ndimsi)
-        ASSERT(neps*nsig.eq.ndsde .or. (ndsde.eq.36 .and. neps*nsig.le.36))
         call lcvisc(fami, kpg, ksp, ndim, imate,&
+            lSigm, lMatr, lVari, &
             instam, instap, deps(1:ndimsi), vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
-            option, sigp(1:ndimsi), vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
+            sigp(1:ndimsi), vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
             dsidep(1:ndimsi,1:ndimsi))
     end if
 !
@@ -1242,4 +1242,23 @@ integer :: codret
     call behaviourRestoreStrain(l_czm, l_large      , l_defo_meca,&
                                 neps , BEHinteg%esva, epsm       , deps)
 !
+! - Prediction: contribution of the thermal stress to the Taylor expansion if needed
+!
+    if (l_defo_meca .and. l_pred) then
+        if (.not. l_czm) then
+            ndimsi = 2*ndim
+            ! A remettre suite à la fiche issue32329
+            !ASSERT(.not. l_large)
+            ASSERT (typmod(2).eq.' ' .or. typmod(2).eq.'GRADVARI' .or. typmod(2).eq.'HHO')
+            ASSERT(nsig.ge.ndimsi)
+            ASSERT(size(dsidep,1).ge.ndimsi)
+            ASSERT(size(dsidep,2).ge.ndimsi)
+            ASSERT(lSigm .and. lMatr)
+
+            call behaviourPredictionStress(BEHinteg%esva, dsidep(1:ndimsi,1:ndimsi), sigp(1:ndimsi))
+        end if
+    end if
+
+
+
 end subroutine

@@ -110,7 +110,7 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
     call nmvcpr(model      , cara_elem      , hval_incr,&
                 ds_material, ds_constitutive, &
-                'V'        , nume_dof)
+                'V')
 !
 ! - Compute loads
 !

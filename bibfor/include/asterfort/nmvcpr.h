@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,12 @@
 interface
     subroutine nmvcpr(modelz     , cara_elemz     , hval_incr,&
                       ds_material, ds_constitutive,&
-                      base       , nume_dof)
+                      base)
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: modelz, cara_elemz
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19), intent(in) :: hval_incr(*)
         character(len=1), intent(in) :: base
-        character(len=24), intent(in) :: nume_dof
     end subroutine nmvcpr
 end interface

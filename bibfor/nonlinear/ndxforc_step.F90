@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
     call nmvcpr(model      , cara_elem      , hval_incr,&
                 ds_material, ds_constitutive, &
-                'V'        , nume_dof)
+                'V')
 !
 ! - Compute loads
 !

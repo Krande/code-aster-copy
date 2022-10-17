@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0104, W1306
+!
 module vmis_isot_nl_module
 
     use scalar_newton_module,       only: &
@@ -61,7 +62,7 @@ module vmis_isot_nl_module
     ! VMIS_ISOT_NL class
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
-        aster_logical :: elas,rigi,resi,vari,pred
+        aster_logical :: elas,rigi,vari,pred
         aster_logical :: grvi = ASTER_FALSE
         aster_logical :: visc = ASTER_FALSE
         integer       :: ndimsi,itemax
@@ -129,13 +130,10 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%elas   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'FULL_MECA_ELAS'
     self%rigi   = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS' &
              .or. option.eq.'FULL_MECA' .or. option.eq.'FULL_MECA_ELAS'
-    self%resi   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
-             .or. option.eq.'RAPH_MECA'
     self%vari   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
              .or. option.eq.'RAPH_MECA'
     self%pred   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'RIGI_MECA_TANG'
 
-    ASSERT (self%rigi .or. self%resi)
 
 
     ! Elasticity material parameters
@@ -255,7 +253,7 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
 ! --------------------------------------------------------------------------------------------------
 ! eps       strain at the end of the time step
 ! vim       internal variables at the beginning of the time step
-! sig       stress at the end of the time step (resi) or the beginning of the time step (not resi)
+! sig       stress at the end of the time step
 ! vip       internal variables at the end of the time step
 ! deps_sig  derivee dsig / deps
 ! dphi_sig  derivee dsig / dphi   (grad_vari)
@@ -322,7 +320,7 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
 ! ka        variable d'ecrouissage kappa (in=debut pas de temps, out=fin)
 ! state     etat pendant le pas (0=elastique, 1=plastique, 2=singulier) (in=debut, out=fin)
 ! ep        deformation plastique (in=debut, out=fin)
-! t         ontrainte en fin de pas de temps (resi) ou au debut du pas de temps (not resi)
+! t         contrainte en fin de pas de temps
 ! deps_t    derivee dt / deps
 ! dphi_t    derivee dt / dphi   (grad_vari)
 ! deps_ka   derivee dka / deps  (grad_vari)
@@ -369,9 +367,6 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
 ! ======================================================================
 !               INTEGRATION DE LA LOI DE COMPORTEMENT
 ! ======================================================================
-
-    if (.not. self%resi) goto 800
-
 
 ! --------------------------------------------------------------------------------------------------
 !  REGIME ELASTIQUE
@@ -490,23 +485,20 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
     ep    = ep + dep
     t     = telh*kr + teld - self%mat%deuxmu*dep
 
-
+800 continue
 
 
 ! ======================================================================
 !                           MATRICES TANGENTES
 ! ======================================================================
 
-800 continue
+
 
     if (.not. self%rigi) goto 999
 
     dphi_t  = 0
     deps_ka = 0
     dphi_ka = 0
-
-    ! Contrainte sans correction de plasticite en phase de prediction
-    if (self%pred) t = tel
 
 
     ! Etat pour choisir l'operateur tangent en phase de prediction

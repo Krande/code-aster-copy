@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,21 @@
 !
 interface
     subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
-                      instam, instap, deps, vim, option, &
+                      lSigm, lMatr, lVari, &
+                      instam, instap, deps, vim, &
                       sigp, vip, dsidep)
         character(len=*),intent(in) :: fami
         integer,intent(in)          :: kpg
         integer,intent(in)          :: ksp
         integer,intent(in)          :: ndim
         integer,intent(in)          :: imate
+        aster_logical, intent(in)   :: lSigm
+        aster_logical, intent(in)   :: lMatr
+        aster_logical, intent(in)   :: lVari
         real(kind=8),intent(in)     :: instam
         real(kind=8),intent(in)     :: instap
         real(kind=8),intent(in)     :: deps(:)
         real(kind=8),intent(in)     :: vim(:)
-        character(len=16),intent(in):: option
         real(kind=8),intent(inout)  :: sigp(:)
         real(kind=8),intent(out)    :: vip(:)
         real(kind=8),intent(inout)  :: dsidep(:,:)
