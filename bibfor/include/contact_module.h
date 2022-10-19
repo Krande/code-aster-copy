@@ -38,6 +38,7 @@
 #define CONT_VARI_NONE 0
 #define CONT_VARI_RAPI 1
 #define CONT_VARI_ROBU 2
+#define CONT_VARI_SYME 3
 
 #define CONT_TYPE_UNIL 0
 #define CONT_TYPE_BILA 1

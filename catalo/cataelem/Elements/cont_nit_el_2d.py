@@ -118,6 +118,7 @@ class CNT3S2(Element):
                               (SP.PGEOMCR, NGEOMER),
                               (SP.PCCONTR, ECCONT), ),
                      para_out=((SP.PMATUUR, MMATUUR),
+                               (SP.PMATUNS, MMATUNS),
                                ),
                      ),
 

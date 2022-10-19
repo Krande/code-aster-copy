@@ -51,13 +51,13 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
     type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
-    integer ::  i_qp, nb_qp
+    integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
-    real(kind=8) :: gap, stress_n, gamma_c, projRmVal
+    real(kind=8) :: gap, stress_nn, gamma_c, projRmVal
     real(kind=8) :: stress_t(2), vT(2), gamma_f, projBsVal(2)
-    real(kind=8) :: dGap(MAX_LAGA_DOFS)
+    real(kind=8) :: dGap(MAX_LAGA_DOFS), dStress_nn(MAX_NITS_DOFS)
     real(kind=8) :: jump_t(MAX_LAGA_DOFS, 3)
     integer :: dofsMap(54)
 !
@@ -79,6 +79,12 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
     hF = diameter(geom%nb_node_slav, geom%coor_slav_init)
 !
+    call nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)
+!
+! - Read material properties
+!
+    call getMaterialProperties(nits)
+!
 ! - Eval stress at face nodes
 !
     call evalStressNodes(geom, nits)
@@ -95,19 +101,28 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 ! ----- Compute contact quantities
 !
         call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
-                    stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
+                    stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
                     stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap=dGap, jump_t=jump_t)
+                    dGap=dGap, jump_t=jump_t, dStress_nn=dStress_nn)
 !
 ! ------ CONTACT PART (always computed)
 !
         if(l_cont_qp) then
 !
 ! ------ Compute displacement (slave and master side)
-!        term: (H*[stress_n + gamma_c * gap(u)]_R-, D(gap(u))[v])
+!        term: (H*[stress_nn + gamma_c * gap(u)]_R-, D(gap(u))[v])
 !
             call remappingVect(geom, dofsMap, dGap, vect_cont, weight_sl_qp * projRmVal)
             coeff = weight_sl_qp * projRmVal
+        end if
+!
+        if(parameters%vari_cont .ne. CONT_VARI_RAPI) then
+!
+! ------ Compute displacement (slave and master side)
+!     term: theta * (gamma_c^-1 ([stress_nn + gamma_c * gap(u)]_R- - stress_nn), D(stress_nn(u))[v])
+!
+            coeff = weight_sl_qp * parameters%vari_cont * (projRmVal - stress_nn) / gamma_c
+            call daxpy(slav_dofs, coeff, dStress_nn, 1, vect_cont, 1)
         end if
 !
 ! ------ FRICTION PART (computed only if friction)
@@ -119,7 +134,7 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
             if(l_fric_qp) then
                 coeff = weight_sl_qp
-                call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, jump_t, MAX_LAGA_DOFS, &
+                call dgemv('N', total_dofs, geom%elem_dime-1, coeff, jump_t, MAX_LAGA_DOFS, &
                             projBsVal, 1, 1.d0, vect_fric, 1)
             end if
         end if

@@ -47,12 +47,13 @@ Compute contact data (cf. MMCHML) as input to compute contact forces and matrice
 
 Arguments:
     pairing (ContactPairing): pairing object
+    material (MaterialField): material field
     initial_contact (bool): True to use value in contact definition (CONTACT_INIT).
 
 Returns:
     FieldOnCellsReal: contact data
         )",
-              py::arg( "pairing" ), py::arg( "initial_contact" ) )
+              py::arg( "pairing" ), py::arg( "material" ), py::arg( "initial_contact" ) )
         .def( "contactCoefficient", &ContactComputation::contactCoefficient, R"(
 Compute contact coefficient at the nodes of the slave surface based on values of COEF_CONT
 and COEF_FROT

@@ -28,17 +28,20 @@ class ContactManager:
 
     defi = pair = comp = None
     coef_cont = coef_frot = None
+    phys_pb = None
     first_pairing = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, definition):
+    def __init__(self, definition, phys_pb):
         """Initialize contact solver.
 
         Arguments:
             definition (ContactNew): contact definition
+            phys_pb (PhysicalProblem): physical problem
         """
         self.first_pairing = True
         self.defi = definition
+        self.phys_pb = phys_pb
         if self.defi is not None:
             self.pair = ContactPairing(self.defi)
             self.comp = ContactComputation(self.defi)
@@ -108,7 +111,8 @@ class ContactManager:
         """
 
         if self.enable:
-            return self.comp.contactData(self.pair, self.first_pairing)
+            return self.comp.contactData(self.pair, self.phys_pb.getMaterialField(),
+                                         self.first_pairing)
 
         return None
 

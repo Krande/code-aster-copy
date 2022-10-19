@@ -39,7 +39,8 @@ type ContactParameters
     !! Contact parameters
     integer                             :: algo_cont = 0
     integer                             :: type_cont = 0
-    real(kind=8)                        :: vari_cont = 0.d0
+    integer                             :: vari_cont = 0
+    real(kind=8)                        :: vari_cont_coef = 0.d0
     real(kind=8), dimension(9)          :: coef_cont = 0.d0
 
     !! Friction paramaters

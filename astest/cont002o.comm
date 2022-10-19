@@ -47,15 +47,6 @@ AFFE = AFFE_MATERIAU(MAILLAGE=Mail,
                      AFFE=_F(TOUT='OUI',
                              MATER=mat1,),)
 
-DEFICO = DEFI_CONT(MODELE=MODI,
-                   INFO=2,
-                   ZONE=_F(APPARIEMENT='MORTAR',
-                           GROUP_MA_MAIT='Group_2',
-                           GROUP_MA_ESCL='Group_1',
-                           ALGO_CONT="NITSCHE",
-                           COEF_CONT=2000.,
-                           CONTACT_INIT='INTERPENETRE',),)
-
 CHAR1 = AFFE_CHAR_CINE(MODELE=MODI,
                        MECA_IMPO=(_F(GROUP_MA='Sym',
                                      DX=0,
@@ -76,61 +67,73 @@ LINST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi,),
 
 RAMPE = DEFI_FONCTION(NOM_PARA='INST', VALE=(0, 0, 1, 1),)
 
-RES = MECA_NON_LINE(INFO=1,
-                    MODELE=MODI,
-                    CHAM_MATER=AFFE,
-                    EXCIT=(_F(CHARGE=CHAR1,
-                              FONC_MULT=RAMPE),
-                           _F(CHARGE=CHAR2,
-                              FONC_MULT=RAMPE,
-                              ), ),
-                    CONTACT=_F(DEFINITION=DEFICO,
-                               ALGO_RESO_GEOM="NEWTON"),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    INCREMENT=_F(LIST_INST=lisi,),
-                    COMPORTEMENT=_F(RELATION='ELAS',
-                                    DEFORMATION='PETIT',
-                                    TOUT='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',
-                               RESI_RELA=1.E-6,
-                               PCENT_PIVOT=30,),
-                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                                   ITER_GLOB_MAXI=50,))
+vari_cont = [{
+    "SYME": "NON", "VARIANTE": "RAPIDE"}, {"SYME": "OUI"}, {"SYME": "NON", "VARIANTE": "ROBUSTE"}]
 
-RES = CALC_CHAMP(reuse=RES,
-                 RESULTAT=RES,
-                 CONTRAINTE=('SIEF_NOEU'),)
+for vari in vari_cont:
+    DEFICO = DEFI_CONT(MODELE=MODI,
+                       ZONE=_F(APPARIEMENT='MORTAR',
+                               GROUP_MA_MAIT='Group_2',
+                               GROUP_MA_ESCL='Group_1',
+                               ALGO_CONT="NITSCHE",
+                               COEF_CONT=2000.,
+                               CONTACT_INIT='INTERPENETRE',
+                               **vari, ),)
 
-RES = CALC_CHAMP(reuse=RES,
-                  RESULTAT=RES,
-                  CONTRAINTE='SIGM_NOEU', FORCE=('FORC_NODA', 'REAC_NODA'))
+    RES = MECA_NON_LINE(INFO=1,
+                        MODELE=MODI,
+                        CHAM_MATER=AFFE,
+                        EXCIT=(_F(CHARGE=CHAR1,
+                                  FONC_MULT=RAMPE),
+                               _F(CHARGE=CHAR2,
+                                   FONC_MULT=RAMPE,
+                                  ), ),
+                        CONTACT=_F(DEFINITION=DEFICO,
+                                   ALGO_RESO_GEOM="NEWTON"),
+                        NEWTON=_F(MATRICE='TANGENTE',
+                                  REAC_ITER=1,),
+                        INCREMENT=_F(LIST_INST=lisi,),
+                        COMPORTEMENT=_F(RELATION='ELAS',
+                                        DEFORMATION='PETIT',
+                                        TOUT='OUI',),
+                        SOLVEUR=_F(METHODE='MUMPS',
+                                   RESI_RELA=1.E-6,
+                                   PCENT_PIVOT=30,),
+                        CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
+                                       ITER_GLOB_MAXI=50,))
 
+    RES = CALC_CHAMP(reuse=RES,
+                     RESULTAT=RES,
+                     CONTRAINTE=('SIEF_NOEU'),)
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   TYPE_TEST='MIN',
-                   RESULTAT=RES,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='SIEF_NOEU',
-                   LEGENDE='CALC_PRESSION',
-                   NOM_CMP='SIYY',
-                   VALE_REFE=-25.0,
-                   VALE_CALC=-25.0,
-                   ),
-                _F(INST=1.0,
-                   TYPE_TEST='MAX',
-                   RESULTAT=RES,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='SIEF_NOEU',
-                   LEGENDE='CALC_PRESSION',
-                   NOM_CMP='SIYY',
-                   VALE_REFE=-25.0,
-                   VALE_CALC=-25.00,
-                   ),
-                ),
-          )
+    RES = CALC_CHAMP(reuse=RES,
+                     RESULTAT=RES,
+                     CONTRAINTE='SIGM_NOEU', FORCE=('FORC_NODA', 'REAC_NODA'))
 
-#RES.printMedFile("/home/C00976/tmp/nit.rmed")
+    TEST_RESU(RESU=(_F(INST=1.0,
+                       TYPE_TEST='MIN',
+                       RESULTAT=RES,
+                       REFERENCE='ANALYTIQUE',
+                       NOM_CHAM='SIEF_NOEU',
+                       LEGENDE='CALC_PRESSION',
+                       NOM_CMP='SIYY',
+                       VALE_REFE=-25.0,
+                       VALE_CALC=-25.0,
+                       ),
+                    _F(INST=1.0,
+                        TYPE_TEST='MAX',
+                        RESULTAT=RES,
+                        REFERENCE='ANALYTIQUE',
+                        NOM_CHAM='SIEF_NOEU',
+                        LEGENDE='CALC_PRESSION',
+                        NOM_CMP='SIYY',
+                        VALE_REFE=-25.0,
+                        VALE_CALC=-25.00,
+                       ),
+                    ),
+              )
+
+# RES.printMedFile("/home/C00976/tmp/nit.rmed")
 
 FIN()
 # CHECKSUM:9f90ac18752a4c0cdfc3c56aef286888  -:FIN CHECKSUM

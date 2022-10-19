@@ -41,6 +41,14 @@ Mail = MODI_MAILLAGE(
     ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS",)),
 )
 
+MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3,
+                            ALPHA=0.01))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=Mail,
+                      AFFE=_F(
+                          TOUT='OUI',
+                          MATER=MAT))
+
 
 MODI = AFFE_MODELE(MAILLAGE=Mail,
                    AFFE=_F(TOUT='OUI',
@@ -148,7 +156,7 @@ test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0, 0.0])
 
 IMPR_RESU(FORMAT="MED",RESU=(_F(CHAM_GD=gap,)))
 
-data = CD.contactData(pair, False)
+data = CD.contactData(pair, CHMAT, False)
 test.assertEqual(data.size() , 60 * len(nema))
 
 FIN()

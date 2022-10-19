@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
-                    stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
+                    stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
                     stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap, d2Gap, jump_t)
+                    dGap, d2Gap, jump_t, dStress_nn)
 !
 use contact_module
 use contact_type
@@ -30,18 +30,20 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/apnorm.h"
 #include "contact_module.h"
 !
 type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
 type(ContactNitsche), intent(in) :: nits
 real(kind=8), intent(in) :: coor_qp_sl(2), hF
-real(kind=8), intent(out) :: stress_n, gap, gamma_c, projRmVal
+real(kind=8), intent(out) :: stress_nn, gap, gamma_c, projRmVal
 real(kind=8), intent(out) :: stress_t(2), vT(2), gamma_f, projBsVal(2)
 aster_logical, intent(out) :: l_cont_qp, l_fric_qp
 real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
+real(kind=8), intent(out), optional :: dStress_nn(MAX_NITS_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +56,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
 ! In  l_axis           : .true. for axisymmetric element
 ! In  nb_lagr          : total number of Lagrangian dof on contact element
 ! In  indi_lagc        : node where Lagrangian dof is present (1) or not (0)
-! In  stress_n           : value of contact lagrangian
+! In  stress_nn           : value of contact lagrangian
 ! In  l_norm_smooth    : indicator for normals smoothing
 ! In  nb_node_slav     : number of nodes of for slave side from contact element
 ! In  elem_slav_code   : code element for slave side from contact element
@@ -76,7 +78,8 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
     real(kind=8) :: dTs_ns(MAX_LAGA_DOFS,2), dTm_nm(MAX_LAGA_DOFS,2)
     real(kind=8) :: dTs(MAX_LAGA_DOFS,3,2)
     real(kind=8) :: d2Ns_nm(MAX_LAGA_DOFS,MAX_LAGA_DOFS), dTs_nm(MAX_LAGA_DOFS,2)
-    real(kind=8) :: stress(3,3), stressn(3)
+    real(kind=8) :: stress(3,3), stress_n(3), norm_slav_init(3)
+    real(kind=8) :: dStress_n(MAX_NITS_DOFS,3)
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -95,13 +98,18 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
                         shape_func_ma, dshape_func_ma, ddshape_func_ma)
     call shapeFuncDispVolu(geom%elem_volu_code, coor_qp_vo, shape_func_vo, dshape_func_vo)
 !
-! ----- Evaluate stress_n and gamma_c at quadrature point
+! ------ Compute outward slave normal (inital configuration)
+!
+    call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_init, &
+                coor_qp_sl(1), coor_qp_sl(2), norm_slav_init)
+!
+! ----- Evaluate stress_nn and gamma_c at quadrature point
 !
     stress = evalStress(nits, geom%nb_node_slav, shape_func_sl)
-    stressn = matmul(stress, norm_slav)
-    stress_n = dot_product(stressn, norm_slav)
+    stress_n = matmul(stress, norm_slav_init)
+    stress_nn = dot_product(stress_n, norm_slav)
     gamma_c = evalPoly(geom%nb_node_slav, shape_func_sl, parameters%coef_cont) / hF
-    sn_gap = stress_n + gamma_c * gap
+    sn_gap = stress_nn + gamma_c * gap
 !
 ! ----- Contact activate at quadrature point ( H = 0 or 1 )
 !
@@ -158,7 +166,7 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
         speed = speedEval(geom, coor_qp_sl, coor_qp_ma, gap)
         vT = cmpTang(invMetricTens, tau_slav, speed)
 !
-        st_v = (stress_n * norm_slav + matmul(tau_slav, stress_t) ) - gamma_f * speed
+        st_v = (stress_nn * norm_slav + matmul(tau_slav, stress_t) ) - gamma_f * speed
         projBsVal3 = projBs(parameters, st_v, thres_qp, norm_slav)
         projBsVal = cmpTang(invMetricTens, tau_slav, projBsVal3)
     end if
@@ -193,6 +201,14 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,3)
         else
             jump_t = 0.d0
         end if
+    end if
+!
+    if(present(dStress_nn)) then
+!
+! ----- Compute d stress_nn / du
+!
+        dStress_n = dStress_n_du(geom, nits, norm_slav_init)
+        dStress_nn = dStress_nn_du(geom, stress_n, dStress_n, norm_slav, dNs)
     end if
 !
 end subroutine

@@ -100,8 +100,8 @@ ContactComputation::geometricGap( const ContactPairingPtr pairing ) const {
  * @brief Compute contact mortar matrix
  */
 FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pairing,
+                                                     const MaterialFieldPtr mater,
                                                      const bool &initial_contact ) const {
-
     CALL_JEMARQ();
 
     auto fed = pairing->getFiniteElementDescriptor();
@@ -143,6 +143,9 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
 
         return mapping;
     };
+
+    // get Material
+    auto listMaterial = mater->getVectorOfMaterial();
 
     // Loop on Grel
     for ( ASTERINTEGER iGrel = 0; iGrel < nbGrel; iGrel++ ) {
@@ -220,10 +223,11 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                     }
 
                     // Provisoire
+                    AS_ASSERT(listMaterial.size() == 1);
                     // Young modulus
-                    ( *data )[shift + 45] = 2000.;
+                    ( *data )[shift + 45] = listMaterial[0]->getValueReal("ELAS", "E");
                     // Poisson ration
-                    ( *data )[shift + 46] = 0.3;
+                    ( *data )[shift + 46] = listMaterial[0]->getValueReal("ELAS", "NU");
                 }
 
                 nbPair++;

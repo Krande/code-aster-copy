@@ -19,7 +19,8 @@
 subroutine tecach(stopz, nmparz, louez, iret, nval,&
                   itab, iad, numa)
 !
-    use calcul_module, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_, ca_igr_, ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
+    use calcul_module, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_, ca_igr_, &
+        ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
 !
     implicit none
 !
@@ -277,7 +278,10 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
                     call contex_param(ca_option_, nompar)
                 else
                     iret = 3
-                    jtab(1)=0
+                    if(inval < 8) then
+                        jtab(1)=0
+                    end if
+                    exit
                 endif
             endif
         end do

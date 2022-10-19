@@ -36,6 +36,7 @@ void exportContactEnumToPython( py::module_ &mod ) {
         .value( "Empty", ContactVariant::Empty )
         .value( "Rapide", ContactVariant::Rapide )
         .value( "Robust", ContactVariant::Robust )
+        .value( "Symetric", ContactVariant::Symetric )
         .export_values();
 
     py::enum_< ContactType >( mod, "ContactType" )

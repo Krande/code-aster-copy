@@ -51,13 +51,14 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 !
     type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
-    integer ::  i_qp, nb_qp
+    integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
-    real(kind=8) :: gap, stress_n, gamma_c, projRmVal
+    real(kind=8) :: gap, stress_nn, gamma_c, projRmVal
     real(kind=8) :: stress_t(2), vT(2), gamma_f, projBsVal(2)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8) :: dStress_nn(MAX_NITS_DOFS), dGapRenum(MAX_NITS_DOFS)
     real(kind=8) :: matr_tmp(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     integer :: dofsMap(54)
 !
@@ -79,6 +80,12 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 !
     hF = diameter(geom%nb_node_slav, geom%coor_slav_init)
 !
+    call nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)
+!
+! - Read material properties
+!
+    call getMaterialProperties(nits)
+!
 ! - Eval stress at face nodes
 !
     call evalStressNodes(geom, nits)
@@ -95,9 +102,9 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 ! ----- Compute contact quantities
 !
         call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
-                    stress_n, gap, gamma_c, projRmVal, l_cont_qp,&
+                    stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
                     stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap=dGap, d2Gap=d2Gap)
+                    dGap=dGap, d2Gap=d2Gap, dStress_nn=dStress_nn)
 !
 ! ------ CONTACT PART (always computed)
 !
@@ -108,20 +115,48 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 !
             matr_tmp = 0.d0
             coeff = weight_sl_qp * gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, &
+            call dger(face_dofs, face_dofs, coeff, dGap, 1, dGap, 1, &
                         matr_tmp, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
-!        term: (H*[stress_n + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
+!        term: (H*[stress_nn + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
 !
             coeff = weight_sl_qp * projRmVal
-            matr_tmp(1:geom%nb_dofs, 1:geom%nb_dofs) = &
-                matr_tmp(1:geom%nb_dofs, 1:geom%nb_dofs) + &
-                coeff * d2Gap(1:geom%nb_dofs, 1:geom%nb_dofs)
+            matr_tmp(1:face_dofs, 1:face_dofs) = &
+                matr_tmp(1:face_dofs, 1:face_dofs) + coeff * d2Gap(1:face_dofs, 1:face_dofs)
 !
 ! ------ Renumbering
 !
             call remappingMatr(geom, dofsMap, matr_tmp, matr_cont, 1.d0)
+!
+! ------ Compute displacement / displacement
+!        term: (H * D(gap(u))[v], D(stress_nn)[du])
+!
+            call remappingVect(geom, dofsMap, dGap, dGapRenum, 1.d0)
+            coeff = weight_sl_qp
+            call dger(total_dofs, slav_dofs, coeff, dGapRenum, 1, dStress_nn, 1, &
+                    matr_cont, MAX_NITS_DOFS)
+!
+            if(parameters%vari_cont .ne. CONT_VARI_RAPI) then
+!
+! ------ Compute displacement / displacement
+!        term: \theta * (H * D(stress_nn)[v], D(gap(u))[du])
+!
+                coeff = weight_sl_qp * parameters%vari_cont_coef
+                call dger(slav_dofs, total_dofs, coeff, dStress_nn, 1, dGapRenum, 1, &
+                        matr_cont, MAX_NITS_DOFS)
+            endif
+
+        else
+            if(parameters%vari_cont .ne. CONT_VARI_RAPI) then
+!
+! ------ Compute displacement / displacement
+!        term: (theta * (H-1) / gamma_c * D(stress_nn)[v], D(stress_nn)[du])
+!
+                coeff = weight_sl_qp * parameters%vari_cont_coef * gamma_c
+                call dger(slav_dofs, slav_dofs, coeff, dStress_nn, 1, dStress_nn, 1, &
+                    matr_cont, MAX_NITS_DOFS)
+            end if
         end if
 !
 ! ------ FRICTION PART (computed only if friction)

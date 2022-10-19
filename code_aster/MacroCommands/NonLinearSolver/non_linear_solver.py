@@ -66,7 +66,7 @@ class NonLinearSolver:
     def __init__(self):
         self.phys_state = PhysicalState()
         self.storage_manager = StorageManager(NonLinearResult())
-        self.contact_manager = ContactManager(None)
+        self.contact_manager = ContactManager(None, None)
 
     def setPhysicalProblem(self, model, material, carael=None):
         """Define the physical problem properties.
@@ -100,7 +100,7 @@ class NonLinearSolver:
         Arguments:
             definition (ContactNew): .
         """
-        self.contact_manager = ContactManager(definition)
+        self.contact_manager = ContactManager(definition, self.phys_pb)
 
         fed_defi = definition.getFiniteElementDescriptor()
         self.phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)

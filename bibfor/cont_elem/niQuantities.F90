@@ -135,18 +135,11 @@ type(ContactParameters), intent(inout) :: param
     do i_node_slav = 1, geom%nb_node_slav
         map = geom%mapVolu2Surf(i_node_slav)
         ASSERT(zl(itab(8)-1+map))
-        !param%coef_cont(i_node_slav) = zr(jv_cont-1+map)
-        param%coef_cont(i_node_slav) = 2000.
+        param%coef_cont(i_node_slav) = zr(jv_cont-1+map)
         if(l_fric) then
             param%coef_fric(i_node_slav) = zr(jv_frot-1+map)
         end if
     end do
-    ! l'adresse est mauvaise - pourquoi ?
-    ! print*, iret
-    ! print*, itab
-    ! print*, zl(itab(8):itab(8)-1+itab(2))
-    ! print*, geom%mapVolu2Surf
-    ! print*, param%coef_cont
-    ! print*, zr(jv_cont:jv_cont+2)
+
 !
 end subroutine

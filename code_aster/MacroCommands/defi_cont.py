@@ -62,12 +62,13 @@ DEFI_CONT_CATA = MACRO(
                              into=("LAGRANGIEN", "NITSCHE", "PENALISATION",),),
 
               b_algo_cont=BLOC(condition="""is_in("ALGO_CONT", ('NITSCHE'))""",
-                               VARIANTE=SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
-                                             into=("RAPIDE", "ROBUSTE"),
-                                             fr=tr("Choix de la variante des formulations du contact"),),
-                               b_vari_syme=BLOC(condition="""equal_to("VARIANTE", "RAPIDE")""",
-                                                SYME=SIMP(statut='f', typ='TXM', defaut="OUI",
-                                                          into=("OUI", "NON"),),
+                               SYME=SIMP(statut='f', typ='TXM',
+                                         defaut="OUI", into=("OUI", "NON"),),
+                               b_vari_syme=BLOC(condition="""equal_to("SYME", "NON")""",
+                                                VARIANTE=SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
+                                                              into=(
+                                                                  "RAPIDE", "ROBUSTE"),
+                                                              fr=tr("Choix de la variante des formulations du contact"),),
                                                 ),
                                ),
               # le choix du type de contact implique aussi celui de frottement
@@ -91,7 +92,7 @@ DEFI_CONT_CATA = MACRO(
                         SANS_GROUP_MA=SIMP(
                                   statut='f', typ=grma, validators=NoRepeat(), max='**'),
                         SANS_GROUP_NO=SIMP(
-                                  statut='f', typ=grno, validators=NoRepeat(), max='**'),
+                            statut='f', typ=grno, validators=NoRepeat(), max='**'),
                         ),
               CONTACT_INIT=SIMP(statut='f', typ='TXM', defaut="INTERPENETRE",
                                 into=("OUI", "INTERPENETRE", "NON"),),

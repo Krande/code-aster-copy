@@ -25,6 +25,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+#include "contact_module.h"
 #include "jeveux.h"
 !
 type(ContactParameters), intent(inout) :: parameters
@@ -45,7 +46,20 @@ type(ContactParameters), intent(inout) :: parameters
 !
     parameters%algo_cont = nint(zr(jcont+23))
     parameters%type_cont = nint(zr(jcont+24))
-    parameters%vari_cont = zr(jcont+25)
+    parameters%vari_cont = nint(zr(jcont+25))
+!
+    select case( parameters%vari_cont )
+        case(CONT_VARI_NONE)
+            parameters%vari_cont_coef = 0.d0
+        case(CONT_VARI_RAPI)
+            parameters%vari_cont_coef = 0.d0
+        case(CONT_VARI_ROBU)
+            parameters%vari_cont_coef = -1.d0
+        case(CONT_VARI_SYME)
+            parameters%vari_cont_coef = 1.d0
+        case default
+            ASSERT(ASTER_FALSE)
+    end select
 !
 ! - Friction
 !

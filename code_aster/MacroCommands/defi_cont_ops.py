@@ -68,7 +68,8 @@ def defi_cont_ops(self, **keywords):
         "BILATERAL": ContactType.Bilateral,
     }
     _vari_cont = {"RAPIDE": ContactVariant.Rapide,
-                  "ROBUSTE": ContactVariant.Robust}
+                  "ROBUSTE": ContactVariant.Robust,
+                  "SYMETRIC": ContactVariant.Symetric}
     _algo_frot = {
         "LAGRANGIEN": FrictionAlgo.Lagrangian,
         "NITSCHE": FrictionAlgo.Nitsche,
@@ -113,7 +114,10 @@ def defi_cont_ops(self, **keywords):
         contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
 
         if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
-            contParam.setVariant(_vari_cont[zone["VARIANTE"]])
+            if zone["SYME"] == "OUI":
+                contParam.setVariant(_vari_cont["SYMETRIC"])
+            else:
+                contParam.setVariant(_vari_cont[zone["VARIANTE"]])
         else:
             contParam.setVariant(ContactVariant.Empty)
 

@@ -52,7 +52,7 @@ class ContactComputation {
      */
     ElementaryMatrixDisplacementRealPtr contactMortarMatrix() const;
 
-    FieldOnCellsRealPtr contactData( const ContactPairingPtr pairing,
+    FieldOnCellsRealPtr contactData( const ContactPairingPtr pairing, const MaterialFieldPtr mater,
                                      const bool &initial_contact ) const;
 
     /**

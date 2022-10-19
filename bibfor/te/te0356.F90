@@ -47,6 +47,7 @@ implicit none
     real(kind=8) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
     real(kind=8) :: matr_cont(MAX_NITS_DOFS, MAX_NITS_DOFS)
     real(kind=8) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
+    aster_logical :: l_matr_sym
 !
 ! - Informations about finite element
 !
@@ -78,6 +79,7 @@ implicit none
         end if
 !
     elseif(nomopt == "RIGI_CONT") then
+        l_matr_sym = .not.parameters%l_fric .and. parameters%vari_cont .eq. CONT_VARI_SYME
 !
 ! --- Compute contact matrix
 !
@@ -85,10 +87,11 @@ implicit none
 !
 ! - Write matrix
 !
-        call writeMatrix('PMATUUR', geom%nb_dofs, geom%nb_dofs, ASTER_TRUE, matr_cont)
-!
-        if(parameters%l_fric) then
-            call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, ASTER_FALSE, matr_fric)
+        if(l_matr_sym) then
+            call writeMatrix('PMATUUR', geom%nb_dofs, geom%nb_dofs, l_matr_sym, matr_cont)
+        else
+            call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, l_matr_sym, &
+                             matr_cont + matr_fric)
         end if
 !
     else

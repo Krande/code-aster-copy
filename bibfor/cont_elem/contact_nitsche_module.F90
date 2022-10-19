@@ -28,9 +28,12 @@ private
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/jevech.h"
 #include "asterfort/reereg.h"
 #include "asterfort/trace_mat.h"
+#include "blas/dgemv.h"
 #include "contact_module.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,18 +44,19 @@ private
 !
 type ContactNitsche
     ! Young modulus
-    real(kind=8)                        :: E = 2000.d0
+    real(kind=8)                        :: E = 0.d0
     ! Poisson ratio
-    real(kind=8)                        :: nu = 0.3d0
+    real(kind=8)                        :: nu = 0.d0
 
     ! stress at nodes
     real(kind=8), dimension(3,3,9) :: stress_nodes = 0.d0
 
 end type
 !
-    public ContactNitsche
-    public :: dofsMapping, remappingVect, remappingMatr
-    public :: evalStressNodes, evalStress
+    public :: ContactNitsche
+    public :: dofsMapping, remappingVect, remappingMatr, nbDofsNitsche
+    public :: evalStressNodes, evalStress, getMaterialProperties
+    public :: dStress_n_du, dStress_nn_du
 !
 contains
 !
@@ -235,7 +239,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: coor_qp_vo(3), mu, lambda, rac_1div3
+        real(kind=8) :: coor_qp_vo(3), mu, lambda
         real(kind=8) :: dshape_func_vo(3,27), grad(3,3), eps(3,3)
         integer :: i_node, iret
 !
@@ -289,6 +293,128 @@ contains
                 evalStress(i,j) = evalPoly(nb_node_slav, shape_func_sl, nits%stress_nodes(i,j,:))
             end do
         end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getMaterialProperties(nits)
+!
+    implicit none
+!
+        type(ContactNitsche), intent(inout) :: nits
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Read material properties
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: jcont
+!
+        call jevech('PCONFR', 'L', jcont)
+!
+        nits%E = zr(jcont+45)
+        nits%nu = zr(jcont+46)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        integer, intent(out) :: total_dofs, face_dofs, slav_dofs
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute number of dofs for Nitsche
+!
+! --------------------------------------------------------------------------------------------------
+!
+        total_dofs = geom%nb_dofs
+        face_dofs = (geom%nb_node_slav + geom%nb_node_mast) * geom%elem_dime
+        slav_dofs =  geom%nb_node_volu * geom%elem_dime
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dStress_n_du(geom, nits, norm_slav_init)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        type(ContactNitsche), intent(in) :: nits
+        real(kind=8), intent(in) :: norm_slav_init(3)
+        real(kind=8) :: dStress_n_du(MAX_NITS_DOFS,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of normal stress
+!   D stress_n^s(u^s)[v^s] = Aep(u^s) : grad(v^s)  * N^s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        dStress_n_du = 0.d0
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function dStress_nn_du(geom, stress_n, dStress_n, norm_slav, dNs)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: norm_slav(3), stress_n(3)
+        real(kind=8), intent(in) :: dStress_n(MAX_NITS_DOFS,3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8) :: dStress_nn_du(MAX_NITS_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of normal, normal stress
+!   D stress_nn^s(u^s)[v^s] = Aep(u^s) : grad(v^s)  * N^s . n^s + stress(u^s) * N^s * Dn^s(u^s)[v^s]
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: dNs_sn(MAX_LAGA_DOFS)
+        integer :: total_dofs, face_dofs, slav_dofs, index, i_dof
+        integer :: dofsMap(54), slav_face_dofs
+!
+        dStress_nn_du = 0.d0
+!
+        call nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)
+        slav_face_dofs = geom%nb_node_slav * geom%elem_dime
+!
+! --- Term Aep(u^s) : grad(v^s)  * N^s . n^s
+!
+        do i_dof = 1, slav_dofs
+            dStress_nn_du(i_dof) = dot_product(dStress_n(i_dof, 1:3), norm_slav)
+        end do
+!
+! --- Term: stress(u^s) * N^s * D n^s(u^s)[v^s]
+!
+        dNs_sn = 0.d0
+        call dgemv('N', slav_face_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
+                    stress_n, 1, 1.d0, dNs_sn, 1)
+!
+! --- Remapping
+!
+        dofsMap = dofsMapping(geom)
+        ! do i_dof = 1, slav_face_dofs
+        !     dStress_nn_du(dofsMap(i_dof)) = dStress_nn_du(dofsMap(i_dof)) + dNs_sn(i_dof)
+        ! end do
 !
     end function
 !
