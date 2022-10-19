@@ -389,7 +389,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dNs_sn(MAX_LAGA_DOFS)
-        integer :: total_dofs, face_dofs, slav_dofs, index, i_dof
+        integer :: total_dofs, face_dofs, slav_dofs, i_dof
         integer :: dofsMap(54), slav_face_dofs
 !
         dStress_nn_du = 0.d0

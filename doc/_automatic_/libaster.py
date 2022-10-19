@@ -3676,6 +3676,8 @@ class ContactVariant:
     Rapide
     
     Robust
+    
+    Symetric
     """
     
     # Method resolution order:
@@ -3739,6 +3741,8 @@ class ContactVariant:
     Rapide = 1
     
     Robust = 2
+    
+    Symetric = 3
 
 # class ContactType in libaster
 
@@ -4838,11 +4842,12 @@ class ContactComputation:
             FieldOnNodesReal: friction coefficient (= COEF_FROT)
         """
     
-    def contactData(self, pairing, initial_contact):
+    def contactData(self, pairing, material, initial_contact):
         """Compute contact data (cf. MMCHML) as input to compute contact forces and matrices.
         
         Arguments:
             pairing (ContactPairing): pairing object
+            material (MaterialField): material field
             initial_contact (bool): True to use value in contact definition (CONTACT_INIT).
         
         Returns:
