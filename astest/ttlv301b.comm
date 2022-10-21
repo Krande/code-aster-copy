@@ -1,0 +1,104 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+# MAILLES : HEXA27
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+#
+# LECTURE DU MAILLAGE --------------------------------------------------
+#
+
+
+MAIL = LIRE_MAILLAGE(FORMAT='MED', )
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
+#
+
+# ----- MATERIAU
+
+
+MATER = DEFI_MATERIAU(THER=_F(LAMBDA=1.0,  RHO_CP=1.0))
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
+#
+
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',  MATER=MATER)
+                      )
+
+MOTH = AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           MODELISATION='3D_HHO',
+                           FORMULATION='LINEAIRE',
+                           PHENOMENE='THERMIQUE')
+                   )
+
+CHTH = AFFE_CHAR_CINE(MODELE=MOTH,
+                      THER_IMPO=_F(GROUP_NO='FAC_EXT', TEMP=2.E0)
+                      )
+
+#
+# DEFINITION DE LA STRATEGIE DE CALCUL --------------------------------
+#
+
+
+LTMPS = DEFI_LIST_REEL(DEBUT=0.E0, INTERVALLE=(
+    _F(JUSQU_A=1,   NOMBRE=1),
+),)
+
+#
+# RESOLUTION ----------------------------------------------------------
+#
+
+TEMPE = THER_LINEAIRE(MODELE=MOTH,
+                      INCREMENT=_F(LIST_INST=LTMPS),
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHTH)
+                      )
+
+#
+# ANALYSE DES RESULTATS -----------------------------------------------
+#
+
+TEMP_01 = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                     NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                     INST=1.0
+                     )
+
+
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N5',
+                      NOM_CMP='HHO_C[1]',
+                      PRECISION=1.E-2,
+                      CHAM_GD=TEMP_01,
+                      VALE_CALC=2.0,
+                      VALE_REFE=2.0,
+                      REFERENCE='NON_DEFINI',),
+                   ),)
+
+#
+# FIN ------------------------------------------------------------------
+#
+
+FIN()

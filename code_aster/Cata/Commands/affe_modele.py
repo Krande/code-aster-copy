@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -262,7 +262,13 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "COQUE_PLAN",      # person_in_charge: mickael.abbas at edf.fr
                                   "PLAN",            # person_in_charge: mickael.abbas at edf.fr
                                   "PLAN_DIAG",       # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_HHO",
+                                  "PLAN_HHO",
                                                                       ),),),
+
+                  b_formu_hho =BLOC( condition = """equal_to('MODELISATION', ('3D_HHO', 'PLAN_HHO', ))""",
+                                   fr=tr("HHO formulation"),
+                     FORMULATION    =SIMP(statut='f',typ='TXM',max=1,into=("LINEAIRE","QUADRATIQUE",), defaut="LINEAIRE"),),
 
                 b_acoustique    =BLOC( condition = """equal_to("PHENOMENE", 'ACOUSTIQUE')""",
                                         fr=tr("modélisations acoustiques"),

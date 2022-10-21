@@ -3658,6 +3658,8 @@ TEMP_R   = PhysicalQuantity(type='R',
        'DTX',
        'DTY',
        'DTZ',
+       'HHO_F[6]',
+       'HHO_C[10]',
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3671,6 +3673,9 @@ TEMP_R   = PhysicalQuantity(type='R',
        DTX : derivee de la temperature selon x (n'est pas un ddl)
        DTY : derivee de la temperature selon y (n'est pas un ddl)
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
+       HHO_C   : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
+       HHO_F   : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face)
+
 """)
 
 THET_R   = PhysicalQuantity(type='R',
