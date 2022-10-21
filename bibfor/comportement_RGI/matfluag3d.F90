@@ -39,9 +39,9 @@ subroutine matfluag3d(epse06,epsk06,sig06,&
 !     parametres materiaux
 !     souplesse du materiau elastique et increment de deformation pour
 !     le fluage
-      real(kind=8) :: deps6(6)
-      real(kind=8) :: cc03(3),vcc33(3,3),vcc33t(3,3),vref33(3,3),vref33t(3,3)
-      real(kind=8) :: cc06(6)
+      real(kind=8), intent(in) :: deps6(6)
+      real(kind=8) :: cc03(3),vcc33(3,3),vcc33t(3,3), cc06(6)
+      real(kind=8), intent(in) :: vref33(3,3),vref33t(3,3)
 
 !     donnees fluage : contrainte de maxwell, deformation maxwell
 !     rigidite relative kelvin, exposant non linearite maxwell, temps
@@ -49,10 +49,10 @@ subroutine matfluag3d(epse06,epsk06,sig06,&
       real(kind=8) :: psik,tauk,taum,deltam
 
 !     variables internes debut de pas
-      real(kind=8) :: epse06(6),epsk06(6),sig06(6)
+      real(kind=8), intent(in) :: epse06(6),epsk06(6),sig06(6)
 !     matrice de couplage du fluage
-      real(kind=8) :: kveve66(6,6),kvem66(6,6),bve6(6)
-      real(kind=8) :: kmve66(6,6),kmm66(6,6),bm6(6)
+      real(kind=8), intent(out) :: kveve66(6,6),kvem66(6,6),bve6(6)
+      real(kind=8), intent(out) :: kmve66(6,6),kmm66(6,6),bm6(6)
 
 !     variables locales
 !     dissipation de reference et energie elestique de reference

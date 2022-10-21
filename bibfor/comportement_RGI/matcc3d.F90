@@ -26,8 +26,8 @@ implicit none
 #include "asterfort/chrep6.h"
 #include "asterfort/indice0.h"
 
-      real(kind=8) :: cc3(3),vcc33(3,3),vcc33t(3,3),v33(3,3),v33t(3,3),cc6(6)
-
+      real(kind=8) :: cc3(3),vcc33(3,3),vcc33t(3,3),cc6(6)
+      real(kind=8), intent(in) :: v33(3,3), v33t(3,3)
       real(kind=8) :: eps6(6),epsp6(6)
       integer i,j,k,l
       aster_logical ::  faux

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dflueff3d(ccmax,dflu0,dflu1,dfin)
+subroutine dflueff3d(ccmax, dflu0, dflu1, dfin)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
@@ -24,11 +24,10 @@ subroutine dflueff3d(ccmax,dflu0,dflu1,dfin)
       implicit none
 
 
-      real(kind=8) :: dflu0,dflu1,dfin,ccmax
-
+      real(kind=8), intent(in) :: dflu0, dfin,ccmax
+      real(kind=8), intent(out) :: dflu1
+!
       real(kind=8) :: dflu
-
-
 !   calcul de l'edommagement effectif actuel en fonction de la consolidation
       dflu=dfin*(1.d0-1.d0/ccmax)
 

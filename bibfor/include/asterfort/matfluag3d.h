@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,27 +25,27 @@ interface
                 kveve66,kvem66,kmve66,kmm66,bve6,&
                 bm6,deltam,avean,cc03,vcc33,&
                 vcc33t,vref33,vref33t)
-        real(kind=8) :: epse06(6)
-        real(kind=8) :: epsk06(6)
-        real(kind=8) :: sig06(6)
+        real(kind=8), intent(in) :: epse06(6)
+        real(kind=8), intent(in) :: epsk06(6)
+        real(kind=8), intent(in) :: sig06(6)
         real(kind=8) :: psik
         real(kind=8) :: tauk
         real(kind=8) :: taum
-        real(kind=8) :: deps6(6)
+        real(kind=8), intent(in) :: deps6(6)
         real(kind=8) :: dt
         real(kind=8) :: theta
-        real(kind=8) :: kveve66(6,6)
-        real(kind=8) :: kvem66(6,6)
-        real(kind=8) :: kmve66(6,6)
-        real(kind=8) :: kmm66(6,6)
-        real(kind=8) :: bve6(6)
-        real(kind=8) :: bm6(6)
+        real(kind=8), intent(out) :: kveve66(6,6)
+        real(kind=8), intent(out) :: kvem66(6,6)
+        real(kind=8), intent(out) :: kmve66(6,6)
+        real(kind=8), intent(out) :: kmm66(6,6)
+        real(kind=8), intent(out) :: bve6(6)
+        real(kind=8), intent(out) :: bm6(6)
         real(kind=8) :: deltam
         real(kind=8) :: avean
         real(kind=8) :: cc03(3)
         real(kind=8) :: vcc33(3,3)
         real(kind=8) :: vcc33t(3,3)
-        real(kind=8) :: vref33(3,3)
-        real(kind=8) :: vref33t(3,3)
+        real(kind=8), intent(in) :: vref33(3,3)
+        real(kind=8), intent(in) :: vref33t(3,3)
     end subroutine matfluag3d
 end interface 

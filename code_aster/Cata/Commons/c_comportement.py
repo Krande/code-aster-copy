@@ -562,7 +562,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
             ),
             b_flua_resi=BLOC(
-                condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO'))""",
+                condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
                 RESI_INTE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-6),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=-1),
             ),

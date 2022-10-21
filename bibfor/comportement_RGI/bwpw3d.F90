@@ -25,12 +25,14 @@ subroutine bwpw3d(mfr,biotw,poro,vw,xnsat,&
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 !   variables externes
-      integer mfr
-      real(kind=8) :: biotw,poro,vw,xnsat,mw,pw,bw,srw
-      real(kind=8), dimension(1) :: valr
+      integer, intent(in) :: mfr
+      real(kind=8), intent(in) :: biotw, poro, vw, xnsat, mw
+      real(kind=8), intent(out) :: pw, bw
+      real(kind=8), intent(inout) :: srw
 
 !   variables locales
       real(kind=8) :: vvw
+      real(kind=8), dimension(1) :: valr
 
 !   pression capillaire si non sature actif
       if(mfr.ne.33) then
@@ -48,7 +50,7 @@ subroutine bwpw3d(mfr,biotw,poro,vw,xnsat,&
             if (abs(mw).ge.r8prem()) then
                 pw=-xnsat*((((srw**(-1.d0/mw))-1.d0))**(1.d0-mw))
             else
-                call utmess('A', 'COMPOR3_14')
+                call utmess('F', 'COMPOR3_14')
             end if
          else
             pw=0.d0

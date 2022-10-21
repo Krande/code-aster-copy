@@ -38,19 +38,24 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
       integer i,j
 
 !   declaration variables externes
-      real(kind=8) :: hyd0,hydr,hyds,young00,young,nu00,nu
-      real(kind=8) :: rt00,rt,ref00,ref,rc00,rc,delta00,delta,beta00,beta
-      real(kind=8) :: pglim,epsm00,epsm,xnsat00,xnsat,biotw00,biotw
-      real(kind=8) :: gft00,gft,krgi00,krgi,xmt,ept00,ept,dpic
-      aster_logical ::  iso,dtiso
-      real(kind=8) :: lambda,mu
+      real(kind=8), intent(in) :: young00, nu00, rt00, ref00, rc00
+      real(kind=8), intent(in) :: delta00, beta00, epsm00, xnsat00
+      real(kind=8), intent(in) :: biotw00, gft00, krgi00, ept00
+      real(kind=8), intent(out) :: young, nu, rt, ref, rc, delta, beta
+      real(kind=8), intent(out) :: epsm, xnsat, biotw, gft, krgi, ept
+      real(kind=8), intent(in) :: hyd0,hydr,hyds
+      real(kind=8), intent(out) :: pglim, xmt
+
+      aster_logical, intent(in) ::  iso
+      aster_logical, intent(out) ::  dtiso
+      real(kind=8) :: lambda, mu
       real(kind=8) :: rt33(3,3),rtg33(3,3),ref33(3,3)
       real(kind=8) :: raideur66(6,6),souplesse66(6,6)
-      integer err1
+      integer :: err1
       real(kind=8) :: rteff
 
 !     declarations variables locales
-      real(kind=8) :: umb00,umb,rtg,xrteff
+      real(kind=8) :: umb00,umb,rtg,xrteff, dpic
 !     coeff d'amplificationpour passer de rt à rteff
       xrteff=dmax1((ept00/(rt00/young00)),1.d0)
 

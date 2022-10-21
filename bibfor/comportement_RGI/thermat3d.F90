@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine thermat3d(teta1,nrjm,tetas,tetar,DT80,&
-                                             dth0,DTH,CTHP,CTHV)
+subroutine thermat3d(teta1, nrjm, tetas, tetar, DT80,&
+                     dth0, DTH, CTHP, CTHV)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   influence de la temperature sur les parametres de fluage
@@ -26,8 +26,8 @@ subroutine thermat3d(teta1,nrjm,tetas,tetar,DT80,&
       implicit none
 
 !   variables externes
-      real(kind=8) :: nrjm,teta1,DT80
-      real(kind=8) :: tetas,tetar,dth0,DTH,CTHP,CTHV
+      real(kind=8), intent(in) :: teta1, nrjm, tetas, tetar, DT80, dth0
+      real(kind=8), intent(out) :: DTH, CTHP,CTHV
 
 !   variables locales
       real(kind=8) :: easurrm,easurrw,unsurtr,unsurts,unsurt,unsurt80
@@ -37,8 +37,7 @@ subroutine thermat3d(teta1,nrjm,tetas,tetar,DT80,&
 !   reglage des activation thermiques pour le fluage
 !   +++ les teta sont en degres Celsius +++
 !**********************************************************************
-!   pour utiliser cette routine avec endo seul
-      nrjm=dmax1(nrjm,1.0)
+
 !   calcul du terme d activation d Arrhenius pour le potentiel
       easurrm=nrjm/8.314D0
 !   cas de l'activation des viscostés

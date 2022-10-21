@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hydrxmat(xmat0,xmat1,hydra1,hydras,n,&
-                                          erreur)
+subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n,&
+                    erreur)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   effet de l hydratation sur les caracteristiques materiau
@@ -25,8 +25,9 @@ subroutine hydrxmat(xmat0,xmat1,hydra1,hydras,n,&
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-      real(kind=8) :: xmat0,xmat1,hydra1,hydras,n
-      integer erreur
+      real(kind=8), intent(in) :: xmat0, hydra1, hydras, n
+      real(kind=8), intent(out) :: xmat1
+      integer, intent(out) :: erreur
 !   declaration locale
       real(kind=8) :: yy,zzmin,hydra
 !   avant le seuil d hydratation on a 1e-3 des cracateristiques

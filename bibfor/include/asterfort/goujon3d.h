@@ -26,7 +26,8 @@ interface
         integer :: nbrenf,numr,numf
         real(kind=8) :: vecr(nbrenf,3),deq(nbrenf),rhor(nbrenf)
         real(kind=8) :: wpl3(3),vwpl33(3,3),vwpl33t(3,3)
-        real(kind=8) :: rc,sigrf
+        real(kind=8), intent(in) :: rc
+        real(kind=8) :: sigrf
         real(kind=8) :: sigrfissp(nbrenf,3,3)
     end subroutine goujon3d
 end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface 
       subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
               sig0,dsw6,nstrs)
-        real(kind=8) :: bw0
-        real(kind=8) :: pw0
-        real(kind=8) :: bw
-        real(kind=8) :: pw
-        real(kind=8) :: sfld
-        real(kind=8) :: sig0(:)
-        real(kind=8) :: dsw6(6)
-        integer :: nstrs
+        real(kind=8), intent(in) :: bw0
+        real(kind=8), intent(in) :: pw0
+        real(kind=8), intent(in) :: bw
+        real(kind=8), intent(in) :: pw
+        real(kind=8), intent(in) :: sfld
+        real(kind=8), intent(in) :: sig0(:)
+        real(kind=8), intent(inout) :: dsw6(6)
+        integer, intent(in) :: nstrs
     end subroutine fludes3d
 end interface

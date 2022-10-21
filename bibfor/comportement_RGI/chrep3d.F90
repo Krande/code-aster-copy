@@ -28,7 +28,9 @@ subroutine chrep3d(M,A,P)
 #include "asterfort/matmat3d.h"
 
 
-      real(kind=8) :: M(3,3),A(3,3),P(3,3)
+      real(kind=8), intent(in) :: A(3,3),P(3,3)
+      real(kind=8), intent(out) :: M(3,3)
+!
       real(kind=8) :: TP(3,3),R(3,3)
       integer i,j
 
@@ -36,7 +38,7 @@ subroutine chrep3d(M,A,P)
       do i=1,3
         do j=1,3
           TP(i,j)=P(j,i)
-          M(i,j)=0.D0
+          M(i,j)=0.d0
         enddo
       enddo
       call matmat3d(A,P,3,3,3,R)

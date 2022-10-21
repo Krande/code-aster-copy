@@ -28,6 +28,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/fluendo3d.h"
+#include "asterfort/getRgiPara.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -48,8 +49,8 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     
 !
 ! DECLARATIONS LOCALES
-    integer :: nvarflumax, nmatflumax
-    parameter(nvarflumax=163, nmatflumax=165)
+    integer :: nvarflumax, nmatflumax, nvarbe
+    parameter(nvarflumax=163, nmatflumax=165, nvarbe=114)
 !
     integer :: nmatbe, nmatac, nmatflu, nvarflu, nmatbe2, nmatbe3
 !   Nombre de paramètres relatifs au beton
@@ -101,9 +102,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !   indicateur d isotropie initiale
     aster_logical :: iso1, local11, end3d, fl3d
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi
-    real(kind=8) :: dt3d, phig3d
-!
-    integer, dimension(2) :: vali
+    real(kind=8) :: dt3d
 !
 !   --------------------------------------------------------------------
 !   Nombre de paramètres matériau et de variables internes
@@ -231,10 +230,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 !
 !        MODULES INSTANTANES ISOTROPES
-    xmat(1) = valres1(1)
-    xmat(2) = valres1(2)
-    xmat(3) = valres1(3)
-    xmat(4) = valres1(4)
+    xmat(1:4) = valres1(1:4)
     alpham = valres1(4)
 !
 ! --- EVALUATION PARAMETERES MATERIAU ELASTIQUES A T+
@@ -243,8 +239,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
                 4, nomres1, valres1, retour1, 2)
 !
     alphap = valres1(4)
-!
-!
 !
 ! ------------------------------------------------------------------
 ! --  RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
@@ -271,181 +265,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 ! --  RECUPERATION PARAMETRES MATERIAU DU MODELE FLUENDO3D
 ! ------------------------------------------------------------------
 !
-    nomres(1) = 'HYDR'
-    nomres(2) = 'HYDS'
-    nomres(3) = 'RT'
-    nomres(4) = 'REF'
-    nomres(5) = 'RC'
-    nomres(6) = 'DELT'
-    nomres(7) = 'BETA'
-    nomres(8) = 'EPT'
-    nomres(9) = 'HRGI'
-    nomres(10)= 'VVRG'
-    nomres(11)= 'KGEL'
-    nomres(12)= 'GFT'
-    nomres(13)= 'EKFL'
-    nomres(14)= 'YKSY'
-    nomres(15)= 'XFLU'
-    nomres(16)= 'TAUK'
-    nomres(17)= 'TAUM'
-    nomres(18)= 'NRJM'
-    nomres(19)= 'DT80'
-    nomres(20)= 'BSHR'
-    nomres(21)= 'MSHR'
-    nomres(22)= 'PORO'
-    nomres(23)= 'VRAG'
-    nomres(24)= 'NRJF'
-    nomres(25)= 'SFLD'
-    nomres(26)= 'MVGN'
-    nomres(27)= 'EPC'
-    nomres(28)= 'EKDC'
-    nomres(29)= 'EKRG'
-    nomres(30)= 'GFR'
-    nomres(31)= 'ALAT'
-    nomres(32)= 'KRGI'
-    nomres(33)= 'TREF'
-    nomres(34)= 'TSTH'
-    nomres(35)= 'DFMX'
-    nomres(36)= 'TAUG'
-    nomres(37)= 'NRJG'
-    nomres(38)= 'SRSG'
-    nomres(39)= 'TRAG'
-    nomres(40)= 'DIM3'
-    nomres(41)= 'TDEF'
-    nomres(42)= 'NRJP'
-    nomres(43)= 'SRSD'
-    nomres(44)= 'VDEF'
-    nomres(45)= 'CNAD'
-    nomres(46)= 'SSAD'
-    nomres(47)= 'CNAK'
-    nomres(48)= 'CNAB'
-    nomres(49)= 'EXND'
-    nomres(50)= 'EXMD'
-    nomres(51)= 'TTDD'
-    nomres(52)= 'TDID'
-    nomres(53)= 'TFID'
-    nomres(54)= 'NRJD'
-    nomres(55)= 'TTRD'
-    nomres(56)= 'TTKF'
-    nomres(57)= 'HPEV'
-
-    nomres(58)= 'YOUM'
-    nomres(59)= 'NUM'
-
-    nomres(nmatbe2+1)= 'NREN'
-
-    nomres(nmatbe2+2)= 'ROA1'
-    nomres(nmatbe2+3)= 'DEQ1'
-    nomres(nmatbe2+4)= 'YOR1'
-    nomres(nmatbe2+5)= 'SYR1'
-    nomres(nmatbe2+6)= 'TYR1'
-    nomres(nmatbe2+7)= 'VR11'
-    nomres(nmatbe2+8)= 'VR12'
-    nomres(nmatbe2+9)= 'VR13'
-    nomres(nmatbe2+10)= 'HPL1'
-    nomres(nmatbe2+11)= 'TMR1'
-    nomres(nmatbe2+12)= 'EKR1'
-    nomres(nmatbe2+13)= 'SKR1'
-    nomres(nmatbe2+14)= 'ATR1'
-    nomres(nmatbe2+15)= 'CTM1'
-    nomres(nmatbe2+16)= 'XFL1'
-    nomres(nmatbe2+17)= 'PRE1'
-    nomres(nmatbe2+18)= 'TTR1'
-    nomres(nmatbe2+19)= 'XNR1'
-    nomres(nmatbe2+20)= 'MUS1'
-    nomres(nmatbe2+21)= 'TKR1'
-    nomres(nmatbe2+22)= 'YKY1'
-
-    nomres(nmatbe2+23)= 'ROA2'
-    nomres(nmatbe2+24)= 'DEQ2'
-    nomres(nmatbe2+25)= 'YOR2'
-    nomres(nmatbe2+26)= 'SYR2'
-    nomres(nmatbe2+27)= 'TYR2'
-    nomres(nmatbe2+28)= 'VR21'
-    nomres(nmatbe2+29)= 'VR22'
-    nomres(nmatbe2+30)= 'VR23'
-    nomres(nmatbe2+31)= 'HPL2'
-    nomres(nmatbe2+32)= 'TMR2'
-    nomres(nmatbe2+33)= 'EKR2'
-    nomres(nmatbe2+34)= 'SKR2'
-    nomres(nmatbe2+35)= 'ATR2'
-    nomres(nmatbe2+36)= 'CTM2'
-    nomres(nmatbe2+37)= 'XFL2'
-    nomres(nmatbe2+38)= 'PRE2'
-    nomres(nmatbe2+39)= 'TTR2'
-    nomres(nmatbe2+40)= 'XNR2'
-    nomres(nmatbe2+41)= 'MUS2'
-    nomres(nmatbe2+42)= 'TKR2'
-    nomres(nmatbe2+43)= 'YKY2'
-
-    nomres(nmatbe2+44)= 'ROA3'
-    nomres(nmatbe2+45)= 'DEQ3'
-    nomres(nmatbe2+46)= 'YOR3'
-    nomres(nmatbe2+47)= 'SYR3'
-    nomres(nmatbe2+48)= 'TYR3'
-    nomres(nmatbe2+49)= 'VR31'
-    nomres(nmatbe2+50)= 'VR32'
-    nomres(nmatbe2+51)= 'VR33'
-    nomres(nmatbe2+52)= 'HPL3'
-    nomres(nmatbe2+53)= 'TMR3'
-
-
-
-    nomres(nmatbe2+54)= 'EKR3'
-    nomres(nmatbe2+55)= 'SKR3'
-    nomres(nmatbe2+56)= 'ATR3'
-    nomres(nmatbe2+57)= 'CTM3'
-    nomres(nmatbe2+58)= 'XFL3'
-    nomres(nmatbe2+59)= 'PRE3'
-    nomres(nmatbe2+60)= 'TTR3'
-    nomres(nmatbe2+61)= 'XNR3'
-    nomres(nmatbe2+62)= 'MUS3'
-    nomres(nmatbe2+63)= 'TKR3'
-    nomres(nmatbe2+64)= 'YKY3'
-
-    nomres(nmatbe2+65)='ROA4'
-    nomres(nmatbe2+66)='DEQ4'
-    nomres(nmatbe2+67)='YOR4'
-    nomres(nmatbe2+68)='SYR4'
-    nomres(nmatbe2+69)='TYR4'
-    nomres(nmatbe2+70)='VR41'
-    nomres(nmatbe2+71)='VR42'
-    nomres(nmatbe2+72)='VR43'
-    nomres(nmatbe2+73)='HPL4'
-    nomres(nmatbe2+74)='TMR4'
-    nomres(nmatbe2+75)='EKR4'
-    nomres(nmatbe2+76)='SKR4'
-    nomres(nmatbe2+77)='ATR4'
-    nomres(nmatbe2+78)='CTM4'
-    nomres(nmatbe2+79)='XFL4'
-    nomres(nmatbe2+80)='PRE4'
-    nomres(nmatbe2+81)='TTR4'
-    nomres(nmatbe2+82)='XNR4'
-    nomres(nmatbe2+83)='MUS4'
-    nomres(nmatbe2+84)='TKR4'
-    nomres(nmatbe2+85)='YKY4'
-
-    nomres(nmatbe2+86)='ROA5'
-    nomres(nmatbe2+87)='DEQ5'
-    nomres(nmatbe2+88)='YOR5'
-    nomres(nmatbe2+89)='SYR5'
-    nomres(nmatbe2+90)='TYR5'
-    nomres(nmatbe2+91)='VR51'
-    nomres(nmatbe2+92)='VR52'
-    nomres(nmatbe2+93)='VR53'
-    nomres(nmatbe2+94)='HPL5'
-    nomres(nmatbe2+95)='TMR5'
-    nomres(nmatbe2+96)='EKR5'
-    nomres(nmatbe2+97)='SKR5'
-    nomres(nmatbe2+98)='ATR5'
-    nomres(nmatbe2+99)='CTM5'
-    nomres(nmatbe2+100)='XFL5'
-    nomres(nmatbe2+101)='PRE5'
-    nomres(nmatbe2+102)='TTR5'
-    nomres(nmatbe2+103)='XNR5'
-    nomres(nmatbe2+104)='MUS5'
-    nomres(nmatbe2+105)='TKR5'
-    nomres(nmatbe2+106)='YKY5'
+    call getRgiPara(nomres, nmatbe2)
 !
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
@@ -552,13 +372,11 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     end do
 !
 !
-    phig3d=0.d0
-
     call fluendo3d(xmat3d, sig03d, sigf3d, depst3d, nstrs3d,&
                    var03d, varf3d, nvari3d, nbelas3d, teta13d,&
-                   teta23d, dt3d, phig3d, epstf3d, ierr1, iso1,&
+                   teta23d, dt3d, epstf3d, ierr1, iso1,&
                    mfr11, end3d, fl3d, local11, ndim,&
-                   nmatbe3, iteflumaxi, sech)
+                   nmatbe3, iteflumaxi, sech, nvarbe)
 !
     do i = 1, 3
         sigp(i) = sigf3d(i)

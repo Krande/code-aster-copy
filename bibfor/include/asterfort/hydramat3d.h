@@ -29,37 +29,37 @@ interface
                 rt33,rtg33,ref33,raideur66,souplesse66,&
                 xmt,dtiso,err1)
 
-        real(kind=8) :: hyd0
-        real(kind=8) :: hydr
-        real(kind=8) :: hyds
-        real(kind=8) :: young00
-        real(kind=8) :: young
-        real(kind=8) :: nu00
-        real(kind=8) :: nu
-        real(kind=8) :: rt00
-        real(kind=8) :: rt
-        real(kind=8) :: ref00
-        real(kind=8) :: ref
-        real(kind=8) :: rc00
-        real(kind=8) :: rc
-        real(kind=8) :: delta00
-        real(kind=8) :: delta
-        real(kind=8) :: beta00
-        real(kind=8) :: beta
-        real(kind=8) :: gft00
-        real(kind=8) :: gft
-        real(kind=8) :: ept00
-        real(kind=8) :: ept
-        real(kind=8) :: pglim
-        real(kind=8) :: epsm00
-        real(kind=8) :: epsm
-        real(kind=8) :: xnsat00
-        real(kind=8) :: xnsat
-        real(kind=8) :: biotw00
-        real(kind=8) :: biotw
-        real(kind=8) :: krgi00
-        real(kind=8) :: krgi
-        aster_logical :: iso
+        real(kind=8), intent(in) :: hyd0
+        real(kind=8), intent(in) :: hydr
+        real(kind=8), intent(in) :: hyds
+        real(kind=8), intent(in) :: young00
+        real(kind=8), intent(out) :: young
+        real(kind=8), intent(in) :: nu00
+        real(kind=8), intent(out) :: nu
+        real(kind=8), intent(in) :: rt00
+        real(kind=8), intent(out) :: rt
+        real(kind=8), intent(in) :: ref00
+        real(kind=8), intent(out) :: ref
+        real(kind=8), intent(in) :: rc00
+        real(kind=8), intent(out) :: rc
+        real(kind=8), intent(in) :: delta00
+        real(kind=8), intent(out) :: delta
+        real(kind=8), intent(in) :: beta00
+        real(kind=8), intent(out) :: beta
+        real(kind=8), intent(in) :: gft00
+        real(kind=8), intent(out) :: gft
+        real(kind=8), intent(in) :: ept00
+        real(kind=8), intent(out) :: ept
+        real(kind=8), intent(out) :: pglim
+        real(kind=8), intent(in) :: epsm00
+        real(kind=8), intent(out) :: epsm
+        real(kind=8), intent(in) :: xnsat00
+        real(kind=8), intent(out) :: xnsat
+        real(kind=8), intent(in) :: biotw00
+        real(kind=8), intent(out) :: biotw
+        real(kind=8), intent(in) :: krgi00
+        real(kind=8), intent(out) :: krgi
+        aster_logical, intent(in) :: iso
         real(kind=8) :: lambda
         real(kind=8) :: mu
         real(kind=8) :: rt33(3,3)
@@ -67,8 +67,8 @@ interface
         real(kind=8) :: ref33(3,3)
         real(kind=8) :: raideur66(6,6)
         real(kind=8) :: souplesse66(6,6)
-        real(kind=8) :: xmt
-        aster_logical :: dtiso
+        real(kind=8), intent(out) :: xmt
+        aster_logical, intent(out) :: dtiso
         integer :: err1
     end subroutine hydramat3d
 end interface

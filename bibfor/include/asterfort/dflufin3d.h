@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
       subroutine dflufin3d(sige6,bw,pw,bg,pg,&
                dsw6,delta,rc,&
                xflu,dfin,cmp1,dfmx2)
-        real(kind=8) :: sige6(6)
-        real(kind=8) :: bw
-        real(kind=8) :: pw
-        real(kind=8) :: bg
-        real(kind=8) :: pg
-        real(kind=8) :: dsw6(6)
-        real(kind=8) :: delta
-        real(kind=8) :: rc
-        real(kind=8) :: xflu
-        real(kind=8) :: dfin
-        real(kind=8) :: cmp1
-        real(kind=8) :: dfmx2
+        real(kind=8), intent(in) :: sige6(6)
+        real(kind=8), intent(in) :: bw
+        real(kind=8), intent(in) :: pw
+        real(kind=8), intent(in) :: bg
+        real(kind=8), intent(in) :: pg
+        real(kind=8), intent(in) :: dsw6(6)
+        real(kind=8), intent(in) :: delta
+        real(kind=8), intent(in) :: rc
+        real(kind=8), intent(in) :: xflu
+        real(kind=8), intent(out) :: dfin
+        real(kind=8), intent(out) :: cmp1
+        real(kind=8), intent(in) :: dfmx2
     end subroutine dflufin3d
 end interface 

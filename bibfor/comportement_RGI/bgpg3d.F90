@@ -40,7 +40,8 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
 #include "asterfort/def3d.h"
 
       integer i
-      real(kind=8) :: bg,pg,mg,phig,treps,trepspg,phivg,pglim,trepsa
+      real(kind=8), intent(in) :: treps, pglim
+      real(kind=8) :: bg,pg,mg,phig,trepspg,phivg,trepsa
       real(kind=8) :: dpg_depsa6(6),dpg_depspg6(6)
       real(kind=8) :: epspt6(6),epspc6(6)
       real(kind=8) :: coeff1,coeff2,dpg_depsa,dpg_depspg

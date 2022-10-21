@@ -21,32 +21,33 @@
 interface 
       subroutine fluendo3d(xmat,sig0,sigf,deps,&
                nstrs,var0,varf,nvari,nbelas3d,&
-               teta1,teta2,dt,vrgi,epstf,ierr1,&
+               teta1,teta2,dt,epstf,ierr1,&
                iso,mfr,end3d,fl3d,local,&
-               ndim,nmatbe2,iteflumax,sech)
-        real(kind=8) :: xmat(:)
-        real(kind=8) :: sig0(:)
+               ndim,nmatbe2,iteflumax,sech,&
+               nvarbe)
+        real(kind=8), intent(in) :: xmat(:)
+        real(kind=8) :: sig0(6)
         real(kind=8) :: sigf(:)
         real(kind=8) :: deps(:)
-        integer :: nstrs
+        integer, intent(in) :: nstrs
         real(kind=8) :: var0(:)
         real(kind=8) :: varf(:)
-        integer :: nvari
-        integer :: nbelas3d 
+        integer, intent(in) :: nvari
+        integer, intent(in) :: nbelas3d 
         real(kind=8) :: teta1
         real(kind=8) :: teta2
         real(kind=8) :: dt
-        real(kind=8) :: vrgi
         real(kind=8) :: epstf(6)
-        integer :: ierr1
+        integer, intent(out) :: ierr1
         aster_logical :: iso
-        integer :: mfr
-        aster_logical :: end3d
-        aster_logical :: fl3d
-        aster_logical :: local
-        integer :: ndim
-        integer :: nmatbe2
-        integer :: iteflumax
+        integer, intent(in) :: mfr
+        aster_logical, intent(in) :: end3d
+        aster_logical, intent(in) :: fl3d
+        aster_logical, intent(in) :: local
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nmatbe2
+        integer, intent(in) :: iteflumax
         real(kind=8) :: sech
+        integer, intent(in) :: nvarbe
     end subroutine fluendo3d
 end interface

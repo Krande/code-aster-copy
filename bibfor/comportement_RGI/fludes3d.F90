@@ -32,14 +32,14 @@ subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
 !   surcharge capillaire en fluage de dessication
 
 !     variables externes
-      integer nstrs
-      real(kind=8) :: sig0(:)
-      real(kind=8) :: bw0,pw0,bw,pw,sfld,sig16(6),dsw6(6)
+      integer, intent(in) :: nstrs
+      real(kind=8), intent(in) :: bw0,pw0,bw,pw,sfld,sig0(:)
+      real(kind=8), intent(inout) :: dsw6(6)
 
 !     variables locales
       real(kind=8) :: sig133(3,3),sig13(3),vsig133(3,3),vsig133t(3,3),dsw6p(6)
-      integer i
-      real(kind=8) :: dbwpw
+      integer :: i
+      real(kind=8) :: dbwpw, sig16(6)
 
       dbwpw=0.d0
 

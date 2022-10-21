@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface 
       subroutine bwpw3d(mfr,biotw,poro,vw,xnsat,&
             mw,pw,bw,srw)
-        integer :: mfr
-        real(kind=8) :: biotw
-        real(kind=8) :: poro
-        real(kind=8) :: vw
-        real(kind=8) :: xnsat
-        real(kind=8) :: mw
-        real(kind=8) :: pw
-        real(kind=8) :: bw
-        real(kind=8) :: srw
+        integer, intent(in) :: mfr
+        real(kind=8), intent(in) :: biotw
+        real(kind=8), intent(in) :: poro
+        real(kind=8), intent(in) :: vw
+        real(kind=8), intent(in) :: xnsat
+        real(kind=8), intent(in) :: mw
+        real(kind=8), intent(out) :: pw
+        real(kind=8), intent(out) :: bw
+        real(kind=8), intent(inout) :: srw
     end subroutine bwpw3d
 end interface 

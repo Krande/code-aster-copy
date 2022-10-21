@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 #include "asterf_types.h"
 interface 
       subroutine chrep3d(M,A,P)
-        real(kind=8) :: M(3,3)
-        real(kind=8) :: A(3,3)
-        real(kind=8) :: P(3,3)
+        real(kind=8), intent(out) :: M(3,3)
+        real(kind=8), intent(in) :: A(3,3)
+        real(kind=8), intent(in) :: P(3,3)
     end subroutine chrep3d
 end interface 

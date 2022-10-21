@@ -16,8 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine conso3d(epsmk,epser,ccmin,ccmax,&
-        epsm6,epse6,cc3,vepsm33,vepsm33t,CWp,CMp,CTD,CTV)
+subroutine conso3d(epsmk, epser, ccmin, ccmax, epsm6,&
+                   epse6, cc3, vepsm33, vepsm33t, CWp,&
+                   CMp, CTD, CTV)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   calcul coeff de consolidation principaux et de leur base
@@ -30,14 +31,14 @@ implicit none
 #include "asterfort/transpos1.h"
 #include "asterfort/chrep6.h"
 
+      real(kind=8), intent(in) :: epsmk, epser, epsm6(6), epse6(6), CWp
+      real(kind=8), intent(in) :: CMp, CTD, CTV
+      real(kind=8), intent(out) :: ccmin, ccmax, cc3(3)
+      real(kind=8), intent(out) :: vepsm33(3,3),vepsm33t(3,3)
+!
       integer i
-
       aster_logical ::  log1
-
-      real(kind=8) :: epsmk,ccmin,epser,ccmax
-      real(kind=8) :: CWp,CMp,CTD,CTV,xx1,xx2,xxk
-      real(kind=8) :: epsm6(6),epse6(6),cc3(3)
-      real(kind=8) :: vepsm33(3,3),vepsm33t(3,3)
+      real(kind=8) :: xx1, xx2, xxk
 !     endommagement asymptotique pour le fluage non lineaire
 
 !     deformation minimale prise en compte pour le calcul de potentiel

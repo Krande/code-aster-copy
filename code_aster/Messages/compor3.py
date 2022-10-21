@@ -21,6 +21,8 @@ from ..Utilities import _
 
 cata_msg = {
 
+    1 : _("""RGI_BETON_BA : les paramètres VR11, VR12 et VR13 sont tous nuls.
+ Ils engendrent un vecteur nul."""),
 
     2 : _("""Dans le KIT_DDI, on ne peut pas coupler GRANGER avec %(k1)s."""),
 
@@ -33,6 +35,9 @@ cata_msg = {
     8 : _("""Vous avez demandé à utiliser un comportement avec des phases métallurgiques de type %(k1)s, mais le matériau est défini avec des variables de commande de type %(k2)s."""),
 
     9 : _("""La valeur du séchage de référence doit être nulle pour la loi de comportement %(k1)s."""),
+
+    10 : _("""RGI_BETON_BA : Le taux d'armature est inférieur ou égal à 1.
+ La somme des paramètres ROA1 à ROA5 doit être supérieure à 1."""),
 
     11 : _("""
  Produit scalaire presque nul entre les vecteurs :
@@ -102,11 +107,6 @@ cata_msg = {
  Dilatance excessive > %(r1)f
 """),
 
-
-    25 : _("""
- Il est préférable que BG.Mg(%(r1)f) < %(r2)f
-"""),
-
     26 : _("""
  Problème lors du tir viscoélastique dans FLUA_ENDO_PORO
 """),
@@ -139,8 +139,8 @@ cata_msg = {
 
     33 : _("""
  FLUA_ENDO_PORO : nombre d'itération maximum %(i1)d atteint :
-             compteur de sous itération plastique = %(i1)d
-             nombre d'itération multiplicateur < 0 = %(i1)d
+             compteur de sous itération plastique = %(i2)d
+             nombre d'itération multiplicateur < 0 = %(i3)d
 
  Essayez de réduire la vitesse de chargement ou augmentez le nombre d'itérations maximum
 

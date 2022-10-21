@@ -40,6 +40,7 @@ subroutine gauss3d(n,a,x,b,ngf,&
        real(kind=8) :: aa(22,22),bb(22)
 
        pmax=0.d0
+       err1 = 0
 
 
 

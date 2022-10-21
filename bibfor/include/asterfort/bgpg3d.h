@@ -36,12 +36,12 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
         real(kind=8) :: pg
         real(kind=8) :: mg
         real(kind=8) :: phig
-        real(kind=8) :: treps
+        real(kind=8), intent(in) :: treps
         real(kind=8) :: trepspg
         real(kind=8) :: epspt6(6)
         real(kind=8) :: epspc6(6)
         real(kind=8) :: phivg
-        real(kind=8) :: pglim
+        real(kind=8), intent(in) :: pglim
         real(kind=8) :: dpg_depsa6(6)
         real(kind=8) :: dpg_depspg6(6)
         real(kind=8) :: taar

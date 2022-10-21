@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,18 +21,18 @@
 interface 
       subroutine conso3d(epsmk,epser,ccmin,ccmax,&
                        epsm6,epse6,cc3,vepsm33,vepsm33t,CWp,CMp,CTD,CTV)
-        real(kind=8) :: epsmk
-        real(kind=8) :: epser
-        real(kind=8) :: ccmin
-        real(kind=8) :: ccmax
-        real(kind=8) :: epsm6(6)
-        real(kind=8) :: epse6(6)
-        real(kind=8) :: cc3(3)
-        real(kind=8) :: vepsm33(3,3)
-        real(kind=8) :: vepsm33t(3,3)
-        real(kind=8) :: CWp
-        real(kind=8) :: CMp
-        real(kind=8) :: CTD
-        real(kind=8) :: CTV
+        real(kind=8), intent(in) :: epsmk
+        real(kind=8), intent(in) :: epser
+        real(kind=8), intent(out) :: ccmin
+        real(kind=8), intent(out) :: ccmax
+        real(kind=8), intent(in) :: epsm6(6)
+        real(kind=8), intent(in) :: epse6(6)
+        real(kind=8), intent(out) :: cc3(3)
+        real(kind=8), intent(out) :: vepsm33(3,3)
+        real(kind=8), intent(out) :: vepsm33t(3,3)
+        real(kind=8), intent(in) :: CWp
+        real(kind=8), intent(in) :: CMp
+        real(kind=8), intent(in) :: CTD
+        real(kind=8), intent(in) :: CTV
     end subroutine conso3d
 end interface 

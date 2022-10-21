@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 #include "asterf_types.h"
 interface 
-      subroutine hydrxmat(xmat0,xmat1,hydra1,hydras,n,&
-              erreur)
-        real(kind=8) :: xmat0
-        real(kind=8) :: xmat1
-        real(kind=8) :: hydra1
-        real(kind=8) :: hydras
-        real(kind=8) :: n
-        integer :: erreur
+      subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n,&
+                          erreur)
+        real(kind=8), intent(in) :: xmat0
+        real(kind=8), intent(out) :: xmat1
+        real(kind=8), intent(in) :: hydra1
+        real(kind=8), intent(in) :: hydras
+        real(kind=8), intent(in) :: n
+        integer, intent(out) :: erreur
     end subroutine hydrxmat
 end interface

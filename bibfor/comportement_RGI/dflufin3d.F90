@@ -16,20 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dflufin3d(sige6,bw,pw,bg,pg,dsw6,delta,rc,&
-                     xflu,dfin,cmp1,dfmx2)
+subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc,&
+                     xflu, dfin, cmp1, dfmx2)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
 !   endommagement par fluage
       implicit none
 
-      real(kind=8) :: xflu,taueq, tauflu0,xdenom
-      real(kind=8) :: dfmx,cmp1
-      real(kind=8) :: dfin,rc,dfmx2
-      real(kind=8) :: sige6(6),bw,pw,bg,pg,delta,dsw6(6)
+      real(kind=8), intent(in) :: sige6(6), bw, pw, bg, pg, dsw6(6)
+      real(kind=8), intent(in) :: delta, rc, xflu
+      real(kind=8), intent(out) :: dfin, cmp1
+      real(kind=8), intent(in) :: dfmx2
 
-      real(kind=8) :: tauflu1,sigs,sig0,sigd6(6),sigeq,sigs3,taulim
+      real(kind=8) :: tauflu1, sigs, sig0, sigd6(6), sigeq, sigs3, taulim
+      real(kind=8) :: taueq, tauflu0, xdenom, dfmx
       integer i
       real(kind=8) :: xmax
 !     multiplicateur non lineaire maxi de potentiel de fluage

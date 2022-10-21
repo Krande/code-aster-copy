@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface 
       subroutine thermat3d(teta1,nrjm,tetas,tetar,DT80,&
                dth0,DTH,CTHP,CTHV)
-        real(kind=8) :: teta1
-        real(kind=8) :: nrjm
-        real(kind=8) :: tetas
-        real(kind=8) :: tetar
-        real(kind=8) :: DT80
-        real(kind=8) :: dth0
-        real(kind=8) :: DTH
-        real(kind=8) :: CTHP
-        real(kind=8) :: CTHV
+        real(kind=8), intent(in) :: teta1
+        real(kind=8), intent(in) :: nrjm
+        real(kind=8), intent(in) :: tetas
+        real(kind=8), intent(in) :: tetar
+        real(kind=8), intent(in) :: DT80
+        real(kind=8), intent(in) :: dth0
+        real(kind=8), intent(out) :: DTH
+        real(kind=8), intent(out) :: CTHP
+        real(kind=8), intent(out) :: CTHV
     end subroutine thermat3d
 end interface 
