@@ -56,8 +56,8 @@ implicit none
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs, gbs, gbs_sym
-    integer :: icompo, npg, gbs_curr, gbs_cmp
-    integer :: codret, ipg, ncomp, idefo, nsig
+    integer :: npg, gbs_curr, gbs_cmp
+    integer :: ipg, idefo, nsig
     aster_logical :: l_largestrains
     character(len=4) :: fami
     character(len=8) :: typmod(2)

@@ -135,12 +135,11 @@ contains
 ! ==================================================================================================
 ! ==================================================================================================
 !
-    subroutine hhoPostDeplMecaOP(model_hho, compor, disp, disp_hho_depl)
+    subroutine hhoPostDeplMecaOP(model_hho, disp, disp_hho_depl)
 !
     implicit none
 !
         character(len=24), intent(in) :: model_hho
-        character(len=24), intent(in) :: compor
         character(len=24), intent(in) :: disp
         character(len=24), intent(in) :: disp_hho_depl
 !
@@ -244,7 +243,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv, iret
-        character(len=24) :: disp_hho_depl, disp, compor
+        character(len=24) :: disp_hho_depl, disp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -261,12 +260,10 @@ contains
         ASSERT(iret == 0)
         call rsexch(' ', result_hho, 'HHO_DEPL', nume_store, disp_hho_depl, iret)
         ASSERT(iret == 100)
-        call rsexch(' ', result_hho, 'COMPORTEMENT', nume_store, compor, iret)
-        ASSERT(iret == 0)
 !
 ! -----  Compute HHO field at nodes (saved in DEPL)
 !
-        call hhoPostDeplMecaOP(model_hho, compor, disp, disp_hho_depl)
+        call hhoPostDeplMecaOP(model_hho, disp, disp_hho_depl)
         call rsnoch(result_hho, 'HHO_DEPL', nume_store)
 !
         call jedema()
