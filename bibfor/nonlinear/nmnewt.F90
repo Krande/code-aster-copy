@@ -31,7 +31,6 @@ subroutine nmnewt(mesh       , model    , numins         , numedd    , numfix   
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
 use HHO_type
-use HHO_statcond_module, only: hhoMecaDecondOP
 !
 implicit none
 !
@@ -202,7 +201,7 @@ integer :: nbiter
                 sdsuiv     , sddyna         ,&
                 ds_contact , ds_conv        ,&
                 sdnume     , numedd         , solveu,&
-                valinc     , solalg         , hhoField)
+                valinc     , solalg)
 !
 ! - Compute forces for second member when constant in time step
 !
@@ -280,11 +279,6 @@ integer :: nbiter
                 ds_contact     , valinc   , solalg     , veelem    , veasse     ,&
                 eta            , ds_conv  , ds_system  , lerrit)
 !
-! --- DECONDENSATION STATIQUE SI HHO
-    if(l_hho) then
-        call hhoMecaDecondOP(model, solalg, hhoField, ds_measure)
-    end if
-!
     if (lerrit) goto 315
 !
 ! --- CALCUL DES FORCES APRES CORRECTION
@@ -293,8 +287,7 @@ integer :: nbiter
                 ds_constitutive, list_load , fonact     , ds_algopara, numins,&
                 iterat         , ds_measure, sddisc     , sddyna     , sdnume,&
                 sderro         , ds_contact, valinc     , solalg     , hhoField,&
-                meelem         , veelem     , veasse    , measse     , matass,&
-                lerrit)
+                veelem         , veasse    , measse     , matass     ,lerrit)
 !
     if (lerrit) goto 315
 !

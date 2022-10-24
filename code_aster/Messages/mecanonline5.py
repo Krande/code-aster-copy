@@ -111,7 +111,7 @@ en accélération est possible
 """),
 
     17 : _("""
- Pour le schéma HHT complet ( SCHEMA='HHT' avec MODI_EQUI = 'OUI'), la valeur de ALPHA ne peut 
+ Pour le schéma HHT complet ( SCHEMA='HHT' avec MODI_EQUI = 'OUI'), la valeur de ALPHA ne peut
  pas être -1.
 """),
 
@@ -184,7 +184,7 @@ On part donc de DEPL/VITE/ACCE généralisés nuls.
     32 : _("""
 Vous utilisez l'option RESI_REFE_RELA avec la présence simultanée d'éléments
 de poutre et de coque. Cela est déconseillé car les dimensions des valeurs à fournir aux mots-clés
-FORCE_REFE et MOMENT_REFE sont différentes pour ces deux types d'éléments. 
+FORCE_REFE et MOMENT_REFE sont différentes pour ces deux types d'éléments.
 """),
 
     33 : _("""
@@ -212,7 +212,7 @@ même lorsque l'équilibre n'est pas vérifié.
     38 : _("""
 Vous utilisez l'option de convergence RESI_REFE_RELA en présence d'éléments de coque.
 Notez que la valeur attendue pour le mot-clé FORCE_REFE est une force linéique et que
-la valeur attendue pour MOMENT_REFE est un moment linéique. 
+la valeur attendue pour MOMENT_REFE est un moment linéique.
 """),
 
     39 : _("""
@@ -311,8 +311,8 @@ A cause des erreurs précédentes, le code s'arrête.
 
     59 : _("""
   Vous utilisez le critère de convergence RESI_REFE_RELA et une modélisation %(k1)s.
-  Le résidu calculé à partir de %(k2)s dans CONVERGENCE, conduit à des valeurs nulles 
-  ce qui peut se produire si des éléments de ce type sont plans. 
+  Le résidu calculé à partir de %(k2)s dans CONVERGENCE, conduit à des valeurs nulles
+  ce qui peut se produire si des éléments de ce type sont plans.
 
   Conseil :
   Utiliser un autre critère de convergence.
@@ -345,8 +345,4 @@ A cause des erreurs précédentes, le code s'arrête.
     72 : _("""La modélisation XFEM implique la réactualisation de la matrice REAC_ITER=1."""),
 
     73 : _("""L'option RESI_COMP_RELA n'est pas disponible pour les méthodes HHO. Il faut utiliser un autre critère de convergence."""),
-
-    74 : _("""La formulation HHO implique la réactualisation de la matrice REAC_ITER=1."""),
-
-    75 : _("""La formulation HHO ne peut pas utiliser la matrice élastique en prédiction."""),
 }

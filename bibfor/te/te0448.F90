@@ -15,172 +15,161 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+subroutine te0448(nomopt, nomte)
 !
-subroutine te0448(option, nomte)
+use HHO_basis_module
+use HHO_eval_module
+use HHO_init_module, only : hhoInfoInitCell
+use HHO_gradrec_module
+use HHO_Meca_module
+use HHO_quadrature_module
+use HHO_size_module
+use HHO_type
+use HHO_utils_module
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/tecach.h"
-#include "blas/daxpy.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/readVector.h"
+#include "blas/dgemv.h"
 #include "jeveux.h"
 !
-character(len=16), intent(in) :: option, nomte
-!
 ! --------------------------------------------------------------------------------------------------
-!
-! Elementary computation
-!
-! Elements: HHO
-!
-! Options: HHO_COMB
-!
-! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Mechanics - EPSI_ELGA
 !
 ! In  option           : name of option to compute
 ! In  nomte            : type of finite element
-!
 ! --------------------------------------------------------------------------------------------------
+    character(len=16) :: nomte, nomopt
 !
-    integer, parameter :: max_param = 4
-    integer :: iret, i_matr, i_vect
-    integer :: idmatr(2), idvect(2), nb_vale_matr_sym, nb_vale_matr_ns, nb_vale_vect
-    integer :: jv_matr_in(max_param), jv_vect_in(max_param)
-    integer :: jv_matr_out, jv_vect_out, nddl
-    real(kind=8) :: coef_matr(max_param), coef_vect(max_param)
-    aster_logical :: l_matr(max_param), l_vect(max_param), l_matsym, l_onematsym
+! --- Local variables
 !
-! --------------------------------------------------------------------------------------------------
+    type(HHO_basis_cell) :: hhoBasisCell
+    type(HHO_Quadrature) :: hhoQuadCellRigi
+    integer :: cbs, fbs, total_dofs, gbs, gbs_sym
+    integer :: icompo, npg, gbs_curr, gbs_cmp
+    integer :: codret, ipg, ncomp, idefo, nsig
+    aster_logical :: l_largestrains
+    character(len=4) :: fami
+    character(len=8) :: typmod(2)
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    real(kind=8) :: G_curr(3,3), E_curr(6)
+    real(kind=8) :: coorpg(3)
+    real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+    real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
+    real(kind=8), dimension(MSIZE_CELL_MAT) :: G_curr_coeff
+    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)   :: gradrec
 !
-    nb_vale_matr_sym = 0
-    nb_vale_matr_ns  = 0
-    nb_vale_vect     = 0
+! --- Get HHO informations
 !
-    jv_matr_in(:) = 0
-    jv_matr_out   = 0
-    jv_vect_in(:) = 0
-    jv_vect_out   = 0
+    call hhoInfoInitCell(hhoCell, hhoData)
 !
-    coef_matr(:)  = 1.d0
-    coef_vect(:)  = 1.d0
+! --- Get element parameters
 !
-    l_matr(:)     = ASTER_FALSE
-    l_vect(:)     = ASTER_FALSE
-    l_matsym      = ASTER_TRUE
-    l_onematsym   = ASTER_FALSE
+    fami = 'RIGI'
+    call elrefe_info(fami=fami, npg=npg)
 !
-! - Get matrices
+! --- Number of dofs
+    call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+    nsig = nbsigm()
+    gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
+    ASSERT(cbs <= MSIZE_CELL_VEC)
+    ASSERT(fbs <= MSIZE_FACE_VEC)
+    ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    call tecach('ONO', 'PMAELS1', 'L', iret, nval=2, itab=idmatr)
-    if (iret .eq. 0) then
-        l_matr(1)     = ASTER_TRUE
-        l_matsym      = ASTER_TRUE
-        l_onematsym   = ASTER_TRUE
-        nb_vale_matr_sym  = idmatr(2)
-        jv_matr_in(1) = idmatr(1)
-    endif
+    ASSERT(nomopt.eq.'EPSI_ELGA')
 !
-    call tecach('ONO', 'PMAELS2', 'L', iret, nval=2, itab=idmatr)
-    if (iret .eq. 0) then
-        l_matr(2)     = ASTER_TRUE
-        l_matsym      = ASTER_TRUE
-        l_onematsym   = ASTER_TRUE
-        ASSERT(nb_vale_matr_sym .eq. idmatr(2))
-        jv_matr_in(2) = idmatr(1)
-    endif
+! --- Initialize quadrature for the rigidity
+    call hhoQuadCellRigi%initCell(hhoCell, npg)
 !
-    call tecach('ONO', 'PMAELNS1', 'L', iret, nval=2, itab=idmatr)
-    if (iret .eq. 0) then
-        l_matr(3)     = ASTER_TRUE
-        l_matsym      = ASTER_FALSE
-        nb_vale_matr_ns  = idmatr(2)
-        jv_matr_in(3) = idmatr(1)
-    endif
+! --- Type of finite element
 !
-    call tecach('ONO', 'PMAELNS2', 'L', iret, nval=2, itab=idmatr)
-    if (iret .eq. 0) then
-        l_matr(4)     = ASTER_TRUE
-        l_matsym      = ASTER_FALSE
-        ASSERT(nb_vale_matr_ns .eq. idmatr(2))
-        jv_matr_in(4) = idmatr(1)
-    endif
-!
-! - Get vectors
-!
-    call tecach('ONO', 'PVEELE1', 'L', iret, nval=2, itab=idvect)
-    if (iret .eq. 0) then
-        l_vect(1)     = ASTER_TRUE
-        nb_vale_vect  = idvect(2)
-        jv_vect_in(1) = idvect(1)
-    endif
-!
-    call tecach('ONO', 'PVEELE2', 'L', iret, nval=2, itab=idvect)
-    if (iret .eq. 0) then
-        l_vect(2)     = ASTER_TRUE
-        ASSERT(nb_vale_vect .eq. idvect(2))
-        jv_vect_in(2) = idvect(1)
-    endif
-!
-    call tecach('ONO', 'PVEELE3', 'L', iret, nval=2, itab=idvect)
-    if (iret .eq. 0) then
-        l_vect(3)     = ASTER_TRUE
-        ASSERT(nb_vale_vect .eq. idvect(2))
-        jv_vect_in(3) = idvect(1)
-    endif
-!
-    call tecach('ONO', 'PVEELE4', 'L', iret, nval=2, itab=idvect)
-    if (iret .eq. 0) then
-        l_vect(4)     = ASTER_TRUE
-        ASSERT(nb_vale_vect .eq. idvect(2))
-        jv_vect_in(4) = idvect(1)
-    endif
-!
-    if(l_matsym) then
-        call jevech('PMATUUR', 'E', jv_matr_out)
-    else
-        call jevech('PMATUNS', 'E', jv_matr_out)
-    end if
-!
-    if(l_matsym) then
-!
-! --- All matrices are symmetric
-!
-        do i_matr = 1, max_param
-            if(l_matr(i_matr)) then
-                call daxpy(nb_vale_matr_sym, coef_matr(i_matr), zr(jv_matr_in(i_matr)), 1,&
-                           zr(jv_matr_out), 1)
-            end if
-        end do
-    else
-        if(l_onematsym) then
-!
-! --- At least one matrix is symmetrix and unsymmetric
-!
-! J'ai pas encore vérifié comment les enregistrer donc pour l'instant on interdit
-! les matrices qui ont différentes tailles
-            nddl = int(sqrt(dble(nb_vale_matr_ns)))
-            ASSERT(nb_vale_matr_sym == nddl*(nddl+1)/2)
+    select case (hhoCell%ndim)
+        case(3)
+            typmod(1) = '3D'
+        case (2)
+            if (lteatt('AXIS','OUI')) then
+                ASSERT(ASTER_FALSE)
+                typmod(1) = 'AXIS'
+            else if (lteatt('C_PLAN','OUI')) then
+                ASSERT(ASTER_FALSE)
+                typmod(1) = 'C_PLAN'
+            else if (lteatt('D_PLAN','OUI')) then
+                typmod(1) = 'D_PLAN'
+            else
+                ASSERT(ASTER_FALSE)
+            endif
+        case default
             ASSERT(ASTER_FALSE)
-        else
+    end select
+    typmod(2) = 'HHO'
 !
-! --- All matrices are unsymmetric
+    call jevech('PDEFOPG', 'E', idefo)
 !
-            do i_matr = 1, max_param
-                if(l_matr(i_matr)) then
-                    call daxpy(nb_vale_matr_ns, coef_matr(i_matr), zr(jv_matr_in(i_matr)), 1,&
-                            zr(jv_matr_out), 1)
-                end if
-            end do
-        end if
+! --- Large strains ?
+!
+    l_largestrains = ASTER_FALSE
+!
+! --- Compute Operators
+!
+    if(l_largestrains) then
+!
+! ----- Compute Gradient reconstruction
+        call hhoGradRecFullMat(hhoCell, hhoData, gradrec)
+    else
+!
+! ----- Compute Symmetric Gradient reconstruction
+        call hhoGradRecSymFullMat(hhoCell, hhoData, gradrec)
     end if
 !
-    call jevech('PVECTUR', 'E', jv_vect_out)
+! --- get displacement
 !
-    do i_vect = 1, max_param
-        if(l_vect(i_vect)) then
-            call daxpy(nb_vale_vect, coef_vect(i_vect), zr(jv_vect_in(i_vect)),1, zr(jv_vect_out),1)
+    depl_curr = 0.d0
+    call readVector('PDEPLAR', total_dofs, depl_curr)
+    call hhoRenumMecaVecInv(hhoCell, hhoData, depl_curr)
+!
+! ----- init basis
+!
+    call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute local contribution
+!
+    if(l_largestrains) then
+        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1,&
+                    0.d0, G_curr_coeff, 1)
+        gbs_curr = gbs
+    else
+        call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
+                   depl_curr, 1, 0.d0, G_curr_coeff, 1)
+        gbs_curr = gbs_sym
+    end if
+!
+! ----- Loop on quadrature point
+!
+    do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+        coorpg(1:3) = hhoQuadCellRigi%points(1:3,ipg)
+!
+! --------- Eval basis function at the quadrature point
+!
+        call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+!
+        if(l_largestrains) then
+            G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                coorpg(1:3), G_curr_coeff, gbs)
+        else
+            E_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                   coorpg(1:3), G_curr_coeff, gbs_sym)
+            zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do
 !

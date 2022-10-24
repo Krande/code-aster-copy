@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,7 +178,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                                      RESI_GLOB_RELA=1.E-4
                                      ),),)
 
-SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'),
+SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSI_ELGA',),
                   VARI_INTERNE=('VARC_ELGA'))
 
 
@@ -192,26 +192,10 @@ INT_SI=POST_ELEM(MODELE=TROISD,
                                 TYPE_MAILLE= '3D'),)
 
 
-INT_EP=POST_ELEM(MODELE=TROISD,
-                   RESULTAT=SOLNL,
-                   INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
-                                NOM_CMP=('EPXX','EPYY','EPZZ'),
-                                TOUT='OUI',
-                                TYPE_MAILLE= '3D'),)
-
-
 TEST_TABLE(
-           VALE_CALC=279.1706313197254,
+           VALE_CALC=279.1740472560837,
            NOM_PARA='INTE_SIZZ',
            TABLE=INT_SI,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=TFIN,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.0010902762653766367,
-           NOM_PARA='INTE_EPZZ',
-           TABLE=INT_EP,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=TFIN,),
            )

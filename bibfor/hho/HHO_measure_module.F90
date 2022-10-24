@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "blas/ddot.h"
+#include "asterc/r8maem.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,7 +40,7 @@ private
 ! --------------------------------------------------------------------------------------------------
 !
     public   :: hhoMeasureCell,  hhoMeasureFace,hhoDiameterCell, hhoDiameterFace, hho_surface_tri
-    public   :: hhoLengthBoundingBoxCell
+    public   :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
     private  :: hho_vol_hexa, hho_vol_tetra, hho_surface_quad, hho_length_edge
     private  :: hho_vol_prism, hho_vol_pyram
     private  :: hhoDiameter, prod_vec
@@ -480,25 +481,74 @@ contains
 !  In HHO_Cell              :: cell HHO
 !  Out length               :: length of the boundix box of the cell
 ! --------------------------------------------------------------------------------------------------
-        real(kind=8), dimension(3) :: xmin, xmax
+        real(kind=8), dimension(3) :: xmin, xmax, pt
+        real(kind=8) :: rotmat(3,3)
         integer :: inode, idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
         ndim = hhoCell%ndim
 !
-        xmin(1:3) = hhoCell%coorno(1:3, 1)
-        xmax(1:3) = hhoCell%coorno(1:3, 1)
+        xmin = r8maem()
+        xmax = -r8maem()
+        pt = 0.d0
+        rotmat = transpose(hhocell%axes)
 !
         do inode = 1, hhoCell%nbnodes
+            pt = matmul(rotmat, hhoCell%coorno(1:3, inode))
             do idim = 1, ndim
-                xmin(idim) = min(xmin(idim), hhoCell%coorno(idim, inode))
-                xmax(idim) = max(xmax(idim), hhoCell%coorno(idim, inode))
+                xmin(idim) = min(xmin(idim), pt(idim))
+                xmax(idim) = max(xmax(idim), pt(idim))
             end do
         end do
 !
         do idim = 1, ndim
             length(idim) = abs(xmax(idim) - xmin(idim))
         end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoLengthBoundingBoxFace(hhoFace) result(length)
+!
+    implicit none
+!
+        type(HHO_Face), intent(in)    :: hhoFace
+        real(kind=8), dimension(2)    :: length
+!
+! --------------------------------------------------------------------------------------------------
+!  In HHO_Face              :: face HHO
+!  Out length               :: length of the boundix box of the face
+! --------------------------------------------------------------------------------------------------
+        real(kind=8) :: xmin(2), xmax(2), pt(2)
+        real(kind=8) :: rotmat(2,3)
+        integer :: inode, idim, ndim
+! --------------------------------------------------------------------------------------------------
+        length = 1.d0
+        ndim = hhoFace%ndim
+!
+        if(ndim == 1) then
+            length(1) = hhoDiameterFace(hhoFace)
+        else
+            rotmat = transpose(hhoFace%axes)
+            xmin = r8maem()
+            xmax = -r8maem()
+            pt = 0.d0
+!
+            do inode = 1, hhoFace%nbnodes
+                pt = matmul(rotmat, hhoFace%coorno(1:3, inode))
+                do idim = 1, ndim
+                    xmin(idim) = min(xmin(idim), pt(idim))
+                    xmax(idim) = max(xmax(idim), pt(idim))
+                end do
+            end do
+!
+            do idim = 1, ndim
+                length(idim) = abs(xmax(idim) - xmin(idim))
+            end do
+        end if
 !
     end function
 !

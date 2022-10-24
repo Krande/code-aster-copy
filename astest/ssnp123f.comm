@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,19 +60,19 @@ DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=INSTANTS),
 
 coor1 = [0.0, 1.53224, 3.2689, 3.80797, 4.40378, 5.0]
 
-Test1 = [234.20852010760856]
+Test1 = [231.73440620372833]
 
-Test2 = [255.8516816984185]
+Test2 = [259.1483877630068]
 
-Test3 = [298.055660289917]
+Test3 = [300.6107955994096]
 
-Test4 = [265.794871200932]
+Test4 = [268.2830038915259]
 
-Test5 = [124.06383884649429]
+Test5 = [181.78332812497035]
 
-Test6 = [416.737124771532]
+Test6 = [440.5433244921241]
 
-Test7 = [-0.22238764009916678]
+Test7 = [-0.07225561795836133]
 
 
 MO = AFFE_MODELE(MAILLAGE=MA,

@@ -306,12 +306,6 @@ integer, intent(out) :: nbin
 ! - HHO
 !
     if (l_hho) then
-        nbin = nbin + 1
-        lpain(nbin) = 'PCELLMR'
-        lchin(nbin) = hhoField%fieldPrev_cell
-        nbin = nbin + 1
-        lpain(nbin) = 'PCELLIR'
-        lchin(nbin) = hhoField%fieldIncr_cell
         nbin = nbin+1
         lpain(nbin) = 'PCHHOGT'
         lchin(nbin) = hhoField%fieldOUT_cell_GT

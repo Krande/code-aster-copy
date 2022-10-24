@@ -91,18 +91,6 @@ PCONTPR  = OutputParameter(phys=PHY.SIEF_R, type='ELGA')
 PVARIPR  = OutputParameter(phys=PHY.VARI_R, type='ELGA')
 
 # For HHO
-PCELLMR  = InputParameter(phys=PHY.CELL_R,
-comment=""" HHO - degres de liberte de la cellule""")
-
-PCELLIR  = InputParameter(phys=PHY.CELL_R,
-comment=""" HHO - degres de liberte de la cellule""")
-
-PCSMTIR  = OutputParameter(phys=PHY.N3240R, type='ELEM',
-comment=""" HHO - matrice cellule pour condensation statique""")
-
-PCSRTIR  = OutputParameter(phys=PHY.CELL_R, type='ELEM',
-comment=""" HHO - 2nd membre cellule pour condensation statique""")
-
 PCHHOGT  = InputParameter(phys=PHY.N1920R,
 comment=""" HHO - matrice du gradient local""")
 
@@ -164,8 +152,6 @@ RAPH_MECA_IMPLEX = Option(
         SP.PVITENT,
         SP.PVITKM1,
         SP.PVITPLU,
-           PCELLMR,
-           PCELLIR,
            PCHHOGT,
            PCHHOST,
     ),
@@ -175,8 +161,6 @@ RAPH_MECA_IMPLEX = Option(
         SP.PSTRXPR,
            PVARIPR,
         SP.PVECTUR,
-           PCSMTIR,
-           PCSRTIR
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),

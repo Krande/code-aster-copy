@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,18 +84,6 @@ comment=""" NE SERT QUE POUR COQUE_3D """)
 
 
 # For HHO
-PCELLMR  = InputParameter(phys=PHY.CELL_R,
-comment=""" HHO - degres de liberte de la cellule""")
-
-PCELLIR  = InputParameter(phys=PHY.CELL_R,
-comment=""" HHO - degres de liberte de la cellule""")
-
-PCSMTIR  = OutputParameter(phys=PHY.N3240R, type='ELEM',
-comment=""" HHO - matrice cellule pour condensation statique""")
-
-PCSRTIR  = OutputParameter(phys=PHY.CELL_R, type='ELEM',
-comment=""" HHO - 2nd membre cellule pour condensation statique""")
-
 PCHHOGT  = InputParameter(phys=PHY.N1920R,
 comment=""" HHO - matrice du gradient local""")
 
@@ -151,8 +139,6 @@ RIGI_MECA = Option(
            PCONTMR,
            PVARCPR,
            PVARIMR,
-           PCELLMR,
-           PCELLIR,
            PCHHOGT,
            PCHHOST,
     ),
@@ -162,8 +148,6 @@ RIGI_MECA = Option(
         SP.PMATUUR,
         SP.PVECTUR,
         SP.PCODRET,
-           PCSMTIR,
-           PCSRTIR,
            PCONTPR,
            PVARIPR,
     ),

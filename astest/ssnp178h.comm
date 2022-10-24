@@ -22,7 +22,7 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 
 
@@ -34,11 +34,11 @@ mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT='OUI', PREF_NUME=12))
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh,
                      ORIE_PEAU=_F(GROUP_MA_PEAU=('Encast', 'load',),),)
 
-mesh = DEFI_GROUP(reuse = mesh,
-                MAILLAGE = mesh,
-                CREA_GROUP_MA = _F(NOM = 'MA3D',
-                                   TYPE_MAILLE = '3D',
-                                   TOUT = 'OUI'),)
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_MA=_F(NOM='MA3D',
+                                   TYPE_MAILLE='3D',
+                                   TOUT='OUI'),)
 
 E = 70
 mater = DEFI_MATERIAU(
@@ -64,15 +64,16 @@ times = DEFI_LIST_INST(
 )
 
 
-AY = [2.212391164545769]
-AX = [-1.6772292983683479]
-AT = [0.053630599967497215]
-CY = [0.3684590896434223]
-CX = [-0.028106402880914802]
-CT = [0.42242216430573043]
+AY = [2.187693078143395]
+AX = [-1.6566706090395669]
+AT = [0.019324167911523124]
+CY = [0.36460526748306443]
+CX = [-0.02758424720818905]
+CT = [0.429517230549077]
 
 model = AFFE_MODELE(
-    AFFE=_F(MODELISATION=('3D_HHO', ), FORMULATION='LINEAIRE', PHENOMENE='MECANIQUE', TOUT='OUI'),
+    AFFE=_F(MODELISATION=('3D_HHO', ), FORMULATION='LINEAIRE',
+            PHENOMENE='MECANIQUE', TOUT='OUI'),
     MAILLAGE=mesh
 )
 
@@ -110,23 +111,23 @@ resnonl = STAT_NON_LINE(
 resnonl = CALC_CHAMP(
     reuse=resnonl,
     CHAM_MATER=fieldmat,
-    CRITERES=('SIEQ_NOEU','SIEQ_ELGA'),
+    CRITERES=('SIEQ_NOEU', 'SIEQ_ELGA'),
     PROPRIETES=('MATE_ELEM', 'MATE_ELGA'),
-    CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
-    DEFORMATION=('EPSI_ELNO','EPSI_ELGA','EPSP_ELGA'),
-    VARI_INTERNE = ('VARC_ELGA'),
+    CONTRAINTE=('SIEF_ELNO', 'SIEF_NOEU',),
+    DEFORMATION=('EPSI_ELNO', 'EPSI_ELGA',),
+    VARI_INTERNE=('VARC_ELGA'),
     MODELE=model,
     RESULTAT=resnonl,
 )
-rescoor=CALC_CHAM_ELEM(MODELE=model,
-                       OPTION='COOR_ELGA',
-                       GROUP_MA= 'MA3D')
+rescoor = CALC_CHAM_ELEM(MODELE=model,
+                         OPTION='COOR_ELGA',
+                         GROUP_MA='MA3D')
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=AY,
                   VALE_REFE=2.13651,
@@ -138,7 +139,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=AX,
                   VALE_REFE=-1.61818,
@@ -158,7 +159,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=CY,
                   CRITERE='RELATIF',),
@@ -167,7 +168,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=CX,
                   CRITERE='RELATIF',),
@@ -188,7 +189,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELNO',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.0012071789084258805,
+                  VALE_CALC=0.0025456652995547065,
                   CRITERE='RELATIF',),
           )
 
@@ -198,16 +199,16 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.01165771730265644,
+                  VALE_CALC=0.016983261782683844,
                   CRITERE='RELATIF',),
           )
 TEST_RESU(CHAM_ELEM=_F(
-                       POINT=1,
-                       NOM_CMP='X',
-                       GROUP_MA='M1797',
-                       CHAM_GD=rescoor,
-                   VALE_CALC=23.349555125707617,
-                       ),
-          )
+    POINT=1,
+    NOM_CMP='X',
+    GROUP_MA='M1797',
+    CHAM_GD=rescoor,
+    VALE_CALC=23.349555125707617,
+),
+)
 
 FIN()

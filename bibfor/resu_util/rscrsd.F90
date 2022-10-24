@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ integer, intent(in) :: nbStore
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 126
+    integer, parameter :: nbFieldMeca = 125
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/&
         'DEPL            ', 'VITE            ', 'ACCE            ',&
         'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ',&
@@ -163,8 +163,8 @@ integer, intent(in) :: nbStore
         'COHE_ELEM       ', 'INDC_ELEM       ', 'SECO_ELEM       ',&
         'VARC_ELGA       ', 'FERRAILLAGE     ', 'EPVC_NOEU       ',&
         'EPFD_NOEU       ', 'EPFP_NOEU       ', 'PDIL_ELGA       ',&
-        'MATE_ELGA       ', 'MATE_ELEM       ', 'HHO_CELL        ',&
-        'HHO_FACE        ', 'PRES_NOEU       ', 'DEPL_ELGA       '/)
+        'MATE_ELGA       ', 'MATE_ELEM       ', 'HHO_DEPL        ',&
+        'PRES_NOEU       ', 'DEPL_ELGA       '/)
 
 !     ------------------------------------------------------------------
 !                      For loads (EVOl_CHAR)

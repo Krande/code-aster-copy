@@ -35,6 +35,7 @@ implicit none
 !
 private
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -68,9 +69,9 @@ private
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca
+    public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca, hhoCalcStabCoeff
     public :: hhoCalcOpMeca, isLargeStrain, hhoReloadPreCalcMeca
-    private :: YoungModulus
+    public :: YoungModulus
 !
 contains
 !
@@ -102,8 +103,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, ifm, niv
-        character(len=19) :: ligrmo
+        integer :: ifm, niv
         aster_logical :: l_load_cine
 !
 ! --------------------------------------------------------------------------------------------------
@@ -119,39 +119,8 @@ contains
 !
 ! --- Prepare fields for algorithm
 !
-        ligrmo = model(1:8)//'.MODELE'
-        hhoField%fieldOUT_cell_MT = '&&HHOMECA.OU.CELLMT'
-        hhoField%fieldOUT_cell_RT = '&&HHOMECA.OU.CELLRT'
         hhoField%fieldOUT_cell_GT = '&&HHOMECA.OU.CELLGT'
         hhoField%fieldOUT_cell_ST = '&&HHOMECA.OU.CELLST'
-!
-        hhoField%fieldIncr_cell = '&&HHOMECA.I.CELL'
-        call detrsd('CHAM_ELEM', hhoField%fieldIncr_cell)
-        call alchml(ligrmo, 'RIGI_MECA_TANG', 'PCELLIR', 'V', hhoField%fieldIncr_cell, iret, ' ')
-        ASSERT(iret .eq. 0)
-        if (hhoField%l_debug) then
-            call imprsd('CHAMP', hhoField%fieldIncr_cell, 6, 'hhoField%fieldIncr_cell:')
-        endif
-!
-        hhoField%fieldPrev_cell = '&&HHOMECA.M.CELL'
-        call detrsd('CHAM_ELEM', hhoField%fieldPrev_cell)
-        call alchml(ligrmo, 'RIGI_MECA_TANG', 'PCELLMR', 'V', hhoField%fieldPrev_cell, iret, ' ')
-        ASSERT(iret .eq. 0)
-        if (hhoField%l_debug) then
-            call imprsd('CHAMP', hhoField%fieldPrev_cell, 6, 'hhoField%fieldPrev_cell:')
-        endif
-!
-        hhoField%fieldCurr_cell = '&&HHOMECA.P.CELL'
-        call detrsd('CHAM_ELEM', hhoField%fieldCurr_cell)
-        call alchml(ligrmo, 'RIGI_MECA_TANG', 'PCELLIR', 'V', hhoField%fieldCurr_cell, iret, ' ')
-        ASSERT(iret .eq. 0)
-        if (hhoField%l_debug) then
-            call imprsd('CHAMP', hhoField%fieldCurr_cell, 6, 'hhoField%fieldCurr_cell:')
-        endif
-!
-! --- Prepare fields for error
-!
-        hhoField%stat_cond_error = '&&HHOMEC.ERROR'
 !
 ! --- Prepare fields for Dirichlet loads
 !
@@ -160,9 +129,6 @@ contains
         if (l_load_cine) then
             call hhoDiriFuncPrepare(model, list_load, hhoField)
         endif
-!
-        hhoField%vectcomb = '&&HHOMECA.VCOMB'
-        hhoField%matrcomb = '&&HHOMECA.MCOMB'
 !
     end subroutine
 !
@@ -339,7 +305,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, stab, &
-                                  fami, typmod, compor, option, deplfm, deplfd, l_largestrain, &
+                                  fami, typmod, compor, option, l_largestrain, &
                                   lhs, rhs, codret)
 !
     implicit none
@@ -353,7 +319,6 @@ contains
         character(len=8), intent(in)    :: typmod(*)
         character(len=16), intent(in)   :: compor(*)
         character(len=16), intent(in)   :: option
-        real(kind=8), intent(in)        :: deplfm(*), deplfd(*)
         aster_logical, intent(in)       :: l_largestrain
         real(kind=8), intent(out)       :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8), intent(out)       :: rhs(MSIZE_TDOFS_VEC)
@@ -372,19 +337,17 @@ contains
 !   In typmod       : type of modelization
 !   In compor       : type of behavior
 !   In option       : option of computations
-!   In deplfm       : displecement at T- of faces
-!   In deplfd       : displacement increment between T- and T+ of faces
 !   In largestrain  : large strain ?
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
 !   Out codret      : info of the LDC integration
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical :: axi, cplan, deborst, resi
+        aster_logical :: axi, cplan, deborst
         integer:: cbs, fbs, total_dofs, j, faces_dofs
         integer :: imate, jmate, lgpg, iret, jtab(7), icarcr, iinstm, iinstp, icontm, ivarim
         integer :: icontp, ivarip, jv_mult_comp
-        character(len=16) :: mult_comp, option_inte
+        character(len=16) :: mult_comp
         real(kind=8), dimension(MSIZE_TDOFS_VEC) :: deplm, deplp, deplincr, angl_naut(7)
 !
 ! --- Verif compor
@@ -397,18 +360,6 @@ contains
             ASSERT(ASTER_FALSE)
         endif
 !
-! --- Because of the static condensation, we have to compute the rigidity matrix even with RAPH_MECA
-!     but with RAPH_MECA, the tangent modulus is not computed by the behavior laws then
-!     we have to force this computation in replacing RAPH_MECA by FULL_MECA
-!
-        resi    = (option.eq.'RAPH_MECA') .or. (option(1:4).eq.'FULL')
-!
-        if (option.eq.'RAPH_MECA') then
-            option_inte = "FULL_MECA"
-        else
-            option_inte = option
-        end if
-!
 ! --- Get input fields
 !
         call jevech('PMATERC', 'L', jmate)
@@ -418,8 +369,18 @@ contains
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PMULCOM', 'L', jv_mult_comp)
-        call jevech('PCONTPR', 'E', icontp)
-        call jevech('PVARIPR', 'E', ivarip)
+!
+        if(L_SIGM(option)) then
+            call jevech('PCONTPR', 'E', icontp)
+        else
+            icontp = 1
+        end if
+!
+        if(L_VARI(option)) then
+            call jevech('PVARIPR', 'E', ivarip)
+        else
+            ivarip = 1
+        end if
 !
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
         ASSERT(iret .eq. 0)
@@ -444,14 +405,14 @@ contains
 ! --- get displacement in T-
 !
         deplm = 0.d0
-        call readVector('PCELLMR', cbs, deplm)
-        call dcopy(faces_dofs, deplfm, 1, deplm(cbs+1), 1)
+        call readVector('PDEPLMR', total_dofs, deplm)
+        call hhoRenumMecaVecInv(hhoCell, hhoData, deplm)
 !
 ! --- get increment displacement beetween T- and T+
 !
         deplincr = 0.d0
-        call readVector('PCELLIR', cbs, deplincr)
-        call dcopy(faces_dofs, deplfd, 1, deplincr(cbs+1), 1)
+        call readVector('PDEPLPR', total_dofs, deplincr)
+        call hhoRenumMecaVecInv(hhoCell, hhoData, deplincr)
 !
 ! --- compute displacement in T+
 !
@@ -471,16 +432,16 @@ contains
 ! --- large strains and use gradient
 !
             call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                      fami, typmod, imate, compor, option_inte, zr(icarcr), lgpg, &
+                                      fami, typmod, imate, compor, option, zr(icarcr), lgpg, &
                                       nbsigm(), zr(iinstm), zr(iinstp), deplm, deplp, &
-                                    zr(icontm), zr(ivarim), angl_naut, mult_comp, resi, &
+                                      zr(icontm), zr(ivarim), angl_naut, mult_comp, &
                                       cplan, lhs, rhs, zr(icontp), zr(ivarip), codret)
         else
 !
 ! --- small strains and use symmetric gradient
 !
             call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                      fami, typmod, imate, compor, option_inte, zr(icarcr), lgpg, &
+                                      fami, typmod, imate, compor, option, zr(icarcr), lgpg, &
                                       nbsigm(), zr(iinstm), zr(iinstp), deplm, deplincr, &
                                       zr(icontm), zr(ivarim), angl_naut, mult_comp, &
                                       lhs, rhs, zr(icontp), zr(ivarip), codret)
@@ -492,12 +453,9 @@ contains
 !
 ! --- add stabilization
 !
-        if(hhoData%adapt()) then
-             call hhoData%setCoeffStab(10.d0 * YoungModulus(fami, imate, &
-                                                             hhoQuadCellRigi%nbQuadPoints))
-        end if
+        call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints)
 !
-        call dsymv('U', total_dofs, -hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
+        call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
                    deplp, 1, 1.d0, rhs,1)
 !
         do j = 1, total_dofs
@@ -641,5 +599,36 @@ contains
         coeff = coeff / real(npg, kind=8)
 !
     end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoCalcStabCoeff(hhoData, fami, nbQuadPoints)
+!
+    implicit none
+!
+        type(HHO_Data), intent(inout) :: hhoData
+        character(len=4) :: fami
+        integer, intent(in) :: nbQuadPoints
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Mechanics - Evaluate stabilzation coefficient
+!
+! In hhoData          : information about the HHO formulation
+! --------------------------------------------------------------------------------------------------
+!
+! --- Local variables
+!
+        integer :: jmate, imate
+!
+        if(hhoData%adapt()) then
+            call jevech('PMATERC', 'L', jmate)
+            imate = zi(jmate -1 + 1)
+            call hhoData%setCoeffStab(10.d0 * YoungModulus(fami, imate, nbQuadPoints))
+       end if
+!
+    end subroutine
 !
 end module

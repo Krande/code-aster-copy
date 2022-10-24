@@ -634,7 +634,7 @@ subroutine isRigiMatrCompute(phaseType    , list_func_acti,&
     aster_logical, intent(out) :: l_comp_rigi, l_asse_rigi
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-    aster_logical :: l_first_step, l_hho, l_shift_mass
+    aster_logical :: l_first_step, l_shift_mass
 !   ------------------------------------------------------------------------------------------------
     l_comp_rigi = ASTER_FALSE
     l_asse_rigi = ASTER_FALSE
@@ -645,7 +645,6 @@ subroutine isRigiMatrCompute(phaseType    , list_func_acti,&
 !
 ! - Active functionnalities
 !
-    l_hho         = isfonc(list_func_acti, 'HHO')
     l_shift_mass  = ndynlo(sddyna, 'COEF_MASS_SHIFT')
 !
 ! - Rigidity matrices have to be calculated ?
@@ -673,9 +672,6 @@ subroutine isRigiMatrCompute(phaseType    , list_func_acti,&
     endif
     if (l_update_matr) then
         l_asse_rigi = ASTER_TRUE
-    endif
-    if (l_hho) then
-        l_asse_rigi = ASTER_FALSE
     endif
 !   -----------------------------------------------------------------------------------------------
 end subroutine
@@ -863,7 +859,7 @@ subroutine inteForceGetOption(phaseType, list_func_acti, ds_algorom,&
     integer, intent(out) :: typeAsse
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 ! - Local
-    aster_logical :: lDyna, lHHO, lRomCorr
+    aster_logical :: lDyna, lRomCorr, lHHO
 !   ------------------------------------------------------------------------------------------------
     lNodeComp = ASTER_FALSE
     lInteComp = ASTER_FALSE
@@ -877,32 +873,24 @@ subroutine inteForceGetOption(phaseType, list_func_acti, ds_algorom,&
     endif
 ! - Options to compute internal forces
     if (phaseType .eq. PRED_EULER) then
-        lNodeComp = .not. lHHO
-        lInteComp = (lDyna .or. lRomCorr)
+        lNodeComp = ASTER_TRUE
+        lInteComp = (lDyna .or. lRomCorr .or. lHHO)
     elseif (phaseType .eq. CORR_NEWTON) then
         lNodeComp = ASTER_FALSE
         lInteComp = ASTER_TRUE
     else
         ASSERT(ASTER_FALSE)
     endif
-! - For HHO: internal forces are NOT independent from tangent matrix evaluation
-    if (lHHO) then
-        lInteComp = ASTER_FALSE
-    endif
 ! - Which second member ?
     if (phaseType .eq. PRED_EULER) then
         typeAsse = INTE_FORCE_COMB
-        if (lDyna .or. lRomCorr) then
+        if (lDyna .or. lRomCorr .or. lHHO) then
             typeAsse = INTE_FORCE_INTE
         endif
     elseif (phaseType .eq. CORR_NEWTON) then
         typeAsse = INTE_FORCE_INTE
     else
         ASSERT(ASTER_FALSE)
-    endif
-! - For HHO: internal forces are NOT independent from tangent matrix evaluation
-    if (lHHO) then
-        typeAsse = INTE_FORCE_NONE
     endif
 !   ------------------------------------------------------------------------------------------------
 end subroutine

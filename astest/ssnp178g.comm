@@ -22,7 +22,7 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 
 
@@ -69,15 +69,16 @@ CT = [0.423160639887]
 
 
 model = AFFE_MODELE(
-    AFFE=_F(MODELISATION=('3D_HHO', ), FORMULATION='LINEAIRE', PHENOMENE='MECANIQUE', TOUT='OUI'),
+    AFFE=_F(MODELISATION=('3D_HHO', ), FORMULATION='LINEAIRE',
+            PHENOMENE='MECANIQUE', TOUT='OUI'),
     MAILLAGE=mesh
 )
 
-carael =AFFE_CARA_ELEM(MODELE=model,
-                       MASSIF=(_F( GROUP_MA='load',
-                                   ANGL_REP=(0.0,0,0),
-                                ),
-                         ),)
+carael = AFFE_CARA_ELEM(MODELE=model,
+                        MASSIF=(_F(GROUP_MA='load',
+                                   ANGL_REP=(0.0, 0, 0),
+                                   ),
+                                ),)
 
 depl = AFFE_CHAR_CINE(
     MECA_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=('Encast', )), MODELE=model, INFO=1,
@@ -113,21 +114,21 @@ resnonl = STAT_NON_LINE(
 resnonl = CALC_CHAMP(
     reuse=resnonl,
     CHAM_MATER=fieldmat,
-    CRITERES=('SIEQ_NOEU','SIEQ_ELGA'),
+    CRITERES=('SIEQ_NOEU', 'SIEQ_ELGA'),
     PROPRIETES=('MATE_ELEM', 'MATE_ELGA'),
-    CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
-    DEFORMATION=('EPSI_ELNO','EPSI_ELGA','EPSP_ELGA'),
-    VARI_INTERNE = ('VARC_ELGA'),
+    CONTRAINTE=('SIEF_ELNO', 'SIEF_NOEU',),
+    DEFORMATION=('EPSI_ELNO', 'EPSI_ELGA',),
+    VARI_INTERNE=('VARC_ELGA'),
     MODELE=model,
     RESULTAT=resnonl,
 )
-rescoor=CALC_CHAM_ELEM(MODELE=model,
-                       OPTION='COOR_ELGA',)
+rescoor = CALC_CHAM_ELEM(MODELE=model,
+                         OPTION='COOR_ELGA',)
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=AY,
                   VALE_REFE=2.13651,
@@ -139,7 +140,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=AX,
                   VALE_REFE=-1.61818,
@@ -151,7 +152,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DZ',
                   VALE_CALC=AZ,
                   VALE_REFE=0.0,
@@ -171,7 +172,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=CY,
                   CRITERE='RELATIF',),
@@ -180,7 +181,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=CX,
                   CRITERE='RELATIF',),
@@ -200,7 +201,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELNO',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.009460092381436025,
+                  VALE_CALC=0.013988296211691835,
                   CRITERE='RELATIF',),
           )
 
@@ -210,16 +211,16 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.012001044339102429,
+                  VALE_CALC=0.016572417865724,
                   CRITERE='RELATIF',),
           )
 TEST_RESU(CHAM_ELEM=_F(
-                       POINT=1,
-                       NOM_CMP='X',
-                       GROUP_MA='M1152',
-                       CHAM_GD=rescoor,
-                   VALE_CALC=21.63397459621556,
-                       ),
-          )
+    POINT=1,
+    NOM_CMP='X',
+    GROUP_MA='M1152',
+    CHAM_GD=rescoor,
+    VALE_CALC=21.63397459621556,
+),
+)
 
 FIN()

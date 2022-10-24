@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ MA0 = LIRE_MAILLAGE(FORMAT='MED',)
 
 MA = CREA_MAILLAGE(MAILLAGE=MA0,
                    MODI_HHO=_F(TOUT='OUI',
-                                PREF_NOEUD='NV',
-                                PREF_NUME=1,),
+                               PREF_NOEUD='NV',
+                               PREF_NUME=1,),
                    INFO=1,)
 
 E = 200000.0
@@ -92,8 +92,8 @@ SYM = AFFE_CHAR_CINE(MODELE=MO,
 APPUI = AFFE_CHAR_CINE(MODELE=MO,
                        MECA_IMPO=_F(TOUT='OUI',
                                     # Equivalent to DZ=0.0
-                                   HHO_W1=0.0, HHO_W2=0.0, HHO_W3=0.0,
-                                   HHO_W4=0.0, HHO_W5=0.0, HHO_W6=0.0,),)
+                                    HHO_W1=0.0, HHO_W2=0.0, HHO_W3=0.0,
+                                    HHO_W4=0.0, HHO_W5=0.0, HHO_W6=0.0,),)
 
 TRAC = AFFE_CHAR_CINE(MODELE=MO,
                       MECA_IMPO=_F(GROUP_MA='LFG_FACE',
@@ -187,7 +187,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIGM_ELNO',
                   GROUP_NO='N5',
                   NOM_CMP='SIYY',
-                  VALE_CALC=Test6,
+                  VALE_CALC=422.97391963561745,
                   CRITERE='RELATIF',
                   GROUP_MA='M1294',
                   ),
@@ -198,7 +198,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIGM_ELNO',
                   GROUP_NO='N5',
                   NOM_CMP='SIXX',
-                  VALE_CALC=Test7,
+                  VALE_CALC=-0.08202114583787917,
                   CRITERE='RELATIF',
                   GROUP_MA='M1294',
                   ),

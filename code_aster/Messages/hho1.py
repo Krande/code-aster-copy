@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,18 +38,6 @@ Vous voulez une quadrature d'ordre %(i1)d ce qui inférieur au minimum autorisé
 Échec de la factorisation LU: la matrice n'est pas factorisable
 """),
 
-    8: _("""
-Condensation statique: la matrice de la cellule n'est pas symétrique définie positive
-    Problème avec le pivot : %(i1)d
-
-    Conseil: Essayez d'augmenter le coefficient de stabilisation
-"""),
-
-    9: _("""
-Condensation statique: échec de la résolution du système local
-    Problème avec l'élément : %(i1)d
-"""),
-
     10: _("""
 Bases HHO:
 Vous voulez une base de degré %(i1)d ce qui supérieur au maximum autorisé (max = %(i2)d)
@@ -63,17 +51,6 @@ Vous voulez une base de degré négatif %(i1)d ce qui inférieur au minimum auto
     12: _("""
 Quadratures HHO:
 Vous voulez une quadrature d'ordre supérieur au maximum autorisé par votre quadrature
-"""),
-
-    13: _("""
-Condensation statique: la matrice de la cellule n'est pas factorisable
-    Problème avec le pivot : %(i1)d
-
-    Conseil: Essayez d'augmenter le coefficient de stabilisation
-"""),
-
-    14: _("""
-Condensation statique: le code retour %(i1)d n'est pas traité
 """),
 
 

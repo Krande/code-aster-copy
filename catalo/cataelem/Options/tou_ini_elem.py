@@ -46,8 +46,6 @@ PFLUN_R = OutputParameter(phys=PHY.FLUN_R, type="ELEM")
 
 PNEUT_F = OutputParameter(phys=PHY.NEUT_F, type="ELEM")
 
-PCELL_R = OutputParameter(phys=PHY.CELL_R, type="ELEM")
-
 
 TOU_INI_ELEM = Option(
     para_in=(),
@@ -63,7 +61,6 @@ TOU_INI_ELEM = Option(
         PCOEH_R,
         PFLUN_R,
         PNEUT_F,
-        PCELL_R,
         SP.PNEUT_I,
         SP.PDEPLEL,
     ),

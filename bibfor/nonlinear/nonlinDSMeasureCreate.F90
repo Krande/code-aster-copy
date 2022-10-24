@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ type(NL_DS_Measure), intent(out) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_device_defi = 26
+    integer, parameter :: nb_device_defi = 24
     integer, parameter :: nb_timer_defi = 8
     integer :: i_device, i_timer, i_col
     aster_logical :: l_time, l_count
@@ -73,8 +73,7 @@ type(NL_DS_Measure), intent(out) :: ds_measure
                     'Cont_Prep ','Cont_Elem ','Matr_Asse ',&
                     'Cont_NCont','Cont_NFric','LineSearch',&
                     'Cont_Cycl1','Cont_Cycl2','Cont_Cycl3',&
-                    'Cont_Cycl4','HHO_Cond  ','HHO_Comb  ',&
-                    'HHO_Prep  ','Other     '/)
+                    'Cont_Cycl4','HHO_Prep  ','Other     '/)
 !
 ! - Timer linked to device
 !
@@ -86,8 +85,7 @@ type(NL_DS_Measure), intent(out) :: ds_measure
                     'CPU_1    ','CPU_1    ','CPU_2    ',&
                     'NoTimer  ','NoTimer  ','NoTimer  ',&
                     'NoTimer  ','NoTimer  ','NoTimer  ',&
-                    'NoTimer  ','CPU_3    ','CPU_3    ',&
-                    'CPU_3    ','NoTimer  '/)
+                    'NoTimer  ','CPU_3    ','NoTimer  '/)
 !
 ! - Flag for counter add or not
 !
@@ -99,8 +97,7 @@ type(NL_DS_Measure), intent(out) :: ds_measure
                     .true. , .true., .true.,&
                     .false.,.false., .true.,&
                     .true. , .true., .true.,&
-                    .true. , .true., .true.,&
-                    .true. , .true. /)
+                    .true. , .true. , .true. /)
 !
 ! - Flag for time measure: 2 by device - First = Step / Second = Total computation
 !
@@ -112,8 +109,7 @@ type(NL_DS_Measure), intent(out) :: ds_measure
                     13, 13, 14, 14, 12, 12,&
                      0,  0,  0,  0,  0,  0,&
                      0,  0,  0,  0,  0,  0,&
-                     0,  0, 27, 27, 28, 28,&
-                     0, 29,  17,  0 /)
+                     0,  0, 0, 29,  17,  0 /)
 !
 ! - Flag for count measure: 2 by device - First = Step / Second = Total computation
 !
@@ -125,8 +121,7 @@ type(NL_DS_Measure), intent(out) :: ds_measure
                     13, 13,  0,  0,  0,  0,&
                     18, 18, 19, 19, 24, 24,&
                     20, 20, 21, 21, 22, 22,&
-                    23, 23,  0,  0,  0 , 0,&
-                     0,  0,  0,  0/)
+                    23, 23,  0,  0,  0,  0/)
 !
 ! --------------------------------------------------------------------------------------------------
 !

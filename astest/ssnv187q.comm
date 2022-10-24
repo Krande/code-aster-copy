@@ -154,7 +154,7 @@ TEST_RESU(
     RESU=_F(
         CRITERE=('RELATIF', ),
         GROUP_NO=('TestDisp', ),
-        NOM_CHAM='DEPL',
+        NOM_CHAM="HHO_DEPL",
         NOM_CMP='DY',
         NUME_ORDRE=2,
         PRECISION=0.002,
@@ -181,7 +181,7 @@ TEST_RESU(
     RESU=_F(
         CRITERE=('RELATIF', ),
         GROUP_NO=('TestDisp', ),
-        NOM_CHAM='DEPL',
+        NOM_CHAM="HHO_DEPL",
         NOM_CMP='DY',
         NUME_ORDRE=2,
         PRECISION=0.002,
@@ -208,7 +208,7 @@ TEST_RESU(
     RESU=_F(
         CRITERE=('RELATIF', ),
         GROUP_NO=('TestDisp', ),
-        NOM_CHAM='DEPL',
+        NOM_CHAM="HHO_DEPL",
         NOM_CMP='DY',
         NUME_ORDRE=2,
         PRECISION=0.002,

@@ -22,13 +22,13 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 
 
 mesh0 = LIRE_MAILLAGE(FORMAT='MED')
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0,
-                   MODI_HHO=_F(TOUT='OUI', PREF_NOEUD='NH'),)
+                     MODI_HHO=_F(TOUT='OUI', PREF_NOEUD='NH'),)
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh,
                      ORIE_PEAU=_F(GROUP_MA_PEAU=('Encast', 'load',),),)
@@ -58,15 +58,9 @@ times = DEFI_LIST_INST(
 FY = FORMULE(NOM_PARA=('X', 'Y', 'INST'), VALE='0.1125')
 
 
-AY = [2.130274497740576]
-AX = [-1.612793458615878]
-AT = [-0.15366678158746833 ]
-CY = [0.350844851649744]
-CX = [-0.025762587741759192]
-CT = [0.4175201506729721 ]
-
 model = AFFE_MODELE(
-    AFFE=_F(MODELISATION='D_PLAN_HHO', FORMULATION='QUADRATIQUE', PHENOMENE='MECANIQUE', TOUT='OUI'),
+    AFFE=_F(MODELISATION='D_PLAN_HHO', FORMULATION='QUADRATIQUE',
+            PHENOMENE='MECANIQUE', TOUT='OUI'),
     MAILLAGE=mesh
 )
 
@@ -91,8 +85,8 @@ resnonl = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=times),
     MODELE=model,
     NEWTON=_F(MATRICE='TANGENTE', PREDICTION='TANGENTE', REAC_ITER=1,),
-    SOLVEUR=_F(METHODE='MUMPS'),
-    HHO=_F(OPTIMISATION='TEMPS',),
+    SOLVEUR=_F(METHODE='MUMPS', POSTTRAITEMENTS='FORCE',),
+    HHO=_F(OPTIMISATION='TEMPS', STABILISATION='MANUEL', COEF_STAB=100.*E),
     INFO=1,
 )
 
@@ -100,26 +94,25 @@ resnonl = CALC_CHAMP(
     reuse=resnonl,
     CHAM_MATER=fieldmat,
     CRITERES=('SIEQ_NOEU',),
-    DEFORMATION = ('EPSI_ELGA',
-                   'EPSP_ELGA'
-                   ),
+    DEFORMATION=('EPSI_ELGA',
+                 ),
     MODELE=model,
     RESULTAT=resnonl,
 )
-rescoor=CALC_CHAM_ELEM(MODELE=model,
-                       OPTION='COOR_ELGA',)
+rescoor = CALC_CHAM_ELEM(MODELE=model,
+                         OPTION='COOR_ELGA',)
 IMPR_RESU(UNITE=80,
-            RESU=_F(RESULTAT=resnonl,
-                    IMPR_NOM_VARI='OUI',),
-            FORMAT='MED',)
+          RESU=_F(RESULTAT=resnonl,
+                  IMPR_NOM_VARI='OUI',),
+          FORMAT='MED',)
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM='HHO_DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=AY,
+                  VALE_CALC=2.130451500670421,
                   VALE_REFE=2.13651,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
@@ -129,9 +122,9 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM='HHO_DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=AX,
+                  VALE_CALC=-1.6127280757924736,
                   VALE_REFE=-1.61818,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
@@ -142,25 +135,25 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='TRSIG',
-                  VALE_CALC=AT,
+                  VALE_CALC=-0.1300995410284606,
                   CRITERE='RELATIF',),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM='HHO_DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=CY,
+                  VALE_CALC=0.3514032353407638,
                   CRITERE='RELATIF',),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM='HHO_DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=CX,
+                  VALE_CALC=-0.025008490763232825,
                   CRITERE='RELATIF',),
           )
 
@@ -169,16 +162,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='TRSIG',
-                  VALE_CALC=CT,
-                  CRITERE='RELATIF',),
-          )
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_MA=('M200'),
-                  POINT=1,
-                  RESULTAT=resnonl,
-                  NOM_CHAM='EPSP_ELGA',
-                  NOM_CMP='EPXY',
-                  VALE_CALC=0.015089300060840114,
+                  VALE_CALC=0.4181246991533172,
                   CRITERE='RELATIF',),
           )
 
@@ -188,19 +172,19 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.018110649467529646 ,
+                  VALE_CALC=0.02567674353079883,
                   CRITERE='RELATIF',),
           )
 
 
 TEST_RESU(CHAM_ELEM=_F(
-                       POINT=1,
-                       NOM_CMP='X',
-                       GROUP_MA='M200',
-                       CHAM_GD=rescoor,
-                   VALE_CALC=21.338104996137776,
-                       ),
-          )
+    POINT=1,
+    NOM_CMP='X',
+    GROUP_MA='M200',
+    CHAM_GD=rescoor,
+    VALE_CALC=21.338104996137776,
+),
+)
 
 
 FIN()

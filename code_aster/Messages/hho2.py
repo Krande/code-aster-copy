@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,18 +33,6 @@ cata_msg = {
     9: _("""On n'a le droit qu'à un seul chargement AFFE_CHAR_CINE de type fonction dans HHO."""),
 
     10: _("""HHO: Calcul des déplacements aux noeuds"""),
-
-    13: _("""HHO: Combinaison des matrices/vecteurs"""),
-
-    14: _("""HHO: Préparation des matrices/vecteurs"""),
-
-    15: _("""HHO: Condensation statique en mécanique"""),
-
-    16: _("""HHO: Dé-condensation statique en mécanique"""),
-
-    17: _("""HHO: Mise à jour des inconnues de cellule"""),
-
-    18: _("""HHO: Initialisation des inconnues de cellule"""),
 
 
 }

@@ -32,7 +32,6 @@ subroutine nmcoma(mesh          , modelz         , ds_material,&
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
 use HHO_type
-use HHO_comb_module, only : hhoPrepMatrix
 use NonLinear_module, only : getOption, getMatrType, isMatrUpdate,&
                              isDampMatrCompute, isMassMatrCompute,&
                              isRigiMatrCompute, isInteVectCompute,&
@@ -130,7 +129,7 @@ integer :: faccvg, ldccvg
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_update_matr, l_comp_damp, l_diri_undead, l_rom, l_comp_mass
-    aster_logical :: l_neum_undead, l_comp_fint, l_asse_rigi, l_hho, l_comp_rigi, l_comp_cont
+    aster_logical :: l_neum_undead, l_comp_fint, l_asse_rigi, l_comp_rigi, l_comp_cont
     character(len=16) :: corrMatrType, option_nonlin
     character(len=19) :: matr_elem, rigid
     character(len=24) :: model
@@ -165,7 +164,6 @@ integer :: faccvg, ldccvg
     l_neum_undead = isfonc(list_func_acti, 'NEUM_UNDEAD')
     l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
     l_rom         = isfonc(list_func_acti, 'ROM')
-    l_hho         = isfonc(list_func_acti, 'HHO')
     l_comp_cont   = isfonc(list_func_acti, 'ELT_CONTACT')
 !
 ! - Renumbering equations ?
@@ -265,18 +263,6 @@ integer :: faccvg, ldccvg
                         ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                         list_l_calc, list_l_asse)
             ASSERT(l_update_matr)
-        endif
-! ----- For HHO: assembly rigidity and condensation
-        if (l_hho) then
-            call hhoPrepMatrix(modelz     , ds_material, lischa,&
-                               ds_system  , ds_measure ,&
-                               meelem     , hhoField   ,&
-                               ASTER_FALSE, ASTER_TRUE ,&
-                               rigid      , condcvg)
-            if (ldccvg .ne. 1) then
-                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume,&
-                                        ds_material, ds_constitutive, ds_system)
-            endif
         endif
 ! ----- Compute and assemble matrices
         if (nb_matr .gt. 0) then

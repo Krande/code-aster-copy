@@ -177,13 +177,6 @@ character(len=*), optional, intent(in) :: sddynz_
         ASSERT(ASTER_FALSE)
     endif
 !
-! - For HHO: always integrate behaviour law
-!
-    if (l_hho) then
-        ASSERT(.not. l_sigmex)
-        l_veinte = ASTER_TRUE
-    end if
-!
 ! - Prepare vector and matrix
 !
     if (l_merigi) then
@@ -258,17 +251,6 @@ character(len=*), optional, intent(in) :: sddynz_
         nbout = nbout+1
         lpaout(nbout) = 'PCONTPR'
         lchout(nbout) = sigm_curr(1:19)
-    endif
-!
-! - Prepare output fields for HHO
-!
-    if (l_hho) then
-        nbout = nbout+1
-        lpaout(nbout) = 'PCSMTIR'
-        lchout(nbout) = hhoField%fieldOUT_cell_MT
-        nbout = nbout+1
-        lpaout(nbout) = 'PCSRTIR'
-        lchout(nbout) = hhoField%fieldOUT_cell_RT
     endif
 !
     ASSERT(nbout.le.mxchout)

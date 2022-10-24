@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -336,7 +336,7 @@ implicit none
     ASSERT(etcalc.eq.'CONT')
     call nmfpas(fonact    , sddyna, sdpilo, sddisc, nbiter,&
                 numins    , eta   , valinc, solalg, veasse, ds_system,&
-                ds_contact, hhoField)
+                ds_contact)
     numins = numins + 1
 !
     goto 200

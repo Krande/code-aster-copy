@@ -85,6 +85,10 @@ class MeshCoordinatesField : public DataField {
         *( _valuesList ) = *( coordField._valuesList );
     };
 
+    bool exists() const {
+        return _valuesList->exists();
+    };
+
     /**
      * @brief Shorthand + operator assignement
      * @return Updated field

@@ -488,18 +488,6 @@ CASECT   = PhysicalQuantity(type='K8',
        NOM : nom d'un objet cara-poutre
 """)
 
-CELL_R   = PhysicalQuantity(type='R',
-    components=(
-       'HHO[20]', 'HHO_U[20]', 'HHO_V[20]', 'HHO_W[20]',
-    ),
-    comment="""  CELL_R Type:R DDL de la cellule pour HHO
-       HHO[20] : 1, X, Y, Z, X^2, Y^2, Z^2, XY, XZ, YZ, X^3, Y^3, ...
-       HHO : degres de liberte HHO - HHO[20]: (cas scalaire)
-       HHO_U : degres de liberte HHO - HHO[20]:  (cas vect-U)
-       HHO_V : degres de liberte HHO - HHO[20]:  (cas vect-V)
-       HHO_W : degres de liberte HHO - HHO[20]:  (cas vect-W)
-""")
-
 CHGREPER = PhysicalQuantity(type='R',
     components=(
        'NATCHG',
@@ -774,7 +762,7 @@ list_cmp_depl=(
   'SITY',       'LH1',        'SIXX',       'SIYY',       'SIZZ',       'SIXY',
   'DAMG',       'PTOT',       'PIX',        'PIY',        'PIZ',
   'DRGX',       'DRGY',       'DRGZ',
-  'HHO[60]',    'HHO_U[6]',   'HHO_V[6]',   'HHO_W[6]',   'PINCH',       'PSI'
+  'HHO_C[60]',    'HHO_U[6]',   'HHO_V[6]',   'HHO_W[6]',   'PINCH',       'PSI'
 )
 comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
@@ -846,7 +834,7 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        HHO_U : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir1
        HHO_V : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir2
        HHO_W : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir3
-       HHO   : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) scal
+       HHO_C   : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
        PINCH   : pinch dof for solid-shell elements
        PSI   : potentiel de vitesse de deplacement du fluid
 """
@@ -3670,7 +3658,6 @@ TEMP_R   = PhysicalQuantity(type='R',
        'DTX',
        'DTY',
        'DTZ',
-       'HHO[6]',
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3684,7 +3671,6 @@ TEMP_R   = PhysicalQuantity(type='R',
        DTX : derivee de la temperature selon x (n'est pas un ddl)
        DTY : derivee de la temperature selon y (n'est pas un ddl)
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
-       HHO : degres de liberté HHO - HHO[6]: 1, X, Y, X2, Y2,XY (X,Y plan face)
 """)
 
 THET_R   = PhysicalQuantity(type='R',

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ use HHO_measure_module
 use HHO_quadrature_module
 use HHO_basis_module
 use HHO_utils_module
+use HHO_inertia_module
 !
 implicit none
 !
@@ -41,7 +42,6 @@ private
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "blas/dsyev.h"
 #include "blas/dsyr.h"
 #include "blas/dscal.h"
 #include "blas/daxpy.h"
@@ -56,151 +56,14 @@ private
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    public :: hhoInfoInitCell, hhoInfoInitFace, hhoInitializeCellValues
+    public :: hhoInfoInitCell, hhoInfoInitFace
     private :: hhoGeomData, hhoGeomFace, hhoDataInit, hhoFaceInit, hhoCellInit
-    private :: hhoOrthoNormBasisFace, hhoL2ProdSFace
 !
 contains
 !
 !===================================================================================================
 !
 !===================================================================================================
-!
-    function hhoL2ProdSFace(hhoFace, hhoBasisFace, hhoQuad, ind_basis_i, degree_basis_i, &
-                            ind_basis_j, degree_basis_j) result(L2ps)
-!
-    implicit none
-!
-        type(HHO_Face), intent(in)          :: hhoFace
-        type(HHO_basis_face), intent(inout) :: hhoBasisFace
-        type(HHO_quadrature), intent(in)    :: hhoQuad
-        integer, intent(in)                 :: ind_basis_i, ind_basis_j
-        integer, intent(in)                 :: degree_basis_i, degree_basis_j
-        real(kind=8)                        :: L2ps
-!
-! --------------------------------------------------------------------------------------------------
-!  HHO : Compute the L2-scalar product of two basis functions in a face
-!
-!  In HHO_Face           :: face HHO
-!  IO hhoBasisFace       :: basis functions for face
-!  In hhoQuad            :: Quadrature of order at least degree_basis_i + degree_basis_j
-!  In ind_basis_i        :: indice of the basis i
-!  In degree_basis_i     :: degree of the basis i
-!  In ind_basis_j        :: indice of the basis j
-!  In degree_basis_j     :: degree of the basis j
-!  Out L2ps              :: L2-scalar product
-! --------------------------------------------------------------------------------------------------
-
-        integer :: ipg
-        real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
-! --------------------------------------------------------------------------------------------------
-        L2ps = 0.d0
-!
-! ----- Loop on quadrature point
-        do ipg = 1, hhoQuad%nbQuadPoints
-! --------- Eval bais function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3,ipg), 0, &
-                                     max(degree_basis_i, degree_basis_j), basisScalEval)
-! --------  Eval
-            L2ps = L2ps + hhoQuad%weights(ipg)*basisScalEval(ind_basis_i)*basisScalEval(ind_basis_j)
-        end do
-    end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoOrthoNormBasisFace(hhoFace, l_ortho)
-!
-    implicit none
-!
-        type(HHO_Face), intent(inout) :: hhoFace
-        aster_logical, intent(in)     :: l_ortho
-!
-! --------------------------------------------------------------------------------------------------
-!   Compute coefficient of the orthonormal basis of a face
-!
-!  In HHO_Face : face HHO
-!  In l_ortho  : orthonoralize the basis function
-!
-! --------------------------------------------------------------------------------------------------
-!
-        type(HHO_basis_face) :: hhoBasisFace
-        type(HHO_quadrature)  :: hhoQuad
-        integer :: nb_basis, i_basis, j_basis_ortho, degree_i, degree_j, i_ortho
-        real(kind=8) :: rij, rii, hs2
-        integer, parameter :: nb_ortho = 1
-! --------------------------------------------------------------------------------------------------
-!
-! ----- init basis
-!
-        call hhoBasisFace%initialize(hhoFace)
-!
-! ----- dimension of the basis
-!
-        nb_basis = hhoBasisFace%BSSize(0, hhoBasisFace%hhoMono%maxOrder())
-!
-! ----- Init the basis with scaled monomials
-!
-        hhoFace%coeff_ONB = 0.d0
-        do i_basis = 1, nb_basis
-            hhoFace%coeff_ONB(i_basis,i_basis) = 1.d0
-        end do
-!
-! ----- Orthonormalize the basis (Algo Bassi 2012)
-!
-        if(l_ortho) then
-            if(hhoFace%ndim == 1) then
-                hs2 = sqrt(2.d0/hhoFace%diameter)
-                ASSERT(hhoBasisFace%hhoMono%maxOrder() == 2)
-!
-! ----- Fill basis
-!
-                hhoFace%coeff_ONB(1,1) = sqrt(0.5d0) * hs2
-                hhoFace%coeff_ONB(2,2) = sqrt(1.5d0) * hs2
-                hhoFace%coeff_ONB(1,3) = -sqrt(5.d0/8.d0) * hs2
-                hhoFace%coeff_ONB(3,3) = 3.d0 * sqrt(5.d0/8.d0) * hs2
-!               hhoFace%coeff_ONB(2,4) = -1.5d0 * sqrt(7d0/2.d0) * hs2
-!               hhoFace%coeff_ONB(4,4) =  2.5d0 * sqrt(7d0/2.d0) * hs2
-
-            else
-                call  hhoQuad%GetQuadFace(hhoFace, 2*hhoBasisFace%hhoMono%maxOrder())
-                do i_ortho = 1, nb_ortho
-                    do i_basis = 1, nb_basis
-                        degree_i = hhoBasisFace%hhoMono%degree_mono(i_basis)
-                        do j_basis_ortho = 1, i_basis - 1
-                            degree_j = hhoBasisFace%hhoMono%degree_mono(j_basis_ortho)
-!
-! ---- Compute rij = (basis_i, basis_j)_F
-!
-                            rij = hhoL2ProdSFace(hhoFace, hhoBasisFace, hhoQuad, i_basis, degree_i,&
-                                                j_basis_ortho, degree_j)
-!
-! ---- Update basis i: basis_i -= rij*basis_j
-!
-                            call daxpy(j_basis_ortho, - rij, hhoFace%coeff_ONB(1,j_basis_ortho), 1,&
-                                      hhoFace%coeff_ONB(1,i_basis), 1)
-                        end do
-!
-! ---- Compute rii = (basis_i, basis_i)_F
-!
-                        rii = sqrt(hhoL2ProdSFace(hhoFace, hhoBasisFace, hhoQuad, i_basis, &
-                                   degree_i, i_basis, degree_i))
-!
-! ---- Update basis i: basis_i = basis_i/ rii
-!
-                        call dscal(i_basis, 1.d0/rii, hhoFace%coeff_ONB(1,i_basis), 1)
-                    end do
-                end do
-            end if
-        end if
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-
 !
     subroutine hhoGeomData(nodes_coor, numnodes, nbnodes, typma, elem_dim)
 !
@@ -408,7 +271,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, numnodes, l_ortho, &
+    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, numnodes, &
                            barycenter_cell)
 !
     implicit none
@@ -419,7 +282,6 @@ contains
         integer, dimension(4), intent(in)               :: numnodes
         integer, intent(in)                             :: nbnodes
         real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
-        aster_logical, intent(in)                       :: l_ortho
         type(HHO_Face), intent(out)                     :: hhoFace
 !
 ! --------------------------------------------------------------------------------------------------
@@ -435,7 +297,6 @@ contains
 ! In nodes_coor         : coordinates of nodes
 ! In nbnodes            : number of nodes
 ! In numnodes           : global id of the nodes in the mesh
-! In l_ortho            : orthonoralize the basis function
 ! In barycenter_cell    : barycenter of the cell
 ! Out hhoFace           : a HHO Face
 ! --------------------------------------------------------------------------------------------------
@@ -456,9 +317,8 @@ contains
         end if
         hhoFace%measure     = hhoMeasureFace(hhoFace)
         hhoFace%diameter    = hhoDiameterFace(hhoFace)
-        hhoFace%local_basis = hhoLocalBasisFace(hhoFace)
-
-        call hhoOrthoNormBasisFace(hhoFace, l_ortho)
+        hhoFace%axes       = hhoLocalAxesFace(hhoFace)
+        hhoFace%length_box = hhoLengthBoundingBoxFace(hhoFace)
 !
     end subroutine
 !
@@ -466,14 +326,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCellInit(typma, nodes_coor, numnodes, l_ortho, hhoCell)
+    subroutine hhoCellInit(typma, nodes_coor, numnodes, hhoCell)
 !
     implicit none
 !
         character(len=8), intent(in)                :: typma
         real(kind=8), dimension(3,27), intent(in)   :: nodes_coor
         integer, dimension(27), intent(in)          :: numnodes
-        aster_logical, intent(in)                   :: l_ortho
         type(HHO_Cell), intent(out)                 :: hhoCell
 !
 ! --------------------------------------------------------------------------------------------------
@@ -486,7 +345,6 @@ contains
 !
 ! In typma              : type of element
 ! In nodes_coor         : coordinates of nodes
-! In l_ortho            : orthonoralize the basis function
 ! Out hhoCell           : a HHO cell
 ! --------------------------------------------------------------------------------------------------
 !
@@ -673,6 +531,8 @@ contains
         hhoCell%measure    = hhoMeasureCell(hhoCell)
         hhoCell%diameter   = hhoDiameterCell(hhoCell)
 !
+        hhoCell%axes = hhoLocalAxesCell(hhoCell)
+!
         hhoCell%length_box = hhoLengthBoundingBoxCell(hhoCell)
 !
 ! ----- Init faces
@@ -684,7 +544,7 @@ contains
                     numnodes_face(i_node)  = numnodes(nodes_faces(i_node, i_face))
                 end do
                 call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
-                                nbnodes_faces(i_face), coor_face, numnodes_face, l_ortho, &
+                                nbnodes_faces(i_face), coor_face, numnodes_face, &
                                 hhoCell%barycenter)
             end do
 !
@@ -738,7 +598,7 @@ contains
 !
 ! --- Get coefficient (if possible)
 !
-        coef_stab = 111.d0
+        coef_stab = 0.d0
         iret = -1
         l_precalc  = ASTER_FALSE
         l_adapt_coeff = ASTER_TRUE
@@ -758,6 +618,7 @@ contains
                 l_adapt_coeff = ASTER_TRUE
             elseif(int(zr(jv_carcri-1+HHO_STAB)) == HHO_STAB_MANU) then
                 l_adapt_coeff = ASTER_FALSE
+                coef_stab = zr(jv_carcri-1+HHO_COEF)
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -782,7 +643,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuad, l_ortho_)
+    subroutine hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuad)
 !
     implicit none
 !
@@ -790,7 +651,6 @@ contains
         type(HHO_Data), intent(out)                 :: hhoData
         integer, intent(in), optional               :: npg
         type(HHO_Quadrature), optional, intent(out) :: hhoQuad
-        aster_logical, optional, intent(in)         :: l_ortho_
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -806,19 +666,13 @@ contains
 !   Out hhoData  : information on HHO methods
 !   Out hhoQuad  : Quadrature for the cell
 !   In npg (optional)      : number of quadrature point for the face
-!   In l_ortho (optional)  : orthonoralize the basis function
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: numnodes(27), nbnodes, elem_dim
         character(len=8) :: typma
         real(kind=8) :: coor(3,27)
-        aster_logical :: l_ortho
 !
         coor = 0.d0
-        l_ortho = ASTER_TRUE
-        if(present(l_ortho_)) then
-            l_ortho = l_ortho_
-        end if
 !
 ! --- Get HHO informations
 !
@@ -826,7 +680,7 @@ contains
         call hhoDataInit(hhoData)
 !
 ! --- Initialize HHO Cell
-        call hhoCellInit(typma, coor, numnodes, ASTER_FALSE, hhoCell)
+        call hhoCellInit(typma, coor, numnodes, hhoCell)
 !
 ! --- Get quadrature (optional)
 !
@@ -880,7 +734,7 @@ contains
 !
 ! --- Initialize HHO Face
 !
-        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor, numnodes(1:4), ASTER_FALSE)
+        call hhoFaceInit(hhoFace, typma, elem_dim, nbnodes, nodes_coor, numnodes(1:4))
 !
 ! --- Get quadrature (optional)
 !
@@ -897,49 +751,5 @@ contains
 !===================================================================================================
 !
 !===================================================================================================
-!
-    subroutine hhoInitializeCellValues(field, value)
-!
-    implicit none
-!
-        character(len=19), intent(in) :: field
-        real(kind=8), intent(in)      :: value
-!
-! --------------------------------------------------------------------------------------------------
-!
-! HHO - Non-linear mechanics
-!
-! Initialize cell values (Newton algorithm)
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  field         : fields
-! In  val           : value to initialize
-!
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: ifm, niv
-        integer :: nb_comp, jvale, i
-        character(len=4) :: scal
-!
-! --------------------------------------------------------------------------------------------------
-!
-        call infniv(ifm, niv)
-        if (niv .ge. 2) then
-            call utmess('I', 'HHO2_18')
-        endif
-!
-! --- Update the cell field
-!
-        call jelira(field//'.CELV', 'TYPE', cval=scal)
-        ASSERT(scal(1:1) .eq. 'R')
-        call jelira(field//'.CELV', 'LONMAX', nb_comp)
-        call jeveuo(field//'.CELV', 'E', jvale)
-!
-        do i = 1, nb_comp
-            zr(jvale-1+i) = value
-        end do
-!
-    end subroutine
 !
 end module

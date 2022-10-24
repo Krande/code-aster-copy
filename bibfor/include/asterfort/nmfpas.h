@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 interface
     subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
                       numins, eta, valinc, solalg, veasse, ds_system,&
-                      ds_contact, hhoField)
+                      ds_contact)
         use NonLin_Datastructure_type
-        use HHO_type
         integer :: fonact(*)
         character(len=19) :: sddyna
         character(len=19) :: sdpilo
@@ -34,6 +33,5 @@ interface
         character(len=19) :: veasse(*)
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_Contact), intent(in) :: ds_contact
-        type(HHO_Field), intent(in) :: hhoField
     end subroutine nmfpas
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
                       ds_constitutive, list_load  , list_func_acti, ds_algopara, nume_inst,&
                       iter_newt      , ds_measure , sddisc        , sddyna     , sdnume   ,&
                       sderro         , ds_contact , hval_incr     , hval_algo, hhoField,&
-                      hval_meelem    , hval_veelem , hval_veasse, hval_measse   , matass   ,&
+                      hval_veelem , hval_veasse, hval_measse   , matass   ,&
                       lerrit)
         use NonLin_Datastructure_type
         use HHO_type
@@ -37,7 +37,7 @@ interface
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system
         character(len=24) :: sderro
-        character(len=19) :: hval_veelem(*), hval_meelem(*)
+        character(len=19) :: hval_veelem(*)
         character(len=19) :: hval_measse(*), hval_veasse(*)
         character(len=19) :: hval_algo(*), hval_incr(*)
         type(HHO_Field), intent(in) :: hhoField

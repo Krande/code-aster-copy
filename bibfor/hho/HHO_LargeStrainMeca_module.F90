@@ -62,8 +62,8 @@ private
 ! Module for large deformations with hho
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: hhoLargeStrainLCMeca
-    private :: hhoComputeAgphi, hhoComputeRhs, hhoComputeLhs, hhoCalculF, transfo_A
+    public  :: hhoLargeStrainLCMeca, hhoComputeRhsLarge, hhoCalculF
+    private :: hhoComputeAgphi, hhoComputeLhsLarge, transfo_A
     private :: select_behavior, gdeflog, nbsigm_cmp, greenlagr
 !
 contains
@@ -75,7 +75,7 @@ contains
     subroutine hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
                                     & fami, typmod, imate, compor, option, carcri, lgpg, ncomp,&
                                     & time_prev, time_curr, depl_prev, depl_curr, &
-                                    & sig_prev, vi_prev, angmas, mult_comp, resi, cplan, &
+                                    & sig_prev, vi_prev, angmas, mult_comp, cplan, &
                                     & lhs, rhs, sig_curr, vi_curr, codret)
 !
     implicit none
@@ -100,7 +100,6 @@ contains
         real(kind=8), intent(in)        :: vi_prev(lgpg,*)
         real(kind=8), intent(in)        :: angmas(*)
         character(len=16), intent(in)   :: mult_comp
-        aster_logical, intent(in)       :: resi
         aster_logical, intent(in)       :: cplan
         real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout)     :: rhs(MSIZE_TDOFS_VEC)
@@ -132,7 +131,6 @@ contains
 !   In vi_prev      : internal variables at T-
 !   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
 !   In multcomp     : ?
-!   In resi         : TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !   In cplan        : plane stress hypothesis
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
@@ -144,15 +142,15 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_prev_coeff, G_curr_coeff
-        real(kind=8) :: module_tang(3,3,3,3), G_prev(3,3), G_curr(3,3), hooke(6,6)
-        real(kind=8) :: F_prev(3,3), F_curr(3,3), Pk1_curr(3,3), repere(7)
+        real(kind=8) :: module_tang(3,3,3,3), G_prev(3,3), G_curr(3,3)
+        real(kind=8) :: F_prev(3,3), F_curr(3,3), Pk1_curr(3,3)
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
         real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer :: cod(27), nbsig
-        aster_logical :: l_gdeflog, l_green_lagr, l_simo_miehe, l_tang
+        aster_logical :: l_gdeflog, l_green_lagr, l_simo_miehe, l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -178,13 +176,8 @@ contains
 !
         call behaviourInit(BEHinteg)
 !
-        l_tang = ASTER_TRUE
-        repere = 0.d0
-        hooke = 0.d0
-        if (option(1:10).eq.'RIGI_MECA ') then
-            l_tang = ASTER_FALSE
-            call ortrep(hhoCell%ndim, hhoCell%barycenter, repere)
-        end if
+        l_lhs = L_MATR(option)
+        l_rhs = L_VECT(option)
 !
         if (cplan .and. (l_simo_miehe .or. l_green_lagr)) then
             ASSERT(ASTER_FALSE)
@@ -248,24 +241,16 @@ contains
                              ipg, time_prev, time_curr, angmas, mult_comp, cplan, &
                              F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
                              sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
-                             Pk1_curr, module_tang, cod(ipg), l_tang)
+                             Pk1_curr, module_tang, cod(ipg))
             elseif(l_green_lagr) then
                 call greenlagr(BEHinteg,&
                                hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg,&
-                               ipg, time_prev, time_curr, mult_comp, resi, &
+                               ipg, time_prev, time_curr, mult_comp, &
                                F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
                                sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
-                               Pk1_curr, module_tang, cod(ipg), l_tang)
+                               Pk1_curr, module_tang, cod(ipg))
             else
                 ASSERT(ASTER_FALSE)
-            end if
-!
-! -------- Use Hooke matrix for the elastic modulus
-!
-            if(.not.l_tang) then
-                call dmatmc(fami, imate, time_curr, '+', ipg, 1, repere, coorpg(1:3), nbsig, &
-                            hooke(1:nbsig, 1:nbsig))
-                call desymt46(hooke, module_tang)
             end if
 !
 ! -------- Test the code of the LDC
@@ -274,14 +259,14 @@ contains
 !
 ! ------- Compute rhs
 !
-            call hhoComputeRhs(hhoCell, Pk1_curr, weight, BSCEval, gbs, bT)
+            if(l_rhs) call hhoComputeRhsLarge(hhoCell, Pk1_curr, weight, BSCEval, gbs, bT)
 !
 ! ------- Compute lhs
 !
-            call hhoComputeLhs(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+            if(l_lhs) call hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
-            ! print*,"vi_prev", vi_prev(1:lgpg, ipg)
-            ! print*,"vi_curr", vi_curr(1:lgpg, ipg)
+        !     print*,"vi_prev", vi_prev(1:lgpg, ipg)
+        !     print*,"vi_curr", vi_curr(1:lgpg, ipg)
             ! print*,"sig_prev", sig_prev(1:nbsig, ipg)
             ! print*,"sig_curr", sig_curr(1:nbsig, ipg)
             ! print*,"Fp"
@@ -298,19 +283,24 @@ contains
 !
 ! ----- compute rhs += Gradrec**T * bT
 !
-        call dgemv('T', gbs, total_dofs, -1.d0, gradrec, MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, 1)
+        if(l_rhs) then
+            call dgemv('T', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
+                        bT, 1, 1.d0, rhs, 1)
+        end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
 !
-        call dgemm('N', 'N', gbs, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
-                  & gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
+        if(l_lhs) then
+            call dgemm('N', 'N', gbs, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
+                   gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
-        call dgemm('T', 'N', total_dofs, total_dofs, gbs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                  & TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
+            call dgemm('T', 'N', total_dofs, total_dofs, gbs, 1.d0, gradrec, MSIZE_CELL_MAT, &
+                   TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
 !
+        end if
         ! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
         ! print*, "fT", norm2(rhs)
 !
@@ -326,7 +316,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeRhs(hhoCell, stress, weight, BSCEval, gbs, bT)
+    subroutine hhoComputeRhsLarge(hhoCell, stress, weight, BSCEval, gbs, bT)
 !
     implicit none
 !
@@ -371,7 +361,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhs(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+    subroutine hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
     implicit none
 !
@@ -695,7 +685,7 @@ contains
     subroutine gdeflog(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, lgpg, ipg, &
                        time_prev, time_curr, angmas, mult_comp, cplan, &
                        F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
-                       PK1_curr, module_tang, cod, l_tang)
+                       PK1_curr, module_tang, cod)
 !
     implicit none
 !
@@ -723,7 +713,6 @@ contains
         real(kind=8), intent(out)       :: PK1_curr(3,3)
         real(kind=8), intent(out)       :: module_tang(3,3,3,3)
         integer, intent(out)            :: cod
-        aster_logical, intent(in)       :: l_tang
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -743,7 +732,6 @@ contains
 !   In time_curr    : current time T+
 !   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
 !   In multcomp     : ?
-!   In resi         : TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !   In cplan        : plane stress hypothesis
 !   In F_prev       : previous deformation gradient at T-
 !   In F_curr       : curr deformation gradient at T+
@@ -754,12 +742,11 @@ contains
 !   Out Pk1_curr    : piola-kirschooff 1 at T+
 !   Out module_tang : tangent modulus dPK1/dF(Fp)
 !   Out cod         : info on integration of the LDC
-!   In  l_tang      : compute tangent modulus ?
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: gn(3,3), lamb(3), logl(3), epslPrev(6), epslIncr(6)
         real(kind=8) :: tlogPrev(6), tlogCurr(6)
-        real(kind=8) :: dtde(6, 6), PK2_prev(6), PK2_curr(6)
+        real(kind=8) :: dtde(6, 6), PK2_prev(6), PK2_curr(6), sig(6)
         real(kind=8) :: dpk2dc(6,6), me(3,3,3,3)
         aster_logical :: lCorr, lMatr, lSigm, lVari
 
@@ -767,7 +754,6 @@ contains
         lMatr = L_MATR(option)
         lSigm = L_SIGM(option)
         lVari = L_VARI(option)
-        lMatr = ASTER_TRUE
 !
 ! ----- Compute pre-processing Elog
 !
@@ -800,7 +786,7 @@ contains
                     lgpg, vi_curr_pg , ndim, F_curr, ipg,&
                     dtde, sig_prev_pg, cplan, fami, imate,&
                     time_curr, angmas, gn, lamb, logl,&
-                    sig_curr_pg, dpk2dc, PK2_prev, PK2_curr, cod)
+                    sig, dpk2dc, PK2_prev, PK2_curr, cod)
 !
 ! ----- Test the code of the LDC
 !
@@ -810,11 +796,16 @@ contains
             PK2_curr = PK2_prev
         end if
 !
+        if(lSigm) then
+            sig_curr_pg(1:2*ndim) = sig(1:2*ndim)
+        end if
+!
 ! ----- Compute PK1
 !
         call pk2topk1(ndim, PK2_curr, F_curr, Pk1_curr)
 !
-        if(l_tang) then
+        module_tang = 0.d0
+        if(lMatr) then
 !
 ! ----- Unpack lagrangian tangent modulus
 !
@@ -834,9 +825,9 @@ contains
 !===================================================================================================
 !
     subroutine greenlagr(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, lgpg, ipg, &
-                       time_prev, time_curr, mult_comp, resi, &
+                       time_prev, time_curr, mult_comp, &
                        F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
-                       PK1_curr, module_tang, cod, l_tang)
+                       PK1_curr, module_tang, cod)
 !
     implicit none
 !
@@ -853,7 +844,6 @@ contains
         real(kind=8), intent(in)        :: time_prev
         real(kind=8), intent(in)        :: time_curr
         character(len=16), intent(in)   :: mult_comp
-        aster_logical, intent(in)       :: resi
         real(kind=8), intent(in)        :: F_prev(3,3)
         real(kind=8), intent(in)        :: F_curr(3,3)
         real(kind=8), intent(in)        :: sig_prev_pg(2*ndim)
@@ -863,7 +853,6 @@ contains
         real(kind=8), intent(out)       :: PK1_curr(3,3)
         real(kind=8), intent(out)       :: module_tang(3,3,3,3)
         integer, intent(out)            :: cod
-        aster_logical, intent(in)       :: l_tang
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -882,7 +871,6 @@ contains
 !   In time_prev    : previous time T-
 !   In time_curr    : current time T+
 !   In multcomp     : ?
-!   In resi         : TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !   In F_prev       : previous deformation gradient at T-
 !   In F_curr       : curr deformation gradient at T+
 !   In sig_prev_pg  : cauchy stress at T-  (XX, YY, ZZ, XY, XZ, YZ)
@@ -892,7 +880,6 @@ contains
 !   Out Pk1_curr    : piola-kirschooff 1 at T+
 !   Out module_tang : tangent modulus dPK1/dF(Fp)
 !   Out cod         : info on integration of the LDC
-!   In  l_tang      : compute tangent modulus ?
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: GL_prev(6), GL_curr(6), GL_incr(6), dpk2dc(6,6), me(3,3,3,3), detF_prev
@@ -920,6 +907,8 @@ contains
 !
         PK2_curr = 0.d0
         dpk2dc = 0.d0
+        module_tang = 0.d0
+!
         if ((jstrainexte .eq. MFRONT_STRAIN_GROTGDEP_S) .or. (jstrainexte .eq. 0)) then
 !
 ! --------- Compute pre-processing E (Green-Lagrange)
@@ -943,20 +932,22 @@ contains
 !
         if (cod .ne. 0) goto 999
 !
-        if(.not. resi) then
+        if(.not.L_CORR(option)) then
             PK2_curr = PK2_prev
         end if
 !
 ! ----- Compute Cauchy stress and save them
 !
-        call lcdetf(ndim, F_curr, detF_curr)
-        call pk2sig(ndim, F_curr, detF_curr, PK2_curr, sig_curr_pg, 1)
+        if(L_SIGM(option)) then
+            call lcdetf(ndim, F_curr, detF_curr)
+            call pk2sig(ndim, F_curr, detF_curr, PK2_curr, sig_curr_pg, 1)
+        end if
 !
 ! ----- Compute PK1
 !
         call pk2topk1(ndim, PK2_curr, F_curr, PK1_curr)
 !
-        if(l_tang) then
+        if(L_MATR(option)) then
 !
 ! ----- Unpack lagrangian tangent modulus
             call desymt46(dpk2dc, me)

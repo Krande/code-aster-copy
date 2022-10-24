@@ -25,11 +25,9 @@ subroutine nmnpas(mesh          , model          , cara_elem,&
                   sdsuiv        , sddyna         ,&
                   ds_contact    , ds_conv        ,&
                   sdnume        , nume_dof       , solver   ,&
-                  hval_incr     , hval_algo      , hhoField)
+                  hval_incr     , hval_algo)
 !
 use NonLin_Datastructure_type
-use HHO_type
-use HHO_init_module, only : hhoInitializeCellValues
 !
 implicit none
 !
@@ -69,7 +67,6 @@ type(NL_DS_Conv), intent(inout) :: ds_conv
 character(len=19), intent(in) :: sdnume, solver
 character(len=24), intent(in)  :: nume_dof
 character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
-type(HHO_Field), intent(in) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -139,12 +136,6 @@ type(HHO_Field), intent(in) :: hhoField
 !
     call nonlinInitDisp(list_func_acti, sdnume   , nume_dof,&
                         hval_algo     , hval_incr)
-!
-! - For HHO (initialize the increment for the cell to zero)
-!
-    if (l_hho) then
-        call hhoInitializeCellValues(hhoField%fieldIncr_cell, 0.d0)
-    endif
 !
 ! - Update dualized relations for non-linear Dirichlet boundary conditions (undead)
 !

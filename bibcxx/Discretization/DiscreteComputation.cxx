@@ -79,9 +79,6 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
     AS_ASSERT( currMater );
 
     // No !
-    if ( currModel->existsHHO() ) {
-        throw std::runtime_error( "HHO not implemented" );
-    }
     if ( currModel->exists3DShell() ) {
         throw std::runtime_error( "COQUE_3D not implemented" );
     }

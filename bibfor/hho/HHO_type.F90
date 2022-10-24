@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,30 +33,12 @@ implicit none
     type HHO_Field
 !
         aster_logical      :: l_debug = ASTER_FALSE
-! ----- Inconnues sur la cellule: previous time
-        character(len=19)  :: fieldPrev_cell = ''
-! ----- Inconnues sur la cellule: current time
-        character(len=19)  :: fieldCurr_cell = ''
-! ----- Inconnues sur la cellule: increment
-        character(len=19)  :: fieldIncr_cell = ''
-! ----- Inconnues sur la cellule - Condensation statique (matrice)
-        character(len=19)  :: fieldOUT_cell_MT = ''
-! ----- Inconnues sur la cellule - Condensation statique (second membre)
-        character(len=19)  :: fieldOUT_cell_RT = ''
 ! ----- Inconnues sur la cellule - Precalcul gradient (matrice)
         character(len=19)  :: fieldOUT_cell_GT = ''
 ! ----- Inconnues sur la cellule - Precalcul stabilisation (matrice)
         character(len=19)  :: fieldOUT_cell_ST = ''
 ! ----- Inconnues sur les noeuds pour post-traitement
         character(len=19)  :: fieldCurr_nodes = ''
-! ----- Matrix and vector after combination
-        character(len=19)  :: vectcomb = ''
-        character(len=19)  :: matrcomb = ''
-! ----- Vecteur second membre
-        character(len=19)  :: vect_elem = ''
-        character(len=19)  :: vect_asse = ''
-! ----- Fields for error
-        character(len=19)  :: stat_cond_error = ''
 ! ----- Fields for Dirichlet loads
         aster_logical      :: l_cine_f = ASTER_FALSE
         character(len=19)  :: fieldCineFunc = ''
@@ -122,10 +104,12 @@ implicit none
         real(kind=8)                :: measure = 0.d0
 ! ----- Normale sortante
         real(kind=8), dimension(3)  :: normal = 0.d0
-! ----- Local basis
-        real(kind=8), dimension(3,2):: local_basis = 0.d0
-! ----- Coeff_ONB (orthonormal basis)
-        real(kind=8), dimension(6,6):: coeff_ONB = 0.d0
+! ----- Utilisation du repere inertiel local
+        aster_logical               :: use_inertia = ASTER_TRUE
+! ----- Axes locaux de la cellule
+        real(kind=8), dimension(3,2) :: axes = 0.d0
+! ----- Longueur de la boite englobante (orientee ou non) de la cellule
+        real(kind=8), dimension(2)  :: length_box = 0.d0
 ! ----- member function
         contains
         procedure, public, pass :: print => print_face
@@ -148,6 +132,10 @@ implicit none
         real(kind=8), dimension(3)  :: barycenter = 0.d0
 ! ----- Diametre de la cellule
         real(kind=8)                :: diameter = 0.d0
+! ----- Utilisation du repere inertiel local
+        aster_logical               :: use_inertia = ASTER_TRUE
+! ----- Axes locaux de la cellule
+        real(kind=8), dimension(3,3) :: axes = 0.d0
 ! ----- Longueur de la boite englobante (orientee ou non) de la cellule
         real(kind=8), dimension(3)  :: length_box = 0.d0
 ! ----- Volume ou Surface de la cellule
@@ -466,11 +454,12 @@ contains
         write(6,*) "Normal: ", this%normal
         write(6,*) "Measure: ", this%measure
         write(6,*) "Diameter: ", this%diameter
-        write(6,*) "Local basis: "
-        write(6,*) "    b1: ", this%local_basis(1:3,1)
+        write(6,*) "Local axis: "
+        write(6,*) "    a1: ", this%axes(1:3,1)
         if(this%ndim > 1) then
-            write(6,*) "    b2: ", this%local_basis(1:3,2)
+            write(6,*) "    a2: ", this%axes(1:3,2)
         end if
+        write(6,*) "Length box: ", this%length_box(1:this%ndim)
 !
     end subroutine
 !
@@ -505,7 +494,15 @@ contains
         write(6,*) "Barycenter: ", this%barycenter
         write(6,*) "Measure: ", this%measure
         write(6,*) "Diameter: ", this%diameter
-        write(6,*) "Length box: ", this%length_box
+        write(6,*) "Local axis: "
+        write(6,*) "    a1: ", this%axes(1:3,1)
+        if(this%ndim > 1) then
+            write(6,*) "    a2: ", this%axes(1:3,2)
+            if(this%ndim > 2) then
+                write(6,*) "    a: ", this%axes(1:3,3)
+            end if
+        end if
+        write(6,*) "Length box: ", this%length_box(1:this%ndim)
         write(6,*) "Number of face: ", this%nbfaces
         do iface = 1, this%nbfaces
             write(6,*) "    face", iface, ": "

@@ -101,7 +101,7 @@ contains
 !
 ! --- We get the solution on the cell
 !
-        call readVector('PCELLPR', cbs, sol_T)
+        call readVector('PDEPLPR', cbs, sol_T, total_dofs-cbs)
 !
 ! --- init cell basis
 !
@@ -135,14 +135,13 @@ contains
 ! ==================================================================================================
 ! ==================================================================================================
 !
-    subroutine hhoPostDeplMecaOP(model_hho, compor, disp_hho_faces, disp_hho_cell, disp_hho_depl)
+    subroutine hhoPostDeplMecaOP(model_hho, compor, disp, disp_hho_depl)
 !
     implicit none
 !
         character(len=24), intent(in) :: model_hho
         character(len=24), intent(in) :: compor
-        character(len=24), intent(in) :: disp_hho_faces
-        character(len=24), intent(in) :: disp_hho_cell
+        character(len=24), intent(in) :: disp
         character(len=24), intent(in) :: disp_hho_depl
 !
 ! --------------------------------------------------------------------------------------------------
@@ -160,7 +159,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv
-        integer, parameter :: nbin = 4
+        integer, parameter :: nbin = 2
         integer, parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
@@ -198,11 +197,7 @@ contains
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom(1:19)
         lpain(2) = 'PDEPLPR'
-        lchin(2) = disp_hho_faces(1:19)
-        lpain(3) = 'PCELLPR'
-        lchin(3) = disp_hho_cell(1:19)
-        lpain(4) = 'PCOMPOR'
-        lchin(4) = compor(1:19)
+        lchin(2) = disp(1:19)
 !
 ! ---- Output fields
 !
@@ -249,7 +244,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv, iret
-        character(len=24) :: disp_hho_depl, disp_hho_faces, disp_hho_cell, compor
+        character(len=24) :: disp_hho_depl, disp, compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -262,23 +257,17 @@ contains
 !
 ! ----- Get output fields
 !
-        call rsexch(' ', result_hho, 'DEPL', nume_store, disp_hho_depl, iret)
+        call rsexch(' ', result_hho, 'DEPL', nume_store, disp, iret)
         ASSERT(iret == 0)
-        call rsexch(' ', result_hho, 'HHO_CELL', nume_store, disp_hho_cell, iret)
-        ASSERT(iret == 0)
-        call rsexch(' ', result_hho, 'HHO_FACE', nume_store, disp_hho_faces, iret)
+        call rsexch(' ', result_hho, 'HHO_DEPL', nume_store, disp_hho_depl, iret)
         ASSERT(iret == 100)
         call rsexch(' ', result_hho, 'COMPORTEMENT', nume_store, compor, iret)
         ASSERT(iret == 0)
 !
-! ----- Copy DEPL in HHO_FACE
-!
-        call copisd('CHAMP_GD', 'G', disp_hho_depl(1:19), disp_hho_faces(1:19))
-!
 ! -----  Compute HHO field at nodes (saved in DEPL)
 !
-        call hhoPostDeplMecaOP(model_hho, compor, disp_hho_faces, disp_hho_cell, disp_hho_depl)
-        call rsnoch(result_hho, 'HHO_FACE', nume_store)
+        call hhoPostDeplMecaOP(model_hho, compor, disp, disp_hho_depl)
+        call rsnoch(result_hho, 'HHO_DEPL', nume_store)
 !
         call jedema()
 !

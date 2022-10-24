@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,10 +67,6 @@ subroutine nmcret(sderro, typcod, vali)
 !                 0 : CAS DU FONCTIONNEMENT NORMAL
 !                 1 : NOMBRE MAXI D'ITERATIONS
 !                 2 : MATRICE SINGULIERE
-!             'HHO' - HHO method - Static Condensation
-!                -1 : Fail
-!                 0 : Success
-!                 1 : Fail
 ! IN  VALI   : VALEUR DU CODE RETOUR
 !
 !

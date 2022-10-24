@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,12 +61,12 @@ times = DEFI_LIST_INST(
     ECHEC=_F(ACTION='DECOUPE', EVENEMENT='ERREUR', SUBD_NIVEAU=4)
 )
 
-AY = [7.00378719411895]
-AX = [-6.248657137717466]
-AT = [-1.2559017584457226]
-CY = [1.4820276983613372]
-CX = [-0.21448200457279487]
-CT = [0.8135674860916374]
+AY = [7.001555707982233]
+AX = [-6.2459943155635225]
+AT = [-1.255316124868067]
+CY = [1.481056274431605]
+CX = [-0.21399022974405887]
+CT = [0.8132769697153331]
 
 model = AFFE_MODELE(
     AFFE=_F(MODELISATION='D_PLAN_HHO', FORMULATION='QUADRATIQUE', PHENOMENE='MECANIQUE', TOUT='OUI'),
@@ -111,7 +111,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=AY,
                   VALE_REFE=7.00031,
@@ -123,7 +123,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=AX,
                   VALE_REFE=-6.23907,
@@ -143,7 +143,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=CY,
                   CRITERE='RELATIF',),
@@ -152,7 +152,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=CX,
                   CRITERE='RELATIF',),

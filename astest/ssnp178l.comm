@@ -22,13 +22,13 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 
 
 mesh0 = LIRE_MAILLAGE(FORMAT='MED')
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0,
-                   MODI_HHO=_F(TOUT='OUI',PREF_NOEUD='NH'),)
+                     MODI_HHO=_F(TOUT='OUI', PREF_NOEUD='NH'),)
 
 E = 70
 mater = DEFI_MATERIAU(
@@ -54,16 +54,17 @@ times = DEFI_LIST_INST(
     ECHEC=_F(ACTION='DECOUPE', EVENEMENT='ERREUR', SUBD_NIVEAU=4)
 )
 
-AY = [2.1450508813497757]
-AX = [-1.6246491138438892]
-AT = [-0.5837680755823438]
-CY = [0.35457721414065063]
-CX = [-0.030370186548103983]
-CT = [0.4144644703886204]
+AY = [2.1414234994454913]
+AX = [-1.6217044475881104]
+AT = [-0.5904095707672938]
+CY = [0.3535826785266773]
+CX = [-0.03018432476813562]
+CT = [0.41451855230302037]
 
 
 model = AFFE_MODELE(
-    AFFE=_F(MODELISATION='D_PLAN_HHO', FORMULATION='QUADRATIQUE', PHENOMENE='MECANIQUE', TOUT='OUI'),
+    AFFE=_F(MODELISATION='D_PLAN_HHO', FORMULATION='QUADRATIQUE',
+            PHENOMENE='MECANIQUE', TOUT='OUI'),
     MAILLAGE=mesh
 )
 
@@ -89,7 +90,7 @@ resnonl = STAT_NON_LINE(
     MODELE=model,
     NEWTON=_F(MATRICE='TANGENTE', PREDICTION='TANGENTE', REAC_ITER=1,),
     SOLVEUR=_F(METHODE='MUMPS'),
-    HHO=_F(STABILISATION='MANUEL', COEF_STAB=10*E,OPTIMISATION='TEMPS',),
+    HHO=_F(STABILISATION='MANUEL', COEF_STAB=100*E, OPTIMISATION='TEMPS',),
     INFO=1,
 )
 
@@ -97,25 +98,24 @@ resnonl = CALC_CHAMP(
     reuse=resnonl,
     CHAM_MATER=fieldmat,
     CRITERES=('SIEQ_NOEU',),
-    DEFORMATION = ('EPSI_ELGA',
-                   'EPSP_ELGA'
-                   ),
+    DEFORMATION=('EPSI_ELGA',
+                 ),
     MODELE=model,
     RESULTAT=resnonl,
 )
-rescoor=CALC_CHAM_ELEM(MODELE=model,
-                       OPTION='COOR_ELGA',)
+rescoor = CALC_CHAM_ELEM(MODELE=model,
+                         OPTION='COOR_ELGA',)
 
 IMPR_RESU(UNITE=80,
-            RESU=_F(RESULTAT=resnonl,
-                    IMPR_NOM_VARI='OUI',),
-            FORMAT='MED',)
+          RESU=_F(RESULTAT=resnonl,
+                  IMPR_NOM_VARI='OUI',),
+          FORMAT='MED',)
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=AY,
                   VALE_REFE=2.13651,
@@ -127,7 +127,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=AX,
                   VALE_REFE=-1.61818,
@@ -147,7 +147,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=CY,
                   CRITERE='RELATIF',),
@@ -156,7 +156,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=CX,
                   CRITERE='RELATIF',),
@@ -171,15 +171,6 @@ TEST_RESU(RESU=_F(INST=1.0,
                   CRITERE='RELATIF',),
           )
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_MA=('M200'),
-                  POINT=1,
-                  RESULTAT=resnonl,
-                  NOM_CHAM='EPSP_ELGA',
-                  NOM_CMP='EPXY',
-                  VALE_CALC=0.017857207796499505,
-                  CRITERE='RELATIF',),
-          )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_MA=('M200'),
@@ -187,18 +178,18 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.020889635604888546,
+                  VALE_CALC=0.02888659554547817,
                   CRITERE='RELATIF',),
           )
 
 
 TEST_RESU(CHAM_ELEM=_F(
-                       POINT=1,
-                       NOM_CMP='X',
-                       GROUP_MA='M200',
-                       CHAM_GD=rescoor,
-                   VALE_CALC=26.72527135947069,
-                       ),
-          )
+    POINT=1,
+    NOM_CMP='X',
+    GROUP_MA='M200',
+    CHAM_GD=rescoor,
+    VALE_CALC=26.72527135947069,
+),
+)
 
 FIN()

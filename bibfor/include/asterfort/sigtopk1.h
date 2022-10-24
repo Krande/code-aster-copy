@@ -16,9 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine te0449(nomopt, nomte)
-    implicit none
-#include "asterfort/utmess.h"
-    character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
-end subroutine
+interface
+    subroutine sigtopk1(ndim, Cauchy, F, PK1)
+        integer, intent(in)                         :: ndim
+        real(kind=8), dimension(6), intent(in)      :: Cauchy
+        real(kind=8), dimension(3,3), intent(in)    :: F
+        real(kind=8), dimension(3,3), intent(out)   :: PK1
+    end subroutine sigtopk1
+end interface

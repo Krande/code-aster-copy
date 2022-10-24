@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,12 +63,12 @@ times = DEFI_LIST_INST(
 )
 
 
-AY = [6.965491179670526]
-AX = [-6.204092475301669]
-AT = [-0.14917307762739507]
-CY = [1.4583973535994204]
-CX = [-0.20123209142336435]
-CT = [0.81552683426479]
+AY = [6.913153600358651]
+AX = [-6.155250844299715]
+AT = [-0.15404302483019633]
+CY = [1.4232706704713918]
+CX = [-0.18365571965172625]
+CT = [0.815822080606959]
 
 model = AFFE_MODELE(
     AFFE=_F(MODELISATION=('3D_HHO', ), FORMULATION='QUADRATIQUE', PHENOMENE='MECANIQUE', TOUT='OUI'),
@@ -118,24 +118,24 @@ TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=AY,
                   VALE_REFE=7.00031,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  PRECISION=2.E-2,),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('A', ),
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=AX,
                   VALE_REFE=-6.23907,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  PRECISION=2.E-2,),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
@@ -150,7 +150,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DY',
                   VALE_CALC=CY,
                   CRITERE='RELATIF',),
@@ -159,7 +159,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   GROUP_NO=('C', ),
                   RESULTAT=resnonl,
-                  NOM_CHAM='DEPL',
+                  NOM_CHAM="HHO_DEPL",
                   NOM_CMP='DX',
                   VALE_CALC=CX,
                   CRITERE='RELATIF',),

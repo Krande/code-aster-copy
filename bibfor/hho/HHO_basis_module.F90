@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,9 @@ private
 !
     type HHO_basis_cell
         type(HHO_monomials) :: hhoMono
+        real(kind=8) :: scaling_factor(3) = 0.d0
+        real(kind=8) :: rotmat(3,3) = 0.d0
+
 ! ----- member function
         contains
         procedure, pass :: initialize => hhoBasisCellInit
@@ -53,10 +56,13 @@ private
         procedure, pass :: BSEval => hhoBSCellEval
         procedure, pass :: BSEvalGrad => hhoBSCellGradEv
         procedure, pass :: BVEvalSymGrad => hhoBVCellSymGdEv
+        procedure, pass, private :: map_pt => map_pt_cell
     end type
 !
     type HHO_basis_face
         type(HHO_monomials) :: hhoMono
+        real(kind=8) :: scaling_factor(2) = 0.d0
+        real(kind=8) :: rotmat(2, 3) = 0.d0
 ! ----- member function
         contains
         procedure, pass :: initialize => hhoBasisFaceInit
@@ -65,14 +71,16 @@ private
         procedure, pass :: BSRange => hhoBSFaceRange
         procedure, pass :: BVRange => hhoBVFaceRange
         procedure, pass :: BSEval => hhoBSFaceEval
+        procedure, pass, private :: map_pt => map_pt_face
     end type
 ! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
     public  :: HHO_basis_cell, HHO_basis_face
-    private :: map_face, hhoBasisCellInit, hhoBasisFaceInit, hhoBSCellSize, hhoBSFaceSize
+    private :: hhoBasisCellInit, hhoBasisFaceInit, hhoBSCellSize, hhoBSFaceSize
     private :: hhoBVCellSize, hhoBVFaceSize, hhoBMCellSize
     private :: hhoBSCellRange, hhoBVCellRange, hhoBMCellRange, hhoBSFaceRange, hhoBVFaceRange
     private :: hhoBSCellEval, hhoBSFaceEval, hhoBSCellGradEv, hhoBVCellSymGdEv, check_order
+    private :: map_pt_cell, map_pt_face
 !
 contains
 !
@@ -134,7 +142,16 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
+        integer :: idim
+!
         call this%hhoMono%initialize(hhoCell%ndim, MAX_DEGREE_CELL)
+!
+        this%scaling_factor = 2.d0 / hhoCell%length_box
+        this%rotmat = transpose(hhoCell%axes)
+!
+        do idim = 1, hhoCell%ndim
+            this%rotmat(idim, :) = this%rotmat(idim, :) * this%scaling_factor(idim)
+        end do
 !
     end subroutine
 !
@@ -158,7 +175,16 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
+        integer :: idim
+!
         call this%hhoMono%initialize(hhoFace%ndim, MAX_DEGREE_FACE)
+!
+        this%scaling_factor = 2.d0 / hhoFace%length_box
+        this%rotmat = transpose(hhoFace%axes)
+!
+        do idim = 1, hhoFace%ndim
+            this%rotmat(idim, :) = this%rotmat(idim, :) * this%scaling_factor(idim)
+        end do
 !
     end subroutine
 !
@@ -544,17 +570,15 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) :: peval
-        integer :: imono, ifrom, ito, size_basis, ind
+        integer :: imono, ifrom, ito
         integer, dimension(3) :: power
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
 !
-        size_basis = this%BSSize(min_order, max_order)
         call this%BSRange(min_order, max_order, ifrom, ito)
 ! ----  scaled point
-        peval = 0.d0
-        peval = (point - hhoCell%barycenter) / (0.5d0 * hhoCell%length_box)
+        peval = this%map_pt(hhoCell%barycenter, point)
 !
 ! ----- Eval monomials
         call this%hhoMono%eval(peval)
@@ -562,23 +586,20 @@ contains
         basisScalEval = 0.d0
 !
 ! ----- Loop on the monomial
-        ind = 0
+!
         if(hhoCell%ndim == 1) then
             do imono = ifrom, ito
-                ind = ind + 1
                 power(1) = this%hhoMono%monomials(1, imono)
                 basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))
             end do
         else if(hhoCell%ndim == 2) then
             do imono = ifrom, ito
-                ind = ind + 1
                 power(1:2) = this%hhoMono%monomials(1:2, imono)
                 basisScalEval(imono) = this%hhoMono%monoEval(1, power(1)) * &
                                        this%hhoMono%monoEval(2, power(2))
             end do
         else if(hhoCell%ndim == 3) then
             do imono = ifrom, ito
-                ind = ind + 1
                 power(1:3) = this%hhoMono%monomials(1:3, imono)
                 basisScalEval(imono) = this%hhoMono%monoEval(1, power(1)) * &
                                        this%hhoMono%monoEval(2, power(2)) * &
@@ -620,28 +641,26 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_basis, ifrom, ito
-        real(kind=8), dimension(3) :: peval, func, dfunc
+        integer :: ifrom, ito
+        real(kind=8), dimension(3) :: peval, func, dfunc, grad
         integer :: ind, imono
         integer, dimension(3) :: power
-        real(kind=8) :: ihx, ihy, ihz
+        real(kind=8) :: invrotmat(3,3)
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
 !
-        size_basis = this%BSSize(min_order, max_order)
         call this%BSRange(min_order, max_order, ifrom, ito)
 !
-        ihx = 2.d0 / hhoCell%length_box(1)
-        ihy = 2.d0 / hhoCell%length_box(2)
-        ihz = 2.d0 / hhoCell%length_box(3)
+        invrotmat = transpose(this%rotmat)
 ! ----  scaled point
-        peval = (point - hhoCell%barycenter) / (0.5d0 * hhoCell%length_box)
+        peval = this%map_pt(hhoCell%barycenter, point)
 !
 ! ----- Eval monomials
         call this%hhoMono%eval(peval)
 !
         BSGradEval = 0.d0
+        grad = 0.d0
 !
 ! ----- Loop on the monomial
         ind = 0
@@ -655,7 +674,8 @@ contains
                 if(power(1) == 0) then
                     dfunc(1) = 0.d0
                 else
-                    dfunc(1) = power(1) * this%hhoMono%monoEval(1, power(1)-1) * ihx
+                    dfunc(1) = power(1) * this%hhoMono%monoEval(1, power(1)-1) * &
+                        this%scaling_factor(1)
                 end if
 !
                 BSGradEval(1,ind) = dfunc(1)
@@ -671,16 +691,17 @@ contains
                 if(power(1) == 0) then
                     dfunc(1) = 0.d0
                 else
-                    dfunc(1) = power(1) * this%hhoMono%monoEval(1, power(1)-1) * ihx
+                    dfunc(1) = power(1) * this%hhoMono%monoEval(1, power(1)-1)
                 end if
                 if(power(2) == 0) then
                     dfunc(2) = 0.d0
                 else
-                    dfunc(2) = power(2) * this%hhoMono%monoEval(2, power(2)-1) * ihy
+                    dfunc(2) = power(2) * this%hhoMono%monoEval(2, power(2)-1)
                 end if
 !
-                BSGradEval(1, ind) = dfunc(1) * func(2)
-                BSGradEval(2, ind) = func(1)  * dfunc(2)
+                grad(1) = dfunc(1) * func(2)
+                grad(2) = func(1)  * dfunc(2)
+                BSGradEval(1:2, ind) = matmul(invrotmat(1:2,1:2), grad(1:2))
             end do
         else if(hhoCell%ndim == 3) then
             do imono = ifrom, ito
@@ -694,22 +715,23 @@ contains
                 if(power(1) == 0) then
                     dfunc(1) = 0.d0
                 else
-                    dfunc(1) = power(1) * this%hhoMono%monoEval(1, power(1)-1) * ihx
+                    dfunc(1) = power(1) * this%hhoMono%monoEval(1, power(1)-1)
                 end if
                 if(power(2) == 0) then
                     dfunc(2) = 0.d0
                 else
-                    dfunc(2) = power(2) * this%hhoMono%monoEval(2, power(2)-1) * ihy
+                    dfunc(2) = power(2) * this%hhoMono%monoEval(2, power(2)-1)
                 end if
                 if(power(3) == 0) then
                     dfunc(3) = 0.d0
                 else
-                    dfunc(3) = power(3) * this%hhoMono%monoEval(3, power(3)-1) * ihz
+                    dfunc(3) = power(3) * this%hhoMono%monoEval(3, power(3)-1)
                 end if
 !
-                BSGradEval(1, ind) = dfunc(1) * func(2)  * func(3)
-                BSGradEval(2, ind) = func(1)  * dfunc(2) * func(3)
-                BSGradEval(3, ind) = func(1)  * func(2)  * dfunc(3)
+                grad(1) = dfunc(1) * func(2)  * func(3)
+                grad(2) = func(1)  * dfunc(2) * func(3)
+                grad(3) = func(1)  * func(2)  * dfunc(3)
+                BSGradEval(1:3, ind) = matmul(invrotmat, grad)
             end do
         else
             ASSERT(ASTER_FALSE)
@@ -748,14 +770,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_basis, size_basis_scal, ind, imono
+        integer :: size_basis_scal, ind, imono
         real(kind=8), parameter :: rac2sur2 = sqrt(2.d0) / 2.d0
         real(kind=8), dimension(3,MSIZE_CELL_SCAL) :: BSGradEval
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
-!
-        size_basis = this%BVSize(min_order, max_order)
 !
         size_basis_scal = this%BSSize(min_order, max_order)
 !
@@ -840,51 +860,39 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(3) :: peval
-        integer :: ind, imono, ifrom, ito, size_mono, i_basis
+        real(kind=8), dimension(2) :: peval
+        integer :: imono, ifrom, ito
         integer, dimension(2) :: power
-        real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisMonoEval
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
 !
-        size_mono = this%BSSize(0, max_order)
-!
 ! ----  scaled point
-        peval = map_face(hhoFace, point)
+        peval = this%map_pt(hhoFace%barycenter, point)
 !
 ! ----- Eval monomials
-        call this%hhoMono%eval(peval)
+        call this%hhoMono%eval([peval(1), peval(2), 0.d0])
 !
-        basisMonoEval = 0.d0
+        basisScalEval = 0.d0
+        call this%BSRange(min_order, max_order, ifrom, ito)
 !
 ! ----- Loop on the monomial
         if(hhoFace%ndim == 0) then
-            basisMonoEval(1) = 1.d0
+            basisScalEval(1) = 1.d0
         else if(hhoFace%ndim == 1) then
-            do imono = 1, size_mono
+            do imono = ifrom, ito
                 power(1) = this%hhoMono%monomials(1, imono)
-                basisMonoEval(imono) = this%hhoMono%monoEval(1, power(1))
+                basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))
             end do
         else if(hhoFace%ndim == 2) then
-            do imono = 1, size_mono
+            do imono = ifrom, ito
                 power(1:2) = this%hhoMono%monomials(1:2, imono)
-                basisMonoEval(imono) = this%hhoMono%monoEval(1, power(1)) * &
+                basisScalEval(imono) = this%hhoMono%monoEval(1, power(1)) * &
                                    & this%hhoMono%monoEval(2, power(2))
             end do
         else
             ASSERT(ASTER_FALSE)
         end if
-!
-        basisScalEval = 0.d0
-        call this%BSRange(min_order, max_order, ifrom, ito)
-!
-! ----- Loop on the basis function
-        ind = 0
-        do i_basis = ifrom, ito
-            ind = ind + 1
-            basisScalEval(ind) = ddot(i_basis, hhoFace%coeff_ONB(:, i_basis), 1, basisMonoEval, 1)
-        end do
 !
     end subroutine
 !
@@ -892,12 +900,44 @@ contains
 !
 !===================================================================================================
 !
-    function map_face(hhoFace, point) result(proj)
+    function map_pt_face(this, barycenter, point) result(proj)
 !
     implicit none
 !
-        type(HHO_Face), intent(in)                 :: hhoFace
-        real(kind=8), dimension(3), intent(in)     :: point
+        class(HHO_basis_face), intent(in)          :: this
+        real(kind=8), dimension(3), intent(in)     :: point, barycenter
+        real(kind=8), dimension(2)                 :: proj
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - basis functions
+!
+!   map a point in global coordinates to local coordinates
+!   In hhoFace              : the current HHO Face
+!   In point                : point to project
+!   Out proj                : projection
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8), dimension(3) :: ep
+!
+        ep(1:3) = point(1:3) - barycenter(1:3)
+!
+        proj = matmul(this%rotmat, ep)
+        ! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorf0: ", proj
+        ! if(proj(2) < -1.1d0 .or. proj(2) > 1.1d0) print*, "errorf1: ", proj
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function map_pt_cell(this, barycenter, point) result(proj)
+!
+    implicit none
+!
+        class(HHO_basis_cell), intent(in)          :: this
+        real(kind=8), dimension(3), intent(in)     :: point, barycenter
         real(kind=8), dimension(3)                 :: proj
 !
 ! --------------------------------------------------------------------------------------------------
@@ -911,28 +951,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) :: ep
-        real(kind=8) :: eta, xi, h
 !
-        ep(1:3) = point(1:3) - hhoFace%barycenter(1:3)
-        proj = 0.d0
+        ep(1:3) = point(1:3) - barycenter(1:3)
 !
-        if(hhoFace%ndim == 2) then
-!
-            eta = dot_product(ep, hhoFace%local_basis(1:3,1))
-            xi  = dot_product(ep, hhoFace%local_basis(1:3,2))
-!
-            proj(1:3) =  [ eta, xi, 0.d0 ]
-        elseif(hhoFace%ndim == 1) then
-!
-            h = hhoFace%diameter
-            eta = dot_product(ep, hhoFace%local_basis(1:3,1))
-!
-            proj(1:3) = [ 2.d0 * eta / h, 0.d0, 0.d0 ]
-        elseif(hhoFace%ndim == 0) then
-            proj = 1.d0
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+        proj = matmul(this%rotmat, ep)
+        ! if(proj(1) < -1.1d0 .or. proj(1) > 1.1d0) print*, "errorc0: ", proj
+        ! if(proj(2) < -1.1d0 .or. proj(2) > 1.1d0) print*, "errorc1: ", proj
+        ! if(proj(3) < -1.1d0 .or. proj(3) > 1.1d0) print*, "errorc2: ", proj
 !
     end function
 !

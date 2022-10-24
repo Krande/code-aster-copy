@@ -22,12 +22,11 @@ subroutine nmfcor(model          , nume_dof   , ds_material   , cara_elem  , ds_
                   ds_constitutive, list_load  , list_func_acti, ds_algopara, nume_inst,&
                   iter_newt      , ds_measure , sddisc        , sddyna     , sdnume   ,&
                   sderro         , ds_contact , hval_incr     , hval_algo  , hhoField ,&
-                  hval_meelem    , hval_veelem, hval_veasse   , hval_measse, matass   ,&
+                  hval_veelem, hval_veasse   , hval_measse, matass   ,&
                   lerrit)
 !
 use NonLin_Datastructure_type
 use HHO_type
-use HHO_comb_module, only : hhoPrepMatrix
 use NonLinear_module, only : getOption, getMatrType, isMatrUpdate,&
                              isInteVectCompute
 !
@@ -64,7 +63,7 @@ type(NL_DS_Material), intent(in) :: ds_material
 type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 character(len=24) :: sderro
 type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: hval_veelem(*), hval_meelem(*)
+character(len=19) :: hval_veelem(*)
 character(len=19) :: hval_measse(*), hval_veasse(*)
 character(len=19) :: hval_algo(*), hval_incr(*)
 type(HHO_Field), intent(in) :: hhoField
@@ -111,9 +110,9 @@ aster_logical :: lerrit
     integer :: ifm, niv
     character(len=24) :: mate, mateco, varc_refe
     aster_logical :: l_comp_fint, l_comp_rigi
-    character(len=19) :: disp_curr, vite_curr, acce_curr, vect_lagr, rigid
+    character(len=19) :: disp_curr, vite_curr, acce_curr, vect_lagr
     character(len=16) :: corrMatrType, option_nonlin
-    aster_logical :: l_cont_disc, l_unil, l_comp_cont, l_hho
+    aster_logical :: l_cont_disc, l_unil, l_comp_cont
     aster_logical :: l_disp, l_vite, l_acce, l_dyna, l_update_matr
     integer :: ldccvg, reac_iter
     integer :: condcvg
@@ -138,7 +137,6 @@ aster_logical :: lerrit
     l_unil      = isfonc(list_func_acti,'LIAISON_UNILATER')
     l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
     l_comp_cont = isfonc(list_func_acti,'ELT_CONTACT')
-    l_hho       = isfonc(list_func_acti,'HHO')
 !
 ! - Get hat-variables
 !
@@ -215,19 +213,6 @@ aster_logical :: lerrit
                                 hhoField_  = hhoField,&
                                 sddyna_    = sddyna)
         endif
-!
-        if (l_hho) then
-            call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigid)
-            call hhoPrepMatrix(model      , ds_material, list_load,&
-                               ds_system  , ds_measure ,&
-                               hval_meelem, hhoField   ,&
-                               ASTER_TRUE , ASTER_FALSE,&
-                               rigid      , condcvg)
-            if (ldccvg .ne. 1) then
-                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume,&
-                                        ds_material, ds_constitutive, ds_system)
-            endif
-        end if
     endif
 !
 ! - Get type of unknowns
@@ -276,7 +261,6 @@ aster_logical :: lerrit
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !
     call nmcret(sderro, 'LDC', ldccvg)
-    call nmcret(sderro, 'HHO', condcvg)
 !
 ! --- EVENEMENT ERREUR ACTIVE ?
 !

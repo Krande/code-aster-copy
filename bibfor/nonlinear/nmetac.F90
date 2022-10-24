@@ -136,8 +136,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 ! - HHO
 !
     if (l_hho) then
-        call SetIOField(ds_inout, 'HHO_CELL', l_acti_ = ASTER_TRUE)
-        call SetIOField(ds_inout, 'HHO_FACE', l_acti_ = ASTER_TRUE)
+        call SetIOField(ds_inout, 'HHO_DEPL', l_acti_ = ASTER_TRUE)
     endif
 !
 end subroutine

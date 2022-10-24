@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer, parameter :: nb_field_defi = 21
+    integer, parameter :: nb_field_defi = 20
     integer :: i_field
 ! - Name of field (type) in results datastructure (add one -> don't forget to modify rscrsd.F90)
     character(len=16), parameter :: field_type(nb_field_defi) = &
@@ -54,7 +54,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               'DEPL_ABSOLU     ','VITE_ABSOLU     ','ACCE_ABSOLU     ',&
               'FORC_NODA       ','STRX_ELGA       ',&
               'FORC_AMOR       ','FORC_LIAI       ','EPSI_ELGA       ',&
-              'CONT_ELEM       ','HHO_CELL        ','HHO_FACE        '/)
+              'CONT_ELEM       ','HHO_DEPL        '/)
 ! - Type of GRANDEUR for field
     character(len=8), parameter :: gran_name(nb_field_defi) = &
             (/'DEPL_R  ','SIEF_R  ','VARI_R  ',&
@@ -64,7 +64,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               'DEPL_R  ','DEPL_R  ','DEPL_R  ',&
               'DEPL_R  ','STRX_R  ',&
               'DEPL_R  ','DEPL_R  ','EPSI_R  ',&
-              'NEUT_R  ','CELL_R  ','DEPL_R  '/)
+              'NEUT_R  ','DEPL_R  '/)
 ! - Keyword for initial state (ETAT_INIT)
     character(len=8), parameter :: init_keyw(nb_field_defi) = &
             (/'DEPL    ','SIGM    ','VARI    ',&
@@ -74,7 +74,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               '        ','        ','        ',&
               '        ','STRX    ',&
               '        ','        ','        ',&
-              '        ','        ','        '/)
+              '        ','        '/)
 ! - Spatial discretization of field
     character(len=4), parameter :: disc_type(nb_field_defi) = &
             (/'NOEU','ELGA','ELGA',&
@@ -84,7 +84,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               'NOEU','NOEU','NOEU',&
               'NOEU','ELGA',&
               'NOEU','NOEU','ELGA',&
-              'ELEM','ELEM','NOEU'/)
+              'ELEM','NOEU'/)
 ! - TRUE if field can been read for initial state (ETAT_INIT)
     aster_logical, parameter :: l_read_init(nb_field_defi) = &
                                                 (/.true._1,.true._1 ,.true._1 ,&
@@ -94,7 +94,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
                                                  .true._1 ,.true._1 ,.true._1 ,&
                                                  .false._1,.true._1 ,&
                                                  .true._1 ,.true._1 ,.false._1,&
-                                                 .false._1,.false._1,.false._1/)
+                                                 .false._1,.false._1/)
 ! - TRUE if field can been store (ARCHIVAGE)
     aster_logical, parameter :: l_store  (nb_field_defi) = &
                                                (/.true._1 ,.true._1,.true._1 ,&
@@ -104,7 +104,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
                                                  .true._1 ,.true._1,.true._1 ,&
                                                  .false._1,.true._1,&
                                                  .true._1 ,.true._1,.false._1,&
-                                                 .true._1,.true._1, .true._1/)
+                                                 .true._1,.true._1/)
  ! - TRUE if field can been followed (OBSERVATION/SUIVI_DDL)
     aster_logical, parameter :: l_obsv  (nb_field_defi) = &
                                                (/.true._1 ,.true._1 ,.true._1 ,&
@@ -114,7 +114,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
                                                  .true._1 ,.true._1 ,.true._1 ,&
                                                  .true._1 ,.true._1 ,&
                                                  .false._1,.false._1,.true._1,&
-                                                 .true._1,.false._1, .false._1/)
+                                                 .true._1,.false._1/)
 ! - Keyword for OBSERVATION
     character(len=16), parameter :: obsv_keyw(nb_field_defi) = &
             (/'DEPL            ','SIEF_ELGA       ','VARI_ELGA       ',&
@@ -124,7 +124,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               'DEPL_ABSOLU     ','VITE_ABSOLU     ','ACCE_ABSOLU     ',&
               'FORC_NODA       ','STRX_ELGA       ',&
               '                ','                ','EPSI_ELGA       ',&
-              'CONT_ELEM       ','                ','                '/)
+              'CONT_ELEM       ','                '/)
 ! - Variable (JEVEUX name) for field (#H# for hat variable)
     character(len=24), parameter :: algo_name(nb_field_defi) = &
             (/'#H#VALINC#DEPMOI','#H#VALINC#SIGMOI','#H#VALINC#VARMOI',&
@@ -134,7 +134,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               'XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX',&
               '&&OP00XX.CNFINT ','#H#VALINC#STRMOI',&
               '#H#VALINC#FAMMOI','#H#VALINC#FLIMOI','&&NMETCR.EPSI   ',&
-              'XXXXXXXXXXXXXXXX','&&HHOMECA.P.CELL','&&HHOMECA.P.FACE'/)
+              'XXXXXXXXXXXXXXXX','&&HHOMECA.DEPLIO'/)
 ! - Variable (JEVEUX name) for init field
     character(len=24), parameter :: init_name(nb_field_defi) = &
             (/'&&CNPART.ZERO   ','&&NMETCR.SIGMO0 ','&&NMETCR.VARMO0 ',&
@@ -144,7 +144,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
               '&&CNPART.ZERO   ','&&CNPART.ZERO   ','&&CNPART.ZERO   ',&
               '&&CNPART.ZERO   ','&&NMETCR.STRMO0 ',&
               '&&CNPART.ZERO   ','&&CNPART.ZERO   ','&&NMETCR.EPSI   ',&
-              'XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX'/)
+              'XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !

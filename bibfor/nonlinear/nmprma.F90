@@ -28,7 +28,6 @@ subroutine nmprma(mesh       , modelz     , ds_material   , carele    , ds_const
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
 use HHO_type
-use HHO_comb_module, only : hhoPrepMatrix
 use NonLinear_module, only : getOption, getMatrType, isMatrUpdate,&
                              isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute,&
                              factorSystem
@@ -129,7 +128,7 @@ integer :: faccvg, ldccvg, condcvg
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_update_matr, l_renumber
-    aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi, l_hho, lmhpc
+    aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi, lmhpc
     aster_logical :: l_neum_undead, l_diri_undead, l_rom, l_comp_cont, l_comp_mass
     character(len=16) :: predMatrType, option_nonlin
     character(len=19) :: matr_elem, rigid
@@ -169,7 +168,6 @@ integer :: faccvg, ldccvg, condcvg
     l_neum_undead = isfonc(list_func_acti, 'NEUM_UNDEAD')
     l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
     l_rom         = isfonc(list_func_acti, 'ROM')
-    l_hho         = isfonc(list_func_acti, 'HHO')
     l_comp_cont   = isfonc(list_func_acti, 'ELT_CONTACT')
 !
 ! - Renumbering equations ?
@@ -263,16 +261,6 @@ integer :: faccvg, ldccvg, condcvg
                     ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
         ASSERT(l_update_matr)
-    endif
-!
-! - For HHO: assembly rigidity and condensation
-!
-    if (l_hho) then
-        call hhoPrepMatrix(modelz    , ds_material, lischa,&
-                           ds_system , ds_measure ,&
-                           meelem    , hhoField   ,&
-                           ASTER_TRUE, ASTER_TRUE ,&
-                           rigid     , condcvg)
     endif
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE

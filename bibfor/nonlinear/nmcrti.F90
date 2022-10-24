@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,8 +113,6 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
         call ActivateDevice(ds_measure, 'LineSearch')
     endif
     if (l_hho) then
-        call ActivateDevice(ds_measure, 'HHO_Cond')
-        call ActivateDevice(ds_measure, 'HHO_Comb')
         call ActivateDevice(ds_measure, 'HHO_Prep')
     end if
 !

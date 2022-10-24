@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,10 +33,10 @@ implicit none
 !
 private
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
-#include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/ortrep.h"
@@ -52,8 +52,8 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoSmallStrainLCMeca
-    private  :: hhoComputeCgphi, hhoComputeRhs, hhoComputeLhs, tranfoMatToSym, tranfoSymToMat
+    public   :: hhoSmallStrainLCMeca, hhoComputeRhsSmall, tranfoMatToSym
+    private  :: hhoComputeCgphi, hhoComputeLhsSmall, tranfoSymToMat
 !
 contains
 !
@@ -130,13 +130,13 @@ contains
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8) :: E_prev_coeff(MSIZE_CELL_MAT), E_incr_coeff(MSIZE_CELL_MAT)
         real(kind=8) :: dsidep(6,6), E_prev(6), E_incr(6), Cauchy_curr(6), Cauchy_prev(6)
-        real(kind=8) :: coorpg(3), weight, repere(7)
+        real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT), bT(MSIZE_CELL_MAT)
         real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
         integer:: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
         integer :: cod(27)
-        aster_logical :: l_tang
+        aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -151,14 +151,9 @@ contains
         E_prev_coeff = 0.d0
         E_incr_coeff = 0.d0
         Cauchy_curr = 0.d0
-        l_tang = ASTER_TRUE
-        repere = 0.d0
+        l_lhs = L_MATR(option)
+        l_rhs = L_VECT(option)
         nb_sig = nbsigm()
-!
-        if (option(1:10).eq.'RIGI_MECA ') then
-            l_tang = ASTER_FALSE
-            call ortrep(hhoCell%ndim, hhoCell%barycenter, repere)
-        end if
 !
 ! ----- Initialisation of behaviour datastructure
 !
@@ -208,42 +203,40 @@ contains
                 goto 999
             endif
 !
-! -------- Use Hooke matrix for the elastic modulus
-!
-            if(.not.l_tang) then
-                call dmatmc(fami, imate, time_curr, '+', ipg, 1, repere, coorpg(1:3), nb_sig, &
-                            dsidep(1:nb_sig, 1:nb_sig))
-            end if
 ! --------- For new prediction and nmisot.F90
-            if (option.eq.'RIGI_MECA_TANG') then
+            if (L_PRED(option)) then
                 Cauchy_curr = 0.d0
             endif
 !
-            if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+            if (L_SIGM(option)) then
 ! -------- tranform Cauchy_curr in symmetric form
                 call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, sigp(1:ncomp,ipg))
             end if
 !
-            call hhoComputeRhs(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
+            if(l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
 !
-            call hhoComputeLhs(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+            if(l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp,AT)
         end do
 !
-! ----- Copy symetric part of AT
-        call hhoCopySymPartMat('U', AT, gbs_sym)
-
-!
 ! ----- compute rhs += Gradrec**T * bT
-        call dgemv('T', gbs_sym, total_dofs, -1.d0, gradrec, MSIZE_CELL_MAT, bT, 1, 1.d0, rhs, 1)
+        if(l_rhs) then
+            call dgemv('T', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
+                bT, 1, 1.d0, rhs, 1)
+        end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
+        if(l_lhs) then
+!
+! ----- Copy symetric part of AT
+            call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-        call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
-                  & gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
+            call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
+                   gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP
-        call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                  & TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
+            call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, 1.d0, gradrec, MSIZE_CELL_MAT, &
+                   TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
+        end if
 !
         ! print*, "AT", hhoNorm2Mat(AT(1:gbs_sym,1:gbs_sym))
         ! print*, "bT", norm2(bT)
@@ -262,7 +255,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeRhs(hhoCell, stress, weight, BSCEval, gbs_cmp, bT)
+    subroutine hhoComputeRhsSmall(hhoCell, stress, weight, BSCEval, gbs_cmp, bT)
 !
     implicit none
 !
@@ -318,7 +311,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhs(hhoCell, module_tang, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+    subroutine hhoComputeLhsSmall(hhoCell, module_tang, weight, BSCEval, gbs_sym, gbs_cmp, AT)
 !
     implicit none
 !

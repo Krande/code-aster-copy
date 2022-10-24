@@ -18,13 +18,11 @@
 
 subroutine te0455(nomopt, nomte)
 !
+use Behaviour_module, only : behaviourOption
 use HHO_type
 use HHO_utils_module
 use HHO_size_module
 use HHO_quadrature_module
-use HHO_stabilization_module, only : hhoStabVec, hdgStabVec, hhoStabSymVec
-use HHO_gradrec_module, only : hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat, &
-                             & hhoGradRecSymMat
 use HHO_Meca_module
 use HHO_init_module, only : hhoInfoInitCell
 !
@@ -57,9 +55,9 @@ implicit none
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs
-    integer :: jmatt, icompo, ideplm, ideplp, npg
+    integer :: jmatt, icompo, npg
     integer :: codret, jcret, jgrad, jstab, icarcr
-    aster_logical :: l_largestrains, l_matrix, matsym
+    aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
     character(len=4) :: fami
     character(len=8) :: typmod(2)
     character(len=16) :: defo_comp, type_comp
@@ -75,110 +73,106 @@ implicit none
 !
 ! --- Get element parameters
 !
-    codret = 0
     fami = 'RIGI'
     call elrefe_info(fami=fami, npg=npg)
 !
-! -- Number of dofs
+! --- Number of dofs
     call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
     ASSERT(cbs <= MSIZE_CELL_VEC)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    if (nomopt == "RIGI_MECA_TANG" .or. nomopt == "RIGI_MECA" &
-                                   .or. nomopt == "FULL_MECA" &
-                                   .or. nomopt == "RAPH_MECA") then
+    if (nomopt /= "RIGI_MECA_TANG" .and. nomopt /= "RIGI_MECA" &
+                                   .and. nomopt /= "FULL_MECA" &
+                                   .and. nomopt /= "RAPH_MECA") then
+        ASSERT(ASTER_FALSE)
+    end if
 !
-! -- Initialize quadrature for the rigidity
-        call hhoQuadCellRigi%initCell(hhoCell, npg)
+! --- Initialize quadrature for the rigidity
 !
-! - Type of finite element
+    call hhoQuadCellRigi%initCell(hhoCell, npg)
 !
-        select case (hhoCell%ndim)
-            case(3)
-                typmod(1) = '3D'
-            case (2)
-                if (lteatt('AXIS','OUI')) then
-                    ASSERT(ASTER_FALSE)
-                    typmod(1) = 'AXIS'
-                else if (lteatt('C_PLAN','OUI')) then
-                    ASSERT(ASTER_FALSE)
-                    typmod(1) = 'C_PLAN'
-                else if (lteatt('D_PLAN','OUI')) then
-                    typmod(1) = 'D_PLAN'
-                else
-                    ASSERT(ASTER_FALSE)
-                endif
-            case default
+! --- Type of finite element
+!
+    select case (hhoCell%ndim)
+        case(3)
+            typmod(1) = '3D'
+        case (2)
+            if (lteatt('AXIS','OUI')) then
                 ASSERT(ASTER_FALSE)
-        end select
-        typmod(2) = 'HHO'
+                typmod(1) = 'AXIS'
+            else if (lteatt('C_PLAN','OUI')) then
+                ASSERT(ASTER_FALSE)
+                typmod(1) = 'C_PLAN'
+            else if (lteatt('D_PLAN','OUI')) then
+                typmod(1) = 'D_PLAN'
+            else
+                ASSERT(ASTER_FALSE)
+            endif
+        case default
+            ASSERT(ASTER_FALSE)
+    end select
+    typmod(2) = 'HHO'
 !
-! - Get input fields
+! --- Get input fields
 !
-        call jevech('PCOMPOR', 'L', icompo)
-        call jevech('PDEPLMR', 'L', ideplm)
-        call jevech('PDEPLPR', 'L', ideplp)
+    call jevech('PCOMPOR', 'L', icompo)
 !
 ! --- Properties of behaviour
 !
-        defo_comp = zk16(icompo-1+DEFO)
-        type_comp = zk16(icompo-1+INCRELAS)
+    defo_comp = zk16(icompo-1+DEFO)
+    type_comp = zk16(icompo-1+INCRELAS)
 !
 ! --- Large strains ?
 !
-        l_largestrains = isLargeStrain(defo_comp)
+    l_largestrains = isLargeStrain(defo_comp)
 !
-! -------- Compute Operators
+    call behaviourOption(nomopt, zk16(icompo), lMatr, lVect, lVari, lSigm, codret)
 !
-        if(hhoData%precompute()) then
-            call jevech('PCHHOGT', 'L', jgrad)
-            call jevech('PCHHOST', 'L', jstab)
+! --- Compute Operators
 !
-            call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
-                                     & gradfull, stab)
-        else
-            call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull, stab)
-        end if
+    if(hhoData%precompute()) then
+        call jevech('PCHHOGT', 'L', jgrad)
+        call jevech('PCHHOST', 'L', jstab)
 !
-! -------- Compute local contribution
-!
-        call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
-                                & fami, typmod, zk16(icompo), nomopt, &
-                                & zr(ideplm), zr(ideplp), l_largestrains, &
-                                & lhs, rhs, codret)
-!
-! --- Test integration of the behavior
-!
-        if (codret .ne. 0) then
-            call jevech('PCODRET', 'E', jcret)
-            zi(jcret) = codret
-        else
-!
-! -- Copy of rhs in PVECTUR ('OUT' to fill)
-!
-            call hhoRenumMecaVec(hhoCell, hhoData, rhs)
-            call writeVector('PVECTUR', total_dofs, rhs)
-!
-            l_matrix = .not.(nomopt == "RAPH_MECA")
-            if (l_matrix) then
-!
-! -- Copy of lhs in PMATU** ('OUT' to fill)
-!
-                call jevech('PCARCRI', 'L', icarcr)
-                call nmtstm(zr(icarcr), jmatt, matsym)
-                call hhoRenumMecaMat(hhoCell, hhoData, lhs)
-!
-                if(matsym) then
-                    call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, lhs)
-                else
-                    call writeMatrix('PMATUNS', total_dofs, total_dofs, ASTER_FALSE, lhs)
-                end if
-            end if
-        end if
-!
+        call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
+                                    gradfull, stab)
     else
-        ASSERT(ASTER_FALSE)
+        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull, stab)
+    end if
+!
+! --- Compute local contribution
+!
+    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
+                                & fami, typmod, zk16(icompo), nomopt, &
+                                & l_largestrains, lhs, rhs, codret)
+!
+! --- Save return code
+!
+    if (lSigm) then
+        call jevech('PCODRET', 'E', jcret)
+        zi(jcret) = codret
+    end if
+!
+! --- Save rhs
+!
+    if(lVect) then
+        call hhoRenumMecaVec(hhoCell, hhoData, rhs)
+        call writeVector('PVECTUR', total_dofs, rhs)
+    end if
+!
+! --- Save of lhs
+!
+    if (lMatr) then
+        call jevech('PCARCRI', 'L', icarcr)
+        call nmtstm(zr(icarcr), jmatt, matsym)
+        call hhoRenumMecaMat(hhoCell, hhoData, lhs)
+!
+        if(matsym) then
+            call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+        else
+            call writeMatrix('PMATUNS', total_dofs, total_dofs, ASTER_FALSE, lhs)
+        end if
     end if
 !
 end subroutine
