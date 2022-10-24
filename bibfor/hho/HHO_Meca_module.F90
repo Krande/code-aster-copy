@@ -348,7 +348,8 @@ contains
         integer :: imate, jmate, lgpg, iret, jtab(7), icarcr, iinstm, iinstp, icontm, ivarim
         integer :: icontp, ivarip, jv_mult_comp
         character(len=16) :: mult_comp
-        real(kind=8), dimension(MSIZE_TDOFS_VEC) :: deplm, deplp, deplincr, angl_naut(7)
+        real(kind=8), dimension(MSIZE_TDOFS_VEC) :: deplm, deplp, deplincr
+        real(kind=8) :: angl_naut(7)
 !
 ! --- Verif compor
 !

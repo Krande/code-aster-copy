@@ -139,7 +139,7 @@ class THER3DH27_HHO121(Element):
                      para_out=((SP.PDCEL_I, LC.EDCEL_I), ),
                      ),
 
-        OP.RIGI_THER(te=51,
+        OP.RIGI_THER(te=454,
                      para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                               (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                               (OP.RIGI_THER.PVARCPR, LC.ZVARCPG), ),

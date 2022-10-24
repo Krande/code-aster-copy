@@ -56,7 +56,8 @@ MOTH = AFFE_MODELE(MAILLAGE=MAIL,
                    )
 
 CHTH = AFFE_CHAR_CINE(MODELE=MOTH,
-                      THER_IMPO=_F(GROUP_NO='FAC_EXT', TEMP=2.E0)
+                      THER_IMPO=_F(GROUP_NO='FAC_EXT',
+                                   HHO_F1=2.E0, HHO_F2=0., HHO_F3=0.)
                       )
 
 #
@@ -64,9 +65,7 @@ CHTH = AFFE_CHAR_CINE(MODELE=MOTH,
 #
 
 
-LTMPS = DEFI_LIST_REEL(DEBUT=0.E0, INTERVALLE=(
-    _F(JUSQU_A=1,   NOMBRE=1),
-),)
+LTMPS = DEFI_LIST_REEL(VALE=(1.0,),)
 
 #
 # RESOLUTION ----------------------------------------------------------
@@ -82,20 +81,54 @@ TEMPE = THER_LINEAIRE(MODELE=MOTH,
 # ANALYSE DES RESULTATS -----------------------------------------------
 #
 
-TEMP_01 = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-                     NOM_CHAM='TEMP', RESULTAT=TEMPE,
-                     INST=1.0
-                     )
 
-
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='N5',
-                      NOM_CMP='HHO_C[1]',
-                      PRECISION=1.E-2,
-                      CHAM_GD=TEMP_01,
-                      VALE_CALC=2.0,
-                      VALE_REFE=2.0,
-                      REFERENCE='NON_DEFINI',),
-                   ),)
+TEST_RESU(RESU=(_F(
+                   PRECISION=1.E-2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM="TEMP",
+                   NOM_CMP='HHO_C1',
+                   TYPE_TEST="MAX",
+                   VALE_ABS="OUI",
+                   VALE_CALC=2.0,
+                   VALE_REFE=2.0,
+                   INST=1.0,
+                   REFERENCE='NON_DEFINI',),
+                _F(PRECISION=1.E-2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM="TEMP",
+                   NOM_CMP='HHO_C1',
+                   TYPE_TEST="MIN",
+                   VALE_ABS="OUI",
+                   VALE_CALC=2.0,
+                   VALE_REFE=2.0,
+                   INST=1.0,
+                   REFERENCE='NON_DEFINI',),
+                _F(
+                   PRECISION=1.E-2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM="TEMP",
+                   NOM_CMP='HHO_C4',
+                   TYPE_TEST="MAX",
+                   VALE_ABS="OUI",
+                   ORDRE_GRANDEUR=1.e-5,
+                   CRITERE="ABSOLU",
+                   VALE_CALC=0.0,
+                   VALE_REFE=0.0,
+                   INST=1.0,
+                   REFERENCE='NON_DEFINI',),
+                _F(PRECISION=1.E-2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM="TEMP",
+                   NOM_CMP='HHO_C4',
+                   TYPE_TEST="MIN",
+                   VALE_ABS="OUI",
+                   CRITERE="ABSOLU",
+                   ORDRE_GRANDEUR=1.e-5,
+                   VALE_CALC=0.0,
+                   VALE_REFE=0.0,
+                   INST=1.0,
+                   REFERENCE='NON_DEFINI',),
+),)
 
 #
 # FIN ------------------------------------------------------------------

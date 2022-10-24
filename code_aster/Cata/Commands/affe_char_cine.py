@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,7 +163,8 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
 
          THER_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
-                   AU_MOINS_UN('TEMP','TEMP_MIL','TEMP_INF','TEMP_SUP'),),
+                   AU_MOINS_UN('TEMP','TEMP_MIL','TEMP_INF','TEMP_SUP',
+                   'HHO_F1', 'HHO_F2', 'HHO_F3', 'HHO_F4', 'HHO_F5', 'HHO_F6',),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -173,6 +174,12 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
            TEMP_MIL        =SIMP(statut='f',typ='R' ),
            TEMP_SUP        =SIMP(statut='f',typ='R' ),
            TEMP_INF        =SIMP(statut='f',typ='R' ),
+           HHO_F1          =SIMP(statut='f',typ='R' ),
+           HHO_F2          =SIMP(statut='f',typ='R' ),
+           HHO_F3          =SIMP(statut='f',typ='R' ),
+           HHO_F4          =SIMP(statut='f',typ='R' ),
+           HHO_F5          =SIMP(statut='f',typ='R' ),
+           HHO_F6          =SIMP(statut='f',typ='R' ),
          ),
 
          ACOU_IMPO       =FACT(statut='f',max='**',
