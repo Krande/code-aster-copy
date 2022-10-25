@@ -1,0 +1,339 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# to be launched in a salome python console/terminal
+
+"""
+Adaptation du script tube-2d-CDAI-CDAE pour une SENT
+
+Author: Samuel Geniaut
+Last modification: 18th February 2022
+"""
+
+import math
+
+import salome
+from salome.geom import geomBuilder
+
+import SMESH
+from salome.smesh import smeshBuilder
+
+
+# ----------------------------------------------------------------------
+# parametres utilisateur pour la config TUB-CDAE ou TUB-CDAI
+# ----------------------------------------------------------------------
+
+# géométrie
+# ---------
+t = 1.   # thickness of the pipe (mm)
+rmst = 1  # ratio of the mean radius over the thickness factice
+ast = 0.1 # ratio of the length of the crack over the thickness (0<a/t<1)
+config = 'CDAI' # config ('CDAI' or 'CDAE')
+
+# maillage
+# --------
+
+# nombre d'éléments le long de la (demi-)circonference [minimum 2]
+nb_circ   = 16
+
+# choix du type de distribution radiale : uniforme ou geometrique
+type_distr_radial_seg = 'uniforme'
+# ~type_distr_radial_seg='geometrique'
+
+# nombre de couches dans le tore [minimum 2]
+# Rq : ne sert pas si distribution geométrique
+nb_layers =  8
+
+# nombre d'éléments dans l'épaisseur du tube (vers le haut)
+nb_elt_ep = 10
+
+# nombre d'élements dans la hauteur (partie réglée)
+nb_elt_L = 10
+
+# distribution suivant la hauteur
+distr = 'uniforme'
+# ~distr = 'linear'
+# ~distr = 'power' # c'est la plus smooth
+
+# type of elements ('quadratic' or 'linear')
+elt_type = 'quadratic'
+#elt_type = 'linear'
+
+# export in a MED file?
+export = True
+
+if export:
+   file_name = 'forma05d_rayonnant.mmed'
+# ----------------------------------------------------------------------
+
+rm = rmst * t
+ri = rm - t/2
+re = rm + t/2
+
+a = ast * t
+if config =='CDAE' : xa = re-a
+if config =='CDAI' : xa = ri+a
+
+
+# total length of the pipe
+L = 1.
+
+# lenght of the zone libre
+Llibre = t/4.
+
+# taille moyenne des mailles dans la zone libre
+h_moy = t/nb_elt_ep
+
+# ----------------------------------------------------------------------
+# Building the Geometry
+# ----------------------------------------------------------------------
+
+salome.salome_init()
+geompy = geomBuilder.New()
+
+# section globale
+Face_1 = geompy.MakeFaceHW(t, L, 1)
+geompy.TranslateDXDYDZ(Face_1, rm, L/2, 0)
+
+# tore (disque en 2d)
+rtore = a/10
+Disk_1 = geompy.MakeDiskR(rtore, 1)
+geompy.TranslateDXDYDZ(Disk_1, xa, 0, 0)
+vertex1 = geompy.MakeVertex(xa, 0, 0)
+
+# ligne de démarquation entre zone libre en bas et zone réglée en haut
+vertex2 = geompy.MakeVertex(ri, Llibre, 0)
+vertex3 = geompy.MakeVertex(re, Llibre, 0)
+Line_1 = geompy.MakeLineTwoPnt(vertex2, vertex3)
+
+Tube = geompy.MakePartition([Face_1], [Disk_1,Line_1,vertex1], [], [],
+                             geompy.ShapeType["FACE"], 0, [], 0)
+
+geompy.TranslateDXDYDZ(Tube, -xa, 0, 0)
+
+
+# création des groupes [a refaire mieux]
+#  -> il faut à la rigueur maj les numero d'ids
+tore       = geompy.CreateGroup(Tube, geompy.ShapeType["FACE"])
+zone_libre = geompy.CreateGroup(Tube, geompy.ShapeType["FACE"])
+zone_regle = geompy.CreateGroup(Tube, geompy.ShapeType["FACE"])
+tube       = geompy.CreateGroup(Tube, geompy.ShapeType["FACE"])
+
+cercle   = geompy.CreateGroup(Tube, geompy.ShapeType["EDGE"])
+lig      = geompy.CreateGroup(Tube, geompy.ShapeType["EDGE"])
+lev      = geompy.CreateGroup(Tube, geompy.ShapeType["EDGE"])
+peau_int = geompy.CreateGroup(Tube, geompy.ShapeType["EDGE"])
+peau_ext = geompy.CreateGroup(Tube, geompy.ShapeType["EDGE"])
+haut     = geompy.CreateGroup(Tube, geompy.ShapeType["EDGE"])
+
+fond     = geompy.CreateGroup(Tube, geompy.ShapeType["VERTEX"])
+haut_g   = geompy.CreateGroup(Tube, geompy.ShapeType["VERTEX"])
+haut_d   = geompy.CreateGroup(Tube, geompy.ShapeType["VERTEX"])
+
+
+geompy.UnionIDs(tore, [23])
+geompy.UnionIDs(zone_libre, [2])
+geompy.UnionIDs(zone_regle, [16])
+geompy.UnionIDs(tube, [2, 16, 23])
+geompy.UnionIDs(cercle, [13])
+l_ids_int=[15, 27]
+l_ids_ext=[11, 25]
+if config == 'CDAE':
+    geompy.UnionIDs(lig, l_ids_int)
+    geompy.UnionIDs(lev, l_ids_ext)
+elif config == 'CDAI':
+    geompy.UnionIDs(lig, l_ids_ext)
+    geompy.UnionIDs(lev, l_ids_int)
+geompy.UnionIDs(peau_int, [4, 18])
+geompy.UnionIDs(peau_ext, [9, 22])
+geompy.UnionIDs(haut, [20])
+geompy.UnionIDs(fond, [26])
+geompy.UnionIDs(haut_g, [19])
+geompy.UnionIDs(haut_d, [21])
+
+[Compound_1, Compound_2] = geompy.Propagate(zone_regle)
+
+#geompy.addToStudy(Face_1, 'Face_1')
+#geompy.addToStudy(Disk_1, 'Disk_1')
+#geompy.addToStudy(Line_1, 'Line_1')
+
+geompy.addToStudy(Tube, 'Tube')
+geompy.addToStudyInFather(Tube, tube, 'tube')
+geompy.addToStudyInFather(Tube, tore, 'tore')
+geompy.addToStudyInFather(Tube, zone_libre, 'zone_libre')
+geompy.addToStudyInFather(Tube, zone_regle, 'zone_regle')
+geompy.addToStudyInFather(Tube, cercle, 'cercle')
+geompy.addToStudyInFather(Tube, lig, 'lig')
+geompy.addToStudyInFather(Tube, lev, 'lev')
+geompy.addToStudyInFather(Tube, peau_int, 'peau_int')
+geompy.addToStudyInFather(Tube, peau_ext, 'peau_ext')
+geompy.addToStudyInFather(Tube, haut, 'haut')
+geompy.addToStudyInFather(Tube, fond, 'fond')
+geompy.addToStudyInFather(Tube, Compound_1, 'Compound_1')
+geompy.addToStudyInFather(Tube, Compound_2, 'Compound_2')
+
+
+
+# ----------------------------------------------------------------------
+# Building the Mesh
+# ----------------------------------------------------------------------
+
+smesh =  smeshBuilder.New()
+
+mesh_pipe = smesh.Mesh(Tube)
+mesh_pipe.Segment(cercle).NumberOfSegments(nb_circ)
+
+# hypothèse pour le maillage radial
+algo_radial = mesh_pipe.Quadrangle(algo=smeshBuilder.RADIAL_QUAD,
+                                   geom=tore)
+if type_distr_radial_seg == 'uniforme':
+    algo_radial.NumberOfLayers(nb_layers)
+elif type_distr_radial_seg == 'geometrique':
+    # Progression geometrique
+    LayersDistr = smesh.CreateHypothesis('LayerDistribution2D')
+    GeomProgDistr = smesh.CreateHypothesis('GeometricProgression')
+    GeomProgDistr.SetStartLength(rtore*math.pi/nb_circ)
+    ratio = 1/math.exp(math.pi/nb_circ)
+    GeomProgDistr.SetCommonRatio(ratio)
+    LayersDistr.SetLayerDistribution(GeomProgDistr)
+    status = mesh_pipe.AddHypothesis(LayersDistr)
+
+
+# hypothèse pour la partie libre
+# ~algo_libre = mesh_pipe.Triangle(algo=smeshBuilder.MG_CADSurf, geom=zone_libre)
+algo_libre = mesh_pipe.Triangle(algo=smeshBuilder.NETGEN_1D2D, geom=zone_libre)
+algo_libre_para = algo_libre.Parameters()
+# ~algo_libre_para.SetPhySize(h_moy)
+algo_libre_para.SetMinSize(rtore*math.pi/nb_circ)
+algo_libre_para.SetMaxSize(h_moy/2.)
+# pour MGCAD SURF : triangles (0), quadrangles dominant (1) ou quadrangles (2)
+# ~algo_libre_para.SetElementType(1)
+
+# hypothèse pour la partie réglée
+algo_regle = mesh_pipe.Quadrangle(algo=smeshBuilder.QUADRANGLE,
+                                  geom=zone_regle)
+Regular_1D_1 = mesh_pipe.Segment(geom=Compound_2)
+Regular_1D_2 = mesh_pipe.Segment(geom=Compound_1)
+
+H1 = Regular_1D_1.NumberOfSegments(nb_elt_ep)  # dans l'épaisseur
+H2 = Regular_1D_2.NumberOfSegments(nb_elt_L)   # suivant la hauteur
+if distr == 'uniforme':
+    pass
+elif distr == 'linear':
+    # on donne la taille (en relatif) au départ (ligne 0)
+    # et à l'arrivée (ligne 1)
+    H2.SetTableFunction( [ 0, 6.,
+                           1, 1. ] )
+elif distr == 'power':
+    # length of segments gradually changes depending on the Scale Factor
+    # (ratio first / last segment)
+    # Length of segments changes in geometric progression A = S**(1/(N-1))
+    # For an edge of length L, length of the first segment is L*(1-A)/(1-A**N)
+    H2.SetScaleFactor(6)
+
+
+Sub_mesh_1 = algo_radial.GetSubMesh()
+Sub_mesh_2 = algo_libre.GetSubMesh()
+Sub_mesh_3 = algo_regle.GetSubMesh()
+
+mesh_pipe.SetMeshOrder([[Sub_mesh_1, Sub_mesh_2 ,Sub_mesh_3]])
+mesh_pipe.Compute()
+
+Gr_tube       = mesh_pipe.GroupOnGeom(tube, 'tube', SMESH.FACE)
+Gr_tore       = mesh_pipe.GroupOnGeom(tore, 'tore', SMESH.FACE)
+Gr_zone_libre = mesh_pipe.GroupOnGeom(zone_libre, 'zone_libre', SMESH.FACE)
+Gr_zone_regle = mesh_pipe.GroupOnGeom(zone_regle, 'zone_regle', SMESH.FACE)
+Gr_lig        = mesh_pipe.GroupOnGeom(lig, 'lig', SMESH.EDGE)
+Gr_lev        = mesh_pipe.GroupOnGeom(lev, 'lev', SMESH.EDGE)
+Gr_peau_int   = mesh_pipe.GroupOnGeom(peau_int, 'peau_int', SMESH.EDGE)
+Gr_peau_ext   = mesh_pipe.GroupOnGeom(peau_ext, 'peau_ext', SMESH.EDGE)
+Gr_haut       = mesh_pipe.GroupOnGeom(haut, 'haut', SMESH.EDGE)
+Gr_fond       = mesh_pipe.GroupOnGeom(fond, 'fond', SMESH.NODE)
+Gr_haut_g     = mesh_pipe.GroupOnGeom(haut_g, 'HAUT_G', SMESH.NODE)
+Gr_haut_d     = mesh_pipe.GroupOnGeom(haut_d, 'HAUT_D', SMESH.NODE)
+
+
+# TRAITEMENT DU CAS DE LA PLAQUE ENTIERE
+[tube_mirrored, tore_mirrored, zone_libre_mirrored, zone_regle_mirrored,
+ lig_mirrored, lev_mirrored, peau_int_mirrored, peau_ext_mirrored, haut_mirrored,
+ fond_mirrored, haut_g_mirrored, haut_d_mirrored] = mesh_pipe.MirrorObject(
+                                 mesh_pipe, SMESH.AxisStruct( 0, 0, 0, 0, 1, 0 ),
+                                 SMESH.SMESH_MeshEditor.PLANE ,True,True)
+
+coincident_nodes = mesh_pipe.FindCoincidentNodesOnPart([mesh_pipe], 1e-05, [Gr_lev, lev_mirrored], 0)
+mesh_pipe.MergeNodes(coincident_nodes)
+
+coincident_nodes = mesh_pipe.FindCoincidentNodesOnPart([Gr_fond, fond_mirrored], 1e-05, [], 0)
+mesh_pipe.MergeNodes(coincident_nodes)
+
+equal_elements = mesh_pipe.FindEqualElements([mesh_pipe])
+mesh_pipe.MergeElements(equal_elements)
+
+# Ménage dans les groupes
+Gr_haut.SetName('HAUT')
+Gr_lev.SetName('LEV_SUP')
+lev_mirrored.SetName('LEV_INF')
+haut_mirrored.SetName('BAS')
+Gr_tore.SetName('tore_sup')
+tore_mirrored.SetName('tore_inf')
+
+new_grto = mesh_pipe.GetMesh().UnionListOfGroups([Gr_tore, tore_mirrored], 'tore')
+new_grpi = mesh_pipe.GetMesh().UnionListOfGroups([Gr_peau_int, peau_int_mirrored], 'peau_int')
+new_grpe = mesh_pipe.GetMesh().UnionListOfGroups([Gr_peau_ext, peau_ext_mirrored], 'peau_ext')
+
+gr_to_remove = (lig_mirrored, Gr_tube, Gr_zone_libre, Gr_zone_regle, tube_mirrored,
+                zone_libre_mirrored, zone_regle_mirrored, fond_mirrored,
+                Gr_tore, tore_mirrored, Gr_peau_int, peau_int_mirrored,
+                Gr_peau_ext, peau_ext_mirrored, Gr_lig, haut_g_mirrored, haut_d_mirrored)
+for gr in gr_to_remove:
+    mesh_pipe.RemoveGroup(gr)
+
+# Set names of Mesh objects
+smesh.SetName(algo_radial.GetAlgorithm(), 'algo_radial')
+smesh.SetName(algo_libre.GetAlgorithm(), 'algo_libre')
+smesh.SetName(algo_libre_para, 'algo_libre_para')
+smesh.SetName(Sub_mesh_1, 'Sub-mesh_1')
+smesh.SetName(Sub_mesh_2, 'Sub-mesh_2')
+smesh.SetName(mesh_pipe.GetMesh(), 'Plaque')
+# ~smesh.SetName(new_grto, 'tore')
+# ~smesh.SetName(Gr_lev, 'lev')
+# ~smesh.SetName(Gr_peau_int, 'peau_int')
+# ~smesh.SetName(Gr_peau_ext, 'peau_ext')
+# ~smesh.SetName(Gr_haut, 'haut')
+smesh.SetName(Gr_fond, 'FRONT')
+
+assert elt_type in('linear', 'quadratic')
+if elt_type == 'quadratic':
+   mesh_pipe.ConvertToQuadratic(0)
+
+# affichage dans l'arbre
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser()
+
+# ----------------------------------------------------------------------
+# Export the File
+# ----------------------------------------------------------------------
+
+# export in a MED file
+if export:
+   try:
+      mesh_pipe.ExportMED(file_name, 0, SMESH.MED_V2_2, 1, None ,1)
+      pass
+   except:
+      print("Echec dans l'export du maillage. Vérifier les chemins")

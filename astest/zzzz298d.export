@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm zzzz298d.comm D 1
-F mmed forma05a.mmed D 20
+F mmed zzzz406a.mmed D 20

@@ -1,0 +1,121 @@
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+"""
+Maillage d'une plaque fissuré.
+maillage linéaire (la conversion en quadratique est faite dans aster)
+"""
+
+import salome
+
+H = 2.   # hauteur totale de la plaque
+W = 1.   # épaisseur de la plaque
+a = 0.1  # profondeur du défaut
+h = a/50 # taille des mailles en fond de défaut
+algo_libre = 'Netgen' # algo maillage libre : 'Netgen' ou 'MGCADSurf'
+
+salome.salome_init()
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+Face_saine = geompy.MakeFaceHW(W, H, 1)
+Vertex_1 = geompy.MakeVertex(-W/2., 0, 0)
+Vertex_2 = geompy.MakeVertex(-W/2.+a, 0, 0)
+Line = geompy.MakeLineTwoPnt(Vertex_2, Vertex_1)
+Vertex_C = geompy.MakeVertex(W/2, 0, 0)
+
+plaque_fiss = geompy.MakePartition([Face_saine], [Line, Vertex_C], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+
+FRONT = geompy.CreateGroup(plaque_fiss, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(FRONT, [17])
+C = geompy.CreateGroup(plaque_fiss, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C, [11])
+HAUT = geompy.CreateGroup(plaque_fiss, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(HAUT, [12])
+BAS = geompy.CreateGroup(plaque_fiss, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(BAS, [6])
+LEV_SUP = geompy.CreateGroup(plaque_fiss, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(LEV_SUP, [16])
+
+geompy.addToStudy(plaque_fiss, 'plaque_fiss')
+geompy.addToStudyInFather(plaque_fiss, C, 'C')
+geompy.addToStudyInFather(plaque_fiss, FRONT, 'FRONT')
+geompy.addToStudyInFather(plaque_fiss, LEV_SUP, 'LEV_SUP' )
+geompy.addToStudyInFather(plaque_fiss, BAS, 'BAS' )
+geompy.addToStudyInFather(plaque_fiss, HAUT, 'HAUT' )
+
+###
+### SMESH component
+###
+
+import  SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+
+smesh = smeshBuilder.New()
+
+mesh = smesh.Mesh(plaque_fiss)
+
+if algo_libre == 'Netgen':
+    algo = mesh.Triangle(algo=smeshBuilder.NETGEN_1D2D)
+elif algo_libre == 'MGCADSurf':
+    algo = mesh.Triangle(algo=smeshBuilder.MG_CADSurf)
+algo_para = algo.Parameters()
+algo_para.SetMaxSize(a)
+algo_para.SetMinSize(h)
+if algo_libre == 'Netgen':
+    algo_para.SetLocalSizeOnShape(FRONT, h)
+    algo_para.SetFineness(4)
+elif algo_libre == 'MGCADSurf':
+    algo_para.SetPhySize(a)
+    algo_para.SetGradation(1.2)
+    algo_para.SetSizeMap(O, str(h))
+
+mesh.Compute()
+
+grC = mesh.GroupOnGeom(C, 'C', SMESH.NODE)
+grFront = mesh.GroupOnGeom(FRONT, 'FRONT', SMESH.NODE)
+grlevsup = mesh.GroupOnGeom(LEV_SUP, 'LEV_SUP', SMESH.EDGE)
+grbas = mesh.GroupOnGeom(BAS, 'BAS', SMESH.EDGE)
+grhaut = mesh.GroupOnGeom(HAUT, 'HAUT', SMESH.EDGE)
+
+# dédoublement des lèvres : fonctionne uniquement sur maillage linéaire
+[smeshObj_1, smeshObj_2] = mesh.AffectedElemGroupsInRegion([grlevsup], [grFront], None )
+grlevinf = mesh.DoubleNodeElemGroups([grlevsup], [grFront], [smeshObj_1, smeshObj_2], 1, 0)
+grlevinf.SetName('LEV_INF')
+mesh.RemoveGroup(smeshObj_1)
+mesh.RemoveGroup(smeshObj_2)
+
+## Set names of Mesh objects
+smesh.SetName(algo.GetAlgorithm(), 'Algo Libre')
+smesh.SetName(mesh.GetMesh(), 'plaque_fiss')
+smesh.SetName(algo_para, 'Algo Libre Parameters')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser()
