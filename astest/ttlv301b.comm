@@ -128,6 +128,27 @@ TEST_RESU(RESU=(_F(
                    VALE_REFE=0.0,
                    INST=1.0,
                    REFERENCE='NON_DEFINI',),
+                _F(
+                   PRECISION=1.E-2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM="HHO_TEMP",
+                   NOM_CMP='TEMP',
+                   TYPE_TEST="MAX",
+                   VALE_ABS="OUI",
+                   VALE_CALC=2.0,
+                   VALE_REFE=2.0,
+                   INST=1.0,
+                   REFERENCE='NON_DEFINI',),
+                _F(PRECISION=1.E-2,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM="HHO_TEMP",
+                   NOM_CMP='TEMP',
+                   TYPE_TEST="MIN",
+                   VALE_ABS="OUI",
+                   VALE_CALC=2.0,
+                   VALE_REFE=2.0,
+                   INST=1.0,
+                   REFERENCE='NON_DEFINI',),
 ),)
 
 #

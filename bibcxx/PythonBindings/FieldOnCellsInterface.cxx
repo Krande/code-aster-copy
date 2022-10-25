@@ -34,6 +34,7 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
     py::class_< FieldOnCellsReal, FieldOnCellsRealPtr, DataField >( mod, "FieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr > ) )
         .def( py::init(
             &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr,

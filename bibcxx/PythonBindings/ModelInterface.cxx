@@ -58,6 +58,7 @@ void exportModelToPython( py::module_ &mod ) {
         .def( "addModelingOnGroupOfNodes", &Model::addModelingOnGroupOfNodes )
         .def( "build", &Model::build )
         .def( "existsThm", &Model::existsThm )
+        .def( "existsHHO", &Model::existsHHO )
         .def( "isXfem", &Model::isXfem )
         .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
         .def( "getSaneModel", &Model::getSaneModel )

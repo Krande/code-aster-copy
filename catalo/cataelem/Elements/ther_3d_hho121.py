@@ -103,6 +103,8 @@ ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type='ELGA', location='RIGI',
 NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type='ELNO',
                             components=('SOUR',))
 
+TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type='ELNO',
+                            components=('TEMP',))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -133,6 +135,13 @@ class THER3DH27_HHO121(Element):
                      para_in=((SP.PGEOMER, NGEOMER), ),
                      para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
                      ),
+
+        OP.HHO_TEMP_THER(te=456,
+                         para_in=((SP.PGEOMER, NGEOMER),
+                                  (SP.PTMPCHF, DDL_THER),
+                                  ),
+                         para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
+                         ),
 
         OP.NSPG_NBVA(te=496,
                      para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2), ),

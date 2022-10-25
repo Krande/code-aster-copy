@@ -227,6 +227,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  tr("Source de chaleur à partir d'un potentiel électrique"), ),
             "ETHE_ELEM":        ( (),
                                  tr("Énergie dissipée thermiquement"), ),
+            "HHO_TEMP":        ( (),
+                                 tr("Temparature reconstruite aux noeuds pour la modélisation HHO"), ),
         }
         d['ACOUSTIQUE'] = {
             "PRAC_ELNO":        ( (),

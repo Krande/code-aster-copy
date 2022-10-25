@@ -76,6 +76,19 @@ class StorageManager:
         self.store()
 
     @profile
+    def storeField(self, field, field_type, rank):
+        """Store a new field.
+
+        Arguments:
+            field (FieldOn***): field to store
+            field_type (str) : type of the field as DEPL, SIEF_ELGA...
+            rank (int): rank where to save field
+        """
+        if field is not None:
+            self.result.setField(field, field_type, rank)
+            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=0, vali=rank)
+
+    @profile
     def store(self):
         """Build result with all ranks in buffer."""
 

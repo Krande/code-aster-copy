@@ -117,11 +117,12 @@
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
-#include "PythonBindings/ParallelThermalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
+#include "PythonBindings/ParallelThermalLoadInterface.h"
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
 #include "PythonBindings/PhysicsAndModelingsInterface.h"
+#include "PythonBindings/PostProcessingInterface.h"
 #include "PythonBindings/PrestressingCableInterface.h"
 #include "PythonBindings/ResultInterface.h"
 #include "PythonBindings/ResultNamingInterface.h"
@@ -285,4 +286,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportBehaviourPropertyToPython( mod );
     exportCodedMaterialToPython( mod );
     exportSetLoggingLevelToPython( mod );
+    exportPostProcessingToPython( mod );
 };

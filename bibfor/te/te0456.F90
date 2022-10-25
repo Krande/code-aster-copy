@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine te0456(nomopt, nomte)
 !
 use HHO_type
-use HHO_postpro_module, only : hhoPostMeca
+use HHO_postpro_module, only : hhoPostMeca, hhoPostTher
 use HHO_init_module, only : hhoInfoInitCell
 !
 implicit none
@@ -51,6 +51,8 @@ implicit none
     if (nomopt == 'HHO_DEPL_MECA') then
 ! --- post-traitement
         call hhoPostMeca(hhoCell, hhoData, nbnodes)
+    else if (nomopt == 'HHO_TEMP_THER') then
+        call hhoPostTher(hhoCell, hhoData, nbnodes)
     else
         ASSERT(ASTER_FALSE)
     end if

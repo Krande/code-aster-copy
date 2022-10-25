@@ -65,7 +65,7 @@ integer, intent(in) :: nbStore
 !     ------------------------------------------------------------------
 !                      For thermic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldTher = 18
+    integer, parameter :: nbFieldTher = 19
     character(len=16), parameter :: fieldTher(nbFieldTher) = (/&
         'TEMP            ',&
         'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ',&
@@ -74,7 +74,7 @@ integer, intent(in) :: nbStore
         'HYDR_ELNO       ', 'HYDR_NOEU       ',&
         'SOUR_ELGA       ', 'COMPORTHER      ', 'COMPORMETA      ',&
         'ERTH_ELEM       ', 'ERTH_ELNO       ', 'ERTH_NOEU       ',&
-        'TEMP_ELGA       '/)
+        'TEMP_ELGA       ', 'HHO_TEMP        '/)
 
 !     ------------------------------------------------------------------
 !                      For external state variables

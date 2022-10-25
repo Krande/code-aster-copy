@@ -87,6 +87,9 @@ class FieldOnCells : public DataField {
         setDescription( FEDesc );
     };
 
+    /** @brief Constructor with automatic name and model*/
+    FieldOnCells( const ModelPtr model ) : FieldOnCells( model->getFiniteElementDescriptor() ){};
+
     /**
      * @brief Constructor for empty FieldOnCells with dynamic components
      * @param model model

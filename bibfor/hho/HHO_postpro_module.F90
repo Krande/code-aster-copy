@@ -46,6 +46,7 @@ private
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/readVector.h"
+#include "asterfort/writeVector.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
 !
@@ -56,7 +57,7 @@ private
 ! Post-processing function to vizualize HHO results
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: hhoPostMeca, hhoPostDeplMeca
+    public  :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -267,6 +268,61 @@ contains
         call rsnoch(result_hho, 'HHO_DEPL', nume_store)
 !
         call jedema()
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostTher(hhoCell, hhoData, nbnodes)
+!
+    implicit none
+!
+        type(HHO_Cell), intent(in)  :: hhoCell
+        type(HHO_Data), intent(in)  :: hhoData
+        integer, intent(in)         :: nbnodes
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermics
+!
+!   Evaluate HHO cell unknowns at the nodes
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In nbnodes         : number of nodes
+! --------------------------------------------------------------------------------------------------
+!
+        integer, parameter :: max_comp = 27
+        type(HHO_basis_cell) :: hhoBasisCell
+        integer :: total_dofs, cbs, fbs, ino
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T
+        real(kind=8), dimension(max_comp) :: post_sol
+!
+        sol_T = 0.d0
+        post_sol = 0.d0
+!
+! --- number of dofs
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        ASSERT(nbnodes .le. max_comp)
+!
+! --- We get the solution on the cell
+!
+        call readVector('PTMPCHF', cbs, sol_T, total_dofs-cbs)
+!
+! --- init cell basis
+!
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute the solution in the cell nodes
+!
+        do ino = 1, nbnodes
+            post_sol(ino) = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(),&
+                                            hhoCell%coorno(1:3, ino), sol_T, cbs)
+        end do
+!
+! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
+!
+        call writeVector("PTEMP_R", nbnodes, post_sol)
 !
     end subroutine
 !

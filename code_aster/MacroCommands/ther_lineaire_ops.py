@@ -31,7 +31,8 @@ from ..Objects import (
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
-    FieldOnNodesReal
+    FieldOnNodesReal,
+    PostProcessing
 )
 from ..Utilities import logger, print_stats, profile
 from .NonLinearSolver import PhysicalState, StorageManager, TimeStepper
@@ -396,6 +397,8 @@ def ther_lineaire_ops(self, **args):
     phys_pb = PhysicalProblem(model, args["CHAM_MATER"], args.get("CARA_ELEM"))
     logger.debug("<THER_LINEAIRE>: Physical Problem created")
 
+    postpro = PostProcessing(phys_pb)
+
     # Add loads
     phys_pb = _addLoads(phys_pb, args)
     has_exchange_fields = _hasExchangeFields(args)
@@ -493,6 +496,9 @@ def ther_lineaire_ops(self, **args):
             if exists_unique(phys_state.time, arch_times, arch_prec, arch_crit):
                 storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state,
                                            theta=time_theta)
+                if model.existsHHO():
+                    proj_hho = postpro.projectHHO(phys_state.primal)
+                    storage_manager.storeField(proj_hho, "HHO_TEMP", rank)
                 rank += 1
 
         timeStepper.completed()
