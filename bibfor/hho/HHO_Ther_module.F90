@@ -36,7 +36,6 @@ private
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcangm.h"
 #include "asterfort/readVector.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -60,9 +59,9 @@ private
 !
 !
     public :: hhoLocalContribTher, hhoCalcStabCoeff
-    public :: hhoCalcOpTher, YoungModulus
+    public :: hhoCalcOpTher
     private :: hhoComputeRhsTher, hhoComputeLhsTher, hhoComputeAgphi
-    private :: hhoComputeBehaviourTher
+    private :: hhoComputeBehaviourTher, Lambda
 !
 contains
 !
@@ -106,7 +105,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
         integer:: cbs, fbs, total_dofs, j, faces_dofs, gbs
-        integer :: imate, jmate, ipg, icodre(3), jtemps
+        integer :: jmate, ipg, icodre(3), jtemps
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
@@ -413,7 +412,7 @@ contains
 !
 !===================================================================================================
 !
-    function YoungModulus(fami, imate, npg) result(coeff)
+    function Lambda(fami, imate, npg) result(coeff)
 !
     implicit none
 !
@@ -429,11 +428,11 @@ contains
 !   In imate        : materiau code
 ! --------------------------------------------------------------------------------------------------
 !
-        character(len=16) :: elas_keyword
-        integer :: elas_id, ipg
-        real(kind=8) :: e
+        ! character(len=16) :: elas_keyword
+        ! integer :: elas_id, ipg
+        ! real(kind=8) :: e
 !
-        coeff = 0.d0
+        coeff = 1.d0
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
 !         call get_elas_id(imate, elas_id, elas_keyword)
@@ -473,7 +472,7 @@ contains
         if(hhoData%adapt()) then
             call jevech('PMATERC', 'L', jmate)
             imate = zi(jmate -1 + 1)
-            call hhoData%setCoeffStab(10.d0)
+            call hhoData%setCoeffStab(10.d0 * Lambda(fami, imate, nbQuadPoints))
        end if
 !
     end subroutine

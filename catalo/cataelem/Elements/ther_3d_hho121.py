@@ -125,8 +125,8 @@ class THER3DH27_HHO121(Element):
         SetOfNodes('EN3', (27,)),
     )
     elrefe = (
-        ElrefeLoc(MT.H27, gauss=('RIGI=FPG8', 'FPG1=FPG1',
-                  'MTGA=FPG8',), mater=('RIGI', 'FPG1', 'MTGA',),),
+        ElrefeLoc(MT.H27, gauss=('RIGI=FPG8', 'FPG1=FPG1', 'MASS=FPG27',
+                  'MTGA=FPG8',), mater=('RIGI', 'FPG1', 'MTGA', 'MASS'),),
         ElrefeLoc(MT.QU9, gauss=('RIGI=FPG4',),),
     )
     calculs = (
@@ -142,6 +142,13 @@ class THER3DH27_HHO121(Element):
                                   ),
                          para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
                          ),
+
+        OP.MASS_THER(te=449,
+                     para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                              (SP.PTEMPSR, CTEMPSR), (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
+                              ),
+                     para_out=((OP.MASS_THER.PMATTTR, MMATTTR), ),
+                     ),
 
         OP.NSPG_NBVA(te=496,
                      para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2), ),
