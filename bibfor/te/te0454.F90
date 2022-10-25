@@ -97,8 +97,8 @@ implicit none
 !
 ! --- Compute local contribution
 !
-    call hhoLocalContribTher(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
-                             fami, typmod, nomopt, lhs=lhs)
+    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
+                             fami, lhs=lhs)
 !
 ! --- Save lhs
 !

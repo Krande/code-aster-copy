@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,99 @@
 ! --------------------------------------------------------------------
 
 subroutine te0445(nomopt, nomte)
-    implicit none
-#include "asterfort/utmess.h"
+!
+use HHO_type
+use HHO_utils_module
+use HHO_size_module
+use HHO_quadrature_module
+use HHO_ther_module
+use HHO_init_module, only : hhoInfoInitCell
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/HHO_size_module.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/writeVector.h"
+#include "jeveux.h"
+#include "blas/daxpy.h"
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Thermics - CHAR_THER_EVOL
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+! --------------------------------------------------------------------------------------------------
     character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+!
+! --- Local variables
+!
+    type(HHO_Quadrature) :: hhoQuadCellRigi, hhoQuadCellMass
+    integer :: cbs, fbs, total_dofs, npg_rigi, npg_mass, itemps
+    character(len=4) :: fami_rigi, fami_mass
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfull
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs_rigi, rhs_mass, rhs
+    real(kind=8) :: theta, dtime
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData)
+!
+! --- Get element parameters
+!
+    fami_rigi = 'RIGI'
+    call elrefe_info(fami=fami_rigi, npg=npg_rigi)
+    fami_mass = 'MASS'
+    call elrefe_info(fami=fami_mass, npg=npg_mass)
+!
+! --- Number of dofs
+    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+    ASSERT(cbs <= MSIZE_CELL_SCAL)
+    ASSERT(fbs <= MSIZE_FACE_SCAL)
+    ASSERT(total_dofs <= MSIZE_TDOFS_SCAL)
+!
+    if (nomopt /= "CHAR_THER_EVOL") then
+        ASSERT(ASTER_FALSE)
+    end if
+!
+! --- Initialize quadrature for the rigidity
+!
+    call hhoQuadCellRigi%initCell(hhoCell, npg_rigi)
+    call hhoQuadCellMass%initCell(hhoCell, npg_mass)
+!
+! --- Compute Operators
+!
+    call hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
+!
+! --- Compute local rigidity contribution
+!
+    call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
+                             fami_rigi, rhs=rhs_rigi)
+!
+! --- Compute local mass contribution
+!
+    call hhoLocalMassTher(hhoCell, hhoData, hhoQuadCellMass, fami_mass, rhs=rhs_mass)
+!
+! --- Compute rhs = 1/dt * rhs_mass + (1-theta) * rhs_rigi
+!
+    call jevech('PTEMPSR', 'L', itemps)
+    dtime = zr(itemps+1)
+    theta = zr(itemps+2)
+!
+    rhs = 0.d0
+    call daxpy(cbs, 1.d0/dtime, rhs_mass, 1, rhs, 1)
+    call daxpy(total_dofs, (1.d0-theta), rhs_rigi, 1, rhs, 1)
+!
+! --- Save rhs
+!
+    call hhoRenumTherVec(hhoCell, hhoData, rhs)
+    call writeVector('PVECTTR', total_dofs, rhs)
+!
 end subroutine

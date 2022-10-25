@@ -55,16 +55,10 @@ implicit none
 ! --- Local variables
 !
     type(HHO_Quadrature) :: hhoQuadCellMass
-    type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs, npg, ipg, imate, itemps
-    integer :: icod(1)
+    integer :: cbs, fbs, total_dofs, npg
     character(len=4) :: fami
-    character(len=8) :: typmod(2)
-    character(len=32) :: phenom
-    real(kind=8) :: coeff, cp(1), time
-    real(kind=8), dimension(MSIZE_CELL_SCAL):: BSCEval
     real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
 !
 ! --- Get HHO informations
@@ -90,65 +84,11 @@ implicit none
 !
     call hhoQuadCellMass%initCell(hhoCell, npg)
 !
-! --- Type of finite element
-!
-    select case (hhoCell%ndim)
-        case(3)
-            typmod(1) = '3D'
-        case (2)
-            typmod(1) = 'PLAN'
-        case default
-            ASSERT(ASTER_FALSE)
-    end select
-    typmod(2) = 'HHO'
-!
     if (lteatt('LUMPE','OUI')) then
         ASSERT(ASTER_FALSE)
     endif
 !
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
-!
-    call rccoma(zi(imate), 'THER', 1, phenom, icod(1))
-    time = zr(itemps)
-!
-! --- Compute local contribution
-!
-! ----- init basis
-    call hhoBasisCell%initialize(hhoCell)
-    lhs = 0.d0
-!
-! ----- Loop on quadrature point
-!
-    do ipg = 1, hhoQuadCellMass%nbQuadPoints
-! --------- Get rho * Cp
-!
-        if (phenom .eq. 'THER') then
-            call rcvalb(fami, ipg, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'INST', [time],&
-                        1, 'RHO_CP', cp, icod(1), 1)
-        else if (phenom .eq. 'THER_ORTH') then
-            call rcvalb(fami, ipg, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'INST', [time],&
-                        1, 'RHO_CP', cp, icod(1), 1)
-        else
-            call utmess('F', 'ELEMENTS2_63')
-        endif
-!
-! --------- Eval bais function at the quadrature point
-!
-        call hhoBasisCell%BSEval(hhoCell, hhoQuadCellMass%points(1:3,ipg), 0, &
-                            hhoData%cell_degree(), BSCEval)
-!
-! --------  Eval massMat
-!
-        coeff = cp(1) * hhoQuadCellMass%weights(ipg)
-        call dsyr('U', cbs, coeff, BSCEval, 1, lhs, MSIZE_TDOFS_SCAL)
-    end do
-!
-! ----- Copy the lower part
-!
-    call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
+    call hhoLocalMassTher(hhoCell, hhoData, hhoQuadCellMass, fami, lhs=lhs)
 !
 ! --- Save lhs
 !

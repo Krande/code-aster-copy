@@ -131,6 +131,14 @@ class THER3DH27_HHO121(Element):
     )
     calculs = (
 
+        OP.CHAR_THER_EVOL(te=445,
+                          para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
+                                   (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER),
+                                   (SP.PTEMPSR, CTEMPSR), (OP.CHAR_THER_EVOL.PVARCPR, LC.ZVARCPG),
+                                   ),
+                          para_out=((SP.PVECTTR, MVECTTR), ),
+                          ),
+
         OP.COOR_ELGA(te=488,
                      para_in=((SP.PGEOMER, NGEOMER), ),
                      para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
