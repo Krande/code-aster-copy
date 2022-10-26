@@ -1,7 +1,7 @@
 
 /**
- * @file PostProcessing.h
- * @brief Header of class PostProcessing
+ * @file HHO.h
+ * @brief Header of class HHO
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -33,30 +33,36 @@
 #include "Studies/PhysicalProblem.h"
 
 /**
- * @class PostProcessing
+ * @class HHO
  * @brief Post-processing tools
  */
-class PostProcessing {
+class HHO {
   private:
     /** @brief Physical problem */
     PhysicalProblemPtr _phys_problem;
 
   public:
-    /** @typedef PostProcessingPtr */
-    typedef std::shared_ptr< PostProcessing > PostProcessingPtr;
+    /** @typedef HHOPtr */
+    typedef std::shared_ptr< HHO > HHOPtr;
 
     /** @brief Default constructor disabled */
-    PostProcessing( void ) = delete;
+    HHO( void ) = delete;
 
     /**
      * @brief Constructor
      * @param PhysicalProblemPtr study
      */
-    PostProcessing( const PhysicalProblemPtr &currPhysProblem )
-        : _phys_problem( currPhysProblem ){};
+    HHO( const PhysicalProblemPtr &currPhysProblem ) : _phys_problem( currPhysProblem ){};
 
-    /** @brief Destructor */
-    ~PostProcessing(){};
+    /**
+     * @brief Project HHO field to H^1-field
+     */
+    FieldOnNodesRealPtr projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const;
+
+    /**
+     * @brief Project H^1-field on HHO space
+     */
+    FieldOnNodesRealPtr projectOnHHOSpace( const ASTERDOUBLE &value ) const;
 };
 
-using PostProcessingPtr = std::shared_ptr< PostProcessing >;
+using HHOPtr = std::shared_ptr< HHO >;

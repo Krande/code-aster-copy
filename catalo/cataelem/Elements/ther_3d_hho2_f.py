@@ -81,7 +81,7 @@ CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
 DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO', diff=True,
                              components=(
                                  ('EN1', ('HHO_F[6]',)),
-                                 ('EN', ()),
+                                 ('EN2', ()),
                              )
                              )
 
@@ -106,6 +106,58 @@ class THER3DQU9_HHO2_F(Element):
         ElrefeLoc(MT.QU9, gauss=('RIGI=FPG9',), mater=('RIGI',),),
     )
     calculs = (
+
+        OP.CHAR_THER_FLUN_F(
+            te=461,
+            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER,
+                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+
+        OP.CHAR_THER_FLUN_R(
+            te=461,
+            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER,
+                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+
+        OP.CHAR_THER_TEXT_F(
+            te=461,
+            para_in=(
+                (SP.PCOEFHF, CCOEFHF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+                (SP.PT_EXTF, CT_EXTF),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+
+        OP.CHAR_THER_TEXT_R(
+            te=461,
+            para_in=(
+                (SP.PCOEFHR, CCOEFHR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+                (SP.PT_EXTR, LC.ET_EXTR),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
+        ),
+
+        OP.RIGI_THER_COEH_F(
+            te=457,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER,
+                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
+        ),
+
+        OP.RIGI_THER_COEH_R(
+            te=457,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER,
+                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
+        ),
 
         OP.TOU_INI_ELGA(
             te=99,

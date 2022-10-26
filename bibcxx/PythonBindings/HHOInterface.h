@@ -1,5 +1,5 @@
-
 /**
+ * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -19,4 +19,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PostProcessing/PostProcessing.h"
+#pragma once
+
+#include "aster_pybind.h"
+#include "astercxx.h"
+
+#include "Modeling/HHO.h"
+
+void exportHHOToPython( py::module_ &mod );

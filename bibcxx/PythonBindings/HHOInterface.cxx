@@ -18,14 +18,35 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PythonBindings/PostProcessingInterface.h"
+#include "PythonBindings/HHOInterface.h"
 
 #include "aster_pybind.h"
 
-void exportPostProcessingToPython( py::module_ &mod ) {
+void exportHHOToPython( py::module_ &mod ) {
 
-    py::class_< PostProcessing, PostProcessing::PostProcessingPtr >( mod, "PostProcessing" )
-        .def( py::init( &initFactoryPtr< PostProcessing, PhysicalProblemPtr > ) )
+    py::class_< HHO, HHO::HHOPtr >( mod, "HHO" )
+        .def( py::init( &initFactoryPtr< HHO, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
-        ;
+        .def( "projectOnLagrangeSpace", &HHO::projectOnLagrangeSpace,
+              R"(
+      Project field from HHO-space to Lagrange-space
+
+      Arguments:
+            hho_field (FieldOnNodesReal): hho field like displacement or thermic
+
+      Returns:
+            FieldOnNodesReal: HHO field project on Lagrange space
+        )",
+              py::arg( "hho_field" ) )
+        .def( "projectOnHHOSpace", &HHO::projectOnHHOSpace,
+              R"(
+      Project real value to HHO-space
+
+      Arguments:
+            value (float): value to project
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "value" ) );
 };

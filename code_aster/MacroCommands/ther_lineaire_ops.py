@@ -32,7 +32,7 @@ from ..Objects import (
     ParallelThermalLoadReal,
     PhysicalProblem,
     FieldOnNodesReal,
-    PostProcessing
+    HHO
 )
 from ..Utilities import logger, print_stats, profile
 from .NonLinearSolver import PhysicalState, StorageManager, TimeStepper
@@ -166,10 +166,11 @@ def _setupInitialField(is_stat, phys_pb, args):
         elif kws.get("VALE") is not None:
             # For HHO, there is a projection to do.
             if phys_pb.getModel().existsHHO():
-                assert abs(kws.get("VALE")) == 0.0
+                initial_field = HHO(phys_pb).projectOnHHOSpace(kws.get("VALE"))
+            else:
+                initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
+                initial_field.setValues(kws.get("VALE"))
 
-            initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
-            initial_field.setValues(kws.get("VALE"))
             logger.debug(
                 "<THER_LINEAIRE><ETAT_INIT>: Initialized with constant field with value %s" % kws.get("VALE"))
         else:
@@ -309,7 +310,8 @@ def _computeMatrix(disr_comp, matrix,
     phys_pb = disr_comp.getPhysicalProblem()
 
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
-    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_value, with_dual=False)
+    matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(
+        time_value, with_dual=False)
     matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
 
     matr_elem_exch = disr_comp.getExchangeThermalMatrix(time_value)
@@ -358,12 +360,12 @@ def _computeRhs(disr_comp,
 
     # compute neumann forces
     rhs += disr_comp.getNeumannForces(time_value, time_delta,
-                             time_theta, previousPrimalField)
+                                      time_theta, previousPrimalField)
     logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
 
     if is_evol:
         rhs += disr_comp.getTransientThermalForces(time_value, time_delta, time_theta,
-                                              previousPrimalField)
+                                                   previousPrimalField)
         logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 
     logger.debug("<THER_LINEAIRE><RHS>: Finish")
@@ -401,7 +403,7 @@ def ther_lineaire_ops(self, **args):
     phys_pb = PhysicalProblem(model, args["CHAM_MATER"], args.get("CARA_ELEM"))
     logger.debug("<THER_LINEAIRE>: Physical Problem created")
 
-    postpro = PostProcessing(phys_pb)
+    hho = HHO(phys_pb)
 
     # Add loads
     phys_pb = _addLoads(phys_pb, args)
@@ -501,8 +503,8 @@ def ther_lineaire_ops(self, **args):
                 storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state,
                                            theta=time_theta)
                 if model.existsHHO():
-                    proj_hho = postpro.projectHHO(phys_state.primal)
-                    storage_manager.storeField(proj_hho, "HHO_TEMP", rank)
+                    hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
+                    storage_manager.storeField(hho_field, "HHO_TEMP", rank)
                 rank += 1
 
         timeStepper.completed()

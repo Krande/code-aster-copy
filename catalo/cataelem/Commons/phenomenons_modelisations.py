@@ -6077,8 +6077,8 @@ phen.add('3D_HHO#2', Modelisation(dim=(3, 3), code='HT1',
     (AT.TYPMOD, '3D'),
 ),
     elements=(
-        # (MT.HEXA27, EL.THER3DH27_HHO222),
-        # (MT.TETRA15, EL.THER3DT15_HHO222),
+        (MT.HEXA27, EL.THER3DH27_HHO222),
+        (MT.TETRA15, EL.THER3DT15_HHO222),
         (MT.QUAD9, EL.THER3DQU9_HHO2_F),
         (MT.TRIA7, EL.THER3DTR7_HHO2_F),
 )))

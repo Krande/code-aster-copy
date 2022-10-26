@@ -296,12 +296,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Scale a vector by a diagonal matrix stored as a vector
      * @return Updated field
      */
-    FieldOnNodes< ValueType > & scale( const VectorReal& vect ) {
+    FieldOnNodes< ValueType > &scale( const VectorReal &vect ) {
         _values->updateValuePointer();
-        if ( _values->size()!=vect.size() )
+        if ( _values->size() != vect.size() )
             raiseAsterError( "Field and vector have incompatible shapes" );
-        for(std::size_t i = 0; i < vect.size(); ++i) {
-            (*_values)[i] = (*_values)[i] * vect[i];
+        for ( std::size_t i = 0; i < vect.size(); ++i ) {
+            ( *_values )[i] = ( *_values )[i] * vect[i];
         }
         return *this;
     };
@@ -567,6 +567,27 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         AS_ASSERT( values.size() == size() );
 
         *_values = values;
+    };
+
+    void setValues( const std::map< std::string, ValueType > &values ) {
+        _values->updateValuePointer();
+
+        VectorString list_cmp;
+        for ( auto &[key, val] : values ) {
+            list_cmp.push_back( trim( key ) );
+        }
+
+        auto num2name = this->getComponentsNumber2Name();
+        const auto descr = this->getNodesAndComponentsNumberFromDOF();
+
+        auto nbDofs = this->size();
+
+        for ( ASTERINTEGER dof = 0; dof < nbDofs; dof++ ) {
+            auto search = values.find( num2name[descr[dof].second] );
+            if ( search != values.end() ) {
+                ( *this )[dof] = search->second;
+            }
+        }
     };
 
     /**

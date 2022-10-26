@@ -112,7 +112,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Arguments:
                 vect (float): diagonal matrix stored as an array
             )",
-              py::arg( "vect" )  )
+              py::arg( "vect" ) )
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(
             Set values of the field
@@ -127,6 +127,18 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Arguments:
                 value (list[float]): list of values to set
+            )",
+              py::arg( "value" ) )
+        .def( "setValues",
+              py::overload_cast< const std::map< std::string, ASTERDOUBLE > & >(
+                  &FieldOnNodesReal::setValues ),
+              R"(
+            Set values of the field where components and values are given as a dict.
+            If the component is not present in the field then it is discarded
+            Example: { "X1" : 0.0, "X3" : 0.0 }
+
+            Arguments:
+                value (dict[str, float]): dict of values to set (key: str, value: float)
             )",
               py::arg( "value" ) )
         .def( "getValues", &FieldOnNodesReal::getValues, py::return_value_policy::reference, R"(
@@ -193,7 +205,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Arguments:
                 vect (float): diagonal matrix stored as an array
             )",
-              py::arg( "vect" )  )
+              py::arg( "vect" ) )
         .def( "dot", &FieldOnNodesComplex::dot, R"(
             Return the dot product of two complex fields
 
