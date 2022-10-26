@@ -215,7 +215,7 @@ class THER3DT15_HHO121(THER3DH27_HHO121):
         SetOfNodes('EN3', (15,)),
     )
     elrefe = (
-        ElrefeLoc(MT.T15, gauss=('RIGI=FPG4', 'FPG1=FPG1',
-                  'MTGA=FPG4',), mater=('RIGI', 'FPG1', 'MTGA',),),
+        ElrefeLoc(MT.T15, gauss=('RIGI=FPG4', 'FPG1=FPG1', 'MASS=FPG11',
+                  'MTGA=FPG4',), mater=('RIGI', 'FPG1', 'MTGA', 'MASS'),),
         ElrefeLoc(MT.TR7, gauss=('RIGI=FPG3',),),
     )

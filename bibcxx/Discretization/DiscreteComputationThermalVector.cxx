@@ -265,6 +265,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
                 calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                calcul->addTimeField( "PTEMPSR", time, time_step, theta );
                 calcul->addInputField( "PFLUXNR", evol_flow_xyz_field );
                 calcul->clearOutputs();
                 calcul->addOutputElementaryTerm( "PVECTTR",
