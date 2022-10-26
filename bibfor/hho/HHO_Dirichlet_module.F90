@@ -602,7 +602,7 @@ contains
                     end if
                     zk8(idnddl+nbddl-1) = 'HHO_W1'
                 elseif (currentDOF .eq. 'TEMP') then
-                    zk8(idnddl+nbddl-1) = 'HHO1'
+                    zk8(idnddl+nbddl-1) = 'HHO_F1'
                 else
                     ASSERT(ASTER_FALSE)
                 endif
@@ -626,7 +626,7 @@ contains
                     elseif (currentDOF .eq. 'DY') then
                         zk8(idnddl+nbddl-1) = 'HHO_V2'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO2'
+                        zk8(idnddl+nbddl-1) = 'HHO_F2'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -648,7 +648,7 @@ contains
                     elseif (currentDOF .eq. 'DZ') then
                         zk8(idnddl+nbddl-1) = 'HHO_W2'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO2'
+                        zk8(idnddl+nbddl-1) = 'HHO_F2'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -669,7 +669,7 @@ contains
                     elseif (currentDOF .eq. 'DZ') then
                         zk8(idnddl+nbddl-1) = 'HHO_W3'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO3'
+                        zk8(idnddl+nbddl-1) = 'HHO_F3'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -694,7 +694,7 @@ contains
                     elseif (currentDOF .eq. 'DY') then
                         zk8(idnddl+nbddl-1) = 'HHO_V3'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO3'
+                        zk8(idnddl+nbddl-1) = 'HHO_F3'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -716,7 +716,7 @@ contains
                     elseif (currentDOF .eq. 'DZ') then
                         zk8(idnddl+nbddl-1) = 'HHO_W4'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO4'
+                        zk8(idnddl+nbddl-1) = 'HHO_F4'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -737,7 +737,7 @@ contains
                     elseif (currentDOF .eq. 'DZ') then
                         zk8(idnddl+nbddl-1) = 'HHO_W5'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO5'
+                        zk8(idnddl+nbddl-1) = 'HHO_F5'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -758,7 +758,7 @@ contains
                     elseif (currentDOF .eq. 'DZ') then
                         zk8(idnddl+nbddl-1) = 'HHO_W6'
                     elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO6'
+                        zk8(idnddl+nbddl-1) = 'HHO_F6'
                     else
                         ASSERT(ASTER_FALSE)
                     endif
@@ -777,6 +777,7 @@ contains
             elseif(hhoData%face_degree() .ge. 3) then
                 ASSERT(ASTER_FALSE)
             endif
+!
 110 continue
         end do
 !
