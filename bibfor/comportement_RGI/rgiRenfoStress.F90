@@ -18,7 +18,7 @@
 !
 subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                           teta1, teta2, dt, ppas, theta, fl3d,&
-                          end3d, wpl3, vwpl33, vwpl33t, dt3, ipzero, &
+                          end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero, &
                           nvarbe, ngf, rc00, var0, varf, sigf6d, ierr1)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
@@ -39,7 +39,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
     integer, intent(in) :: nvarbe, ngf, iadrmat, ipzero(ngf)
     real(kind=8), intent(in) :: xmat(*), sigmf6(6), epstf6(6), epspt6(6)
     real(kind=8), intent(in) :: var0(*), rc00, teta1, teta2, dt, theta
-    real(kind=8), intent(in) :: wpl3(3), vwpl33(3,3), vwpl33t(3,3), dt3(3)
+    real(kind=8), intent(in) :: wpl3(3), vwpl33(3,3), vwpl33t(3,3), dt3(3), dr3(3)
     aster_logical, intent(in) :: end3d, fl3d, ppas
     real(kind=8), intent(out) :: varf(*), sigf6d(6)
     integer, intent(out) :: ierr1
@@ -57,7 +57,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
     real(kind=8) :: sigrm33(3, 3), sigrf33(3, 3), epsr0(nbrenf), vnorm
     real(kind=8) :: eplr0(nbrenf), sigr0(nbrenf), eprm0(nbrenf), mu_r0(nbrenf)
     real(kind=8) :: spre0(nbrenf), sigrfissp(nbrenf, 3, 3), sigrd33p(3, 3), sigrf33p(3, 3)
-    real(kind=8) :: sigrh6p(6), dti, epspmf33(3, 3), epstf33(3, 3)
+    real(kind=8) :: sigrh6p(6), dri, epspmf33(3, 3), epstf33(3, 3)
     real(kind=8) :: rhov, sigrf6p(6), sigrh33(3, 3), sigrh33p(3, 3), sigrm33p(3, 3), sigrm6p(6)
     real(kind=8) :: epsrf(nbrenf), epspmf(nbrenf),sigrf(nbrenf), eprk0(nbrenf), eplrf(nbrenf)
     real(kind=8) :: eps_nl(nbrenf), eprkf(nbrenf), eprmf(nbrenf), sigrh6(6), sigrm6(6)
@@ -219,7 +219,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                     if (dt3(numf) .gt. 0.) then
                         do numr = 1, nrenf00
                             sigrd33p(k,numf)=sigrd33p(k,numf) &
-                     +sigrfissp(numr,numf,k)*dt3(numf)
+                     +sigrfissp(numr,numf,k)*dr3(numf)
                         end do
                     end if
                 end do
@@ -248,8 +248,8 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
             call x33x6(sigrm33p, sigrm6p)
             do i = 1, 6
                 call indice0(i, k, l)
-                dti=max(dt3(k),dt3(l))
-                sigrh6p(i)=sigrm6p(i)*(1.d0-dti)+sigrf6p(i)
+                dri=max(dr3(k),dr3(l))
+                sigrh6p(i)=sigrm6p(i)*(1.d0-dri)+sigrf6p(i)
             end do
             call x6x33(sigrh6p, sigrh33p)
             call chrep3d(sigrh33, sigrh33p, vwpl33t)

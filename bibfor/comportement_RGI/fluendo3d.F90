@@ -813,7 +813,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     if (is_ba) then
         call rgiRenfoStress(xmat, nbelas3d+nmatbe2+1, sigmf6, &
                           epstf6, epspt6, teta1, teta2, dt, ppas, theta,&
-                          fl3d, end3d, wpl3, vwpl33, vwpl33t, dt3,&
+                          fl3d, end3d, wpl3, vwpl33, vwpl33t, dt3, dr3,&
                           ipzero, nvarbe, ngf, rc00, var0, varf, sigf6d, ierr1)
     endif
 !
