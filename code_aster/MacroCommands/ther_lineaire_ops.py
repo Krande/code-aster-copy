@@ -164,6 +164,10 @@ def _setupInitialField(is_stat, phys_pb, args):
                                                                                                         irank))
 
         elif kws.get("VALE") is not None:
+            # For HHO, there is a projection to do.
+            if phys_pb.getModel().existsHHO():
+                assert abs(kws.get("VALE")) == 0.0
+
             initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
             initial_field.setValues(kws.get("VALE"))
             logger.debug(

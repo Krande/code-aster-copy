@@ -78,7 +78,7 @@ contains
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(inout)   :: hhoData
         type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
-        real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8), intent(in)        :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
         character(len=*), intent(in)    :: fami
         real(kind=8), intent(out), optional :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
@@ -148,9 +148,13 @@ contains
 ! --- compute temp in T+
 !
         temp_curr = 0.d0
+        if(l_rhs) then
+            call readVector('PTEMPER', total_dofs, temp_curr)
+            call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
+        end if
         poum = "+"
 !
-! ----- compute G_curr = gradrec * depl_curr
+! ----- compute G_curr = gradrec * temp_curr
 !
         call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_VEC, temp_curr, 1,&
                     0.d0, G_curr_coeff,1)
@@ -208,7 +212,7 @@ contains
 !
 ! --- add stabilization
 !
-        call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints)
+        call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints, hhoCell%ndim, time_curr)
 !
         if(l_rhs) then
                 call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_SCAL,&
@@ -260,7 +264,7 @@ contains
         character(len=32) :: phenom
         integer:: cbs, fbs, total_dofs, faces_dofs, gbs
         integer :: jmate, ipg, icodre(3), jtemps
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, time_curr, cp, temp_eval
         character(len=8) :: poum
@@ -292,8 +296,8 @@ contains
 !
 ! --- compute temp in T+
 !
-        temp_curr = 0.d0
-        if(l_rhs) call readVector('PTEMPER', cbs, temp_curr, total_dofs-cbs)
+        temp_T_curr = 0.d0
+        if(l_rhs) call readVector('PTEMPER', cbs, temp_T_curr, total_dofs-cbs)
         poum = "+"
 !
 ! ----- Loop on quadrature point
@@ -309,7 +313,7 @@ contains
 ! --------- Eval gradient at T+
 !
             temp_eval = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(),&
-                        coorpg, temp_curr, cbs)
+                        coorpg, temp_T_curr, cbs)
 !
 ! -------- Compute behavior
 !
@@ -480,7 +484,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(MSIZE_CELL_VEC,3)
-        integer:: deca, i, k, gbs_cmp, col
+        integer:: i, k, gbs_cmp, col
 ! --------------------------------------------------------------------------------------------------
 !
         gbs_cmp = gbs / hhoCell%ndim
@@ -488,14 +492,12 @@ contains
         call hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, qp_Agphi)
 !
 ! -------- Compute scalar_product of (A_gphi, gphi)_T
-        deca = 1
         col = 1
         do i = 1, hhoCell%ndim
             do k = 1, gbs_cmp
-                call daxpy(gbs, BSCEval(k), qp_Agphi(:,deca), 1, AT(:, col), 1)
+                call daxpy(gbs, BSCEval(k), qp_Agphi(:,i), 1, AT(:, col), 1)
                 col = col + 1
             end do
-            deca = deca + 1
         end do
 !
     end subroutine
@@ -573,8 +575,7 @@ contains
 !
         row = 1
         do i = 1, dim
-! --------- Extract and transform the tangent moduli
-            qp_mod_vec = qp_module_tang(i, :)
+            qp_mod_vec = qp_module_tang(:, i)
             call dger(gbs_cmp, dim, 1.d0, BSCEval, 1, qp_mod_vec, 1,&
                       Agphi(row:(row + gbs_cmp - 1), 1:dim), gbs_cmp)
             row = row + gbs_cmp
@@ -586,12 +587,13 @@ contains
 !
 !===================================================================================================
 !
-    function LambdaMax(fami, imate, npg) result(coeff)
+    function LambdaMax(fami, imate, npg, ndim, time) result(coeff)
 !
     implicit none
 !
         character(len=*), intent(in)  :: fami
-        integer, intent(in)           :: imate, npg
+        integer, intent(in)           :: imate, npg, ndim
+        real(kind=8), intent(in)      :: time
         real(kind=8) :: coeff
 !
 ! --------------------------------------------------------------------------------------------------
@@ -602,21 +604,42 @@ contains
 !   In imate        : materiau code
 ! --------------------------------------------------------------------------------------------------
 !
-        ! character(len=16) :: elas_keyword
-        ! integer :: elas_id, ipg
-        ! real(kind=8) :: e
+        character(len=16) :: nomres(3)
+        real(kind=8) :: valres(3)
+        integer :: icodre(3), ipg
+        integer, parameter :: spt = 1
+        character(len=32) :: phenom
+        real(kind=8) :: lambda, lambor(3)
 !
         coeff = 1.d0
-! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
+        call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
-!         call get_elas_id(imate, elas_id, elas_keyword)
-! !
-!         do ipg = 1, npg
-!             call get_elas_para(fami, imate, '+', ipg, 1, elas_id , elas_keyword, e_ = e)
-!             coeff = coeff + e
-!         end do
-! !
-!         coeff = coeff / real(npg, kind=8)
+        do ipg = 1, npg
+            if (phenom .eq. 'THER') then
+                nomres(1) = 'LAMBDA'
+                call rcvalb(fami, ipg, spt, '+', zi(imate),&
+                            ' ', phenom, 1, 'INST', [time],&
+                            1, nomres, valres, icodre, 1)
+                lambda = valres(1)
+                coeff = coeff + lambda
+            else if (phenom.eq.'THER_ORTH') then
+                ASSERT(ASTER_FALSE)
+                nomres(1) = 'LAMBDA_L'
+                nomres(2) = 'LAMBDA_T'
+                nomres(3) = 'LAMBDA_N'
+                call rcvalb(fami, ipg, spt, '+', zi(imate),&
+                            ' ', phenom, 1, 'INST', [time],&
+                            ndim, nomres, valres, icodre, 1)
+                lambor(1) = valres(1)
+                lambor(2) = valres(2)
+                if(ndim == 3) lambor(3) = valres(3)
+            else
+                call utmess('F', 'ELEMENTS2_63')
+            endif
+
+        end do
+!
+        coeff = coeff / real(npg, kind=8)
 !
     end function
 !
@@ -624,13 +647,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCalcStabCoeff(hhoData, fami, nbQuadPoints)
+    subroutine hhoCalcStabCoeff(hhoData, fami, nbQuadPoints, ndim, time)
 !
     implicit none
 !
         type(HHO_Data), intent(inout) :: hhoData
         character(len=4) :: fami
-        integer, intent(in) :: nbQuadPoints
+        integer, intent(in) :: nbQuadPoints, ndim
+        real(kind=8), intent(in) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -641,12 +665,11 @@ contains
 !
 ! --- Local variables
 !
-        integer :: jmate, imate
+        integer :: imate
 !
         if(hhoData%adapt()) then
-            call jevech('PMATERC', 'L', jmate)
-            imate = zi(jmate -1 + 1)
-            call hhoData%setCoeffStab(10.d0 * LambdaMax(fami, imate, nbQuadPoints))
+            call jevech('PMATERC', 'L', imate)
+            call hhoData%setCoeffStab( 10.d0*LambdaMax(fami, imate, nbQuadPoints, ndim, time))
        end if
 !
     end subroutine

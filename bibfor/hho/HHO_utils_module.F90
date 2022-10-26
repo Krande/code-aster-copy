@@ -47,7 +47,7 @@ private
     public :: hhoPrintTensor4, hhoPrintTensor4Mangle, hhoRenumMecaVec, hhoRenumMecaMat
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv
     public :: SigVec2Mat, hhoGetMatrElem
-    public :: hhoRenumTherVec, hhoRenumTherMat
+    public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
 !    private  ::
 !
 contains
@@ -538,6 +538,46 @@ contains
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        faces_dofs = total_dofs - cbs
+!
+        call dcopy(total_dofs, vec, 1, vec_tmp, 1)
+! --- v_T
+        call dcopy(cbs, vec_tmp(faces_dofs+1), 1, vec, 1)
+! --- v_F
+        call dcopy(faces_dofs, vec_tmp, 1, vec(cbs+1), 1)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoRenumTherVecInv(hhoCell, hhoData, vec)
+!
+    implicit none
+!
+        type(HHO_Cell), intent(in)  :: hhoCell
+        type(HHO_Data), intent(in)  :: hhoData
+        real(kind=8), intent(inout) :: vec(MSIZE_TDOFS_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Renumbering of HHO unknowns:
+!   From (vF1, ..., vFn, vT) to (vT, vF1, ..., vFn)
+!
+!   In hhoCell      : the current HHO Cell
+!   In hhoData      : information on HHO methods
+!   IOut vec        : vector to renumber
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: cbs, fbs, total_dofs, faces_dofs
+        real(kind=8) :: vec_tmp(MSIZE_TDOFS_SCAL)
+! --------------------------------------------------------------------------------------------------
+!
+! ---- Number of dofs
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         faces_dofs = total_dofs - cbs
 !
         call dcopy(total_dofs, vec, 1, vec_tmp, 1)

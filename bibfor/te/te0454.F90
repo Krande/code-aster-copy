@@ -53,8 +53,8 @@ implicit none
     character(len=8) :: typmod(2)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)   :: gradfull
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)  :: lhs, stab
+    real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfull
+    real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs, stab
 !
 ! --- Get HHO informations
 !
