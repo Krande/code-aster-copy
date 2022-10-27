@@ -6098,27 +6098,27 @@ phen.add('3D_HHO#1', Modelisation(dim=(3, 3), code='HT2',
 )))
 
 
-phen.add('PLAN_HHO#2', Modelisation(dim=(2, 2), code='HT3',
+phen.add('PLAN_HHO#2', Modelisation(dim=(2, 2), code='PT3',
                                       attrs=(
     (AT.FORMULATION, 'HHO_QUAD'),
     (AT.TYPMOD2, 'HHO'),
     (AT.TYPMOD, 'PLAN'),
 ),
     elements=(
-        # (MT.QUAD9, EL.THER_DPQ9_HHO222),
-        # (MT.TRIA7, EL.THER_DPT7_HHO222),
+        (MT.QUAD9, EL.THER2DQ9_HHO222),
+        (MT.TRIA7, EL.THER2DT7_HHO222),
         (MT.SEG3, EL.THER_2D_HHO2_F),
 )))
 
-phen.add('PLAN_HHO#1', Modelisation(dim=(2, 2), code='HT4',
+phen.add('PLAN_HHO#1', Modelisation(dim=(2, 2), code='PT4',
                                       attrs=(
     (AT.FORMULATION, 'HHO_LINE'),
     (AT.TYPMOD2, 'HHO'),
     (AT.TYPMOD, 'PLAN'),
 ),
     elements=(
-        # (MT.QUAD9, EL.THER_DPQ9_HHO121),
-        # (MT.TRIA7, EL.THER_DPT7_HHO121),
+        (MT.QUAD9, EL.THER2DQ9_HHO121),
+        (MT.TRIA7, EL.THER2DT7_HHO121),
         (MT.SEG3, EL.THER_2D_HHO1_F),
 )))
 

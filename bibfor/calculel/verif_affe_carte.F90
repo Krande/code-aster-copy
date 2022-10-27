@@ -142,7 +142,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
                         moloc=zi(joptmod-1+3+kin)
                         call jeveuo(jexnum('&CATA.TE.MODELOC', moloc), 'L', jmodeloc)
                         if (zi(jmodeloc-1+2).eq.numgd) then
-                            ASSERT(zi(jmodeloc-1+4).lt.10000)
+                            ASSERT(zi(jmodeloc-1+4).lt.11000)
                             ASSERT(zi(jmodeloc-1+4).gt.0)
                             do kcmp = 1, nbcmp
                                 if (exisdg(zi(jmodeloc-1+5),kcmp)) then

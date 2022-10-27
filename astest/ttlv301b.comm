@@ -56,8 +56,7 @@ MOTH = AFFE_MODELE(MAILLAGE=MAIL,
                    )
 
 CHTH = AFFE_CHAR_CINE(MODELE=MOTH,
-                      THER_IMPO=_F(GROUP_NO='FAC_EXT',
-                                   HHO_F1=2.E0, HHO_F2=0., HHO_F3=0.)
+                      THER_IMPO=_F(GROUP_NO='FAC_EXT', TEMP=2.E0)
                       )
 
 #
@@ -96,7 +95,7 @@ TEST_RESU(RESU=(
         NOM_CHAM="HHO_TEMP",
         NOM_CMP='TEMP',
         TYPE_TEST="MAX",
-        VALE_CALC=2.0001292804800506,
+        VALE_CALC=2.0097885705516143,
         VALE_REFE=2.0000000000000018,
         INST=1.2,
         REFERENCE='NON_DEFINI',),
@@ -105,7 +104,7 @@ TEST_RESU(RESU=(
        NOM_CHAM="HHO_TEMP",
        NOM_CMP='TEMP',
        TYPE_TEST="MIN",
-       VALE_CALC=1.9777729736989482,
+       VALE_CALC=1.9999762926938476,
        VALE_REFE=1.9828164948013618,
        INST=1.2,
        REFERENCE='NON_DEFINI',),
@@ -114,7 +113,7 @@ TEST_RESU(RESU=(
        NOM_CHAM="HHO_TEMP",
        NOM_CMP='TEMP',
        TYPE_TEST="SOMM_ABS",
-       VALE_CALC=7832.417453268841,
+       VALE_CALC=7861.842613010426,
        VALE_REFE=7837.350333179525,
        INST=1.2,
        REFERENCE='NON_DEFINI',),
