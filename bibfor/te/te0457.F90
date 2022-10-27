@@ -64,7 +64,7 @@ character(len=16), intent(in) :: option, nomte
     type(HHO_basis_face) :: hhoBasisFace
     real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
     real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: lhs
-    real(kind=8) :: CoefHQP(MAX_QP_FACE), coeff, theta, time
+    real(kind=8) :: CoefHQP(MAX_QP_FACE), coeff, time
     integer :: fbs, celldim, ipg, nbpara, nnoEF, npg
     integer :: j_time, j_coefh
 !
@@ -86,7 +86,6 @@ character(len=16), intent(in) :: option, nomte
 !
     call jevech('PTEMPSR', 'L', j_time)
     time = zr(j_time)
-    theta = zr(j_time+2)
 !
 ! ---- Which option ?
 !
@@ -143,7 +142,7 @@ character(len=16), intent(in) :: option, nomte
         call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3,ipg), 0, &
                                  hhoData%face_degree(), basisScalEval)
 ! --------  Eval massMat
-        coeff = theta * CoefHQP(ipg) * hhoQuadFace%weights(ipg)
+        coeff = CoefHQP(ipg) * hhoQuadFace%weights(ipg)
         call dsyr('U', fbs, coeff , basisScalEval, 1, lhs, MSIZE_FACE_SCAL)
     end do
 !

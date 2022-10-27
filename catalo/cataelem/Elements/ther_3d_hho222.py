@@ -138,6 +138,19 @@ class THER3DH27_HHO222(Element):
                           para_out=((SP.PVECTTR, MVECTTR), ),
                           ),
 
+        OP.CHAR_THER_SOUR_F(te=465,
+                            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCF, LC.CSOURCF),
+                                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_THER_SOUR_F.PVARCPR, LC.ZVARCPG),),
+                            para_out=((SP.PVECTTR, MVECTTR), ),
+                            ),
+
+        OP.CHAR_THER_SOUR_R(te=465,
+                            para_in=((SP.PGEOMER, NGEOMER), (SP.PSOURCR, ESOURCR),
+                                     (SP.PTEMPSR, CTEMPSR),
+                                     ),
+                            para_out=((SP.PVECTTR, MVECTTR), ),
+                            ),
+
         OP.COOR_ELGA(te=488,
                      para_in=((SP.PGEOMER, NGEOMER), ),
                      para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),

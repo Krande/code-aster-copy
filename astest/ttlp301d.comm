@@ -63,7 +63,8 @@ MOTH = AFFE_MODELE(MAILLAGE=MAIL,
 CHTH = AFFE_CHAR_THER(MODELE=MOTH,
                       FLUX_REP=_F(GROUP_MA='GRP_FLU',  FLUN=1.0),
                       ECHANGE=_F(GROUP_MA='GRP_ECH',
-                                 COEF_H=1.0,  TEMP_EXT=0.0)
+                                 COEF_H=1.0,  TEMP_EXT=0.0),
+                      SOURCE=_F(TOUT="OUI", SOUR=0.0,),
                       )
 
 #
