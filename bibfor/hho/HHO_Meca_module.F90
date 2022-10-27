@@ -454,7 +454,7 @@ contains
 !
 ! --- add stabilization
 !
-        call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints)
+        call hhoCalcStabCoeff(hhoData, fami, zr(iinstp), hhoQuadCellRigi)
 !
         call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
                    deplp, 1, 1.d0, rhs,1)
@@ -567,12 +567,14 @@ contains
 !
 !===================================================================================================
 !
-    function YoungModulus(fami, imate, npg) result(coeff)
+    function YoungModulus(fami, imate, time, hhoQuad) result(coeff)
 !
     implicit none
 !
         character(len=*), intent(in)  :: fami
-        integer, intent(in)           :: imate, npg
+        integer, intent(in)           :: imate
+        real(kind=8), intent(in)      :: time
+        type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8) :: coeff
 !
 ! --------------------------------------------------------------------------------------------------
@@ -592,12 +594,13 @@ contains
 !
         call get_elas_id(imate, elas_id, elas_keyword)
 !
-        do ipg = 1, npg
-            call get_elas_para(fami, imate, '+', ipg, 1, elas_id , elas_keyword, e_ = e)
+        do ipg = 1, hhoQuad%nbQuadPoints
+            call get_elas_para(fami, imate, '+', ipg, 1, elas_id , elas_keyword, &
+                                e_ = e, time=time, xyzgau_ = hhoQuad%points(1:3,ipg))
             coeff = coeff + e
         end do
 !
-        coeff = coeff / real(npg, kind=8)
+        coeff = coeff / real(hhoQuad%nbQuadPoints, kind=8)
 !
     end function
 !
@@ -605,13 +608,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCalcStabCoeff(hhoData, fami, nbQuadPoints)
+    subroutine hhoCalcStabCoeff(hhoData, fami, time, hhoQuad)
 !
     implicit none
 !
         type(HHO_Data), intent(inout) :: hhoData
         character(len=4) :: fami
-        integer, intent(in) :: nbQuadPoints
+        real(kind=8), intent(in) :: time
+        type(HHO_Quadrature), intent(in) :: hhoQuad
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -627,7 +631,7 @@ contains
         if(hhoData%adapt()) then
             call jevech('PMATERC', 'L', jmate)
             imate = zi(jmate -1 + 1)
-            call hhoData%setCoeffStab(10.d0 * YoungModulus(fami, imate, nbQuadPoints))
+            call hhoData%setCoeffStab(10.d0 * YoungModulus(fami, imate, time, hhoQuad))
        end if
 !
     end subroutine

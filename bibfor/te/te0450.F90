@@ -204,7 +204,7 @@ implicit none
 !
 ! --- add stabilization
 !
-    call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints)
+    call hhoCalcStabCoeff(hhoData, fami, 0.d0, hhoQuadCellRigi)
 !
     call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
               depl_curr, 1, 1.d0, rhs, 1)

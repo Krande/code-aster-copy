@@ -1,0 +1,170 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+meshHE8 = LIRE_MAILLAGE(FORMAT='MED',)
+
+mesh = CREA_MAILLAGE(MAILLAGE=meshHE8,
+                     INFO=1,
+                     MODI_HHO=_F(TOUT='OUI', ),
+                     )
+
+geomFieldNode = CREA_CHAMP(MAILLAGE=mesh,
+                           OPERATION='EXTR',
+                           TYPE_CHAM='NOEU_GEOM_R',
+                           NOM_CHAM='GEOMETRIE',
+                           )
+
+# Material parameters
+alpha = 6.5E-6
+tempRefe = 20.
+nu = 0.3
+young = 30.E+06
+lamb = 1.0
+rho_cp = 2.0
+
+funcYoung = DEFI_FONCTION(NOM_PARA='Z',
+                          PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                          VALE=(0., young,
+                                0.125, young,
+                                0.25, young,),)
+
+funcNu = DEFI_FONCTION(NOM_PARA='Z',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       VALE=(0., nu,
+                             0.25, nu),)
+
+funcAlpha = DEFI_CONSTANTE(VALE=alpha)
+
+mecaMate = DEFI_MATERIAU(ELAS_FO=_F(E=funcYoung,
+                                    NU=funcNu,
+                                    ALPHA=funcAlpha,
+                                    TEMP_DEF_ALPHA=tempRefe,)
+                         )
+
+therMate = DEFI_MATERIAU(THER=_F(LAMBDA=lamb, RHO_CP=rho_cp))
+
+# Calcul thermique
+modelTher = AFFE_MODELE(MAILLAGE=mesh,
+                        AFFE=_F(TOUT='OUI',
+                                PHENOMENE='THERMIQUE',
+                                MODELISATION=('3D_HHO',),
+                                FORMULATION="LINEAIRE",
+                                ),
+                        )
+
+fieldMateTher = AFFE_MATERIAU(MAILLAGE=mesh,
+                              AFFE=_F(TOUT='OUI', MATER=therMate))
+
+tempImpo = AFFE_CHAR_CINE(MODELE=modelTher,
+                          THER_IMPO=(_F(GROUP_MA='SurfInf', TEMP=-50.),
+                                     _F(GROUP_MA='SurfSup', TEMP=+50.),),
+                          )
+
+timeList = DEFI_LIST_REEL(DEBUT=0.,
+                          INTERVALLE=_F(JUSQU_A=1.0,   NOMBRE=1)
+                          )
+
+resuTher = THER_LINEAIRE(MODELE=modelTher,
+                         CHAM_MATER=fieldMateTher,
+                         ETAT_INIT=_F(VALE=tempRefe),
+                         INCREMENT=_F(LIST_INST=timeList),
+                         EXCIT=_F(CHARGE=tempImpo)
+                         )
+
+# Static linear
+modelMeca = AFFE_MODELE(MAILLAGE=mesh,
+                        AFFE=_F(TOUT='OUI',
+                                PHENOMENE='MECANIQUE',
+                                MODELISATION=('3D_HHO',),
+                                FORMULATION="LINEAIRE",
+                                ),
+                        )
+
+kineCondition = AFFE_CHAR_CINE(MODELE=modelMeca,
+                               MECA_IMPO=(_F(GROUP_MA=('FaceDA'),
+                                             DX=0.,),
+                                          _F(GROUP_MA=('FaceAB'),
+                                              DY=0.,),
+                                          _F(GROUP_MA=('FaceBC', 'FaceCD'),
+                                              DZ=0.,),),
+                               )
+
+fieldMateMeca = AFFE_MATERIAU(MAILLAGE=mesh,
+                              AFFE=_F(GROUP_MA='Plaque',
+                                      MATER=mecaMate,
+                                      ),
+                              AFFE_VARC=(_F(NOM_CHAM='HHO_TEMP',
+                                            NOM_VARC='TEMP',
+                                            EVOL=resuTher,
+                                            VALE_REF=tempRefe),
+                                         _F(NOM_VARC='GEOM',
+                                             CHAM_GD=geomFieldNode,),
+                                         ),
+                              )
+
+ramp = DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0, 0.0, 1.0, 1.0))
+
+resuLinearSNL = STAT_NON_LINE(MODELE=modelMeca,
+                              CHAM_MATER=fieldMateMeca,
+                              EXCIT=_F(CHARGE=kineCondition,
+                                       FONC_MULT=ramp,),
+                              INCREMENT=_F(LIST_INST=timeList,),)
+
+# Post-treatement
+resuLinearSNL = CALC_CHAMP(reuse=resuLinearSNL,
+                           RESULTAT=resuLinearSNL,
+                           DEFORMATION=('EPVC_ELGA', 'EPVC_ELNO'),
+                           CRITERES=('SIEQ_ELGA', ),)
+
+# Tests
+deplRefe = 0.1033
+epvcRefe = -alpha * 70.
+
+# For STAT_NON_LINE
+deplTole = 0.01 * 2.7
+epvcTole = 0.015
+
+TEST_RESU(RESU=(_F(RESULTAT=resuLinearSNL,
+                   INST=1.0,
+                   GROUP_NO='NodeASup',
+                   NOM_CHAM='HHO_DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=0.10054825172507925,
+                   VALE_REFE=deplRefe,
+                   PRECISION=deplTole,),),)
+
+
+TEST_RESU(RESU=(_F(RESULTAT=resuLinearSNL,
+                   INST=1.0,
+                   GROUP_MA='CellTest',
+                   TYPE_TEST="MIN",
+                   NOM_CHAM='EPVC_ELNO',
+                   NOM_CMP='EPTHER_L',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_CALC=-0.00045043105578761134,
+                   VALE_REFE=epvcRefe,
+                   PRECISION=epvcTole,),),)
+
+FIN()

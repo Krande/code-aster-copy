@@ -273,6 +273,17 @@ class MECA3DH27_HHO222(Element):
                                ),
                      ),
 
+        OP.EPVC_ELGA(te=529,
+                     para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                              (OP.EPVC_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG), ),
+                     para_out=((OP.EPVC_ELGA.PDEFOPG, EDFVCPG), ),
+                     ),
+
+        OP.EPVC_ELNO(te=4,
+                     para_in=((OP.EPVC_ELNO.PDEFOPG, EDFVCPG), ),
+                     para_out=((SP.PDEFONO, EDFVCNO), ),
+                     ),
+
         OP.FORC_NODA(te=450,
                      para_in=((OP.FORC_NODA.PCOMPOR, LC.CCOMPOR), (OP.FORC_NODA.PCONTMR, ECONTPG),
                               (SP.PDEPLMR, DDL_MECA), (SP.PGEOMER, NGEOMER),

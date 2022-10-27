@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,8 @@ def C_AFFE_VARC() : return FACT(statut='f', max='**',
       NOM_CHAM      =SIMP(statut='f',typ='TXM',into=("TEMP","CORR","IRRA","NEUT","GEOM",
                                                      "HYDR_ELNO","HYDR_NOEU",
                                                      "META_ELNO","META_NOEU",
-                                                     "EPSA_ELNO","EPSA_NOEU","PTOT","DIVU",)),
+                                                     "EPSA_ELNO","EPSA_NOEU","PTOT","DIVU",
+                                                     "HHO_TEMP",)),
       PROL_DROITE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
       PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
       FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
@@ -53,4 +54,3 @@ def C_AFFE_VARC() : return FACT(statut='f', max='**',
 );
 
 C_AFFE_VARC_EXTE = FACT(statut='o', AFFE_VARC=C_AFFE_VARC( ))
-
