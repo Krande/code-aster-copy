@@ -195,7 +195,7 @@ private
 !===================================================================================================
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
-    private :: circ_perm, numbering_edge, numbering_face, dividing_cell
+    private :: circ_perm, numbering_edge, numbering_face, dividing_cell, mult_elem
 contains
 !
 !===================================================================================================
@@ -781,7 +781,7 @@ contains
             elseif(cell_type == MT_TETRA10 .or. cell_type == MT_TETRA15) then
                 face_type(1:4) = MT_TRIA6
                 face_loc(4:6,1) = [7,6,5]
-                face_loc(4:6,2) = [1,9,8]
+                face_loc(4:6,2) = [5,9,8]
                 face_loc(4:6,3) = [8,10,7]
                 face_loc(4:6,4) = [6,10,9]
                 if(cell_type == MT_TETRA15) then
@@ -1077,7 +1077,6 @@ contains
             integer :: nb_edges, edge_type(12), edge_loc(3,12), edge_id, edge_nno
             integer :: nb_faces, face_type(6), face_loc(9,6), i_node, i_edge
             integer :: face_nno, face_nodes(27), face_id, edge_nodes(27)
-            aster_logical :: find
 !
             ASSERT(this%converter%dim(type) == 3)
             nno = this%converter%nno(type)
@@ -1095,6 +1094,7 @@ contains
             this%volumes(volume_id)%nb_edges = nb_edges
             do i_edge = 1, nb_edges
                 edge_nno = this%converter%nno(edge_type(i_edge))
+                edge_nodes = 0
                 do i_node = 1, edge_nno
                     edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
                 end do
@@ -1106,6 +1106,7 @@ contains
             this%volumes(volume_id)%nb_faces = nb_faces
             do i_face = 1, nb_faces
                 face_nno = this%converter%nno(face_type(i_face))
+                face_nodes = 0
                 do i_node = 1, face_nno
                     face_nodes(i_node) = nodes(face_loc(i_node, i_face))
                 end do
@@ -1117,13 +1118,16 @@ contains
 !
             if(this%debug) then
                 print*, "Add volume: ", volume_id
-                print*, "- Find: ", find
+                print*, "- Find: ", ASTER_FALSE
                 print*, "- Type: ", this%converter%name(this%volumes(volume_id)%type), &
                                     "(",this%volumes(volume_id)%type, ")"
                 print*, "- Owner: ", this%owner_cell(nno, this%volumes(volume_id)%nodes)
                 print*, "- Nodes: ", this%volumes(volume_id)%nodes
                 print*, "- Edges: ", this%volumes(volume_id)%edges
                 print*, "- Faces: ", this%volumes(volume_id)%faces
+                if(mult_elem(nno, this%volumes(volume_id)%nodes)) then
+                    ASSERT(ASTER_FALSE)
+                end if
             end if
 !
     end function
@@ -1207,6 +1211,9 @@ contains
                 print*, "- Nodes: ", this%faces(face_id)%nodes
                 print*, "- NNOS: ", this%faces(face_id)%nnos_sort
                 print*, "- Edges: ", this%faces(face_id)%edges
+                if(mult_elem(nno, this%faces(face_id)%nodes)) then
+                    ASSERT(ASTER_FALSE)
+                end if
             end if
 !
     end function
@@ -1273,6 +1280,10 @@ contains
                 print*, "- Owner: ", this%owner_cell(3, this%edges(edge_id)%nodes)
                 print*, "- Nodes: ", this%edges(edge_id)%nodes
                 print*, "- NNOS: ", this%edges(edge_id)%nnos_sort
+                if(mult_elem(nno, this%edges(edge_id)%nodes)) then
+                    ASSERT(ASTER_FALSE)
+                end if
+
             end if
 !
     end function
@@ -2629,5 +2640,32 @@ contains
             call jedema()
         end if
     end subroutine
+!
+! ==================================================================================================
+!
+    logical function mult_elem(nb_nodes, nodes)
+!
+! Performs circular permutation such that the first element is the smallest and
+! the second element is the second smallest
+!
+        implicit none
+!
+            integer, intent(in) :: nb_nodes
+            integer, intent(inout) :: nodes(1:nb_nodes)
+!
+            integer :: i_node, j_node
+!
+            ASSERT(nb_nodes <= 27)
+            mult_elem = .false.
+!
+            do i_node = 1, nb_nodes
+                do j_node = i_node + 1, nb_nodes
+                    if(nodes(i_node) == nodes(j_node)) then
+                        mult_elem = .true.
+                        exit
+                    end if
+                end do
+            end do
+    end function
 !
 end module
