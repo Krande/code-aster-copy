@@ -88,7 +88,9 @@ resuTher = THER_LINEAIRE(MODELE=modelTher,
                          CHAM_MATER=fieldMateTher,
                          ETAT_INIT=_F(VALE=tempRefe),
                          INCREMENT=_F(LIST_INST=timeList),
-                         EXCIT=_F(CHARGE=tempImpo)
+                         EXCIT=_F(CHARGE=tempImpo),
+                         SOLVEUR=_F(METHODE='PETSC',
+                                    PRE_COND='HPDDM', RESI_RELA=1.e-10,),
                          )
 
 # Static linear
@@ -130,6 +132,10 @@ resuLinearSNL = STAT_NON_LINE(MODELE=modelMeca,
                               EXCIT=_F(CHARGE=kineCondition,
                                        FONC_MULT=ramp,),
                               INCREMENT=_F(LIST_INST=timeList,),
+                              SOLVEUR=_F(METHODE='PETSC',
+                                         #OPTION_PETSC='-ksp_monitor_true_residual -options_view',
+                                         PRE_COND='HPDDM',
+                                         RESI_RELA=1.e-9,),
                               METHODE="NEWTON",
                               NEWTON=_F(PREDICTION="ELASTIQUE",),)
 
