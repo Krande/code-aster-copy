@@ -37,12 +37,14 @@ private
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
+#include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/ortrep.h"
 #include "blas/daxpy.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +54,7 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoSmallStrainLCMeca, hhoComputeRhsSmall, tranfoMatToSym
+    public   :: hhoSmallStrainLCMeca, hhoComputeRhsSmall, tranfoMatToSym, hhoMatrElasMeca
     private  :: hhoComputeCgphi, hhoComputeLhsSmall, tranfoSymToMat
 !
 contains
@@ -248,6 +250,97 @@ contains
 ! ---- Return code summary
 !
         call codere(cod, hhoQuadCellRigi%nbQuadPoints, codret)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
+                                fami, imate, option, time_curr, angmas, lhs)
+!
+    implicit none
+!
+        type(HHO_Cell), intent(in)      :: hhoCell
+        type(HHO_Data), intent(in)      :: hhoData
+        type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
+        real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        character(len=*), intent(in)    :: fami
+        integer, intent(in)             :: imate
+        character(len=16), intent(in)   :: option
+        real(kind=8), intent(in)        :: time_curr
+        real(kind=8), intent(in)        :: angmas(*)
+        real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute matrix for RIGI_MECA
+!   In hhoCell      : the current HHO Cell
+!   In hhoData      : information on HHO methods
+!   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   In gradrec      : local gradient reconstruction
+!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
+!   In typmod       : type of modelization
+!   In imate        : materiau code
+!   In option       : option of computations
+!   In time_curr    : current time T+
+!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
+!   Out lhs         : local contribution (lhs)
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        real(kind=8) :: dsidep(6,6)
+        real(kind=8) :: coorpg(3), weight
+        real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
+        real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        integer:: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+! --------------------------------------------------------------------------------------------------
+!
+! ------ number of dofs
+        call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
+        faces_dofs = total_dofs - cbs
+        gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
+!
+        AT = 0.d0
+        dsidep = 0.d0
+        nb_sig = nbsigm()
+!
+        if (option /= "RIGI_MECA") then
+            ASSERT(ASTER_FALSE)
+        end if
+!
+! ----- init basis
+        call hhoBasisCell%initialize(hhoCell)
+!
+! ----- Loop on quadrature point
+!
+        do ipg = 1, hhoQuadCellRigi%nbQuadPoints
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3,ipg)
+            weight = hhoQuadCellRigi%weights(ipg)
+! --------- Eval basis function at the quadrature point
+            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+!
+! --------- Compute behaviour
+!
+            call dmatmc(fami, zi(imate), time_curr, '+', ipg, 1, angmas, coorpg, nb_sig, dsidep)
+!
+            call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp, AT)
+        end do
+!
+! ----- compute lhs += gradrec**T * AT * gradrec
+!
+! ----- Copy symetric part of AT
+        call hhoCopySymPartMat('U', AT, gbs_sym)
+! ----- step1: TMP = AT * gradrec
+        call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
+                   gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
+!
+! ----- step2: lhs += gradrec**T * TMP
+        call dgemm('T', 'N', total_dofs, total_dofs, gbs_sym, 1.d0, gradrec, MSIZE_CELL_MAT, &
+                   TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
 !
     end subroutine
 !

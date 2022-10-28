@@ -19,11 +19,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # Prepare mesh
-meshHE8 = LIRE_MAILLAGE(FORMAT='MED',)
+meshHE8 = LIRE_MAILLAGE(FORMAT='MED', PARTITIONNEUR="PTSCOTCH",)
 
 mesh = CREA_MAILLAGE(MAILLAGE=meshHE8,
                      INFO=1,
-                     MODI_HHO=_F(TOUT='OUI', ),
+                     MODI_HHO=_F(TOUT='OUI', PREF_NOEUD="AN",),
                      )
 
 geomFieldNode = CREA_CHAMP(MAILLAGE=mesh,
@@ -129,7 +129,9 @@ resuLinearSNL = STAT_NON_LINE(MODELE=modelMeca,
                               CHAM_MATER=fieldMateMeca,
                               EXCIT=_F(CHARGE=kineCondition,
                                        FONC_MULT=ramp,),
-                              INCREMENT=_F(LIST_INST=timeList,),)
+                              INCREMENT=_F(LIST_INST=timeList,),
+                              METHODE="NEWTON",
+                              NEWTON=_F(PREDICTION="ELASTIQUE",),)
 
 # Post-treatement
 resuLinearSNL = CALC_CHAMP(reuse=resuLinearSNL,

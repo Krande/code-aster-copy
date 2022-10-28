@@ -82,9 +82,11 @@ implicit none
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    if (nomopt /= "RIGI_MECA_TANG" .and. nomopt /= "RIGI_MECA" &
-                                   .and. nomopt /= "FULL_MECA" &
-                                   .and. nomopt /= "RAPH_MECA") then
+    if (nomopt /= "RIGI_MECA_TANG" .and.  &
+        nomopt /= "RIGI_MECA_ELAS" .and.  &
+        nomopt /= "RIGI_MECA" .and. &
+        nomopt /= "FULL_MECA" .and. &
+        nomopt /= "RAPH_MECA") then
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -114,20 +116,30 @@ implicit none
     end select
     typmod(2) = 'HHO'
 !
+    if(nomopt .ne. "RIGI_MECA") then
+!
 ! --- Get input fields
 !
-    call jevech('PCOMPOR', 'L', icompo)
+        call jevech('PCOMPOR', 'L', icompo)
 !
 ! --- Properties of behaviour
 !
-    defo_comp = zk16(icompo-1+DEFO)
-    type_comp = zk16(icompo-1+INCRELAS)
+        defo_comp = zk16(icompo-1+DEFO)
+        type_comp = zk16(icompo-1+INCRELAS)
 !
 ! --- Large strains ?
 !
-    l_largestrains = isLargeStrain(defo_comp)
+        l_largestrains = isLargeStrain(defo_comp)
 !
-    call behaviourOption(nomopt, zk16(icompo), lMatr, lVect, lVari, lSigm, codret)
+        call behaviourOption(nomopt, zk16(icompo), lMatr, lVect, lVari, lSigm, codret)
+    else
+        l_largestrains = ASTER_FALSE
+        lMatr = ASTER_TRUE
+        lSigm = ASTER_FALSE
+        lVect = ASTER_FALSE
+        codret = 0
+        icompo = 1
+    endif
 !
 ! --- Compute Operators
 !
@@ -164,8 +176,12 @@ implicit none
 ! --- Save of lhs
 !
     if (lMatr) then
-        call jevech('PCARCRI', 'L', icarcr)
-        call nmtstm(zr(icarcr), jmatt, matsym)
+        if(nomopt .ne. "RIGI_MECA") then
+            call jevech('PCARCRI', 'L', icarcr)
+            call nmtstm(zr(icarcr), jmatt, matsym)
+        else
+            matsym = ASTER_TRUE
+        endif
         call hhoRenumMecaMat(hhoCell, hhoData, lhs)
 !
         if(matsym) then

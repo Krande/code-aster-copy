@@ -51,6 +51,7 @@ private
 #include "asterfort/megeom.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/ortrep.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/readVector.h"
 #include "asterfort/tecach.h"
@@ -343,33 +344,66 @@ contains
 !   Out codret      : info of the LDC integration
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical :: axi, cplan, deborst
+        aster_logical :: axi, cplan, l_rigi_meca
         integer:: cbs, fbs, total_dofs, j, faces_dofs
         integer :: imate, jmate, lgpg, iret, jtab(7), icarcr, iinstm, iinstp, icontm, ivarim
         integer :: icontp, ivarip, jv_mult_comp
         character(len=16) :: mult_comp
         real(kind=8), dimension(MSIZE_TDOFS_VEC) :: deplm, deplp, deplincr
-        real(kind=8) :: angl_naut(7)
+        real(kind=8) :: angl_naut(7), time_curr, time_prev
 !
 ! --- Verif compor
 !
         axi     = typmod(1) .eq. 'AXIS'
         cplan   = typmod(1) .eq. 'C_PLAN'
-        deborst = compor(5)(1:7) .eq. 'DEBORST'
+        l_rigi_meca = (option == "RIGI_MECA")
 !
-        if (axi .or. cplan .or. deborst) then
+        if (axi .or. cplan) then
             ASSERT(ASTER_FALSE)
         endif
+!
+        time_curr = 0.d0
+        time_prev = 0.d0
 !
 ! --- Get input fields
 !
         call jevech('PMATERC', 'L', jmate)
-        call jevech('PCARCRI', 'L', icarcr)
-        call jevech('PINSTMR', 'L', iinstm)
-        call jevech('PINSTPR', 'L', iinstp)
-        call jevech('PCONTMR', 'L', icontm)
-        call jevech('PVARIMR', 'L', ivarim)
-        call jevech('PMULCOM', 'L', jv_mult_comp)
+        if(.not. l_rigi_meca) then
+            call jevech('PCARCRI', 'L', icarcr)
+            call jevech('PINSTMR', 'L', iinstm)
+            call jevech('PINSTPR', 'L', iinstp)
+            call jevech('PCONTMR', 'L', icontm)
+            call jevech('PVARIMR', 'L', ivarim)
+            call jevech('PMULCOM', 'L', jv_mult_comp)
+
+            time_curr = zr(iinstp)
+            time_prev = zr(iinstm)
+
+            call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+            ASSERT(iret .eq. 0)
+            lgpg = max(jtab(6),1)*jtab(7)
+            imate = zi(jmate -1 + 1)
+            mult_comp = zk16(jv_mult_comp-1+1)
+!
+! --- Get orientation
+!
+            call rcangm(hhoCell%ndim, hhoCell%barycenter, angl_naut)
+        else
+            ASSERT(.not.l_largestrain)
+            imate = jmate
+            icarcr = 0
+            icontm = 0
+            ivarim = 0
+            lgpg = 0
+            call tecach('ONO', 'PTEMPSR', 'L', iret, iad=iinstp)
+            if (iinstp .ne. 0) then
+                time_curr = zr(iinstp)
+            endif
+!
+! --- Get orientation
+!
+            call ortrep(hhoCell%ndim, hhoCell%barycenter, angl_naut)
+        end if
 !
         if(L_SIGM(option)) then
             call jevech('PCONTPR', 'E', icontp)
@@ -383,16 +417,6 @@ contains
             ivarip = 1
         end if
 !
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-        ASSERT(iret .eq. 0)
-        lgpg = max(jtab(6),1)*jtab(7)
-        imate = zi(jmate -1 + 1)
-        mult_comp = zk16(jv_mult_comp-1+1)
-!
-! --- Get orientation
-!
-        call rcangm(hhoCell%ndim, hhoCell%barycenter, angl_naut)
-!
 ! --- number of dofs
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
@@ -402,31 +426,27 @@ contains
 !
         lhs = 0.d0
         rhs = 0.d0
+        deplm = 0.d0
+        deplincr = 0.d0
+        deplp = 0.d0
+!
+        if(.not.l_rigi_meca) then
 !
 ! --- get displacement in T-
 !
-        deplm = 0.d0
-        call readVector('PDEPLMR', total_dofs, deplm)
-        call hhoRenumMecaVecInv(hhoCell, hhoData, deplm)
+            call readVector('PDEPLMR', total_dofs, deplm)
+            call hhoRenumMecaVecInv(hhoCell, hhoData, deplm)
 !
 ! --- get increment displacement beetween T- and T+
 !
-        deplincr = 0.d0
-        call readVector('PDEPLPR', total_dofs, deplincr)
-        call hhoRenumMecaVecInv(hhoCell, hhoData, deplincr)
+            call readVector('PDEPLPR', total_dofs, deplincr)
+            call hhoRenumMecaVecInv(hhoCell, hhoData, deplincr)
 !
 ! --- compute displacement in T+
 !
-        deplp = 0.d0
-        call dcopy(total_dofs, deplm, 1, deplp, 1)
-        call daxpy(total_dofs, 1.d0, deplincr, 1, deplp, 1)
-!
-    ! print*,"sol debut"
-    ! print*, deplm(1:total_dofs)
-    ! print*,"sol incr"
-    ! print*, deplincr(1:total_dofs)
-    ! print*,"sol fin"
-    ! print*, deplp(1:total_dofs)
+            call dcopy(total_dofs, deplm, 1, deplp, 1)
+            call daxpy(total_dofs, 1.d0, deplincr, 1, deplp, 1)
+        end if
 !
         if(l_largestrain) then
 !
@@ -434,18 +454,24 @@ contains
 !
             call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
                                       fami, typmod, imate, compor, option, zr(icarcr), lgpg, &
-                                      nbsigm(), zr(iinstm), zr(iinstp), deplm, deplp, &
+                                      nbsigm(), time_prev, time_curr, deplm, deplp, &
                                       zr(icontm), zr(ivarim), angl_naut, mult_comp, &
                                       cplan, lhs, rhs, zr(icontp), zr(ivarip), codret)
         else
 !
 ! --- small strains and use symmetric gradient
 !
-            call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
+            if(l_rigi_meca) then
+                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
+                                     imate, option, time_curr, angl_naut, lhs)
+                codret = 0
+            else
+                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
                                       fami, typmod, imate, compor, option, zr(icarcr), lgpg, &
-                                      nbsigm(), zr(iinstm), zr(iinstp), deplm, deplincr, &
+                                      nbsigm(), time_prev, time_curr, deplm, deplincr, &
                                       zr(icontm), zr(ivarim), angl_naut, mult_comp, &
                                       lhs, rhs, zr(icontp), zr(ivarip), codret)
+            end if
         end if
 !
 ! --- test integration of the behavior
@@ -454,16 +480,20 @@ contains
 !
 ! --- add stabilization
 !
-        call hhoCalcStabCoeff(hhoData, fami, zr(iinstp), hhoQuadCellRigi)
+        call hhoCalcStabCoeff(hhoData, fami, time_curr, hhoQuadCellRigi)
 !
-        call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
+        if(L_VECT(option)) then
+            call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
                    deplp, 1, 1.d0, rhs,1)
+        end if
 !
-        do j = 1, total_dofs
-            call daxpy(total_dofs, hhoData%coeff_stab(), stab(1,j), 1, lhs(1,j), 1)
-        end do
+        if(L_MATR(option)) then
+            do j = 1, total_dofs
+                call daxpy(total_dofs, hhoData%coeff_stab(), stab(1,j), 1, lhs(1,j), 1)
+            end do
+        end if
 
-    !  print*, "lhs", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
+    !  print*, "lhs", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs)), hhoData%coeff_stab()
     ! print*, "rhs", norm2(rhs)
 !
     999 continue
