@@ -265,7 +265,7 @@ character(len=4), intent(in) :: valeType
         call calirc(phenom, load, model)
 
 ! ----- LIAISON_PROJ
-        call calipj(load)
+        call calipj(load, model)
 
 ! ----- LIAISON_CYCL
         call calyrc(load, mesh, model, geomDime)

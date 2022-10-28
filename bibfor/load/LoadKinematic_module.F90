@@ -31,15 +31,19 @@ use KineListRela_type
 implicit none
 ! ==================================================================================================
 public :: kineLoadGlueMeshMeca, kineLoadGlueMeshTher
+public :: kineLoadLinkProj
 private :: kineLoadMeshProjVoVo, kineLoadMeshProjShVo, kineLoadMeshProjShSh, kineLoadMeshProjVoSh
 private :: kineLoadMeshLinkVoVo, kineLoadMeshLinkShVo, kineLoadMeshLinkShSh, kineLoadMeshLinkVoSh
 private :: kineLoadGlueMeshMecaPara, kineLoadGlueMeshMecaLine
 private :: kineLoadGlueMeshTherPara, kineLoadGlueMeshTherLine
+private :: kineLoadLinkProjPara
 ! ==================================================================================================
 private
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 #include "asterc/getfac.h"
+#include "asterc/indik8.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -48,6 +52,8 @@ private
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -1778,6 +1784,315 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
 ! ----- Next master nodes
         shiftNodeMast = shiftNodeMast + nbNodeMast
     enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! kineLoadLinkProj
+!
+! Main subroutine to glue mesh from projection (LIAISON_PROJ)
+!
+! In  model            : model
+! In  valeType         : affected value type (real, complex or function)
+! Out listLineRela     : name of datastructure for list of linear relation
+!
+! --------------------------------------------------------------------------------------------------
+subroutine kineLoadLinkProj(modelZ, valeTypeZ, listLineRela)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=*), intent(in) :: modelZ, valeTypeZ
+    character(len=19), intent(out) :: listLineRela
+! - Local
+!   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 1 + 3*27 (max maille: 27 noeuds)
+    integer, parameter :: nbTermMaxi = 82
+    character(len=80), parameter :: title = 'LIAISON_PROJ'
+    character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
+    character(len=8), parameter :: physQuanName = "DEPL_R"
+    character(len=19) :: modelLigrel
+    character(len=8) :: mesh
+    character(len=16) :: meshLink
+    character(len=4) :: valeType
+    integer :: geomDime
+    integer :: iOcc, nocc, nbDof
+    character(len=8), pointer :: dofName(:) => null()
+    integer :: iNode1, iNode2, iDof
+    integer :: nbNode1, nbNode2
+    integer :: cell1Nume, cell1TypeNume, node1Nume, node2Nume
+    integer :: idecal, iTerm, nbTerm
+    character(len=8) :: node1Name, node2Name, dofLocaName
+    aster_logical :: hasExcent, oneDofDoesntExist
+    aster_logical, pointer :: dofExist(:) => null()
+    integer, pointer :: cell1List(:) => null(), cellType(:) => null()
+    integer, pointer :: node1List(:) => null(), node2List(:) => null()
+    real(kind=8), pointer :: nodeCoef(:) => null(), nodeCoor(:) => null()
+    real(kind=8) :: coeffi, xyzom(3), coefZero
+    type(KINE_LIST_RELA) :: kineListRela
+    integer :: physQuanNbCmp, jvPhysQuanCmpName, nbec, jvPrnm
+    character(len=1) :: dofUnknown
+    integer, parameter :: nbDofRota = 3
+    character(len=8), pointer :: dofRotaName(:) => null()
+
+!   ------------------------------------------------------------------------------------------------
+!
+    valeType = valeTypeZ
+    ASSERT(valeType .eq. 'REEL')
+
+! - List of rotation DOF
+    AS_ALLOCATE(vk8 = dofRotaName, size = nbDofRota)
+    dofRotaName(1) = "DRX"
+    dofRotaName(2) = "DRY"
+    dofRotaName(3) = "DRZ"
+
+! - About model
+    call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk = mesh)
+    call dismoi('DIM_GEOM', modelZ, 'MODELE', repi = geomDime)
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk = modelLigrel)
+    call jeveuo(modelLigrel//'.PRNM', 'L', jvPrnm)
+
+! - About mesh
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi = cellType)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr = nodeCoor)
+    if (.not.(geomDime .eq. 2 .or. geomDime .eq. 3)) then
+        call utmess('F', 'CHARGES7_6')
+    endif
+
+! - Name of datastructure for list of linear relations
+    listLineRela = '&&CALIRC.RLLISTE'
+
+! - Get information about physical quantity
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', physQuanName), 'L', jvPhysQuanCmpName)
+    call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', physQuanNbCmp)
+    call dismoi('NB_EC', physQuanName, 'GRANDEUR', repi = nbec)
+
+! - Create object for list of linear relations
+    call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
+    coefZero = kineListRela%coefMultTole
+
+    call getfac(factorKeyword, nocc)
+    do iOcc = 1, nocc
+
+! ----- Get main parameters from user
+        call kineLoadLinkProjPara(factorKeyword, iOcc, mesh,&
+                                  meshLink,  hasExcent,&
+                                  nbDof, dofName, dofUnknown, dofExist)
+
+! ----- Acces to mesh link
+        call jelira(meshLink//'.PJEF_NB', 'LONMAX', nbNode2)
+        call jeveuo(meshLink//'.PJEF_NB', 'L', vi = node2List)
+        call jeveuo(meshLink//'.PJEF_M1', 'L', vi = cell1List)
+        call jeveuo(meshLink//'.PJEF_NU', 'L', vi = node1List)
+        call jeveuo(meshLink//'.PJEF_CF', 'L', vr = nodeCoef)
+
+! ----- Loop on slave nodes
+        idecal = 0
+        do iNode2 = 1, nbNode2
+
+! --------- Current slave node
+            node2Nume = iNode2
+            call jenuno(jexnum(mesh//'.NOMNOE', node2Nume), node2Name)
+            cell1Nume = cell1List(node2Nume)
+            if (cell1Nume .eq. 0) cycle
+            if (hasExcent) then
+                cell1TypeNume = cellType(cell1Nume)
+                if (cell1TypeNume .ne. MT_TRIA3 .and. cell1TypeNume .ne. MT_QUAD4) then
+                    call utmess('F', 'CHARGES7_12')
+                endif
+                if (geomDime .ne. 3) then
+                    call utmess('F', 'CHARGES7_15')
+                endif
+            endif
+
+! --------- Check components on current slave node
+            call kineLoadCheckCmpOnNode(jvPrnm, node2Nume,&
+                                        physQuanNbCmp, jvPhysQuanCmpName,&
+                                        nbDof, nbec, dofName,&
+                                        dofExist, oneDofDoesntExist)
+
+! --------- Relation for current slave node
+            do iDof = 1, nbDof
+! ------------- Init list of relations
+                call kineListRelaInit(kineListRela)
+                iTerm = 0
+                dofLocaName = dofName(iDof)
+
+                if (dofExist(iDof)) then
+                    iTerm = iTerm + 1
+                    kineListRela%nodeName(iTerm) = node2Name
+                    kineListRela%coefMultReal(iTerm) = -1.d0
+                    kineListRela%dofName(iTerm) = dofLocaName
+                else
+                    if (dofUnknown .ne. " ") then
+                        call utmess(dofUnknown, "CHARGES7_14")
+                    endif
+                    cycle
+                endif
+
+! ------------- None of the DOF exists on slave node
+                if (iTerm .eq. 0) then
+                    goto 130
+                endif
+
+! ------------- Loop on master nodes
+                nbNode1 = node2List(node2Nume)
+                do iNode1 = 1, nbNode1
+
+! ----------------- Current master node
+                    node1Nume = node1List(idecal+iNode1)
+                    call jenuno(jexnum(mesh//'.NOMNOE', node1Nume), node1Name)
+                    coeffi = nodeCoef(idecal + iNode1)
+                    if (node1Nume .eq. node2Nume) then
+                        call utmess("A", "CHARGES7_13")
+                        goto 130
+                    endif
+
+! ----------------- Check components on current master node
+                    if (hasExcent) then
+
+                        if (dofExist(iDof)) then
+                            iTerm = iTerm + 1
+                            kineListRela%nodeName(iTerm) = node1Name
+                            kineListRela%coefMultReal(iTerm) = coeffi
+                            kineListRela%dofName(iTerm) = dofLocaName
+                        else
+                            if (dofUnknown .ne. " ") then
+                                call utmess(dofUnknown, "CHARGES7_14")
+                            endif
+                            cycle
+                        endif
+
+! --------------------- Est-ce que les ddl de rotation existent sur le noeud d'en face ?
+                        call kineLoadCheckCmpOnNode(jvPrnm, node1Nume,&
+                                                    physQuanNbCmp, jvPhysQuanCmpName,&
+                                                    nbDofRota, nbec, dofRotaName,&
+                                                    dofExist, oneDofDoesntExist)
+                        if (oneDofDoesntExist) then
+                            call utmess('F', 'CHARGES7_16')
+                        endif
+
+! --------------------- U1 = UI2 + DRI2^O2M ==> -UI2 + U1*al(i) - DRI2^O2M*al(i)
+                        xyzom(1) = nodeCoor(3*(node2Nume-1)+1) - nodeCoor(3*(node1Nume-1)+1)
+                        xyzom(2) = nodeCoor(3*(node2Nume-1)+2) - nodeCoor(3*(node1Nume-1)+2)
+                        xyzom(3) = nodeCoor(3*(node2Nume-1)+3) - nodeCoor(3*(node1Nume-1)+3)
+
+! --------------------- Add relations
+                        if (dofLocaName .eq. 'DX') then
+                            call kineLoadApplyEccentricity(3, node1Name, "DRY",&
+                                                        coeffi, coefZero, xyzom,&
+                                                        iTerm, kineListRela)
+                            call kineLoadApplyEccentricity(2, node1Name, "DRZ",&
+                                                        -coeffi, coefZero, xyzom,&
+                                                            iTerm, kineListRela)
+                        elseif (dofLocaName .eq. 'DY') then
+                            call kineLoadApplyEccentricity(3, node1Name, "DRX",&
+                                                            -coeffi, coefZero, xyzom,&
+                                                            iTerm, kineListRela)
+                            call kineLoadApplyEccentricity(1, node1Name, "DRZ",&
+                                                            coeffi, coefZero, xyzom,&
+                                                            iTerm, kineListRela)
+                        elseif (dofLocaName .eq. 'DZ') then
+                            call kineLoadApplyEccentricity(2, node1Name, "DRX",&
+                                                            coeffi, coefZero, xyzom,&
+                                                            iTerm, kineListRela)
+                            call kineLoadApplyEccentricity(1, node1Name, "DRY",&
+                                                            -coeffi, coefZero, xyzom,&
+                                                            iTerm, kineListRela)
+                        endif
+                    else
+                        if ( abs(coeffi) .gt. coefZero ) then
+                            call kineLoadCheckCmpOnNode(jvPrnm, node1Nume,&
+                                                        physQuanNbCmp, jvPhysQuanCmpName,&
+                                                        nbDof, nbec, dofName,&
+                                                        dofExist, oneDofDoesntExist)
+                            if (dofExist(iDof)) then
+                                iTerm = iTerm + 1
+                                kineListRela%nodeName(iTerm) = node1Name
+                                kineListRela%coefMultReal(iTerm) = coeffi
+                                kineListRela%dofName(iTerm) = dofName(iDof)
+                            else
+                                if (dofUnknown .ne. " ") then
+                                    call utmess(dofUnknown, "CHARGES7_14")
+                                endif
+                                cycle
+                            endif
+                        endif
+                    endif
+                end do
+
+! ------------- Affect linear relation
+                nbTerm = iTerm
+                call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
+
+            enddo
+    130     continue
+            idecal = idecal + nbNode1
+        enddo
+
+! ----- Clean
+        AS_DEALLOCATE(vk8 = dofName)
+        AS_DEALLOCATE(vl = dofExist)
+    end do
+
+! - Clean
+    call kineListRelaDelete(kineListRela)
+    AS_DEALLOCATE(vk8 = dofRotaName)
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! kineLoadLinkProjPara
+!
+! Get parameters for LIAISON_PROJ
+!
+! --------------------------------------------------------------------------------------------------
+subroutine kineLoadLinkProjPara(factorKeywordZ, iOcc, mesh,&
+                                meshLink, hasExcent,&
+                                nbDof, dofName, dofUnknown, dofExist)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=*), intent(in) :: factorKeywordZ
+    integer, intent(in) :: iOcc
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(out) :: meshLink
+    integer, intent(out) :: nbDof
+    character(len=8), pointer :: dofName(:)
+    aster_logical, pointer :: dofExist(:)
+    aster_logical, intent(out) :: hasExcent
+    character(len=1), intent(out) :: dofUnknown
+! - Local
+    integer :: iret
+    character(len=16) :: answer
+    character(len=8) :: mesh1, mesh2
+    character(len=24), pointer :: meshLinkPjxx(:)=>null()
+!   ------------------------------------------------------------------------------------------------
+!
+    call getvtx(factorKeywordZ, 'DDL', iocc=iOcc, nbval=0, nbret=nbDof)
+    nbDof = -nbDof
+    ASSERT(nbDof .ge. 1)
+    AS_ALLOCATE(size = nbDof, vk8 = dofName)
+    AS_ALLOCATE(size = nbDof, vl = dofExist)
+    call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=nbDof, vect=dofName)
+    call getvid(factorKeywordZ, 'MATR_PROJECTION', iocc=iocc, scal=meshLink)
+    call getvtx(factorKeywordZ, 'TYPE', iocc=iocc, scal=answer, nbret=iret)
+    hasExcent = ASTER_FALSE
+    if (iret .ne. 0) then
+        hasExcent = answer .eq. 'EXCENTREMENT'
+    endif
+    !call getvtx(factorKeywordZ, 'DDL_EXIST', iocc=iocc, scal=answer, nbret=iret)
+    dofUnknown = "F"
+    ! if (iret .ne. 0) then
+    !     if (answer .eq. "ERREUR") dofUnknown = "F"
+    !     if (answer .eq. "ALARME") dofUnknown = "A"
+    !     if (answer .eq. "IGNORE") dofUnknown = " "
+    ! endif
+
+    call jeveuo(meshLink//'.PJXX_K1', 'L', vk24 = meshLinkPjxx)
+    mesh1 = meshLinkPjxx(1)(1:8)
+    mesh2 = meshLinkPjxx(2)(1:8)
+    if ((mesh.ne.mesh1) .or. (mesh.ne.mesh2)) then
+        call utmess('F', 'CHARGES7_11')
+    endif
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

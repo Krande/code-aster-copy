@@ -34,6 +34,7 @@ public :: kineLoadGetMasterNodes, kineLoadGetMasterCells
 public :: kineLoadNormFromSkinCells, kineLoadNormAtNodes
 public :: kineLoadSetLCS, kineLoadElimMult, kineLoadReadTransf, kineLoadApplyTransf
 public :: kineLoadGetPhysQuanInfo, kineLoadDeleteNodePair
+public :: kineLoadCheckCmpOnNode, kineLoadApplyEccentricity
 ! ==================================================================================================
 private
 #include "asterf_types.h"
@@ -47,6 +48,7 @@ private
 #include "asterfort/canort.h"
 #include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getelem.h"
 #include "asterfort/getnode.h"
@@ -1069,6 +1071,74 @@ subroutine kineLoadAverageNormal(meshZ, geomDime,&
         inoma = -1
     else if (slavHasPOI1) then
         inoma = -2
+    endif
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! kineLoadCheckCmpOnNode
+!
+! Check components on node
+!
+! --------------------------------------------------------------------------------------------------
+subroutine kineLoadCheckCmpOnNode(jvPrnm, nodeNume,&
+                                  physQuanNbCmp, jvPhysQuanCmpName,&
+                                  nbDof, nbec, dofName,&
+                                  dofExist, oneDofDoesntExist)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    integer, intent(in) :: jvPrnm, nodeNume
+    integer, intent(in) :: physQuanNbCmp, nbec, nbDof
+    character(len=8), pointer :: dofName(:)
+    integer, intent(in) :: jvPhysQuanCmpName
+    aster_logical, pointer :: dofExist(:)
+    aster_logical, intent(out) :: oneDofDoesntExist
+! - Local
+    integer :: iDof, idxCmp
+!   ------------------------------------------------------------------------------------------------
+!
+    dofExist = ASTER_TRUE
+    oneDofDoesntExist = ASTER_FALSE
+    do iDof = 1, nbDof
+        idxCmp = indik8(zk8(jvPhysQuanCmpName), dofName(iDof), 1, physQuanNbCmp)
+        ASSERT(idxCmp .gt. 0)
+        if (.not.exisdg(zi(jvPrnm-1+(nodeNume-1)*nbec+1), idxCmp)) then
+            dofExist(iDof) = ASTER_FALSE
+            oneDofDoesntExist = ASTER_TRUE
+        endif
+    enddo
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! kineLoadApplyEccentricity
+!
+! Apply eccentricity on coefficients
+!
+! --------------------------------------------------------------------------------------------------
+subroutine kineLoadApplyEccentricity(iDime, nodeNameZ, rotaCmpNameZ,&
+                                     coef, coefZero, xyzom,&
+                                     iTerm, kineListRela)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    integer, intent(in) :: iDime
+    character(len=*), intent(in) :: nodeNameZ, rotaCmpNameZ
+    real(kind=8), intent(in) :: coef, coefZero
+    real(kind=8), intent(in) :: xyzom(3)
+    integer, intent(inout) :: iTerm
+    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+! - Local
+    character(len=8) :: rotaCmpName, nodeName
+!   ------------------------------------------------------------------------------------------------
+!
+    nodeName = nodeNameZ
+    rotaCmpName = rotaCmpNameZ
+    if ( abs(coef*xyzom(iDime)) .gt. coefZero) then
+        iTerm = iTerm + 1
+        kineListRela%nodeName(iTerm) = nodeName
+        kineListRela%coefMultReal(iTerm) = coef*xyzom(iDime)
+        kineListRela%dofName(iTerm) = rotaCmpName
     endif
 !
 !   ------------------------------------------------------------------------------------------------
