@@ -21,9 +21,14 @@
 
 import numpy as np
 from collections import OrderedDict
-from .mac3coeur_commons import (get_first_digit, check_centers_and_size as check,
-                               check_contiguous, find_nearest_idx,
-                               MAC3_ROUND)
+from .mac3coeur_commons import (
+    get_first_digit,
+    check_centers_and_size as check,
+    check_contiguous,
+    find_nearest_idx,
+    MAC3_ROUND,
+)
+
 
 class ThycResult:
 
@@ -55,8 +60,9 @@ class ThycResult:
 
     @property
     def grids_index(self):
-        return [find_nearest_idx(i, self.cells_center, self.cells_size)
-                for i in self.grids_position]
+        return [
+            find_nearest_idx(i, self.cells_center, self.cells_size) for i in self.grids_position
+        ]
 
     @property
     def cells_number(self):
@@ -92,10 +98,10 @@ class ThycResult:
         Axial dimension of the THYC cells computed from the barycenter
         """
         cells_size = np.zeros(self.cells_center.size)
-        cells_size[0] = 2*self.cells_center[0]
+        cells_size[0] = 2 * self.cells_center[0]
         delta_center = self.cells_center[1:] - self.cells_center[:-1]
         for i in range(delta_center.size):
-            cells_size[i+1] = 2*delta_center[i] - cells_size[i]
+            cells_size[i + 1] = 2 * delta_center[i] - cells_size[i]
         return cells_size.round(MAC3_ROUND)
 
     @property
@@ -106,7 +112,7 @@ class ThycResult:
         pos_ax = self._thyc_data["AXIAL"].keys()
         pos_trx = self._thyc_data[self.method_tr]["X"].keys()
         pos_try = self._thyc_data[self.method_tr]["Y"].keys()
-        assert (pos_ax == pos_trx == pos_try)
+        assert pos_ax == pos_trx == pos_try
         return list(pos_ax)
 
     @property
@@ -128,7 +134,7 @@ class ThycResult:
             (array): The axial force for the assembly (i,j).
 
         """
-        return self._thyc_data["AXIAL"][i,j][0]
+        return self._thyc_data["AXIAL"][i, j][0]
 
     def transversal_force_x(self, i, j):
         """
@@ -141,7 +147,7 @@ class ThycResult:
         Returns:
             (array): The transversal force along the X axis for the assembly (i,j).
         """
-        return self._thyc_data[self.method_tr]["X"][i,j]
+        return self._thyc_data[self.method_tr]["X"][i, j]
 
     def transversal_force_y(self, i, j):
         """
@@ -154,7 +160,7 @@ class ThycResult:
         Returns:
             (array): The transversal force along the Y axis for the assembly (i,j).
         """
-        return self._thyc_data[self.method_tr]["Y"][i,j]
+        return self._thyc_data[self.method_tr]["Y"][i, j]
 
     def __init__(self):
         self._reset_structures()
@@ -165,8 +171,8 @@ class ThycResult:
         self._thyc_mesh = OrderedDict()
         self._thyc_data = OrderedDict()
         self._thyc_data["AXIAL"] = OrderedDict()
-        self._thyc_data["M2TEN"] = {"X" : OrderedDict(), "Y" : OrderedDict()}
-        self._thyc_data["M1DEV"] = {"X" : OrderedDict(), "Y" : OrderedDict()}
+        self._thyc_data["M2TEN"] = {"X": OrderedDict(), "Y": OrderedDict()}
+        self._thyc_data["M1DEV"] = {"X": OrderedDict(), "Y": OrderedDict()}
 
     def _read_mesh_data(self, thyclines):
 
@@ -182,7 +188,7 @@ class ThycResult:
         # Check mesh data
         for key_mesh in mandatory_kws:
             if not key_mesh in self._thyc_mesh:
-                msg = "Mesh %s not found"%key_mesh
+                msg = "Mesh %s not found" % key_mesh
                 raise IOError(msg)
 
         if check_contiguous(self._thyc_mesh[self._K]) is False:
@@ -191,13 +197,16 @@ class ThycResult:
 
         cells_count = list(set([len(i) for i in self._thyc_mesh.values()]))
         if len(cells_count) != 1:
-            msg = "Number of items mismatch between %s"%mandatory_kws
+            msg = "Number of items mismatch between %s" % mandatory_kws
             raise IOError(msg)
 
         if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 0) is False:
             # Premier cas, decalage de 1 verifié sur tout l'axe, on corrige
             if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 1) is True:
-                ep0 = 2*(self._thyc_mesh[self._Z][1] - self._thyc_mesh[self._Z][0]) - self._thyc_mesh[self._Ep][0]
+                ep0 = (
+                    2 * (self._thyc_mesh[self._Z][1] - self._thyc_mesh[self._Z][0])
+                    - self._thyc_mesh[self._Ep][0]
+                )
                 self._thyc_mesh[self._Ep] = np.roll(self._thyc_mesh[self._Ep], 1)
                 self._thyc_mesh[self._Ep][0] = ep0
                 if check(self._thyc_mesh[self._Z], self._thyc_mesh[self._Ep], 0) is False:
@@ -207,11 +216,13 @@ class ThycResult:
             elif check(self._thyc_mesh[self._Z][:2], self._thyc_mesh[self._Ep][:2], 0) is True:
                 pass
             else:
-                msg = "Invalid THYC file : {} and {} do not match and cannot be repaired".format(self._Z, self._Ep)
+                msg = "Invalid THYC file : {} and {} do not match and cannot be repaired".format(
+                    self._Z, self._Ep
+                )
                 raise IOError(msg)
 
         # Z shift
-        z0mac3 = self._thyc_mesh[self._Z][0] - 0.5*self._thyc_mesh[self._Ep][0]
+        z0mac3 = self._thyc_mesh[self._Z][0] - 0.5 * self._thyc_mesh[self._Ep][0]
         self._thyc_mesh[self._Z] -= z0mac3
 
     def _read_thyc_data(self, thyclines):
@@ -221,18 +232,18 @@ class ThycResult:
 
             # Recherche des blocs dans les lignes *
             if all(i in line for i in ("*", "en (N)")):
-                if "AXIAL" in line :
+                if "AXIAL" in line:
                     key_block = "AXIAL"
                 elif "TENSEURS" in line:
                     key_block = "M2TEN"
                 elif "DEVELOPPEE" in line:
                     key_block = "M1DEV"
                 else:
-                    assert(False)
+                    assert False
 
             # Recherches des valeurs dans les autres lignes
-            if (not "*" in line.strip() and len(line.strip()) !=0):
-                assert(key_block is not None)
+            if not "*" in line.strip() and len(line.strip()) != 0:
+                assert key_block is not None
 
                 if "TRANSVERSES" in line:
                     key_dir = spline[-3]
@@ -245,15 +256,15 @@ class ThycResult:
                     errmsg = "Items mismatch for position '%s' (%s, %s)"
 
                     if key_block in ("M2TEN", "M1DEV"):
-                        self._thyc_data[key_block][key_dir][i,j] = forces
+                        self._thyc_data[key_block][key_dir][i, j] = forces
                         if not len(forces) == self.cells_number:
-                            raise IOError(errmsg%(key_block, i, j))
+                            raise IOError(errmsg % (key_block, i, j))
                     elif key_block in ("AXIAL",):
-                        self._thyc_data[key_block][i,j] = forces
+                        self._thyc_data[key_block][i, j] = forces
                         if not len(forces) == 1:
-                            raise IOError(errmsg%(key_block, i, j))
-                    else :
-                        assert(False)
+                            raise IOError(errmsg % (key_block, i, j))
+                    else:
+                        assert False
 
     def read_thyc_file(self, fname):
         """
@@ -272,8 +283,11 @@ class ThycResult:
 
         self._read_mesh_data(all_lines)
         # Keep only lines without mesh data
-        sub_lines = [l for l in all_lines
-                     if not any(x.lower() in l.lower() for x in [self._K, self._Ep, self._Z])]
+        sub_lines = [
+            l
+            for l in all_lines
+            if not any(x.lower() in l.lower() for x in [self._K, self._Ep, self._Z])
+        ]
         self._read_thyc_data(sub_lines)
 
     def get_transversal_load_profile(self, i, j, direction, coeff):
@@ -292,7 +306,7 @@ class ThycResult:
 
         assert direction in ("X", "Y")
 
-        force =  self._thyc_data[self.method_tr][direction][i,j]
+        force = self._thyc_data[self.method_tr][direction][i, j]
         epaisseur = self.cells_size_from_center
         cote = self.cells_center
 
@@ -306,14 +320,14 @@ class ThycResult:
         start_eb = 0
         stop_eb = self.grids_index[0]
         som_l = sum(epaisseur[start_eb:stop_eb])
-        som_f = sum(coeff*force[start_eb:stop_eb])
-        som_feq = som_f / (som_l + 0.25*epaisseur[stop_eb])
+        som_f = sum(coeff * force[start_eb:stop_eb])
+        som_feq = som_f / (som_l + 0.25 * epaisseur[stop_eb])
 
         # Point1
-        x1 = cote[start_eb] - 0.5*epaisseur[start_eb] - eps
+        x1 = cote[start_eb] - 0.5 * epaisseur[start_eb] - eps
         y1 = som_feq
         # Point2
-        x2 = cote[stop_eb] - 0.5*epaisseur[stop_eb] + eps
+        x2 = cote[stop_eb] - 0.5 * epaisseur[stop_eb] + eps
         y2 = som_feq
         # Point3
         x3 = cote[stop_eb]
@@ -324,19 +338,19 @@ class ThycResult:
         applied_force.extend([som_f, som_f, 0.0])
 
         # Pour aller de la premiere a la derniere grille.
-        for g in range(0, len(self.grids_index)-1):
+        for g in range(0, len(self.grids_index) - 1):
             start_me = self.grids_index[g]
-            stop_me = self.grids_index[g+1]
+            stop_me = self.grids_index[g + 1]
 
-            som_l = sum(epaisseur[start_me+1:stop_me])
-            som_f = sum(coeff*force[start_me+1:stop_me])
-            som_feq = som_f / (som_l + 0.25*(epaisseur[start_me] + epaisseur[stop_me]))
+            som_l = sum(epaisseur[start_me + 1 : stop_me])
+            som_f = sum(coeff * force[start_me + 1 : stop_me])
+            som_feq = som_f / (som_l + 0.25 * (epaisseur[start_me] + epaisseur[stop_me]))
 
             # Point1
-            x1 = cote[start_me] + 0.5*epaisseur[start_me] - eps
+            x1 = cote[start_me] + 0.5 * epaisseur[start_me] - eps
             y1 = som_feq
             # Point2
-            x2 = cote[stop_me] - 0.5*epaisseur[stop_me] + eps
+            x2 = cote[stop_me] - 0.5 * epaisseur[stop_me] + eps
             y2 = som_feq
             # Point3
             x3 = cote[stop_me]
@@ -348,23 +362,23 @@ class ThycResult:
 
         # Pour aller de la derniere grille jusqu'a l embout superieur.
         start_eh = self.grids_index[-1]
-        stop_eh = len(cote)-1
+        stop_eh = len(cote) - 1
 
-        som_l = sum(epaisseur[start_eh+1:stop_eh+1])
-        som_f = sum(coeff*force[start_eh+1:stop_eh+1])
+        som_l = sum(epaisseur[start_eh + 1 : stop_eh + 1])
+        som_f = sum(coeff * force[start_eh + 1 : stop_eh + 1])
         som_feq = som_f / (som_l + 0.25 * epaisseur[start_eh])
 
-        x1 = cote[start_eh] + 0.5*epaisseur[start_eh] - eps
+        x1 = cote[start_eh] + 0.5 * epaisseur[start_eh] - eps
         y1 = som_feq
-        x2 = cote[stop_eh] + 0.5*epaisseur[stop_eh] + eps
+        x2 = cote[stop_eh] + 0.5 * epaisseur[stop_eh] + eps
         y2 = som_feq
 
         x_axis.extend([x1, x2])
         y_axis.extend([y1, y2])
         applied_force.extend([som_f, som_f])
 
-        x_axis = [round(i, MAC3_ROUND) for i in x_axis]
-        y_axis = [round(i, MAC3_ROUND) for i in y_axis]
-        applied_force = [round(i, MAC3_ROUND) for i in applied_force]
+        x_axis = [round(v, MAC3_ROUND) for v in x_axis]
+        y_axis = [round(v, MAC3_ROUND) for v in y_axis]
+        applied_force = [round(v, MAC3_ROUND) for v in applied_force]
 
         return x_axis, y_axis, applied_force

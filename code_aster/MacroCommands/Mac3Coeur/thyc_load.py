@@ -30,6 +30,7 @@ from ...Messages import ASSERT, UTMESS
 from ...Utilities import logger
 from .thyc_result import ThycResult
 
+
 def DEFI_FONCTION_PROFILE(px, py):
     func = Function()
     func.setParameterName("X")
@@ -38,10 +39,13 @@ def DEFI_FONCTION_PROFILE(px, py):
     func.setValues(px, py)
     return func
 
+
 class ThycLoadManager(object):
 
     """Object to represent a result read from THYC"""
-    __slots__ = ('chtr_nodal', 'chtr_poutre', 'chax_nodal', 'chax_poutre')
+
+    __slots__ = ("chtr_nodal", "chtr_poutre", "chax_nodal", "chax_poutre")
+
 
 def lire_resu_thyc(coeur, MODELE, nom_fic):
     """XXX
@@ -52,25 +56,28 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     # Fonction multiplicative de la force hydrodynamique axiale.
     # On multiplie par 0.708 les forces hydrodynamiques a froid pour obtenir
     # celles a chaud.
-    FOHYFR_1 = 1.0    # Valeur a froid
+    FOHYFR_1 = 1.0  # Valeur a froid
     FOHYCH_1 = 0.708  # Valeur a chaud
 
     thyc_load = ThycLoadManager()
     thyc_resu = ThycResult()
     thyc_resu.grids_position = coeur.altitude
     thyc_resu.read_thyc_file(nom_fic)
-    assert(coeur.NBAC == thyc_resu.fa_number)
-    if not all(abs(thyc_resu.cells_size - thyc_resu.cells_size_from_center) < 1.E-4):
-        UTMESS('A', 'COEUR0_6')
-        logger.debug("<THYC_LOAD><COEUR0_6>: cells_size = %s"%(thyc_resu.cells_size))
-        logger.debug("<THYC_LOAD><COEUR0_6>: cells_size_from_center = %s"%(thyc_resu.cells_size_from_center))
+    assert coeur.NBAC == thyc_resu.fa_number
+    if not all(abs(thyc_resu.cells_size - thyc_resu.cells_size_from_center) < 1.0e-4):
+        UTMESS("A", "COEUR0_6")
+        logger.debug("<THYC_LOAD><COEUR0_6>: cells_size = %s" % (thyc_resu.cells_size))
+        logger.debug(
+            "<THYC_LOAD><COEUR0_6>: cells_size_from_center = %s"
+            % (thyc_resu.cells_size_from_center)
+        )
 
     logger.debug("<THYC_LOAD>: Start")
     n1 = len(thyc_resu.grids_index)
     n2 = len(thyc_resu.grids_position)
-    if n1 != n2 :
-        UTMESS('F', 'COEUR0_7', vali=(n1, n2))
-    logger.debug("<THYC_LOAD>: Grids index %s"%thyc_resu.grids_index)
+    if n1 != n2:
+        UTMESS("F", "COEUR0_7", vali=(n1, n2))
+    logger.debug("<THYC_LOAD>: Grids index %s" % thyc_resu.grids_index)
 
     # Recuperation des efforts transverses sur les grilles
     nodal_tr = []
@@ -81,7 +88,9 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     chThyc = {}
     for i, (posX_thyc, posY_thyc) in enumerate(thyc_resu.fa_positions):
         posi_aster = coeur.position_fromthyc(posX_thyc, posY_thyc)
-        logger.debug("<THYC_LOAD>: Position THYC : (%s, %s) MAC3 : %s"%(posX_thyc, posY_thyc, posi_aster))
+        logger.debug(
+            "<THYC_LOAD>: Position THYC : (%s, %s) MAC3 : %s" % (posX_thyc, posY_thyc, posi_aster)
+        )
 
         idAC = coeur.position_todamac(posi_aster)
         ac = coeur.collAC[idAC]
@@ -90,80 +99,95 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         tr_y = thyc_resu.transversal_force_y(posX_thyc, posY_thyc)
         force_ax = thyc_resu.axial_force(posX_thyc, posY_thyc)
 
-        cr_grp_ma = 'CR_%s'%posi_aster
+        cr_grp_ma = "CR_%s" % posi_aster
 
         for j, grid_j in enumerate(thyc_resu.grids_index):
-            grid_grp_no = "G_%s_%d"%(posi_aster, j+1)
-            chThyc['X']= tr_x[grid_j]/4.0
-            chThyc['Y']= tr_y[grid_j]/4.0
+            grid_grp_no = "G_%s_%d" % (posi_aster, j + 1)
+            chThyc["X"] = tr_x[grid_j] / 4.0
+            chThyc["Y"] = tr_y[grid_j] / 4.0
 
-            logger.debug("<THYC_LOAD><TRANSVERSAL>: Grid group %s : LoadX = %s, LoadY = %s"%(grid_grp_no, chThyc['X'], chThyc['Y']))
+            logger.debug(
+                "<THYC_LOAD><TRANSVERSAL>: Grid group %s : LoadX = %s, LoadY = %s"
+                % (grid_grp_no, chThyc["X"], chThyc["Y"])
+            )
 
-            chAsterY=coeur.coefFromThyc('Y')*chThyc[coeur.axeFromThyc('Y')]
-            chAsterZ=coeur.coefFromThyc('Z')*chThyc[coeur.axeFromThyc('Z')]
+            chAsterY = coeur.coefFromThyc("Y") * chThyc[coeur.axeFromThyc("Y")]
+            chAsterZ = coeur.coefFromThyc("Z") * chThyc[coeur.axeFromThyc("Z")]
             nodal_tr.extend([_F(GROUP_NO=grid_grp_no, FY=chAsterY, FZ=chAsterZ)])
 
         for direction in ("X", "Y"):
-            px, py, fy = thyc_resu.get_transversal_load_profile(posX_thyc, posY_thyc,
-                                                                direction, coeur.coefToThyc(direction))
-            logger.debug("<THYC_LOAD><TRANSVERSAL>: Rod group %s, direction %s"%(cr_grp_ma, direction))
-            logger.debug("<THYC_LOAD><TRANSVERSAL>:   px = %s"%px)
-            logger.debug("<THYC_LOAD><TRANSVERSAL>:   py = %s"%py)
-            logger.debug("<THYC_LOAD><TRANSVERSAL>:   fy = %s"%fy)
+            px, py, fy = thyc_resu.get_transversal_load_profile(
+                posX_thyc, posY_thyc, direction, coeur.coefToThyc(direction)
+            )
+            logger.debug(
+                "<THYC_LOAD><TRANSVERSAL>: Rod group %s, direction %s" % (cr_grp_ma, direction)
+            )
+            logger.debug("<THYC_LOAD><TRANSVERSAL>:   px = %s" % px)
+            logger.debug("<THYC_LOAD><TRANSVERSAL>:   py = %s" % py)
+            logger.debug("<THYC_LOAD><TRANSVERSAL>:   fy = %s" % fy)
 
             chThyc[direction] = DEFI_FONCTION_PROFILE(px, py)
 
-        linear_tr.extend([_F(GROUP_MA=cr_grp_ma,
-                             FY=chThyc[coeur.axeFromThyc('Y')],
-                             FZ=chThyc[coeur.axeFromThyc('Z')])])
-
+        linear_tr.extend(
+            [
+                _F(
+                    GROUP_MA=cr_grp_ma,
+                    FY=chThyc[coeur.axeFromThyc("Y")],
+                    FZ=chThyc[coeur.axeFromThyc("Z")],
+                )
+            ]
+        )
 
         # Chargements axiaux
         KTOT = ac.K_GRM * (ac.NBGR - 2) + ac.K_GRE * 2 + ac.K_EBSU + ac.K_TUB + ac.K_EBIN
 
         # Force axiale pour une grille extremite (inf)
-        grp_ax_g1 = "G_%s_1"%posi_aster
+        grp_ax_g1 = "G_%s_1" % posi_aster
         f_ax_g1 = force_ax / FOHYCH_1 * ac.K_GRE / KTOT / 4.0
         nodal_ax.extend([_F(GROUP_NO=grp_ax_g1, FX=f_ax_g1)])
-        logger.debug("<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s"%(grp_ax_g1, f_ax_g1))
+        logger.debug("<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_g1, f_ax_g1))
 
         # Force axiale pour chacune des grilles de mélange
         for j in range(1, ac.NBGR - 1):
-            grp_ax_gi = "G_%s_%d"%(posi_aster, j+1)
+            grp_ax_gi = "G_%s_%d" % (posi_aster, j + 1)
             f_ax_gi = force_ax / FOHYCH_1 * ac.K_GRM / KTOT / 4.0
             nodal_ax.extend([_F(GROUP_NO=grp_ax_gi, FX=f_ax_gi)])
-            logger.debug("<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s"%(grp_ax_gi, f_ax_gi))
+            logger.debug(
+                "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_gi, f_ax_gi)
+            )
 
-        grp_ax_glast = "G_%s_%d"%(posi_aster, ac.NBGR)
+        grp_ax_glast = "G_%s_%d" % (posi_aster, ac.NBGR)
         f_ax_glast = force_ax / FOHYCH_1 * ac.K_GRE / KTOT / 4.0
         nodal_ax.extend([_F(GROUP_NO=grp_ax_glast, FX=f_ax_glast)])
-        logger.debug("<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s"%(grp_ax_glast, f_ax_glast))
+        logger.debug(
+            "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_glast, f_ax_glast)
+        )
 
         # Force axiale pour l'embout inferieur
-        grp_ax_pi = "PI_%s"%posi_aster
+        grp_ax_pi = "PI_%s" % posi_aster
         f_ax_pi = force_ax / FOHYCH_1 * ac.K_EBIN / KTOT
         nodal_ax.extend([_F(GROUP_NO=grp_ax_pi, FX=f_ax_pi)])
-        logger.debug("<THYC_LOAD><AXIAL>: Nozzle group %s : Axial Load = %s"%(grp_ax_pi, f_ax_pi))
+        logger.debug("<THYC_LOAD><AXIAL>: Nozzle group %s : Axial Load = %s" % (grp_ax_pi, f_ax_pi))
 
         # Force axiale pour l'embout superieur
-        grp_ax_ps = "PS_%s"%posi_aster
+        grp_ax_ps = "PS_%s" % posi_aster
         f_ax_ps = force_ax / FOHYCH_1 * ac.K_EBSU / KTOT
         nodal_ax.extend([_F(GROUP_NO=grp_ax_ps, FX=f_ax_ps)])
-        logger.debug("<THYC_LOAD><AXIAL>: Nozzle group %s : Axial Load = %s"%(grp_ax_ps, f_ax_ps))
+        logger.debug("<THYC_LOAD><AXIAL>: Nozzle group %s : Axial Load = %s" % (grp_ax_ps, f_ax_ps))
 
         # Force axiale pour les crayons
-        cr_grp_ma = 'CR_%s'%posi_aster
+        cr_grp_ma = "CR_%s" % posi_aster
         f_ax_cr = force_ax / FOHYCH_1 * ac.K_TUB / KTOT * ac.NBCR / (ac.NBCR + ac.NBTG) / ac.LONCR
         _FXC = DEFI_FONCTION_PROFILE([ac.XINFC, ac.XSUPC], [f_ax_cr, f_ax_cr])
         linear_ax.extend([_F(GROUP_MA=cr_grp_ma, FX=_FXC)])
-        logger.debug("<THYC_LOAD><AXIAL>: Rod group %s : Axial Load = %s"%(cr_grp_ma, f_ax_cr))
+        logger.debug("<THYC_LOAD><AXIAL>: Rod group %s : Axial Load = %s" % (cr_grp_ma, f_ax_cr))
 
         # Force axiale pour les tubes-guides
-        tg_grp_ma = 'TG_%s'%posi_aster
+        tg_grp_ma = "TG_%s" % posi_aster
         f_ax_tg = force_ax / FOHYCH_1 * ac.K_TUB / KTOT * ac.NBTG / (ac.NBCR + ac.NBTG) / ac.LONTU
         _FXT = DEFI_FONCTION_PROFILE([ac.XINFT, ac.XSUPT], [f_ax_tg, f_ax_tg])
         linear_ax.extend([_F(GROUP_MA=tg_grp_ma, FX=_FXT)])
-        logger.debug("<THYC_LOAD><AXIAL>: Tubes group %s : Axial Load = %s"%(tg_grp_ma, f_ax_tg))
+        logger.debug("<THYC_LOAD><AXIAL>: Tubes group %s : Axial Load = %s" % (tg_grp_ma, f_ax_tg))
 
     thyc_load.chtr_nodal = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=nodal_tr)
     thyc_load.chtr_poutre = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_POUTRE=linear_tr)

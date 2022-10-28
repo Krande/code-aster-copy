@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,8 @@ import os.path as osp
 class Mac3Factory(object):
 
     """Classe chapeau des factories."""
-    prefix = ''
+
+    prefix = ""
 
     def __init__(self, datg):
         """Initialisation"""
@@ -45,7 +46,7 @@ class Mac3Factory(object):
     def _get_obj_fname(self, fname):
         """Retourne le nom du fichier définissant l'objet à importer."""
         fname = osp.join(self.rep_datg, fname + ".datg")
-        assert osp.exists(fname), 'file not found %s' % fname
+        assert osp.exists(fname), "file not found %s" % fname
         return fname
 
     def build_supported_types(self):
@@ -62,9 +63,9 @@ class Mac3Factory(object):
         fname = self._get_obj_fname(objname)
         ctxt = self._context_init()
         with open(fname) as f:
-            exec(compile(f.read(), fname, 'exec'), ctxt)
+            exec(compile(f.read(), fname, "exec"), ctxt)
         obj = ctxt.get(objname)
-        assert obj, "No object named '%s' has been defined in the catalog '%s'"%(objname, fname)
+        assert obj, "No object named '%s' has been defined in the catalog '%s'" % (objname, fname)
         self.cata[objname] = ctxt[objname]
 
     def get(self, objname):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,68 +32,94 @@ def mac3coeur_ac_permute(self, **args):
 
     # On importe les definitions des commandes a utiliser dans la macro
 
-    POS_INIT = args['POS_INIT']
-    POS_FIN = args['POS_FIN']
-    RESU_INI = args['RESU_INI']
-    RESU_FIN = args['RESU_FIN']
-    INSTANT = args['INSTANT']
-    MA_INI = args['MAILLAGE_INIT']
-    MA_FIN = args['MAILLAGE_FINAL']
-    VECT = args['TRAN']
+    POS_INIT = args["POS_INIT"]
+    POS_FIN = args["POS_FIN"]
+    RESU_INI = args["RESU_INI"]
+    RESU_FIN = args["RESU_FIN"]
+    INSTANT = args["INSTANT"]
+    MA_INI = args["MAILLAGE_INIT"]
+    MA_FIN = args["MAILLAGE_FINAL"]
+    VECT = args["TRAN"]
 
-    CREA_RESU(reuse=RESU_FIN,
-              OPERATION='PERM_CHAM',
-              TYPE_RESU='EVOL_NOLI',
-              RESU_INIT=RESU_INI,
-              INST_INIT=INSTANT,
-              MAILLAGE_INIT=MA_INI,
-              NOM_CHAM=('DEPL', 'VARI_ELGA'),
-              RESU_FINAL=RESU_FIN,
-              MAILLAGE_FINAL=MA_FIN,
-              PERM_CHAM=(_F(GROUP_MA_INIT='CR_' + POS_INIT,
-                            GROUP_MA_FINAL='CR_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='TG_' + POS_INIT,
-                            GROUP_MA_FINAL='TG_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='ES_' + POS_INIT,
-                            GROUP_MA_FINAL='ES_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='EI_' + POS_INIT,
-                            GROUP_MA_FINAL='EI_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='DI_' + POS_INIT,
-                            GROUP_MA_FINAL='DI_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GC_' + POS_INIT + '_B',
-                            GROUP_MA_FINAL='GC_' + POS_FIN + '_B',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GC_' + POS_INIT + '_T',
-                            GROUP_MA_FINAL='GC_' + POS_FIN + '_T',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GC_' + POS_INIT + '_M',
-                            GROUP_MA_FINAL='GC_' + POS_FIN + '_M',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GT_' + POS_INIT + '_E',
-                            GROUP_MA_FINAL='GT_' + POS_FIN + '_E',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GT_' + POS_INIT + '_M',
-                            GROUP_MA_FINAL='GT_' + POS_FIN + '_M',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='MNT_' + POS_INIT,
-                            GROUP_MA_FINAL='MNT_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),))
+    CREA_RESU(
+        reuse=RESU_FIN,
+        OPERATION="PERM_CHAM",
+        TYPE_RESU="EVOL_NOLI",
+        RESU_INIT=RESU_INI,
+        INST_INIT=INSTANT,
+        MAILLAGE_INIT=MA_INI,
+        NOM_CHAM=("DEPL", "VARI_ELGA"),
+        RESU_FINAL=RESU_FIN,
+        MAILLAGE_FINAL=MA_FIN,
+        PERM_CHAM=(
+            _F(
+                GROUP_MA_INIT="CR_" + POS_INIT,
+                GROUP_MA_FINAL="CR_" + POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="TG_" + POS_INIT,
+                GROUP_MA_FINAL="TG_" + POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="ES_" + POS_INIT,
+                GROUP_MA_FINAL="ES_" + POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="EI_" + POS_INIT,
+                GROUP_MA_FINAL="EI_" + POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="DI_" + POS_INIT,
+                GROUP_MA_FINAL="DI_" + POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GC_" + POS_INIT + "_B",
+                GROUP_MA_FINAL="GC_" + POS_FIN + "_B",
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GC_" + POS_INIT + "_T",
+                GROUP_MA_FINAL="GC_" + POS_FIN + "_T",
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GC_" + POS_INIT + "_M",
+                GROUP_MA_FINAL="GC_" + POS_FIN + "_M",
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GT_" + POS_INIT + "_E",
+                GROUP_MA_FINAL="GT_" + POS_FIN + "_E",
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="GT_" + POS_INIT + "_M",
+                GROUP_MA_FINAL="GT_" + POS_FIN + "_M",
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+            _F(
+                GROUP_MA_INIT="MNT_" + POS_INIT,
+                GROUP_MA_FINAL="MNT_" + POS_FIN,
+                TRAN=VECT,
+                PRECISION=1.0e-10,
+            ),
+        ),
+    )
 
     return RESU_FIN
 
@@ -103,19 +129,15 @@ MACRO_AC_PERMUTE_CATA = MACRO(
     sd_prod=evol_noli,
     op=mac3coeur_ac_permute,
     fr="PERMUTATION DES ASSEMBLAGES",
-    POS_INIT=SIMP(statut='o', typ='TXM',),
-    POS_FIN=SIMP(statut='o', typ='TXM',),
-    RESU_INI=SIMP(statut='o', typ=evol_noli),
-    RESU_FIN=SIMP(statut='o', typ=evol_noli),
-    INSTANT=SIMP(
-    statut='o', typ='R', validators=NoRepeat(), max=1),
-    MAILLAGE_INIT=SIMP(statut='o', typ=maillage_sdaster,),
-    MAILLAGE_FINAL=SIMP(
-        statut='o', typ=maillage_sdaster,),
-    MODELE_FINAL=SIMP(statut='o', typ=modele_sdaster),
-    TRAN=SIMP(statut='o', typ='R', min=3, max=3),
+    POS_INIT=SIMP(statut="o", typ="TXM"),
+    POS_FIN=SIMP(statut="o", typ="TXM"),
+    RESU_INI=SIMP(statut="o", typ=evol_noli),
+    RESU_FIN=SIMP(statut="o", typ=evol_noli),
+    INSTANT=SIMP(statut="o", typ="R", validators=NoRepeat(), max=1),
+    MAILLAGE_INIT=SIMP(statut="o", typ=maillage_sdaster),
+    MAILLAGE_FINAL=SIMP(statut="o", typ=maillage_sdaster),
+    MODELE_FINAL=SIMP(statut="o", typ=modele_sdaster),
+    TRAN=SIMP(statut="o", typ="R", min=3, max=3),
 )
 
-MACRO_AC_PERMUTE = UserMacro("MACRO_AC_PERMUTE",
-                             MACRO_AC_PERMUTE_CATA,
-                             mac3coeur_ac_permute)
+MACRO_AC_PERMUTE = UserMacro("MACRO_AC_PERMUTE", MACRO_AC_PERMUTE_CATA, mac3coeur_ac_permute)

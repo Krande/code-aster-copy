@@ -23,6 +23,7 @@ import numpy as np
 
 MAC3_ROUND = 14
 
+
 def get_first_digit(spline):
     for i, v in enumerate(spline):
         try:
@@ -30,6 +31,7 @@ def get_first_digit(spline):
             return i
         except ValueError as err:
             continue
+
 
 def check_centers_and_size(z, ep, s):
     """
@@ -42,11 +44,15 @@ def check_centers_and_size(z, ep, s):
     """
     assert s in (0, 1)
     assert len(z) == len(ep)
-    return all(abs(z[i+s] - z[i+1+s] + 0.5*(ep[i] + ep[i+1])) < 1.E-5
-               for i in range(len(z)-1-s))
+    return all(
+        abs(z[i + s] - z[i + 1 + s] + 0.5 * (ep[i] + ep[i + 1])) < 1.0e-5
+        for i in range(len(z) - 1 - s)
+    )
+
 
 def check_contiguous(arr):
-    return all(arr[i+1] == arr[i]+1 for i in range(len(arr)-1))
+    return all(arr[i + 1] == arr[i] + 1 for i in range(len(arr) - 1))
+
 
 def find_nearest_idx(value, array, bounds=None):
 
@@ -56,9 +62,9 @@ def find_nearest_idx(value, array, bounds=None):
         diff = np.abs(array - value)
         idx = diff.argmin()
     else:
-        bmax = array + bounds/2
-        bmin = array - bounds/2
-        condition = np.logical_and(value>bmin, value<bmax)
+        bmax = array + bounds / 2
+        bmin = array - bounds / 2
+        condition = np.logical_and(value > bmin, value < bmax)
         assert np.count_nonzero(condition) == 1
         idx = condition.argmax()
 

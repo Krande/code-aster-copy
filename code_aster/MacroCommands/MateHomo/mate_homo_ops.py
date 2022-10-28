@@ -29,45 +29,56 @@ from .mate_homo_mesh import prepare_mesh_syme
 from .mate_homo_massif import calc_tabpara_massif, calc_corr_massif_syme
 from .mate_homo_plaque import calc_tabpara_plaque, calc_corr_plaque_syme
 
+
 def mate_homo_ops(self, **kwargs):
 
-    meshin    = kwargs.get('MAILLAGE')
-    ls_affe   = kwargs.get('AFFE')
-    ls_varc   = kwargs.get('VARC')
-    unit      = kwargs.get('UNITE')
-    verbose   = kwargs.get('INFO') == 2
-    type_homo = kwargs.get('TYPE_HOMO')
+    meshin = kwargs.get("MAILLAGE")
+    ls_affe = kwargs.get("AFFE")
+    ls_varc = kwargs.get("VARC")
+    unit = kwargs.get("UNITE")
+    verbose = kwargs.get("INFO") == 2
+    type_homo = kwargs.get("TYPE_HOMO")
 
-    dir_plaque = kwargs.get('VECT_NORM')
+    dir_plaque = kwargs.get("VECT_NORM")
 
     affe_all = any("TOUT" in i for i in ls_affe)
-    affe_groups = list(set([j for i in [k for k in ls_affe if "GROUP_MA" in k] for j in i['GROUP_MA']]))
+    affe_groups = list(
+        set([j for i in [k for k in ls_affe if "GROUP_MA" in k] for j in i["GROUP_MA"]])
+    )
 
-    varc_name = ls_varc['NOM_VARC']
-    varc_values = ls_varc['VALE']
+    varc_name = ls_varc["NOM_VARC"]
+    varc_values = ls_varc["VALE"]
 
     mesh, group_tout, volume_ver, dirthick = prepare_mesh_syme(meshin, affe_groups, affe_all)
 
-    DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc = setup_calcul(mesh, (group_tout,), ls_affe, varc_name, varc_values)
+    DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc = setup_calcul(
+        mesh, (group_tout,), ls_affe, varc_name, varc_values
+    )
 
-    if type_homo in ('MASSIF',):
-        fields = calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST,
-                                       alpha_calc, (group_tout,))
+    if type_homo in ("MASSIF",):
+        fields = calc_corr_massif_syme(
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
+        )
 
-        A_hom, K_hom, tabpara = calc_tabpara_massif(DEPLMATE,
-                                                    volume_ver, (group_tout,),
-                                                    varc_name, varc_values,
-                                                    **fields)
+        A_hom, K_hom, tabpara = calc_tabpara_massif(
+            DEPLMATE, volume_ver, (group_tout,), varc_name, varc_values, **fields
+        )
 
-    elif type_homo in ('PLAQUE',):
-        fields = calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,),
-                                       dir_plaque)
+    elif type_homo in ("PLAQUE",):
+        fields = calc_corr_plaque_syme(
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,), dir_plaque
+        )
 
-        C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(DEPLMATE,
-                                                           volume_ver, (group_tout,),
-                                                           varc_name, varc_values,
-                                                           dir_plaque, dirthick,
-                                                           **fields)
+        C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
+            DEPLMATE,
+            volume_ver,
+            (group_tout,),
+            varc_name,
+            varc_values,
+            dir_plaque,
+            dirthick,
+            **fields
+        )
     else:
         ASSERT(False)
 
@@ -75,21 +86,22 @@ def mate_homo_ops(self, **kwargs):
         if kwargs.get(fldname) is not None:
             self.register_result(fld, kwargs.get(fldname))
 
-    med_name = lambda s : s.replace('MECA','ME').replace('THER', 'TH').replace('DILA', 'DI').replace('CORR_','C').replace('MEMB', 'M').replace('FLEX', 'F')
+    med_name = (
+        lambda s: s.replace("MECA", "ME")
+        .replace("THER", "TH")
+        .replace("DILA", "DI")
+        .replace("CORR_", "C")
+        .replace("MEMB", "M")
+        .replace("FLEX", "F")
+    )
 
-    if unit is not None :
-        IMPR_RESU(FORMAT='MED',
-                  RESU=[_F(RESULTAT=fld,
-                           NOM_RESU_MED=med_name(fldname))
-                        for fldname, fld in fields.items()],
-                  UNITE=unit)
+    if unit is not None:
+        IMPR_RESU(
+            FORMAT="MED",
+            RESU=[
+                _F(RESULTAT=fld, NOM_RESU_MED=med_name(fldname)) for fldname, fld in fields.items()
+            ],
+            UNITE=unit,
+        )
 
     return tabpara
-
-
-
-
-
-
-
-

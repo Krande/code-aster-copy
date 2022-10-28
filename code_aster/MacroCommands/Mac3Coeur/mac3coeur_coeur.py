@@ -28,13 +28,28 @@ Définition d'une conception de coeur (ensemble d'assemblages).
 import os
 
 from ...Cata.Syntax import _F
-from ...Commands import (AFFE_CARA_ELEM, AFFE_CHAR_CINE, AFFE_CHAR_MECA,
-                         AFFE_CHAR_MECA_F, AFFE_MATERIAU, AFFE_MODELE,
-                         CREA_CHAMP, CREA_MAILLAGE, CREA_RESU, DEFI_COMPOR,
-                         DEFI_FONCTION, DEFI_GEOM_FIBRE, DEFI_GROUP,
-                         DEFI_LIST_INST, DEFI_LIST_REEL, DEFI_MATERIAU,
-                         DEFI_NAPPE, FORMULE, INCLUDE_MATERIAU,
-                         RECU_TABLE)
+from ...Commands import (
+    AFFE_CARA_ELEM,
+    AFFE_CHAR_CINE,
+    AFFE_CHAR_MECA,
+    AFFE_CHAR_MECA_F,
+    AFFE_MATERIAU,
+    AFFE_MODELE,
+    CREA_CHAMP,
+    CREA_MAILLAGE,
+    CREA_RESU,
+    DEFI_COMPOR,
+    DEFI_FONCTION,
+    DEFI_GEOM_FIBRE,
+    DEFI_GROUP,
+    DEFI_LIST_INST,
+    DEFI_LIST_REEL,
+    DEFI_MATERIAU,
+    DEFI_NAPPE,
+    FORMULE,
+    INCLUDE_MATERIAU,
+    RECU_TABLE,
+)
 from .mac3coeur_assemblage import ACFactory
 from .mac3coeur_factory import Mac3Factory
 
@@ -42,40 +57,67 @@ from .mac3coeur_factory import Mac3Factory
 class Coeur(object):
 
     """Classe définissant un coeur de reacteur."""
+
     type_coeur = None
     required_parameters = [
         # Nombre d'assemblages pour définir le coeur
-        'NBAC',
+        "NBAC",
         # Position des grilles pour definition du champ de fluence
-        'altitude',
+        "altitude",
         # Position des crayons et tubes-guides pour definition du champ de
         # fluence
-        'XINFT', 'XSUPT', 'XINFC', 'XSUPC', 'LONCR', 'LONTU',
+        "XINFT",
+        "XSUPT",
+        "XINFC",
+        "XSUPC",
+        "LONCR",
+        "LONTU",
         # Caractéristique de la cuve
-        'pas_assemblage',
-        'XINFCUVE', 'XSUPCUVE',
-        #---fleche des ressorts de maintien à la fermeture de la cuve
-        'flechResMaint',
-        #---Dimensions de la cavité entre PIC (ou FSC) et PSC
-        'Hcav1centre', 'Hcav2centre', 'Hcav3centre', 'Hcav4centre',
-        'Hcav1periph', 'Hcav2periph', 'Hcav3periph', 'Hcav4periph',
+        "pas_assemblage",
+        "XINFCUVE",
+        "XSUPCUVE",
+        # ---fleche des ressorts de maintien à la fermeture de la cuve
+        "flechResMaint",
+        # ---Dimensions de la cavité entre PIC (ou FSC) et PSC
+        "Hcav1centre",
+        "Hcav2centre",
+        "Hcav3centre",
+        "Hcav4centre",
+        "Hcav1periph",
+        "Hcav2periph",
+        "Hcav3periph",
+        "Hcav4periph",
         # Températures caractérisitiques
-        'TP_REF', 'ARRET_FR', 'ARRET_CH', 'TINFCUVE', 'TSUPCUVE', 'TENVELOP', 'TP_TG1', 'TP_TG2', 'TXX1', 'TXX2', 'TXX3', 'TXX4',
+        "TP_REF",
+        "ARRET_FR",
+        "ARRET_CH",
+        "TINFCUVE",
+        "TSUPCUVE",
+        "TENVELOP",
+        "TP_TG1",
+        "TP_TG2",
+        "TXX1",
+        "TXX2",
+        "TXX3",
+        "TXX4",
         # Abscisses caracteristiques pour le profil de temperature des crayons
-        'SXX2', 'SXX3',
+        "SXX2",
+        "SXX3",
         # paramètres de l'interpolation linéaire
         # du coefficient de dilatation des internes de cuve
-        'ALPH1', 'ALPH2',
+        "ALPH1",
+        "ALPH2",
         # Post-traitement des lames
         #'nomContactAssLame', 'nomContactCuve',
-        #Valeurs de gravité et tables de l'eau à pression int cuve
-        'ACC_PESA', 'RHO_EAU20', 'RHO_EAU60', 'RHO_EAU307',
+        # Valeurs de gravité et tables de l'eau à pression int cuve
+        "ACC_PESA",
+        "RHO_EAU20",
+        "RHO_EAU60",
+        "RHO_EAU307",
     ]
 
-    _time = ('T0', 'T0b', 'T1', 'T2', 'T3',
-             'T4', 'T5', 'T6', 'T7', 'T8', 'T8b', 'T9',)
-    _subtime = ('N0', 'N0b', 'N1', 'N2', 'N3',
-                'N4', 'N5', 'N6', 'N7', 'N8', 'N8b', 'N9')
+    _time = ("T0", "T0b", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8b", "T9")
+    _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
 
     def __init__(self, name, typ_coeur, macro, datg, longueur=None):
         """Initialisation d'un type de coeur."""
@@ -107,10 +149,10 @@ class Coeur(object):
             raise KeyError("parameter not defined : '%s'" % para)
         return self._para.get(para)
 
-    def get_contactAssLame(self) :
+    def get_contactAssLame(self):
         return self.nomContactAssLame
 
-    def get_contactCuve(self) :
+    def get_contactCuve(self):
         return self.nomContactCuve
 
     def get_geom_coeur(self):
@@ -121,7 +163,7 @@ class Coeur(object):
         """Retourne la position Aster correspondant à la position DAMAC."""
         raise NotImplementedError
 
-    def position_todamac(self,position):
+    def position_todamac(self, position):
         """Retourne la position DAMAC correspondant à la position Aster."""
         raise NotImplementedError
 
@@ -129,38 +171,36 @@ class Coeur(object):
         """Retourne la position Aster correspondant à la position Thyc."""
         raise NotImplementedError
 
-    def get_length(self) :
-        if self.longueur :
-            l = len(self.ALPHA_MAC[:self.longueur])
-        else :
+    def get_length(self):
+        if self.longueur:
+            l = len(self.ALPHA_MAC[: self.longueur])
+        else:
             l = len(self.ALPHA_MAC)
         return l
 
-    def get_letter(self,index) :
+    def get_letter(self, index):
         return self.ALPHA_MAC[index]
 
-    def get_index(self,letter) :
+    def get_index(self, letter):
         return self.ALPHA_MAC.index(letter)
 
     def init_from_table(self, tab, mater=True):
         """Initialise le coeur à partir d'une table."""
         self.nbac = len(tab)
         for rows in tab:
-            idAC = rows['idAC'].strip()
+            idAC = rows["idAC"].strip()
             # print 'idAC = ',idAC
-            typeAC = rows['Milieu'].strip()
-            nameAC = rows['Repere'].strip()
+            typeAC = rows["Milieu"].strip()
+            nameAC = rows["Repere"].strip()
             ac = self.factory.get(typeAC)(self.typ_coeur)
             ac.register_position(self.position_toaster, self.position_todamac)
-            ac.place(idAC, rows['Cycle'],nameAC)
+            ac.place(idAC, rows["Cycle"], nameAC)
             if self._mateAC.get(typeAC) is None:
                 self._mateAC[typeAC] = MateriauAC(typeAC, self.macro)
             ac_def = {}
-            for igr in range(0, ac._para['NBGR']):
-                ac_def['DY' + str(igr + 1)] = rows[
-                    'XG' + str(igr + 1)] / 1000.0
-                ac_def['DZ' + str(igr + 1)] = rows[
-                    'YG' + str(igr + 1)] / 1000.0
+            for igr in range(0, ac._para["NBGR"]):
+                ac_def["DY" + str(igr + 1)] = rows["XG" + str(igr + 1)] / 1000.0
+                ac_def["DZ" + str(igr + 1)] = rows["YG" + str(igr + 1)] / 1000.0
             ac.set_deforDAM(ac_def)
             ac.set_materiau(self._mateAC[typeAC])
             ac.check()
@@ -176,15 +216,12 @@ class Coeur(object):
 
     def repr(self):
         """Liste les assemblages."""
-        txt = ["Lecture du Coeur %s - composé de %d assemblages"
-               % (self.name, self.nbac)]
+        txt = ["Lecture du Coeur %s - composé de %d assemblages" % (self.name, self.nbac)]
         all = list(self.collAC.items())
         all.sort()
-        txt.append(
-            "position_DAMAC correspondance_Code_Aster Type_de_conception Nombre_de_cycle")
+        txt.append("position_DAMAC correspondance_Code_Aster Type_de_conception Nombre_de_cycle")
         for idAC, ac in all:
-            txt.append("%8s %8s %8s %i" %
-                       (idAC, ac.idAST, ac.typeAC, ac._cycle))
+            txt.append("%8s %8s %8s %i" % (idAC, ac.idAST, ac.typeAC, ac._cycle))
         return os.linesep.join(txt)
 
     def mcf_geom_fibre(self):
@@ -225,7 +262,7 @@ class Coeur(object):
     def definition_geom_fibre(self):
 
         mcf = self.mcf_geom_fibre()
-        _GFF = DEFI_GEOM_FIBRE(FIBRE=mcf,)
+        _GFF = DEFI_GEOM_FIBRE(FIBRE=mcf)
 
         return _GFF
 
@@ -253,15 +290,17 @@ class Coeur(object):
         mcf = []
         for ac in list(self.collAC.values()):
             _FCT_TG = DEFI_FONCTION(
-                NOM_PARA='X', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-                VALE=(
-                    ac.XINFT, (ac.AFTG_1 / ac.LONTU),
-                    ac.XSUPT, (ac.AFTG_1 / ac.LONTU)))
+                NOM_PARA="X",
+                PROL_DROITE="CONSTANT",
+                PROL_GAUCHE="CONSTANT",
+                VALE=(ac.XINFT, (ac.AFTG_1 / ac.LONTU), ac.XSUPT, (ac.AFTG_1 / ac.LONTU)),
+            )
             _FCT_CR = DEFI_FONCTION(
-                NOM_PARA='X', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-                VALE=(
-                    ac.XINFC, (ac.AFCRA_1 / ac.LONCR),
-                    ac.XSUPC, (ac.AFCRA_1 / ac.LONCR)))
+                NOM_PARA="X",
+                PROL_DROITE="CONSTANT",
+                PROL_GAUCHE="CONSTANT",
+                VALE=(ac.XINFC, (ac.AFCRA_1 / ac.LONCR), ac.XSUPC, (ac.AFCRA_1 / ac.LONCR)),
+            )
             mcf.extend(ac.mcf_archimede_poutre(_FCT_TG, _FCT_CR))
         return mcf
 
@@ -272,79 +311,96 @@ class Coeur(object):
         return _FOARCH_1
 
     def definition_temp_archimede(self, use_archimede):
-        """ Valeur à froid (20 degrés) de la force d'Archimède = 860/985.46*1000.52 """
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
+        """Valeur à froid (20 degrés) de la force d'Archimède = 860/985.46*1000.52"""
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
 
-        assert use_archimede in ('OUI', 'NON')
+        assert use_archimede in ("OUI", "NON")
 
         # cas ou la force d'archimede est activee
-        if use_archimede == 'OUI':
+        if use_archimede == "OUI":
 
             ARCHFR1 = self.ACC_PESA * self.RHO_EAU20
             ARCHFR2 = self.ACC_PESA * self.RHO_EAU60
-            ARCHCH  = self.ACC_PESA * self.RHO_EAU307
+            ARCHCH = self.ACC_PESA * self.RHO_EAU307
 
         # cas ou la force d'archimede n'est pas activee
-        elif use_archimede == 'NON':
+        elif use_archimede == "NON":
 
-            ARCHFR1 = 0.
-            ARCHFR2 = 0.
-            ARCHCH = 0.
+            ARCHFR1 = 0.0
+            ARCHFR2 = 0.0
+            ARCHCH = 0.0
 
-        _ARCH_F1 = DEFI_FONCTION(NOM_PARA='INST',
-                                 PROL_DROITE='CONSTANT',
-                                 PROL_GAUCHE='CONSTANT',
-                                 VALE=(self.temps_simu['T0'], ARCHFR1,
-                                       self.temps_simu['T1'], ARCHFR1,
-                                       self.temps_simu['T2'], ARCHFR2,
-                                       self.temps_simu['T4'], ARCHCH,
-                                       self.temps_simu['T5'], ARCHCH,
-                                       self.temps_simu['T7'], ARCHFR2,
-                                       self.temps_simu['T8'], ARCHFR1,
-                                       self.temps_simu['T9'], ARCHFR1,),)
+        _ARCH_F1 = DEFI_FONCTION(
+            NOM_PARA="INST",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            # fmt: off
+            VALE=(
+                self.temps_simu["T0"], ARCHFR1,
+                self.temps_simu["T1"], ARCHFR1,
+                self.temps_simu["T2"], ARCHFR2,
+                self.temps_simu["T4"], ARCHCH,
+                self.temps_simu["T5"], ARCHCH,
+                self.temps_simu["T7"], ARCHFR2,
+                self.temps_simu["T8"], ARCHFR1,
+                self.temps_simu["T9"], ARCHFR1,
+            ),
+            # fmt: on
+        )
 
         return _ARCH_F1
 
     def definition_temp_hydro_axiale(self, coef_mult_thv):
-        """ Fonction multiplicative de la force hydrodynamique axiale.
-            On multiplie par 0.708 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
-        FOHYFR_1 = 1.0*coef_mult_thv    # Valeur a froid
-        FOHYCH_1 = 0.708*coef_mult_thv  # Valeur a chaud
+        """Fonction multiplicative de la force hydrodynamique axiale.
+        On multiplie par 0.708 les forces hydrodynamiques a froid pour obtenir celles a chaud."""
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
+        FOHYFR_1 = 1.0 * coef_mult_thv  # Valeur a froid
+        FOHYCH_1 = 0.708 * coef_mult_thv  # Valeur a chaud
 
         _HYDR_F1 = DEFI_FONCTION(
-            NOM_PARA='INST', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(self.temps_simu['T0'], 0.0,
-                  self.temps_simu['T1'], 0.0,
-                  self.temps_simu['T2'], FOHYFR_1,
-                  self.temps_simu['T3'], FOHYCH_1,
-                  self.temps_simu['T4'], FOHYCH_1,
-                  self.temps_simu['T5'], FOHYCH_1,
-                  self.temps_simu['T6'], FOHYCH_1,
-                  self.temps_simu['T7'], FOHYFR_1,
-                  self.temps_simu['T8'], 0.0,
-                  self.temps_simu['T9'], 0.0,),)
+            NOM_PARA="INST",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            # fmt: off
+            VALE=(
+                self.temps_simu["T0"], 0.0,
+                self.temps_simu["T1"], 0.0,
+                self.temps_simu["T2"], FOHYFR_1,
+                self.temps_simu["T3"], FOHYCH_1,
+                self.temps_simu["T4"], FOHYCH_1,
+                self.temps_simu["T5"], FOHYCH_1,
+                self.temps_simu["T6"], FOHYCH_1,
+                self.temps_simu["T7"], FOHYFR_1,
+                self.temps_simu["T8"], 0.0,
+                self.temps_simu["T9"], 0.0,
+            ),
+            # fmt: on
+        )
         return _HYDR_F1
 
     def definition_effort_transverse(self, coef_mult_tht):
-        """ Fonction multiplicative pour la prise en compte des efforts transverses."""
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
-        AVEC = 1.0*coef_mult_tht
+        """Fonction multiplicative pour la prise en compte des efforts transverses."""
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
+        AVEC = 1.0 * coef_mult_tht
         SANS = 0.0
 
         _F_TRAN1 = DEFI_FONCTION(
-            NOM_PARA='INST', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(self.temps_simu['T0'], SANS,
-                  self.temps_simu['T1'], SANS,
-                  self.temps_simu['T2'], SANS,
-                  self.temps_simu['T4'], AVEC,
-                  self.temps_simu['T5'], AVEC,
-                  self.temps_simu['T7'], SANS,
-                  self.temps_simu['T8'], SANS,
-                  self.temps_simu['T9'], SANS,),)
+            NOM_PARA="INST",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            # fmt: off
+            VALE=(
+                self.temps_simu["T0"], SANS,
+                self.temps_simu["T1"], SANS,
+                self.temps_simu["T2"], SANS,
+                self.temps_simu["T4"], AVEC,
+                self.temps_simu["T5"], AVEC,
+                self.temps_simu["T7"], SANS,
+                self.temps_simu["T8"], SANS,
+                self.temps_simu["T9"], SANS,
+            ),
+            # fmt: on
+        )
         return _F_TRAN1
 
     def definition_cara_coeur(self, MODELE, _GFF):
@@ -352,174 +408,165 @@ class Coeur(object):
         mcm = self.mcf_cara_multifibre()
         mcr = self.mcf_cara_barre()
         mcp = self.mcf_cara_poutre()
-        mtmp = _F(GROUP_MA='DIL', SECTION='RECTANGLE',
-                  CARA=('HY', 'HZ'), VALE=(0.03, 0.2138))
+        mtmp = _F(GROUP_MA="DIL", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(0.03, 0.2138))
         mcp.append(mtmp)
         mcd = self.mcf_cara_discret()
-        mtmp = _F(GROUP_MA='RES_TOT', REPERE='LOCAL',
-                  CARA='K_T_D_L', VALE=(0., 0., 0.,),)
+        mtmp = _F(GROUP_MA="RES_TOT", REPERE="LOCAL", CARA="K_T_D_L", VALE=(0.0, 0.0, 0.0))
         mcd.append(mtmp)
-        mtmp = _F(GROUP_MA='RES_TOT', REPERE='LOCAL', CARA='M_T_D_L', VALE=0.,)
+        mtmp = _F(GROUP_MA="RES_TOT", REPERE="LOCAL", CARA="M_T_D_L", VALE=0.0)
         mcd.append(mtmp)
 
-        _CARA = AFFE_CARA_ELEM(MODELE=MODELE,
-                               POUTRE=mcp,
-                               BARRE=mcr,
-                               GEOM_FIBRE=_GFF,
-                               MULTIFIBRE=mcm,
-                               DISCRET=mcd,
-                               ORIENTATION=(_F(GROUP_MA=('ELA_EX', 'ELA_ME', 'RIG_EX', 'RIG_ME', 'DIL'), CARA='VECT_Y', VALE=(1., 0., 0.),),),)
+        _CARA = AFFE_CARA_ELEM(
+            MODELE=MODELE,
+            POUTRE=mcp,
+            BARRE=mcr,
+            GEOM_FIBRE=_GFF,
+            MULTIFIBRE=mcm,
+            DISCRET=mcd,
+            ORIENTATION=(
+                _F(
+                    GROUP_MA=("ELA_EX", "ELA_ME", "RIG_EX", "RIG_ME", "DIL"),
+                    CARA="VECT_Y",
+                    VALE=(1.0, 0.0, 0.0),
+                ),
+            ),
+        )
         return _CARA
 
     def definition_pesanteur(self, MODELE):
 
-        _PESA = AFFE_CHAR_MECA(MODELE=MODELE,
-                               PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(-1., 0., 0.),),)
+        _PESA = AFFE_CHAR_MECA(
+            MODELE=MODELE, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(-1.0, 0.0, 0.0))
+        )
         return _PESA
 
-    def definition_maintien_type(self, model, typ, force=None,compression_init=False):
+    def definition_maintien_type(self, model, typ, force=None, compression_init=False):
         """Retourne le chargement dû au couvercle de la cuve selon le type"""
-        assert typ in ('FORCE', 'DEPL_PSC')
-        if typ != 'FORCE':
-            return self.definition_effor_maintien(model,compression_init)
+        assert typ in ("FORCE", "DEPL_PSC")
+        if typ != "FORCE":
+            return self.definition_effor_maintien(model, compression_init)
         else:
-            return self.definition_effor_maintien_force(model, force,compression_init)
+            return self.definition_effor_maintien_force(model, force, compression_init)
 
-    def definition_effor_maintien(self, MODELE,compression_init):
+    def definition_effor_maintien(self, MODELE, compression_init):
         """Retourne les déplacements imposés aux noeuds modélisant la PSC
         et traduisant la fermeture de la cuve"""
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
 
-        if compression_init :
-            _DXpsc = DEFI_FONCTION(NOM_PARA='INST',
-                               VALE=(-2.0,   0.,
-                                     -1.0,   0.,
-                                     -0.75,  -1. * self.flechResMaint,
-                                     -0.25,  -1. * self.flechResMaint,
-                                     self.temps_simu['T0'],   0.,
-                                     self.temps_simu['T0b'],   0.,
-                                     self.temps_simu[
-                                     'T1'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T2'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T3'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T4'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T5'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T6'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T7'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T8'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T8b'],  -1. * self.flechResMaint / 3.,
-                                     self.temps_simu['T9'],   0.,),
-                               PROL_DROITE='CONSTANT',
-                               PROL_GAUCHE='CONSTANT',)
+        if compression_init:
+            _DXpsc = DEFI_FONCTION(
+                NOM_PARA="INST",
+                # fmt: off
+                VALE=(
+                    -2.0, 0.0,
+                    -1.0, 0.0,
+                    -0.75, -1.0 * self.flechResMaint,
+                    -0.25, -1.0 * self.flechResMaint,
+                    self.temps_simu["T0"], 0.0,
+                    self.temps_simu["T0b"], 0.0,
+                    self.temps_simu["T1"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T2"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T3"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T4"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T5"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T6"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T7"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T8"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T8b"], -1.0 * self.flechResMaint / 3.0,
+                    self.temps_simu["T9"], 0.0,
+                ),
+                # fmt: on
+                PROL_DROITE="CONSTANT",
+                PROL_GAUCHE="CONSTANT",
+            )
         else:
-            _DXpsc = DEFI_FONCTION(NOM_PARA='INST',
-                               VALE=(-2.0,   0.,
-                                     -1.0,   0.,
-                                     #-0.75,  -1. * self.flechResMaint,
-                                     #-0.25,  -1. * self.flechResMaint,
-                                     self.temps_simu['T0'],   0.,
-                                     self.temps_simu['T0b'],   0.,
-                                     self.temps_simu[
-                                     'T1'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T2'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T3'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T4'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T5'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T6'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T7'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T8'],   -1. * self.flechResMaint,
-                                     self.temps_simu[
-                                     'T8b'],  -1. * self.flechResMaint / 3.,
-                                     self.temps_simu['T9'],   0.,),
-                               PROL_DROITE='CONSTANT',
-                               PROL_GAUCHE='CONSTANT',)
+            _DXpsc = DEFI_FONCTION(
+                NOM_PARA="INST",
+                # fmt: off
+                VALE=(
+                    -2.0, 0.0,
+                    -1.0, 0.0,
+                    # -0.75,  -1. * self.flechResMaint,
+                    # -0.25,  -1. * self.flechResMaint,
+                    self.temps_simu["T0"], 0.0,
+                    self.temps_simu["T0b"], 0.0,
+                    self.temps_simu["T1"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T2"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T3"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T4"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T5"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T6"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T7"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T8"], -1.0 * self.flechResMaint,
+                    self.temps_simu["T8b"], -1.0 * self.flechResMaint / 3.0,
+                    self.temps_simu["T9"], 0.0,
+                ),
+                # fmt: on
+                PROL_DROITE="CONSTANT",
+                PROL_GAUCHE="CONSTANT",
+            )
 
-        _F_EMBO = AFFE_CHAR_MECA_F(MODELE=MODELE,
-                                   DDL_IMPO=_F(GROUP_NO='PMNT_S',           DX=_DXpsc,),)
+        _F_EMBO = AFFE_CHAR_MECA_F(MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="PMNT_S", DX=_DXpsc))
         return _F_EMBO
 
-    def definition_effor_maintien_force(self, MODELE, ForceMaintien,compression_init):
+    def definition_effor_maintien_force(self, MODELE, ForceMaintien, compression_init):
         """Retourne le chargement d'effort de maintien considéré constant"""
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
 
-        if compression_init :
-            _FXpsc = DEFI_FONCTION(NOM_PARA='INST',
-                               VALE=(-2.0,   0.,
-                                     -1.0,   0.,
-                                     -0.75, -1. * ForceMaintien,
-                                     -0.25, -1. * ForceMaintien,
-                                     self.temps_simu['T0'],   0.,
-                                     self.temps_simu['T0b'],   0.,
-                                     self.temps_simu[
-                                         'T1'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T2'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T3'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T4'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T5'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T6'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T7'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T8'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                     'T8b'],  -1. * ForceMaintien / 30.,
-                                     self.temps_simu['T9'],   0.,),
-                               PROL_DROITE='CONSTANT',
-                               PROL_GAUCHE='CONSTANT',)
-        else :
-            _FXpsc = DEFI_FONCTION(NOM_PARA='INST',
-                               VALE=(-2.0,   0.,
-                                     -1.0,   0.,
-                                     #-0.75, -1. * ForceMaintien,
-                                     #-0.25, -1. * ForceMaintien,
-                                     self.temps_simu['T0'],   0.,
-                                     self.temps_simu['T0b'],   0.,
-                                     self.temps_simu[
-                                         'T1'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T2'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T3'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T4'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T5'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T6'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T7'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                         'T8'],   -1. * ForceMaintien,
-                                     self.temps_simu[
-                                     'T8b'],  -1. * ForceMaintien / 30.,
-                                     self.temps_simu['T9'],   0.,),
-                               PROL_DROITE='CONSTANT',
-                               PROL_GAUCHE='CONSTANT',)
+        if compression_init:
+            _FXpsc = DEFI_FONCTION(
+                NOM_PARA="INST",
+                # fmt: off
+                VALE=(
+                    -2.0, 0.0,
+                    -1.0, 0.0,
+                    -0.75, -1.0 * ForceMaintien,
+                    -0.25, -1.0 * ForceMaintien,
+                    self.temps_simu["T0"], 0.0,
+                    self.temps_simu["T0b"], 0.0,
+                    self.temps_simu["T1"], -1.0 * ForceMaintien,
+                    self.temps_simu["T2"], -1.0 * ForceMaintien,
+                    self.temps_simu["T3"], -1.0 * ForceMaintien,
+                    self.temps_simu["T4"], -1.0 * ForceMaintien,
+                    self.temps_simu["T5"], -1.0 * ForceMaintien,
+                    self.temps_simu["T6"], -1.0 * ForceMaintien,
+                    self.temps_simu["T7"], -1.0 * ForceMaintien,
+                    self.temps_simu["T8"], -1.0 * ForceMaintien,
+                    self.temps_simu["T8b"], -1.0 * ForceMaintien / 30.0,
+                    self.temps_simu["T9"], 0.0,
+                ),
+                # fmt: on
+                PROL_DROITE="CONSTANT",
+                PROL_GAUCHE="CONSTANT",
+            )
+        else:
+            _FXpsc = DEFI_FONCTION(
+                NOM_PARA="INST",
+                # fmt: off
+                VALE=(
+                    -2.0, 0.0,
+                    -1.0, 0.0,
+                    # -0.75, -1. * ForceMaintien,
+                    # -0.25, -1. * ForceMaintien,
+                    self.temps_simu["T0"], 0.0,
+                    self.temps_simu["T0b"], 0.0,
+                    self.temps_simu["T1"], -1.0 * ForceMaintien,
+                    self.temps_simu["T2"], -1.0 * ForceMaintien,
+                    self.temps_simu["T3"], -1.0 * ForceMaintien,
+                    self.temps_simu["T4"], -1.0 * ForceMaintien,
+                    self.temps_simu["T5"], -1.0 * ForceMaintien,
+                    self.temps_simu["T6"], -1.0 * ForceMaintien,
+                    self.temps_simu["T7"], -1.0 * ForceMaintien,
+                    self.temps_simu["T8"], -1.0 * ForceMaintien,
+                    self.temps_simu["T8b"], -1.0 * ForceMaintien / 30.0,
+                    self.temps_simu["T9"], 0.0,
+                ),
+                # fmt: on
+                PROL_DROITE="CONSTANT",
+                PROL_GAUCHE="CONSTANT",
+            )
 
-        _F_EMBO = AFFE_CHAR_MECA_F(MODELE=MODELE,
-                                   FORCE_NODALE=_F(GROUP_NO='PMNT_S',           FX=_FXpsc,),)
+        _F_EMBO = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="PMNT_S", FX=_FXpsc))
         return _F_EMBO
 
     def affectation_maillage(self, MA0):
@@ -531,63 +578,64 @@ class Coeur(object):
         LIS_PG = []
         nbgrmax = 0
         for ac in list(self.collAC.values()):
-            nbgrmax = max(nbgrmax, ac._para['NBGR'])
+            nbgrmax = max(nbgrmax, ac._para["NBGR"])
             LIS_GNO = []
-            for igr in range(0, ac._para['NBGR']):
-                LIS_GNO.append('G_' + ac.idAST + '_' + str(igr + 1))
-                LIS_PG.append('P_' + ac.idAST + '_' + str(igr + 1))
+            for igr in range(0, ac._para["NBGR"]):
+                LIS_GNO.append("G_" + ac.idAST + "_" + str(igr + 1))
+                LIS_PG.append("P_" + ac.idAST + "_" + str(igr + 1))
 
             DICG = {}
             DICG["GROUP_NO"] = tuple(LIS_GNO)
-            DICG["NOM_GROUP_MA"] = 'GR_' + ac.idAST
+            DICG["NOM_GROUP_MA"] = "GR_" + ac.idAST
             LISG.append(DICG)
 
         for igr in range(0, nbgrmax):
             DICGRIL = {}
-            DICGRIL["GROUP_NO"] = 'GRIL_' + str(igr + 1)
-            DICGRIL["NOM_GROUP_MA"] = 'GRIL_' + str(igr + 1)
+            DICGRIL["GROUP_NO"] = "GRIL_" + str(igr + 1)
+            DICGRIL["NOM_GROUP_MA"] = "GRIL_" + str(igr + 1)
             LISGRIL.append(DICGRIL)
 
             if igr == 0:
-                LISGRILE.append('GRIL_' + str(igr + 1))
+                LISGRILE.append("GRIL_" + str(igr + 1))
             elif igr == (nbgrmax - 1):
-                LISGRILE.append('GRIL_' + str(igr + 1))
+                LISGRILE.append("GRIL_" + str(igr + 1))
             else:
-                LISGRILI.append('GRIL_' + str(igr + 1))
+                LISGRILI.append("GRIL_" + str(igr + 1))
 
-        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0,
-                            CREA_POI1=tuple(LISGRIL + LISG),)
+        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(LISGRIL + LISG))
 
-        DICCR={}
-        DICCR["GROUP_MA"]='CREI'
-        DICCR["NOM"]='CREIC'
-        DICCR["PREF_MAILLE"]='M'
-        LISCR2=[]
+        DICCR = {}
+        DICCR["GROUP_MA"] = "CREI"
+        DICCR["NOM"] = "CREIC"
+        DICCR["PREF_MAILLE"] = "M"
+        LISCR2 = []
         LISCR2.append(DICCR)
-        DICCR={}
-        DICCR["GROUP_MA"]='ELA'
-        DICCR["NOM"]='ELAP'
-        DICCR["PREF_MAILLE"]='M'
+        DICCR = {}
+        DICCR["GROUP_MA"] = "ELA"
+        DICCR["NOM"] = "ELAP"
+        DICCR["PREF_MAILLE"] = "M"
         LISCR2.append(DICCR)
 
-        _MA=CREA_MAILLAGE(MAILLAGE=_MA1,
-                      INFO=1,
-                     CREA_MAILLE=tuple(LISCR2),)
+        _MA = CREA_MAILLAGE(MAILLAGE=_MA1, INFO=1, CREA_MAILLE=tuple(LISCR2))
 
-        _MA = DEFI_GROUP(reuse=_MA, ALARME='NON',
-                         MAILLAGE=_MA,
-                         CREA_GROUP_MA=(
-                             _F(NOM='GRIL_I', UNION=tuple(LISGRILI),),
-                         _F(NOM='GRIL_E', UNION=tuple(LISGRILE),),),
-                         CREA_GROUP_NO=(
-                         _F(GROUP_MA=('T_GUIDE', 'EBOSUP', 'EBOINF',
-                                      'CRAYON', 'ELA', 'DIL', 'MAINTIEN',),),
-                         _F(NOM='LISPG', UNION=tuple(LIS_PG),),),)
+        _MA = DEFI_GROUP(
+            reuse=_MA,
+            ALARME="NON",
+            MAILLAGE=_MA,
+            CREA_GROUP_MA=(
+                _F(NOM="GRIL_I", UNION=tuple(LISGRILI)),
+                _F(NOM="GRIL_E", UNION=tuple(LISGRILE)),
+            ),
+            CREA_GROUP_NO=(
+                _F(GROUP_MA=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN")),
+                _F(NOM="LISPG", UNION=tuple(LIS_PG)),
+            ),
+        )
 
         return _MA
 
     def check_groups(self, mesh):
-        cu_groups = [i for i in mesh.getGroupsOfCells() if i.startswith('CU_')]
+        cu_groups = [i for i in mesh.getGroupsOfCells() if i.startswith("CU_")]
         if not set(cu_groups) == set(self.get_contactCuve()):
             return False
         return True
@@ -595,120 +643,116 @@ class Coeur(object):
     def recuperation_donnees_geom(self, MAILL):
         """recuperation de donnees géometrique a partir du maillage"""
 
-        #--- recuperation de donnees géometriques ---
+        # --- recuperation de donnees géometriques ---
         # nombre d'assemblages dans le coeur
         self.NBAC = len(list(self.collAC.values()))
 
         # altitudes mini et maxi de la cavité de coeur
-        _ma_tmp = CREA_MAILLAGE(
-            MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='EBOINF',),)
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
-        self.XINFCUVE = _TAB_tmp['X_MIN', 1]
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="EBOINF"))
+        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
+        self.XINFCUVE = _TAB_tmp["X_MIN", 1]
 
-        _ma_tmp = CREA_MAILLAGE(
-            MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='MAINTIEN',),)
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
-        self.XSUPCUVE = _TAB_tmp['X_MAX', 1]
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="MAINTIEN"))
+        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
+        self.XSUPCUVE = _TAB_tmp["X_MAX", 1]
 
         # altitudes mini et maxi, et longueur de l'ensemble des crayons
-        _ma_tmp = CREA_MAILLAGE(
-            MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='CRAYON',),)
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
-        self.XINFC = _TAB_tmp['X_MIN', 1]
-        self.XSUPC = _TAB_tmp['X_MAX', 1]
-        self.LONCR = _TAB_tmp['X_MAX', 1] - _TAB_tmp['X_MIN', 1]
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="CRAYON"))
+        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
+        self.XINFC = _TAB_tmp["X_MIN", 1]
+        self.XSUPC = _TAB_tmp["X_MAX", 1]
+        self.LONCR = _TAB_tmp["X_MAX", 1] - _TAB_tmp["X_MIN", 1]
 
         # altitudes mini et maxi, et longueur de l'ensemble des tubes
-        _ma_tmp = CREA_MAILLAGE(
-            MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='T_GUIDE',),)
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
-        self.XINFT = _TAB_tmp['X_MIN', 1]
-        self.XSUPT = _TAB_tmp['X_MAX', 1]
-        self.LONTU = _TAB_tmp['X_MAX', 1] - _TAB_tmp['X_MIN', 1]
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="T_GUIDE"))
+        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
+        self.XINFT = _TAB_tmp["X_MIN", 1]
+        self.XSUPT = _TAB_tmp["X_MAX", 1]
+        self.LONTU = _TAB_tmp["X_MAX", 1] - _TAB_tmp["X_MIN", 1]
 
         # altitudes moyennes des grilles
         self.altitude = []
-        _ma_tmp = CREA_MAILLAGE(
-            MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='ELA',),)
-        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
-        altimax = _TAB_tmp['X_MAX', 1]
+        _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="ELA"))
+        _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
+        altimax = _TAB_tmp["X_MAX", 1]
         altimaxtmp = 0
         while altimaxtmp != altimax:  # tant que l'on ne dépasse pas la grille la plus haute
-            _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(
-                GROUP_MA='GRIL_' + str(len(self.altitude) + 1),),)
-            _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
-            altimintmp = _TAB_tmp['X_MAX', 1]
-            altimaxtmp = _TAB_tmp['X_MAX', 1]
-            self.altitude.append((altimintmp + altimaxtmp) / 2.)
+            _ma_tmp = CREA_MAILLAGE(
+                MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA="GRIL_" + str(len(self.altitude) + 1))
+            )
+            _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE="CARA_GEOM")
+            altimintmp = _TAB_tmp["X_MAX", 1]
+            altimaxtmp = _TAB_tmp["X_MAX", 1]
+            self.altitude.append((altimintmp + altimaxtmp) / 2.0)
 
     def cl_rigidite_grille(self):
 
         mcf = []
         for ac in list(self.collAC.values()):
-            for igr in range(0, ac._para['NBGR']):
-                mcf.append(_F(GROUP_NO='G_' + ac.idAST + '_' + str(igr + 1)))
+            for igr in range(0, ac._para["NBGR"]):
+                mcf.append(_F(GROUP_NO="G_" + ac.idAST + "_" + str(igr + 1)))
         return mcf
 
     def affectation_modele(self, MAILLAGE):
-        _MODELE = AFFE_MODELE(MAILLAGE=MAILLAGE,
-                              AFFE=(_F(GROUP_MA='CRAYON',
-                                       PHENOMENE='MECANIQUE',
-                                       MODELISATION='POU_D_TGM',),
-                                    _F(GROUP_MA='T_GUIDE',
-                                       PHENOMENE='MECANIQUE',
-                                       MODELISATION='POU_D_TGM',),
-                                    _F(GROUP_MA=('EBOSUP', 'EBOINF'),
-                                       PHENOMENE='MECANIQUE',
-                                       MODELISATION='POU_D_T',),
-                                    _F(GROUP_MA=('ELA', 'RIG'),
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = 'DIS_TR',),
-                                    _F(GROUP_MA = 'DIL',
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = 'POU_D_E',),
-                                    _F(GROUP_MA =('GRIL_I', 'GRIL_E',),
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = 'DIS_T',),
-                                    _F(GROUP_MA =('MAINTIEN',),
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = 'BARRE',),
-                                    _F(GROUP_MA =('RES_TOT','CREI','CREIC','ELAP'),
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = 'DIS_T',),),)
+        _MODELE = AFFE_MODELE(
+            MAILLAGE=MAILLAGE,
+            AFFE=(
+                _F(GROUP_MA="CRAYON", PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
+                _F(GROUP_MA="T_GUIDE", PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
+                _F(GROUP_MA=("EBOSUP", "EBOINF"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),
+                _F(GROUP_MA=("ELA", "RIG"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+                _F(GROUP_MA="DIL", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+                _F(GROUP_MA=("GRIL_I", "GRIL_E"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+                _F(GROUP_MA=("MAINTIEN",), PHENOMENE="MECANIQUE", MODELISATION="BARRE"),
+                _F(
+                    GROUP_MA=("RES_TOT", "CREI", "CREIC", "ELAP"),
+                    PHENOMENE="MECANIQUE",
+                    MODELISATION="DIS_T",
+                ),
+            ),
+        )
 
         return _MODELE
 
     def definition_time(self, fluence, subdivis, nbSubdEchec=10):
         """Return the list of timesteps"""
-        _LI = self.definition_time_arch(fluence,subdivis)
+        _LI = self.definition_time_arch(fluence, subdivis)
 
-        if nbSubdEchec == 1 :
+        if nbSubdEchec == 1:
             return _LI
-        else :
-            _TE = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=_LI,),
-                                 ECHEC=(
-                                     _F(EVENEMENT='ERREUR',
-                                        ACTION='DECOUPE',
-                                        SUBD_METHODE='MANUEL',
-                                        SUBD_PAS=4,
-                                        SUBD_NIVEAU=nbSubdEchec),
-                                     _F(EVENEMENT = 'DIVE_RESI',
-                                        ACTION = 'DECOUPE',
-                                        SUBD_METHODE = 'MANUEL',
-                                        SUBD_PAS=4,
-                                        SUBD_NIVEAU=nbSubdEchec)
-                                 )
-                             )
+        else:
+            _TE = DEFI_LIST_INST(
+                DEFI_LIST=_F(LIST_INST=_LI),
+                ECHEC=(
+                    _F(
+                        EVENEMENT="ERREUR",
+                        ACTION="DECOUPE",
+                        SUBD_METHODE="MANUEL",
+                        SUBD_PAS=4,
+                        SUBD_NIVEAU=nbSubdEchec,
+                    ),
+                    _F(
+                        EVENEMENT="DIVE_RESI",
+                        ACTION="DECOUPE",
+                        SUBD_METHODE="MANUEL",
+                        SUBD_PAS=4,
+                        SUBD_NIVEAU=nbSubdEchec,
+                    ),
+                ),
+            )
             return _TE
 
-    def definition_time_arch(self,fluence, subdivis):
+    def definition_time_arch(self, fluence, subdivis):
         """Return the list of timesteps"""
+
         def m_time(a):
             # for debugging use NOMBRE=1
             m_time = (
-                _F(JUSQU_A=self.temps_simu[self._time[a]],
-                   NOMBRE=int(self.sub_temps_simu[self._subtime[a]]),
-                   ),)
+                _F(
+                    JUSQU_A=self.temps_simu[self._time[a]],
+                    NOMBRE=int(self.sub_temps_simu[self._subtime[a]]),
+                ),
+            )
             return m_time
 
         self.init_temps_simu(fluence, subdivis)
@@ -717,63 +761,68 @@ class Coeur(object):
         for _time in range(len(self._time)):
             _list.extend(m_time(_time))
 
-        _LI = DEFI_LIST_REEL(DEBUT=-1, INTERVALLE=_list,)
+        _LI = DEFI_LIST_REEL(DEBUT=-1, INTERVALLE=_list)
         return _LI
-
 
     def init_temps_simu(self, fluence, subdivis):
         """Initialise les temps caracteristiques"""
-        Dt = 1.e-3
-        self.temps_simu['T0'] = 0.0
-        self.temps_simu['T0b'] = self.temps_simu['T0'] + Dt / 2
-        self.temps_simu['T1'] = self.temps_simu['T0'] + Dt
-        self.temps_simu['T2'] = self.temps_simu['T1'] + Dt
-        self.temps_simu['T3'] = self.temps_simu['T2'] + Dt
-        self.temps_simu['T4'] = self.temps_simu['T3'] + Dt
-        self.temps_simu['T5'] = self.temps_simu['T4'] + max(fluence, Dt)
-        self.temps_simu['T6'] = self.temps_simu['T5'] + Dt
-        self.temps_simu['T7'] = self.temps_simu['T6'] + Dt
-        self.temps_simu['T8'] = self.temps_simu['T7'] + Dt
-        self.temps_simu['T8b'] = self.temps_simu['T8'] + Dt / 2
-        self.temps_simu['T9'] = self.temps_simu['T8'] + Dt
+        Dt = 1.0e-3
+        self.temps_simu["T0"] = 0.0
+        self.temps_simu["T0b"] = self.temps_simu["T0"] + Dt / 2
+        self.temps_simu["T1"] = self.temps_simu["T0"] + Dt
+        self.temps_simu["T2"] = self.temps_simu["T1"] + Dt
+        self.temps_simu["T3"] = self.temps_simu["T2"] + Dt
+        self.temps_simu["T4"] = self.temps_simu["T3"] + Dt
+        self.temps_simu["T5"] = self.temps_simu["T4"] + max(fluence, Dt)
+        self.temps_simu["T6"] = self.temps_simu["T5"] + Dt
+        self.temps_simu["T7"] = self.temps_simu["T6"] + Dt
+        self.temps_simu["T8"] = self.temps_simu["T7"] + Dt
+        self.temps_simu["T8b"] = self.temps_simu["T8"] + Dt / 2
+        self.temps_simu["T9"] = self.temps_simu["T8"] + Dt
 
-        self.sub_temps_simu['N0'] = 4
-        self.sub_temps_simu['N0b'] = 1
-        self.sub_temps_simu['N1'] = 2 * subdivis
-        self.sub_temps_simu['N2'] = 2
-        self.sub_temps_simu['N3'] = 2 * subdivis
-        self.sub_temps_simu['N4'] = 2 * subdivis
-        self.sub_temps_simu['N5'] = 50
-        self.sub_temps_simu['N6'] = 2 * subdivis
-        self.sub_temps_simu['N7'] = 2 * subdivis
-        self.sub_temps_simu['N8'] = 2
-        self.sub_temps_simu['N8b'] = 2 * subdivis * 2
-        self.sub_temps_simu['N9'] = 1
+        self.sub_temps_simu["N0"] = 4
+        self.sub_temps_simu["N0b"] = 1
+        self.sub_temps_simu["N1"] = 2 * subdivis
+        self.sub_temps_simu["N2"] = 2
+        self.sub_temps_simu["N3"] = 2 * subdivis
+        self.sub_temps_simu["N4"] = 2 * subdivis
+        self.sub_temps_simu["N5"] = 50
+        self.sub_temps_simu["N6"] = 2 * subdivis
+        self.sub_temps_simu["N7"] = 2 * subdivis
+        self.sub_temps_simu["N8"] = 2
+        self.sub_temps_simu["N8b"] = 2 * subdivis * 2
+        self.sub_temps_simu["N9"] = 1
 
-    def definition_fluence(self, fluence, MAILLAGE, fluence_cycle,lame=False):
+    def definition_fluence(self, fluence, MAILLAGE, fluence_cycle, lame=False):
         """Return the time evolution of the field of fluence"""
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
 
         #
         # CREATION D UNE NAPPE DE FLUX NEUTRONIQUE DANS LE COEUR   #
         #
         # CREATION DE LA PARTIE GEOMETRIQUE        #
         #
-        _CHXN = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                           NOM_CHAM='GEOMETRIE', MAILLAGE=MAILLAGE)
+        _CHXN = CREA_CHAMP(
+            OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAILLAGE
+        )
 
         #
         # CREATION DU PROFIL AXIAL DE FLUX   #
         #
-        _FLUXAX1 = DEFI_FONCTION(NOM_PARA='X',
-                                 VALE=(self.altitude[0],  0.54,
-                                       self.altitude[1],  1.,
-                                       self.altitude[-3], 1.,
-                                       self.altitude[-2], 0.85,
-                                       self.altitude[-1], 0.06,),
-                                 PROL_DROITE = 'CONSTANT',
-                                 PROL_GAUCHE = 'CONSTANT',)
+        _FLUXAX1 = DEFI_FONCTION(
+            NOM_PARA="X",
+            # fmt: off
+            VALE=(
+                self.altitude[0], 0.54,
+                self.altitude[1], 1.0,
+                self.altitude[-3], 1.0,
+                self.altitude[-2], 0.85,
+                self.altitude[-1], 0.06,
+            ),
+            # fmt: on
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
 
         #
         # DEFINITION DU CHAMP NEUTRONIQUE RADIAL (CONSTANT)        #
@@ -782,154 +831,233 @@ class Coeur(object):
         Y_2 = 1.0
 
         _FLY_1 = DEFI_FONCTION(
-            NOM_PARA='Y', VALE=(Y_1, 1.0, Y_2, 1.0), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
+            NOM_PARA="Y", VALE=(Y_1, 1.0, Y_2, 1.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+        )
 
-        _FLY_2 = DEFI_FONCTION(NOM_PARA='Y', VALE=(
-            Y_1, 1.0, Y_2, 1.0), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
+        _FLY_2 = DEFI_FONCTION(
+            NOM_PARA="Y", VALE=(Y_1, 1.0, Y_2, 1.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+        )
 
-        _FLUXRD1 = DEFI_NAPPE(NOM_PARA='Z', PARA=(Y_1, Y_2), FONCTION=(
-            _FLY_1, _FLY_2), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
+        _FLUXRD1 = DEFI_NAPPE(
+            NOM_PARA="Z",
+            PARA=(Y_1, Y_2),
+            FONCTION=(_FLY_1, _FLY_2),
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
 
-        #------------------------------------------------
+        # ------------------------------------------------
         # CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXAX1
-        #------------------------------------------------
+        # ------------------------------------------------
         _CH_FAX = CREA_CHAMP(
-            OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MAILLAGE,
-            AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='X1', VALE_F=_FLUXAX1,),),)
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_NEUT_F",
+            MAILLAGE=MAILLAGE,
+            AFFE=(
+                _F(
+                    GROUP_MA=("T_GUIDE", "CRAYON", "ELA", "MAINTIEN"), NOM_CMP="X1", VALE_F=_FLUXAX1
+                ),
+            ),
+        )
 
         _CH_FAXR = CREA_CHAMP(
-            OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CH_FAX, CHAM_PARA=_CHXN)
+            OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=_CH_FAX, CHAM_PARA=_CHXN
+        )
 
-        #-----------------------------------------------
+        # -----------------------------------------------
         # CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXRD1
-        #-----------------------------------------------
+        # -----------------------------------------------
         _CH_FRD = CREA_CHAMP(
-            OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MAILLAGE,
-            AFFE=(_F(TOUT='OUI', NOM_CMP='X2', VALE_F=_FLUXRD1),),)
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_NEUT_F",
+            MAILLAGE=MAILLAGE,
+            AFFE=(_F(TOUT="OUI", NOM_CMP="X2", VALE_F=_FLUXRD1),),
+        )
 
         _CH_FRDR = CREA_CHAMP(
-            OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CH_FRD, CHAM_PARA=_CHXN)
+            OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=_CH_FRD, CHAM_PARA=_CHXN
+        )
 
-        _MULT = FORMULE(
-            NOM_PARA=('X1', 'X2', 'INST'), VALE='X1*X2*INST')
+        _MULT = FORMULE(NOM_PARA=("X1", "X2", "INST"), VALE="X1*X2*INST")
 
         _CHRES = CREA_CHAMP(
-            OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MAILLAGE,
-            AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='X1', VALE_F=_MULT),),)
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_NEUT_F",
+            MAILLAGE=MAILLAGE,
+            AFFE=(
+                _F(GROUP_MA=("T_GUIDE", "CRAYON", "ELA", "MAINTIEN"), NOM_CMP="X1", VALE_F=_MULT),
+            ),
+        )
 
-        #-----------------------------------------------------
+        # -----------------------------------------------------
         # CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
-        #-----------------------------------------------------
-        mcfm=[]
-        mcf0=[]
-        mcf1=[]
+        # -----------------------------------------------------
+        mcfm = []
+        mcf0 = []
+        mcf1 = []
         for ac in list(self.collAC.values()):
-            (lgma,cyc) = ac.liste_gma_fluence()
+            (lgma, cyc) = ac.liste_gma_fluence()
             # pour calcul lame : on prend le nombre de cycle (e.g. assemblage neuf : 0)
             # pour calcul deformation : le nombre de cycle est celui donne
             #                           dans le DAMAC (donc en fin de cycle)
             #                           (e.g. assemblage neuf : 1)
             #                           il faut donc retrancher 1 au nombre de cycles
-            if lame :
+            if lame:
                 nb_cycle = cyc
-            else :
-                nb_cycle = cyc-1
-            mtmpm = _F(GROUP_MA=lgma,NOM_CMP='INST', VALE=0.)
-            mtmp0 = _F(GROUP_MA=lgma,NOM_CMP='INST', VALE=nb_cycle*fluence_cycle)
-            mtmp1 = _F(GROUP_MA=lgma,NOM_CMP='INST', VALE=nb_cycle*fluence_cycle+fluence)
+            else:
+                nb_cycle = cyc - 1
+            mtmpm = _F(GROUP_MA=lgma, NOM_CMP="INST", VALE=0.0)
+            mtmp0 = _F(GROUP_MA=lgma, NOM_CMP="INST", VALE=nb_cycle * fluence_cycle)
+            mtmp1 = _F(GROUP_MA=lgma, NOM_CMP="INST", VALE=nb_cycle * fluence_cycle + fluence)
             mcfm.append(mtmpm)
             mcf0.append(mtmp0)
             mcf1.append(mtmp1)
 
         _INST_M = CREA_CHAMP(
-            OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MAILLAGE,
-            #AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
-            AFFE=mcfm)
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_INST_R",
+            MAILLAGE=MAILLAGE,
+            # AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
+            AFFE=mcfm,
+        )
 
         _REST_M = CREA_CHAMP(
-            OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CHRES,
-            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_M,))
+            OPERATION="EVAL",
+            TYPE_CHAM="NOEU_NEUT_R",
+            CHAM_F=_CHRES,
+            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_M),
+        )
 
         _RES_M = CREA_CHAMP(
-            OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MAILLAGE,
-            ASSE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), CHAM_GD=_REST_M, NOM_CMP='X1', NOM_CMP_RESU='IRRA',),),)
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_IRRA_R",
+            MAILLAGE=MAILLAGE,
+            ASSE=(
+                _F(
+                    GROUP_MA=("T_GUIDE", "CRAYON", "ELA", "MAINTIEN"),
+                    CHAM_GD=_REST_M,
+                    NOM_CMP="X1",
+                    NOM_CMP_RESU="IRRA",
+                ),
+            ),
+        )
 
         _INST_0 = CREA_CHAMP(
-            OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MAILLAGE,
-            #AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
-            AFFE=mcf0)
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_INST_R",
+            MAILLAGE=MAILLAGE,
+            # AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
+            AFFE=mcf0,
+        )
 
         _REST_0 = CREA_CHAMP(
-            OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CHRES,
-            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_0,))
+            OPERATION="EVAL",
+            TYPE_CHAM="NOEU_NEUT_R",
+            CHAM_F=_CHRES,
+            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_0),
+        )
 
         _RES_0 = CREA_CHAMP(
-            OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MAILLAGE,
-            ASSE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), CHAM_GD=_REST_0, NOM_CMP='X1', NOM_CMP_RESU='IRRA',),),)
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_IRRA_R",
+            MAILLAGE=MAILLAGE,
+            ASSE=(
+                _F(
+                    GROUP_MA=("T_GUIDE", "CRAYON", "ELA", "MAINTIEN"),
+                    CHAM_GD=_REST_0,
+                    NOM_CMP="X1",
+                    NOM_CMP_RESU="IRRA",
+                ),
+            ),
+        )
 
         _INST_1 = CREA_CHAMP(
-            OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MAILLAGE,
-            #AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=fluence),),)
-            AFFE=mcf1)
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_INST_R",
+            MAILLAGE=MAILLAGE,
+            # AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=fluence),),)
+            AFFE=mcf1,
+        )
 
         _REST_1 = CREA_CHAMP(
-            OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CHRES,
-            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_1,))
+            OPERATION="EVAL",
+            TYPE_CHAM="NOEU_NEUT_R",
+            CHAM_F=_CHRES,
+            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_1),
+        )
 
         _RES_1 = CREA_CHAMP(
-            OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MAILLAGE,
-            ASSE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), CHAM_GD=_REST_1, NOM_CMP='X1', NOM_CMP_RESU='IRRA',),),)
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_IRRA_R",
+            MAILLAGE=MAILLAGE,
+            ASSE=(
+                _F(
+                    GROUP_MA=("T_GUIDE", "CRAYON", "ELA", "MAINTIEN"),
+                    CHAM_GD=_REST_1,
+                    NOM_CMP="X1",
+                    NOM_CMP_RESU="IRRA",
+                ),
+            ),
+        )
 
         _FLUENC = CREA_RESU(
-            TYPE_RESU='EVOL_VARC', NOM_CHAM='IRRA', OPERATION='AFFE',
+            TYPE_RESU="EVOL_VARC",
+            NOM_CHAM="IRRA",
+            OPERATION="AFFE",
             AFFE=(
-                _F(CHAM_GD=_RES_M, INST=-1, PRECISION=1.E-8),
-                _F(CHAM_GD=_RES_M, INST=-0.75, PRECISION=1.E-8),
-                _F(CHAM_GD=_RES_0, INST=-0.25, PRECISION=1.E-8),
-                _F(CHAM_GD=_RES_0, INST=self.temps_simu['T4'], PRECISION=1.E-8),
-                _F(CHAM_GD=_RES_1, INST=self.temps_simu['T5'], PRECISION=1.E-8),
-                _F(CHAM_GD=_RES_1, INST=self.temps_simu['T9'], PRECISION=1.E-8),),)
+                _F(CHAM_GD=_RES_M, INST=-1, PRECISION=1.0e-8),
+                _F(CHAM_GD=_RES_M, INST=-0.75, PRECISION=1.0e-8),
+                _F(CHAM_GD=_RES_0, INST=-0.25, PRECISION=1.0e-8),
+                _F(CHAM_GD=_RES_0, INST=self.temps_simu["T4"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_RES_1, INST=self.temps_simu["T5"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_RES_1, INST=self.temps_simu["T9"], PRECISION=1.0e-8),
+            ),
+        )
 
         return _FLUENC
 
     def mcf_crea_champ_dil(self):
-        #AAA modifier Tref => -Tref
+        # AAA modifier Tref => -Tref
         mcf = []
         groups_ma_tini = []
 
         for ac in self.collAC.values():
             # boucle sur les grilles
-            try :
-              _alpha = ac._para['AL_DIL']
-              _dilatbu = ac._para['dilatBU']
-            except KeyError :
-              _alpha = 1.
-              _dilatbu = [0.]*ac._para['NBGR']
+            try:
+                _alpha = ac._para["AL_DIL"]
+                _dilatbu = ac._para["dilatBU"]
+            except KeyError:
+                _alpha = 1.0
+                _dilatbu = [0.0] * ac._para["NBGR"]
 
-            if all([i==0. for i in _dilatbu]):
-                groups_ma_tini.extend(['DI_%s%d'%(ac.idAST, (igr + 1))
-                                       for igr in range(ac._para['NBGR'])])
-            else :
-                for igr in range(0, ac._para['NBGR']):
-                    Ttmp_val = self.TP_REF - _dilatbu[igr]/_alpha
-                    mtmp =  (_F(NOM_CMP='TEMP',
-                                GROUP_MA='DI_%s%d'%(ac.idAST, (igr + 1)),
-                                VALE = Ttmp_val)),
+            if all([i == 0.0 for i in _dilatbu]):
+                groups_ma_tini.extend(
+                    ["DI_%s%d" % (ac.idAST, (igr + 1)) for igr in range(ac._para["NBGR"])]
+                )
+            else:
+                for igr in range(0, ac._para["NBGR"]):
+                    Ttmp_val = self.TP_REF - _dilatbu[igr] / _alpha
+                    mtmp = (
+                        (
+                            _F(
+                                NOM_CMP="TEMP",
+                                GROUP_MA="DI_%s%d" % (ac.idAST, (igr + 1)),
+                                VALE=Ttmp_val,
+                            )
+                        ),
+                    )
                     mcf.extend(mtmp)
 
-        if groups_ma_tini :
+        if groups_ma_tini:
             Ttmp_val = self.TP_REF
-            mtmp =  (_F(NOM_CMP='TEMP',
-                        GROUP_MA=groups_ma_tini,
-                        VALE = Ttmp_val)),
+            mtmp = ((_F(NOM_CMP="TEMP", GROUP_MA=groups_ma_tini, VALE=Ttmp_val)),)
             mcf.extend(mtmp)
 
         return mcf
 
     def definition_champ_temperature(self, MAILLAGE):
         """Return the time evolution of the field of temperature"""
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
 
         #
         # Temperatures utiles pour les calculs sous flux neutronique #
@@ -939,7 +1067,7 @@ class Coeur(object):
         # TP_REF   =
         # ARRET_FR =  arret a froid (temp moyenne cuve)
         # ARRET_CH =  arret a chaud (297.2 dans doc TF JD DC 1494)
-                    # c est une temperature moyenne en cuve
+        # c est une temperature moyenne en cuve
 
         # profil lineaire de temperature pour les TG
         # TP_TG1 = temperature TG pour xinft
@@ -952,8 +1080,12 @@ class Coeur(object):
         #
 
         _F_TP1_1 = DEFI_FONCTION(
-            NOM_PARA='X', NOM_RESU='TEMP', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(self.XINFT, self.TP_REF, self.XSUPT, self.TP_REF),)
+            NOM_PARA="X",
+            NOM_RESU="TEMP",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            VALE=(self.XINFT, self.TP_REF, self.XSUPT, self.TP_REF),
+        )
 
         #
         # AFFECTATION DE REFENCE DU CHAMP DE TEMPERATURE  #
@@ -961,41 +1093,80 @@ class Coeur(object):
         #
 
         _CHTEM11 = CREA_CHAMP(
-            TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MAILLAGE, OPERATION='AFFE',
-            AFFE=(_F(GROUP_NO=('T_GUIDE', 'EBOSUP', 'EBOINF', 'CRAYON', 'ELA', 'DIL', 'MAINTIEN',), NOM_CMP='TEMP', VALE_F=_F_TP1_1,),),)
+            TYPE_CHAM="NOEU_TEMP_F",
+            MAILLAGE=MAILLAGE,
+            OPERATION="AFFE",
+            AFFE=(
+                _F(
+                    GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"),
+                    NOM_CMP="TEMP",
+                    VALE_F=_F_TP1_1,
+                ),
+            ),
+        )
 
-        _CHTEM1N=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MAILLAGE,
-                            ASSE=_F( GROUP_NO=('T_GUIDE', 'EBOSUP', 'EBOINF', 'CRAYON', 'ELA', 'DIL', 'MAINTIEN',), CHAM_GD = _CHTEM11,
-                                                NOM_CMP = ('TEMP',),  NOM_CMP_RESU = ('X1',)),  )
+        _CHTEM1N = CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_NEUT_F",
+            MAILLAGE=MAILLAGE,
+            ASSE=_F(
+                GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"),
+                CHAM_GD=_CHTEM11,
+                NOM_CMP=("TEMP",),
+                NOM_CMP_RESU=("X1",),
+            ),
+        )
 
-        _CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                NOM_CHAM='GEOMETRIE', MAILLAGE=MAILLAGE )
+        _CHXN = CREA_CHAMP(
+            OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MAILLAGE
+        )
 
-        _CHTEM1A = CREA_CHAMP(OPERATION='EVAL', CHAM_F = _CHTEM1N, CHAM_PARA = _CHXN, TYPE_CHAM='NOEU_NEUT_R',)
+        _CHTEM1A = CREA_CHAMP(
+            OPERATION="EVAL", CHAM_F=_CHTEM1N, CHAM_PARA=_CHXN, TYPE_CHAM="NOEU_NEUT_R"
+        )
 
-        _CHTEM1B = CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILLAGE,
-                            ASSE=_F( GROUP_NO=('T_GUIDE', 'EBOSUP', 'EBOINF', 'CRAYON', 'ELA', 'DIL', 'MAINTIEN',), CHAM_GD = _CHTEM1A,
-                                                NOM_CMP = ('X1',),  NOM_CMP_RESU = ('TEMP',)),  )
+        _CHTEM1B = CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM="NOEU_TEMP_R",
+            MAILLAGE=MAILLAGE,
+            ASSE=_F(
+                GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"),
+                CHAM_GD=_CHTEM1A,
+                NOM_CMP=("X1",),
+                NOM_CMP_RESU=("TEMP",),
+            ),
+        )
 
         # champ de dilatation du a l'irradiation des grilles
         mcf_champ_dil = self.mcf_crea_champ_dil()
 
         _CHTEM1D = CREA_CHAMP(
-            TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAILLAGE, OPERATION='AFFE',
-            AFFE=mcf_champ_dil,)
+            TYPE_CHAM="NOEU_TEMP_R", MAILLAGE=MAILLAGE, OPERATION="AFFE", AFFE=mcf_champ_dil
+        )
 
-        _CHTEM10 = CREA_CHAMP(OPERATION = 'ASSE',
-                        MAILLAGE = MAILLAGE,TYPE_CHAM ='NOEU_TEMP_R',
-                        ASSE =
-                        (_F( CHAM_GD = _CHTEM1B, GROUP_NO = ('T_GUIDE', 'EBOSUP', 'EBOINF', 'CRAYON', 'ELA', 'MAINTIEN',),),
-                         _F( CHAM_GD = _CHTEM1D, GROUP_MA = 'DIL' ),),)
-         #
+        _CHTEM10 = CREA_CHAMP(
+            OPERATION="ASSE",
+            MAILLAGE=MAILLAGE,
+            TYPE_CHAM="NOEU_TEMP_R",
+            ASSE=(
+                _F(
+                    CHAM_GD=_CHTEM1B,
+                    GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "MAINTIEN"),
+                ),
+                _F(CHAM_GD=_CHTEM1D, GROUP_MA="DIL"),
+            ),
+        )
+        #
         # TEMPERATURE EN PHASE ARRET A FROID           #
         #
 
         _F_TP2_1 = DEFI_FONCTION(
-            NOM_PARA='X', NOM_RESU='TEMP', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(self.XINFT, self.ARRET_FR, self.XSUPT, self.ARRET_FR),)
+            NOM_PARA="X",
+            NOM_RESU="TEMP",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            VALE=(self.XINFT, self.ARRET_FR, self.XSUPT, self.ARRET_FR),
+        )
 
         #
         # AFFECTATION DE REFENCE DU CHAMP DE TEMPERATURE  #
@@ -1003,16 +1174,29 @@ class Coeur(object):
         #
 
         _CHTEM21 = CREA_CHAMP(
-            TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MAILLAGE, OPERATION='AFFE',
-            AFFE=(_F(GROUP_NO=('T_GUIDE', 'EBOSUP', 'EBOINF', 'CRAYON', 'ELA', 'DIL', 'MAINTIEN',), NOM_CMP='TEMP', VALE_F=_F_TP2_1,),),)
+            TYPE_CHAM="NOEU_TEMP_F",
+            MAILLAGE=MAILLAGE,
+            OPERATION="AFFE",
+            AFFE=(
+                _F(
+                    GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"),
+                    NOM_CMP="TEMP",
+                    VALE_F=_F_TP2_1,
+                ),
+            ),
+        )
 
         #
         # TEMPERATURE EN PHASE ARRET A CHAUD           #
         #
 
         _F_TP3_1 = DEFI_FONCTION(
-            NOM_PARA='X', NOM_RESU='TEMP', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(self.XINFT, self.ARRET_CH, self.XSUPT, self.ARRET_CH),)
+            NOM_PARA="X",
+            NOM_RESU="TEMP",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            VALE=(self.XINFT, self.ARRET_CH, self.XSUPT, self.ARRET_CH),
+        )
 
         #
         # AFFECTATION DE REFENCE DU CHAMP DE TEMPERATURE  #
@@ -1020,8 +1204,17 @@ class Coeur(object):
         #
 
         _CHTEM31 = CREA_CHAMP(
-            TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MAILLAGE, OPERATION='AFFE',
-            AFFE=(_F(GROUP_NO=('T_GUIDE', 'EBOSUP', 'EBOINF', 'CRAYON', 'ELA', 'DIL', 'MAINTIEN',), NOM_CMP='TEMP', VALE_F=_F_TP3_1,),),)
+            TYPE_CHAM="NOEU_TEMP_F",
+            MAILLAGE=MAILLAGE,
+            OPERATION="AFFE",
+            AFFE=(
+                _F(
+                    GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"),
+                    NOM_CMP="TEMP",
+                    VALE_F=_F_TP3_1,
+                ),
+            ),
+        )
 
         #
         # EVOLUTION DE LA TEMPERATURE DANS LES CRAYONS     #
@@ -1034,8 +1227,12 @@ class Coeur(object):
         XX4 = XX1 + self.LONCR
 
         _F_CR3 = DEFI_FONCTION(
-            NOM_PARA='X', NOM_RESU='TEMP', PROL_DROITE='LINEAIRE', PROL_GAUCHE='LINEAIRE',
-            VALE=(XX1, self.TXX1, XX2, self.TXX2, XX3, self.TXX3, XX4, self.TXX4),)
+            NOM_PARA="X",
+            NOM_RESU="TEMP",
+            PROL_DROITE="LINEAIRE",
+            PROL_GAUCHE="LINEAIRE",
+            VALE=(XX1, self.TXX1, XX2, self.TXX2, XX3, self.TXX3, XX4, self.TXX4),
+        )
 
         #
         # EVOLUTION DE LA TEMPERATURE DANS LES TUBES-GUIDE #
@@ -1043,211 +1240,236 @@ class Coeur(object):
         #
 
         _F_TP4_1 = DEFI_FONCTION(
-            NOM_PARA='X', NOM_RESU='TEMP', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
-            VALE=(self.XINFT, self.TP_TG1, self.XSUPT, self.TP_TG2),)
+            NOM_PARA="X",
+            NOM_RESU="TEMP",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            VALE=(self.XINFT, self.TP_TG1, self.XSUPT, self.TP_TG2),
+        )
 
         _CHTEM41 = CREA_CHAMP(
-            TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MAILLAGE, OPERATION='AFFE',
+            TYPE_CHAM="NOEU_TEMP_F",
+            MAILLAGE=MAILLAGE,
+            OPERATION="AFFE",
             AFFE=(
-                _F(GROUP_NO=('T_GUIDE', 'EBOSUP', 'EBOINF', 'ELA', 'DIL', 'MAINTIEN',),
-                   NOM_CMP='TEMP', VALE_F=_F_TP4_1,),
-                _F(GROUP_NO='CRAYON',                                  NOM_CMP='TEMP', VALE_F=_F_CR3,),),)
+                _F(
+                    GROUP_NO=("T_GUIDE", "EBOSUP", "EBOINF", "ELA", "DIL", "MAINTIEN"),
+                    NOM_CMP="TEMP",
+                    VALE_F=_F_TP4_1,
+                ),
+                _F(GROUP_NO="CRAYON", NOM_CMP="TEMP", VALE_F=_F_CR3),
+            ),
+        )
 
         _CHTH_1 = CREA_RESU(
-            TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP', OPERATION='AFFE',
+            TYPE_RESU="EVOL_THER",
+            NOM_CHAM="TEMP",
+            OPERATION="AFFE",
             AFFE=(
-                _F(CHAM_GD=_CHTEM10, INST=-1,
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM41, INST=-0.75,
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM41, INST=-0.25,
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM11, INST=0.,
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu['T1'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM21, INST=self.temps_simu['T2'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM31, INST=self.temps_simu['T3'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM41, INST=self.temps_simu['T4'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM41, INST=self.temps_simu['T5'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM31, INST=self.temps_simu['T6'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM21, INST=self.temps_simu['T7'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu['T8'],
-                   PRECISION=1.E-8),
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu['T9'],
-                   PRECISION=1.E-8),),)
+                _F(CHAM_GD=_CHTEM10, INST=-1, PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM41, INST=-0.75, PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM41, INST=-0.25, PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM11, INST=0.0, PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu["T1"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM21, INST=self.temps_simu["T2"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM31, INST=self.temps_simu["T3"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM41, INST=self.temps_simu["T4"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM41, INST=self.temps_simu["T5"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM31, INST=self.temps_simu["T6"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM21, INST=self.temps_simu["T7"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu["T8"], PRECISION=1.0e-8),
+                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu["T9"], PRECISION=1.0e-8),
+            ),
+        )
 
         return _CHTH_1
 
-    def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT='NON',RATIO=1.):
+    def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT="NON", RATIO=1.0):
 
         # TP_REF = 20.
 
-        if CONTACT == 'OUI':
-            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E9*RATIO+1.E1*(1.-RATIO)))
+        if CONTACT == "OUI":
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9 * RATIO + 1.0e1 * (1.0 - RATIO)))
         else:
-            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E1))
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e1))
 
+        _M_BCR = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9, JEU=0.0))
 
-        _M_BCR = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E9, JEU=.0),)
-
-        mcf_affe_mater = self.mcf_coeur_mater(_M_RES,_M_BCR)
-        mcf_affe_varc = self.mcf_coeur_varc(FLUENCE,CHTH)
+        mcf_affe_mater = self.mcf_coeur_mater(_M_RES, _M_BCR)
+        mcf_affe_varc = self.mcf_coeur_varc(FLUENCE, CHTH)
         # Affectation des materiau dans le coeur
-        _A_MAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                               AFFE_VARC=mcf_affe_varc,
-                               AFFE=mcf_affe_mater,
-                               AFFE_COMPOR=self.mcf_compor_fibre(GFF))
+        _A_MAT = AFFE_MATERIAU(
+            MAILLAGE=MAILLAGE,
+            AFFE_VARC=mcf_affe_varc,
+            AFFE=mcf_affe_mater,
+            AFFE_COMPOR=self.mcf_compor_fibre(GFF),
+        )
         return _A_MAT
 
-    def mcf_coeur_varc(self, FLUENCE,CHTH):
+    def mcf_coeur_varc(self, FLUENCE, CHTH):
         mcf = []
-        #variable de commande d'irradiation
-        _VARCIRR = (_F(NOM_VARC='IRRA',
-                       TOUT='OUI',
-                       EVOL=FLUENCE,
-                       PROL_DROITE='CONSTANT'),
-                    _F(NOM_VARC='TEMP',
-                       TOUT='OUI',
-                       EVOL=CHTH,
-                       PROL_DROITE='CONSTANT',
-                       VALE_REF=self.TP_REF))
+        # variable de commande d'irradiation
+        _VARCIRR = (
+            _F(NOM_VARC="IRRA", TOUT="OUI", EVOL=FLUENCE, PROL_DROITE="CONSTANT"),
+            _F(
+                NOM_VARC="TEMP", TOUT="OUI", EVOL=CHTH, PROL_DROITE="CONSTANT", VALE_REF=self.TP_REF
+            ),
+        )
         mcf.extend(_VARCIRR)
 
         for ac in self.collAC.values():
-            try :
-                _alpha = ac._para['AL_DIL']
-                _dilatbu = ac._para['dilatBU']
+            try:
+                _alpha = ac._para["AL_DIL"]
+                _dilatbu = ac._para["dilatBU"]
 
-                if not all([i==0. for i in _dilatbu]):
-                    for igr in range(ac._para['NBGR']):
-                        Ttmp = self.TP_REF - _dilatbu[igr]/_alpha
-                        mtmp =  (_F(NOM_VARC='TEMP',
-                                    GROUP_MA='DI_%s%d'%(ac.idAST, (igr + 1)),
+                if not all([i == 0.0 for i in _dilatbu]):
+                    for igr in range(ac._para["NBGR"]):
+                        Ttmp = self.TP_REF - _dilatbu[igr] / _alpha
+                        mtmp = (
+                            (
+                                _F(
+                                    NOM_VARC="TEMP",
+                                    GROUP_MA="DI_%s%d" % (ac.idAST, (igr + 1)),
                                     EVOL=CHTH,
-                                    PROL_DROITE='CONSTANT',
-                                    VALE_REF=Ttmp)),
+                                    PROL_DROITE="CONSTANT",
+                                    VALE_REF=Ttmp,
+                                )
+                            ),
+                        )
                         mcf.extend(mtmp)
 
-            except KeyError :
-              pass
+            except KeyError:
+                pass
 
         return mcf
 
     def mcf_compor_fibre(self, GFF):
         mcf = []
         for ac in list(self.collAC.values()):
-            _CMPC = DEFI_COMPOR(GEOM_FIBRE=GFF,
-                                MATER_SECT=ac.mate.mate['CR'],
-                                MULTIFIBRE=_F(
-                                GROUP_FIBRE='CR_' + ac.idAST,
-                                MATER=ac.mate.mate[
-                                'CR'],
-                                RELATION='GRAN_IRRA_LOG',),)
-            _CMPT = DEFI_COMPOR(GEOM_FIBRE=GFF,
-                                MATER_SECT=ac.mate.mate['TG'],
-                                MULTIFIBRE=_F(
-                                GROUP_FIBRE=(
-                                'LG_' + ac.idAST, 'BI_' + ac.idAST, 'RE_' + ac.idAST,),
-                                MATER=ac.mate.mate[
-                                'TG'],
-                                RELATION='GRAN_IRRA_LOG',),)
-            mtmp = (_F(GROUP_MA='CR_' + ac.idAST, COMPOR=_CMPC,),
-                    _F(GROUP_MA='TG_' + ac.idAST, COMPOR=_CMPT,),)
+            _CMPC = DEFI_COMPOR(
+                GEOM_FIBRE=GFF,
+                MATER_SECT=ac.mate.mate["CR"],
+                MULTIFIBRE=_F(
+                    GROUP_FIBRE="CR_" + ac.idAST, MATER=ac.mate.mate["CR"], RELATION="GRAN_IRRA_LOG"
+                ),
+            )
+            _CMPT = DEFI_COMPOR(
+                GEOM_FIBRE=GFF,
+                MATER_SECT=ac.mate.mate["TG"],
+                MULTIFIBRE=_F(
+                    GROUP_FIBRE=("LG_" + ac.idAST, "BI_" + ac.idAST, "RE_" + ac.idAST),
+                    MATER=ac.mate.mate["TG"],
+                    RELATION="GRAN_IRRA_LOG",
+                ),
+            )
+            mtmp = (
+                _F(GROUP_MA="CR_" + ac.idAST, COMPOR=_CMPC),
+                _F(GROUP_MA="TG_" + ac.idAST, COMPOR=_CMPT),
+            )
             mcf.extend(mtmp)
 
         return mcf
 
     def mcf_coeur_mater(self, _M_RES, _M_BCR):
         # Definition d'un materiau bidon pour les elements de poutres
-        _MAT_BID = DEFI_MATERIAU(
-            ELAS=_F(E=1.0,   NU=0.0, RHO=0.0, ALPHA=0.0,),)
-        _MAT_GR = DEFI_MATERIAU(
-            ELAS=_F(E=1.E14, NU=0.3, RHO=0.0, ALPHA=0.0,),)
+        _MAT_BID = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.0, RHO=0.0, ALPHA=0.0))
+        _MAT_GR = DEFI_MATERIAU(ELAS=_F(E=1.0e14, NU=0.3, RHO=0.0, ALPHA=0.0))
 
         mcf = []
-        mtmp = (_F(GROUP_MA='RES_TOT', MATER=_M_RES,),)
+        mtmp = (_F(GROUP_MA="RES_TOT", MATER=_M_RES),)
         mcf.extend(mtmp)
 
         for ac in list(self.collAC.values()):
             mcf.extend(ac.mcf_AC_mater())
             mtmp = (
-                _F(GROUP_MA=('GT_' + ac.idAST + '_M',
-                   'GT_' + ac.idAST + '_E',), MATER=_MAT_BID,),
-                _F(GROUP_MA='GR_' + ac.idAST, MATER=_MAT_GR,),
-                _F(GROUP_MA='DI_' + ac.idAST, MATER=ac.mate.mate['DIL'],),
-                )
+                _F(GROUP_MA=("GT_" + ac.idAST + "_M", "GT_" + ac.idAST + "_E"), MATER=_MAT_BID),
+                _F(GROUP_MA="GR_" + ac.idAST, MATER=_MAT_GR),
+                _F(GROUP_MA="DI_" + ac.idAST, MATER=ac.mate.mate["DIL"]),
+            )
             mcf.extend(mtmp)
-        mtmp = (_F(GROUP_MA = 'CREIC', MATER = _M_BCR,),)
+        mtmp = (_F(GROUP_MA="CREIC", MATER=_M_BCR),)
         mcf.extend(mtmp)
         return mcf
 
-    def dilatation_cuve(self, MODEL, MAILL, is_char_ini=False, maintien_grille=False, T_CONST_CUVE=None):
+    def dilatation_cuve(
+        self, MODEL, MAILL, is_char_ini=False, maintien_grille=False, T_CONST_CUVE=None
+    ):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
         et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
         # XXX trop long pour être lisible, création des formules fragile
-        assert self.temps_simu[
-            'T0'] is not None, '`definition_time` must be called first!'
+        assert self.temps_simu["T0"] is not None, "`definition_time` must be called first!"
 
         # definition des evolutions de températures
         # sur la PIC/FSC, la PSC et l'enveloppe
-        _TEMPPIC = DEFI_FONCTION(NOM_PARA='INST',
-                                 NOM_RESU='TEMP',
-                                 VALE=(-2.0,   self.TP_REF,
-                                       -1.0,   self.TP_REF,
-                                       self.temps_simu['T0'],   self.TP_REF,
-                                       self.temps_simu['T1'],   self.TP_REF,
-                                       self.temps_simu['T2'],   self.ARRET_FR,
-                                       self.temps_simu['T3'],   T_CONST_CUVE or self.ARRET_CH,
-                                       self.temps_simu['T4'],   T_CONST_CUVE or self.TINFCUVE,
-                                       self.temps_simu['T5'],   T_CONST_CUVE or self.TINFCUVE,
-                                       self.temps_simu['T6'],   T_CONST_CUVE or self.ARRET_CH,
-                                       self.temps_simu['T7'],   self.ARRET_FR,
-                                       self.temps_simu['T8'],   self.TP_REF,
-                                       self.temps_simu['T9'],   self.TP_REF,),
-                                 PROL_DROITE='CONSTANT',
-                                 PROL_GAUCHE='CONSTANT',)
+        _TEMPPIC = DEFI_FONCTION(
+            NOM_PARA="INST",
+            NOM_RESU="TEMP",
+            # fmt: off
+            VALE=(
+                -2.0, self.TP_REF,
+                -1.0, self.TP_REF,
+                self.temps_simu["T0"], self.TP_REF,
+                self.temps_simu["T1"], self.TP_REF,
+                self.temps_simu["T2"], self.ARRET_FR,
+                self.temps_simu["T3"], T_CONST_CUVE or self.ARRET_CH,
+                self.temps_simu["T4"], T_CONST_CUVE or self.TINFCUVE,
+                self.temps_simu["T5"], T_CONST_CUVE or self.TINFCUVE,
+                self.temps_simu["T6"], T_CONST_CUVE or self.ARRET_CH,
+                self.temps_simu["T7"], self.ARRET_FR,
+                self.temps_simu["T8"], self.TP_REF,
+                self.temps_simu["T9"], self.TP_REF,
+            ),
+            # fmt: on
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
 
-        _TEMPPSC = DEFI_FONCTION(NOM_PARA='INST',
-                                 NOM_RESU='TEMP',
-                                 VALE=(-2.0,   self.TP_REF,
-                                       -1.0,   self.TP_REF,
-                                       self.temps_simu['T0'],   self.TP_REF,
-                                       self.temps_simu['T1'],   self.TP_REF,
-                                       self.temps_simu['T2'],   self.ARRET_FR,
-                                       self.temps_simu['T3'],   T_CONST_CUVE or self.ARRET_CH,
-                                       self.temps_simu['T4'],   T_CONST_CUVE or self.TSUPCUVE,
-                                       self.temps_simu['T5'],   T_CONST_CUVE or self.TSUPCUVE,
-                                       self.temps_simu['T6'],   T_CONST_CUVE or self.ARRET_CH,
-                                       self.temps_simu['T7'],   self.ARRET_FR,
-                                       self.temps_simu['T8'],   self.TP_REF,
-                                       self.temps_simu['T9'],   self.TP_REF,),
-                                 PROL_DROITE='CONSTANT',
-                                 PROL_GAUCHE='CONSTANT',)
+        _TEMPPSC = DEFI_FONCTION(
+            NOM_PARA="INST",
+            NOM_RESU="TEMP",
+            # fmt: off
+            VALE=(
+                -2.0, self.TP_REF,
+                -1.0, self.TP_REF,
+                self.temps_simu["T0"], self.TP_REF,
+                self.temps_simu["T1"], self.TP_REF,
+                self.temps_simu["T2"], self.ARRET_FR,
+                self.temps_simu["T3"], T_CONST_CUVE or self.ARRET_CH,
+                self.temps_simu["T4"], T_CONST_CUVE or self.TSUPCUVE,
+                self.temps_simu["T5"], T_CONST_CUVE or self.TSUPCUVE,
+                self.temps_simu["T6"], T_CONST_CUVE or self.ARRET_CH,
+                self.temps_simu["T7"], self.ARRET_FR,
+                self.temps_simu["T8"], self.TP_REF,
+                self.temps_simu["T9"], self.TP_REF,
+            ),
+            # fmt: on
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
 
-        _TEMPENV = DEFI_FONCTION(NOM_PARA='INST',
-                                 NOM_RESU='TEMP',
-                                 VALE=(-2.0,   self.TP_REF,
-                                       -1.0,   self.TP_REF,
-                                       self.temps_simu['T0'],   self.TP_REF,
-                                       self.temps_simu['T1'],   self.TP_REF,
-                                       self.temps_simu['T2'],   self.ARRET_FR,
-                                       self.temps_simu['T3'],   T_CONST_CUVE or self.ARRET_CH,
-                                       self.temps_simu['T4'],   T_CONST_CUVE or self.TENVELOP,
-                                       self.temps_simu['T5'],   T_CONST_CUVE or self.TENVELOP,
-                                       self.temps_simu['T6'],   T_CONST_CUVE or self.ARRET_CH,
-                                       self.temps_simu['T7'],   self.ARRET_FR,
-                                       self.temps_simu['T8'],   self.TP_REF,
-                                       self.temps_simu['T9'],   self.TP_REF,),
-                                 PROL_DROITE='CONSTANT',
-                                 PROL_GAUCHE='CONSTANT',)
+        _TEMPENV = DEFI_FONCTION(
+            NOM_PARA="INST",
+            NOM_RESU="TEMP",
+            # fmt: off
+            VALE=(
+                -2.0, self.TP_REF,
+                -1.0, self.TP_REF,
+                self.temps_simu["T0"], self.TP_REF,
+                self.temps_simu["T1"], self.TP_REF,
+                self.temps_simu["T2"], self.ARRET_FR,
+                self.temps_simu["T3"], T_CONST_CUVE or self.ARRET_CH,
+                self.temps_simu["T4"], T_CONST_CUVE or self.TENVELOP,
+                self.temps_simu["T5"], T_CONST_CUVE or self.TENVELOP,
+                self.temps_simu["T6"], T_CONST_CUVE or self.ARRET_CH,
+                self.temps_simu["T7"], self.ARRET_FR,
+                self.temps_simu["T8"], self.TP_REF,
+                self.temps_simu["T9"], self.TP_REF,
+            ),
+            # fmt: on
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
 
         TP_REFlocal = self.TP_REF
 
@@ -1255,40 +1477,40 @@ class Coeur(object):
         # des internes de cuve en fonction de la température
         ALPH1local = self.ALPH1
         ALPH2local = self.ALPH2
-        ALPHENV = '(%(ALPH1local)e*_TEMPENV(INST) + %(ALPH2local)e)'
-        ALPHPIC = '(%(ALPH1local)e*_TEMPPIC(INST) + %(ALPH2local)e)'
-        ALPHPSC = '(%(ALPH1local)e*_TEMPPSC(INST) + %(ALPH2local)e)'
+        ALPHENV = "(%(ALPH1local)e*_TEMPENV(INST) + %(ALPH2local)e)"
+        ALPHPIC = "(%(ALPH1local)e*_TEMPPIC(INST) + %(ALPH2local)e)"
+        ALPHPSC = "(%(ALPH1local)e*_TEMPPSC(INST) + %(ALPH2local)e)"
 
         # Donnees geometriques
         # coordonnees centre cuve
-        _TABG = RECU_TABLE(CO=MAILL,
-                           NOM_TABLE='CARA_GEOM',)
-        xmin = _TABG['X_MIN', 1]
-        xmax = _TABG['X_MAX', 1]
-        ymin = _TABG['Y_MIN', 1]
-        ymax = _TABG['Y_MAX', 1]
-        zmin = _TABG['Z_MIN', 1]
-        zmax = _TABG['Z_MAX', 1]
-        Y0 = (ymin + ymax) / 2.
-        Z0 = (zmin + zmax) / 2.
+        _TABG = RECU_TABLE(CO=MAILL, NOM_TABLE="CARA_GEOM")
+        xmin = _TABG["X_MIN", 1]
+        xmax = _TABG["X_MAX", 1]
+        ymin = _TABG["Y_MIN", 1]
+        ymax = _TABG["Y_MAX", 1]
+        zmin = _TABG["Z_MIN", 1]
+        zmax = _TABG["Z_MAX", 1]
+        Y0 = (ymin + ymax) / 2.0
+        Z0 = (zmin + zmax) / 2.0
         # rayon de la PSC
-        Rpsc = (ymax - ymin) / 2.
+        Rpsc = (ymax - ymin) / 2.0
 
-        #---------------------------------------------------------------
-        #--                  Dilatations radiales                     --
-        #--      du cloisonnement, de la PIC/FSC, et de la PSC        --
-        #---------------------------------------------------------------
-        L = '(sqrt( ((Y-%(Y0)f)**2)+ ((Z-%(Z0)f)**2)))'
-        epsilon = 1.E-6
+        # ---------------------------------------------------------------
+        # --                  Dilatations radiales                     --
+        # --      du cloisonnement, de la PIC/FSC, et de la PSC        --
+        # ---------------------------------------------------------------
+        L = "(sqrt( ((Y-%(Y0)f)**2)+ ((Z-%(Z0)f)**2)))"
+        epsilon = 1.0e-6
         # on rentre un epsilon pour le cas où L=0 (assemblage central)
         # pour éviter la division par zéro
-        COSTE = '(Y-%(Y0)f)/(' + L + '+%(epsilon)e)'
-        SINTE = '(Z-%(Z0)f)/(' + L + '+%(epsilon)e)'
-        Dcth = L + ' * ' + ALPHENV + ' * (_TEMPENV(INST)-%(TP_REFlocal)f) '
-        f_DthY = Dcth + '*' + COSTE
-        f_DthZ = Dcth + '*' + SINTE
+        COSTE = "(Y-%(Y0)f)/(" + L + "+%(epsilon)e)"
+        SINTE = "(Z-%(Z0)f)/(" + L + "+%(epsilon)e)"
+        Dcth = L + " * " + ALPHENV + " * (_TEMPENV(INST)-%(TP_REFlocal)f) "
+        f_DthY = Dcth + "*" + COSTE
+        f_DthZ = Dcth + "*" + SINTE
         _DthY = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthY % locals(),
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthY % locals(),
             Dcth=Dcth,
             COSTE=COSTE,
             ALPHPIC=ALPHPIC,
@@ -1300,9 +1522,11 @@ class Coeur(object):
             ALPHENV=ALPHENV,
             epsilon=epsilon,
             Y0=Y0,
-            Z0=Z0,)
+            Z0=Z0,
+        )
         _DthZ = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthZ % locals(),
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthZ % locals(),
             Dcth=Dcth,
             SINTE=SINTE,
             ALPHPIC=ALPHPIC,
@@ -1314,13 +1538,15 @@ class Coeur(object):
             ALPHENV=ALPHENV,
             epsilon=epsilon,
             Y0=Y0,
-            Z0=Z0,)
+            Z0=Z0,
+        )
 
-        Dthpic = L + ' * ' + ALPHPIC + ' * (_TEMPPIC(INST)-%(TP_REFlocal)f) '
-        f_DthYpic = Dthpic + '*' + COSTE
-        f_DthZpic = Dthpic + '*' + SINTE
+        Dthpic = L + " * " + ALPHPIC + " * (_TEMPPIC(INST)-%(TP_REFlocal)f) "
+        f_DthYpic = Dthpic + "*" + COSTE
+        f_DthZpic = Dthpic + "*" + SINTE
         _DthYpic = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthYpic % locals(),
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthYpic % locals(),
             Dthpic=Dthpic,
             COSTE=COSTE,
             ALPHPIC=ALPHPIC,
@@ -1334,9 +1560,10 @@ class Coeur(object):
             Y0=Y0,
             Z0=Z0,
             _TEMPPIC=_TEMPPIC,
-            )
+        )
         _DthZpic = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthZpic % locals(),
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthZpic % locals(),
             Dthpic=Dthpic,
             SINTE=SINTE,
             ALPHPIC=ALPHPIC,
@@ -1347,13 +1574,15 @@ class Coeur(object):
             epsilon=epsilon,
             Y0=Y0,
             Z0=Z0,
-            _TEMPPIC=_TEMPPIC,)
+            _TEMPPIC=_TEMPPIC,
+        )
 
-        Dthpsc = L + ' * ' + ALPHPSC + ' * (_TEMPPSC(INST)-%(TP_REFlocal)f) '
-        f_DthYpsc = Dthpsc + '*' + COSTE
-        f_DthZpsc = Dthpsc + '*' + SINTE
+        Dthpsc = L + " * " + ALPHPSC + " * (_TEMPPSC(INST)-%(TP_REFlocal)f) "
+        f_DthYpsc = Dthpsc + "*" + COSTE
+        f_DthZpsc = Dthpsc + "*" + SINTE
         _DthYpsc = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthYpsc % locals(),
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthYpsc % locals(),
             Dthpic=Dthpic,
             COSTE=COSTE,
             ALPHPSC=ALPHPSC,
@@ -1364,9 +1593,11 @@ class Coeur(object):
             epsilon=epsilon,
             Y0=Y0,
             Z0=Z0,
-            _TEMPPSC=_TEMPPSC,)
+            _TEMPPSC=_TEMPPSC,
+        )
         _DthZpsc = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthZpsc % locals(),
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthZpsc % locals(),
             Dthpic=Dthpic,
             SINTE=SINTE,
             ALPHPSC=ALPHPSC,
@@ -1377,121 +1608,122 @@ class Coeur(object):
             epsilon=epsilon,
             Y0=Y0,
             Z0=Z0,
-            _TEMPPSC=_TEMPPSC,)
+            _TEMPPSC=_TEMPPSC,
+        )
 
-        #---------------------------------------------------------------
-        #--                  Deplacements verticaux                   --
-        #--                      de la PIC/FSC                        --
-        #---------------------------------------------------------------
+        # ---------------------------------------------------------------
+        # --                  Deplacements verticaux                   --
+        # --                      de la PIC/FSC                        --
+        # ---------------------------------------------------------------
         # le déplacement de la PIC est égal à la différence de hauteur de cavité
         # (entre l'instant "cuve fermée à 20C"et l'instant considéré)
         #
         # centre du coeur
-        _DthXpicCentre = DEFI_FONCTION(NOM_PARA='INST',
-                                       VALE=(-2.0,   0.,
-                                             -1.0,   0.,
-                                             self.temps_simu['T0'],   0.,
-                                             self.temps_simu['T0b'],   0.,
-                                             self.temps_simu[
-                                             'T1'],   self.Hcav1centre - self.Hcav1centre,
-                                             self.temps_simu[
-                                             'T2'],   self.Hcav1centre - self.Hcav2centre,
-                                             self.temps_simu[
-                                             'T3'],   self.Hcav1centre - self.Hcav3centre,
-                                             self.temps_simu[
-                                             'T4'],   self.Hcav1centre - self.Hcav4centre,
-                                             self.temps_simu[
-                                             'T5'],   self.Hcav1centre - self.Hcav4centre,
-                                             self.temps_simu[
-                                             'T6'],   self.Hcav1centre - self.Hcav3centre,
-                                             self.temps_simu[
-                                             'T7'],   self.Hcav1centre - self.Hcav2centre,
-                                             self.temps_simu[
-                                             'T8'],   self.Hcav1centre - self.Hcav1centre,
-                                             self.temps_simu['T9'],   0.,),
-                                       PROL_DROITE='CONSTANT',
-                                       PROL_GAUCHE='CONSTANT',)
+        _DthXpicCentre = DEFI_FONCTION(
+            NOM_PARA="INST",
+            # fmt: off
+            VALE=(
+                -2.0, 0.0,
+                -1.0, 0.0,
+                self.temps_simu["T0"], 0.0,
+                self.temps_simu["T0b"], 0.0,
+                self.temps_simu["T1"], self.Hcav1centre - self.Hcav1centre,
+                self.temps_simu["T2"], self.Hcav1centre - self.Hcav2centre,
+                self.temps_simu["T3"], self.Hcav1centre - self.Hcav3centre,
+                self.temps_simu["T4"], self.Hcav1centre - self.Hcav4centre,
+                self.temps_simu["T5"], self.Hcav1centre - self.Hcav4centre,
+                self.temps_simu["T6"], self.Hcav1centre - self.Hcav3centre,
+                self.temps_simu["T7"], self.Hcav1centre - self.Hcav2centre,
+                self.temps_simu["T8"], self.Hcav1centre - self.Hcav1centre,
+                self.temps_simu["T9"], 0.0,
+            ),
+            # fmt: on
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
         # peripherie du coeur
-        _DthXpicPeriph = DEFI_FONCTION(NOM_PARA='INST',
-                                       VALE=(-2.0,   0.,
-                                             -1.0,   0.,
-                                             self.temps_simu['T0'],   0.,
-                                             self.temps_simu['T0b'],   0.,
-                                             self.temps_simu[
-                                             'T1'],   self.Hcav1periph - self.Hcav1periph,
-                                             self.temps_simu[
-                                             'T2'],   self.Hcav1periph - self.Hcav2periph,
-                                             self.temps_simu[
-                                             'T3'],   self.Hcav1periph - self.Hcav3periph,
-                                             self.temps_simu[
-                                             'T4'],   self.Hcav1periph - self.Hcav4periph,
-                                             self.temps_simu[
-                                             'T5'],   self.Hcav1periph - self.Hcav4periph,
-                                             self.temps_simu[
-                                             'T6'],   self.Hcav1periph - self.Hcav3periph,
-                                             self.temps_simu[
-                                             'T7'],   self.Hcav1periph - self.Hcav2periph,
-                                             self.temps_simu[
-                                             'T8'],   self.Hcav1periph - self.Hcav1periph,
-                                             self.temps_simu['T9'],   0.,),
-                                       PROL_DROITE='CONSTANT',
-                                       PROL_GAUCHE='CONSTANT',)
+        _DthXpicPeriph = DEFI_FONCTION(
+            NOM_PARA="INST",
+            # fmt: off
+            VALE=(
+                -2.0, 0.0,
+                -1.0, 0.0,
+                self.temps_simu["T0"], 0.0,
+                self.temps_simu["T0b"], 0.0,
+                self.temps_simu["T1"], self.Hcav1periph - self.Hcav1periph,
+                self.temps_simu["T2"], self.Hcav1periph - self.Hcav2periph,
+                self.temps_simu["T3"], self.Hcav1periph - self.Hcav3periph,
+                self.temps_simu["T4"], self.Hcav1periph - self.Hcav4periph,
+                self.temps_simu["T5"], self.Hcav1periph - self.Hcav4periph,
+                self.temps_simu["T6"], self.Hcav1periph - self.Hcav3periph,
+                self.temps_simu["T7"], self.Hcav1periph - self.Hcav2periph,
+                self.temps_simu["T8"], self.Hcav1periph - self.Hcav1periph,
+                self.temps_simu["T9"], 0.0,
+            ),
+            # fmt: on
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+        )
 
-        f_DthXpic = '( (_DthXpicPeriph(INST) -_DthXpicCentre(INST) ) /(%(Rpsc)f)**2   )*(' + L + ')**2   +_DthXpicCentre(INST)'
+        f_DthXpic = (
+            "( (_DthXpicPeriph(INST) -_DthXpicCentre(INST) ) /(%(Rpsc)f)**2   )*("
+            + L
+            + ")**2   +_DthXpicCentre(INST)"
+        )
         _DthXpic = FORMULE(
-            NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthXpic % locals(),
-            _DthXpicPeriph=_DthXpicPeriph,_DthXpicCentre=_DthXpicCentre)
+            NOM_PARA=("X", "Y", "Z", "INST"),
+            VALE=f_DthXpic % locals(),
+            _DthXpicPeriph=_DthXpicPeriph,
+            _DthXpicCentre=_DthXpicCentre,
+        )
 
-        #---------------------------------------------------------------
-        #--                Deplacements  verticaux                    --
-        #--               des noeuds du cloisonnement                 --
-        #---------------------------------------------------------------
+        # ---------------------------------------------------------------
+        # --                Deplacements  verticaux                    --
+        # --               des noeuds du cloisonnement                 --
+        # ---------------------------------------------------------------
         XINFCUVElocal = self.XINFCUVE
         XSUPCUVElocal = self.XSUPCUVE
-        f_DthX = '(-1.*_DthXpicPeriph' + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +' + '_DthXpicPeriph(INST))'
-        _DthX = FORMULE(NOM_PARA=('X', 'INST'), VALE=f_DthX % locals(),
-                        _DthXpicPeriph=_DthXpicPeriph,
-                        XSUPCUVElocal=XSUPCUVElocal,
-                        XINFCUVElocal=XINFCUVElocal,
-                        )
+        f_DthX = (
+            "(-1.*_DthXpicPeriph"
+            + "(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +"
+            + "_DthXpicPeriph(INST))"
+        )
+        _DthX = FORMULE(
+            NOM_PARA=("X", "INST"),
+            VALE=f_DthX % locals(),
+            _DthXpicPeriph=_DthXpicPeriph,
+            XSUPCUVElocal=XSUPCUVElocal,
+            XINFCUVElocal=XINFCUVElocal,
+        )
 
-        #---------------------------------------------------------------
-        #--                  chargement resultant                     --
-        #---------------------------------------------------------------
-        if (is_char_ini) :
-            _dilatation = AFFE_CHAR_MECA_F( MODELE   = MODEL,
-                                           DDL_IMPO = (_F(GROUP_NO = 'FIX',
-                                                          DX=_DthXpic,),
-                                                       _F(GROUP_NO = 'P_CUV',
-                                                          DX=_DthX,   ),),)
-        else :
-          if maintien_grille :
-            _dilatation = AFFE_CHAR_MECA_F(MODELE=MODEL,
-                                       DDL_IMPO=(_F(GROUP_NO='FIX',
-                                                    DX=_DthXpic,
-                                                    DY=_DthYpic,
-                                                    DZ=_DthZpic),
-                                                 _F(GROUP_NO='PMNT_S',
-                                                    DY=_DthYpsc,
-                                                    DZ=_DthZpsc,),
-                                                 _F(GROUP_NO='LISPG',DY=_DthYpsc,DZ=_DthZpsc,),
-                                                 _F(GROUP_NO='P_CUV',
-                                                    DX=_DthX,
-                                                    DY=_DthY,
-                                                    DZ=_DthZ),),)
-          else :
-            _dilatation = AFFE_CHAR_MECA_F(MODELE=MODEL,
-                                       DDL_IMPO=(_F(GROUP_NO='FIX',
-                                                    DX=_DthXpic,
-                                                    DY=_DthYpic,
-                                                    DZ=_DthZpic),
-                                                 _F(GROUP_NO='PMNT_S',
-                                                    DY=_DthYpsc,
-                                                    DZ=_DthZpsc,),
-                                                 _F(GROUP_NO='P_CUV',
-                                                    DX=_DthX,
-                                                    DY=_DthY,
-                                                    DZ=_DthZ),),)
+        # ---------------------------------------------------------------
+        # --                  chargement resultant                     --
+        # ---------------------------------------------------------------
+        if is_char_ini:
+            _dilatation = AFFE_CHAR_MECA_F(
+                MODELE=MODEL,
+                DDL_IMPO=(_F(GROUP_NO="FIX", DX=_DthXpic), _F(GROUP_NO="P_CUV", DX=_DthX)),
+            )
+        else:
+            if maintien_grille:
+                _dilatation = AFFE_CHAR_MECA_F(
+                    MODELE=MODEL,
+                    DDL_IMPO=(
+                        _F(GROUP_NO="FIX", DX=_DthXpic, DY=_DthYpic, DZ=_DthZpic),
+                        _F(GROUP_NO="PMNT_S", DY=_DthYpsc, DZ=_DthZpsc),
+                        _F(GROUP_NO="LISPG", DY=_DthYpsc, DZ=_DthZpsc),
+                        _F(GROUP_NO="P_CUV", DX=_DthX, DY=_DthY, DZ=_DthZ),
+                    ),
+                )
+            else:
+                _dilatation = AFFE_CHAR_MECA_F(
+                    MODELE=MODEL,
+                    DDL_IMPO=(
+                        _F(GROUP_NO="FIX", DX=_DthXpic, DY=_DthYpic, DZ=_DthZpic),
+                        _F(GROUP_NO="PMNT_S", DY=_DthYpsc, DZ=_DthZpsc),
+                        _F(GROUP_NO="P_CUV", DX=_DthX, DY=_DthY, DZ=_DthZ),
+                    ),
+                )
 
         return _dilatation
 
@@ -1499,9 +1731,10 @@ class Coeur(object):
 class CoeurFactory(Mac3Factory):
 
     """Classe pour construire les objets Coeur."""
+
     # Ex.: La classe "Coeur" sera nommée Coeur_900 dans le fichier
     # Coeur_900.datg
-    prefix = 'Coeur_'
+    prefix = "Coeur_"
 
     def build_supported_types(self):
         """Construit la liste des types autorisés."""
@@ -1515,7 +1748,8 @@ class CoeurFactory(Mac3Factory):
 class MateriauAC(object):
 
     """Conteneur des matériaux d'un assemblage."""
-    _types = ('DIL', 'MNT', 'ES', 'EI', 'CR', 'TG', 'GC_ME', 'GC_EB', 'GC_EH')
+
+    _types = ("DIL", "MNT", "ES", "EI", "CR", "TG", "GC_ME", "GC_EB", "GC_EH")
 
     def __init__(self, typeAC, macro):
         """Initialisation"""
@@ -1528,7 +1762,6 @@ class MateriauAC(object):
         """Crée les matériaux"""
 
         for typ in self._types:
-            self.mate[typ] = INCLUDE_MATERIAU(NOM_AFNOR=self.typeAC + '_' + typ,
-                                    TYPE_MODELE='REF',
-                                    VARIANTE='A',
-                                    TYPE_VALE='NOMI')
+            self.mate[typ] = INCLUDE_MATERIAU(
+                NOM_AFNOR=self.typeAC + "_" + typ, TYPE_MODELE="REF", VARIANTE="A", TYPE_VALE="NOMI"
+            )

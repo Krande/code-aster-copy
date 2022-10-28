@@ -294,7 +294,7 @@ class PostAC:
         )
 
     def _compute_norm(self, fy, fz):
-        return np.sqrt(fy ** 2 + fz ** 2)
+        return np.sqrt(fy**2 + fz**2)
 
     def _compute_gravite(self, coor_x, fy, fz):
 
