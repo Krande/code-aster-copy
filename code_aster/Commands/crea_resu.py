@@ -123,6 +123,10 @@ class ResultCreator(ExecuteCommand):
 
         if keywords.get("MATR_RIGI"):
             self._result.setModel(keywords["MATR_RIGI"].getModel())
+            self._result.setDOFNumbering(keywords["MATR_RIGI"].getDOFNumbering())
+        elif keywords.get("MATR_MASS"):
+            self._result.setModel(keywords["MATR_MASS"].getModel())
+            self._result.setDOFNumbering(keywords["MATR_MASS"].getDOFNumbering())
 
         if keywords.get("ECLA_PG"):
             self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])

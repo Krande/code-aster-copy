@@ -292,6 +292,17 @@ MODES_RG = CREA_RESU(OPERATION ='AFFE',
                            )
                     )
 
+PROJ=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODEL,
+                                      BASE=MODES_RG,),
+                     MODELE_MESURE=_F(MODELE=MODEL,
+                                      MESURE=MODES_RG,
+                                      NOM_CHAM='DEPL',),
+                    )
+
+MODES=REST_GENE_PHYS(RESU_GENE=PROJ,
+                     TOUT_ORDRE='OUI',
+                     NOM_CHAM   ='DEPL')
+
 __BAMO = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA = MODES_RG ),),
                                     # NUME_REF = NUM,
                           )
@@ -334,6 +345,17 @@ MOD_RG_D = CREA_RESU(OPERATION ='AFFE',
                               ),
                            )
                     )
+
+PROJ=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODEL,
+                                      BASE=MOD_RG_D,),
+                     MODELE_MESURE=_F(MODELE=MODEL,
+                                      MESURE=MOD_RG_D,
+                                      NOM_CHAM='DEPL',),
+                           )
+
+MODES=REST_GENE_PHYS(RESU_GENE=PROJ,
+                     TOUT_ORDRE='OUI',
+                     NOM_CHAM='DEPL')
 
 __BAMO_D = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA = MODES_RG ),),
                                     # NUME_REF = NUM,
