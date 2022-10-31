@@ -458,6 +458,11 @@ CHAONSB=CREA_RESU(OPERATION='CONV_CHAR',
                           LIST_INST=LINSTB,),
                 )
 
+CHAONFB=REST_SPEC_TEMP(RESULTAT=CHAONSB,
+                       METHODE='PROL_ZERO',
+                       SYMETRIE='NON',
+                       NOM_CHAM='DEPL')
+
 CHAONSC=CREA_RESU(OPERATION='CONV_RESU',
                   TYPE_RESU='EVOL_CHAR',
                   CONV_RESU=_F(NUME_DDL=NUMEDDL,

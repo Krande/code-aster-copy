@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdls140a.comm D 1
+F comm sdls140a.com1 D 1
 F mmed sdls140a.mmed D 20
 F nom  sdls140a.py   D 0

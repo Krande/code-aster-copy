@@ -135,7 +135,10 @@ class ResultCreator(ExecuteCommand):
             self._result.setModel(matr_rigi.getModel())
             dofNum = matr_rigi.getDOFNumbering()
             if dofNum:
-                fnds.append(dofNum.getDescription())
+                if keywords["TYPE_RESU"]=="DYNA_TRANS":
+                    self._result.setDOFNumbering(dofNum)
+                else:
+                    fnds.append(dofNum.getDescription())
         if keywords.get("CONV_RESU"):
             self._result.setModel(
                 keywords["CONV_RESU"]["RESU_INIT"].getModel())
@@ -145,7 +148,10 @@ class ResultCreator(ExecuteCommand):
             else:
                 dofNum = keywords["CONV_RESU"]["NUME_DDL"]
             if dofNum:
-                fnds.append(dofNum.getDescription())
+                if keywords["TYPE_RESU"]=="DYNA_TRANS":
+                    self._result.setDOFNumbering(dofNum)
+                else:
+                    fnds.append(dofNum.getDescription())
         if keywords.get("KUCV"):
             self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
             dofNum = keywords["KUCV"]["MATR_AMOR"].getDOFNumbering()
