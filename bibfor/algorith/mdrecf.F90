@@ -23,7 +23,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -75,7 +75,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     real(kind=8) :: alpha
     real(kind=8) :: coef
     character(len=2) :: ires
-    character(len=3) :: imo
+    character(len=5) :: imo
     character(len=8) :: modsta, modcor
     character(len=8) :: matass, mailla, monmot(2)
     character(len=14) :: numddl
@@ -292,6 +292,12 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 ! (MC NUME_ORDRE), ASSOCIEES A UNE FONCTION MULTIPLICATRICE
 !
     call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
+
+
+    !if (nbmode .gt. 999) then
+     !   call utmess('F', 'ALGORITH5_77')
+    !endif
+
     do i = 1, nexcir
 !
         call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resu, nbret=l1)
@@ -303,11 +309,11 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
         call jeveuo(resu//'.DEPL', 'L', jdepl)
 !
         ii = nexci+nbmode*(i-1)
-        call codent(i, 'D0', ires)
+        call codlet(i, 'D0', ires)
 !
         do jmod = 1, nbmode
-            call codent(jmod, 'D0', imo)
-            nomfon(ii+jmod) = 'FON'//ires//imo
+            call codlet(jmod, 'D0', imo)
+            nomfon(ii+jmod) = '_'//ires//imo
             nofk19 = nomfon(ii+jmod)
             call wkvect(nofk19//'.VALE', 'V V R8', 2*ninst, jvale)
             do iinst = 1, ninst
