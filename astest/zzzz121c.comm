@@ -89,7 +89,7 @@ CHTH00=AFFE_CHAR_THER(    MODELE=MOTH00,
 RETH00=THER_LINEAIRE( MODELE=MOTH00,
                       CHAM_MATER=MA00_T,
                       EXCIT=_F(  CHARGE = CHTH00,   ),
-                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STAT = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INST00,   )
                      )
 #
@@ -204,7 +204,7 @@ CHTH01=AFFE_CHAR_THER(    MODELE=MOTH01,
 RETH01=THER_LINEAIRE( MODELE=MOTH01,
                       CHAM_MATER=MA01_T,
                       EXCIT=_F(  CHARGE = CHTH01,   ),
-                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STAT = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INST01,   )
                       )
 #
@@ -357,7 +357,7 @@ CHTH02=AFFE_CHAR_THER(    MODELE=MOTH02,
 RETH02=THER_LINEAIRE( MODELE=MOTH02,
                       CHAM_MATER=MA02_T,
                       EXCIT=_F(  CHARGE = CHTH02,   ),
-                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STAT = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INST02,   )
                       )
 #
@@ -495,7 +495,7 @@ CHTH03=AFFE_CHAR_THER(    MODELE=MOTH03,
 RETH03=THER_LINEAIRE( MODELE=MOTH03,
                       CHAM_MATER=MA03_T,
                       EXCIT=_F(  CHARGE = CHTH03,   ),
-                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STAT = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INST03,   )
                       )
 #
@@ -614,7 +614,7 @@ CHTH04=AFFE_CHAR_THER(    MODELE=MOTH04,
 RETH04=THER_LINEAIRE( MODELE=MOTH04,
                       CHAM_MATER=MA04_T,
                       EXCIT=_F(  CHARGE = CHTH04,   ),
-                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STAT = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INST03,   )
                       )
 #

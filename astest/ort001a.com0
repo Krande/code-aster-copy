@@ -62,7 +62,7 @@ MO_THER=AFFE_MODELE(MAILLAGE=MAIL,
 
 # --- Thermal properties at t=0
 # The thermal properties must be defined at TEMP=0 for THER_NON_LINE / ETAT_INIT
-# and STATIONNAIRE='OUI', cf. R5.02.02.
+# and STAT = 'OUI', cf. R5.02.02.
 # So we use constant properties evaluated à TEMP=mean(Tint(t=0)) with THER_LINEAIRE
 temp_moy0 = G_input[:, 0].mean()
 print('Température moyenne à t=0 :', temp_moy0)
@@ -126,7 +126,7 @@ CHAR_TH0=AFFE_CHAR_THER_F(MODELE=MO_THER,
 RESU_TH0=THER_LINEAIRE(MODELE=MO_THER,
                        CHAM_MATER=CHMAT0,
                        EXCIT=_F(CHARGE=CHAR_TH0,),
-                       ETAT_INIT=_F(STATIONNAIRE='OUI',),)
+                       ETAT_INIT=_F(STAT = 'OUI',),)
 
 TEMP_0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='EXTR',

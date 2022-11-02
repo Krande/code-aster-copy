@@ -201,13 +201,13 @@ THINI=THER_NON_LINE(MODELE=MODELETH,
                     CHAM_MATER=CHMAT_NL,
                     EXCIT=_F(CHARGE=CL_THER,),
                     INCREMENT=_F(LIST_INST=LINIT,),
-                    ETAT_INIT=_F(STATIONNAIRE='OUI',),)
+                    ETAT_INIT=_F(STAT = 'OUI',),)
 
 TINIDIAG=THER_NON_LINE(MODELE=MODDIAG,
                        CHAM_MATER=CHMAT_NL,
                        EXCIT=_F(CHARGE=CHARDIAG,),
                        INCREMENT=_F(LIST_INST=LINIT,),
-                       ETAT_INIT=_F(STATIONNAIRE='OUI',),)
+                       ETAT_INIT=_F(STAT = 'OUI',),)
 
 RESUTHER=THER_NON_LINE(MODELE=MODELETH,
                        CHAM_MATER=CHMATTH,

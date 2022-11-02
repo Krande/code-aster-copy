@@ -164,7 +164,7 @@ CHT4=AFFE_CHAR_CINE(  MODELE=MOTH,
 
 
 TEMP1=THER_LINEAIRE( MODELE=MOTH,
-                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
+                     ETAT_INIT=_F( STAT = 'OUI'),
                      INCREMENT=_F( LIST_INST = LR8),
                      CHAM_MATER=CHMAT,
                      EXCIT=( _F( CHARGE = CHT1),
@@ -178,7 +178,7 @@ F1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_FLUX_R',
 NOM_CHAM='FLUX_ELNO', RESULTAT=TEMP1, NUME_ORDRE=2)
 
 TEMP2=THER_LINEAIRE( MODELE=MOTH,
-                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
+                     ETAT_INIT=_F( STAT = 'OUI'),
                      INCREMENT=_F( LIST_INST = LR8),
                      CHAM_MATER=CHMAT,
                      EXCIT=( _F( CHARGE = CHT1),

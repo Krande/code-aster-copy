@@ -342,7 +342,7 @@ RESUTHER=THER_LINEAIRE(MODELE=MOTHER,
                        INCREMENT=_F(
                                     LIST_INST=L_INST,
                                    ),
-                       ETAT_INIT=_F(STATIONNAIRE='OUI',),
+                       ETAT_INIT=_F(STAT = 'OUI',),
                        ARCHIVAGE=_F(LIST_INST=L_INST,),)
 
 MAT_TH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,

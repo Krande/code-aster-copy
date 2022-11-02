@@ -114,7 +114,7 @@ TEMPE=THER_LINEAIRE(MODELE=MODELTH,
                            _F(CHARGE=CHTH,),
                            _F(CHARGE=CHTHEPR,),
                            ),
-                    ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
+                    ETAT_INIT=_F( STAT = 'OUI'),
                     INCREMENT=_F( LIST_INST = LR8),
                     )
 

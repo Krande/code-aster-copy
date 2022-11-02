@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,
 
 TEMPE=THER_LINEAIRE(
                                 MODELE=MOTH,
-                             ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
+                             ETAT_INIT=_F( STAT = 'OUI'),
                              INCREMENT=_F( LIST_INST = LR8),
                             CHAM_MATER=CHMAT,
                                  EXCIT=_F( CHARGE = CHTH),

@@ -96,7 +96,7 @@ TEMPE=THER_LINEAIRE(MODELE=MO,
                            _F(CHARGE=CHF1),
                            _F(CHARGE=CHF2,),),
                     INCREMENT=_F(LIST_INST=LR8,),
-                    ETAT_INIT=_F(STATIONNAIRE='OUI',),)
+                    ETAT_INIT=_F(STAT = 'OUI',),)
 
 T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
               OPERATION='EXTR',

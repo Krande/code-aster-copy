@@ -68,7 +68,7 @@ LR8=DEFI_LIST_REEL(   DEBUT=0.,
                      INTERVALLE=_F(  JUSQU_A = 10.0,   NOMBRE = 2)  )
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
-                              ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
+                              ETAT_INIT=_F(  STAT = 'OUI'),
                               INCREMENT=_F(  LIST_INST = LR8),
                              PARM_THETA=0.8,
                              CHAM_MATER=CHMAT,
