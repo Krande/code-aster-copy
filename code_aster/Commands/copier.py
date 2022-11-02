@@ -57,10 +57,20 @@ class Copier(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         other = keywords['CONCEPT']
-        
+
         if isinstance(other, Result):
-            self._result.setModel(other.getModel())
-        
+            indexes = other.getRanks()
+            for i in indexes:
+                if other.hasModel(i):
+                    self._result.setModel(other.getModel(i), i)
+                if other.hasMaterialField(i):
+                    self._result.setMaterialField(other.getMaterialField(i), i)
+                if other.hasElementaryCharacteristics(i):
+                    self._result.setElementaryCharacteristics(
+                        other.getElementaryCharacteristics(i), i)
+                if other.hasListOfLoads(i):
+                    self._result.setListOfLoads(other.getListOfLoads(i), i)
+
         if isinstance(other, Mesh):
             self._result.build()
 
