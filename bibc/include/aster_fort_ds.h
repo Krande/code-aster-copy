@@ -191,6 +191,9 @@ extern void DEFPSSSS( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, ASTERINTEGER *, const 
                       const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                       STRING_SIZE );
 
+#define CALLO_RSAGSD( a, b ) CALLOP( RSAGSD, rsagsd, a, b )
+void DEFSP( RSAGSD, rsagsd, const char *, STRING_SIZE, ASTERINTEGER * );
+
 #define CALLO_RSCRSD( a, b, c, d ) CALLOOOP( RSCRSD, rscrsd, a, b, c, d )
 void DEFSSSP( RSCRSD, rscrsd, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
               STRING_SIZE, const ASTERINTEGER * );
@@ -207,6 +210,9 @@ void DEFSSP( RSNOCH, rsnoch, const char *, STRING_SIZE, const char *, STRING_SIZ
 #define CALLO_RSNOCH_FORWARD( a, b, c ) CALLOOP( RSNOCH_FORWARD, rsnoch_forward, a, b, c )
 void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const ASTERINTEGER * );
+
+#define CALLO_RSRUSD( a, b ) CALLOP( RSRUSD, rsagsd, a, b )
+void DEFSP( RSRUSD, rsrusd, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_RSINFO( a, b ) CALLOP( RSINFO, rsinfo, a, b )
 extern void DEFSP( RSINFO, rsinfo, const char *, STRING_SIZE, ASTERINTEGER * );

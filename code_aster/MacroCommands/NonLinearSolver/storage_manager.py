@@ -18,7 +18,27 @@
 # --------------------------------------------------------------------
 
 from ...Messages import UTMESS
-from ...Utilities import no_new_attributes, profile
+from ...Utilities import no_new_attributes, profile, force_list
+
+
+def get_index(inst, linst, prec, crit):
+
+    assert crit in ("RELATIF", "ABSOLU")
+
+    if crit == "RELATIF":
+        min_v = inst*(1-prec)
+        max_v = inst*(1+prec)
+    else:
+        min_v = inst-prec
+        max_v = inst+prec
+
+    min_v, max_v = sorted((min_v, max_v))
+    test = tuple((i >= min_v and i <= max_v) for i in linst)
+    return tuple(i for i, v in enumerate(test) if v is True)
+
+
+def exists_unique(*args, **kwargs):
+    return len(get_index(*args, **kwargs)) == 1
 
 
 class StorageManager:
@@ -31,15 +51,94 @@ class StorageManager:
     class Slot:
         """Container that holds objects to be saved"""
 
-        __slots__ = ("rank", "time", "model", "material_field", "elem_char", "load", "fields", "theta")
+        __slots__ = ("index", "time", "model", "material_field",
+                     "elem_char", "load", "fields", "param")
 
     result = None
     buffer = None
+    excl_fields = set()
+    crit = prec = None
+    list_time = pas_arch = None
+    curr_index = init_index = 0
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, result):
+    def __init__(self, result, mcf=None, **kwargs):
+        """Create the storage manager object from the ARCHIVE factor keyword.
+
+        Arguments:
+            result (Result): result where store fields
+            mcf (list|tuple|dict): Convenient option to pass `(kwargs,)`, the value
+            returned for a factor keyword.
+            kwargs (dict): Valid ARCHIVE keywords (syntax checked, with defaults).
+
+        """
         self.result = result
         self.buffer = []
+
+        if mcf:
+            if isinstance(mcf, (list, tuple)):
+                mcf = mcf[0]
+            if isinstance(mcf, dict):
+                kwargs = mcf
+
+        excl_fields = kwargs.get("CHAM_EXCLU")
+        if excl_fields is not None:
+            for field in excl_fields:
+                self.excl_fields.add(field)
+
+        if "CRITERE" in kwargs:
+            self.crit = kwargs["CRITERE"]
+        if "PRECISION" in kwargs:
+            self.prec = kwargs["PRECISION"]
+
+        if "INST" in kwargs:
+            self.list_time = force_list(kwargs["INST"])
+        elif "LIST_INST" in kwargs:
+            self.list_time = kwargs["LIST_INST"].getValues()
+        elif "PAS_ARCH" in kwargs:
+            self.pas_arch = kwargs["PAS_ARCH"]
+        else:
+            self.pas_arch = 1
+
+        if self.list_time is not None:
+            for time in self.list_time:
+                assert(exists_unique(time, self.list_time, self.prec, self.crit))
+
+    def setInitialIndex(self, index):
+        """Set initial index.
+
+        Arguments:
+            index (int): initial index.
+        """
+        self.curr_index = index
+        self.init_index = index
+
+        if self.result.getNumberOfRanks() > 0:
+            self.result.clear(self.init_index)
+
+    def hasToBeStored(self, time):
+        """To known if this time step has to be store
+
+        Arguments:
+            time (float): time step.
+
+        Returns:
+            bool: True if the time step has to be store else False
+        """
+
+        if self.pas_arch is not None:
+            return (self.curr_index - self.init_index) % self.pas_arch == 0
+
+        if self.list_time is not None:
+            indexes = get_index(time, self.list_time, self.prec, self.crit)
+            assert len(indexes) <= 1
+            return len(indexes) == 1
+
+        return True
+
+    def completed(self):
+        """Register the current step as completed successfully."""
+        self.curr_index += 1
 
     def getResult(self):
         """Returns the Result container.
@@ -50,19 +149,18 @@ class StorageManager:
         return self.result
 
     @profile
-    def storeState(self, rank, time, phys_pb, phys_state, theta=None):
+    def storeState(self, time, phys_pb, phys_state, param=None):
         """Store a new state.
 
         Arguments:
-            rank (int): rank where to save fields
             time (float): current (pseudo)-time.
             phys_pb (PhysicalProblem): Physical problem
             phys_state (PhysicalState): Physical state
         """
         slot = StorageManager.Slot()
-        slot.rank = rank
+        slot.index = self.curr_index
         slot.time = time
-        slot.theta = theta
+        slot.param = param
         slot.model = phys_pb.getModel()
         slot.material_field = phys_pb.getMaterialField()
         slot.elem_char = phys_pb.getElementaryCharacteristics()
@@ -76,17 +174,17 @@ class StorageManager:
         self.store()
 
     @profile
-    def storeField(self, field, field_type, rank):
+    def storeField(self, field, field_type, time=0.0):
         """Store a new field.
 
         Arguments:
             field (FieldOn***): field to store
             field_type (str) : type of the field as DEPL, SIEF_ELGA...
-            rank (int): rank where to save field
         """
-        if field is not None:
-            self.result.setField(field, field_type, rank)
-            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=0, vali=rank)
+        if field is not None and field_type not in self.excl_fields:
+            self.result.setField(field, field_type, self.curr_index)
+            UTMESS("I", "ARCHIVAGE_6", valk=field_type,
+                   valr=time, vali=self.curr_index)
 
     @profile
     def store(self):
@@ -95,23 +193,23 @@ class StorageManager:
         new_size = self.result.getNumberOfRanks() + len(self.buffer)
         self.result.resize(new_size)
         for slot in self.buffer:
-            rank_curr = slot.rank
+            curr_index = slot.index
             if slot.time is not None:
-                self.result.setTimeValue(slot.time, rank_curr)
-            if slot.theta is not None:
-                self.result.setParameterValue("PARM_THETA", slot.theta, rank_curr)
+                self.result.setTimeValue(slot.time, curr_index)
+            if slot.param is not None:
+                for param, value in slot.param.items():
+                    self.result.setParameterValue(param, value, curr_index)
             if slot.model:
-                self.result.setModel(slot.model, rank_curr)
+                self.result.setModel(slot.model, curr_index)
             if slot.material_field:
-                self.result.setMaterialField(slot.material_field, rank_curr)
+                self.result.setMaterialField(slot.material_field, curr_index)
             if slot.elem_char:
-                self.result.setElementaryCharacteristics(slot.elem_char, rank_curr)
+                self.result.setElementaryCharacteristics(
+                    slot.elem_char, curr_index)
             if slot.load:
-                self.result.setListOfLoads(slot.load, rank_curr)
+                self.result.setListOfLoads(slot.load, curr_index)
             if slot.fields:
                 for field_type, field in slot.fields.items():
-                    if field is not None:
-                        self.result.setField(field, field_type, rank_curr)
-                        UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=slot.time, vali=rank_curr)
+                    self.storeField(field, field_type, slot.time)
 
         self.buffer = []

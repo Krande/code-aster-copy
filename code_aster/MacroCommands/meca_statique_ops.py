@@ -226,8 +226,8 @@ def meca_statique_ops(self, **args):
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
         phys_pb.computeReferenceExternalStateVariables()
 
-    # first rank to use
-    rank = result.getNumberOfRanks() + 1
+    # first index to use
+    storage_manager.setInitialIndex(result.getNumberOfRanks() + 1)
 
     # Run computation
     logger.debug("<MECA_STATIQUE>: Run computation")
@@ -246,11 +246,11 @@ def meca_statique_ops(self, **args):
         diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
         phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
 
-        # store rank
-        storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state)
+        # store field
+        storage_manager.storeState(phys_state.time, phys_pb, phys_state)
 
         timeStepper.completed()
-        rank += 1
+        storage_manager.completed()
         isFirst = False
 
     # delete factorized matrix - free memory

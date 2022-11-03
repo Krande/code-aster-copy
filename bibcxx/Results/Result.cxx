@@ -379,9 +379,9 @@ py::dict Result::getAccessParameters() const {
     returnDict[var_name.c_str()] = listValues;
 
     auto items = _calculationParameter->getObjects();
-    for ( auto& item : items ) {
+    for ( auto &item : items ) {
         item->updateValuePointer();
-        typevar = trim( (*item)[3].toString() );
+        typevar = trim( ( *item )[3].toString() );
 
         if ( typevar == "ACCES" ) {
             var_name = trim( _accessVariables->getStringFromIndex( item->getIndex() ) );
@@ -786,6 +786,61 @@ void Result::resize( ASTERINTEGER nbRanks ) {
         CALLO_RSAGSD( getName(), &nbRanks );
     }
 }
+
+void Result::clear( const ASTERINTEGER &index ) {
+
+    auto old_index = getRanks();
+
+    ASTERINTEGER nume_ordre = index;
+    CALLO_RSRUSD( getName(), &nume_ordre );
+
+    for ( auto &index : old_index ) {
+        _mapModel.erase( index );
+        _mapMaterial.erase( index );
+        _mapLoads.erase( index );
+        _mapElemCara.erase( index );
+
+        for ( auto &[key, fields] : _dictOfMapOfFieldOnNodesReal ) {
+            fields.erase( index );
+        }
+        for ( auto &[key, fields] : _dictOfMapOfFieldOnNodesComplex ) {
+            fields.erase( index );
+        }
+        for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsReal ) {
+            fields.erase( index );
+        }
+        for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsComplex ) {
+            fields.erase( index );
+        }
+        for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsLong ) {
+            fields.erase( index );
+        }
+        for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsReal ) {
+            fields.erase( index );
+        }
+        for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsChar16 ) {
+            fields.erase( index );
+        }
+    }
+};
+
+void Result::clear() {
+    auto index = getRanks()[0];
+    CALLO_RSRUSD( getName(), &index );
+
+    _mapModel.clear();
+    _mapMaterial.clear();
+    _mapLoads.clear();
+    _mapElemCara.clear();
+
+    _dictOfMapOfFieldOnNodesReal.clear();
+    _dictOfMapOfFieldOnNodesComplex.clear();
+    _dictOfMapOfFieldOnCellsReal.clear();
+    _dictOfMapOfFieldOnCellsComplex.clear();
+    _dictOfMapOfFieldOnCellsLong.clear();
+    _dictOfMapOfConstantFieldOnCellsReal.clear();
+    _dictOfMapOfConstantFieldOnCellsChar16.clear();
+};
 
 std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() const {
     return _fieldBuidler.getFiniteElementDescriptors();

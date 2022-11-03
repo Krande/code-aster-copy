@@ -37,6 +37,18 @@ Arguments:
     nb_rank (int):  number of rank to allocate
         )",
               py::arg( "nb_rank" ) )
+        .def( "clear", py::overload_cast<>( &Result::clear ),
+              R"(
+Clear fields, models, parameters, ... in result
+)" )
+        .def( "clear", py::overload_cast< const ASTERINTEGER & >( &Result::clear ),
+              R"(
+Clear fields, models, parameters, ... in result from the given index
+
+Arguments:
+    index (int): index from begin cleaning
+        )",
+              py::arg( "index" ) )
         .def( "setTimeValue", &Result::setTimeValue, R"(
 Add time at the specified rank
 

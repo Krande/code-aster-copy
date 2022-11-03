@@ -120,7 +120,7 @@ def _addLoads(phys_pb, args):
 @profile
 def _setupInitialField(phys_pb, args):
 
-    logger.info("<THER_LINEAIRE><ETAT_INIT>: Start")
+    logger.debug("<THER_LINEAIRE><ETAT_INIT>: Start")
 
     initial_field = None
     is_stat_init = False
@@ -131,65 +131,44 @@ def _setupInitialField(phys_pb, args):
     initial_state = args["ETAT_INIT"]
 
     if "STAT" in initial_state:
-        logger.info(
+        logger.debug(
             "<THER_LINEAIRE><ETAT_INIT>: Stationnary Computation initialized with a null field")
         initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
         initial_field.setValues(0.0)
         is_stat_init = True
     elif "CHAM_NO" in initial_state:
-        logger.info("<THER_LINEAIRE><ETAT_INIT>: Initialized with given field '%s'" % initial_state.get(
+        logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with given field '%s'" % initial_state.get(
             "CHAM_NO").getName())
         initial_field = initial_state.get("CHAM_NO")
     elif "VALE" in initial_state:
-        logger.info(
-            "<THER_LINEAIRE><ETAT_INIT>: Initialized with constant field with value %s" % initial_state.get("VALE"))
+        logger.debug(
+            "<THER_LINEAIRE><ETAT_INIT>: Initialized with constant field with value %s" % initial_state["VALE"])
         # For HHO, there is a projection to do.
         if phys_pb.getModel().existsHHO():
             initial_field = HHO(phys_pb).projectOnHHOSpace(
-                initial_state.get("VALE"))
+                initial_state["VALE"])
         else:
             initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())
-            initial_field.setValues(initial_state.get("VALE"))
+            initial_field.setValues(initial_state["VALE"])
     elif "EVOL_THER" in initial_state:
         resu_ther = initial_state.get("EVOL_THER")
         para = resu_ther.getAccessParameters()
 
-        irank = initial_state.get("NUME_ORDRE") or para["NUME_ORDRE"][-1]
+        index = initial_state.get("NUME_ORDRE") or para["NUME_ORDRE"][-1]
 
         if initial_state.get("INST") is not None:
-            irank = get_unique_index(initial_state.get("INST"), para["INST"],
+            index = get_unique_index(initial_state.get("INST"), para["INST"],
                                      initial_state.get("PRECISION"), initial_state.get("CRITERE"))
 
-        initial_field = resu_ther.getFieldOnNodesReal("TEMP", irank)
-        logger.info("<THER_LINEAIRE><ETAT_INIT>: Initialized with field from '%s' at rank '%s'" % (resu_ther.getName(),
-                                                                                                   irank))
+        initial_field = resu_ther.getField("TEMP", index).duplicate()
+        logger.debug("<THER_LINEAIRE><ETAT_INIT>: Initialized with field from '%s' at index '%s'" % (resu_ther.getName(),
+                                                                                                     index))
     else:
         assert(False)
 
     assert(initial_field is not None)
-    logger.info("<THER_LINEAIRE><ETAT_INIT>: Finish")
+    logger.debug("<THER_LINEAIRE><ETAT_INIT>: Finish")
     return initial_field, is_stat_init
-
-
-@profile
-def _setupArchivage(timestepper_values, args):
-    logger.info("<THER_LINEAIRE><ARCHIVAGE>: Start")
-
-    arch_args = args["ARCHIVAGE"]
-    arch_prec = arch_args.get("PRECISION")
-    arch_crit = arch_args.get("CRITERE")
-    if "LIST_INST" in arch_args:
-        arch_times = arch_args["LIST_INST"].getValues()
-    else:
-        arch_times = timestepper_values
-
-    for t in arch_times:
-        assert(exists_unique(t, timestepper_values,
-               prec=arch_prec, crit=arch_crit))
-
-    logger.info("<THER_LINEAIRE><ARCHIVAGE>: arch_times %s " % arch_times)
-    logger.info("<THER_LINEAIRE><ARCHIVAGE>: Finish")
-    return arch_times
 
 
 @profile
@@ -203,18 +182,18 @@ def _createTimeStepper(args):
         (TimeStepper): a time stepper.
     """
 
-    logger.info("<THER_LINEAIRE><TIMESTEPPER>: Start")
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: Start")
 
     # Create result
     result = args.get("RESULTAT") or args.get("reuse")
     if result is None:
         last_prev_inst = None
-        first_rank = 0
+        first_index = 0
     else:
         para = result.getAccessParameters()
         inst_prev = para["INST"]
         last_prev_inst = inst_prev[-1]
-        rank_prev = para["NUME_ORDRE"]
+        index_prev = para["NUME_ORDRE"]
 
     increment = args.get("INCREMENT")
 
@@ -224,7 +203,7 @@ def _createTimeStepper(args):
         prec = increment.get("PRECISION")
 
         list_values = listInst.getValues()
-        logger.info(
+        logger.debug(
             "<THER_LINEAIRE><TIMESTEPPER>: list_values = %s" % list_values)
 
         nume_inst_init = increment.get("NUME_INST_INIT") or 0
@@ -237,13 +216,13 @@ def _createTimeStepper(args):
 
         inst_fin = increment.get("INST_FIN") or list_values[-1]
 
-        logger.info(
+        logger.debug(
             "<THER_LINEAIRE><TIMESTEPPER>: nume_inst_init = %s" % nume_inst_init)
-        logger.info(
+        logger.debug(
             "<THER_LINEAIRE><TIMESTEPPER>: nume_inst_fin = %s" % nume_inst_fin)
-        logger.info(
+        logger.debug(
             "<THER_LINEAIRE><TIMESTEPPER>: inst_init = %s" % inst_init)
-        logger.info(
+        logger.debug(
             "<THER_LINEAIRE><TIMESTEPPER>: inst_fin = %s" % inst_fin)
 
         assert nume_inst_init >= 0
@@ -262,16 +241,17 @@ def _createTimeStepper(args):
 
         assert len(time_values) > 0
 
-        # first rank to use
+        # first index to use
         if last_prev_inst is not None:
             assert(result is not None)
             idx = get_unique_index(last_prev_inst, inst_prev, prec)
-            first_rank = rank_prev[idx] + 1
+            first_index = index_prev[idx]
 
-    logger.info("<THER_LINEAIRE><TIMESTEPPER>: first_rank = %s" % first_rank)
-    logger.info("<THER_LINEAIRE><TIMESTEPPER>: time_values = %s" %
-                time_values)
-    return first_rank, TimeStepper(time_values)
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: first_index = %s" %
+                 first_index)
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: time_values = %s" %
+                 time_values)
+    return first_index, TimeStepper(time_values)
 
 
 @profile
@@ -289,11 +269,11 @@ def _computeMatrix(disr_comp, matrix,
     Returns:
         AssemblyMatrixTemperatureReal: matrix computed and assembled
     """
-    logger.info("<THER_LINEAIRE><MATRIX>: Start")
+    logger.debug("<THER_LINEAIRE><MATRIX>: Start")
 
     phys_pb = disr_comp.getPhysicalProblem()
 
-    logger.info("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
+    logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
     matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(
         time_value, with_dual=False)
     matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
@@ -302,19 +282,19 @@ def _computeMatrix(disr_comp, matrix,
     matrix.addElementaryMatrix(matr_elem_exch, time_theta)
 
     if phys_pb.getDOFNumbering().useLagrangeMultipliers():
-        logger.info("<THER_LINEAIRE><MATRIX>: Dual Conductivity")
+        logger.debug("<THER_LINEAIRE><MATRIX>: Dual Conductivity")
         matr_elem_dual = disr_comp.getDualLinearConductivityMatrix()
         matrix.addElementaryMatrix(matr_elem_dual)
 
     if is_evol:
-        logger.info("<THER_LINEAIRE><MATRIX>: Linear Capacity")
+        logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")
 
         matr_elem_capa = disr_comp.getLinearCapacityMatrix(time_value)
         matrix.addElementaryMatrix(matr_elem_capa, 1.0/time_delta)
 
     matrix.assemble(True)
 
-    logger.info("<THER_LINEAIRE><MATRIX>: Finish")
+    logger.debug("<THER_LINEAIRE><MATRIX>: Finish")
 
     return matrix
 
@@ -336,23 +316,22 @@ def _computeRhs(disr_comp,
          FieldOnNodesReal: vector of load
     """
 
-    logger.info("<THER_LINEAIRE><RHS>: Start")
+    logger.debug("<THER_LINEAIRE><RHS>: Start")
 
     # compute imposed temperature with Lagrange
     rhs = disr_comp.getImposedDualBC(time_value, time_delta, time_theta)
-    logger.info("<THER_LINEAIRE><RHS>: Nodal BC")
-
+    logger.debug("<THER_LINEAIRE><RHS>: Nodal BC")
     # compute neumann forces
     rhs += disr_comp.getNeumannForces(time_value, time_delta,
                                       time_theta, previousPrimalField)
-    logger.info("<THER_LINEAIRE><RHS>: Neumann BC")
+    logger.debug("<THER_LINEAIRE><RHS>: Neumann BC")
 
     if is_evol:
         rhs += disr_comp.getTransientThermalForces(time_value, time_delta, time_theta,
                                                    previousPrimalField)
-        logger.info("<THER_LINEAIRE><RHS>: Transient Load BC")
+        logger.debug("<THER_LINEAIRE><RHS>: Transient Load BC")
 
-    logger.info("<THER_LINEAIRE><RHS>: Finish")
+    logger.debug("<THER_LINEAIRE><RHS>: Finish")
     return rhs
 
 
@@ -366,8 +345,8 @@ def ther_lineaire_ops(self, **args):
         ThermalResult: result for linear thermal problem
     """
 
-    logger.info("<THER_LINEAIRE>: Initialization")
-    logger.info("<THER_LINEAIRE>: Args : %s" % args)
+    logger.debug("<THER_LINEAIRE>: Initialization")
+    logger.debug("<THER_LINEAIRE>: Args : %s" % args)
 
     _checkArgs(args)
 
@@ -385,7 +364,7 @@ def ther_lineaire_ops(self, **args):
     # Create physical problem
     model = args["MODELE"]
     phys_pb = PhysicalProblem(model, args["CHAM_MATER"], args.get("CARA_ELEM"))
-    logger.info("<THER_LINEAIRE>: Physical Problem created")
+    logger.debug("<THER_LINEAIRE>: Physical Problem created")
 
     # for HHO model
     hho = HHO(phys_pb)
@@ -393,23 +372,17 @@ def ther_lineaire_ops(self, **args):
     # Add loads
     phys_pb = _addLoads(phys_pb, args)
     has_exchange_fields = _hasExchangeFields(args)
-    logger.info("<THER_LINEAIRE>: Loads added")
+    logger.debug("<THER_LINEAIRE>: Loads added")
 
     # Compute numbering
     phys_pb.computeDOFNumbering()
-    logger.info("<THER_LINEAIRE>: DOFNumbering computed")
+    logger.debug("<THER_LINEAIRE>: DOFNumbering computed")
 
     # Setup ETAT_INIT
     initial_field, is_stat_init = _setupInitialField(phys_pb, args)
 
     # Create time stepper
-    rank, timeStepper = _createTimeStepper(args)
-
-    # Archivage
-    arch_args = args["ARCHIVAGE"]
-    arch_prec = arch_args.get("PRECISION")
-    arch_crit = arch_args.get("CRITERE")
-    arch_times = _setupArchivage(timeStepper.times, args)
+    first_index, timeStepper = _createTimeStepper(args)
 
     # Create linear solver
     linear_solver = LinearSolver.factory("THER_LINEAIRE", args["SOLVEUR"])
@@ -419,7 +392,8 @@ def ther_lineaire_ops(self, **args):
     linear_solver.build()
 
     # Create storage manager
-    storage_manager = StorageManager(result)
+    storage_manager = StorageManager(result, args["ARCHIVAGE"])
+    storage_manager.setInitialIndex(first_index)
 
     # Define main objects
     phys_state = PhysicalState()
@@ -439,67 +413,87 @@ def ther_lineaire_ops(self, **args):
         phys_pb.computeReferenceExternalStateVariables()
 
     # Run computation
-    logger.info("<THER_LINEAIRE>: Start computation")
+    logger.debug("<THER_LINEAIRE>: Start computation")
 
-    is_first = True
     phys_state.primal = initial_field
     time_delta_prev = timeStepper.null_increment
 
-    while not timeStepper.hasFinished():
+    # Compute initial state
+    if is_evol:
         phys_state.time = timeStepper.getNext()
+        time_theta = 1.0
+        time_delta = timeStepper.null_increment
+        if is_stat_init:
+            matrix = _computeMatrix(disc_comp, matrix,
+                                    False, phys_state.time, time_delta, time_theta)
+            profile(linear_solver.factorize)(matrix)
 
-        is_evol_c = is_evol and not is_stat_init
-
-        if is_evol_c:
-            time_theta = args.get("PARM_THETA")
-            time_delta = timeStepper.getIncrement()
-        else:
-            time_theta = 1.0
-            time_delta = timeStepper.null_increment
-
-        logger.info("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol_c)
-        logger.info("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
-        logger.info("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s" %
-                    hasExternalStateVariable)
-        logger.info("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time)
-        logger.info("<THER_LINEAIRE>:     TIME_VALUE %s" % phys_state.time)
-        logger.info("<THER_LINEAIRE>:     TIME_DELTA %s" % time_delta)
-        logger.info("<THER_LINEAIRE>:     TIME_THETA %s" % time_theta)
-
-        if not (is_first and not is_stat_init):
-            if (not is_const
-                or (is_const and time_delta is timeStepper.null_increment)
-                or (is_const and has_exchange_fields)
-                or (is_const and abs(time_delta - time_delta_prev) > 1.e-12)
-                    or (is_const and hasExternalStateVariable)):
-
-                matrix = _computeMatrix(disc_comp, matrix,
-                                        is_evol_c, phys_state.time, time_delta, time_theta)
-                profile(linear_solver.factorize)(matrix)
-
-            rhs = _computeRhs(disc_comp,
-                              is_evol_c, phys_state.time, time_delta, time_theta,
+            rhs = _computeRhs(disc_comp, False, phys_state.time, time_delta, time_theta,
                               phys_state.primal)
 
             # solve linear system
             diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
             phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
 
-        if (rank == 0) or not is_first:
-            if exists_unique(phys_state.time, arch_times, arch_prec, arch_crit):
-                storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state,
-                                           theta=time_theta)
-                if model.existsHHO():
-                    hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
-                    storage_manager.storeField(hho_field, "HHO_TEMP", rank)
-                rank += 1
+        storage_manager.storeState(phys_state.time, phys_pb, phys_state,
+                                   param={"PARM_THETA": time_theta})
+        if model.existsHHO():
+            hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
+            storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
+
+        storage_manager.completed()
+        timeStepper.completed()
+
+    # Loop on time step
+    while not timeStepper.hasFinished():
+        phys_state.time = timeStepper.getNext()
+
+        if is_evol:
+            time_theta = args.get("PARM_THETA")
+            time_delta = timeStepper.getIncrement()
+        else:
+            time_theta = 1.0
+            time_delta = timeStepper.null_increment
+
+        logger.debug("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol)
+        logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
+        logger.debug("<THER_LINEAIRE>:     HAS_EXT_STATE_VAR = %s" %
+                     hasExternalStateVariable)
+        logger.debug("<THER_LINEAIRE>:     CURRENT TIME %s" % phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     TIME_VALUE %s" % phys_state.time)
+        logger.debug("<THER_LINEAIRE>:     TIME_DELTA %s" % time_delta)
+        logger.debug("<THER_LINEAIRE>:     TIME_THETA %s" % time_theta)
+
+        if (not is_const
+            or (is_const and time_delta is timeStepper.null_increment)
+            or (is_const and has_exchange_fields)
+            or (is_const and abs(time_delta - time_delta_prev) > 1.e-12)
+                or (is_const and hasExternalStateVariable)):
+
+            matrix = _computeMatrix(disc_comp, matrix,
+                                    is_evol, phys_state.time, time_delta, time_theta)
+            profile(linear_solver.factorize)(matrix)
+
+        rhs = _computeRhs(disc_comp, is_evol, phys_state.time, time_delta, time_theta,
+                          phys_state.primal)
+
+        # solve linear system
+        diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
+        phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
+
+        if storage_manager.hasToBeStored(phys_state.time):
+            storage_manager.storeState(phys_state.time, phys_pb, phys_state,
+                                       param={"PARM_THETA": time_theta})
+            if model.existsHHO():
+                hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
+                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
+
+            storage_manager.completed()
 
         timeStepper.completed()
-        is_first = False
-        is_stat_init = False
         time_delta_prev = time_delta
 
-    logger.info("<THER_LINEAIRE>: Finish computation")
+    logger.debug("<THER_LINEAIRE>: Finish computation")
     # delete factorized matrix - free memory
     linear_solver.deleteFactorizedMatrix()
 

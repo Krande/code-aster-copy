@@ -224,8 +224,8 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add time value for one rank
      * @param rank
      */
-    void setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ){
-        this->setParameterValue( "INST", value, rank);
+    void setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
+        this->setParameterValue( "INST", value, rank );
     };
 
     /**
@@ -496,9 +496,9 @@ class Result : public DataStructure, public ListOfTables {
      *  dictOfMapOfFieldOnCellsReal
      */
     virtual bool build( const std::vector< FiniteElementDescriptorPtr > feds =
-                    std::vector< FiniteElementDescriptorPtr >(),
-                const std::vector< FieldOnNodesDescriptionPtr > fnds =
-                    std::vector< FieldOnNodesDescriptionPtr >() );
+                            std::vector< FiniteElementDescriptorPtr >(),
+                        const std::vector< FieldOnNodesDescriptionPtr > fnds =
+                            std::vector< FieldOnNodesDescriptionPtr >() );
 
     /**
      * @brief Update the  Result's size
@@ -508,6 +508,10 @@ class Result : public DataStructure, public ListOfTables {
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
 
     std::vector< FieldOnNodesDescriptionPtr > getFieldOnNodesDescriptions() const;
+
+    void clear( const ASTERINTEGER &index );
+
+    void clear();
 };
 
 /**

@@ -194,22 +194,22 @@ class NonLinearSolver:
         resetFortranLoggingLevel()
         logger.setLevel(20)
 
-    def _storeRank(self, rank, time):
+    def _storeRank(self, time):
         """Store the current physical state.
 
         Arguments:
-            rank (int): rank index for storing
             time (float): current (pseudo)-time.
         """
         self.storage_manager.storeState(
-            rank, time, self.phys_pb, self.phys_state)
+            time, self.phys_pb, self.phys_state)
+        self.storage_manager.completed()
 
     @profile
     def _initializeRun(self):
         """Initialize run"""
         self.phys_state.readInitialState(self.phys_pb, self.param)
         self.step_rank = 0
-        self._storeRank(self.step_rank, self.phys_state.time)
+        self._storeRank(self.phys_state.time)
         self.stepper.insertStep(self.step_rank, self.phys_state.time)
         self.stepper.completed()
 
@@ -238,7 +238,7 @@ class NonLinearSolver:
             else:
                 self.phys_state.update(solv.getPhysicalState())
                 self.step_rank += 1
-                self._storeRank(self.step_rank, timeEndStep)
+                self._storeRank(timeEndStep)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
 
