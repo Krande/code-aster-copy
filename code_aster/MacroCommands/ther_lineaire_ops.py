@@ -188,7 +188,10 @@ def _createTimeStepper(args):
     result = args.get("RESULTAT") or args.get("reuse")
     if result is None:
         last_prev_inst = None
-        first_index = 0
+        if args["TYPE_CALCUL"] == "STAT":
+            first_index = 1
+        else:
+            first_index = 0
     else:
         para = result.getAccessParameters()
         inst_prev = para["INST"]

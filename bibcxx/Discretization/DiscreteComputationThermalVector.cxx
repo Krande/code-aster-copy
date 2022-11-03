@@ -164,7 +164,6 @@ bool DiscreteComputation::addTherNeumannTerms(
     const ASTERDOUBLE theta, const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
-    AS_ASSERT( _previousNodalField->exists() );
 
     // Init
     ASTERINTEGER iload = 1;
@@ -242,6 +241,7 @@ bool DiscreteComputation::addTherNeumannTerms(
                     AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
                               std::to_string( time ) );
                 }
+                AS_ASSERT( _previousNodalField->exists() );
 
                 calcul->setOption( "CHAR_THER_TEXT_R" );
                 calcul->setFiniteElementDescriptor( model_FEDesc );

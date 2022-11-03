@@ -204,21 +204,21 @@ def calc_corr_massif_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
     #======================================================================
     fields["CORR_THER11"] = THER_LINEAIRE(MODELE=MODTH,
                                           CHAM_MATER=CHMATTH,
-                                          PARM_THETA=1,
+                                          TYPE_CALCUL="STAT",
                                           INCREMENT=_F(LIST_INST=L_INST),
                                           EXCIT=(_F(CHARGE=CHAR1),
                                                  _F(CHARGE=SYME_THER_11)))
 
     fields["CORR_THER22"] = THER_LINEAIRE(MODELE=MODTH,
                                           CHAM_MATER=CHMATTH,
-                                          PARM_THETA=1,
+                                          TYPE_CALCUL="STAT",
                                           INCREMENT=_F(LIST_INST=L_INST),
                                           EXCIT=(_F(CHARGE=CHAR2),
                                                  _F(CHARGE=SYME_THER_22)))
 
     fields["CORR_THER33"] = THER_LINEAIRE(MODELE=MODTH,
                                           CHAM_MATER=CHMATTH,
-                                          PARM_THETA=1,
+                                          TYPE_CALCUL="STAT",
                                           INCREMENT=_F(LIST_INST=L_INST),
                                           EXCIT=(_F(CHARGE=CHAR3),
                                                  _F(CHARGE=SYME_THER_33)
