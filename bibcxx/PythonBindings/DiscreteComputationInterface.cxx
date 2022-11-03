@@ -126,12 +126,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Return the imposed displacement vector used to remove imposed DDL
 
             Arguments:
-                  time (float): Current time
+                  time (float): Current time (default 0.0)
 
             Returns:
                   FieldOnNodes: imposed displacement vector
         )",
-              py::arg( "time" ) )
+              py::arg( "time" ) = 0.0 )
         .def( "getIncrementalDirichletBC", &DiscreteComputation::getIncrementalDirichletBC,
               R"(
             Return the incremental imposed displacement vector used to remove imposed DDL

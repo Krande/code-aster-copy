@@ -165,6 +165,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.HHO` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.HHO
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.HeatFluxReal` object
 ********************************************************************************
 
@@ -326,6 +335,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.Physics
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.PostProcessing` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PostProcessing
    :show-inheritance:
    :members:
 

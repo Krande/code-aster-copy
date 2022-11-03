@@ -258,7 +258,7 @@ class DiscreteComputation {
      * @param time Time
      * @return Nodal field for kinematic boundary condition
      */
-    FieldOnNodesRealPtr getDirichletBC( const ASTERDOUBLE &time ) const;
+    FieldOnNodesRealPtr getDirichletBC( const ASTERDOUBLE time = 0.0 ) const;
 
     /**
      * @brief Compute nodal field for incremental kinematic boundary condition

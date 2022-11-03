@@ -160,7 +160,7 @@ FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPt
     return bume;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::getDirichletBC( const ASTERDOUBLE &time ) const {
+FieldOnNodesRealPtr DiscreteComputation::getDirichletBC( const ASTERDOUBLE time ) const {
 
     auto dofNume = _phys_problem->getDOFNumbering();
     FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );

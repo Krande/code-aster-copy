@@ -762,11 +762,11 @@ class DiscreteComputation:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
         """
     
-    def getDirichletBC(self, time):
+    def getDirichletBC(self, time= 0.0):
         """Return the imposed displacement vector used to remove imposed DDL
         
         Arguments:
-              time (float): Current time
+              time (float): Current time (default 0.0)
         
         Returns:
               FieldOnNodes: imposed displacement vector
@@ -1673,11 +1673,13 @@ class FieldOnCellsReal(DataField):
         
         2. __init__(self: libaster.FieldOnCellsReal, arg0: str) -> None
         
-        3. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: BehaviourProperty, arg2: str) -> None
+        3. __init__(self: libaster.FieldOnCellsReal, arg0: Model) -> None
         
-        4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: BehaviourProperty, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
+        4. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: BehaviourProperty, arg2: str) -> None
         
-        5. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
+        5. __init__(self: libaster.FieldOnCellsReal, arg0: Model, arg1: BehaviourProperty, arg2: str, arg3: libaster.ElementaryCharacteristics) -> None
+        
+        6. __init__(self: libaster.FieldOnCellsReal, arg0: libaster.FieldOnCellsReal) -> None
         """
     
     def __isub__(self, arg0):
@@ -2261,6 +2263,17 @@ class FieldOnNodesReal(DataField):
         
                     Arguments:
                         value (list[float]): list of values to set
+                    
+        
+        3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float]) -> None
+        
+        
+                    Set values of the field where components and values are given as a dict.
+                    If the component is not present in the field then it is discarded
+                    Example: { "X1" : 0.0, "X3" : 0.0 }
+        
+                    Arguments:
+                        value (dict[str, float]): dict of values to set (key: str, value: float)
         """
     
     def size(self):
@@ -8804,6 +8817,9 @@ class Model(DataStructure):
     def build(self):
         pass
     
+    def existsHHO(self):
+        pass
+    
     def existsMultiFiberBeam(self):
         pass
     
@@ -9305,6 +9321,24 @@ class Result(DataStructure):
         
         Returns:
             bool: *True* if ok.
+        """
+    
+    def clear(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. clear(self: libaster.Result) -> None
+        
+        
+        Clear fields, models, parameters, ... in result
+        
+        
+        2. clear(self: libaster.Result, index: int) -> None
+        
+        
+        Clear fields, models, parameters, ... in result from the given index
+        
+        Arguments:
+            index (int): index from begin cleaning
         """
     
     def getAccessParameters(self):
@@ -11783,3 +11817,53 @@ def setFortranLoggingLevel(level):
 def resetFortranLoggingLevel():
     """Reset level of logging for fortran code (level = 0).
     """
+
+# class PostProcessing in libaster
+
+class PostProcessing:
+    pass
+    
+    # Method resolution order:
+    #     PostProcessing
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, arg0):
+        pass
+
+# class HHO in libaster
+
+class HHO:
+    pass
+    
+    # Method resolution order:
+    #     HHO
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, arg0):
+        pass
+    
+    def projectOnHHOSpace(self, value):
+        """Project real value to HHO-space
+        
+        Arguments:
+              value (float): value to project
+        
+        Returns:
+              FieldOnNodesReal: HHO field
+        """
+    
+    def projectOnLagrangeSpace(self, hho_field):
+        """Project field from HHO-space to Lagrange-space
+        
+        Arguments:
+              hho_field (FieldOnNodesReal): hho field like displacement or thermic
+        
+        Returns:
+              FieldOnNodesReal: HHO field project on Lagrange space
+        """
