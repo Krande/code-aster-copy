@@ -187,7 +187,7 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                     EXCIT=(_F(CHARGE=CHTH,),
                            _F(CHARGE=CHTHB,),
                            _F(CHARGE=CHTHC,),),
-                    ETAT_INIT=_F(STAT = 'OUI',),
+                    ETAT_INIT=_F(STATIONNAIRE = 'OUI',),
                     NEWTON=_F(REAC_ITER=1,),)
 
 TEMPE=CALC_CHAMP(reuse =TEMPE,
