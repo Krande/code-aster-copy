@@ -48,5 +48,17 @@ void exportHHOToPython( py::module_ &mod ) {
       Returns:
             FieldOnNodesReal: HHO field
         )",
+              py::arg( "value" ) )
+        .def( "projectOnHHOCellSpace", &HHO::projectOnHHOCellSpace,
+              R"(
+      Project real value to HHO Cell-space
+      Cell space is the restriction of HHO-space to cells only
+
+      Arguments:
+            value (float): value to project
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
               py::arg( "value" ) );
 };

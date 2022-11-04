@@ -63,6 +63,9 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
 
     __nomama = AFFE_MATERIAU(
         MAILLAGE=__nomlma, AFFE=_F(TOUT='OUI', MATER=__nomdma,),)
+
+    DLZ = DEFI_LIST_REEL(VALE=(0.0),)
+
     #
     # L'utilisateur ne peut rien faire pour éviter ces "Alarmes" donc pas d'impression
     MasquerAlarme('CHARGES2_87')
@@ -195,7 +198,6 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
         #------------------------------------------------------------
         # RESOLUTION DE LAPLACIEN(PHI) = -2
         # AVEC PHI = 0 SUR LE CONTOUR :
-        DLZ = DEFI_LIST_REEL(VALE=(0.0),)
         motscles = {}
         motscles['EXCIT'] = [_F(CHARGE=__chart1,), ]
         if 'GROUP_MA_INTE' in args:

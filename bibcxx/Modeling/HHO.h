@@ -63,6 +63,11 @@ class HHO {
      * @brief Project H^1-field on HHO space
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const ASTERDOUBLE &value ) const;
+
+        /**
+     * @brief Project H^1-field on HHO Cell-space
+     */
+    FieldOnNodesRealPtr projectOnHHOCellSpace( const ASTERDOUBLE &value ) const;
 };
 
 using HHOPtr = std::shared_ptr< HHO >;

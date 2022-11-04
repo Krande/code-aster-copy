@@ -191,6 +191,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes( const FiniteElementDescriptorPtr &fed, const std::string &localMode )
         : FieldOnNodes() {
 
+        if ( !fed ) {
+            raiseAsterError( " FEDescriptor is null" );
+        }
+
         // Create numbering from Local mode (see Cata)
         auto dofNume = std::make_shared< DOFNumbering >();
 
@@ -210,6 +214,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes( const ModelPtr &model ) : FieldOnNodes() {
 
+        if ( !model ) {
+            raiseAsterError( " Model is null" );
+        }
+
         // Create numbering from Local mode (see Cata)
         auto dofNume = std::make_shared< DOFNumbering >();
 
@@ -228,6 +236,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructor with DOFNumbering
      */
     FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
+
+        if ( !dofNum ) {
+            raiseAsterError( " DOFNumbering is null" );
+        }
 
         _dofDescription = dofNum->getDescription();
         _mesh = dofNum->getMesh();

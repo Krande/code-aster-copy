@@ -11911,6 +11911,17 @@ class HHO:
     def __init__(self, arg0):
         pass
     
+    def projectOnHHOCellSpace(self, value):
+        """Project real value to HHO Cell-space
+        Cell space is the restriction of HHO-space to cells only
+        
+        Arguments:
+              value (float): value to project
+        
+        Returns:
+              FieldOnNodesReal: HHO field
+        """
+    
     def projectOnHHOSpace(self, value):
         """Project real value to HHO-space
         

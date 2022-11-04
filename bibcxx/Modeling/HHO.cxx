@@ -85,3 +85,26 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
 
     return hho_field;
 };
+
+FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const ASTERDOUBLE &value ) const {
+
+    auto hho_field = std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+    hho_field->setValues( 0.0 );
+
+    std::map< std::string, ASTERDOUBLE > map;
+
+    auto model = _phys_problem->getModel();
+
+    if ( model->isMechanical() ) {
+        AS_ABORT( "TODO..." );
+        // Comment faire pour les cells...
+    } else if ( model->isThermal() ) {
+        map["HHO_C1"] = value;
+    } else {
+        AS_ABORT( "Not implemented for HHO" );
+    }
+
+    hho_field->setValues( map );
+
+    return hho_field;
+};

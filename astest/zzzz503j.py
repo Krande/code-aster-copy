@@ -53,7 +53,7 @@ model = AFFE_MODELE(MAILLAGE=mesh,
 H = 2.0
 A = 4.0
 
-coeff = DEFI_MATERIAU(THER=_F(LAMBDA=A,  RHO_CP=H))
+coeff = DEFI_MATERIAU(THER=_F(LAMBDA=1.0,  RHO_CP=1.0))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh,
                       AFFE=_F(TOUT='OUI',  MATER=coeff)
@@ -61,14 +61,13 @@ mater = AFFE_MATERIAU(MAILLAGE=mesh,
 
 # define BC
 f = 100.
-load = AFFE_CHAR_THER(MODELE=model,
-                      SOURCE=_F(GROUP_MA='SURFACE',  SOUR=H*f),
-                      )
-
 bc = AFFE_CHAR_CINE(MODELE=model,
                     THER_IMPO=_F(GROUP_MA=('RIGHT', 'LEFT',
                                  'TOP', 'BOTTOM',),  TEMP=0.0),
                     )
+load = AFFE_CHAR_THER(MODELE=model,
+                      SOURCE=_F(GROUP_MA='SURFACE',  SOUR=H*f),
+                      )
 
 # define discrete object
 phys_pb = code_aster.PhysicalProblem(model, mater)
@@ -77,41 +76,71 @@ phys_pb.addLoad(load)
 
 disc_comp = code_aster.DiscreteComputation(phys_pb)
 
+hho = code_aster.HHO(phys_pb)
+
 # compute DOF numbering
 phys_pb.computeDOFNumbering()
 
-# compute (A * GkT(huT), GkT(hvT))_T
-matK = disc_comp.getLinearStiffnessMatrix()
+# compute (GkT(huT), GkT(hvT))_T
+matEK = disc_comp.getLinearStiffnessMatrix()
+matK = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
+matK.addElementaryMatrix(matEK)
+matK.assemble()
 
-# compute (H * u_T, v_T) _T
-matM = disc_comp.getMassMatrix()
+# compute (u_T, v_T) _T
+matEM = disc_comp.getMassMatrix()
+matM = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
+matM.addElementaryMatrix(matEM)
+matM.assemble()
 
-# compute (H * f, v_T)_T
+# compute ( H * f, v_T)_T
+f_hho = hho.projectOnHHOCellSpace(f)
+rhs2 = H * matM * f_hho
 rhs = disc_comp.getNeumannForces()
+
+# sould be equal: pb with basis function
+# test.assertAlmostEqual(rhs.norm("NORM_2"), rhs2.norm("NORM_2"), delta=1e-6)
 
 # compute BC
 diriBCs = disc_comp.getDirichletBC()
 
-# assemble matrix
-matrix = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
-
-matrix.addElementaryMatrix(matK)
-matrix.addElementaryMatrix(matM)
-matrix.assemble()
+# lhs matrix
+lhs = A * matK + H * matM
 
 # solve linear system
 mySolver = code_aster.MumpsSolver()
-mySolver.factorize(matrix)
+mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
-test.assertAlmostEqual(solution.norm("NORM_2"), 28.660962846752938, delta=1e-6)
+test.assertAlmostEqual(solution.norm("NORM_2"), 28.661313016531285, delta=1e-6)
 
 # project HHO solution
-hho_field = code_aster.HHO(phys_pb).projectOnLagrangeSpace(solution)
-test.assertAlmostEqual(hho_field.norm("NORM_2"), 32.18599383551358, delta=1e-6)
+hho_field = hho.projectOnLagrangeSpace(solution)
+test.assertAlmostEqual(hho_field.norm("NORM_2"), 32.1858136117712, delta=1e-6)
 
 # save result
 hho_field.printMedFile("hhoField.med")
+
+# Non-linear process with A(u) = A * (1.1+max(u)_Omega), H(u) = H * (1 + max(u)_Omega)
+u_hho = hho.projectOnHHOSpace(0.0)
+
+print("Newton solver:")
+for i in range(100):
+    max_u = u_hho.norm("NORM_INFINITY")
+    Au = A * (1.1+max_u)
+    Hu = H * (1+max_u)
+    Resi = Au * matK * u_hho + Hu * matM * u_hho - Hu / H * rhs
+    Jaco = Au * matK + Hu * matM
+
+    print("*Iter %d: residual %f"%(i, Resi.norm("NORM_2")))
+    if Resi.norm("NORM_2") < 10e-8:
+        break
+
+    mySolver.factorize(Jaco)
+    du_hho = mySolver.solve(-Resi, diriBCs)
+    u_hho += du_hho
+
+test.assertAlmostEqual(u_hho.norm("NORM_2"), 28.046099934496567, delta=1e-6)
 
 test.printSummary()
 
