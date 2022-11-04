@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ TEMPA2=THER_LINEAIRE(
                CHAM_MATER=CMANT,    CARA_ELEM=EPANT,
               EXCIT=_F(  CHARGE = CHANT) )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=TEMPA2,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N201',
@@ -132,7 +132,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=13.331018048501,
                    PRECISION=1.E-3,
                    ),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE=1,
                    RESULTAT=TEMPA2,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N176',
@@ -142,7 +142,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=13.25650073213,
                    PRECISION=1.E-3,
                    ),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE=1,
                    RESULTAT=TEMPA2,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N161',
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=12.746259086106,
                    PRECISION=1.E-3,
                    ),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE=1,
                    RESULTAT=TEMPA2,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N1',
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=6.6666666666667,
                    PRECISION=1.E-4,
                    ),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE=1,
                    RESULTAT=TEMPA2,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N46',

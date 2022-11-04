@@ -94,7 +94,6 @@ subroutine rsrusd(nomsd, iordr)
         call jenuno(jexnum(noms2//'.DESC', k), nomsy)
         call jenonu(jexnom(noms2//'.DESC', nomsy), ibid)
         call jeveuo(jexnum(noms2//'.TACH', ibid), 'E', jtach)
-        print*, k, nomsy, ibid, irang, nbordr
         do krang = irang, nbordr
             kordr=ordr(krang)
             call rsutch(nomsd, nomsy, kordr, chextr, .true._1)
