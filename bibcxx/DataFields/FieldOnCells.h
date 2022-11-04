@@ -445,6 +445,12 @@ class FieldOnCells : public DataField {
         _values->assign( value );
     };
 
+    void setValues( const std::vector< ValueType > &values ) {
+        AS_ASSERT( values.size() == size() );
+
+        *_values = values;
+    };
+
     std::string getPhysicalQuantity() const {
         _descriptor->updateValuePointer();
 

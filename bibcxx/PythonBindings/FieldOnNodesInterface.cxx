@@ -126,9 +126,9 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Set values of the field
 
             Arguments:
-                value (list[float]): list of values to set
+                values (list[float]): list of values to set
             )",
-              py::arg( "value" ) )
+              py::arg( "values" ) )
         .def( "setValues",
               py::overload_cast< const std::map< std::string, ASTERDOUBLE > & >(
                   &FieldOnNodesReal::setValues ),
@@ -241,9 +241,9 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Set values of the field
 
             Arguments:
-                value (list[complex]): list of values to set
+                values (list[complex]): list of values to set
             )",
-              py::arg( "value" ) )
+              py::arg( "values" ) )
         .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
 
     /**

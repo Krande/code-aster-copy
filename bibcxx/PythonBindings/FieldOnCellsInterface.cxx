@@ -83,13 +83,22 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::self * float() )
         .def( float() * py::self )
         .def( -py::self )
-        .def( "setValues", &FieldOnCellsReal::setValues, R"(
+        .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnCellsReal::setValues ),
+              R"(
             Set values of the field
 
             Arguments:
-                float: value to set
+                value (float): value to set
             )",
               py::arg( "value" ) )
+        .def( "setValues", py::overload_cast< const VectorReal & >( &FieldOnCellsReal::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                values (list[float]): list of values to set
+            )",
+              py::arg( "values" ) )
         .def( "getValues", &FieldOnCellsReal::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
@@ -184,6 +193,24 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             )" )
         .def( "build", &FieldOnCellsComplex::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
+        .def( "setValues",
+              py::overload_cast< const ASTERCOMPLEX & >( &FieldOnCellsComplex::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                value (complex): value to set
+            )",
+              py::arg( "value" ) )
+        .def( "setValues",
+              py::overload_cast< const VectorComplex & >( &FieldOnCellsComplex::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                values (list[complex]): list of values to set
+            )",
+              py::arg( "values" ) )
         .def( "getValues", &FieldOnCellsComplex::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
@@ -251,6 +278,23 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             )" )
         .def( "build", &FieldOnCellsLong::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
+        .def( "setValues",
+              py::overload_cast< const ASTERINTEGER & >( &FieldOnCellsLong::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                value (complex): value to set
+            )",
+              py::arg( "value" ) )
+        .def( "setValues", py::overload_cast< const VectorLong & >( &FieldOnCellsLong::setValues ),
+              R"(
+            Set values of the field
+
+            Arguments:
+                values (list[complex]): list of values to set
+            )",
+              py::arg( "values" ) )
         .def( "getValues", &FieldOnCellsLong::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 

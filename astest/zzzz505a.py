@@ -50,6 +50,9 @@ test.assertEqual(elno.getFieldType(), "ELGA")
 test.assertSequenceEqual(elno.getComponents(), ["DX", "DY", "DZ"])
 test.assertEqual(elno.getNumberOfComponents(), 3)
 
+elno_values = elno.getValues()
+elno.setValues(elno_values)
+
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=elno,
                        REFERENCE='ANALYTIQUE',
                        VALE_CALC=-1.0,
