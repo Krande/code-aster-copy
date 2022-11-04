@@ -161,13 +161,13 @@ TEMPI=THER_LINEAIRE(MODELE=MOTH,
                     CARA_ELEM=ORIEN,
                     EXCIT=(_F(CHARGE=CHTH,),
                            _F(CHARGE=CHTH1,),),)
-TEMPI=CALC_CHAMP(reuse =TEMPI,RESULTAT=TEMPI,NUME_ORDRE=0,THERMIQUE=('ETHE_ELEM'),)
+TEMPI=CALC_CHAMP(reuse =TEMPI,RESULTAT=TEMPI,NUME_ORDRE = 1,THERMIQUE=('ETHE_ELEM'),)
 TEMPO=THER_LINEAIRE(MODELE=MOTH,
                     CHAM_MATER=CHMATO,
                     CARA_ELEM=ORIEN,
                     EXCIT=(_F(CHARGE=CHTH,),
                            _F(CHARGE=CHTH1,),),)
-TEMPO=CALC_CHAMP(reuse =TEMPO,RESULTAT=TEMPO,NUME_ORDRE=0,THERMIQUE=('ETHE_ELEM'),)
+TEMPO=CALC_CHAMP(reuse =TEMPO,RESULTAT=TEMPO,NUME_ORDRE = 1,THERMIQUE=('ETHE_ELEM'),)
 
 #
 # ANALYSE DES RESULTATS ------------------------------------------------
@@ -177,7 +177,7 @@ TEMPE=CALC_CHAMP(reuse =TEMPE,
 
 
                 RESULTAT=TEMPE,
-                NUME_ORDRE=0,
+                NUME_ORDRE = 1,
                  THERMIQUE=('FLUX_ELNO','ETHE_ELEM'),
 
 )
@@ -191,7 +191,7 @@ FLUYAB=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='FLUYAB',
                                RESULTAT=TEMPE,
                                NOM_CHAM='FLUX_NOEU',
-                               NUME_ORDRE=0,
+                               NUME_ORDRE = 1,
                                GROUP_NO=('AB','CD','COUP02',),
                                NOM_CMP=('FLUY','FLUX',),),)
 
@@ -199,7 +199,7 @@ TEMP_CD=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='TEMP_CD',
                                 RESULTAT=TEMPE,
                                 NOM_CHAM='TEMP',
-                                NUME_ORDRE=0,
+                                NUME_ORDRE = 1,
                                 GROUP_NO=('CD','AB','COUP02',),
                                 NOM_CMP='TEMP',),)
 
@@ -289,7 +289,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MIN',
            TABLE=TEMP_CD,)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+TEST_RESU(RESU=(_F(NUME_ORDRE = 1,
                    POINT=1,
                    RESULTAT=TEMPE,
                    NOM_CHAM='ETHE_ELEM',
@@ -298,7 +298,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    GROUP_MA='M109',),
                 ),
           )
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+TEST_RESU(RESU=(_F(NUME_ORDRE = 1,
                    POINT=1,
                    RESULTAT=TEMPI,
                    NOM_CHAM='ETHE_ELEM',
@@ -307,7 +307,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    GROUP_MA='M109',),
                 ),
           )
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+TEST_RESU(RESU=(_F(NUME_ORDRE = 1,
                    POINT=1,
                    RESULTAT=TEMPO,
                    NOM_CHAM='ETHE_ELEM',

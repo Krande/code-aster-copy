@@ -135,7 +135,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=TEM_FIN2))
 T_INIT=CREA_CHAMP( OPERATION='EXTR',
                    TYPE_CHAM='NOEU_TEMP_R',
                    NOM_CHAM='TEMP',
-                   NUME_ORDRE=0,
+                   NUME_ORDRE = 1,
                    RESULTAT=TEM_INIT)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=T_INIT))
@@ -143,7 +143,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=T_INIT))
 T_FIN1=CREA_CHAMP( OPERATION='EXTR',
                    TYPE_CHAM='NOEU_TEMP_R',
                    NOM_CHAM='TEMP',
-                   NUME_ORDRE=0,
+                   NUME_ORDRE = 1,
                    RESULTAT=TEM_FIN1)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=T_FIN1))
@@ -151,7 +151,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=T_FIN1))
 T_FIN2=CREA_CHAMP( OPERATION='EXTR',
                    TYPE_CHAM='NOEU_TEMP_R',
                    NOM_CHAM='TEMP',
-                   NUME_ORDRE=0,
+                   NUME_ORDRE = 1,
                    RESULTAT=TEM_FIN2)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=T_FIN2))

@@ -202,8 +202,8 @@ TEMP_TEMP1 = THER_LINEAIRE(MODELE=MODTH,
 norm_diff_depl_t0 = (DEPL31_FONC.getFieldOnNodesReal('DEPL',1) - DEPL31_TEMP0.getFieldOnNodesReal('DEPL',1)).norm('NORM_2')
 norm_diff_depl_t1 = (DEPL31_FONC.getFieldOnNodesReal('DEPL',2) - DEPL31_TEMP1.getFieldOnNodesReal('DEPL',1)).norm('NORM_2')
 
-norm_diff_temp_t0 = (TEMP_FONC.getFieldOnNodesReal('TEMP',0) - TEMP_TEMP0.getFieldOnNodesReal('TEMP',0)).norm('NORM_2')
-norm_diff_temp_t1 = (TEMP_FONC.getFieldOnNodesReal('TEMP',1) - TEMP_TEMP1.getFieldOnNodesReal('TEMP',0)).norm('NORM_2')
+norm_diff_temp_t0 = (TEMP_FONC.getFieldOnNodesReal('TEMP',0) - TEMP_TEMP0.getFieldOnNodesReal('TEMP',1)).norm('NORM_2')
+norm_diff_temp_t1 = (TEMP_FONC.getFieldOnNodesReal('TEMP',1) - TEMP_TEMP1.getFieldOnNodesReal('TEMP',1)).norm('NORM_2')
 
 
 test = code_aster.TestCase()

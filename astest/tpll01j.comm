@@ -93,7 +93,7 @@ for k in range(nbcalc):
                      MAILLAGE_NP1 = M[k+1],
                      RESULTAT_N = RESU[k],
                      NOM_CHAM = 'ERTH_ELEM',
-                     NUME_ORDRE = 0,
+                     NUME_ORDRE = 1,
                      NOM_CMP = 'ERTABS',
                      CRIT_RAFF_PE = 0.1,
                      NIVE_MAX = 5,
@@ -102,7 +102,7 @@ for k in range(nbcalc):
 # Tests de non-regression de ERTH_ELEM/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD
 # La maille MA1 est le tetraedre du groupe TEST_V dans MA[0]
-TEST_RESU(RESU=_F(NUME_ORDRE=0,
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
                   POINT=1,
                   RESULTAT=RESU[0],
                   NOM_CHAM='ERTH_ELEM',
@@ -113,7 +113,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=0,
                   ),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=0,
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
                   GROUP_NO='G',
                   RESULTAT=RESU[0],
                   NOM_CHAM='ERTH_ELNO',
@@ -131,7 +131,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=0,
 #print 'la maille de TEST_V est : '+M[1].sdj.NOMMAI.get()[num[0]-1]
 
 # La maille MA65 est le tetraedre du groupe TEST_V dans MA[1]
-TEST_RESU(RESU=_F(NUME_ORDRE=0,
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
                   POINT=1,
                   RESULTAT=RESU[1],
                   NOM_CHAM='ERTH_ELEM',

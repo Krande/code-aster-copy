@@ -114,7 +114,8 @@ CHTH=AFFE_CHAR_THER(MODELE=MODELEX,
 
 TEMPE=THER_LINEAIRE(MODELE=MODELEX,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHTH),)
+                    EXCIT=_F(CHARGE=CHTH),
+                    TYPE_CALCUL="STAT",)
 
 #----------------------------------------------
 #            POST-TRAITEMENTS
@@ -287,14 +288,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #                    OPERATION = 'EXTR',
 #                    RESULTAT  =  TEMPE,
 #                    NOM_CHAM  = 'TEMP_ELGA',
-#                    NUME_ORDRE = 0,
+#                    NUME_ORDRE = 1,
 #                    INFO = 2)
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=TEMPE,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
-                   NUME_ORDRE = 0,
+                   NUME_ORDRE = 1,
                    GROUP_MA='M3',
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
@@ -303,7 +304,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=TEMPE,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
-                   NUME_ORDRE = 0,
+                   NUME_ORDRE = 1,
                    GROUP_MA='M6',
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,

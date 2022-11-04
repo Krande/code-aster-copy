@@ -118,7 +118,7 @@ TEMP = THER_LINEAIRE(MODELE=MODE_TL,
                      )
 
 # Extract the field from the result
-temp = TEMP.getField('TEMP', 0)
+temp = TEMP.getField('TEMP', 1)
 
 # Project the field from the linear to the quadratic thermal model
 TEMP2 = PROJ_CHAMP(METHODE='COLLOCATION',
@@ -128,7 +128,7 @@ TEMP2 = PROJ_CHAMP(METHODE='COLLOCATION',
                    )
 
 # Validate the result
-temp2 = TEMP2.getField('TEMP', 0)
+temp2 = TEMP2.getField('TEMP', 1)
 test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), temp.norm("NORM_INFINITY"))
 
 test.assertAlmostEqual(temp2.norm("NORM_2"), 412.46150094775635)

@@ -211,7 +211,7 @@ void DEFSSP( RSNOCH, rsnoch, const char *, STRING_SIZE, const char *, STRING_SIZ
 void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const ASTERINTEGER * );
 
-#define CALLO_RSRUSD( a, b ) CALLOP( RSRUSD, rsagsd, a, b )
+#define CALLO_RSRUSD( a, b ) CALLOP( RSRUSD, rsrusd, a, b )
 void DEFSP( RSRUSD, rsrusd, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_RSINFO( a, b ) CALLOP( RSINFO, rsinfo, a, b )

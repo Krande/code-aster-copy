@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,10 +51,10 @@ TEMPE=THER_LINEAIRE(   MODELE=MOTH,
                        )
 
 
-TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,NUME_ORDRE=0,THERMIQUE=('FLUX_ELNO','FLUX_ELGA','FLUX_NOEU',))
+TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,NUME_ORDRE = 1,THERMIQUE=('FLUX_ELNO','FLUX_ELGA','FLUX_NOEU',))
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+TEST_RESU(RESU=(_F(NUME_ORDRE = 1,
                    RESULTAT=TEMPE,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N5',
@@ -63,7 +63,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=100.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE = 1,
                    RESULTAT=TEMPE,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N1',
@@ -72,7 +72,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=20.000007339091,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE = 1,
                    RESULTAT=TEMPE,
                    NOM_CHAM='TEMP',
                    GROUP_NO='N3',
@@ -81,7 +81,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=60.000007339091,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE = 1,
                    POINT=3,
                    RESULTAT=TEMPE,
                    NOM_CHAM='FLUX_ELNO',
@@ -91,7 +91,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',
                    GROUP_MA='M1',),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE = 1,
                    POINT=2,
                    RESULTAT=TEMPE,
                    NOM_CHAM='FLUX_ELNO',
@@ -101,7 +101,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',
                    GROUP_MA='M2',),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE = 1,
                    POINT=3,
                    RESULTAT=TEMPE,
                    NOM_CHAM='FLUX_ELGA',
@@ -111,7 +111,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',
                    GROUP_MA='M1',),
-                _F(NUME_ORDRE=0,
+                _F(NUME_ORDRE = 1,
                    POINT=2,
                    RESULTAT=TEMPE,
                    NOM_CHAM='FLUX_ELGA',
@@ -128,7 +128,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
 # VALIDATION DE TRAC_NOR DE LA COMMANDE POST_RELEVE_T:
 #
 
-FLUX_G=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
+FLUX_G=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE = 1, NOM_CHAM='FLUX_ELNO',
                      LIGN_COUPE=(
                         _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLUX_GLO',
                            NOM_CMP = ( 'FLUX', 'FLUY', ), DISTANCE_MAX=1.e-5,
@@ -162,7 +162,7 @@ TEST_TABLE(VALE_REFE=720.0,
 # ---------------------------
 
 
-FLUX_L=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_NOEU',
+FLUX_L=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE = 1, NOM_CHAM='FLUX_NOEU',
                      LIGN_COUPE=(
                         _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLUX_LOC',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
@@ -200,7 +200,7 @@ TEST_TABLE(VALE_REFE=1200.0,
 # CALCUL PAR LA TRAC_NORMALE :
 # --------------------------
 
-FLUX_N=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
+FLUX_N=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE = 1, NOM_CHAM='FLUX_ELNO',
                      LIGN_COUPE=(
                         _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLUX_NOR',
                            NOM_CMP = ( 'FLUX', 'FLUY', ), DISTANCE_MAX=1.e-5, TRAC_NOR='OUI',
@@ -245,7 +245,7 @@ TEST_TABLE(VALE_REFE=1200.0,
 TR1_N1=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            GROUP_NO = ( 'N9', 'N1', 'N2', ),
                            RESULTAT = TEMPE,
-                           NUME_ORDRE=0,
+                           NUME_ORDRE = 1,
                            NOM_CHAM='FLUX_ELNO',
                            TRAC_NOR = 'OUI',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
@@ -285,7 +285,7 @@ TEST_TABLE(VALE_REFE=1200.0,
 # CHEMIN ORIENTE DE D VERS E, LA NORMALE VERS L'INTERIEUR DU DOMAINE
 # -------------------------------------------------------------------
 
-TR1_C2=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
+TR1_C2=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE = 1, NOM_CHAM='FLUX_ELNO',
                      LIGN_COUPE=(
                         _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLU_NORM',
                            DISTANCE_MAX=1.e-6, TRAC_NOR='OUI', NOM_CMP = ( 'FLUX', 'FLUY', ),
@@ -331,7 +331,7 @@ TR1_N2=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            GROUP_NO = ( 'N2', 'N1', 'N9', ),
                            RESULTAT = TEMPE,
                            TRAC_NOR = 'OUI',
-                           NUME_ORDRE=0,
+                           NUME_ORDRE = 1,
                            NOM_CHAM='FLUX_ELNO',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
                            OPERATION = 'EXTRACTION')  )

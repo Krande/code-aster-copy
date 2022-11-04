@@ -66,19 +66,19 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,THERMIQUE=('FLUX_ELGA','FLUX_ELNO'))
 TEMP0=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='NOEU_TEMP_R',
                  NOM_CHAM='TEMP',
-                 NUME_ORDRE=0,
+                 NUME_ORDRE=1,
                  RESULTAT=RESU)
 
 FLUX0=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='ELGA_FLUX_R',
                  NOM_CHAM='FLUX_ELGA',
-                 NUME_ORDRE=0,
+                 NUME_ORDRE=1,
                  RESULTAT=RESU)
 
 FLUX1=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='ELNO_FLUX_R',
                  NOM_CHAM='FLUX_ELNO',
-                 NUME_ORDRE=0,
+                 NUME_ORDRE=1,
                  RESULTAT=RESU)
 
 

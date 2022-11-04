@@ -60,7 +60,7 @@ POT_ELRE=CALC_CHAMP(reuse =POT_ELRE,
                    INST=0.0,
                     THERMIQUE=('SOUR_ELGA'),)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=0,
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
                   POINT=1,
                   RESULTAT=POT_ELRE,
                   NOM_CHAM='SOUR_ELGA',
@@ -73,7 +73,7 @@ SOURCE=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                   OPERATION='EXTR',
                   RESULTAT=POT_ELRE,
                   NOM_CHAM='SOUR_ELGA',
-                  NUME_ORDRE=0,)
+                  NUME_ORDRE = 1,)
 
 # CALCUL THERMIQUE
 
@@ -106,7 +106,7 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='EXTR',
                 RESULTAT=TEMPRESU,
                 NOM_CHAM='TEMP',
-                NUME_ORDRE=0,)
+                NUME_ORDRE = 1,)
 
 LIGN=MACR_LIGN_COUPE(RESULTAT=TEMPRESU,
                      LIGN_COUPE=_F(TYPE='SEGMENT',

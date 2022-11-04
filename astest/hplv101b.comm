@@ -218,7 +218,7 @@ CALC_CHAMP(reuse=DEPLDFOO,RESULTAT=DEPLDFOO,CONTRAINTE=('SIGM_ELNO'))
 #
 # ------------------------------------------------------------------
 T_DZET=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-        NOM_CHAM='TEMP',  RESULTAT=TEMPGR,  NUME_ORDRE=0  )
+        NOM_CHAM='TEMP',  RESULTAT=TEMPGR,  NUME_ORDRE = 1  )
 
 TT=POST_ELEM(   MODELE=MODTH,   CHAM_MATER=CHMAT,
                CHAM_GD=T_DZET,    INST=0.,   ENER_POT=_F(  TOUT = 'OUI') )
@@ -239,7 +239,7 @@ PF=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMAT,
 #
 
 TEST_RESU(RESU=(_F(RESULTAT=TEMPGR,
-                   NUME_ORDRE=0,
+                   NUME_ORDRE = 1,
                    GROUP_MA='M1',
                    POINT=1,NOM_CHAM='ETHE_ELEM',
                    NOM_CMP='TOTALE',
@@ -325,7 +325,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 # ------------------------------------------------------------------
 T_DZETO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-          NOM_CHAM='TEMP', RESULTAT=TEMPGRO,  NUME_ORDRE=0 )
+          NOM_CHAM='TEMP', RESULTAT=TEMPGRO,  NUME_ORDRE = 1 )
 
 TTO=POST_ELEM(  MODELE=MODTH,   CHAM_MATER=CHMATO,
                   CHAM_GD=T_DZETO,   INST=0.,  ENER_POT=_F(  TOUT = 'OUI'))
@@ -425,7 +425,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 # ------------------------------------------------------------------
 T_DZETOO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-          NOM_CHAM='TEMP', RESULTAT=TEMPGROO,  NUME_ORDRE=0 )
+          NOM_CHAM='TEMP', RESULTAT=TEMPGROO,  NUME_ORDRE = 1 )
 
 TTOO=POST_ELEM(  MODELE=MODTH,   CHAM_MATER=CHMATOO,
                  CHAM_GD=T_DZETOO,   INST=0.,

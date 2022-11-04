@@ -794,32 +794,34 @@ void Result::clear( const ASTERINTEGER &index ) {
     ASTERINTEGER nume_ordre = index;
     CALLO_RSRUSD( getName(), &nume_ordre );
 
-    for ( auto &index : old_index ) {
-        _mapModel.erase( index );
-        _mapMaterial.erase( index );
-        _mapLoads.erase( index );
-        _mapElemCara.erase( index );
+    for ( auto &index_2 : old_index ) {
+        if ( index_2 >= index ) {
+            _mapModel.erase( index_2 );
+            _mapMaterial.erase( index_2 );
+            _mapLoads.erase( index_2 );
+            _mapElemCara.erase( index_2 );
 
-        for ( auto &[key, fields] : _dictOfMapOfFieldOnNodesReal ) {
-            fields.erase( index );
-        }
-        for ( auto &[key, fields] : _dictOfMapOfFieldOnNodesComplex ) {
-            fields.erase( index );
-        }
-        for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsReal ) {
-            fields.erase( index );
-        }
-        for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsComplex ) {
-            fields.erase( index );
-        }
-        for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsLong ) {
-            fields.erase( index );
-        }
-        for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsReal ) {
-            fields.erase( index );
-        }
-        for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsChar16 ) {
-            fields.erase( index );
+            for ( auto &[key, fields] : _dictOfMapOfFieldOnNodesReal ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfFieldOnNodesComplex ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsReal ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsComplex ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfFieldOnCellsLong ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsReal ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsChar16 ) {
+                fields.erase( index_2 );
+            }
         }
     }
 };

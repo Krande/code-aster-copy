@@ -546,6 +546,7 @@ for k in range(1,NBPAS+1) :
                         SOURCE=_F(SOUR_CALCULEE=DISSIP,),)
 
   if ( k < NBPAS ) :
+    print(RESUTH.getRanks(), flush=True)
     RESUTH=THER_LINEAIRE(reuse=RESUTH,
                       ETAT_INIT=_F(EVOL_THER=RESUTH,NUME_ORDRE=k),
                       MODELE=MOD_THER,
@@ -553,6 +554,7 @@ for k in range(1,NBPAS+1) :
                       EXCIT=_F(CHARGE=CH_SOU,),
                       INCREMENT=_F(LIST_INST=LINST,
                                    NUME_INST_FIN=k+1,),)
+    print(RESUTH.getRanks(), flush=True)
 
   if k < NBPAS :
     DETRUIRE(NOM=(CH_SOU,CH1,DISSIP,CHMTM ))

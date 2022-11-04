@@ -122,7 +122,7 @@ DEPLDM = CALC_CHAMP(reuse=DEPLDM,
 
 # ------------------------------------------------------------------
 T_DZETA = CREA_CHAMP(NOM_CHAM='TEMP',
-                     NUME_ORDRE=0,
+                     NUME_ORDRE = 1,
                      OPERATION='EXTR',
                      RESULTAT=TEMPGR,
                      TYPE_CHAM='NOEU_TEMP_R')
@@ -148,7 +148,7 @@ PM = POST_ELEM(CHAM_GD=DEM_KI11,
 TEST_RESU(RESU=_F(GROUP_MA='M1',
                   NOM_CHAM='ETHE_ELEM',
                   NOM_CMP='TOTALE',
-                  NUME_ORDRE=0,
+                  NUME_ORDRE = 1,
                   POINT=1,
                   RESULTAT=TEMPGR,
                   VALE_CALC=-0.5))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,11 +98,14 @@ chther08=AFFE_CHAR_THER(
              _F(GROUP_MA=('SRAY2','SSUP2','SRAY3',),
                 COEF_H=400.0, TEMP_EXT=275.0,),),
 )
+
+LI = DEFI_LIST_REEL(VALE=0.0)
 # A.5
 rther08=THER_LINEAIRE(
   MODELE=mode08,
   CHAM_MATER=mater08,
   EXCIT=_F(CHARGE=chther08,),
+  INCREMENT=_F(LIST_INST=LI,),
 )
 # A.6
 IMPR_RESU( FORMAT='MED', UNITE=81,
