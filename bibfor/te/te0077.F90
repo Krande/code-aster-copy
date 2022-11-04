@@ -51,8 +51,6 @@ subroutine te0077(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate, jgano, ibid
 !
 !-----------------------------------------------------------------------
-    real(kind=8) :: deltat
-!-----------------------------------------------------------------------
     call elref1(elrefe)
 !
     if (lteatt('LUMPE','OUI')) then
@@ -71,7 +69,6 @@ subroutine te0077(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PMATTTR', 'E', imattt)
-    deltat = zr(itemps+1)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (phenom .eq. 'THER') then
@@ -105,7 +102,7 @@ subroutine te0077(option, nomte)
 !
                 do j = 1, i
                     ij = ij + 1
-                    zr(ij) = zr(ij) + poids * cp(1)/deltat * zr(ivf+k+i- 1) * zr(ivf+k+j-1)
+                    zr(ij) = zr(ij) + poids * cp(1)* zr(ivf+k+i- 1) * zr(ivf+k+j-1)
                 end do
             end do
         end do
@@ -150,7 +147,7 @@ subroutine te0077(option, nomte)
                     do j = 1, nno
                         mt(c(ise,i),c(ise,j)) = mt(&
                                                 c(ise, i),&
-                                                c(ise, j)) + poids * cp(1)/deltat * zr(ivf2+k+i-1&
+                                                c(ise, j)) + poids * cp(1) * zr(ivf2+k+i-1&
                                                 &) * zr(ivf2+k+j-1&
                                                 )
                     end do

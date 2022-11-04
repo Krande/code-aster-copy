@@ -55,7 +55,7 @@ subroutine te0102(option, nomte)
     real(kind=8) :: m(3, 3), h
     real(kind=8) :: valres(nbres)
     real(kind=8) :: coor2d(18)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, pm, deltat
+    real(kind=8) :: dfdx(9), dfdy(9), poids, pm
     real(kind=8) :: mun, zero, deux, quatre
     real(kind=8) :: quinze, seize, cour, cosa, sina, r
     real(kind=8) :: valpar(nbvar), tempe, instan
@@ -121,11 +121,10 @@ subroutine te0102(option, nomte)
 !     ---------------------------------------
     call jevech('PCACOQU', 'L', icacoq)
 !
-! --- RECUPERATION DE L'INSTANT DU CALCUL ET DU PAS DE TEMPS :
+! --- RECUPERATION DE L'INSTANT DU CALCUL :
 !     ------------------------------------------------------
     call jevech('PTEMPSR', 'L', itemps)
     valpar(1) = zr(itemps)
-    deltat = zr(itemps+1)
 !
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM :
 !     -------------------------------------------------
@@ -359,7 +358,7 @@ subroutine te0102(option, nomte)
     do i = 1, nbddl
         do j = 1, i
             ind = ind + 1
-            zr(imattt+ind-1) = masse(i,j)/deltat
+            zr(imattt+ind-1) = masse(i,j)
         end do
     end do
 !

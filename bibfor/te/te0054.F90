@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine te0054(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option, phenom
     real(kind=8) :: valpar, poids
-    real(kind=8) :: cp(1), deltat
+    real(kind=8) :: cp(1)
     integer :: ipoids, ivf, idfde, igeom, imate, ll, ndim
     integer :: jgano, nno, kp, npg2, ij, i, j, imattt, itemps
     integer :: nnos, kpg, spt
@@ -71,7 +71,6 @@ subroutine te0054(option, nomte)
     poum='+'
 !
     valpar = zr(itemps)
-    deltat = zr(itemps+1)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', phenom, 1, 'INST', [valpar],&
                 1, 'RHO_CP', cp, icodre(1), 1)
@@ -88,7 +87,7 @@ subroutine te0054(option, nomte)
 !
             do j = 1, i
                 ij = (i-1)*i/2 + j
-                zr(imattt+ij-1)=zr(imattt+ij-1) + cp(1)/deltat*poids* zr(ivf+ll+i-1)* zr(ivf+ll+j-1)
+                zr(imattt+ij-1)=zr(imattt+ij-1) + cp(1)*poids* zr(ivf+ll+i-1)* zr(ivf+ll+j-1)
 !
             end do
         end do

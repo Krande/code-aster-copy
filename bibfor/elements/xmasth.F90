@@ -82,7 +82,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
     real(kind=8) :: he
-    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), deltat, valpar(1), valres(1), jac
+    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), valpar(1), valres(1), jac
     real(kind=8) :: rhocp
     real(kind=8) :: r
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
@@ -113,8 +113,6 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !     NBRE DE DDLS PAR NOEUD
     nbddl = 1+nfh+nfe
 !
-!     RECUP DU PAS DE TEMPS (POUR LE THETA SCHEMA)
-    deltat = zr(itemps-1+2)
 !
 !     POUR PREPARER L'APPEL A RCVALB
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
@@ -270,7 +268,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !                 ON NE DEPASSE PAS PAS LA DIAGONALE
                             if (lddl .le. iddlma) then
                                 ind2 = ind1 + nbddl*(jnp-1)+lddl
-                                mattt(ind2) = mattt(ind2)+rhocp/ deltat*jac* ffenr(inp,kddl)*ffen&
+                                mattt(ind2) = mattt(ind2)+rhocp*jac* ffenr(inp,kddl)*ffen&
                                               &r(jnp, lddl)
                             endif
 !
