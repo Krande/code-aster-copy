@@ -512,6 +512,8 @@ class Result : public DataStructure, public ListOfTables {
     void clear( const ASTERINTEGER &index );
 
     void clear();
+
+    bool exists() const;
 };
 
 /**

@@ -37,6 +37,12 @@ Arguments:
     nb_rank (int):  number of rank to allocate
         )",
               py::arg( "nb_rank" ) )
+        .def( "exists", &Result::exists, R"(
+The result exists or nor
+
+Returns:
+    bool: True if the result exists else False
+        )" )
         .def( "clear", py::overload_cast<>( &Result::clear ),
               R"(
 Clear fields, models, parameters, ... in result

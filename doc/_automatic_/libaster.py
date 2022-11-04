@@ -1808,11 +1808,25 @@ class FieldOnCellsReal(DataField):
     def setDescription(self, arg0):
         pass
     
-    def setValues(self, value):
-        """Set values of the field
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
         
-        Arguments:
-            float: value to set
+        1. setValues(self: libaster.FieldOnCellsReal, value: float) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (float): value to set
+                    
+        
+        2. setValues(self: libaster.FieldOnCellsReal, values: List[float]) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        values (list[float]): list of values to set
         """
     
     def size(self):
@@ -1926,6 +1940,27 @@ class FieldOnCellsComplex(DataField):
     def setDescription(self, arg0):
         pass
     
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. setValues(self: libaster.FieldOnCellsComplex, value: complex) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (complex): value to set
+                    
+        
+        2. setValues(self: libaster.FieldOnCellsComplex, values: List[complex]) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        values (list[complex]): list of values to set
+        """
+    
     def size(self):
         """Return the size of the field
         
@@ -2036,6 +2071,27 @@ class FieldOnCellsLong(DataField):
     
     def setDescription(self, arg0):
         pass
+    
+    def setValues(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. setValues(self: libaster.FieldOnCellsLong, value: int) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        value (complex): value to set
+                    
+        
+        2. setValues(self: libaster.FieldOnCellsLong, values: List[int]) -> None
+        
+        
+                    Set values of the field
+        
+                    Arguments:
+                        values (list[complex]): list of values to set
+        """
     
     def size(self):
         """Return the size of the field
@@ -2256,13 +2312,13 @@ class FieldOnNodesReal(DataField):
                         value (float): value to set
                     
         
-        2. setValues(self: libaster.FieldOnNodesReal, value: List[float]) -> None
+        2. setValues(self: libaster.FieldOnNodesReal, values: List[float]) -> None
         
         
                     Set values of the field
         
                     Arguments:
-                        value (list[float]): list of values to set
+                        values (list[float]): list of values to set
                     
         
         3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float]) -> None
@@ -2411,13 +2467,13 @@ class FieldOnNodesComplex(DataField):
                         value (complex): value to set
                     
         
-        2. setValues(self: libaster.FieldOnNodesComplex, value: List[complex]) -> None
+        2. setValues(self: libaster.FieldOnNodesComplex, values: List[complex]) -> None
         
         
                     Set values of the field
         
                     Arguments:
-                        value (list[complex]): list of values to set
+                        values (list[complex]): list of values to set
         """
     
     def updateValuePointers(self):
@@ -9339,6 +9395,13 @@ class Result(DataStructure):
         
         Arguments:
             index (int): index from begin cleaning
+        """
+    
+    def exists(self):
+        """The result exists or nor
+        
+        Returns:
+            bool: True if the result exists else False
         """
     
     def getAccessParameters(self):

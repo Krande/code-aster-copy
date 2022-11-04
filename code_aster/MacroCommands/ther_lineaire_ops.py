@@ -383,6 +383,13 @@ def ther_lineaire_ops(self, **args):
     # Create time stepper
     first_index, timeStepper = _createTimeStepper(args)
 
+    # do not erase initial state if there are equals
+    save_initial_state = True
+    if is_evol and "reuse" in args and "EVOL_THER" in args["ETAT_INIT"] \
+            and args["reuse"] == args["ETAT_INIT"]["EVOL_THER"]:
+        first_index += 1
+        save_initial_state = False
+
     # Create linear solver
     linear_solver = LinearSolver.factory("THER_LINEAIRE", args["SOLVEUR"])
     if (model.getMesh().isParallel()) and (not linear_solver.supportParallelMesh()):
@@ -434,13 +441,15 @@ def ther_lineaire_ops(self, **args):
             diriBCs = profile(disc_comp.getDirichletBC)(phys_state.time)
             phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
 
-        storage_manager.storeState(phys_state.time, phys_pb, phys_state,
-                                   param={"PARM_THETA": time_theta})
-        if model.existsHHO():
-            hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
-            storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
+        if save_initial_state:
+            storage_manager.storeState(phys_state.time, phys_pb, phys_state,
+                                       param={"PARM_THETA": time_theta})
+            if model.existsHHO():
+                hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
+                storage_manager.storeField(
+                    hho_field, "HHO_TEMP", phys_state.time)
 
-        storage_manager.completed()
+            storage_manager.completed()
         timeStepper.completed()
 
     # Loop on time step
@@ -485,7 +494,8 @@ def ther_lineaire_ops(self, **args):
                                        param={"PARM_THETA": time_theta})
             if model.existsHHO():
                 hho_field = hho.projectOnLagrangeSpace(phys_state.primal)
-                storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
+                storage_manager.storeField(
+                    hho_field, "HHO_TEMP", phys_state.time)
 
             storage_manager.completed()
 

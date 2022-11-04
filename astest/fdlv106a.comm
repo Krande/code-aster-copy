@@ -29,6 +29,7 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),
+      IMPR_MACRO="OUI",
       IGNORE_ALARM=('MODELE1_63','MODELE1_64',),)
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
@@ -155,9 +156,14 @@ CL=AFFE_CHAR_THER(MODELE=FLUIDE,
                             _F(GROUP_MA='SORTIE',
                                FLUN=4.,),),)
 
+DLZ = DEFI_LIST_REEL(VALE=(0.),)
+
 PHIBAR=THER_LINEAIRE(MODELE=FLUIDE,
                      CHAM_MATER=DOMFLUI,
-                     EXCIT=_F(CHARGE=CL,),)
+                     EXCIT=_F(CHARGE=CL,),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 4.24 M/S (VITESSE CRITIQUE)
 
@@ -171,7 +177,10 @@ CLCRIT=AFFE_CHAR_THER(MODELE=FLUIDE,
 
 PHIBCRIT=THER_LINEAIRE(MODELE=FLUIDE,
                        CHAM_MATER=DOMFLUI,
-                       EXCIT=_F(CHARGE=CLCRIT,),)
+                       EXCIT=_F(CHARGE=CLCRIT,),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 6 M/S (FLOTTEMENT)
 
@@ -185,7 +194,10 @@ CLFLOT=AFFE_CHAR_THER(MODELE=FLUIDE,
 
 PHIBFLOT=THER_LINEAIRE(MODELE=FLUIDE,
                        CHAM_MATER=DOMFLUI,
-                       EXCIT=_F(CHARGE=CLFLOT,),)
+                       EXCIT=_F(CHARGE=CLFLOT,),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
 # ROTATION AUTOUR D UN PIVOT EN AVAL DE L ECOULEMENT

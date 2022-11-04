@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,9 +144,14 @@ CL=AFFE_CHAR_THER( MODELE=FLUIDE,
                              FLUN = 4.))
                                )
 
+DLZ = DEFI_LIST_REEL(VALE=(0.),)
+
 PHIBAR=THER_LINEAIRE(  MODELE=FLUIDE,
                          CHAM_MATER=DOMFLUI,
-                       EXCIT=_F( CHARGE = CL))
+                       EXCIT=_F( CHARGE = CL),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 0.5 M/S
 
@@ -160,7 +165,10 @@ CLRI1=AFFE_CHAR_THER( MODELE=FLUIDE,
 
 PHIBRI1=THER_LINEAIRE(  MODELE=FLUIDE,
                          CHAM_MATER=DOMFLUI,
-                       EXCIT=_F( CHARGE = CLRI1))
+                       EXCIT=_F( CHARGE = CLRI1),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 1.5 M/S
 
@@ -174,7 +182,10 @@ CLRI2=AFFE_CHAR_THER( MODELE=FLUIDE,
 
 PHIBRI2=THER_LINEAIRE(  MODELE=FLUIDE,
                          CHAM_MATER=DOMFLUI,
-                       EXCIT=_F( CHARGE = CLRI2))
+                       EXCIT=_F( CHARGE = CLRI2),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 2. M/S
 
@@ -188,7 +199,10 @@ CLRI3=AFFE_CHAR_THER( MODELE=FLUIDE,
 
 PHIBRI3=THER_LINEAIRE(  MODELE=FLUIDE,
                          CHAM_MATER=DOMFLUI,
-                       EXCIT=_F( CHARGE = CLRI3))
+                       EXCIT=_F( CHARGE = CLRI3),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 2.2 M/S
 
@@ -202,7 +216,10 @@ CLRI4=AFFE_CHAR_THER( MODELE=FLUIDE,
 
 PHIBRI4=THER_LINEAIRE(  MODELE=FLUIDE,
                          CHAM_MATER=DOMFLUI,
-                       EXCIT=_F( CHARGE = CLRI4))
+                       EXCIT=_F( CHARGE = CLRI4),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # CALCUL DU POTENTIEL DES VITESSES A 2.688 M/S (VITESSE CRITIQUE)
 
@@ -216,7 +233,10 @@ CLRI5=AFFE_CHAR_THER( MODELE=FLUIDE,
 
 PHIBRI5=THER_LINEAIRE(  MODELE=FLUIDE,
                          CHAM_MATER=DOMFLUI,
-                       EXCIT=_F( CHARGE = CLRI5))
+                       EXCIT=_F( CHARGE = CLRI5),
+                     TYPE_CALCUL='TRAN',
+                     ETAT_INIT=_F(STAT='OUI'),
+                     INCREMENT=_F(LIST_INST=DLZ),)
 
 # AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
 # FLEXION SUR DEUX ROTULES AUX EXTREMITES
