@@ -114,6 +114,17 @@ test.assertEqual(SOLUT.getNumberOfRanks(), SOLUN.getNumberOfRanks())
 test.assertSequenceEqual(SOLUT.getRanks(), [0, 1, 2])
 test.assertSequenceEqual(SOLUN.getRanks(), [0, 1, 2])
 
+test.assertTrue(SOLUT.getField("DEPL", 1) is SOLUT.getField("DEPL", 0.5, "INST"))
+
+with test.assertRaises(ValueError):
+    SOLUT.getField("DEPL", 5.0, "INST")
+
+with test.assertRaises(ValueError):
+    SOLUT.getField("DEPL", 1.0, "TEMP")
+
+with test.assertRaises(IndexError):
+    SOLUT.getField("DEPL", 1.0, "INST", crit="ABSOLU", prec=1.0)
+
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
 
 for rank in range(SOLUT.getNumberOfRanks()):

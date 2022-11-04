@@ -26,7 +26,7 @@
 import aster
 from libaster import Result
 
-from ..Utilities import injector, logger
+from ..Utilities import injector, logger, SearchList
 from ..Objects.Serialization import InternalStateBuilder
 
 
@@ -65,8 +65,7 @@ class ResultStateBuilder(InternalStateBuilder):
             if result.hasMaterialField(i):
                 self._st["mater"].append(result.getMaterialField(i))
             if result.hasElementaryCharacteristics(i):
-                self._st["cara_elem"].append(
-                    result.getElementaryCharacteristics(i))
+                self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
             if result.hasListOfLoads(i):
                 self._st["loads"].append(result.getListOfLoads(i))
 
@@ -111,13 +110,12 @@ class ResultStateBuilder(InternalStateBuilder):
             if self._st["mater"]:
                 result.setMaterialField(self._st["mater"][i], rank)
             if len(self._st["cara_elem"]) > 0 and self._st["cara_elem"]:
-                result.setElementaryCharacteristics(
-                    self._st["cara_elem"][i], rank)
+                result.setElementaryCharacteristics(self._st["cara_elem"][i], rank)
             if len(self._st["loads"]) > 0 and self._st["loads"]:
                 result.setListOfLoads(self._st["loads"][i], rank)
 
         if result.getMesh():
-            result.build(self._st["feds"],  self._st["fnds"])
+            result.build(self._st["feds"], self._st["fnds"])
 
 
 @injector(Result)
@@ -135,45 +133,80 @@ class ExtendedResult:
     def LIST_PARA(self):
         return aster.GetResu(self.getName(), "PARAMETRES")
 
-    def getField(self, name, rank):
+    def _getIndexFromParameter(self, para, value, crit, prec):
+        """
+        Get the rank corresponding to a given value of an access parameter.
+
+        Arguments:
+            para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
+            value (float|int) : value of the access parameter
+            crit (str) : search criterion ABSOLU or RELATIF
+            prec (float) : precision for the search criterion
+
+        Returns:
+            index (int) : the corresponding index (rank)
+
+        """
+        acpara = self.getAccessParameters()
+
+        if not para in acpara:
+            msg = "Missing parameter {}".format(para)
+            raise ValueError(msg)
+
+        slist = SearchList(acpara[para], prec, crit)
+        idx = slist.index(value)
+
+        return acpara["NUME_ORDRE"][idx]
+
+    def getField(self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
         """Get the specified field. This is an overlay to existing methods
         for each type of field.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            value (float|int) : value of the access parameter
+            para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
+            crit (str) : search criterion ABSOLU or RELATIF
+            prec (float) : precision for the search criterion
 
         Returns:
             Field***: field to get whit type in (FieldOnNodes***/FieldOnCells***/
             ConstantFieldOnCell***)
         """
 
+        assert crit in ("ABSOLU", "RELATIF")
+
+        if para in ("NUME_ORDRE"):
+            index = value
+        else:
+            index = self._getIndexFromParameter(para, value, crit, prec)
+
         names = self.getFieldsOnNodesRealNames()
         if name in names:
-            return self.getFieldOnNodesReal(name, rank)
+            return self.getFieldOnNodesReal(name, index)
 
         names = self.getFieldsOnNodesComplexNames()
         if name in names:
-            return self.getFieldOnNodesComplex(name, rank)
+            return self.getFieldOnNodesComplex(name, index)
 
         names = self.getFieldsOnCellsRealNames()
         if name in names:
-            return self.getFieldOnCellsReal(name, rank)
+            return self.getFieldOnCellsReal(name, index)
 
         names = self.getFieldsOnCellsComplexNames()
         if name in names:
-            return self.getFieldOnCellsComplex(name, rank)
+            return self.getFieldOnCellsComplex(name, index)
 
         names = self.getFieldsOnCellsLongNames()
         if name in names:
-            return self.getFieldOnCellsLong(name, rank)
+            return self.getFieldOnCellsLong(name, index)
 
         names = self.getConstantFieldsOnCellsRealNames()
         if name in names:
-            return self.getConstantFieldOnCellsReal(name, rank)
+            return self.getConstantFieldOnCellsReal(name, index)
 
         names = self.getConstantFieldsOnCellsChar16Names()
         if name in names:
-            return self.getConstantFieldOnCellsChar16(name, rank)
+            return self.getConstantFieldOnCellsChar16(name, index)
 
         raise KeyError("name of field %s not found" % name)
