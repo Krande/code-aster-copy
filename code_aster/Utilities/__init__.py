@@ -40,6 +40,7 @@ from .general import initial_context
 from .i18n import localization
 from .i18n import translate as _
 from .injector import injector
+from .searchlist import SearchList
 from .logger import DEBUG, ERROR, INFO, WARNING, logger
 from .misc import get_shared_tmpdir, shared_tmpdir
 from .mpi_utils import MPI, haveMPI

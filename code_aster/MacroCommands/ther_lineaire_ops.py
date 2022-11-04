@@ -34,33 +34,8 @@ from ..Objects import (
     FieldOnNodesReal,
     HHO,
 )
-from ..Utilities import logger, print_stats, profile
+from ..Utilities import logger, print_stats, profile, SearchList
 from .NonLinearSolver import PhysicalState, StorageManager, TimeStepper
-
-
-def get_index(inst, linst, prec=1.0e-6, crit="RELATIF"):
-
-    assert crit in ("RELATIF", "ABSOLU")
-
-    if crit == "RELATIF":
-        min_v = inst * (1 - prec)
-        max_v = inst * (1 + prec)
-    else:
-        min_v = inst - prec
-        max_v = inst + prec
-
-    min_v, max_v = sorted((min_v, max_v))
-    test = tuple((i >= min_v and i <= max_v) for i in linst)
-    return tuple(i for i, v in enumerate(test) if v is True)
-
-
-def exists_unique(*args, **kwargs):
-    return len(get_index(*args, **kwargs)) == 1
-
-
-def get_unique_index(*args, **kwargs):
-    assert exists_unique(*args, **kwargs)
-    return get_index(*args, **kwargs)[0]
 
 
 def _checkArgs(args):
@@ -161,12 +136,11 @@ def _setupInitialField(phys_pb, args):
         index = initial_state.get("NUME_ORDRE") or para["NUME_ORDRE"][-1]
 
         if initial_state.get("INST") is not None:
-            index = get_unique_index(
-                initial_state.get("INST"),
-                para["INST"],
-                initial_state.get("PRECISION"),
-                initial_state.get("CRITERE"),
+            timelist = SearchList(
+                para["INST"], initial_state["PRECISION"], initial_state["CRITERE"]
             )
+
+            index = timelist.index(initial_state["INST"])
 
         initial_field = resu_ther.getField("TEMP", index).duplicate()
         logger.debug(
@@ -216,6 +190,9 @@ def _createTimeStepper(args):
         prec = increment.get("PRECISION")
 
         list_values = listInst.getValues()
+
+        timelist_current = SearchList(list_values, prec)
+
         logger.debug("<THER_LINEAIRE><TIMESTEPPER>: list_values = %s" % list_values)
 
         nume_inst_init = increment.get("NUME_INST_INIT") or 0
@@ -241,8 +218,8 @@ def _createTimeStepper(args):
         assert inst_fin <= list_values[-1]
         assert inst_init <= inst_fin
 
-        assert exists_unique(inst_init, list_values, prec)
-        assert exists_unique(inst_fin, list_values, prec)
+        assert timelist_current.unique(inst_init)
+        assert timelist_current.unique(inst_fin)
 
         time_values = [
             time
@@ -255,7 +232,8 @@ def _createTimeStepper(args):
         # first index to use
         if last_prev_inst is not None:
             assert result is not None
-            idx = get_unique_index(last_prev_inst, inst_prev, prec)
+            timelist_prev = SearchList(inst_prev, prec)
+            idx = timelist_prev.index(last_prev_inst)
             first_index = index_prev[idx]
 
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: first_index = %s" % first_index)

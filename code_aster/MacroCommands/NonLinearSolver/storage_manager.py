@@ -18,27 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Messages import UTMESS
-from ...Utilities import no_new_attributes, profile, force_list
-
-
-def get_index(inst, linst, prec, crit):
-
-    assert crit in ("RELATIF", "ABSOLU")
-
-    if crit == "RELATIF":
-        min_v = inst*(1-prec)
-        max_v = inst*(1+prec)
-    else:
-        min_v = inst-prec
-        max_v = inst+prec
-
-    min_v, max_v = sorted((min_v, max_v))
-    test = tuple((i >= min_v and i <= max_v) for i in linst)
-    return tuple(i for i, v in enumerate(test) if v is True)
-
-
-def exists_unique(*args, **kwargs):
-    return len(get_index(*args, **kwargs)) == 1
+from ...Utilities import no_new_attributes, profile, force_list, SearchList
 
 
 class StorageManager:
@@ -86,23 +66,19 @@ class StorageManager:
             for field in excl_fields:
                 self.excl_fields.add(field)
 
-        if "CRITERE" in kwargs:
-            self.crit = kwargs["CRITERE"]
-        if "PRECISION" in kwargs:
-            self.prec = kwargs["PRECISION"]
-
+        list_time = None
         if "INST" in kwargs:
-            self.list_time = force_list(kwargs["INST"])
+            list_time = force_list(kwargs["INST"])
         elif "LIST_INST" in kwargs:
-            self.list_time = kwargs["LIST_INST"].getValues()
+            list_time = kwargs["LIST_INST"].getValues()
         elif "PAS_ARCH" in kwargs:
             self.pas_arch = kwargs["PAS_ARCH"]
         else:
             self.pas_arch = 1
 
-        if self.list_time is not None:
-            for time in self.list_time:
-                assert(exists_unique(time, self.list_time, self.prec, self.crit))
+        if list_time is not None:
+            self.list_time = SearchList(list_time, kwargs["PRECISION"], kwargs["CRITERE"])
+            assert all(self.list_time.unique(t) for t in list_time)
 
     def setInitialIndex(self, index):
         """Set initial index.
@@ -130,9 +106,11 @@ class StorageManager:
             return (self.curr_index - self.init_index) % self.pas_arch == 0
 
         if self.list_time is not None:
-            indexes = get_index(time, self.list_time, self.prec, self.crit)
-            assert len(indexes) <= 1
-            return len(indexes) == 1
+            if time in self.list_time:
+                index = self.list_time.index(time)
+                return True
+            else:
+                return False
 
         return True
 
@@ -183,8 +161,7 @@ class StorageManager:
         """
         if field is not None and field_type not in self.excl_fields:
             self.result.setField(field, field_type, self.curr_index)
-            UTMESS("I", "ARCHIVAGE_6", valk=field_type,
-                   valr=time, vali=self.curr_index)
+            UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self.curr_index)
 
     @profile
     def store(self):
@@ -204,8 +181,7 @@ class StorageManager:
             if slot.material_field:
                 self.result.setMaterialField(slot.material_field, curr_index)
             if slot.elem_char:
-                self.result.setElementaryCharacteristics(
-                    slot.elem_char, curr_index)
+                self.result.setElementaryCharacteristics(slot.elem_char, curr_index)
             if slot.load:
                 self.result.setListOfLoads(slot.load, curr_index)
             if slot.fields:
