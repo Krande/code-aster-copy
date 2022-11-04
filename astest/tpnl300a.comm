@@ -277,7 +277,7 @@ CHARGE=AFFE_CHAR_THER_F(MODELE=MOTH,
 #
 
 TEMPE=THER_NON_LINE(       MODELE=MOTH,
-                  ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
+                  ETAT_INIT=_F(  STAT = 'OUI'),
                  CHAM_MATER=CHMAT,
                 AFFICHAGE=_F(INFO_TEMPS='OUI', INFO_RESIDU='OUI',UNITE=37,),
                       EXCIT=_F(  CHARGE = CHARGE),

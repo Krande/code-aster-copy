@@ -121,7 +121,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 ! - For thermics
 !
     if (phenom.eq.'THER') then
-        call getvtx(keywf, 'STATIONNAIRE', iocc=1, scal=answer   , nbret=nocc)
+        call getvtx(keywf, 'STAT', iocc=1, scal=answer   , nbret=nocc)
         if (nocc.eq.1) then
             ds_inout%l_init_stat = ASTER_TRUE
         endif
