@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,9 +87,9 @@ implicit none
 !
 ! - Detection of cycling: contact/no contact
 !
-    call mm_cycl_d1(ds_contact, i_cont_poin, pres_cont_prev, dist_cont_prev, coef_cont,&
-                    indi_cont_eval,indi_cont_prev, dist_cont_curr, pres_cont_curr,alpha_cont_matr,&
-                    alpha_cont_vect)
+    call mm_cycl_d1(ds_contact, i_cont_poin, coef_cont, pres_cont_prev, dist_cont_prev, &
+                    indi_cont_eval, indi_cont_prev, dist_cont_curr, pres_cont_curr, &
+                    alpha_cont_matr, alpha_cont_vect)
 !
 ! - Detection of cycling: sliding/sticking
 !
