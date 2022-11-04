@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine te0076(option, nomte)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: valres(nbres)
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, theta, fluglo(2)
+    real(kind=8) :: dfdx(9), dfdy(9), poids, r, fluglo(2)
     real(kind=8) :: lambor(2), orig(2), p(2, 2), point(2)
     real(kind=8) :: fluloc(2), lambda
     real(kind=8) :: mrigt(9, 9), coorse(18)
@@ -77,7 +77,6 @@ subroutine te0076(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTR', 'E', imattt)
     call jevech('PTEMPSR', 'L', itemps)
-    theta = zr(itemps+2)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
@@ -182,7 +181,7 @@ subroutine te0076(option, nomte)
 !
                 do j = 1, nno
                     mrigt(c(ise,i),c(ise,j)) = mrigt(c(ise,i),c(ise,j)) +&
-                    & poids*theta* ( fluglo(1)*dfdx(j) + fluglo(2)*dfdy(j) )
+                    & poids*( fluglo(1)*dfdx(j) + fluglo(2)*dfdy(j) )
 !
                 end do
             end do

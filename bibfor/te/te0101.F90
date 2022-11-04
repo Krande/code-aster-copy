@@ -55,7 +55,7 @@ subroutine te0101(option, nomte)
     character(len=8) :: nompar(nbvar), alias8, fami, poum
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
-    real(kind=8) :: b(3, 3), a(3, 3, 2, 2), conduc, h, theta
+    real(kind=8) :: b(3, 3), a(3, 3, 2, 2), conduc, h
     real(kind=8) :: valres(nbres), axe(3, 3), ang(2), hom(nbres)
     real(kind=8) :: dfdx(9), dfdy(9), poids, pk, coor2d(18)
     real(kind=8) :: mun, zero, deux, quatre, six, sept, huit
@@ -125,14 +125,10 @@ subroutine te0101(option, nomte)
 !     ------------------
     call jevech('PCACOQU', 'L', icacoq)
 !
-! --- RECUPERATION DE L'INSTANT DU CALCUL ET
-! --- DU PARAMETRE THETA DE LA METHODE 'THETA' UTILISEE
-! --- POUR RESOUDRE L'EQUATION DIFFERENTIELLE EN TEMPS DE LA
-! --- TEMPERATURE (EN STATIONNAIRE THETA =1 ) :
+! --- RECUPERATION DE L'INSTANT DU CALCUL
 !     ---------------------------------------
     call jevech('PTEMPSR', 'L', itemps)
     valpar(1) = zr(itemps)
-    theta = zr(itemps+2)
 !
 ! --- NOMBRE DE NOEUDS SOMMETS :
 !     ------------------------
@@ -468,7 +464,7 @@ subroutine te0101(option, nomte)
                             pk = a(pi,pj,1,1)*dfdx(gi)*dfdx(gj) + a(pi,pj,2,2)*dfdy(gi)*dfdy(gj) &
                                  &+ a(pi,pj, 1,2)*dfdx(gi)*dfdy(gj) + a(pi,pj,1,2)* dfdy(gi)*dfdx&
                                  &(gj)
-                            pk = pk*poids*theta
+                            pk = pk*poids
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
@@ -511,7 +507,7 @@ subroutine te0101(option, nomte)
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)* poids*theta
+                            pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)* poids
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
@@ -561,7 +557,7 @@ subroutine te0101(option, nomte)
                     do pi = 1, 3
                         do pj = 1, pi
                             pk = a(pi,pj,1,1)*dfdx(gi)*dfdx(gj)
-                            pk = pk*poids*theta
+                            pk = pk*poids
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
@@ -597,7 +593,7 @@ subroutine te0101(option, nomte)
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids* theta
+                            pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :

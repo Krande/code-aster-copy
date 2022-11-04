@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine te0051(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: nomres(nbres), nomte, option
     character(len=32) :: phenom
-    real(kind=8) :: valres(nbres), lambda, theta, fluloc(3), fluglo(3)
+    real(kind=8) :: valres(nbres), lambda, fluloc(3), fluglo(3)
     real(kind=8) :: valpar(nbres), lambor(3), orig(3), dire(3)
     real(kind=8) :: p(3, 3), dfdx(27), dfdy(27), dfdz(27), poids
     real(kind=8) :: point(3), angl(3)
@@ -69,7 +69,6 @@ subroutine te0051(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTR', 'E', imattt)
     call jevech('PTEMPSR', 'L', itemps)
-    theta = zr(itemps+2)
 !
     valpar(1) = zr(itemps)
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
@@ -167,7 +166,7 @@ subroutine te0051(option, nomte)
 !
             do j = 1, i
                 ij = (i-1)*i/2 + j
-                zr(imattt+ij-1) = zr(imattt+ij-1) + theta*poids*&
+                zr(imattt+ij-1) = zr(imattt+ij-1) + poids*&
                                   &( fluglo(1)*dfdx(j)+ fluglo(2)*dfdy(j)+fluglo(3)*dfdz(j) )
             end do
         end do

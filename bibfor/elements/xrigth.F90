@@ -82,7 +82,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
     real(kind=8) :: valpar(1), valres(1), lambda
     real(kind=8) :: r, he
-    real(kind=8) :: jac, theta, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
+    real(kind=8) :: jac, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl, hea_se
@@ -111,9 +111,6 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !
 !     NBRE DE DDLS PAR NOEUD
     nbddl = 1+nfh+nfe
-!
-!     RECUP DU PARAMETRE THETA (POUR LE THETA SCHEMA)
-    theta = zr(itemps-1+3)
 !
 !     POUR PREPARER L'APPEL A RCVALB
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
@@ -282,7 +279,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                                              &im)
                                 end do
                                 ind2 = ind1 + nbddl*(jnp-1)+lddl
-                                mattt(ind2) = mattt(ind2 )+pdscal*jac* lambda*theta
+                                mattt(ind2) = mattt(ind2 )+pdscal*jac* lambda
                             endif
 !
                         end do
