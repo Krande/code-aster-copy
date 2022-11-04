@@ -33,9 +33,9 @@ def C_INCREMENT(TYPE_CMD, mandatory=True) :   #COMMUN#
 
     if TYPE_CMD in ('THERMIQUE'):
       if mandatory:
-        statut_liste_inst = 'f'
-      else:
         statut_liste_inst = 'o'
+      else:
+        statut_liste_inst = 'f'
     elif TYPE_CMD in ('MECANIQUE'):
       statut_liste_inst = 'o'
 

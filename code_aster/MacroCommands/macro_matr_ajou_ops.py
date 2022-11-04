@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,8 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ..Cata.Syntax import _F
 from ..Commands import (AFFE_CHAR_THER, AFFE_MATERIAU, AFFE_MODELE,
-                        CALC_MATR_AJOU, DEFI_MATERIAU, THER_LINEAIRE)
+                        CALC_MATR_AJOU, DEFI_MATERIAU, DEFI_LIST_REEL,
+                        THER_LINEAIRE)
 from .Utils.calc_forc_ajou import CALC_FORC_AJOU
 
 
@@ -196,9 +197,13 @@ def macro_matr_ajou_ops(
                                   TEMP_IMPO=affimp,
                                   FLUX_REP=affecl)
 
+        __DLZ=DEFI_LIST_REEL(VALE=(0.0),)
         __POTEN = THER_LINEAIRE(MODELE=__NOFLUI,
                                 CHAM_MATER=__NOMCMA,
-                                EXCIT=_F(CHARGE=__CHARG2))
+                                EXCIT=_F(CHARGE=__CHARG2),
+                                TYPE_CALCUL="TRAN",
+                                ETAT_INIT=_F(STAT="OUI",),
+                                INCREMENT=_F(LIST_INST=__DLZ,),)
 
 #  ---------------------------------------------------------------
 #  calcul amortissement proprement dit

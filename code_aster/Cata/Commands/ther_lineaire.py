@@ -27,13 +27,28 @@ from ..Language.Syntax import *
 def compat_syntax(keywords):
     """ Update keywords for compatibility """
 
+    # reuse
+    if "reuse" in keywords and "RESULTAT" not in keywords:
+        keywords["RESULTAT"] = keywords["reuse"]
+
+    # change STATIONNAIRE to STAT
+    if "ETAT_INIT" in keywords:
+        if "STATIONNAIRE" in keywords["ETAT_INIT"]:
+            del keywords["ETAT_INIT"]["STATIONNAIRE"]
+            keywords["ETAT_INIT"]["STAT"] = "OUI"
+
+    # fix that INCREMENT is mandatory for transitory
+    if "TYPE_CALCUL" not in keywords:
+        if "ETAT_INIT" not in keywords or "STAT" in keywords["ETAT_INIT"]:
+            if "INCREMENT" not in keywords:
+                keywords["TYPE_CALCUL"] = "STAT"
+                if "ETAT_INIT" in keywords:
+                    del keywords["ETAT_INIT"]
+
+    # report default keywords
     if "TYPE_CALCUL" not in keywords or keywords["TYPE_CALCUL"] == "TRAN":
         if "ETAT_INIT" not in keywords:
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
-        else:
-            if "STATIONNAIRE" in keywords["ETAT_INIT"]:
-                del keywords["ETAT_INIT"]["STATIONNAIRE"]
-                keywords["ETAT_INIT"]["STAT"] = "OUI"
 
 
 THER_LINEAIRE = MACRO(nom="THER_LINEAIRE",

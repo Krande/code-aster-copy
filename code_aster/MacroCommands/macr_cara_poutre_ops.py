@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from ..Commands import (AFFE_CHAR_THER, AFFE_CHAR_THER_F,
                                  CALC_CHAMP, CALC_MATR_ELEM, CALC_TABLE,
                                  CALC_VECT_ELEM, COPIER, CREA_MAILLAGE,
                                  CREA_TABLE, DEFI_CONSTANTE, DEFI_FONCTION,
-                                 DEFI_GROUP, DEFI_MATERIAU,
+                                 DEFI_GROUP, DEFI_LIST_REEL, DEFI_MATERIAU,
                                  IMPR_TABLE, LIRE_MAILLAGE, MACR_LIGN_COUPE,
                                  NUME_DDL, POST_ELEM, THER_LINEAIRE)
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
@@ -195,6 +195,7 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
         #------------------------------------------------------------
         # RESOLUTION DE LAPLACIEN(PHI) = -2
         # AVEC PHI = 0 SUR LE CONTOUR :
+        DLZ = DEFI_LIST_REEL(VALE=(0.0),)
         motscles = {}
         motscles['EXCIT'] = [_F(CHARGE=__chart1,), ]
         if 'GROUP_MA_INTE' in args:
@@ -204,6 +205,9 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
             MODELE=__nomoth,
             CHAM_MATER=__chmath,
             SOLVEUR=_F(STOP_SINGULIER='NON',),
+            TYPE_CALCUL="TRAN",
+            ETAT_INIT=_F(STAT="OUI"),
+            INCREMENT=_F(LIST_INST=DLZ),
             **motscles)
 
         #------------------------------------------------------------
@@ -268,6 +272,9 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
             CHAM_MATER=__chmath,
             EXCIT=_F(CHARGE=__chart2,),
             SOLVEUR=_F(STOP_SINGULIER='NON',),
+            TYPE_CALCUL="TRAN",
+            ETAT_INIT=_F(STAT="OUI"),
+            INCREMENT=_F(LIST_INST=DLZ),
         )
 
         #------------------------------------------------------------
@@ -298,6 +305,9 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
             CHAM_MATER=__chmath,
             EXCIT=_F(CHARGE=__chart3,),
             SOLVEUR=_F(STOP_SINGULIER='NON',),
+            TYPE_CALCUL="TRAN",
+            ETAT_INIT=_F(STAT="OUI"),
+            INCREMENT=_F(LIST_INST=DLZ),
         )
 
         #------------------------------------------------------------
@@ -497,7 +507,10 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
             MODELE=__nomot2,
             CHAM_MATER=__chmat2,
             EXCIT=(_F(CHARGE=__chart5,), _F(CHARGE=__chart6,),),
-            SOLVEUR=_F(STOP_SINGULIER='NON', METHODE='LDLT',),)
+            SOLVEUR=_F(STOP_SINGULIER='NON', METHODE='LDLT',),
+            TYPE_CALCUL="TRAN",
+            ETAT_INIT=_F(STAT="OUI"),
+            INCREMENT=_F(LIST_INST=DLZ),)
 
         # CALCUL DE L INERTIE DE GAUCHISSEMENT :
         __tabtmp = POST_ELEM(
@@ -624,7 +637,10 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
             __tempe1 = THER_LINEAIRE(
                 MODELE=__nomoth, CHAM_MATER=__chmath,
                 EXCIT=_F(CHARGE=__chart1, ),
-                SOLVEUR=_F(STOP_SINGULIER='NON',),)
+                SOLVEUR=_F(STOP_SINGULIER='NON',),
+                TYPE_CALCUL="TRAN",
+                ETAT_INIT=_F(STAT="OUI"),
+                INCREMENT=_F(LIST_INST=DLZ),)
 
             # ----------------------------------------------
             # CALCUL DU  CENTRE DE TORSION/CISAILLEMENT
@@ -653,7 +669,10 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
             __tempe2 = THER_LINEAIRE(
                 MODELE=__nomoth, CHAM_MATER=__chmath,
                 EXCIT=_F(CHARGE=__chart2, ),
-                SOLVEUR=_F(STOP_SINGULIER='NON',),)
+                SOLVEUR=_F(STOP_SINGULIER='NON',),
+                TYPE_CALCUL="TRAN",
+                ETAT_INIT=_F(STAT="OUI"),
+                INCREMENT=_F(LIST_INST=DLZ),)
 
             # POUR LE CALCUL DES CONSTANTES DE CISAILLEMENT, ON VA DEFINIR
             # UN PREMIER TERME SOURCE, SECOND MEMBRE DE L EQUATION DE LAPLACE
@@ -677,7 +696,10 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
                 MODELE=__nomoth,
                 CHAM_MATER=__chmath,
                 EXCIT=_F(CHARGE=__chart3, ),
-                SOLVEUR=_F(STOP_SINGULIER='NON',),)
+                SOLVEUR=_F(STOP_SINGULIER='NON',),
+                TYPE_CALCUL="TRAN",
+                ETAT_INIT=_F(STAT="OUI"),
+                INCREMENT=_F(LIST_INST=DLZ),)
 
             # CALCUL DU RAYON DE TORSION :
             # CALCUL DU RAYON DE TORSION EXTERNE : rtext

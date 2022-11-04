@@ -124,13 +124,9 @@ def _setupInitialField(phys_pb, args):
 
     initial_field = None
     is_stat_init = False
+    initial_state = args.get("ETAT_INIT")
 
-    if args["TYPE_CALCUL"] == "STAT":
-        return initial_field, is_stat_init
-
-    initial_state = args["ETAT_INIT"]
-
-    if "STAT" in initial_state:
+    if args["TYPE_CALCUL"] == "STAT" or "STAT" in initial_state:
         logger.debug(
             "<THER_LINEAIRE><ETAT_INIT>: Stationnary Computation initialized with a null field")
         initial_field = FieldOnNodesReal(phys_pb.getDOFNumbering())

@@ -82,7 +82,6 @@ subroutine rsrusd(nomsd, iordr)
 !     -- SI IORDR N'EST PAS TROUVE DANS NOMSD, ON VERIFIE
 !        QUE IORDR > DERNIER NUMERO D'ORDRE
 !        ET ON RESSORT SANS RIEN FAIRE :
-    print*, "irang: ", irang
     if (irang .eq. 0) then
         ASSERT(iordr.gt.ordr(nbordr))
         goto 999
@@ -91,7 +90,6 @@ subroutine rsrusd(nomsd, iordr)
 !
 !     -- ON DETRUIT ET ON EFFACE LES CHAMPS :
 !     ---------------------------------------
-    print*, "CHAM: ", nbcham
     do k = 1, nbcham
         call jenuno(jexnum(noms2//'.DESC', k), nomsy)
         call jenonu(jexnom(noms2//'.DESC', nomsy), ibid)

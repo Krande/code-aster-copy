@@ -243,19 +243,19 @@ def macr_ecrevisse_ops(self, **args):
                 # Definition de l'etat initial
                 motclefs = {}
                 if nume_ordre == 0:
-                    motclefs["ETAT_INIT"] = [_F(VALE=TEMP_INIT, NUME_ORDRE=nume_ordre)]
+                    motclefs["ETAT_INIT"] = _F(VALE=TEMP_INIT, )
                     if debug:
                         print("thermique initialise avec tref")
                 else:
                     if IsInit:
                         # if (IsPoursuite) :
                         motclefs["reuse"] = _THINIT
-                        motclefs["ETAT_INIT"] = [_F(EVOL_THER=_THINIT, NUME_ORDRE=nume_ordre)]
+                        motclefs["ETAT_INIT"] = _F(EVOL_THER=_THINIT, NUME_ORDRE=nume_ordre)
                         if debug:
                             print("thermique initialise avec etat_initial")
                     else:
                         motclefs["reuse"] = RTHERM
-                        motclefs["ETAT_INIT"] = [_F(EVOL_THER=RTHERM, NUME_ORDRE=nume_ordre)]
+                        motclefs["ETAT_INIT"] = _F(EVOL_THER=RTHERM, NUME_ORDRE=nume_ordre)
                         if debug:
                             print("thermique initialise avec instant precedent")
 
@@ -273,6 +273,7 @@ def macr_ecrevisse_ops(self, **args):
                             LIST_INST=__pas, NUME_INST_INIT=nume_ordre, NUME_INST_FIN=nume_ordre + 1
                         ),
                         INFO=InfoAster,
+                        TYPE_CALCUL="TRAN",
                         **motclefs
                     )
 
@@ -294,6 +295,7 @@ def macr_ecrevisse_ops(self, **args):
                             LIST_INST=__pas, NUME_INST_INIT=nume_ordre, NUME_INST_FIN=nume_ordre + 1
                         ),
                         INFO=InfoAster,
+                        TYPE_CALCUL="TRAN",
                         **motclefs
                     )
 
