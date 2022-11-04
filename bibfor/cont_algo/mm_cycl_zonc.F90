@@ -43,16 +43,21 @@ subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (laug_cont .gt. pres_near) then
-        zone_cont = 1
-    elseif ((laug_cont .le. pres_near) .and. (laug_cont .ge. r8prem())) then
-        zone_cont = 2
-    elseif ((laug_cont .ge. -pres_near) .and. (laug_cont .le. r8prem())) then
-        zone_cont = 3
-    elseif (laug_cont .lt. -pres_near) then
-        zone_cont = 4
+
+    if (laug_cont .lt. 0.0) then
+        ! contact
+        if (laug_cont .lt. -pres_near) then
+            zone_cont = 4
+        else
+            zone_cont = 3
+        end if
     else
-        ASSERT(.false.)
+        ! no contact
+        if (laug_cont .le. pres_near) then
+            zone_cont = 2
+        else
+            zone_cont = 1
+        end if
     end if
 
 end subroutine

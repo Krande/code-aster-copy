@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev, zone_cont_curr,&
-                         cycl_sub_type, alpha_cont_matr, alpha_cont_vect)
+subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev, &
+                         zone_cont_curr, cycl_sub_type, alpha_cont_matr, alpha_cont_vect)
 !
     implicit none
 !
@@ -113,10 +113,7 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
         alpha_cont_vect = 1.0
 
     else
-        cycl_sub_type = 5
-        alpha_cont_matr = 0.5
-        alpha_cont_vect = 0.5
-!        ASSERT(.false.)
+        ASSERT(.false.)
     end if
 
 end subroutine
