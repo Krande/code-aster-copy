@@ -109,7 +109,6 @@ THER_NON_LINE = OPER(nom="THER_NON_LINE", op=186, sd_prod=evol_ther,
                                                                                           ),),
                                                         ),),
                      # -------------------------------------------------------------------
-                     TYPE_CALCUL=SIMP(statut='f', typ='TXM', into=("TRAN"), defaut="TRAN"),
                      INCREMENT=C_INCREMENT('THERMIQUE', False),
                      # -------------------------------------------------------------------
                      ETAT_INIT=FACT(statut='f',
