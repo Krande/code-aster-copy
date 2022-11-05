@@ -37,7 +37,7 @@ subroutine te0260(option, nomte)
 !
     integer :: icodre(1)
     character(len=8) :: fami, poum
-    real(kind=8) :: dfdr(9), dfdz(9), poids, r, theta, valres(1)
+    real(kind=8) :: dfdr(9), dfdz(9), poids, r, valres(1)
     integer :: nno, kp, npg1, i, j, k, itemps, imattt, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, imate, kpg, spt
 !
@@ -60,7 +60,6 @@ subroutine te0260(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTR', 'E', imattt)
     call jevech('PTEMPSR', 'L', itemps)
-    theta = zr(itemps+2)
 !
     fami='FPG1'
     kpg=1
@@ -88,7 +87,7 @@ subroutine te0260(option, nomte)
             do j = 1, i
                 wij = zr(ivf+k+i-1) * zr(ivf+k+j-1)
                 ij = ij + 1
-                zr(ij) = zr(ij) + poids * valres(1) * theta * ( dfdr(i)*dfdr(j) + dfdz(i)*dfdz(j)&
+                zr(ij) = zr(ij) + poids * valres(1) * ( dfdr(i)*dfdr(j) + dfdz(i)*dfdz(j)&
                          & + xh2*wij/r2)
             end do
         end do
