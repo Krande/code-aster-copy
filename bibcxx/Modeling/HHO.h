@@ -1,4 +1,3 @@
-
 /**
  * @file HHO.h
  * @brief Header of class HHO
@@ -25,11 +24,10 @@
 
 #include "astercxx.h"
 
-#include "Behaviours/BehaviourProperty.h"
-#include "Discretization/Calcul.h"
-#include "LinearAlgebra/ElementaryMatrix.h"
-#include "LinearAlgebra/ElementaryVector.h"
-#include "Numbering/DOFNumbering.h"
+#include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnNodes.h"
+#include "Functions/Function.h"
 #include "Studies/PhysicalProblem.h"
 
 /**
@@ -40,6 +38,8 @@ class HHO {
   private:
     /** @brief Physical problem */
     PhysicalProblemPtr _phys_problem;
+
+    FunctionPtr _createFunc( const ASTERDOUBLE &value ) const;
 
   public:
     /** @typedef HHOPtr */
@@ -60,14 +60,25 @@ class HHO {
     FieldOnNodesRealPtr projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const;
 
     /**
-     * @brief Project H^1-field on HHO space
+     * @brief Project real value on HHO space
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const ASTERDOUBLE &value ) const;
 
-        /**
-     * @brief Project H^1-field on HHO Cell-space
+    /**
+     * @brief Project real on HHO Cell-space
      */
     FieldOnNodesRealPtr projectOnHHOCellSpace( const ASTERDOUBLE &value ) const;
+
+    /**
+     * @brief Project function on HHO space
+     */
+    FieldOnNodesRealPtr projectOnHHOSpace( const FunctionPtr fct, ASTERDOUBLE time = 0.0 ) const;
+
+    /**
+     * @brief Project function on HHO Cell-space
+     */
+    FieldOnNodesRealPtr projectOnHHOCellSpace( const FunctionPtr fct,
+                                               ASTERDOUBLE time = 0.0 ) const;
 };
 
 using HHOPtr = std::shared_ptr< HHO >;

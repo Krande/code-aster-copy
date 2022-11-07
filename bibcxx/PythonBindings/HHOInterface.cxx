@@ -38,7 +38,22 @@ void exportHHOToPython( py::module_ &mod ) {
             FieldOnNodesReal: HHO field project on Lagrange space
         )",
               py::arg( "hho_field" ) )
-        .def( "projectOnHHOSpace", &HHO::projectOnHHOSpace,
+        .def( "projectOnHHOSpace",
+              py::overload_cast< const FunctionPtr, ASTERDOUBLE >( &HHO::projectOnHHOSpace,
+                                                                   py::const_ ),
+              R"(
+      Project real function to HHO-space
+
+      Arguments:
+            func (Function): real function to project
+            time (float): time value to evaluate function (default=0.0)
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "func" ), py::arg( "time" ) = 0.0 )
+        .def( "projectOnHHOSpace",
+              py::overload_cast< const ASTERDOUBLE & >( &HHO::projectOnHHOSpace, py::const_ ),
               R"(
       Project real value to HHO-space
 
@@ -49,7 +64,23 @@ void exportHHOToPython( py::module_ &mod ) {
             FieldOnNodesReal: HHO field
         )",
               py::arg( "value" ) )
-        .def( "projectOnHHOCellSpace", &HHO::projectOnHHOCellSpace,
+        .def( "projectOnHHOCellSpace",
+              py::overload_cast< const FunctionPtr, ASTERDOUBLE >( &HHO::projectOnHHOCellSpace,
+                                                                   py::const_ ),
+              R"(
+      Project real function to HHO Cell-space
+      Cell space is the restriction of HHO-space to cells only
+
+      Arguments:
+            func (Function): real function to project
+            time (float): time value to evaluate function (default=0.0)
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "func" ), py::arg( "time" ) = 0.0 )
+        .def( "projectOnHHOCellSpace",
+              py::overload_cast< const ASTERDOUBLE & >( &HHO::projectOnHHOCellSpace, py::const_ ),
               R"(
       Project real value to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only

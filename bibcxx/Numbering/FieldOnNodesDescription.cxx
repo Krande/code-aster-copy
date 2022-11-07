@@ -66,9 +66,7 @@ bool FieldOnNodesDescription::operator==( FieldOnNodesDescription &toCompare ) {
     if ( ( *_indexationVector ) == ( *toCompare._indexationVector ) ) {
         if ( ( *_nodeAndComponentsNumberFromDOF ) ==
              ( *toCompare._nodeAndComponentsNumberFromDOF ) ) {
-            if ( ( *_namesOfGroupOfCells ) == ( *toCompare._namesOfGroupOfCells ) ) {
-                ret = true;
-            }
+            ret = true;
         }
     }
     // }

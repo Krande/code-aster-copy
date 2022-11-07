@@ -24,12 +24,14 @@ use HHO_massmat_module
 use HHO_quadrature_module
 use HHO_type
 use HHO_size_module
+use HHO_eval_module
 !
 implicit none
 !
 private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "blas/dposv.h"
 !
@@ -199,6 +201,7 @@ contains
 ! ---- Compute rhs
 !
         call hhoMakeRhsCellScal(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
+        print*, coeff_L2Proj
 !
 ! ---- Solve the system
 !
@@ -329,13 +332,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoL2ProjScal(hhoCell, hhoData, value, coeff_L2Proj)
+    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
 !
     implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
-        real(kind=8), intent(in)            :: value
+        character(len=8), intent(in)        :: func
+        real(kind=8), intent(in)            :: time
         real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -348,16 +352,37 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
+        integer, parameter :: maxpara = 4
+        real(kind=8) :: valpar(maxpara)
+        character(len=8) :: nompar(maxpara)
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, iFace, ind
-        real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL)
+        integer :: cbs, fbs, total_dofs, iFace, ind, nbpara
+        real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
         coeff_L2Proj = 0
-        FuncValuesCellQP = value
+        FuncValuesCellQP = 0.d0
+!
+! --- Type of function dor a face
+!
+        if (hhoCell%ndim == 3) then
+            nbpara = 4
+            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(nbpara) = 'INST'
+            valpar(nbpara) = time
+        else if (hhoCell%ndim == 2) then
+            nbpara = 3
+            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(nbpara) = 'INST'
+            valpar(nbpara) = time
+            nompar(4) = 'XXXXXXXX'
+            valpar(4) = 0.d0
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
 ! --- Loop on faces
 !
@@ -369,9 +394,15 @@ contains
 !
             call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 1)
 !
+! -------------- Value of the function at the quadrature point
+!
+            call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar,&
+                                valpar, hhoCell%ndim, FuncValuesFaceQP)
+!
+!
 ! -------------- Compute L2 projection
 !
-            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesCellQP, hhoData%face_degree(), &
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
                                   coeff_L2Proj(ind))
             ind = ind + fbs
         end do
@@ -379,6 +410,12 @@ contains
 ! --- On cell
 !
         call hhoQuadCell%GetQuadCell(hhoCell, 2 * hhoData%cell_degree() + 1)
+!
+! -------------- Value of the function at the quadrature point
+!
+        call hhoFuncFScalEvalQp(hhoQuadCell, func, nbpara, nompar,&
+                                valpar, hhoCell%ndim, FuncValuesCellQP)
+!
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                   coeff_L2Proj(ind))
 !

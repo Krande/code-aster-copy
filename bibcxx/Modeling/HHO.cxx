@@ -1,4 +1,3 @@
-
 /**
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -22,6 +21,18 @@
 #include "Modeling/HHO.h"
 
 #include "Discretization/Calcul.h"
+
+FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
+    auto funct = std::make_shared< Function >();
+    funct->setValues( { 1. }, { value } );
+    funct->setResultName( "TOUTRESU" );
+    funct->setParameterName( "TOUTPARA" );
+    funct->setInterpolation( "LIN LIN" );
+    funct->setExtrapolation( "CC" );
+    funct->setAsConstant();
+
+    return funct;
+};
 
 FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const {
 
@@ -61,25 +72,28 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     return exitField->toFieldOnNodes();
 };
 
-FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
+FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FunctionPtr fct, ASTERDOUBLE time ) const {
 
     const std::string option = "HHO_PROJ_THER";
     auto model = _phys_problem->getModel();
     auto mesh = model->getMesh();
 
+    AS_ASSERT( model->isThermal() );
+
     auto calcul = std::make_unique< Calcul >( option );
     calcul->setModel( model );
 
-    auto valeField = std::make_shared< ConstantFieldOnCellsReal >( mesh );
-    const std::string physicalName( "NEUT_R" );
-    valeField->allocate( physicalName );
+    auto funcField = std::make_shared< ConstantFieldOnCellsChar8 >( mesh );
+    const std::string physicalName( "NEUT_K8" );
+    funcField->allocate( physicalName );
     ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( { "X1" }, { value } );
-    valeField->setValueOnZone( a, b );
+    ConstantFieldValues< JeveuxChar8 > b( { "Z1" }, { fct->getName() } );
+    funcField->setValueOnZone( a, b );
 
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
-    calcul->addInputField( "PVALE_R", valeField );
+    calcul->addInputField( "PFUNC_R", funcField );
+    calcul->addTimeField( "PINSTPR", time );
 
     // Output fields
     auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
@@ -90,15 +104,16 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
         calcul->compute();
     };
 
-    std::cout << "Size: " << hho_elno->size() << std::endl;
-    std::cout << *( hho_elno->getValues() ) << std::endl;
-
     return hho_elno->toFieldOnNodes();
 };
 
-FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const ASTERDOUBLE &value ) const {
+FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
+    return projectOnHHOSpace( _createFunc( value ) );
+};
 
-    auto hho_field = projectOnHHOSpace( value );
+FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FunctionPtr fct, ASTERDOUBLE time ) const {
+
+    auto hho_field = projectOnHHOSpace( fct, time );
 
     auto model = _phys_problem->getModel();
     std::map< std::string, ASTERDOUBLE > map;
@@ -127,4 +142,8 @@ FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const ASTERDOUBLE &value ) const
     hho_field->setValues( map );
 
     return hho_field;
+};
+
+FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const ASTERDOUBLE &value ) const {
+    return projectOnHHOCellSpace( _createFunc( value ) );
 };

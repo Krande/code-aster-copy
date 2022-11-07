@@ -27,13 +27,14 @@ import cataelem.Commons.attributes as AT
 PTEMP_R = OutputParameter(phys=PHY.TEMP_R, type='ELNO',
                           comment=""" HHO - degres de liberte de la cellule""")
 
-PVALE_R = InputParameter(phys=PHY.NEUT_R, comment=""" Value to project""")
+PFUNC_R = InputParameter(phys=PHY.NEUT_K8, comment=""" Value to project""")
 
 
 HHO_PROJ_THER = Option(
     para_in=(
         SP.PGEOMER,
-        PVALE_R,
+        PFUNC_R,
+        SP.PINSTPR,
     ),
     para_out=(
         PTEMP_R,

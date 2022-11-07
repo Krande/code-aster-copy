@@ -106,6 +106,12 @@ NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type='ELNO',
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type='ELNO',
                             components=('TEMP',))
 
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type='ELEM',
+                          components=('Z[1]',))
+
+CINSTR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                           components=('INST',))
+
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
@@ -156,6 +162,14 @@ class THER3DH27_HHO121(Element):
                      para_in=((SP.PGEOMER, NGEOMER), ),
                      para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
                      ),
+
+        OP.HHO_PROJ_THER(te=473,
+                         para_in=((SP.PGEOMER, NGEOMER),
+                                  (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
+                                  (SP.PINSTPR, CINSTR),
+                                  ),
+                         para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
+                         ),
 
         OP.HHO_TEMP_THER(te=456,
                          para_in=((SP.PGEOMER, NGEOMER),
