@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ use HHO_rhs_module
 use HHO_massmat_module
 use HHO_quadrature_module
 use HHO_type
+use HHO_size_module
 !
 implicit none
 !
@@ -39,7 +40,7 @@ private
 ! Module to compute L2 prjoection
 !
 ! --------------------------------------------------------------------------------------------------
-    public :: hhoL2ProjFaceScal, hhoL2ProjFaceVec
+    public :: hhoL2ProjFaceScal, hhoL2ProjFaceVec, hhoL2ProjScal
     public :: hhoL2ProjCellScal, hhoL2ProjCellVec, hhoL2ProjCellMat
 !    private  ::
 !
@@ -321,6 +322,65 @@ contains
         if(info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoL2ProjScal(hhoCell, hhoData, value, coeff_L2Proj)
+!
+    implicit none
+!
+        type(HHO_Cell), intent(in)          :: hhoCell
+        type(HHO_Data), intent(in)          :: hhoData
+        real(kind=8), intent(in)            :: value
+        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the L2-prjoection of a scalar given function on a local space (cell + face)
+!   In hhoCell      : the current HHO Cell
+!   In FuncValuesQP : Values of the function to project at the quadrature points
+!   Out coeff_L2Proj: coefficient after projection
+!
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_Face) :: hhoFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
+        integer :: cbs, fbs, total_dofs, iFace, ind
+        real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL)
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+        coeff_L2Proj = 0
+        FuncValuesCellQP = value
+!
+! --- Loop on faces
+!
+        ind = 1
+        do iFace = 1, hhoCell%nbfaces
+            hhoFace = hhoCell%faces(iFace)
+!
+! ----- get quadrature
+!
+            call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 1)
+!
+! -------------- Compute L2 projection
+!
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesCellQP, hhoData%face_degree(), &
+                                  coeff_L2Proj(ind))
+            ind = ind + fbs
+        end do
+!
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2 * hhoData%cell_degree() + 1)
+        call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                                  coeff_L2Proj(ind))
 !
     end subroutine
 !

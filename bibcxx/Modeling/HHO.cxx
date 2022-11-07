@@ -21,6 +21,8 @@
 
 #include "Modeling/HHO.h"
 
+#include "Discretization/Calcul.h"
+
 FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const {
 
     std::string option, para_name_in, para_name_out;
@@ -61,45 +63,63 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
 
 FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
 
-    auto hho_field = std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
-    hho_field->setValues( 0.0 );
-
-    std::map< std::string, ASTERDOUBLE > map;
-
+    const std::string option = "HHO_PROJ_THER";
     auto model = _phys_problem->getModel();
+    auto mesh = model->getMesh();
 
-    if ( model->isMechanical() ) {
-        AS_ABORT( "TODO..." );
-        // Comment faire pour les cells...
-        map["HHO_U1"] = value;
-        map["HHO_V1"] = value;
-        map["HHO_W1"] = value;
-    } else if ( model->isThermal() ) {
-        map["HHO_C1"] = value;
-        map["HHO_F1"] = value;
-    } else {
-        AS_ABORT( "Not implemented for HHO" );
-    }
+    auto calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( model );
 
-    hho_field->setValues( map );
+    auto valeField = std::make_shared< ConstantFieldOnCellsReal >( mesh );
+    const std::string physicalName( "NEUT_R" );
+    valeField->allocate( physicalName );
+    ConstantFieldOnZone a( mesh );
+    ConstantFieldValues< ASTERDOUBLE > b( { "X1" }, { value } );
+    valeField->setValueOnZone( a, b );
 
-    return hho_field;
+    // Input fields
+    calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
+    calcul->addInputField( "PVALE_R", valeField );
+
+    // Output fields
+    auto hho_elno = std::make_shared< FieldOnCellsReal >( model );
+    calcul->addOutputField( "PTEMP_R", hho_elno );
+
+    // Compute
+    if ( model->existsFiniteElement() ) {
+        calcul->compute();
+    };
+
+    std::cout << "Size: " << hho_elno->size() << std::endl;
+    std::cout << *( hho_elno->getValues() ) << std::endl;
+
+    return hho_elno->toFieldOnNodes();
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const ASTERDOUBLE &value ) const {
 
-    auto hho_field = std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
-    hho_field->setValues( 0.0 );
-
-    std::map< std::string, ASTERDOUBLE > map;
+    auto hho_field = projectOnHHOSpace( value );
 
     auto model = _phys_problem->getModel();
+    std::map< std::string, ASTERDOUBLE > map;
 
+    // Set to zero face unknowns
+    const ASTERDOUBLE zero = 0.0;
     if ( model->isMechanical() ) {
-        AS_ABORT( "TODO..." );
-        // Comment faire pour les cells...
+        for ( ASTERINTEGER i = 1; i <= 6; i++ ) {
+            std::string name_cmp_u = "HHO_U" + std::to_string( i );
+            std::string name_cmp_v = "HHO_V" + std::to_string( i );
+            std::string name_cmp_w = "HHO_W" + std::to_string( i );
+
+            map[name_cmp_u] = zero;
+            map[name_cmp_v] = zero;
+            map[name_cmp_w] = zero;
+        }
     } else if ( model->isThermal() ) {
-        map["HHO_C1"] = value;
+        for ( ASTERINTEGER i = 1; i <= 6; i++ ) {
+            std::string name_cmp = "HHO_F" + std::to_string( i );
+            map[name_cmp] = zero;
+        }
     } else {
         AS_ABORT( "Not implemented for HHO" );
     }

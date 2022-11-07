@@ -103,6 +103,8 @@ EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type='ELGA', location='RIGI',
                             components=('SOUR',))
 
+EVALER = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                           components=('X[1]',))
 
 DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO', diff=True,
                              components=(
@@ -172,6 +174,13 @@ class THER2DQ9_HHO121(Element):
                                   (SP.PTMPCHF, DDL_THER),
                                   ),
                          para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
+                         ),
+
+        OP.HHO_PROJ_THER(te=473,
+                         para_in=((SP.PGEOMER, NGEOMER),
+                                  (OP.HHO_PROJ_THER.PVALE_R, EVALER),
+                                  ),
+                         para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
                          ),
 
         OP.MASS_THER(te=449,
