@@ -95,7 +95,7 @@ implicit none
     integer :: ncdyn, lgchel,numc
     integer :: ibid, modmx, iamolo, itych, itych1
     integer :: illiel, jdcesd, jdcesl
-    integer :: ima, ncmpv2, kk, ityplo, nbpoin
+    integer :: ima, ncmpv2, kk, ityplo
     aster_logical :: letendu
     integer, pointer :: liel(:) => null()
     integer, pointer :: cesv(:) => null()
@@ -247,12 +247,6 @@ implicit none
             if (ityplo .gt. 3) then
                 call jenuno(jexnum('&CATA.TE.NOMMOLOC', mode), nomolo)
                 call utmess('F', 'CALCUL_33', sk=nomolo)
-            else
-                nbpoin = zi(iamolo-1+4)
-                if ((ityplo.eq.2) .and. (nbpoin.gt.10000)) then
-                    call jenuno(jexnum('&CATA.TE.NOMMOLOC', mode), nomolo)
-                    call utmess('F', 'CALCUL_34', sk=nomolo)
-                endif
             endif
 
             itych = zi(iamolo-1+1)
