@@ -50,7 +50,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 ! DECLARATIONS LOCALES
     integer :: nvarflumax, nmatflumax, nvarbe
-    parameter(nvarflumax=163, nmatflumax=165, nvarbe=114)
+    parameter(nvarflumax=158, nmatflumax=165, nvarbe=114)
 !
     integer :: nmatbe, nmatac, nmatflu, nvarflu, nmatbe2, nmatbe3
 !   Nombre de paramètres relatifs au beton
@@ -112,7 +112,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         nmatbe3 = 0
     else
         nmatflu=nmatbe+2+nmatac
-        nvarflu = 163
+        nvarflu = 158
         nmatbe3 = nmatbe2
     endif
 !   nombre totale de paramètres et variables internes (option comprise)

@@ -127,9 +127,9 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 !   Contrainte princales du beton
     call x6x33(sigmf6, sig133)
     call b3d_valp33(sig133, sig13, vsig133)
-    varf(161)=MAX(sig13(1),sig13(2),sig13(3))
-    varf(163)=MIN(sig13(1),sig13(2),sig13(3))
-    varf(162)=(sig13(1)+sig13(2)+sig13(3))-(varf(161)+varf(163))
+    varf(156)=MAX(sig13(1),sig13(2),sig13(3))
+    varf(158)=MIN(sig13(1),sig13(2),sig13(3))
+    varf(157)=(sig13(1)+sig13(2)+sig13(3))-(varf(156)+varf(158))
 
 ! - Calcul des contraintes dans les renforts
     if (nrenf00 .ne. 0) then
@@ -142,14 +142,13 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
         call x6x33(epspt6, epspmf33)
 !       calcul des contraintes axiales dans chaque renfort            
         do i = 1, nrenf00
-            epsr0(i)=var0(nvarbe+8*(i-1)+1)
-!           pas de non local pour le moment donc pas de variable +2
-            eplr0(i)=var0(nvarbe+8*(i-1)+3)
-            sigr0(i)=var0(nvarbe+8*(i-1)+4)
-            eprm0(i)=var0(nvarbe+8*(i-1)+5)
-            mu_r0(i)=var0(nvarbe+8*(i-1)+6)
-            eprk0(i)=var0(nvarbe+8*(i-1)+7)
-            spre0(i)=var0(nvarbe+8*(i-1)+8)
+            epsr0(i)=var0(nvarbe+7*(i-1)+1)
+            eplr0(i)=var0(nvarbe+7*(i-1)+2)
+            sigr0(i)=var0(nvarbe+7*(i-1)+3)
+            eprm0(i)=var0(nvarbe+7*(i-1)+4)
+            mu_r0(i)=var0(nvarbe+7*(i-1)+5)
+            eprk0(i)=var0(nvarbe+7*(i-1)+6)
+            spre0(i)=var0(nvarbe+7*(i-1)+7)
 !             if(istep.eq.2) then
 !              recuperation de la deformation finale non locale
 !               eps_nl(i)=var0(NVARFLU3D+NVARSUP3D+(i-1)*NVARENF3D+2)
@@ -171,14 +170,13 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                 ierr1=1
                 goto 999
             end if 
-            varf(nvarbe+8*(i-1)+1)=epsrf(i)
-            varf(nvarbe+8*(i-1)+2)=eps_nl(i)
-            varf(nvarbe+8*(i-1)+3)=eplrf(i)
-            varf(nvarbe+8*(i-1)+4)=sigrf(i)
-            varf(nvarbe+8*(i-1)+5)=eprmf(i)
-            varf(nvarbe+8*(i-1)+6)=mu_r0(i)
-            varf(nvarbe+8*(i-1)+7)=eprkf(i)
-            varf(nvarbe+8*(i-1)+8)=spref(i)                
+            varf(nvarbe+7*(i-1)+1)=epsrf(i)
+            varf(nvarbe+7*(i-1)+2)=eplrf(i)
+            varf(nvarbe+7*(i-1)+3)=sigrf(i)
+            varf(nvarbe+7*(i-1)+4)=eprmf(i)
+            varf(nvarbe+7*(i-1)+5)=mu_r0(i)
+            varf(nvarbe+7*(i-1)+6)=eprkf(i)
+            varf(nvarbe+7*(i-1)+7)=spref(i)                
 !
 !            modification de la direction par effet goujon, calcul des      
 !            vecteurs forces sur chaque fissure                         
@@ -269,7 +267,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
     end if 
 !   tenseur des contrainte matrice seule et homogeneise  Sbei 
     do i = 1, 6
-        varf(nvarbe+8*5+i)= sigmf6(i)
+        varf(nvarbe+7*5+i)= sigmf6(i)
     end do
 999 continue
         

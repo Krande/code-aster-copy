@@ -224,8 +224,8 @@ implicit none
                      mucr=0.6667d0*khir/(khir-1.d0)
                      km=mucr/(mucr-mu0)
                      if(km.lt.0.) then
-                          print*,'km<0 ds renfort3d',km
-                          print*,mu0,sigr0,syr
+!                          print*,'km<0 ds renfort3d',km
+!                          print*,mu0,sigr0,syr
                           errr=.true.
                           go to 999
                      end if
@@ -249,10 +249,10 @@ implicit none
                      end if
                  end if
                  if(kt.gt.200.) then
-                       print*,'Amplification thermique renfort3d :',kt
-                       print*,'Valeur tres grande'
-                       print*,'verifier les donnees ATR et XNR'
-                       print*,ATRref,Teta,xnr,Tetaref,mu00
+!                       print*,'Amplification thermique renfort3d :',kt
+!                       print*,'Valeur tres grande'
+!                       print*,'verifier les donnees ATR et XNR'
+!                       print*,ATRref,Teta,xnr,Tetaref,mu00
                     errr=.true.
                     go to 999
                 end if
@@ -325,15 +325,15 @@ implicit none
               call gauss3d(3,ann,xn,bn,ngf,errgauss,ipzero)
               if(errgauss.eq.1) then
                errr=.true.
-               print*,'Pb avec gauss3d tir viscoelastique ds renfort3d'
-               print*,tauk,taum,kt,kf,cc0,Teta,Tetaref,xnr,gamr,mu00
-               print*,'renfort3d theta',theta,'ttaref',ttaref
-               print*,'hplr,tomr,ekr,skr,ATRrf,khir,gamr,sprec,teta2,dt' 
-               print*, hplr,tomr,ekr,skr,ATRref,khir,gamr,sprec,teta2,dt
-               print*,'theta,eprm0,ttaref,rhor'
-               print*, theta,eprm0,ttaref,rhor
-               print*,'eprk0,eprkf,tokr,K'
-               print*, eprk0,eprkf,tokr,K
+!               print*,'Pb avec gauss3d tir viscoelastique ds renfort3d'
+!               print*,tauk,taum,kt,kf,cc0,Teta,Tetaref,xnr,gamr,mu00
+!               print*,'renfort3d theta',theta,'ttaref',ttaref
+!               print*,'hplr,tomr,ekr,skr,ATRrf,khir,gamr,sprec,teta2,dt' 
+!               print*, hplr,tomr,ekr,skr,ATRref,khir,gamr,sprec,teta2,dt
+!               print*,'theta,eprm0,ttaref,rhor'
+!               print*, theta,eprm0,ttaref,rhor
+!               print*,'eprk0,eprkf,tokr,K'
+!               print*, eprk0,eprkf,tokr,K
                go to 999
               end if          
 !             recuperation des solutions
@@ -390,7 +390,7 @@ implicit none
                call gauss3d(4,ann,xn,bn,ngf,errgauss,ipzero) 
                if(errgauss.eq.1) then
                  errr=.true.
-                 print*,'Pb avec gauss3d viscoplasticite ds renfort3d'
+!                 print*,'Pb avec gauss3d viscoplasticite ds renfort3d'
                  go to 999
                end if 
 !              recuperation des solutions
@@ -408,24 +408,24 @@ implicit none
                sigeq=sigrf-hplr*eprpf
                if(sigeq.gt.0.d0) then
                 if(sigeq.gt.syr*tol_syr) then
-                    print*,'Pd de plasticite ds renfort3d'
-                    print*,sigeq,'>',syr
+!                    print*,'Pd de plasticite ds renfort3d'
+!                    print*,sigeq,'>',syr
                     errr=.true.
                 end if
                else
                 if(sigeq.lt.-syr*tol_syr) then
-                    print*,'Pd de plasticite ds renfort3d'
-                    print*,sigeq,'<',-syr
+!                    print*,'Pd de plasticite ds renfort3d'
+!                    print*,sigeq,'<',-syr
                     errr=.true.
                 end if             
                end if
                if(errr) then
-                do i=1,4
-                  do j=1,4
-                    print*,'ann(',i,j,')=',ann(i,j)
-                  end do
-                  print*,'bn(',i,')=',bn(i)
-                end do
+!                do i=1,4
+!                  do j=1,4
+!                    print*,'ann(',i,j,')=',ann(i,j)
+!                  end do
+!                  print*,'bn(',i,')=',bn(i)
+!                end do
                 go to 999
                end if
              end if   

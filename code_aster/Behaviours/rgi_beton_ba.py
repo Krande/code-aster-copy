@@ -26,7 +26,7 @@ loi = LoiComportement(
     lc_type        = ('MECANIQUE',),
     doc            =   """lois de Réaction de Gonflement interne (RGI), de fluage et d'endommagement couplées pour le béton avec armatures réparties"""            ,
     num_lc         = 169,
-    nb_vari        = 163,
+    nb_vari        = 158,
     nom_vari=(
  #         deformations elastiques
            'EPE1',
@@ -188,7 +188,6 @@ loi = LoiComportement(
            'PGMAX',
  #       variables pour les renforts acier (3 directions possibles)
            'EPSIN1',
-           'ENL1',
            'EPSEQ1',
            'SNR1',
            'ERM1',
@@ -196,7 +195,6 @@ loi = LoiComportement(
            'ERK1',
            'SPR1',
            'EPSIN2',
-           'ENL2',
            'EPSEQ2',
            'SNR2',
            'ERM2',
@@ -204,7 +202,6 @@ loi = LoiComportement(
            'ERK2',
            'SPR2',
            'EPSIN3',
-           'ENL3',
            'EPSEQ3',
            'SNR3',
            'ERM3',
@@ -212,7 +209,6 @@ loi = LoiComportement(
            'ERK3',
            'SPR3',
            'EPSIN4',
-           'ENL4',
            'EPSEQ4',
            'SNR4',
            'ERM4',
@@ -220,7 +216,6 @@ loi = LoiComportement(
            'ERK4',
            'SPR4',
            'EPSIN5',
-           'ENL5',
            'EPSEQ5',
            'SNR5',
            'ERM5',
