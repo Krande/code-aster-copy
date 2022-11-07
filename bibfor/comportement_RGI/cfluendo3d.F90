@@ -61,7 +61,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     integer :: nbelas3d
     parameter (nbelas3d=4)
 
-    character(len=8) :: nomres(nmatflumax), nomres1(nbelas3d)
+    character(len=12) :: nomres(nmatflumax), nomres1(nbelas3d)
     real(kind=8) :: valres(nmatflumax), xmat(nbelas3d+nmatflumax), valres1(nbelas3d)
     integer :: nstrs, mfr, i, j
     integer :: retour(nmatflumax),retour1(nbelas3d), iteflumaxi

@@ -21,7 +21,7 @@
 !
 interface
     subroutine getRgiPara(nomres, nmatbe2)
-        character(len=8), intent(out) :: nomres(*)
+        character(len=12), intent(out) :: nomres(*)
         integer, intent(in) :: nmatbe2
     end subroutine getRgiPara
 end interface
