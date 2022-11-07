@@ -62,11 +62,16 @@ MOTH = AFFE_MODELE(MAILLAGE=MAIL,
 
 CHTH = AFFE_CHAR_THER(MODELE=MOTH,
                       FLUX_REP=_F(GROUP_MA='GRP_FLU',  FLUN=1.0),
-                      ECHANGE=_F(GROUP_MA='GRP_ECH',
-                                 COEF_H=1.0,  TEMP_EXT=0.0),
                       SOURCE=_F(TOUT="OUI", SOUR=0.0,),
                       )
 
+COH = DEFI_CONSTANTE(VALE=1.0,)
+TEXT = DEFI_CONSTANTE(VALE=0.0,)
+
+CHEC = AFFE_CHAR_THER_F(MODELE=MOTH,
+                        ECHANGE=_F(GROUP_MA='GRP_ECH',
+                                   COEF_H=COH,  TEMP_EXT=TEXT)
+                        )
 #
 # DEFINITION DE LA STRATEGIE DE CALCUL --------------------------------
 #
@@ -85,7 +90,7 @@ TEMPE = THER_LINEAIRE(MODELE=MOTH,
                       ETAT_INIT=_F(VALE=0.E0),
                       INCREMENT=_F(LIST_INST=LTMPS),
                       CHAM_MATER=CHMAT,
-                      EXCIT=_F(CHARGE=CHTH)
+                      EXCIT=(_F(CHARGE=CHTH), _F(CHARGE=CHEC),),
                       )
 
 #

@@ -84,10 +84,6 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
                              components=('X[30]',))
 
 
-ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type='ELGA', location='RIGI',
-                            components=('SOUR',))
-
-
 CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type='ELEM',
                             components=('TEMP',))
 
@@ -177,8 +173,7 @@ class THER_2D_HHO2_F(Element):
                         para_out=((OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG), (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
                                   (OP.TOU_INI_ELGA.PNEUT_F,
                                    EGNEUT_F), (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
-                                  (OP.TOU_INI_ELGA.PSOUR_R,
-                                   ESOURCR), (SP.PTEMP_R, LC.ETEMPPG),
+                                  (SP.PTEMP_R, LC.ETEMPPG),
                                   ),
                         ),
 
