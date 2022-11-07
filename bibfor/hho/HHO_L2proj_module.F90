@@ -201,7 +201,6 @@ contains
 ! ---- Compute rhs
 !
         call hhoMakeRhsCellScal(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
-        print*, coeff_L2Proj
 !
 ! ---- Solve the system
 !

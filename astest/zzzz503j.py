@@ -98,7 +98,6 @@ f_hho = hho.projectOnHHOCellSpace(f)
 rhs2 = H * matM * f_hho
 rhs = disc_comp.getNeumannForces()
 
-# sould be equal: pb with basis function
 # test.assertAlmostEqual(rhs.norm("NORM_2"), rhs2.norm("NORM_2"), delta=1e-6)
 
 # compute BC
@@ -131,7 +130,7 @@ for i in range(100):
     max_u = u_hho.norm("NORM_INFINITY")
     Au = A * (1.1+max_u)
     Hu = H * (1+max_u)
-    Resi = Au * matK * u_hho + Hu * matM * u_hho - Hu / H * rhs
+    Resi = Au * matK * u_hho + Hu * matM * (u_hho - f_hho)
     Jaco = Au * matK + Hu * matM
 
     print("*Iter %d: residual %f" % (i, Resi.norm("NORM_2")))
