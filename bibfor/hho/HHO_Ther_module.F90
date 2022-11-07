@@ -308,7 +308,7 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
 ! --------- Eval gradient at T+
 !

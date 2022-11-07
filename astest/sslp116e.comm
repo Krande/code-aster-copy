@@ -159,7 +159,7 @@ TEST_RESU(RESU=(_F(RESULTAT=resuLinearSNL,
                    NOM_CHAM='HHO_DEPL',
                    NOM_CMP='DZ',
                    REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=0.10054825172507925,
+                   VALE_CALC=0.10054812011958975,
                    VALE_REFE=deplRefe,
                    PRECISION=deplTole,),),)
 
@@ -171,7 +171,7 @@ TEST_RESU(RESU=(_F(RESULTAT=resuLinearSNL,
                    NOM_CHAM='EPVC_ELNO',
                    NOM_CMP='EPTHER_L',
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=-0.00045043105578761134,
+                   VALE_CALC=-0.0004514850149511043,
                    VALE_REFE=epvcRefe,
                    PRECISION=epvcTole,),),)
 

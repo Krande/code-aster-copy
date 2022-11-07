@@ -112,11 +112,11 @@ mySolver = code_aster.MumpsSolver()
 mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
-test.assertAlmostEqual(solution.norm("NORM_2"), 28.661313016531285, delta=1e-6)
+test.assertAlmostEqual(solution.norm("NORM_2"), 28.677774021490347, delta=1e-6)
 
 # project HHO solution
 hho_field = hho.projectOnLagrangeSpace(solution)
-test.assertAlmostEqual(hho_field.norm("NORM_2"), 32.1858136117712, delta=1e-6)
+test.assertAlmostEqual(hho_field.norm("NORM_2"), 32.19785504937473, delta=1e-6)
 
 # save result
 hho_field.printMedFile("hhoField.med")
@@ -140,7 +140,7 @@ for i in range(100):
     du_hho = mySolver.solve(-Resi, diriBCs)
     u_hho += du_hho
 
-test.assertAlmostEqual(u_hho.norm("NORM_2"), 28.046099934496567, delta=1e-6)
+test.assertAlmostEqual(u_hho.norm("NORM_2"), 28.062005519735614, delta=1e-6)
 
 test.printSummary()
 
