@@ -41,6 +41,7 @@ private
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cncinv.h"
+#include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -519,17 +520,18 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idnddl, idvddl, jcmp
+        integer :: idnddl, idvddl, jcmp, cbs_dir
         integer :: iddl, i, nbcmp, ila, icmp, userDOFNbSupp, ndim
         character(len=16) :: currentDOF
         real(kind=8) :: valeDOF
         character(len=2) :: typeJEVEUX
         type(HHO_Data) :: hhoData
         character(len=8) :: nomFunc
+        character(len=2) :: code
         character(len=16), parameter :: motcle(5) = (/ 'GROUP_MA', 'MAILLE  ',&
                                                     'GROUP_NO', 'NOEUD   ',&
                                                     'TOUT    '/)
-        integer, parameter :: nbCmpSupp = 6
+        integer, parameter :: nbCmpSupp = 16
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -545,6 +547,7 @@ contains
 ! --- Get type of HHO
 !
         call hhoGetTypeFromModel(model, hhoData, ndim)
+        cbs_dir = binomial(hhoData%cell_degree()+ndim,hhoData%cell_degree())
 !
 ! - Create objects
 !
@@ -777,6 +780,71 @@ contains
             elseif(hhoData%face_degree() .ge. 3) then
                 ASSERT(ASTER_FALSE)
             endif
+!
+            if (currentDOF .eq. 'DX') then
+                do i = 1, cbs_dir
+                    nbddl = nbddl + 1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_C' // code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1)  = valeDOF
+                    elseif (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+            elseif (currentDOF .eq. 'DY') then
+                do i = cbs_dir+1, 2*cbs_dir
+                    nbddl = nbddl + 1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_C' // code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1)  = valeDOF
+                    elseif (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+            elseif (currentDOF .eq. 'DZ') then
+                if(ndim .ne. 3) then
+                    call utmess('F', 'CHARGES_57')
+                end if
+                do i = 2*cbs_dir+1, 3*cbs_dir
+                    nbddl = nbddl + 1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_C' // code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1)  = valeDOF
+                    elseif (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+            elseif (currentDOF .eq. 'TEMP') then
+                do i = 1, cbs_dir
+                    nbddl = nbddl + 1
+                    call codent(i, 'G', code, 'F')
+                    zk8(idnddl+nbddl-1) = 'HHO_C' // code
+                    if (valeType .eq. 'R') then
+                        zr(idvddl+nbddl-1)  = valeDOF
+                    elseif (valeType .eq. 'F') then
+                        ASSERT(currentDOF(1:3) .ne. 'HHO')
+                        zk8(idvddl+nbddl-1) = nomFunc
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end do
+            else
+                ASSERT(ASTER_FALSE)
+            endif
+!
+
 !
 110 continue
         end do
