@@ -80,9 +80,9 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
     integer :: nb_pt, nb_grel, imolo, nb_grel_ligr
     integer :: i_cmp, i_pt, i_spt, elem_nume, iad, vali(2)
     integer :: nb_pt_max, nb_elem, nb_cmp_max, nb_spt, nb_dyn, nb_dyn_max, lgcata
-    integer :: ico, adiel, nb_cmp_cumu
+    integer :: ico, adiel, nb_cmp_cumu, kpt
     character(len=24) :: valk(2)
-    aster_logical :: sdveri, l_copy_nan, undf0, rect
+    aster_logical :: sdveri, l_copy_nan, undf0, rect, diff
     integer, pointer :: v_liel(:) => null()
     integer, pointer :: v_liel_long(:) => null()
     integer, pointer :: v_celd(:) => null()
@@ -209,12 +209,15 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jv_molo)
             ASSERT(zi(jv_molo-1+1) .le. 3)
             ASSERT(zi(jv_molo-1+2) .eq. gd)
+            diff      = zi(jv_molo-1+4).gt.10000
             nb_pt     = mod(zi(jv_molo-1+4),10000)
             nb_pt_max = max(nb_pt_max,nb_pt)
 ! --------- Update maximum number of components on all cells
             nb_cmp_max = 0
             do i_pt = 1, nb_pt
-                iadg = jv_molo - 1 + 5
+                kpt=1
+                if (diff) kpt=i_pt
+                iadg = jv_molo - 1 + 4+(kpt-1)*nec+1
                 do i_cmp = 1, nb_cmp_mx
                     if (exisdg(zi(iadg),i_cmp)) then
                         nb_cmp_max = max(nb_cmp_max,i_cmp)
@@ -280,17 +283,21 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
         AS_ALLOCATE(vi=long_pt_cumu, size=nb_pt_max)
         do i_grel = 1, nb_grel
             imolo = v_celd(v_celd(4+i_grel)+2)
+
             if (imolo .ne. 0) then
 ! ------------- Access to located components
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jv_molo)
+                diff    = zi(jv_molo-1+4).gt.10000
                 nb_pt   = mod(zi(jv_molo-1+4),10000)
                 nb_elem = nbelem(ligrel, i_grel)
 ! ------------- Number of components for each Gauss point
                 do i_pt = 1, nb_pt
+                    kpt=1
+                    if (diff) kpt=i_pt
                     ico  = 0
                     do i_cmp = 1, nb_cmp
                         nume_cmp = field_to_cata(i_cmp)
-                        if (exisdg(zi(jv_molo - 1 + 5), nume_cmp)) then
+                        if (exisdg(zi(jv_molo - 1 + 4+(kpt-1)*nec+1), nume_cmp)) then
                             ico = ico + 1
                         endif
                     end do
@@ -310,10 +317,12 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
                         adiel  = v_celd(v_celd(4+i_grel)+4+4* (i_elem-1)+4)
 ! --------------------- Loop on Gauss points
                         do i_pt = 1, nb_pt
+                            kpt=1
+                            if (diff) kpt=i_pt
                             ico = 0
                             do i_cmp = 1, nb_cmp
                                 nume_cmp = field_to_cata(i_cmp)
-                                if (exisdg(zi(jv_molo - 1 + 5), nume_cmp)) then
+                                if (exisdg(zi(jv_molo - 1 + 4+(kpt-1)*nec+1), nume_cmp)) then
                                     ico   = ico + 1
                                     i_cmp_cata = cata_to_field(nume_cmp)
                                     ASSERT(i_cmp_cata .eq. i_cmp)
