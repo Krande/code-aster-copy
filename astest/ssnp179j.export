@@ -3,7 +3,7 @@ P mpi_nbcpu 2
 P mpi_nbnoeud 1
 P time_limit 300
 P memory_limit 1024
-P testlist verification sequential
+P testlist verification parallel
 
 F comm ssnp179j.comm D 1
 F mmed ssnp178f.mmed D 20
