@@ -23,7 +23,7 @@ from ..Cata.Syntax import _F
 from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM,
                         POST_ELEM, FORMULE,
                         MODI_MAILLAGE, DEFI_CONSTANTE,
-                        COPIER,CREA_RESU)
+                        COPIER,CREA_RESU, IMPR_RESU)
 
 # ===========================================================================
 #           CORPS DE LA MACRO "POST_ROCHE"
@@ -1046,6 +1046,7 @@ class PostRocheCommon():
                 # param
                 dSig = sigRef/1000
                 tol = 1e-6
+                tolfk = 1e-20
                 # init
                 ratio = 1
                 sigVk = sigRef/2
@@ -1053,11 +1054,14 @@ class PostRocheCommon():
                 fk = f0
                 nbIter = 0
 
-                # print('f0',f0)
+                # print('f0',f0,'sigv0',sigVk)
 
-                while ratio > tol and nbIter<=nbIterMax:
+                while ratio > tol and nbIter<=nbIterMax and abs(fk)>tolfk:
                     fkp = funcToSolve(sigVk+dSig)
                     dfk = (fkp-fk)/dSig
+                    # print('dfk',dfk)
+                    if abs(dfk)<tolfk:
+                        return sigVk
 
                     sigVk = sigVk - fk/dfk
                     fkp1    = funcToSolve(sigVk)
@@ -1067,7 +1071,7 @@ class PostRocheCommon():
                     nbIter =nbIter+1
                     # print('nbIter',nbIter, 'ratio',ratio, 'fk',fk, 'sigVk',sigVk)
 
-                if ratio > tol :
+                if ratio > tol and abs(fk)>tolfk:
                     return -1.
                 else:
                     return sigVk
@@ -1102,10 +1106,17 @@ class PostRocheCommon():
                                               **self.dicAllZones),))
         # epsilon vraie
 
+        
+        def EpsVraie(sigV, E, K_FACT, N_EXPO):
+                if sigV<0.:
+                    return -1.
+                else:
+                    return sigV/E+K_FACT*pow(sigV/E,1/N_EXPO)
+        
         if self.lRCCM_RX:
 
             fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
-                              VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
+                              VALE     =  'EpsVraie(X2, E, K_FACT, N_EXPO)', EpsVraie=EpsVraie)
 
 
             self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
@@ -1119,10 +1130,10 @@ class PostRocheCommon():
         else:
 
             fEpsVraie = FORMULE(NOM_PARA = ('X1', 'E', 'K_FACT', 'N_EXPO'),
-                              VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
+                              VALE     =  'EpsVraie(X1, E, K_FACT, N_EXPO)', EpsVraie=EpsVraie)
 
             fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
-                              VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
+                              VALE     =  'EpsVraie(X2, E, K_FACT, N_EXPO)', EpsVraie=EpsVraie)
 
 
             self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
