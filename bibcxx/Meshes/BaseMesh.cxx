@@ -200,10 +200,10 @@ const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
 
 std::string BaseMesh::getNodeName( const ASTERINTEGER& index) const
 {
-    return trim(_nameOfNodes->getStringFromIndex(index));
+    return trim(_nameOfNodes->getStringFromIndex(index + 1));
 };
 
 std::string BaseMesh::getCellName( const ASTERINTEGER& index) const
 {
-    return trim(_nameOfCells->getStringFromIndex(index));
+    return trim(_nameOfCells->getStringFromIndex(index + 1));
 };
