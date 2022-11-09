@@ -80,7 +80,7 @@ Returns:
 Return the name of the given node
 
 Arguments:
-    index (int) : index of the node
+    index (int) : index of the node (0-based)
 
 Returns:
     str : name of the node (stripped)
@@ -90,7 +90,7 @@ Returns:
 Return the name of the given cell
 
 Arguments:
-    index (int) : index of the cell
+    index (int) : index of the cell (0-based)
 
 Returns:
     str : name of the cell (stripped)
