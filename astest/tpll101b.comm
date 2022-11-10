@@ -77,6 +77,9 @@ SOURCE=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                   NOM_CHAM='SOUR_ELGA',
                   NUME_ORDRE = 1,)
 
+CHNO_SOUR=CREA_CHAMP(  OPERATION='DISC', TYPE_CHAM='NOEU_SOUR_R',
+                     MODELE=MO,CHAM_GD=SOURCE)
+
 # CALCUL THERMIQUE
 
 CHAR_TH=AFFE_CHAR_THER(MODELE=MO,
@@ -90,7 +93,7 @@ CHAR_TH=AFFE_CHAR_THER(MODELE=MO,
                                     FLUN=0.,),),)
 
 CHAR_SO=AFFE_CHAR_THER(MODELE=MO,
-                       SOURCE=_F(SOUR_CALCULEE=SOURCE,),)
+                       SOURCE=_F(SOUR_CALCULEE=CHNO_SOUR,),)
 
 ACIER_TH=DEFI_MATERIAU(THER=_F(LAMBDA=2.E-2,
                                RHO_CP=0.,),)
@@ -121,7 +124,7 @@ LIGN=MACR_LIGN_COUPE(RESULTAT=TEMPRESU,
                                    COOR_EXTR=(x,0.1,y,),),)
 
 TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=585.90271454742,
+           VALE_CALC=588.3805344157255,
            VALE_REFE=588.9313,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='TEMP',

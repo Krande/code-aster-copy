@@ -105,7 +105,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            SOUR            =SIMP(statut='f',typ='R'),
-           SOUR_CALCULEE   =SIMP(statut='f',typ=(cham_elem) ),
+           SOUR_CALCULEE   =SIMP(statut='f',typ=(cham_elem, cham_no_sdaster) ),
          ),
 
          PRE_GRAD_TEMP  =FACT(statut='f',max='**',

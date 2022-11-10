@@ -21,6 +21,7 @@ subroutine cbsour(load, mesh, model, geomDime, valeType)
 implicit none
 !
 #include "asterc/getfac.h"
+#include "asterfort/assert.h"
 #include "asterfort/casour.h"
 #include "asterfort/copisd.h"
 #include "asterfort/getvid.h"
@@ -29,6 +30,8 @@ implicit none
 #include "asterfort/celces.h"
 #include "asterfort/cescar.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/convertFieldNodeToFieldElga.h"
 
 !
 character(len=8), intent(in) :: load, mesh, model
@@ -37,6 +40,7 @@ character(len=4), intent(in) :: valeType
 !
     integer :: nbcalc, icalc, nbfac, isour, iocc
     real(kind=8) :: r8bid
+    character(len=4) :: tych
     character(len=8) :: scalc
     character(len=16) :: motfac
     character(len=24) :: carte, chsour, chame
@@ -56,7 +60,15 @@ character(len=4), intent(in) :: valeType
         if (nbcalc .gt. 1) then
             call utmess('F', 'MODELISA3_64')
         else if (nbcalc.eq.1) then
-           call copisd('CHAMP_GD', 'G', chsour(1:19), chame(1:19))
+            call dismoi('TYPE_CHAMP', chsour(1:19), 'CHAMP', repk=tych, arret='F')
+            if(tych == "NOEU") then
+                call convertFieldNodeToFieldElga(model, chsour(1:19), chame(1:19))
+            elseif(tych == "ELGA") then
+                call copisd('CHAMP_GD', 'G', chsour(1:19), chame(1:19))
+            else
+                print*, tych
+                ASSERT(ASTER_FALSE)
+            end if
         endif
     endif
 !
