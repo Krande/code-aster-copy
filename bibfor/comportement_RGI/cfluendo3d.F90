@@ -32,12 +32,13 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 !
 !
     character(len=*) :: fami
     integer :: kpg, ksp, ndim, imate
-    character(len=16) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
+    character(len=16) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(6),deps(6)
     real(kind=8) :: sigm(6), vim(*)
@@ -104,9 +105,12 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi
     real(kind=8) :: dt3d
 !
+    character(len=12) :: rela_name
+!
 !   --------------------------------------------------------------------
 !   Nombre de paramètres matériau et de variables internes
-    if (compor(1)(1:12) .ne. 'RGI_BETON_BA')then
+    rela_name = compor(RELA_NAME)
+    if (rela_name(1:12) .ne. 'RGI_BETON_BA')then
         nmatflu = nmatbe
         nvarflu = 114
         nmatbe3 = 0
@@ -135,7 +139,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     valres1(:)=0.d0
     valres(:)=0.d0
 !
-    iteflumaxi = int(carcri(1))
+    iteflumaxi = int(carcri(ITER_INTE_MAXI))
 !
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
@@ -182,7 +186,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 !   le séchage de référence doit être nul
 !
-    if (sref .ne. 0.d0) call utmess('F', 'COMPOR3_9', sk=compor(1))
+    if (sref .ne. 0.d0) call utmess('F', 'COMPOR3_9', sk=rela_name)
 !
 ! -----------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL DEBUT DE PAS
@@ -214,7 +218,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     do i = 1, 2
         if (retour1(i) .eq. 0) then
             if (valres1(i) .ne. 0.d0) then
-                call utmess('F', 'COMPOR3_40', nk=2, valk=[compor(1), nomres1(i)])
+                call utmess('F', 'COMPOR3_40', nk=2, valk=[rela_name, nomres1(i)])
             endif
         endif
     enddo
@@ -269,7 +273,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', compor(1), 0, ' ', [0.d0],&
+                ' ', rela_name, 0, ' ', [0.d0],&
                 nmatflu, nomres, valres, retour, 0,&
                 nan='NON')
 !
@@ -290,11 +294,11 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
             ifour = 0
         endif
     endif
-    if (compor(1) .eq. 'FLUA_PORO_BETON') then
+    if (rela_name .eq. 'FLUA_PORO_BETON') then
         fl3d = .true.
         end3d= .false.
     else
-        if (compor(1) .eq. 'ENDO_PORO_BETON') then
+        if (rela_name .eq. 'ENDO_PORO_BETON') then
             fl3d = .false.
             end3d= .true.
         else
@@ -310,10 +314,17 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         xmat3d(i)=xmat(i)
     end do
 !
-    do i = 1, nvari3d
-        var03d(i)=vim(i)
-        varf3d(i)=vip(i)
-    end do
+    if (L_CORR(option)) then
+        do i = 1, nvari3d
+            var03d(i)=vim(i)
+            varf3d(i)=vip(i)
+        end do
+    else
+        do i = 1, nvari3d
+            var03d(i)=vim(i)
+            varf3d(i)=0.d0
+        end do
+    endif 
 !
 !   initialisation des contraintes effectives si premier pas
     if (abs(var03d(64)-1.d0) .ge. r8prem()) then
@@ -385,13 +396,13 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         sigp(i) = sigf3d(i) * rac2
     end do
 !
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+    if (L_CORR(option)) then
         do i = 1, nvari3d
             vip(i) = varf3d(i)
         end do
     endif
 !
-    if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if (L_CORR(option)) then
 !
         zero = 0.d0
         un = 1.d0
