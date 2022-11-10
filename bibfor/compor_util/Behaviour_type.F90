@@ -241,8 +241,8 @@ implicit none
         type(Behaviour_Para), pointer :: v_para(:)=> null()
 ! ----- List of parameters for external behaviours
         type(Behaviour_ParaExte), pointer  :: v_paraExte(:) => null()
-! ----- Flag for non-incremental cases (at least one behaviour is NOT incremental)
-        aster_logical :: lNonIncr = ASTER_FALSE
+! ----- Flag for total strain model cases (at least one behaviour)
+        aster_logical :: lTotalStrain = ASTER_FALSE
 ! ----- Flag for debug
         aster_logical :: lDebug = ASTER_FALSE
     end type Behaviour_PrepPara

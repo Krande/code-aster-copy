@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'ELAS_POUTRE_GR',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """ERelation de comportement élastique pour les poutres en grands déplacements et grandes rotations
-   (DEFORMATION: 'GREEN_GR' est obligatoire). (Cf. [R5.03.40] pour plus de détail)."""              ,
-    num_lc         = 0,
-    nb_vari        = 3,
-    nom_vari       = ('GR1','GR2','GR3',),
-    mc_mater       = ('ELAS',),
-    modelisation   = ('POU_D_T_GD',),
-    deformation    = ('GROT_GDEP',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = None,
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="ELAS_POUTRE_GR",
+    lc_type=("MECANIQUE",),
+    doc="""ERelation de comportement élastique pour les poutres en grands déplacements et grandes rotations
+   (DEFORMATION: 'GREEN_GR' est obligatoire). (Cf. [R5.03.40] pour plus de détail).""",
+    num_lc=0,
+    nb_vari=3,
+    nom_vari=("GR1", "GR2", "GR3"),
+    mc_mater=("ELAS",),
+    modelisation=("POU_D_T_GD",),
+    deformation=("GROT_GDEP",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=None,
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

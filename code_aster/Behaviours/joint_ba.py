@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,24 +22,23 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'JOINT_BA',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
+    nom="JOINT_BA",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
    Elle permet de rendre compte de l'influence de la liaison dans la redistribution des contraintes dans le corps du béton ainsi que la prédiction des fissures et leur espacement.
    Disponible pour des chargements en monotone et en cyclique, elle prend en compte les effets du frottement des fissures, et du confinement.
-   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails)."""              ,
-    num_lc         = 13,
-    nb_vari        = 6,
-    nom_vari       = ('ENDONOR','ENDOTAN','ECRISOM1','ECRISOM2','GLIS',
-        'ECROCINE',),
-    mc_mater       = ('ELAS','JOINT_BA',),
-    modelisation   = ('AXIS','PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('NEWTON_1D',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails).""",
+    num_lc=13,
+    nb_vari=6,
+    nom_vari=("ENDONOR", "ENDOTAN", "ECRISOM1", "ECRISOM2", "GLIS", "ECROCINE"),
+    mc_mater=("ELAS", "JOINT_BA"),
+    modelisation=("AXIS", "PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("NEWTON_1D",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

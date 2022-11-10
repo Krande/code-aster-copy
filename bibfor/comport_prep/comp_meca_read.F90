@@ -62,7 +62,7 @@ character(len=8), intent(in), optional :: model
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp, meca_comp
     character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc
     character(len=16) :: kit_comp(4), answer
-    aster_logical :: l_cristal, l_kit, lNonIncr
+    aster_logical :: l_cristal, l_kit, lTotalStrain
     aster_logical :: l_comp_external
     integer, pointer :: modelCell(:) => null()
 !
@@ -70,7 +70,7 @@ character(len=8), intent(in), optional :: model
 !
     nbFactorKeyword = behaviourPrepPara%nb_comp
     mesh = ' '
-    lNonIncr = ASTER_FALSE
+    lTotalStrain = ASTER_FALSE
 
 ! - Pointer to list of elements in model
     if ( present(model) ) then
@@ -147,13 +147,13 @@ character(len=8), intent(in), optional :: model
 ! ----- Select type of behaviour (incremental or total)
         type_comp = 'VIDE'
         call comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
-        if (type_comp .eq. 'COMP_ELAS') then
-            lNonIncr = ASTER_TRUE
-        endif
 
 ! ----- Select type of strain (mechanical or total) from catalog
         defo_ldc = 'VIDE'
         call comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
+        if (defo_ldc .eq. 'TOTALE') then
+            lTotalStrain = ASTER_TRUE
+        endif
 
 ! ----- Save parameters
         behaviourPrepPara%v_para(iFactorKeyword)%rela_comp = rela_comp
@@ -189,6 +189,6 @@ character(len=8), intent(in), optional :: model
     endif
 
 ! - Is at least ONE behaviour is not incremental ?
-    behaviourPrepPara%lNonIncr = lNonIncr
+    behaviourPrepPara%lTotalStrain = lTotalStrain
 !
 end subroutine

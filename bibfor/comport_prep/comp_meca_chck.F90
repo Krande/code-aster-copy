@@ -180,7 +180,7 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
     if (lElasByDefault) then
         call utmess('I', 'COMPOR5_21')
     endif
-    if (lExistVarc .and. behaviourPrepPara%lNonIncr) then
+    if (lExistVarc .and. behaviourPrepPara%lTotalStrain) then
         call utmess('A', 'COMPOR4_17')
     endif
     if (behaviourPrepPara%nb_comp .eq. 0) then

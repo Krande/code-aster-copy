@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,26 +22,41 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'JOINT_MECA_FROT',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi elastoplastique de Mohr-Coulomb avec adhesion pour modélisation de joints dans les barrages.
+    nom="JOINT_MECA_FROT",
+    lc_type=("MECANIQUE",),
+    doc="""Loi elastoplastique de Mohr-Coulomb avec adhesion pour modélisation de joints dans les barrages.
             Elle permet aussi de modéliser, avec les éléments  de joint hydro-mécaniques, un couplage entre
-            la mécanique et l'écoulement de fluide dans la fissure """              ,
-    num_lc         = 48,
-    nb_vari        = 18,
-    nom_vari       = ('LAMBDA','INDIPLAS','DEPPLAS1','DEPPLAS2','INDIOUV',
-        'SIGT','SAUT_N','SAUT_T1','SAUT_T2','EPAISSJO',
-        'SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X',
-        'FH_Y','FH_Z','PRESF',),
-    mc_mater       = ('JOINT_MECA_FROT',),
-    modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','EJ_HYME',
-        ),
-    deformation    = ('PETIT',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+            la mécanique et l'écoulement de fluide dans la fissure """,
+    num_lc=48,
+    nb_vari=18,
+    nom_vari=(
+        "LAMBDA",
+        "INDIPLAS",
+        "DEPPLAS1",
+        "DEPPLAS2",
+        "INDIOUV",
+        "SIGT",
+        "SAUT_N",
+        "SAUT_T1",
+        "SAUT_T2",
+        "EPAISSJO",
+        "SIGN_GLO",
+        "GRADP_X",
+        "GRADP_Y",
+        "GRADP_Z",
+        "FH_X",
+        "FH_Y",
+        "FH_Z",
+        "PRESF",
+    ),
+    mc_mater=("JOINT_MECA_FROT",),
+    modelisation=("3D", "PLAN", "AXIS", "ELEMJOINT", "EJ_HYME"),
+    deformation=("PETIT",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

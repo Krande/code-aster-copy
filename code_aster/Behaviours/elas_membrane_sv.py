@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'ELAS_MEMBRANE_SV',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement hyper-élastique utilisant le modèle de Saint-Venant Kirchhoff
-           applicable uniquement aux MEMBRANE en grandes déformations (DEFORMATION='GROT_GDEP') """              ,
-    num_lc         = 0,
-    nb_vari        = 1,
-    nom_vari       = ('VIDE',),
-    mc_mater       = ('ELAS',),
-    modelisation   = ('C_PLAN',),
-    deformation    = ('GROT_GDEP',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="ELAS_MEMBRANE_SV",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement hyper-élastique utilisant le modèle de Saint-Venant Kirchhoff
+           applicable uniquement aux MEMBRANE en grandes déformations (DEFORMATION='GROT_GDEP') """,
+    num_lc=0,
+    nb_vari=1,
+    nom_vari=("VIDE",),
+    mc_mater=("ELAS",),
+    modelisation=("C_PLAN",),
+    deformation=("GROT_GDEP",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,27 +22,36 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'CZM_TAC_MIX',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement cohésive (Cohesive Zone Model TAlon-Curnier MIXte) (Cf. [R7.02.11]) modélisant l'ouverture et la
+    nom="CZM_TAC_MIX",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement cohésive (Cohesive Zone Model TAlon-Curnier MIXte) (Cf. [R7.02.11]) modélisant l'ouverture et la
    propagation d'une fissure. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte
    lagrangien augmenté (Cf. [R3.06.13]) et permet d'introduire une force de cohésion entre les lèvres de la fissure dans les
    trois modes de rupture avec une irréversibilité de type Talon-Curnier.
    Attention, cette loi ne peut être utilisée lorsqu'on impose des conditions de symétrie sur l'élément d'interface.
    Dans ce cas de figure il faut utiliser CZM_OUV_MIX.
-   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""              ,
-    num_lc         = 41,
-    nb_vari        = 9,
-    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
-        'ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2',),
-    mc_mater       = ('RUPT_FRAG',),
-    modelisation   = ('3D','PLAN','AXIS','INTERFAC',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03]).""",
+    num_lc=41,
+    nb_vari=9,
+    nom_vari=(
+        "SEUILDEP",
+        "INDIDISS",
+        "INDIENDO",
+        "PCENERDI",
+        "DISSIP",
+        "ENEL_RES",
+        "SAUT_N",
+        "SAUT_T1",
+        "SAUT_T2",
+    ),
+    mc_mater=("RUPT_FRAG",),
+    modelisation=("3D", "PLAN", "AXIS", "INTERFAC"),
+    deformation=("PETIT",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'CZM_ELAS_MIX',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement cohésive  lineaire elastique (avec eventuellement
-adherence et conditions de contact"""              ,
-    num_lc         = 77,
-    nb_vari        = 3,
-    nom_vari       = ('SAUT_N','SAUT_T1','SAUT_T2',),
-    mc_mater       = ('CZM_ELAS',),
-    modelisation   = ('INTERFAC',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="CZM_ELAS_MIX",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement cohésive  lineaire elastique (avec eventuellement
+adherence et conditions de contact""",
+    num_lc=77,
+    nb_vari=3,
+    nom_vari=("SAUT_N", "SAUT_T1", "SAUT_T2"),
+    mc_mater=("CZM_ELAS",),
+    modelisation=("INTERFAC",),
+    deformation=("PETIT",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )
