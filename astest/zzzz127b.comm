@@ -218,7 +218,7 @@ CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
 MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MEST11,
                    NOM_CHAM='TEMP',
                    GROUP_NO='F',
