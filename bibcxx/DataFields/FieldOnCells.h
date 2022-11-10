@@ -127,7 +127,7 @@ class FieldOnCells : public DataField {
     }
 
     /** @brief Move constructor */
-    FieldOnCells( FieldOnCells &&other ) : DataField{ std::move( other ) } {
+    FieldOnCells( FieldOnCells &&other ) : DataField( std::move( other ) ) {
         _descriptor = other._descriptor;
         _reference = other._reference;
         _values = other._values;

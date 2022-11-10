@@ -81,7 +81,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixDisplacementReal::defineSolver )
         // -----------------------------------------------------------------------------------------
-        .def( "size", &AssemblyMatrixDisplacementReal::size , R"(
+        .def( "size", &AssemblyMatrixDisplacementReal::size, R"(
 Get the size of the matrix
 
 Arguments:
@@ -98,10 +98,9 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
+            return M * v;
+        } );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
                 BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementComplex" )
@@ -148,9 +147,8 @@ Arguments:
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
-                            const FieldOnNodesComplex &v ) { return M * v; } );
+        .def( "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
+                              const FieldOnNodesComplex &v ) { return M * v; } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
@@ -201,7 +199,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "defineSolver", &AssemblyMatrixTemperatureReal::defineSolver )
         // -----------------------------------------------------------------------------------------
-        .def( "size", &AssemblyMatrixTemperatureReal::size , R"(
+        .def( "size", &AssemblyMatrixTemperatureReal::size, R"(
 Get the size of the matrix
 
 Arguments:
@@ -218,10 +216,9 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
+            return M * v;
+        } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureComplex, AssemblyMatrixTemperatureComplexPtr,
@@ -293,10 +290,9 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
+            return M * v;
+        } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixPressureComplex, AssemblyMatrixPressureComplexPtr,
@@ -335,8 +331,6 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixPressureComplex &M, const FieldOnNodesComplex &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixPressureComplex &M,
+                              const FieldOnNodesComplex &v ) { return M * v; } );
 };

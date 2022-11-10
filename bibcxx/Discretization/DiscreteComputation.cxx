@@ -43,8 +43,8 @@ DiscreteComputation::createTimeField( const ASTERDOUBLE time_value, const ASTERD
     if ( _phys_problem->getModel()->isThermal() )
         sz = 6;
 
-    VectorString para_names = { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" };
-    VectorReal para_values = { time_value, time_delta, time_theta, 0., 0., 0. };
+    VectorString para_names = {"INST", "DELTAT", "THETA", "KHI", "R", "RHO"};
+    VectorReal para_values = {time_value, time_delta, time_theta, 0., 0., 0.};
 
     VectorString reduced_names = VectorString( para_names.begin(), para_names.begin() + sz );
     VectorReal reduced_values = VectorReal( para_values.begin(), para_values.begin() + sz );

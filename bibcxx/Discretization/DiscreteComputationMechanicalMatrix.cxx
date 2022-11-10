@@ -749,12 +749,12 @@ DiscreteComputation::getTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
 /** @brief Compute tangent prediction matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
 DiscreteComputation::getPredictionTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
-                                                     const FieldOnNodesRealPtr displ_step,
-                                                     const FieldOnCellsRealPtr stress,
-                                                     const FieldOnCellsRealPtr internVar,
-                                                     const ASTERDOUBLE &time_prev,
-                                                     const ASTERDOUBLE &time_step,
-                                                     const VectorString &groupOfCells ) const {
+                                                          const FieldOnNodesRealPtr displ_step,
+                                                          const FieldOnCellsRealPtr stress,
+                                                          const FieldOnCellsRealPtr internVar,
+                                                          const ASTERDOUBLE &time_prev,
+                                                          const ASTERDOUBLE &time_step,
+                                                          const VectorString &groupOfCells ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     FieldOnCellsRealPtr _externVarFieldPrev;

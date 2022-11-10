@@ -32,6 +32,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Numbering/BaseDOFNumbering.h"
+
 #include <unordered_map>
 
 /**
@@ -41,8 +42,7 @@
  */
 class ParallelDOFNumbering : public BaseDOFNumbering {
   private:
-
-    class ParallelGlobalEquationNumbering: public GlobalEquationNumbering {
+    class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
         /** @brief Objet Jeveux '.NULG' */
         JeveuxVectorLong _localToGlobal;
         /** @brief Objet Jeveux '.PDDL' */
@@ -51,7 +51,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
         ParallelGlobalEquationNumbering( const std::string &DOFNumName )
             : GlobalEquationNumbering( DOFNumName ),
               _localToGlobal( JeveuxVectorLong( getName() + ".NULG" ) ),
-              _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ) {};
+              _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ){};
 
       public:
         /**
@@ -70,20 +70,19 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /** @brief Objet '.NUME' */
     GlobalEquationNumberingPtr _globalNumbering;
 
-
-     std::unordered_map<ASTERINTEGER, ASTERINTEGER> _global2localMap ;
+    std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
 
     /**
      * @brief Build the mapping from global to local numbering of the dof
      */
-     void _buildGlobal2LocalMap() {
-       getLocalToGlobalMapping()->updateValuePointer();
-       ASTERINTEGER nloc = getLocalToGlobalMapping()->size();
+    void _buildGlobal2LocalMap() {
+        getLocalToGlobalMapping()->updateValuePointer();
+        ASTERINTEGER nloc = getLocalToGlobalMapping()->size();
 
-       _global2localMap.reserve(nloc);
-       for (auto j = 0; j < nloc; j++)
-         _global2localMap[(*getLocalToGlobalMapping())[j]] = j;
-     };
+        _global2localMap.reserve( nloc );
+        for ( auto j = 0; j < nloc; j++ )
+            _global2localMap[( *getLocalToGlobalMapping() )[j]] = j;
+    };
 
   public:
     /**
@@ -101,14 +100,12 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    ParallelDOFNumbering( const std::string& name );
+    ParallelDOFNumbering( const std::string &name );
 
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    virtual GlobalEquationNumberingPtr getGlobalNumbering() const {
-        return _globalNumbering;
-    };
+    virtual GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; };
 
     /**
      * @brief Get Physical Quantity
@@ -221,18 +218,17 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
 
     /**
      * @brief Return the local number of a global Dof
-     * @return Return the local number if the row if present on the subdomain ; otherwise 
+     * @return Return the local number if the row if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER globalToLocalRow(const ASTERINTEGER) const;
+    const ASTERINTEGER globalToLocalRow( const ASTERINTEGER ) const;
 
     /**
      * @brief Return the global number of a local Dof
-     * @return Return the global number if the row if present on the subdomain ; otherwise 
+     * @return Return the global number if the row if present on the subdomain ; otherwise
      * raise an exception
      */
-    const ASTERINTEGER localToGlobalRow(const ASTERINTEGER);
-
+    const ASTERINTEGER localToGlobalRow( const ASTERINTEGER );
 };
 
 /**

@@ -165,7 +165,7 @@ class ParallelMesh : public BaseMesh {
      * @brief Get the mapping between local and global numbering of nodes
      * @return JeveuxVector of the indirection
      */
-    const JeveuxVectorLong getLocalToGlobalMapping() const {return _globalNumbering;};
+    const JeveuxVectorLong getLocalToGlobalMapping() const { return _globalNumbering; };
 
     /**
      * @brief Returns the nodes indexes of a group of cells
@@ -194,10 +194,10 @@ class ParallelMesh : public BaseMesh {
 
     /**
      * @brief Get the local number of a node from its local number
-     * @return Return the local number if the node if present on the subdomain ; 
+     * @return Return the local number if the node if present on the subdomain ;
      * otherwise raise an exception
      */
-    const ASTERINTEGER globalToLocalNodeId(const ASTERINTEGER);
+    const ASTERINTEGER globalToLocalNodeId( const ASTERINTEGER );
 
     bool updateGlobalGroupOfNodes( void );
 

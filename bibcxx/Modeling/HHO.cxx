@@ -24,7 +24,7 @@
 
 FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
     auto funct = std::make_shared< Function >();
-    funct->setValues( { 1. }, { value } );
+    funct->setValues( {1.}, {value} );
     funct->setResultName( "TOUTRESU" );
     funct->setParameterName( "TOUTPARA" );
     funct->setInterpolation( "LIN LIN" );
@@ -87,7 +87,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FunctionPtr fct, ASTERDOUBLE t
     const std::string physicalName( "NEUT_K8" );
     funcField->allocate( physicalName );
     ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< JeveuxChar8 > b( { "Z1" }, { fct->getName() } );
+    ConstantFieldValues< JeveuxChar8 > b( {"Z1"}, {fct->getName()} );
     funcField->setValueOnZone( a, b );
 
     // Input fields

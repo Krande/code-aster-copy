@@ -3,6 +3,7 @@ BasedOnStyle: LLVM
 BreakConstructorInitializers : BeforeColon
 ColumnLimit: 100
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
+Cpp11BracedListStyle : true
 FixNamespaceComments : true
 IncludeBlocks: Regroup
 IncludeCategories:

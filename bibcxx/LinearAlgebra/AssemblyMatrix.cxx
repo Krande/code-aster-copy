@@ -27,9 +27,9 @@
 
 // Specialization for <double, Displacement>
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong& idx,
-                                                             const VectorLong& jdx,
-                                                             const VectorReal& values ) {
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong &idx,
+                                                             const VectorLong &jdx,
+                                                             const VectorReal &values ) {
     if ( get_sh_jeveux_status() == 1 ) {
         const ASTERINTEGER dim = idx.size();
         if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
@@ -41,10 +41,10 @@ void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong& i
 };
 
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Displacement >::scale( const VectorReal& lvect,
-                                                         const VectorReal& rvect ) {
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::scale( const VectorReal &lvect,
+                                                         const VectorReal &rvect ) {
     if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER matSize = size(true)[0];
+        const ASTERINTEGER matSize = size( true )[0];
         if ( lvect.size() != matSize || rvect.size() != matSize ) {
             throw std::runtime_error( "Arguments must share the matrix size" );
         }
@@ -65,9 +65,9 @@ void AssemblyMatrix< ASTERCOMPLEX, Displacement >::defineSolver() {
 
 // Specialization for <double, Temperature>
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong& idx,
-                                                            const VectorLong& jdx,
-                                                            const VectorReal& values ) {
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong &idx,
+                                                            const VectorLong &jdx,
+                                                            const VectorReal &values ) {
     if ( get_sh_jeveux_status() == 1 ) {
         const ASTERINTEGER dim = idx.size();
         if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
@@ -79,10 +79,10 @@ void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong& id
 };
 
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Temperature >::scale( const VectorReal& lvect,
-                                                        const VectorReal& rvect ) {
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::scale( const VectorReal &lvect,
+                                                        const VectorReal &rvect ) {
     if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER matSize = size(true)[0];
+        const ASTERINTEGER matSize = size( true )[0];
         if ( lvect.size() != matSize || rvect.size() != matSize ) {
             throw std::runtime_error( "Arguments must share the matrix size" );
         }
@@ -98,9 +98,9 @@ void AssemblyMatrix< ASTERDOUBLE, Temperature >::defineSolver() {
 
 // Specialization for <double, Pressure>
 template <>
-void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong& idx, 
-                                                         const VectorLong& jdx,
-                                                         const VectorReal& values ) {
+void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
+                                                         const VectorLong &jdx,
+                                                         const VectorReal &values ) {
     if ( get_sh_jeveux_status() == 1 ) {
         const ASTERINTEGER dim = idx.size();
         if ( idx.size() != jdx.size() || idx.size() != values.size() ) {

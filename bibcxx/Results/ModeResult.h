@@ -336,7 +336,7 @@ class ModeResult : public FullResult {
 
         if ( numeDdl )
             setDOFNumbering( numeDdl );
-        return Result::build(feds, fnds);
+        return Result::build( feds, fnds );
     };
 };
 

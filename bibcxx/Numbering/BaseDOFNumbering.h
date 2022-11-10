@@ -188,7 +188,6 @@ class BaseDOFNumbering : public DataStructure {
     typedef std::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
 
   protected:
-
     class GlobalEquationNumbering : public DataStructure {
       protected:
         /** @brief Objet Jeveux '.NEQU' */
@@ -198,11 +197,11 @@ class BaseDOFNumbering : public DataStructure {
         /** @brief Objet Jeveux '.DELG' */
         JeveuxVectorLong _lagrangianInformations;
 
-        GlobalEquationNumbering( const std::string& baseName )
+        GlobalEquationNumbering( const std::string &baseName )
             : DataStructure( baseName + ".NUME", 19, "NUME_EQUA" ),
               _numberOfEquations( getName() + ".NEQU" ),
               _informations( getName() + ".REFN" ),
-              _lagrangianInformations( getName() + ".DELG" ) {};
+              _lagrangianInformations( getName() + ".DELG" ){};
 
       public:
         /**
@@ -253,7 +252,7 @@ class BaseDOFNumbering : public DataStructure {
         /** @brief Objet Jeveux '.PDDL' */
         JeveuxVectorLong _localToRank;
 
-        LocalEquationNumbering( const std::string& baseName )
+        LocalEquationNumbering( const std::string &baseName )
             : DataStructure( baseName + ".NUML", 19, "NUML_EQUA" ),
               _numberOfEquations( getName() + ".NEQU" ),
               _lagrangianInformations( getName() + ".DELG" ),
@@ -284,7 +283,6 @@ class BaseDOFNumbering : public DataStructure {
     typedef std::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
 
   private:
-
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
     /** @brief Objet prof_chno */
@@ -342,7 +340,7 @@ class BaseDOFNumbering : public DataStructure {
      * @param Args... Liste d'arguments template
      */
     template < typename... Args >
-    void addLoad( const Args &...a ) {
+    void addLoad( const Args &... a ) {
         _listOfLoads->addLoad( a... );
     };
 
@@ -419,7 +417,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get The total number of Dofs
      */
-    virtual ASTERINTEGER getNumberOfDofs(const bool local) const { AS_ABORT( "Not allowed" ); };
+    virtual ASTERINTEGER getNumberOfDofs( const bool local ) const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief get the Row index Associated To the Component of a Node

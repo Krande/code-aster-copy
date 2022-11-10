@@ -26,68 +26,66 @@
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
 
-XfemModel::SubElementTopology::SubElementTopology( const std::string name):
-                            _name( name + ".TOPOSE" ),
-                            pin( new FieldOnCellsReal( getName() + ".PIN" ) ),
-                            cns( new FieldOnCellsLong( getName() + ".CNS" ) ),
-                            hea( new FieldOnCellsLong( getName() + ".HEA" ) ),
-                            lon( new FieldOnCellsLong( getName() + ".LON" ) ),
-                            pai( new FieldOnCellsReal( getName() + ".PAI" ) ),
-                            pmi( new FieldOnCellsReal( getName() + ".PMI" ) ){};
+XfemModel::SubElementTopology::SubElementTopology( const std::string name )
+    : _name( name + ".TOPOSE" ),
+      pin( new FieldOnCellsReal( getName() + ".PIN" ) ),
+      cns( new FieldOnCellsLong( getName() + ".CNS" ) ),
+      hea( new FieldOnCellsLong( getName() + ".HEA" ) ),
+      lon( new FieldOnCellsLong( getName() + ".LON" ) ),
+      pai( new FieldOnCellsReal( getName() + ".PAI" ) ),
+      pmi( new FieldOnCellsReal( getName() + ".PMI" ) ){};
 
-XfemModel::FacetTopology::FacetTopology( const std::string name):
-                            _name( name + ".TOPOFAC" ),
-                            _intersection_pt( new FieldOnCellsReal( getName() + ".PI" ) ),
-                            _intersection_edge( new FieldOnCellsReal( getName() + ".AI" ) ),
-                            connectivity( new FieldOnCellsLong( getName() + ".CF" ) ),
-                            length( new FieldOnCellsLong( getName() + ".LO" ) ),
-                            base( new FieldOnCellsReal( getName() + ".BA" ) ),
-                            _heaviside( new FieldOnCellsLong( getName() + ".HE" ) ),
-                            intersection_pt2( new FieldOnCellsReal( getName() + ".OE" ) ){};
+XfemModel::FacetTopology::FacetTopology( const std::string name )
+    : _name( name + ".TOPOFAC" ),
+      _intersection_pt( new FieldOnCellsReal( getName() + ".PI" ) ),
+      _intersection_edge( new FieldOnCellsReal( getName() + ".AI" ) ),
+      connectivity( new FieldOnCellsLong( getName() + ".CF" ) ),
+      length( new FieldOnCellsLong( getName() + ".LO" ) ),
+      base( new FieldOnCellsReal( getName() + ".BA" ) ),
+      _heaviside( new FieldOnCellsLong( getName() + ".HE" ) ),
+      intersection_pt2( new FieldOnCellsReal( getName() + ".OE" ) ){};
 
-XfemModel::NodalTopology::NodalTopology( const std::string name):
-                            _name( name + ".TOPONO" ),
-                            hno( new FieldOnCellsLong( getName() + ".HNO" ) ),
-                            hfa( new FieldOnCellsLong( getName() + ".HFA" ) ),
-                            hse( new FieldOnCellsLong( getName() + ".HSE" ) ){};
+XfemModel::NodalTopology::NodalTopology( const std::string name )
+    : _name( name + ".TOPONO" ),
+      hno( new FieldOnCellsLong( getName() + ".HNO" ) ),
+      hfa( new FieldOnCellsLong( getName() + ".HFA" ) ),
+      hse( new FieldOnCellsLong( getName() + ".HSE" ) ){};
 
-XfemModel::XfemModel( const std::string name ):
-                                _topose( SubElementTopology( name ) ),
-                                _topofac( FacetTopology( name ) ),
-                                _topono( NodalTopology( name ) ),
-                                _normal_levelset( new FieldOnCellsReal( name + ".LNNO" ) ),
-                                _tangent_levelset( new FieldOnCellsReal( name + ".LTNO") ),
-                                _local_basis( new FieldOnCellsReal( name + ".BASLOC" ) ),
-                                _nodal_status( new FieldOnCellsLong( name + ".STNO" ) ),
-                                _crack_nodes( new FieldOnCellsLong( name + ".FISSNO" ) ),
-                                _crack_conn( new FieldOnCellsLong( name + ".FISSCO" ) ),
-                                _heaviside( new FieldOnCellsLong( name + ".HEAVNO" ) ),
-                                _cracked_cells( new FieldOnCellsLong( name + ".XMAFIS" ) ),
-                                _xfem_nodes( new FieldOnNodesLong( name + ".NOXFEM" ) ),
-                                _contact( JeveuxVectorLong( name + ".XFEM_CONT" ) ),
-                                _crack_number( JeveuxVectorLong( name + ".NFIS" ) ),
-                                _crack_names( JeveuxVectorChar8( name + ".FISS" ) ),
-                                _pre_cond( JeveuxVectorChar8( name + ".PRE_COND" ) ),
-                                _thermic( JeveuxVectorChar8( name + ".MODELE_THER" ) ){
-                                    _xfem_nodes->setDescription(
-                               std::make_shared< FieldOnNodesDescription >(name + ".NOXF.PRCHN") );
-                                    _listfields.insert( { "PINTTO", _topose.pin } );
-                                    _listfields.insert( { "CNSETO", _topose.cns } );
-                                    _listfields.insert( { "HEAVTO", _topose.hea } );
-                                    _listfields.insert( { "LONCHA", _topose.lon } );
-                                    _listfields.insert( { "PMILT", _topose.pmi });
-                                    _listfields.insert( { "HEAVTO", _topose.hea } );
-                                    _listfields.insert( { "BASLOC", _local_basis } );
-                                    _listfields.insert( { "LSN", _normal_levelset } );
-                                    _listfields.insert( { "LST", _tangent_levelset } );
-                                    _listfields.insert( { "STANO", _nodal_status } );
-                                    _listfields.insert( { "FISSNO", _crack_nodes } );
-                                    _listfields.insert( { "HEAVNO", _topono.hno } );
-                                    _listfields.insert( { "HEAVFA", _topono.hfa } );
-                                    _listfields.insert( { "PINTER", _topofac.intersection_pt2 } );
-                                    _listfields.insert( { "CFACE", _topofac.connectivity } );
-                                    _listfields.insert( { "LONGCO", _topofac.length } );
-                                    _listfields.insert( { "BASECO", _topofac.base } );
-
-
+XfemModel::XfemModel( const std::string name )
+    : _topose( SubElementTopology( name ) ),
+      _topofac( FacetTopology( name ) ),
+      _topono( NodalTopology( name ) ),
+      _normal_levelset( new FieldOnCellsReal( name + ".LNNO" ) ),
+      _tangent_levelset( new FieldOnCellsReal( name + ".LTNO" ) ),
+      _local_basis( new FieldOnCellsReal( name + ".BASLOC" ) ),
+      _nodal_status( new FieldOnCellsLong( name + ".STNO" ) ),
+      _crack_nodes( new FieldOnCellsLong( name + ".FISSNO" ) ),
+      _crack_conn( new FieldOnCellsLong( name + ".FISSCO" ) ),
+      _heaviside( new FieldOnCellsLong( name + ".HEAVNO" ) ),
+      _cracked_cells( new FieldOnCellsLong( name + ".XMAFIS" ) ),
+      _xfem_nodes( new FieldOnNodesLong( name + ".NOXFEM" ) ),
+      _contact( JeveuxVectorLong( name + ".XFEM_CONT" ) ),
+      _crack_number( JeveuxVectorLong( name + ".NFIS" ) ),
+      _crack_names( JeveuxVectorChar8( name + ".FISS" ) ),
+      _pre_cond( JeveuxVectorChar8( name + ".PRE_COND" ) ),
+      _thermic( JeveuxVectorChar8( name + ".MODELE_THER" ) ) {
+    _xfem_nodes->setDescription(
+        std::make_shared< FieldOnNodesDescription >( name + ".NOXF.PRCHN" ) );
+    _listfields.insert( {"PINTTO", _topose.pin} );
+    _listfields.insert( {"CNSETO", _topose.cns} );
+    _listfields.insert( {"HEAVTO", _topose.hea} );
+    _listfields.insert( {"LONCHA", _topose.lon} );
+    _listfields.insert( {"PMILT", _topose.pmi} );
+    _listfields.insert( {"HEAVTO", _topose.hea} );
+    _listfields.insert( {"BASLOC", _local_basis} );
+    _listfields.insert( {"LSN", _normal_levelset} );
+    _listfields.insert( {"LST", _tangent_levelset} );
+    _listfields.insert( {"STANO", _nodal_status} );
+    _listfields.insert( {"FISSNO", _crack_nodes} );
+    _listfields.insert( {"HEAVNO", _topono.hno} );
+    _listfields.insert( {"HEAVFA", _topono.hfa} );
+    _listfields.insert( {"PINTER", _topofac.intersection_pt2} );
+    _listfields.insert( {"CFACE", _topofac.connectivity} );
+    _listfields.insert( {"LONGCO", _topofac.length} );
+    _listfields.insert( {"BASECO", _topofac.base} );
 };

@@ -50,7 +50,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
-      _isEmpty( true ) {};
+      _isEmpty( true ){};
 
 bool BaseDOFNumbering::computeNumbering() {
     if ( _model ) {

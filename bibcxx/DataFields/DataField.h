@@ -64,7 +64,7 @@ class DataField : public DataStructure {
     /**
      * @brief Move Constructor
      */
-    DataField( DataField &&other ) : DataStructure{ std::move( other ) } {};
+    DataField( DataField &&other ) : DataStructure( std::move( other ) ){};
 
     /**
      * @brief Constructor

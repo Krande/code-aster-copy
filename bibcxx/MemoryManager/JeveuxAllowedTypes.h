@@ -51,8 +51,8 @@ enum JeveuxTypes {
  * @def JeveuxTypesNames
  * @brief Fournit sous forme de chaine les types Jeveux existant
  */
-static const std::string JeveuxTypesNames[10] = { "I",   "I4",  "R",   "C",   "K8",
-                                                  "K16", "K24", "K32", "K80", "L" };
+static const std::string JeveuxTypesNames[10] = {"I",   "I4",  "R",   "C",   "K8",
+                                                 "K16", "K24", "K32", "K80", "L"};
 
 /**
  * @struct AllowedJeveuxType

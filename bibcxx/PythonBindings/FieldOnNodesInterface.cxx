@@ -45,12 +45,10 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesReal::exportToSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
-        .def(
-            "__getitem__",
-            +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
-        .def(
-            "__setitem__",
-            +[]( FieldOnNodesReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
+        .def( "__getitem__",
+              +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def( "__setitem__", +[]( FieldOnNodesReal &v, ASTERINTEGER i,
+                                  float f ) { return v.operator[]( i ) = f; } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -168,12 +166,10 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
-        .def(
-            "__getitem__",
-            +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
-        .def(
-            "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
-                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+        .def( "__getitem__",
+              +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def( "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
+                                  ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
         .def( "setDescription", &FieldOnNodesComplex::setDescription )

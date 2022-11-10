@@ -92,9 +92,7 @@ class DOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    virtual GlobalEquationNumberingPtr getGlobalNumbering() const {
-        return _globalNumbering;
-    };
+    virtual GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; };
 
     /**
      * @brief Get Physical Quantity

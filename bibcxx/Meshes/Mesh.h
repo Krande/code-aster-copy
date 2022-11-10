@@ -89,7 +89,7 @@ class Mesh : public BaseMesh {
     VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorLong& cells, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
@@ -135,7 +135,6 @@ class Mesh : public BaseMesh {
      * @return retourne true si tout est ok
      */
     bool readGmshFile( const std::string &fileName );
-
 };
 
 /**

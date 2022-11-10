@@ -45,8 +45,8 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ),
       _mesh( mesh ),
-      _explorer( FiniteElementDescriptor::ConnectivityVirtualCellsExplorer(
-          _virtualCellsDescriptor ) ),
+      _explorer(
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ){};
 

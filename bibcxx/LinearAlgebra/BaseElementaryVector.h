@@ -82,13 +82,13 @@ class BaseElementaryVector : public DataStructure {
 
     /** @brief Constructor with automatic name */
     BaseElementaryVector( const PhysicalProblemPtr phys_pb ) : BaseElementaryVector() {
-        this->setPhysicalProblem(phys_pb);
+        this->setPhysicalProblem( phys_pb );
     };
 
   public:
     /** @brief Add a load to elementary vector */
     template < typename... Args >
-    void addLoad( const Args &...a ) {
+    void addLoad( const Args &... a ) {
         _listOfLoads->addLoad( a... );
     };
 

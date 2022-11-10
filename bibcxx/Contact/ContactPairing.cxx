@@ -374,7 +374,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
                         listType[typeElem] += 1;
 
                         listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
-                        listNodes.push_back( VectorLong( { nodeNume, typeElem } ) );
+                        listNodes.push_back( VectorLong( {nodeNume, typeElem} ) );
                     }
                 }
             }

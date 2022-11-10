@@ -144,7 +144,7 @@ class CellsIteratorFromFiniteElementDescriptor {
         auto &obj = ( *_connectAndType )[pos + 1];
         obj->updateValuePointer();
         const auto size = obj->size() - 1;
-        const ASTERINTEGER type = (*obj)[size];
+        const ASTERINTEGER type = ( *obj )[size];
         return CellObject( pos + 1, &obj->operator[]( 0 ), size, type );
     };
 

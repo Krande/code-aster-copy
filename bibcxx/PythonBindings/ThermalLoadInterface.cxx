@@ -27,8 +27,7 @@
 
 void exportThermalLoadToPython( py::module_ &mod ) {
 
-    py::class_< ThermalLoadReal, ThermalLoadRealPtr, DataStructure >(
-        mod, "ThermalLoadReal" )
+    py::class_< ThermalLoadReal, ThermalLoadRealPtr, DataStructure >( mod, "ThermalLoadReal" )
         .def( py::init( &initFactoryPtr< ThermalLoadReal, ModelPtr & > ) )
         .def( py::init( &initFactoryPtr< ThermalLoadReal, std::string, ModelPtr & > ) )
         .def( "getFiniteElementDescriptor", &ThermalLoadReal::getFiniteElementDescriptor )
@@ -63,7 +62,7 @@ void exportThermalLoadToPython( py::module_ &mod ) {
 
             Returns:
                 bool: field exists
-            )"  )
+            )" )
         .def( "hasLoadResult", &ThermalLoadFunction::hasLoadResult, R"(
             Return true if the LoadResult structure exists
 

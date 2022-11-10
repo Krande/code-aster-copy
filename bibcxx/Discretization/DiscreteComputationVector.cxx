@@ -64,8 +64,8 @@ FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE tim
 
 FieldOnNodesRealPtr
 DiscreteComputation::getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE time_delta,
-                                 const ASTERDOUBLE time_theta,
-                                 const FieldOnNodesRealPtr _previousPrimalField ) const {
+                                       const ASTERDOUBLE time_theta,
+                                       const FieldOnNodesRealPtr _previousPrimalField ) const {
 
     bool has_load = false;
 

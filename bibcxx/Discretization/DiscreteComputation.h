@@ -332,11 +332,11 @@ class DiscreteComputation {
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
     getPredictionTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
-                                    const FieldOnNodesRealPtr displ_step,
-                                    const FieldOnCellsRealPtr stress,
-                                    const FieldOnCellsRealPtr internVar,
-                                    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
-                                    const VectorString &groupOfCells = VectorString() ) const;
+                                         const FieldOnNodesRealPtr displ_step,
+                                         const FieldOnCellsRealPtr stress,
+                                         const FieldOnCellsRealPtr internVar,
+                                         const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                         const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute contact forces

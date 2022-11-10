@@ -30,25 +30,21 @@
 
 #include <stdexcept>
 
-DOFNumbering::DOFNumbering() : BaseDOFNumbering( ResultNaming::getNewResultName(),
-                                                 "NUME_DDL" ),
-                               _globalNumbering( new GlobalEquationNumbering( getName() ) ),
-                               _localNumbering( new LocalEquationNumbering( getName() ) )
-{};
+DOFNumbering::DOFNumbering()
+    : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL" ),
+      _globalNumbering( new GlobalEquationNumbering( getName() ) ),
+      _localNumbering( new LocalEquationNumbering( getName() ) ){};
 
 DOFNumbering::DOFNumbering( const std::string name, const ModelPtr model,
-                            const ListOfLoadsPtr loads,
-                            const FieldOnNodesDescriptionPtr fdof )
+                            const ListOfLoadsPtr loads, const FieldOnNodesDescriptionPtr fdof )
     : BaseDOFNumbering( name, "NUME_DDL", model, loads, fdof ),
       _globalNumbering( new GlobalEquationNumbering( getName() ) ),
-      _localNumbering( new LocalEquationNumbering( getName() ) )
-{};
+      _localNumbering( new LocalEquationNumbering( getName() ) ){};
 
 DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
       _globalNumbering( new GlobalEquationNumbering( getName() ) ),
-      _localNumbering( new LocalEquationNumbering( getName() ) )
-{};
+      _localNumbering( new LocalEquationNumbering( getName() ) ){};
 
 std::string DOFNumbering::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();
@@ -103,14 +99,14 @@ std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
     JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
     descriptor->updateValuePointer();
     ASTERINTEGER cmpId = ( *descriptor )[2 * row + 1];
-    const bool isLagrange(cmpId<=0);
+    const bool isLagrange( cmpId <= 0 );
     if ( cmpId == 0 )
         return "LAGR:MPC"; // Lagrange multiplier associated to MPC
-    cmpId = abs(cmpId);
+    cmpId = abs( cmpId );
     JeveuxChar8 cmpName( " " );
     CALLO_NUMEDDL_GET_COMPONENT_NAME( getName(), &cmpId, cmpName );
 
-    if (isLagrange)
+    if ( isLagrange )
         return "LAGR:" + cmpName.rstrip(); // Lagrange multiplier associated to Dirichlet BC
 
     return cmpName.rstrip(); // Physical DoF

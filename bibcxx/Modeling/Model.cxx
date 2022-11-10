@@ -34,9 +34,9 @@
 #include <stdexcept>
 #include <typeinfo>
 
-const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = { "CENTRALISE", "SOUS_DOMAINE",
-                                                                      "GROUP_ELEM" };
-const char *const GraphPartitionerNames[nbGraphPartitioner] = { "SCOTCH", "METIS" };
+const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = {"CENTRALISE", "SOUS_DOMAINE",
+                                                                     "GROUP_ELEM"};
+const char *const GraphPartitionerNames[nbGraphPartitioner] = {"SCOTCH", "METIS"};
 
 Model::Model( const std::string name, const bool is_xfem )
     : DataStructure( name, 8, "MODELE" ),

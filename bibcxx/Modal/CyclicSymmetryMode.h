@@ -93,8 +93,9 @@ class CyclicSymmetryMode : public DataStructure {
               {};
 
     bool setMesh( MeshPtr &currentMesh ) {
-        if ( currentMesh->isEmpty() )
-            {AS_ABORT( "Mesh is empty" );}
+        if ( currentMesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
         _mesh = currentMesh;
         return true;
     };

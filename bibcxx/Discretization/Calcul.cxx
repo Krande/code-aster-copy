@@ -102,7 +102,7 @@ void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
     const std::string physicalName( "HARMON" );
     _FourierField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERINTEGER > b( { "NH" }, { nh } );
+    ConstantFieldValues< ASTERINTEGER > b( {"NH"}, {nh} );
     _FourierField->setValueOnZone( a, b );
     addInputField( "PHARMON", _FourierField );
 }
@@ -113,7 +113,7 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE t
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time_value } );
+    ConstantFieldValues< ASTERDOUBLE > b( {"INST"}, {time_value} );
     _timeField->setValueOnZone( a, b );
     addInputField( parameterName, _timeField );
 }
@@ -125,8 +125,8 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE &
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" },
-                                          { time_value, time_delta, time_theta, 0.0, 0.0, 0.0 } );
+    ConstantFieldValues< ASTERDOUBLE > b( {"INST", "DELTAT", "THETA", "KHI", "R", "RHO"},
+                                          {time_value, time_delta, time_theta, 0.0, 0.0, 0.0} );
     _timeField->setValueOnZone( a, b );
     addInputField( parameterName, _timeField );
 }

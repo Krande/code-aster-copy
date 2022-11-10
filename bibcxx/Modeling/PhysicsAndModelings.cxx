@@ -3,7 +3,7 @@
  * @brief Initialisation des modelisations autorisees pour chaque physique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,8 +28,8 @@ const char *const ModelingNames[nbModelings] = {"AXIS",   "3D",  "3D_ABSO", "PLA
                                                 "C_PLAN", "DKT", "DKTG",    "2D_BARRE"};
 
 const Modelings MechanicsModelings[nbModelingsMechanics] = {
-    Axisymmetrical, Tridimensional, TridimensionalAbsorbingBoundary, PlaneStrain,
-    PlaneStress,    DKT,            DKTG,                            PlanarBar};
+    Axisymmetrical, Tridimensional, TridimensionalAbsorbingBoundary, PlaneStrain, PlaneStress, DKT,
+    DKTG,           PlanarBar};
 
 const Modelings ThermalModelings[nbModelingsThermal] = {Axisymmetrical, Tridimensional, Planar};
 

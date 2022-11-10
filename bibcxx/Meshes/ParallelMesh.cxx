@@ -345,17 +345,18 @@ bool ParallelMesh::build() {
     return BaseMesh::build();
 }
 
-const ASTERINTEGER ParallelMesh::globalToLocalNodeId(const ASTERINTEGER glob) {
-    if (_global2localMap.empty()) _buildGlobal2LocalMap();
+const ASTERINTEGER ParallelMesh::globalToLocalNodeId( const ASTERINTEGER glob ) {
+    if ( _global2localMap.empty() )
+        _buildGlobal2LocalMap();
 
-    auto search = _global2localMap.find(glob);
-    if (search != _global2localMap.end()) {
+    auto search = _global2localMap.find( glob );
+    if ( search != _global2localMap.end() ) {
         return search->second;
     } else {
-      auto rank = getMPIRank();
-      throw std::out_of_range("Global node number " + std::to_string(glob) +
-                               " not found on rank " + std::to_string(rank));
-      return -1;
+        auto rank = getMPIRank();
+        throw std::out_of_range( "Global node number " + std::to_string( glob ) +
+                                 " not found on rank " + std::to_string( rank ) );
+        return -1;
     }
 }
 

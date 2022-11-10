@@ -779,9 +779,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     return update_tables();
 };
 
-bool Result::exists() const {
-    return _symbolicNamesOfFields->exists();
-};
+bool Result::exists() const { return _symbolicNamesOfFields->exists(); };
 
 void Result::resize( ASTERINTEGER nbRanks ) {
     if ( !exists() ) {

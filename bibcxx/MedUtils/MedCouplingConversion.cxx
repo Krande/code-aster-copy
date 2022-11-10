@@ -37,26 +37,26 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
     std::map< std::string, VectorLong > groups_n;
 
     // TYPE_MED = { TYPE_MEDCOUPLING, DIM, NB_NODES }
-    med_to_mc[1] = { 0, 0, 1 };     // POINT1
-    med_to_mc[102] = { 1, 1, 2 };   // SEG2
-    med_to_mc[103] = { 2, 1, 3 };   // SEG3
-    med_to_mc[104] = { 10, 1, 4 };  // SEG4
-    med_to_mc[203] = { 3, 2, 3 };   // TRI3
-    med_to_mc[206] = { 6, 2, 6 };   // TRI6
-    med_to_mc[207] = { 7, 2, 7 };   // TRI7
-    med_to_mc[204] = { 4, 2, 4 };   // QUAD4
-    med_to_mc[208] = { 8, 2, 8 };   // QUAD8
-    med_to_mc[209] = { 9, 2, 9 };   // QUAD9
-    med_to_mc[304] = { 14, 3, 4 };  // TETRA4
-    med_to_mc[310] = { 20, 3, 10 }; // TETRA10
-    med_to_mc[306] = { 16, 3, 6 };  // PENTA6
-    med_to_mc[315] = { 25, 3, 15 }; // PENTA15
-    med_to_mc[318] = { 28, 3, 18 }; // PENTA18
-    med_to_mc[305] = { 15, 3, 5 };  // PYRA5
-    med_to_mc[313] = { 23, 3, 13 }; // PYRA13
-    med_to_mc[308] = { 18, 3, 8 };  // HEXA8
-    med_to_mc[320] = { 30, 3, 20 }; // HEXA20
-    med_to_mc[327] = { 27, 3, 27 }; // HEXA27
+    med_to_mc[1] = {0, 0, 1};     // POINT1
+    med_to_mc[102] = {1, 1, 2};   // SEG2
+    med_to_mc[103] = {2, 1, 3};   // SEG3
+    med_to_mc[104] = {10, 1, 4};  // SEG4
+    med_to_mc[203] = {3, 2, 3};   // TRI3
+    med_to_mc[206] = {6, 2, 6};   // TRI6
+    med_to_mc[207] = {7, 2, 7};   // TRI7
+    med_to_mc[204] = {4, 2, 4};   // QUAD4
+    med_to_mc[208] = {8, 2, 8};   // QUAD8
+    med_to_mc[209] = {9, 2, 9};   // QUAD9
+    med_to_mc[304] = {14, 3, 4};  // TETRA4
+    med_to_mc[310] = {20, 3, 10}; // TETRA10
+    med_to_mc[306] = {16, 3, 6};  // PENTA6
+    med_to_mc[315] = {25, 3, 15}; // PENTA15
+    med_to_mc[318] = {28, 3, 18}; // PENTA18
+    med_to_mc[305] = {15, 3, 5};  // PYRA5
+    med_to_mc[313] = {23, 3, 13}; // PYRA13
+    med_to_mc[308] = {18, 3, 8};  // HEXA8
+    med_to_mc[320] = {30, 3, 20}; // HEXA20
+    med_to_mc[327] = {27, 3, 27}; // HEXA27
 
     JeveuxVectorLong cells_types = mesh->getMedCellsTypes();
     cells_types->updateValuePointer();
@@ -85,7 +85,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
         connectivity[dim].push_back( mc_type );
         for ( int j = 0; j < cell_size; ++j ) {
             // shift de 1 sur l'indexe des noeuds
-            connectivity[dim].push_back( (*nodes_med)[j] - 1 );
+            connectivity[dim].push_back( ( *nodes_med )[j] - 1 );
         }
 
         // connectivity_index indique la position des types dans connectivity

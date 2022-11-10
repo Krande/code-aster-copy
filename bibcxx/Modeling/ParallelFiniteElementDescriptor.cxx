@@ -189,8 +189,8 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         *( _joins ) = unique( joins );
 
         // Allocation du .NEMA
-        _virtualCellsDescriptor->allocateContiguousNumbered(
-            -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
+        _virtualCellsDescriptor->allocateContiguousNumbered( -nbElemToKeep,
+                                                             totalSizeToKeep - nbElemToKeep );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
         for ( int numElem : virtualCellToKeep ) {

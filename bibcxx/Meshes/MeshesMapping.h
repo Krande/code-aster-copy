@@ -78,8 +78,9 @@ class MeshesMapping : public DataStructure {
     MeshesMapping( const std::string name = ResultNaming::getNewResultName() );
 
     bool setFirstMesh( MeshPtr &currentMesh ) {
-        if ( currentMesh->isEmpty() )
-            {AS_ABORT( "Mesh is empty" );}
+        if ( currentMesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
         _firstBaseMesh = currentMesh;
         return true;
     };

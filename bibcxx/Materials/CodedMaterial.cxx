@@ -38,8 +38,8 @@ CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &m
       _model( model ),
       _field( std::make_shared< ConstantFieldOnCellsLong >( getName() + ".MATE_CODE",
                                                             _model->getMesh() ) ),
-      _grp( JeveuxVectorChar8( ljust (_field->getName() + ".GRP", 24) ) ),
-      _nGrp( JeveuxVectorLong( ljust (_field->getName() + ".NGRP", 24) ) ){};
+      _grp( JeveuxVectorChar8( ljust( _field->getName() + ".GRP", 24 ) ) ),
+      _nGrp( JeveuxVectorLong( ljust( _field->getName() + ".NGRP", 24 ) ) ){};
 
 bool CodedMaterial::allocate( bool force ) {
     if ( !force && _field->exists() )
@@ -113,11 +113,9 @@ bool CodedMaterial::constant() const {
 
     if ( _model->isMechanical() ) {
         questi = "ELAS_FO";
-    }
-    else if ( _model->isThermal() ) {
+    } else if ( _model->isThermal() ) {
         questi = "THER_F_INST";
-    }
-    else {
+    } else {
         AS_ASSERT( false );
     }
     CALLO_DISMOI( questi, _mater->getName(), typeco, &repi, repk, arret, &ier );

@@ -223,11 +223,11 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                     }
 
                     // Provisoire
-                    AS_ASSERT(listMaterial.size() == 1);
+                    AS_ASSERT( listMaterial.size() == 1 );
                     // Young modulus
-                    ( *data )[shift + 45] = listMaterial[0]->getValueReal("ELAS", "E");
+                    ( *data )[shift + 45] = listMaterial[0]->getValueReal( "ELAS", "E" );
                     // Poisson ration
-                    ( *data )[shift + 46] = listMaterial[0]->getValueReal("ELAS", "NU");
+                    ( *data )[shift + 46] = listMaterial[0]->getValueReal( "ELAS", "NU" );
                 }
 
                 nbPair++;

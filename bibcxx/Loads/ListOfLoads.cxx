@@ -163,10 +163,10 @@ bool ListOfLoads::build( ModelPtr model ) {
 
         /* Add contact FED */
         std::string ligrel_slav = " ", ligrel_cont = " ";
-        if(_contact.first){
+        if ( _contact.first ) {
             ligrel_slav = _contact.first->getName();
         }
-        if(_contact.second){
+        if ( _contact.second ) {
             ligrel_cont = _contact.second->getName();
         }
 
