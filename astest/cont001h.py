@@ -83,7 +83,7 @@ CD = ContactComputation(DEFICO_BAS)
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
-grel = fed.getListOfGroupOfElements()
+grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 3)
 test.assertSequenceEqual(nema, [[58, 59, 176, 14, 13, 116, 104], [58, 59, 176, 13, 1, 115, 104],
@@ -142,7 +142,7 @@ CD = ContactComputation(DEFICO_HAUT)
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
-grel = fed.getListOfGroupOfElements()
+grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 3)
 test.assertSequenceEqual(nema, [[14, 13, 116, 58, 59, 176, 104], [14, 13, 116, 11, 58, 175, 104],

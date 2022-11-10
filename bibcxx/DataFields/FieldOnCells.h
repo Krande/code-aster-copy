@@ -576,7 +576,7 @@ class FieldOnCells : public DataField {
         JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
         CellsRank->updateValuePointer();
 
-        JeveuxCollectionLong collec = _dofDescription->getListOfGroupOfElements();
+        JeveuxCollectionLong collec = _dofDescription->getListOfGroupsOfElements();
         nbgrp = ( *_descriptor )[1];
 
         for ( auto i = 0; i < nbgrp; i++ ) {

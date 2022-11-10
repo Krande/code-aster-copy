@@ -118,7 +118,7 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
 
     auto pair2Zone = pairing->pairsToZones();
 
-    auto grel = fed->getListOfGroupOfElements();
+    auto grel = fed->getListOfGroupsOfElements();
     auto nbGrel = data->getNumberOfGroupOfElements();
 
     auto meshConnectivty = pairing->getMesh()->getConnectivity();

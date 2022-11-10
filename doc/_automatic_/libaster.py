@@ -454,7 +454,7 @@ class BaseMesh(DataStructure):
         """Return the name of the given cell
         
         Arguments:
-            index (int) : index of the cell
+            index (int) : index of the cell (0-based)
         
         Returns:
             str : name of the cell (stripped)
@@ -499,7 +499,7 @@ class BaseMesh(DataStructure):
         """Return the name of the given node
         
         Arguments:
-            index (int) : index of the node
+            index (int) : index of the node (0-based)
         
         Returns:
             str : name of the node (stripped)
@@ -1569,7 +1569,7 @@ class FiniteElementDescriptor(DataStructure):
         4. __init__(self: libaster.FiniteElementDescriptor, arg0: Model, arg1: List[str]) -> None
         """
     
-    def getListOfGroupOfElements(self):
+    def getListOfGroupsOfElements(self):
         pass
     
     def getMesh(self):
@@ -11911,25 +11911,62 @@ class HHO:
     def __init__(self, arg0):
         pass
     
-    def projectOnHHOCellSpace(self, value):
-        """Project real value to HHO Cell-space
-        Cell space is the restriction of HHO-space to cells only
+    def projectOnHHOCellSpace(self, *args, **kwargs):
+        """Overloaded function.
         
-        Arguments:
-              value (float): value to project
+        1. projectOnHHOCellSpace(self: libaster.HHO, func: libaster.Function, time: float = 0.0) -> libaster.FieldOnNodesReal
         
-        Returns:
-              FieldOnNodesReal: HHO field
+        
+              Project real function to HHO Cell-space
+              Cell space is the restriction of HHO-space to cells only
+        
+              Arguments:
+                    func (Function): real function to project
+                    time (float): time value to evaluate function (default=0.0)
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
+                
+        
+        2. projectOnHHOCellSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        
+        
+              Project real value to HHO Cell-space
+              Cell space is the restriction of HHO-space to cells only
+        
+              Arguments:
+                    value (float): value to project
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
         """
     
-    def projectOnHHOSpace(self, value):
-        """Project real value to HHO-space
+    def projectOnHHOSpace(self, *args, **kwargs):
+        """Overloaded function.
         
-        Arguments:
-              value (float): value to project
+        1. projectOnHHOSpace(self: libaster.HHO, func: libaster.Function, time: float = 0.0) -> libaster.FieldOnNodesReal
         
-        Returns:
-              FieldOnNodesReal: HHO field
+        
+              Project real function to HHO-space
+        
+              Arguments:
+                    func (Function): real function to project
+                    time (float): time value to evaluate function (default=0.0)
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
+                
+        
+        2. projectOnHHOSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        
+        
+              Project real value to HHO-space
+        
+              Arguments:
+                    value (float): value to project
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
         """
     
     def projectOnLagrangeSpace(self, hho_field):

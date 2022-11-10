@@ -189,7 +189,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         *( _joins ) = unique( joins );
 
         // Allocation du .NEMA
-        _delayedNumberedConstraintElementsDescriptor->allocateContiguousNumbered(
+        _virtualCellsDescriptor->allocateContiguousNumbered(
             -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
@@ -204,10 +204,10 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                 }
             }
             toCopy.push_back( explorer[numElem - 1].getType() );
-            _delayedNumberedConstraintElementsDescriptor->push_back( toCopy );
+            _virtualCellsDescriptor->push_back( toCopy );
         }
 
-        const auto &liel = FEDesc->getListOfGroupOfElementsExplorer();
+        const auto &liel = FEDesc->getListOfGroupsOfElementsExplorer();
         int nbCollObj = 0, totalCollSize = 0;
         std::vector< VectorLong > toLiel( liel.size(), VectorLong() );
         ASTERINTEGER type = 0;
@@ -228,14 +228,14 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
             }
         }
 
-        _listOfGroupOfCells->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
+        _listOfGroupsOfElements->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
         for ( const auto &vec : toLiel ) {
             if ( vec.size() != 0 ) {
-                _listOfGroupOfCells->push_back( vec );
+                _listOfGroupsOfElements->push_back( vec );
             }
         }
     } else
-        _listOfGroupOfCells->allocateContiguousNumbered( 1, 1 );
+        _listOfGroupsOfElements->allocateContiguousNumbered( 1, 1 );
 
     // Remplissage du .NBNO avec le nouveau nombre de noeuds tardifs
     _numberOfDelayedNumberedConstraintNodes->allocate( 1 );

@@ -55,11 +55,11 @@ class FiniteElementDescriptor : public DataStructure {
     /** @brief Vecteur Jeveux '.PRNM' */
     JeveuxVectorLong _dofDescriptor;
     /** @brief Collection '.LIEL' */
-    JeveuxCollectionLong _listOfGroupOfCells;
+    JeveuxCollectionLong _listOfGroupsOfElements;
     /** @brief Vecteur Jeveux '.REPE' */
     JeveuxVectorLong _groupsOfCellsNumberByElement;
     /** @brief Collection '.NEMA' */
-    JeveuxCollectionLong _delayedNumberedConstraintElementsDescriptor;
+    JeveuxCollectionLong _virtualCellsDescriptor;
     /** @brief Vecteur Jeveux '.PRNS' */
     JeveuxVectorLong _dofOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGNS' */
@@ -110,9 +110,9 @@ class FiniteElementDescriptor : public DataStructure {
 
     const JeveuxVectorLong &getVirtualNodesNumbering() const;
 
-    const ConnectivityVirtualCellsExplorer &getListOfGroupOfElementsExplorer() const;
+    const ConnectivityVirtualCellsExplorer &getListOfGroupsOfElementsExplorer() const;
 
-    const JeveuxCollectionLong &getListOfGroupOfElements() const;
+    const JeveuxCollectionLong &getListOfGroupsOfElements() const;
 
     const JeveuxCollectionLong &getVirtualCellsDescriptor() const;
 
@@ -126,7 +126,7 @@ class FiniteElementDescriptor : public DataStructure {
 
     const JeveuxVectorLong &getPhysicalNodesComponentDescriptor() const;
 
-    const JeveuxVectorLong &getListOfGroupOfElementsbyElement() const;
+    const JeveuxVectorLong &getListOfGroupsOfElementsbyElement() const;
 
     const BaseMeshPtr getMesh() const;
 

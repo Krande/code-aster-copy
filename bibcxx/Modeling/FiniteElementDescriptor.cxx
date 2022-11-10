@@ -37,18 +37,18 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _numberOfDelayedNumberedConstraintNodes( getName() + ".NBNO" ),
       _parameters( getName() + ".LGRF" ),
       _dofDescriptor( getName() + ".PRNM" ),
-      _listOfGroupOfCells( getName() + ".LIEL" ),
+      _listOfGroupsOfElements( getName() + ".LIEL" ),
       _groupsOfCellsNumberByElement( getName() + ".REPE" ),
-      _delayedNumberedConstraintElementsDescriptor( getName() + ".NEMA" ),
+      _virtualCellsDescriptor( getName() + ".NEMA" ),
       _dofOfDelayedNumberedConstraintNodes( getName() + ".PRNS" ),
       _virtualNodesNumbering( getName() + ".LGNS" ),
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ),
       _mesh( mesh ),
       _explorer( FiniteElementDescriptor::ConnectivityVirtualCellsExplorer(
-          _delayedNumberedConstraintElementsDescriptor ) ),
+          _virtualCellsDescriptor ) ),
       _explorer2(
-          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupOfCells ) ){};
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ){};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ){};
@@ -85,7 +85,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {
-    _delayedNumberedConstraintElementsDescriptor->build();
+    _virtualCellsDescriptor->build();
     return _explorer;
 };
 
@@ -99,17 +99,17 @@ const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesNumbering() cons
 };
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
-FiniteElementDescriptor::getListOfGroupOfElementsExplorer() const {
-    _listOfGroupOfCells->build();
+FiniteElementDescriptor::getListOfGroupsOfElementsExplorer() const {
+    _listOfGroupsOfElements->build();
     return _explorer2;
 };
 
-const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfElements() const {
-    return _listOfGroupOfCells;
+const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupsOfElements() const {
+    return _listOfGroupsOfElements;
 };
 
 const JeveuxCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
-    return _delayedNumberedConstraintElementsDescriptor;
+    return _virtualCellsDescriptor;
 };
 
 ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
@@ -138,7 +138,7 @@ const JeveuxVectorLong &FiniteElementDescriptor::getPhysicalNodesComponentDescri
     return _dofDescriptor;
 };
 
-const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupOfElementsbyElement() const {
+const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupsOfElementsbyElement() const {
     _groupsOfCellsNumberByElement->updateValuePointer();
     return _groupsOfCellsNumberByElement;
 };
@@ -202,8 +202,9 @@ bool FiniteElementDescriptor::exists() const {
 };
 
 bool FiniteElementDescriptor::build() {
-    _delayedNumberedConstraintElementsDescriptor->build();
-    _listOfGroupOfCells->build();
+    // too costly in affe_char_meca
+    // _virtualCellsDescriptor->build();
+    _listOfGroupsOfElements->build();
 
     return true;
 };
@@ -274,8 +275,8 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
     const int rank = getMPIRank();
     const int size = getMPISize();
 
-    auto &otherRepe = other->getListOfGroupOfElementsbyElement();
-    auto &otherLiel = other->getListOfGroupOfElements();
+    auto &otherRepe = other->getListOfGroupsOfElementsbyElement();
+    auto &otherLiel = other->getListOfGroupsOfElements();
 
     const auto nbCells = connectionMesh->getNumberOfCells();
     auto &cellsLocNum = connectionMesh->getCellsLocalNumbering();
@@ -346,9 +347,9 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
         totalSize += grel.size();
     }
 
-    _listOfGroupOfCells->allocateContiguousNumbered( listOfGrel.size(), totalSize );
+    _listOfGroupsOfElements->allocateContiguousNumbered( listOfGrel.size(), totalSize );
     for ( auto &grel : listOfGrel ) {
-        _listOfGroupOfCells->push_back( grel );
+        _listOfGroupsOfElements->push_back( grel );
     }
 };
 

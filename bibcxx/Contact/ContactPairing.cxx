@@ -408,7 +408,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
     ligrcf_liel_lont += nbGrel;
 
     /*Create LIEL object*/
-    auto ContactResFEDLiel = _fed->getListOfGroupOfElements();
+    auto ContactResFEDLiel = _fed->getListOfGroupsOfElements();
     ContactResFEDLiel->allocateContiguousNumbered( nbGrel, ligrcf_liel_lont, Variable );
 
     _pair2Zone.clear();

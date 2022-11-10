@@ -41,7 +41,7 @@ void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
         .def( "getModel", &FiniteElementDescriptor::getModel )
         .def( "setModel", &FiniteElementDescriptor::setModel )
         .def( "getVirtualCellsDescriptor", &FiniteElementDescriptor::getVirtualCellsDescriptor )
-        .def( "getListOfGroupOfElements", &FiniteElementDescriptor::getListOfGroupOfElements )
+        .def( "getListOfGroupsOfElements", &FiniteElementDescriptor::getListOfGroupsOfElements )
 #ifdef ASTER_HAVE_MPI
         .def( "transferDofDescriptorFrom", &FiniteElementDescriptor::transferDofDescriptorFrom )
 #endif /* ASTER_HAVE_MPI */
