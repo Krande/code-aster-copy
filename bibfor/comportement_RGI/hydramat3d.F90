@@ -163,8 +163,8 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
                          raideur66(i,j)=lambda+2.d0*mu
                          souplesse66(i,j)=1.d0/young
                      else
-                         raideur66(i,j)=mu
-                         souplesse66(i,j)=1.d0/mu
+                         raideur66(i,j)=2.0*mu
+                         souplesse66(i,j)=1.d0/(2.d0*mu)
                      end if
                  else
                     if ((j.le.3).and.(i.le.3)) then

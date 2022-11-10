@@ -58,11 +58,8 @@ implicit none
        xxk=0.d0
 
 !     diagonalisation du tenseur des deformations de fluage + def therm transitoire
-      do i=1,3
+      do i=1,6
          epsmeq6(i)=epsm6(i)
-      end do
-      do i=4,6
-          epsmeq6(i)=epsm6(i)/2.d0
       end do
 !     passage 33
       call x6x33(epsmeq6,epsm33)
@@ -73,7 +70,7 @@ implicit none
 
 !     passage des deformations elastiques dans la base principale
 !     des deformations de fluage
-        log1=.true.
+        log1=.false.
       call chrep6(epse6,vepsm33,log1,epse16)
 
 !     calcul des coefficients de consolidation principaux

@@ -206,14 +206,8 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
 !      calcul de l endommagement rgi
 !***********************************************************************
 !     valeurs propres des deformations plastiques de rgi
-      do i=4,6
-         epspg6(i)=epspg6(i)/2.d0
-      end do
 !     passage 33
       call x6x33(epspg6,epspg33)
-      do i=4,6
-         epspg6(i)=epspg6(i)*2.d0
-      end do
 !     diagonalisation
       call b3d_valp33(epspg33,epspg3,vepspg33)
 !     construction matrice de passage inverse

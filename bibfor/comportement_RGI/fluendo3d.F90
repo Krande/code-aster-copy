@@ -335,11 +335,9 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     epstf6(:)=0.d0
     deps6(1:nstrs)=deps(1:nstrs)
     epstf6(1:nstrs)=epstf(1:nstrs)
-    if (is_ba) then
-!       passage en epsilon
-        deps6(4:6)=0.5d0*deps6(4:6)
-        epstf6(4:6)=0.5d0*epstf6(4:6) 
-    endif
+!   passage en epsilon
+    deps6(4:6)=0.5d0*deps6(4:6)
+    epstf6(4:6)=0.5d0*epstf6(4:6) 
 !     remarque si rt rtg ref et rc dependent de  l ecrouissage
 !     il faut les actualiser en fonction de l ecrouissage avant de
 !     de passer dans hydramat, il faut egalement que dra_dl soit

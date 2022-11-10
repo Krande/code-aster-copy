@@ -270,11 +270,11 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !
 !   passage des deformations plastiques de traction
 !   dans la base principale du tir visco elastique
-        call chrep6(epspt6, vsig133, .true._1, epspt6p)
+        call chrep6(epspt6, vsig133, .false._1, epspt6p)
 !   passage des deformations plastiques de gel
-        call chrep6(epspg6, vsig133, .true._1, epspg6p)
+        call chrep6(epspg6, vsig133, .false._1, epspg6p)
 !   passage des deformations plastiques de cisaillement
-        call chrep6(epspc6, vsig133, .true._1, epspc6p)
+        call chrep6(epspc6, vsig133, .false._1, epspc6p)
 !   initialisation des increments de deformations
         call iniVect0(6, depspt6p, depspg6p, depspc6p)
 !
@@ -305,9 +305,9 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !     reconstruction de la matrice de couplage fluage->fluage
 !     dans la base principale actuelle
             if (fl3d) then
-                call chrep6(epse16, vsig133, .true._1, epse06p)
-                call chrep6(epsk16, vsig133, .true._1, epsk06p)
-                call chrep6(epsm16, vsig133, .true._1, epsm06p)
+                call chrep6(epse16, vsig133, .false._1, epse06p)
+                call chrep6(epsk16, vsig133, .false._1, epsk06p)
+                call chrep6(epsm16, vsig133, .false._1, epsm06p)
             end if
 !
 !     pas d increments de deformation pendant la boucle de consistance
@@ -445,15 +445,15 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !
 !     *** retour des increments de deformation dans la base fixe ***
 !     plasticite traction
-            call chrep6(depspt6p, vsig133t, .true._1, depspt6)
+            call chrep6(depspt6p, vsig133t, .false._1, depspt6)
 !     elasticite
-            call chrep6(depse6p, vsig133t, .true._1, depse6)
+            call chrep6(depse6p, vsig133t, .false._1, depse6)
 !     cas des increments remis a zero si refermeture forcee
             if (.not. limit1) then
-                call chrep6(depsk6p, vsig133t, .true._1, depsk6)
-                call chrep6(depsm6p, vsig133t, .true._1, depsm6)
-                call chrep6(depspg6p, vsig133t, .true._1, depspg6)
-                call chrep6(depspc6p, vsig133t, .true._1, depspc6)
+                call chrep6(depsk6p, vsig133t, .false._1, depsk6)
+                call chrep6(depsm6p, vsig133t, .false._1, depsm6)
+                call chrep6(depspg6p, vsig133t, .false._1, depspg6)
+                call chrep6(depspc6p, vsig133t, .false._1, depspc6)
             else
 !               mise a zero des increments en cas de refermeture forcee
                 call iniVect0(6, depsk6, depsm6, depspg6, depspc6)
@@ -507,12 +507,7 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !    comparaison avec calcul direct par la trace par l invariant
         depleqc3=0.d0
         do i = 1, 6
-            if (i .le. 3) then
-                depleqc3=depleqc3+ depspc6(i)**2
-            else
-!           0.5 car on a des gama dans les depsc
-                depleqc3=depleqc3+ 0.5d0*(depspc6(i)**2)
-            end if
+            depleqc3=depleqc3+ depspc6(i)**2
         end do
         depleqc3=dsqrt(depleqc3*2.d0/3.d0)
 !    actualisation et stockage

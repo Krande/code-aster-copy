@@ -41,7 +41,7 @@ implicit none
       real(kind=8) :: wplt06(6),wplt6(6),wpltx06(6),wpltx6(6)
       real(kind=8) :: wpl3(3),vwpl33(3,3),vwpl33t(3,3)
       real(kind=8) :: wplx3(3),vwplx33(3,3),vwplx33t(3,3)
-      aster_logical ::  local,vrai
+      aster_logical ::  local,vrai,faux
 
 !     variables locales
       real(kind=8) :: depspt6(6),depspt33(3,3),depspt3(3)
@@ -52,13 +52,10 @@ implicit none
       real(kind=8) :: wpltx33(3,3),wplt61(6),aux6(6),aux3(3)
 
       vrai=.true.
+      faux=.false.
 !     *** actualisation ouvertures de fissures actuelles  **************
       do i=1,6
         depspt6(i)=epspt6(i)-epspt60(i)
-      end do
-!     digonalisation de l'increment
-      do i=4,6
-         depspt6(i)=depspt6(i)/2.d0
       end do
 !     passage 33
       call x6x33(depspt6,depspt33)
@@ -82,18 +79,15 @@ implicit none
          dwp6(i)=0.d0
       end do
 !     passage des increments en base fixe
-      call chrep6(dwp6,vdepspt33t,vrai,dw6)
+      call chrep6(dwp6,vdepspt33t,faux,dw6)
 !     actualisation de l ouverture actuelle (stockage en gamma)
       do i=1,6
         wplt6(i)=wplt06(i)+dw6(i)
       end do
 !     direction principale des ouvertures actuelles
 !     passage en epsilon pour diagonaliser
-      do i=1,3
+      do i=1,6
           aux6(i)=wplt6(i)
-      end do
-      do i=4,6
-          aux6(i)=0.5d0*wplt6(i)
       end do
 !     passage 33
       call x6x33(aux6,wplt33)
@@ -113,10 +107,10 @@ implicit none
       do i=4,6
         wplt61(i)=0.d0
       end do
-      call chrep6(wplt61,vwpl33t,vrai,wplt6)
+      call chrep6(wplt61,vwpl33t,faux,wplt6)
 !     ***** ouvertures maximales ***************************************
 !     passage des ouvertures maximale dans la base prin actuelle
-      call chrep6(wpltx06,vwpl33,vrai,wpltx061)
+      call chrep6(wpltx06,vwpl33,faux,wpltx061)
 !     comparaison des valeurs normales maxi
       do i=1,3
         wpltx61(i)=dmax1(wpltx061(i),wpl3(i))
@@ -126,15 +120,11 @@ implicit none
         wpltx61(i)=wpltx061(i)
       end do
 !     retour en base fixe des ouvertures maximales
-      call chrep6(wpltx61,vwpl33t,vrai,wpltx6)
+      call chrep6(wpltx61,vwpl33t,faux,wpltx6)
 !     diagonalisation des ouvertures maxi pour la base d endommagement
-!     passage 33 pour diagonalisation (apres passage en epsilon)
-!     passage en epsilon pour diagonaliser
-      do i=1,3
+!     passage 33 pour diagonalisation
+      do i=1,6
           aux6(i)=wpltx6(i)
-      end do
-      do i=4,6
-          aux6(i)=0.5d0*wpltx6(i)
       end do
       call x6x33(aux6,wpltx33)
 !     diagonalisation
