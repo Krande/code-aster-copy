@@ -19,6 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
+from ..Helpers import adapt_for_mgis_behaviour
 from ..Objects import FullTransientResult
 from ..Supervis import ExecuteCommand
 
@@ -27,6 +28,8 @@ class CalcForcNonl(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.FullTransientResult`."""
 
     command_name = "CALC_FORC_NONL"
+    # Change the content of the COMPORTEMENT keyword.
+    adapt_syntax = adapt_for_mgis_behaviour
 
     def create_result(self, keywords):
         """Initialize the result.

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -20,9 +20,10 @@
 # person_in_charge: mathieu.courtois@edf.fr
 from collections import namedtuple
 
+from ..Cata import Commands
+from ..Helpers import adapt_for_mgis_behaviour
 from ..Objects import TableContainer
 from ..Supervis import ExecuteCommand, UserMacro
-from ..Cata import Commands
 from .extr_table import EXTR_TABLE
 
 
@@ -31,6 +32,8 @@ class Compute(ExecuteCommand):
 
     command_name = "_CALCUL_"
     command_cata = Commands.CALCUL
+    # Change the content of the COMPORTEMENT keyword.
+    adapt_syntax = adapt_for_mgis_behaviour
 
     def create_result(self, keywords):
         """Initialize the result.

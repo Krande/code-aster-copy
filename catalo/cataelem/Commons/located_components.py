@@ -237,6 +237,7 @@ CCOMPOR = LocatedComponents(
         "DEFO_LDC",
         "RIGIGEOM",
         "REGUVISC",
+        "MGISADDR",
     ),
 )
 

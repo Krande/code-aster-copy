@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # ELASTOPLASTICITE  ISOTROPE VON MISES
 # ......................................................................
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=39)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="Plasticity", UNITE_MFRONT=38)
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -91,11 +91,7 @@ U = STAT_NON_LINE(
         _F(CHARGE=CISAIL, FONC_MULT=TAU_F),
     ),
     COMPORTEMENT=_F(
-        RELATION="MFRONT",
-        NOM_ROUTINE="asterplasticity",
-        UNITE_LIBRAIRIE=39,
-        ITER_INTE_MAXI=30,
-        RESI_INTE_MAXI=1.0e-8,
+        RELATION="MFRONT", COMPOR_MFRONT=behaviour, ITER_INTE_MAXI=30, RESI_INTE_MAXI=1.0e-8
     ),
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=3),

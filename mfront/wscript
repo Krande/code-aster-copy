@@ -50,6 +50,7 @@ def configure(self):
     opts = self.options
     try:
         self.env.stash()
+        self.check_mgis()
         self.check_mfront()
     except Errors.ConfigurationError:
         self.reset_msg()
@@ -57,9 +58,11 @@ def configure(self):
         if opts.enable_mfront is True:
             raise
         self.undefine("ASTER_HAVE_MFRONT")
+        self.undefine("ASTER_HAVE_MGIS")
         self.env.TFELSUFFIX = ""
     else:
         self.define("ASTER_HAVE_MFRONT", 1)
+        self.define("ASTER_HAVE_MGIS", 1)
         self.env.BUILD_MFRONT = True
 
 
@@ -83,6 +86,17 @@ def build(self):
 
 
 ###############################################################################
+@Configure.conf
+def check_mgis(self):
+    opts = self.options
+    if opts.enable_mfront == False:
+        raise Errors.ConfigurationError("MGIS disabled")
+    # for MGIS
+    self.check_mgis_headers()
+    self.check_mgis_api_version(1)
+    self.check_mgis_libs()
+
+
 @Configure.conf
 def check_mfront(self):
     opts = self.options
@@ -139,7 +153,8 @@ def check_mfront(self):
         # these options are not relevant for C
         self.env.append_value("CXXFLAGS_MFRONT_ONLY", flag)
     self.env.append_value("CXXFLAGS_MFRONT_ONLY", "-Wno-return-type")
-    self.check_mfront_version((3, 2, 1))
+    # MFront
+    self.check_mfront_version((4, 1, 0))
     self.check_mfront_libs()
     self.check_cxx11_abi()
     self.check_mfront_obsolete_source()
@@ -178,7 +193,7 @@ def check_mfront_version(self, minver=None):
 def check_mfront_libs(self):
     _check = partial(self.check_cxx, mandatory=True, uselib_store="MFRONT", use="MFRONT")
     check_lib = lambda lib: _check(lib=lib)
-    libs = ["AsterInterface" + self.env.TFELSUFFIX, "TFELSystem" + self.env.TFELSUFFIX]
+    libs = ["TFELSystem" + self.env.TFELSUFFIX]
     list(map(check_lib, Utils.to_list(libs)))
 
 
@@ -242,11 +257,11 @@ def process_mfront(self, node):
     wrkdir = node.parent.find_or_declare(name)
     # print "DEBUG: node:", node, "wkrdir:", wrkdir.abspath()
     wrkdir.mkdir()
-    files = [name, "aster" + name] + getAdditionalOutputs(node)
+    files = [name, name + "-generic"] + getAdditionalOutputs(node)
 
     _nod = wrkdir.find_or_declare
     outputs = [_nod(osp.join("src", i + ".cxx")) for i in files]
-    outputs.append(_nod(osp.join("include", "MFront", "Aster", "aster" + name + ".hxx")))
+    outputs.append(_nod(osp.join("include", "MFront", "GenericBehaviour", name + "-generic.hxx")))
     outputs.extend(
         [
             _nod(osp.join("include", "TFEL", "Material", name + i + ".hxx"))
@@ -283,10 +298,62 @@ class mfront2cxx(Task.Task):
             msg = "The behaviour name is too long, max. 16 characters: " "'%s'" % name
             raise Errors.WafError(msg)
         wrkdir = wrknode.abspath()
-        cmd = "%s --interface=aster --search-path=%s %s" % (
+        cmd = "%s --interface=generic --search-path=%s %s" % (
             self.env.MFRONT[0],
             mfrdir.get_src().abspath(),
             self.inputs[0].abspath(),
         )
         # self.generator.bld.cmd_and_log(cmd, cwd=wrkdir, quiet=Context.STDOUT)
         self.exec_command(cmd, cwd=wrkdir)
+
+
+@Configure.conf
+def check_mgis_headers(self):
+    self.start_msg("Checking for headers from MGIS/Behaviour")
+    incs = ["MGIS/Config-c.h"]
+    incs.extend(
+        [
+            osp.join("MGIS/Behaviour/", hxx)
+            for hxx in ("Behaviour.hxx", "BehaviourData.hxx", "Integrate.hxx")
+        ]
+    )
+    try:
+        for hxx in incs:
+            self.check_cxx(header_name=hxx, uselib_store="MGIS", use="MGIS", mandatory=True)
+    except:
+        self.end_msg("no", "YELLOW")
+        raise
+    else:
+        self.end_msg("yes")
+
+
+@Configure.conf
+def check_mgis_api_version(self, vers):
+    fragment = r"""
+#include <stdio.h>
+#include <MGIS/Config-c.h>
+int main(void){
+    printf("%d", MGIS_BEHAVIOUR_API_VERSION);
+    return 0;
+}"""
+    self.start_msg("Checking MGIS API version")
+    ret = ""
+    try:
+        ret = self.check_cc(
+            fragment=fragment, use="MGIS", mandatory=True, execute=True, define_ret=True
+        )
+        if ret != str(vers):
+            raise ValueError
+    except:
+        self.end_msg("API version '{vers}' expected, found '{ret}'", "YELLOW")
+        raise
+    else:
+        self.end_msg(ret)
+
+
+@Configure.conf
+def check_mgis_libs(self):
+    _check = partial(self.check_cxx, mandatory=True, uselib_store="MGIS", use="MGIS")
+    check_lib = lambda lib: _check(lib=lib)
+    libs = ["MFrontGenericInterface"]
+    list(map(check_lib, Utils.to_list(libs)))

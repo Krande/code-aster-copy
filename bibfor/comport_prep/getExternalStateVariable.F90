@@ -19,17 +19,17 @@
 !
 subroutine getExternalStateVariable(rela_comp, rela_code_py, &
                                     l_mfront_offi, l_mfront_proto, &
-                                    cptr_nbvarext, cptr_namevarext, &
-                                    variExteCode)
+                                    extern_addr, variExteCode)
 !
     use NonLin_Datastructure_type
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "asterc/lcextevari.h"
 #include "asterc/lcinfo.h"
-#include "asterc/mfront_get_external_state_variable.h"
+#include "asterc/mgis_get_esvs.h"
+#include "asterc/mgis_get_number_of_esvs.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/iscode.h"
@@ -37,7 +37,7 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 !
     character(len=16), intent(in) :: rela_comp, rela_code_py
     aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
-    integer, intent(in) :: cptr_nbvarext, cptr_namevarext
+    character(len=16), intent(in) :: extern_addr
     integer, intent(out) :: variExteCode(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,28 +52,28 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 ! In  rela_code_py     : coded comportment for RELATION (coding in Python)
 ! In  l_mfront_proto   : .true. if MFront prototype
 ! In  l_mfront_offi    : .true. if MFront official
-! In  cptr_nbvarext    : pointer to number of external state variable
-! In  cptr_namevarext  : pointer to name of external state variable
+! In  extern_addr          : pointer to the MGIS Behaviour
 ! Out variExteCode     : coded integers for external state variable
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
     integer, parameter :: nb_exte_list = 32
-    character(len=8) :: name_exte(8)
+    character(len=8) :: name_exte(EXTE_ESVA_NBMAXI)
 
     integer :: tabcod(60)
-   character(len=16), parameter :: name_varc(nb_exte_list) = (/'ELTSIZE1', 'ELTSIZE2', 'COORGA  ', &
-                                                               'GRADVELO', 'HYGR    ', 'NEUT1   ', &
-                                                               'NEUT2   ', 'TEMP    ', 'DTX     ', &
-                                                               'DTY     ', 'DTZ     ', 'X       ', &
-                                                               'Y       ', 'Z       ', 'SECH    ', &
-                                                               'HYDR    ', 'CORR    ', 'IRRA    ', &
-                                                               'EPSAXX  ', 'EPSAYY  ', 'EPSAZZ  ', &
-                                                               'EPSAXY  ', 'EPSAXZ  ', 'EPSAYZ  ', &
-                                                               'PFERRITE', 'PPERLITE', 'PBAINITE', &
-                                                               'PMARTENS', 'ALPHPUR ', 'ALPHBET ', &
-                                                                'TIME    ', 'TEMPREFE'/)
+    character(len=16), parameter :: name_varc(nb_exte_list) = (/ &
+                                    'ELTSIZE1', 'ELTSIZE2', 'COORGA  ', &
+                                    'GRADVELO', 'HYGR    ', 'NEUT1   ', &
+                                    'NEUT2   ', 'TEMP    ', 'DTX     ', &
+                                    'DTY     ', 'DTZ     ', 'X       ', &
+                                    'Y       ', 'Z       ', 'SECH    ', &
+                                    'HYDR    ', 'CORR    ', 'IRRA    ', &
+                                    'EPSAXX  ', 'EPSAYY  ', 'EPSAZZ  ', &
+                                    'EPSAXY  ', 'EPSAXZ  ', 'EPSAYZ  ', &
+                                    'PFERRITE', 'PPERLITE', 'PBAINITE', &
+                                    'PMARTENS', 'ALPHPUR ', 'ALPHBET ', &
+                                    'TIME    ', 'TEMPREFE'/)
     aster_logical, parameter :: l_allow_mfront(nb_exte_list) = (/.true., .false., .false., &
                                                                  .false., .true., .true., &
                                                                  .true., .true., .true., &
@@ -94,12 +94,12 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
     nb_exte = 0
     name_exte = ' '
     if (l_mfront_proto .or. l_mfront_offi) then
-        call mfront_get_external_state_variable(cptr_nbvarext, cptr_namevarext, &
-                                                name_exte, nb_exte)
-        ASSERT(nb_exte .le. 8)
+        call mgis_get_number_of_esvs(extern_addr, nb_exte)
+        ASSERT(nb_exte .le. EXTE_ESVA_NBMAXI)
+        call mgis_get_esvs(extern_addr, name_exte)
     else
         call lcinfo(rela_code_py, idummy1, idummy2, nb_exte)
-        ASSERT(nb_exte .le. 8)
+        ASSERT(nb_exte .le. EXTE_ESVA_NBMAXI)
         call lcextevari(rela_code_py, nb_exte, name_exte)
     end if
 
@@ -125,6 +125,6 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
             end if
         end do
     end do
-    call iscode(tabcod, variextecode, 60)
+    call iscode(tabcod, variExteCode, 60)
 !
 end subroutine

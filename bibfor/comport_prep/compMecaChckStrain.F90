@@ -26,9 +26,8 @@ subroutine compMecaChckStrain(iComp, &
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/lctest.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/cesexi.h"
@@ -40,6 +39,7 @@ subroutine compMecaChckStrain(iComp, &
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
     integer, intent(in) :: iComp
     character(len=8), intent(in) :: model
@@ -187,21 +187,11 @@ subroutine compMecaChckStrain(iComp, &
                 if (exteDefo .eq. MFRONT_STRAIN_SMALL) then
                     if (defoComp .ne. 'PETIT' .and. &
                         defoComp .ne. 'PETIT_REAC' .and. &
-                        defoComp .ne. 'GDEF_LOG' .and. &
-                        defoComp .ne. 'GROT_GDEP') then
+                        defoComp .ne. 'GDEF_LOG') then
                         call utmess('F', 'COMPOR4_35', sk=defoComp)
                     end if
-                end if
-                if (exteDefo .eq. MFRONT_STRAIN_SIMOMIEHE) then
-                    if (defoComp .ne. 'SIMO_MIEHE') then
-                        call utmess('F', 'COMPOR4_35', sk=defoComp)
-                    end if
-                end if
-                if (exteDefo .eq. MFRONT_STRAIN_GROTGDEP) then
-                    if (defoComp .ne. 'GROT_GDEP' .and. &
-                        defoComp .ne. 'PETIT') then
-                        call utmess('F', 'COMPOR4_35', sk=defoComp)
-                    end if
+                else
+                    ASSERT(.false.)
                 end if
             end if
 

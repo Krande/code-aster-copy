@@ -26,15 +26,16 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/comp_meca_l.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/getExternalBehaviourPara.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/getExternalBehaviourPara.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
-#include "asterfort/Behaviour_type.h"
 !
     character(len=8), optional, intent(in) :: model_
     character(len=19), optional, intent(in) :: comporMap_
@@ -62,7 +63,6 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_comp_external
     integer, pointer :: modelCell(:) => null()
     character(len=16), pointer :: comporVale(:) => null()
     integer, pointer :: comporInfoZone(:) => null()
@@ -71,13 +71,13 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     integer, pointer :: comporLimaCumu(:) => null()
     integer :: nbVale, mapNbCmpMax, nb_vari, nbCell, nbCellMesh
     integer :: iMapZone, iret, iCell, posit
-    integer :: affeZoneType, affeZoneNume, cellTypeNume, cellNume, model_dim
+    integer :: affeZoneType, affeZoneNume, cellTypeNume, cellNume
+    integer :: iocc
+    character(len=16), parameter:: factorKeyword = 'COMPORTEMENT'
     character(len=16) :: cellTypeName
     character(len=16) :: post_iter
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla
-    character(len=16) :: model_mfront
-    character(len=255) :: libr_name, subr_name
-    character(len=16) :: principal
+    character(len=16) :: principal, extern_addr
     character(len=8) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -117,15 +117,13 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     allocate (behaviourParaExte(mapNbZone))
 
 ! - Count internal variables by comportment
+    iocc = 0
     do iMapZone = 1, mapNbZone
-        subr_name = ' '
-        libr_name = ' '
-        model_mfront = ' '
-        model_dim = 0
 
 ! ----- Get parameters
         if (present(comporMap_)) then
             rela_comp = comporVale(mapNbCmpMax*(iMapZone-1)+RELA_NAME)
+            extern_addr = comporVale(mapNbCmpMax*(iMapZone-1)+MGIS_ADDR)
             defo_comp = comporVale(mapNbCmpMax*(iMapZone-1)+DEFO)
             type_cpla = comporVale(mapNbCmpMax*(iMapZone-1)+PLANESTRESS)
             mult_comp = comporVale(mapNbCmpMax*(iMapZone-1)+MULTCOMP)
@@ -136,6 +134,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
             post_iter = comporVale(mapNbCmpMax*(iMapZone-1)+POSTITER)
         else
             rela_comp = comporList_(RELA_NAME)
+            extern_addr = comporList_(MGIS_ADDR)
             defo_comp = comporList_(DEFO)
             type_cpla = comporList_(PLANESTRESS)
             mult_comp = comporList_(MULTCOMP)
@@ -188,9 +187,12 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 20      continue
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
+        behaviourParaExte(iMapZone)%extern_addr = extern_addr
+
         call getExternalBehaviourPara(mesh, modelCell, &
-                                      rela_comp, kit_comp, &
-                                      l_comp_external, behaviourParaExte(iMapZone), &
+                                      rela_comp, defo_comp, kit_comp, &
+                                      behaviourParaExte(iMapZone), &
+                                      factorKeyword, iocc, &
                                       elem_type_=cellTypeNume, &
                                       type_cpla_in_=type_cpla)
 

@@ -81,12 +81,9 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         end if
         carcriMap_(IPOSTINCR) = behaviourCrit(iFactorKeyword)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
-        carcriMap_(EXTE_PTR) = behaviourCrit(iFactorKeyword)%cptr_fct_ldc
+        carcriMap_(EXTE_PTR) = behaviourCrit(iFactorKeyword)%extern_ptr
+        carcriMap_(EXTE_TYPE) = behaviourCrit(iFactorKeyword)%extern_type
         carcriMap_(EXTE_STRAIN) = behaviourCrit(iFactorKeyword)%exte_strain
-        carcriMap_(EXTE_ESVA_NB) = behaviourCrit(iFactorKeyword)%cptr_nbvarext
-        carcriMap_(EXTE_ESVA_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_namevarext
-        carcriMap_(EXTE_PROP_NB) = behaviourCrit(iFactorKeyword)%cptr_nameprop
-        carcriMap_(EXTE_PROP_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_nbprop
     end if
     if (present(carcriList_)) then
         carcriList_(ITER_INTE_MAXI) = behaviourCrit(iFactorKeyword)%iter_inte_maxi
@@ -111,12 +108,9 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         end if
         carcriList_(IPOSTINCR) = behaviourCrit(iFactorKeyword)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
-        carcriList_(EXTE_PTR) = behaviourCrit(iFactorKeyword)%cptr_fct_ldc
+        carcriList_(EXTE_PTR) = behaviourCrit(iFactorKeyword)%extern_ptr
+        carcriList_(EXTE_TYPE) = behaviourCrit(iFactorKeyword)%extern_type
         carcriList_(EXTE_STRAIN) = behaviourCrit(iFactorKeyword)%exte_strain
-        carcriList_(EXTE_ESVA_NB) = behaviourCrit(iFactorKeyword)%cptr_nbvarext
-        carcriList_(EXTE_ESVA_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_namevarext
-        carcriList_(EXTE_PROP_NB) = behaviourCrit(iFactorKeyword)%cptr_nameprop
-        carcriList_(EXTE_PROP_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_nbprop
     end if
 
 ! - Set values for MFRONT

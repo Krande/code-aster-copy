@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,6 @@
 #
 # MACRO DE COUPLAGE IFS AVEC SATURNE VIA YACS
 #
-import os
-
-import aster
-from ...Objects.table_py import Table
-from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
 from ...Commands import (
@@ -39,7 +34,6 @@ from ...Commands import (
     LIRE_MAILLAGE,
     PROJ_CHAMP,
 )
-from ...SD.sd_maillage import sd_maillage
 from .env_cine_yacs import ENV_CINE_YACS
 from .impr_mail_yacs import IMPR_MAIL_YACS
 from .modi_char_yacs import MODI_CHAR_YACS

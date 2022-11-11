@@ -36,6 +36,8 @@ std::string toUpper( const std::string &in_str );
 
 std::string toLower( const std::string &in_str );
 
+std::string remove_brackets( const std::string &in_str );
+
 /**
  * @brief irange Create a vector of integer from begin to end (included).
  *      for exemple {-1, 0, 1, 2, 3}
@@ -45,10 +47,16 @@ VectorInt irange( const int begin, const int end );
 VectorLong irange( const long begin, const long end );
 
 /**
- * @brief vectorStringToFStr Create an array of Fortran strings from a vector of strings.
+ * @brief vectorStringToFStrArray Fill an array of Fortran strings with a vector of strings.
+ *      The caller must ensure that 'tabFStr' is big enough.
+ */
+void vectorStringToFStrArray( char *tabFStr, const int flen, const VectorString &vector );
+
+/**
+ * @brief vectorStringAsFStrArray Create an array of Fortran strings from a vector of strings.
  *      The output array must be freed by the caller.
  */
-char *vectorStringAsFStrArray( const VectorString &vector, const int size );
+char *vectorStringAsFStrArray( const VectorString &vector, const int flen );
 
 // Set and sort a vector
 template < typename T >

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,14 @@
 !
 interface
     subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp ,&
-                           post_iter, meca_comp, mult_comp, regu_visc,&
-                           libr_name, subr_name, model_dim, model_mfront,&
+                           post_iter, mult_comp, regu_visc,&
+                           extern_type, extern_addr, model_dim,&
                            nbVariUMAT,&
                            nbVari, numeLaw, nbVariKit, numeLawKit)
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-        character(len=16), intent(in) :: kit_comp(4), post_iter, meca_comp
-        character(len=16), intent(in) :: mult_comp, regu_visc
-        character(len=255), intent(in) :: libr_name, subr_name
-        integer, intent(in) :: model_dim
-        character(len=16), intent(in) :: model_mfront
+        character(len=16), intent(in) :: kit_comp(4), post_iter
+        character(len=16), intent(in) :: mult_comp, regu_visc, extern_addr
+        integer, intent(in) :: extern_type, model_dim
         integer, intent(in) :: nbVariUMAT
         integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
     end subroutine comp_nbvari

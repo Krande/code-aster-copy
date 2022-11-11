@@ -116,7 +116,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
         end if
 
 ! ----- Save informations in the field <COMPOR>
-        call setBehaviourTypeValue(behaviourPrepPara%v_para, iFactorKeyword, &
+        call setBehaviourTypeValue(behaviourPrepPara, iFactorKeyword, &
                                    comporMap_=comporValv)
 
 ! ----- Affect in <CARTE>

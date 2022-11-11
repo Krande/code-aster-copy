@@ -101,7 +101,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
     end if
 
 ! - Save informations in the field <COMPOR>
-    call setBehaviourTypeValue(behaviourPrepPara%v_para, comporList_=compor(1:COMPOR_SIZE))
+    call setBehaviourTypeValue(behaviourPrepPara, comporList_=compor(1:COMPOR_SIZE))
 
 ! - Prepare informations about internal variables
     call comp_meca_pvar(comporList_=compor, comporInfo=comporInfo)
@@ -111,6 +111,6 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 
 ! - Cleaning
     deallocate (behaviourPrepPara%v_para)
-
+    deallocate (behaviourPrepPara%v_paraExte)
 !
 end subroutine

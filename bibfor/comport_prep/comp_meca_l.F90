@@ -90,7 +90,7 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, post_iter)
         ASSERT(present(post_iter))
         l_detec = post_iter .eq. 'CRIT_RUPT'
     else
-        write (6, *) 'What: ', rela_comp, what, whatz
+        write (6, *) 'What: ', rela_comp, '/', what, '/', whatz
         ASSERT(ASTER_FALSE)
     end if
 !

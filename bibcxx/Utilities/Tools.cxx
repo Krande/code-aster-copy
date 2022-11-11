@@ -54,14 +54,29 @@ std::string toLower( const std::string &in_str ) {
     return str;
 }
 
-char *vectorStringAsFStrArray( const VectorString &vector, const int size ) {
-    char *tabFStr = MakeTabFStr( vector.size(), size );
-    VectorString::const_iterator vecIt = vector.begin();
+std::string remove_brackets( const std::string &in_str ) {
+    std::string outstr;
+    for ( auto ch : in_str ) {
+        if ( ch == '[' ) {
+            outstr += "_";
+        } else if ( ch != ']' ) {
+            outstr += ch;
+        }
+    }
+    return outstr;
+}
+
+void vectorStringToFStrArray( char *tabFStr, const int flen, const VectorString &vector ) {
     int i = 0;
-    for ( ; vecIt != vector.end(); ++vecIt ) {
-        SetTabFStr( tabFStr, i, (char *)vecIt->c_str(), size );
+    for ( auto &value : vector ) {
+        SetTabFStr( tabFStr, i, (char *)value.c_str(), flen );
         ++i;
     }
+}
+
+char *vectorStringAsFStrArray( const VectorString &vector, const int flen ) {
+    char *tabFStr = MakeTabFStr( vector.size(), flen );
+    vectorStringToFStrArray( tabFStr, flen, vector );
     return tabFStr;
 }
 

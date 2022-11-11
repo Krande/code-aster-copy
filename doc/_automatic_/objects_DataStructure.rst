@@ -983,6 +983,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MGISBehaviour` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MGISBehaviour
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.Material` object
 ********************************************************************************
 

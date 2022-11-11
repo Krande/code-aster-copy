@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=40)
-CREA_LIB_MFRONT(UNITE_MFRONT=39, UNITE_LIBRAIRIE=41)
+hayhurst = CREA_LIB_MFRONT(NOM_COMPOR="Hayhurst", UNITE_MFRONT=38)
+implicit_hayhurst = CREA_LIB_MFRONT(NOM_COMPOR="ImplicitHayhurst", UNITE_MFRONT=39)
 
 # temperature de travail en degres celsius
 Tdegc = 600
@@ -119,8 +119,7 @@ resuexpl = SIMU_POINT_MAT(
     SIGM_IMPOSE=_F(SIYY=char),
     COMPORTEMENT=_F(
         RELATION="MFRONT",
-        NOM_ROUTINE="asterhayhurst",
-        UNITE_LIBRAIRIE=40,
+        COMPOR_MFRONT=hayhurst,
         # RESI_INTE_RELA=1.E-8,
     ),
     INCREMENT=_F(LIST_INST=listtps),
@@ -198,8 +197,7 @@ resuimpl = SIMU_POINT_MAT(
     SIGM_IMPOSE=_F(SIYY=char),
     COMPORTEMENT=_F(
         RELATION="MFRONT",
-        NOM_ROUTINE="asterimplicithayhurst",
-        UNITE_LIBRAIRIE=41,
+        COMPOR_MFRONT=implicit_hayhurst,
         # RESI_INTE_RELA=1.E-8,
     ),
     INCREMENT=_F(LIST_INST=listtps),

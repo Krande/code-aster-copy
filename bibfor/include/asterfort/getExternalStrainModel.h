@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine getExternalStrainModel(l_mfront_offi, l_mfront_proto, paraExte,&
-                                      defo_comp    , istrainexte)
-        use Behaviour_type
-        aster_logical, intent(in) :: l_mfront_offi
-        aster_logical, intent(in) :: l_mfront_proto
-        type(Behaviour_ParaExte), intent(in) :: paraExte
+    subroutine getExternalStrainModel(defo_comp, strain_model)
         character(len=16), intent(in) :: defo_comp
-        integer, intent(out) :: istrainexte
+        integer, intent(out) :: strain_model
     end subroutine getExternalStrainModel
 end interface

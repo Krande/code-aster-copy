@@ -69,18 +69,8 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
             b_mfront=BLOC(
                 condition="""equal_to('RELATION', 'MFRONT') """,
                 fr=tr("Comportement utilisateur de type MFRONT"),
-                regles=(UN_PARMI("UNITE_LIBRAIRIE", "LIBRAIRIE")),
-                UNITE_LIBRAIRIE=SIMP(statut="f", typ=UnitType(), inout="in"),
-                LIBRAIRIE=SIMP(
-                    statut="f",
-                    typ="TXM",
-                    validators=LongStr(1, 128),
-                    fr=tr(
-                        "Chemin vers la bibliothèque dynamique définissant le comportement MFRONT"
-                    ),
-                ),
-                NOM_ROUTINE=SIMP(
-                    statut="o", typ="TXM", fr=tr("Nom de la routine MFRONT dans la bibliothèque")
+                COMPOR_MFRONT=SIMP(
+                    statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
                 ),
                 VERI_BORNE=SIMP(
                     statut="f",
@@ -90,6 +80,12 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                     fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),
                 ),
                 SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+            ),
+            b_mfront_hidden=BLOC(
+                condition="""not equal_to('RELATION', 'MFRONT')""",
+                COMPOR_MFRONT=SIMP(
+                    statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
+                ),
             ),
             DEFORMATION=SIMP(
                 statut="f", typ="TXM", defaut="PETIT", into=("PETIT", "GDEF_LOG", "GREEN_LAGRANGE")
@@ -178,16 +174,8 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
             b_mfront=BLOC(
                 condition="""equal_to("RELATION", 'MFRONT') """,
                 fr=tr("Comportement utilisateur de type MFRONT"),
-                regles=(UN_PARMI("UNITE_LIBRAIRIE", "LIBRAIRIE")),
-                UNITE_LIBRAIRIE=SIMP(statut="f", typ=UnitType(), inout="in"),
-                LIBRAIRIE=SIMP(
-                    statut="f",
-                    typ="TXM",
-                    validators=LongStr(1, 128),
-                    fr=tr("Chemin vers la bibliothèque dynamique pour MFRONT"),
-                ),
-                NOM_ROUTINE=SIMP(
-                    statut="o", typ="TXM", fr=tr("Nom de la routine MFRONT dans la bibliothèque")
+                COMPOR_MFRONT=SIMP(
+                    statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
                 ),
                 VERI_BORNE=SIMP(
                     statut="f",
@@ -200,6 +188,12 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                     statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
                 ),
                 SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+            ),
+            b_mfront_hidden=BLOC(
+                condition="""not equal_to('RELATION', 'MFRONT')""",
+                COMPOR_MFRONT=SIMP(
+                    statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
+                ),
             ),
             b_kit_ddi=BLOC(
                 condition="""equal_to("RELATION", 'KIT_DDI') """,
@@ -274,19 +268,8 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 b_mfr_thm=BLOC(
                     condition="""'MFRONT' in value("RELATION_KIT")""",
                     fr=tr("Comportement utilisateur meca THM de type MFRONT"),
-                    regles=(UN_PARMI("UNITE_LIBRAIRIE", "LIBRAIRIE")),
-                    UNITE_LIBRAIRIE=SIMP(statut="f", typ=UnitType(), inout="in"),
-                    LIBRAIRIE=SIMP(
-                        statut="f",
-                        typ="TXM",
-                        fr=tr(
-                            "Chemin vers la bibliothèque dynamique définissant le comportement MFRONT"
-                        ),
-                    ),
-                    NOM_ROUTINE=SIMP(
-                        statut="o",
-                        typ="TXM",
-                        fr=tr("Nom de la routine MFRONT dans la bibliothèque"),
+                    COMPOR_MFRONT=SIMP(
+                        statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
                     ),
                     VERI_BORNE=SIMP(
                         statut="f",
@@ -299,6 +282,12 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                         statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
                     ),
                     SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+                ),
+                b_mfr_thm_hidden=BLOC(
+                    condition="""'MFRONT' not in value("RELATION_KIT")""",
+                    COMPOR_MFRONT=SIMP(
+                        statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
+                    ),
                 ),
             ),
             b_kit_meta=BLOC(
@@ -402,16 +391,8 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
             b_mfront=BLOC(
                 condition="""equal_to("RELATION", 'MFRONT') """,
                 fr=tr("Comportement utilisateur de type MFRONT"),
-                regles=(UN_PARMI("UNITE_LIBRAIRIE", "LIBRAIRIE")),
-                UNITE_LIBRAIRIE=SIMP(statut="f", typ=UnitType(), inout="in"),
-                LIBRAIRIE=SIMP(
-                    statut="f",
-                    typ="TXM",
-                    validators=LongStr(1, 128),
-                    fr=tr("Chemin vers la bibliothèque dynamique pour MFRONT"),
-                ),
-                NOM_ROUTINE=SIMP(
-                    statut="o", typ="TXM", fr=tr("Nom de la routine MFRONT dans la bibliothèque")
+                COMPOR_MFRONT=SIMP(
+                    statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
                 ),
                 VERI_BORNE=SIMP(
                     statut="f",
@@ -424,6 +405,12 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                     statut="f", typ="TXM", defaut="DEBORST", into=("DEBORST", "ANALYTIQUE")
                 ),
                 SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+            ),
+            b_mfront_hidden=BLOC(
+                condition="""not equal_to('RELATION', 'MFRONT')""",
+                COMPOR_MFRONT=SIMP(
+                    statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
+                ),
             ),
             b_kit_ddi=BLOC(
                 condition="""equal_to("RELATION", 'KIT_DDI') """,
@@ -524,19 +511,8 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                 b_mfr_thm=BLOC(
                     condition="""'MFRONT' in value("RELATION_KIT")""",
                     fr=tr("Comportement utilisateur meca THM de type MFRONT"),
-                    regles=(UN_PARMI("UNITE_LIBRAIRIE", "LIBRAIRIE")),
-                    UNITE_LIBRAIRIE=SIMP(statut="f", typ=UnitType(), inout="in"),
-                    LIBRAIRIE=SIMP(
-                        statut="f",
-                        typ="TXM",
-                        fr=tr(
-                            "Chemin vers la bibliothèque dynamique définissant le comportement MFRONT"
-                        ),
-                    ),
-                    NOM_ROUTINE=SIMP(
-                        statut="o",
-                        typ="TXM",
-                        fr=tr("Nom de la routine MFRONT dans la bibliothèque"),
+                    COMPOR_MFRONT=SIMP(
+                        statut="o", typ=compor_mgis, fr=tr("Comportement MFRONT à utiliser")
                     ),
                     VERI_BORNE=SIMP(
                         statut="f",
@@ -551,6 +527,12 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                     RESI_INTE_MAXI=SIMP(statut="f", typ="R", defaut=1.0e-8),
                     ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
                     SYME_MATR_TANG=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+                ),
+                b_mfr_thm_hidden=BLOC(
+                    condition="""'MFRONT' not in value("RELATION_KIT")""",
+                    COMPOR_MFRONT=SIMP(
+                        statut="c", typ=compor_mgis, fr=tr("objet ajouté automatiquement")
+                    ),
                 ),
             ),
             b_kit_meta=BLOC(

@@ -185,6 +185,7 @@ def all_components(self):
         "HDF5",
         "MED",
         "MFRONT",
+        "MGIS",
         "METIS",
         "PARMETIS",
         "SCOTCH",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,16 @@ Comportement - Occurrence  %(i1)d"""
   Par exemple, une occurrence pour les groupes de mailles contenant des éléments 3D (et comportement MFRONT),
   puis une occurrence pour les groupes de mailles contenant des éléments discrets (et comportement ELAS).
 
-  Les types de modélisation rencontrés sont : %(k1)s et %(k2)s.
+  Les types de modélisation rencontrés sont : %(i1)d et %(i2)d.
+  Voir la signification de l'index dans '%(k1)s'.
 """
     ),
     14: _(
         """
-  La modélisation %(k1)s dans le modèle n'est pas utilisable avec MFront.
+  La modélisation %(i1)d dans le modèle n'est pas utilisable avec MFront.
   S'il s'agit d'éléments de type TUYAU ou PMF et que vous êtes en mode prototypage, vous devez activer ALGO_CPLAN='DEBORST' pour pouvoir l'utiliser.
+
+  Voir la signification de l'index dans '%(k1)s'.
 """
     ),
     15: _(

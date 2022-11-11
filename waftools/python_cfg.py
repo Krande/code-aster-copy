@@ -76,7 +76,6 @@ def check_numpy_headers(self):
         feature="c",
         header_name="Python.h numpy/arrayobject.h",
         includes=numpy_includes,
-        defines="NPY_NO_PREFIX",
         use=["PYEXT"],
         uselib_store="NUMPY",
         errmsg="Could not find the numpy development headers",

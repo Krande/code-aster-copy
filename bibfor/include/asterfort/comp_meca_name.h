@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,22 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_name(nbVari     , nbVariMeca,&
-                              l_excl     , vari_excl   ,&
-                              l_kit_meta , l_mfront_offi, l_mfront_proto, l_umat,&
-                              rela_comp  , defo_comp   , kit_comp     ,&
-                              type_cpla  , post_iter   , regu_visc    ,&
-                              libr_name  , subr_name   , model_mfront , model_dim,&
-                              infoVari)
+    subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta,&
+                              rela_comp, defo_comp, kit_comp, type_cpla, post_iter,&
+                              regu_visc, extern_addr, extern_type, model_dim, infoVari)
         integer, intent(in) :: nbVari, nbVariMeca
         aster_logical, intent(in) :: l_excl
         character(len=16), intent(in) :: vari_excl
-        aster_logical, intent(in) :: l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat
-        character(len=16), intent(in) :: rela_comp, defo_comp, kit_comp(4)
+        aster_logical, intent(in) :: l_kit_meta
+        character(len=16), intent(in) :: extern_addr, rela_comp, defo_comp, kit_comp(4)
         character(len=16), intent(in) :: type_cpla, post_iter, regu_visc
-        character(len=255), intent(in) :: libr_name, subr_name
-        character(len=16), intent(in) :: model_mfront
-        integer, intent(in) :: model_dim
+        integer, intent(in) :: extern_type, model_dim
         character(len=16), pointer :: infoVari(:)
     end subroutine comp_meca_name
 end interface

@@ -23,26 +23,24 @@ subroutine carc_read(behaviourPrepCrit, model_)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/lcsymm.h"
 #include "asterc/lctest.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/compGetMecaPart.h"
-#include "asterfort/compGetRelation.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_read_mesh.h"
+#include "asterfort/compGetMecaPart.h"
+#include "asterfort/compGetRelation.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
 #include "asterfort/getBehaviourAlgo.h"
 #include "asterfort/getBehaviourPara.h"
 #include "asterfort/getExternalBehaviourPara.h"
-#include "asterfort/getExternalBehaviourPntr.h"
 #include "asterfort/getExternalStateVariable.h"
-#include "asterfort/getExternalStrainModel.h"
 #include "asterfort/getTHMPara.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -80,16 +78,15 @@ subroutine carc_read(behaviourPrepCrit, model_)
     character(len=16) :: rela_code_py, defo_code_py, meca_code_py
     character(len=16) :: veri_borne
     character(len=16) :: kit_comp(4)
-    character(len=16) :: defo_comp, rela_comp
+    character(len=16) :: extern_addr, defo_comp, rela_comp
     character(len=16) :: thmc_comp, hydr_comp, ther_comp, meca_comp
     aster_logical :: l_kit_thm, l_kit_ddi, l_exist_thm
     aster_logical :: l_kit
     aster_logical :: plane_stress, l_mfront_proto, l_mfront_offi
     character(len=24), parameter :: list_elem_affe = '&&CARCREAD.LIST'
-    aster_logical :: l_affe_all, l_matr_unsymm, l_comp_external
+    aster_logical :: l_affe_all, l_matr_unsymm
     integer :: nb_elem_affe
-    integer :: cptr_nbvarext, cptr_namevarext, cptr_fct_ldc
-    integer :: cptr_nameprop, cptr_nbprop
+    integer :: extern_type
     integer :: variExteCode(2), exte_strain
     character(len=16) :: texte(3)
     integer, pointer :: modelCell(:) => null()
@@ -298,9 +295,11 @@ subroutine carc_read(behaviourPrepCrit, model_)
         end if
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
-        call getExternalBehaviourPara(mesh, modelCell, rela_comp, kit_comp, &
-                                      l_comp_external, paraExte, &
-                                      factorKeyword, iFactorKeyword)
+        call getExternalBehaviourPara(mesh, modelCell, rela_comp, defo_comp, kit_comp, &
+                                      paraExte, factorKeyword, iFactorKeyword)
+        extern_type = paraExte%extern_type
+        extern_addr = paraExte%extern_addr
+        exte_strain = paraExte%strain_model
 
 ! ----- Get list of elements where comportment is defined
         plane_stress = ASTER_FALSE
@@ -317,19 +316,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
                               factorKeyword, iFactorKeyword, &
                               algo_inte, algo_inte_r)
 
-! ----- Get function pointers for external programs (MFRONT/UMAT)
-        cptr_fct_ldc = 0
-        cptr_nbvarext = 0
-        cptr_namevarext = 0
-        cptr_nbprop = 0
-        cptr_nameprop = 0
-        if (l_comp_external) then
-            call getExternalBehaviourPntr(paraExte, &
-                                          cptr_fct_ldc, &
-                                          cptr_nbvarext, cptr_namevarext, &
-                                          cptr_nbprop, cptr_nameprop)
-        end if
-
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
         resi_inte_rela = 0.d0
         iter_inte_maxi = 0
@@ -340,14 +326,7 @@ subroutine carc_read(behaviourPrepCrit, model_)
 ! ----- Get external state variables
         call getExternalStateVariable(rela_comp, rela_code_py, &
                                       l_mfront_offi, l_mfront_proto, &
-                                      cptr_nbvarext, cptr_namevarext, &
-                                      variExteCode)
-
-! ----- Get model of strains for external programs (MFRONT)
-        exte_strain = 0
-        call getExternalStrainModel(l_mfront_offi, l_mfront_proto, &
-                                    paraExte, &
-                                    defo_comp, exte_strain)
+                                      extern_addr, variExteCode)
 
 ! ----- Discard
         call lcdiscard(meca_code_py)
@@ -371,11 +350,8 @@ subroutine carc_read(behaviourPrepCrit, model_)
         behaviourPrepCrit%v_crit(iFactorKeyword)%algo_inte_r = algo_inte_r
         behaviourPrepCrit%v_crit(iFactorKeyword)%resi_inte_rela = resi_inte_rela
         behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_maxi = iter_inte_maxi
-        behaviourPrepCrit%v_crit(iFactorKeyword)%cptr_fct_ldc = cptr_fct_ldc
-        behaviourPrepCrit%v_crit(iFactorKeyword)%cptr_nbvarext = cptr_nbvarext
-        behaviourPrepCrit%v_crit(iFactorKeyword)%cptr_namevarext = cptr_namevarext
-        behaviourPrepCrit%v_crit(iFactorKeyword)%cptr_nbprop = cptr_nbprop
-        behaviourPrepCrit%v_crit(iFactorKeyword)%cptr_nameprop = cptr_nameprop
+        behaviourPrepCrit%v_crit(iFactorKeyword)%extern_ptr = paraExte%extern_ptr
+        behaviourPrepCrit%v_crit(iFactorKeyword)%extern_type = extern_type
         behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext1 = variExteCode(1)
         behaviourPrepCrit%v_crit(iFactorKeyword)%jvariext2 = variExteCode(2)
         behaviourPrepCrit%v_crit(iFactorKeyword)%exte_strain = exte_strain

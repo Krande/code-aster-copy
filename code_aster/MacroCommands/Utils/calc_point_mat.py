@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 
 from ...Objects import Table
 from ...Supervis import ExecuteCommand
+from ...Helpers import adapt_for_mgis_behaviour
 from .calc_point_mat_cata import CALC_POINT_MAT_CATA
 
 
@@ -28,6 +29,9 @@ class CalcPointMat(ExecuteCommand):
 
     command_name = "CALC_POINT_MAT"
     command_cata = CALC_POINT_MAT_CATA
+
+    # Change the content of the COMPORTEMENT keyword.
+    adapt_syntax = adapt_for_mgis_behaviour
 
     def create_result(self, keywords):
         """Create the result.

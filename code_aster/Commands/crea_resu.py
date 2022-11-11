@@ -19,6 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
+from ..Helpers import adapt_for_mgis_behaviour
 from ..Objects import (
     LoadResult,
     ThermalResult,
@@ -47,6 +48,8 @@ class ResultCreator(ExecuteCommand):
     """Command that creates evolutive results."""
 
     command_name = "CREA_RESU"
+    # Change the content of the COMPORTEMENT keyword.
+    adapt_syntax = adapt_for_mgis_behaviour
 
     def create_result(self, keywords):
         """Initialize the result.

@@ -59,6 +59,8 @@ module THM_type
         character(len=16) :: rela_thmc = ' '
 ! ----- Name of behaviour law for mechanic
         character(len=16) :: rela_meca = ' '
+! ----- Address of MGISBehaviour object
+        character(len=16) :: extern_addr = ' '
 ! ----- Name of behaviour law for thermic
         character(len=16) :: rela_ther = ' '
 ! ----- Name of behaviour law for hydraulic

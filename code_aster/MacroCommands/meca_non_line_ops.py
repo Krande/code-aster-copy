@@ -19,9 +19,10 @@
 
 
 from ..Cata.Syntax import _F
+from ..Helpers import adapt_for_mgis_behaviour
+from ..Messages import UTMESS
 from ..Objects import (
     FrictionType,
-    InitialState,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -29,7 +30,6 @@ from ..Objects import (
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
 )
-from ..Messages import UTMESS
 from ..Utilities import print_stats
 from .NonLinearSolver import NonLinearSolver, TimeStepper
 
@@ -102,6 +102,7 @@ def meca_non_line_ops(self, **args):
     )
 
     # Add behaviour
+    adapt_for_mgis_behaviour(self, args)
     snl.setBehaviourProperty(args["COMPORTEMENT"])
 
     # Add loads

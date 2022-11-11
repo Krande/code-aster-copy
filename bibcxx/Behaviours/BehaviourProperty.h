@@ -35,7 +35,6 @@
 
 #include <string>
 
-// TODO doit être une DataStructure
 /**
  * @class BehaviourProperty
  * @brief Class to define behaviour

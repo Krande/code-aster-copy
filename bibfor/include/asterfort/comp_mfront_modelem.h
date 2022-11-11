@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=16), intent(in) :: elem_type_name
         aster_logical, intent(in) :: l_mfront_cp
         integer, intent(out) :: model_dim
-        character(len=16), intent(out) :: model_mfront
+        integer, intent(out) :: model_mfront
         integer, intent(out) :: codret
         character(len=16), intent(out) :: type_cpla
     end subroutine comp_mfront_modelem

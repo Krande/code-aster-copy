@@ -48,6 +48,7 @@ subroutine thmGetBehaviour(compor, ds_thm)
     ds_thm%ds_behaviour%rela_ther = compor(THER_NAME)
     ds_thm%ds_behaviour%rela_hydr = compor(HYDR_NAME)
     ds_thm%ds_behaviour%rela_meca = compor(MECA_NAME)
+    ds_thm%ds_behaviour%extern_addr = compor(MGIS_ADDR)
     read (compor(THMC_NVAR), '(I16)') ds_thm%ds_behaviour%nb_vari_thmc
     read (compor(THER_NVAR), '(I16)') ds_thm%ds_behaviour%nb_vari_ther
     read (compor(HYDR_NVAR), '(I16)') ds_thm%ds_behaviour%nb_vari_hydr

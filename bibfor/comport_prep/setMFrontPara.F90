@@ -23,10 +23,10 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
     implicit none
 !
+#include "asterc/mgis_set_double_parameter.h"
+#include "asterc/mgis_set_integer_parameter.h"
+#include "asterc/mgis_set_outofbounds_policy.h"
 #include "asterf_types.h"
-#include "asterc/mfront_set_double_parameter.h"
-#include "asterc/mfront_set_integer_parameter.h"
-#include "asterc/mfront_set_outofbounds_policy.h"
 #include "asterfort/assert.h"
 !
     type(Behaviour_Crit), pointer :: behaviourCrit(:)
@@ -45,34 +45,24 @@ subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(Behaviour_ParaExte) :: paraExte
     real(kind=8) :: iter_inte_maxi, resi_inte_rela
-    integer:: iveriborne
-    aster_logical :: l_mfront_proto, l_mfront_offi
-    character(len=255) :: libr_name, subr_name
-    character(len=16) :: model_mfront
+    integer:: extern_type, iveriborne
+    character(len=16) :: extern_addr
 !
 ! --------------------------------------------------------------------------------------------------
 !
     iveriborne = behaviourCrit(iFactorKeyword)%iveriborne
     resi_inte_rela = behaviourCrit(iFactorKeyword)%resi_inte_rela
     iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
-    paraExte = behaviourCrit(iFactorKeyword)%paraExte
-    l_mfront_offi = paraExte%l_mfront_offi
-    l_mfront_proto = paraExte%l_mfront_proto
-    libr_name = paraExte%libr_name
-    subr_name = paraExte%subr_name
-    model_mfront = paraExte%model_mfront
+    extern_addr = behaviourCrit(iFactorKeyword)%paraExte%extern_addr
+    extern_type = behaviourCrit(iFactorKeyword)%extern_type
 !
 ! - Set values
 !
-    if (l_mfront_offi .or. l_mfront_proto) then
-        call mfront_set_double_parameter(libr_name, subr_name, model_mfront, &
-                                         "epsilon", resi_inte_rela)
-        call mfront_set_integer_parameter(libr_name, subr_name, model_mfront, &
-                                          "iterMax", int(iter_inte_maxi))
-        call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront, &
-                                           iveriborne)
+    if (extern_type .eq. 1 .or. extern_type .eq. 2) then
+        call mgis_set_double_parameter(extern_addr, "epsilon", resi_inte_rela)
+        call mgis_set_integer_parameter(extern_addr, "iterMax", int(iter_inte_maxi))
+        call mgis_set_outofbounds_policy(extern_addr, iveriborne)
     end if
 !
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,14 @@ CREA_LIB_MFRONT = MACRO(
     nom="CREA_LIB_MFRONT",
     op=OPS("code_aster.MacroCommands.crea_lib_mfront_ops.crea_lib_mfront_ops"),
     reentrant="n",
-    fr=tr("Compiler une loi de comportement MFront"),
-    UNITE_MFRONT=SIMP(statut="o", typ=UnitType(), inout="in"),
-    UNITE_LIBRAIRIE=SIMP(statut="o", typ=UnitType(), inout="out"),
+    sd_prod=compor_mgis,
+    fr=tr(
+        "Compiler une loi de comportement MFront ou charger un comportement "
+        "depuis une bibliothèque existante"
+    ),
+    regles=AU_MOINS_UN("UNITE_MFRONT", "UNITE_LIBRAIRIE"),
+    NOM_COMPOR=SIMP(statut="o", typ="TXM", fr=tr("Nom du comportement dans la bibliothèque")),
+    UNITE_MFRONT=SIMP(statut="f", typ=UnitType(), inout="in"),
+    UNITE_LIBRAIRIE=SIMP(statut="f", typ=UnitType(), inout="out"),
     DEBUG=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
 )

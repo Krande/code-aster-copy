@@ -102,13 +102,10 @@ subroutine mat_proto(BEHinteg, &
 !
 ! - Copy properties
 !
-    if (ncoef .le. nprops) then
-        do i = 1, ncoef
-            props(i) = zr(jadr-1+i)
-        end do
-        nprops = ncoef
-    else
-        ASSERT(ASTER_FALSE)
-    end if
+    ASSERT(ncoef .le. nprops)
+    do i = 1, ncoef
+        props(i) = zr(jadr-1+i)
+    end do
+    nprops = ncoef
 
 end subroutine

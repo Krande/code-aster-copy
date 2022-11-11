@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=39)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="Chaboche", UNITE_MFRONT=38)
 
 
 CARRE = LIRE_MAILLAGE(FORMAT="ASTER")
@@ -99,9 +99,7 @@ SOLNL = STAT_NON_LINE(
     MODELE=CPLAN,
     CHAM_MATER=MAT,
     EXCIT=_F(CHARGE=TR_CS, FONC_MULT=COEF, TYPE_CHARGE="FIXE_CSTE"),
-    COMPORTEMENT=_F(
-        RELATION="MFRONT", NOM_ROUTINE="asterchaboche", UNITE_LIBRAIRIE=39, RESI_INTE_MAXI=1.0e-8
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1.0e-8),
     INCREMENT=_F(LIST_INST=LINST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=1.0e-6),

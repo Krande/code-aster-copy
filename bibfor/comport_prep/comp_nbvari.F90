@@ -18,27 +18,25 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
-                       post_iter, meca_comp, mult_comp, regu_visc, &
-                       libr_name, subr_name, model_dim, model_mfront, &
+                       post_iter, mult_comp, regu_visc, &
+                       extern_type, extern_addr, model_dim, &
                        nbVariUMAT, &
                        nbVari, numeLaw, nbVariKit, numeLawKit)
 !
     implicit none
 !
+#include "asterc/mgis_get_sizeof_isvs.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
-#include "asterfort/comp_nbvari_std.h"
 #include "asterfort/comp_nbvari_kit.h"
-#include "asterfort/comp_nbvari_ext.h"
+#include "asterfort/comp_nbvari_std.h"
 #include "asterfort/jeveuo.h"
 !
     character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-    character(len=16), intent(in) :: kit_comp(4), post_iter, meca_comp
-    character(len=16), intent(in) :: mult_comp, regu_visc
-    character(len=255), intent(in) :: libr_name, subr_name
-    integer, intent(in) :: model_dim
-    character(len=16), intent(in) :: model_mfront
+    character(len=16), intent(in) :: kit_comp(4), post_iter
+    character(len=16), intent(in) :: mult_comp, regu_visc, extern_addr
+    integer, intent(in) :: extern_type, model_dim
     integer, intent(in) :: nbVariUMAT
     integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
 !
@@ -55,13 +53,12 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 ! In  type_cpla        : plane stress method
 ! In  kit_comp         : KIT comportment
 ! In  post_iter        : type of post_treatment
-! In  regu_visc        : keyword for viscuous regularization
 ! In  mult_comp        : multi-comportment (for crystal)
-! In  nbVariUMAT       : number of internal state variables for UMAT
-! In  libr_name        : name of library if UMAT or MFront
-! In  subr_name        : name of comportement in library if UMAT or MFront
+! In  regu_visc        : keyword for viscuous regularization
+! In  external_type    : type of type of integration (internal, official, proto, umat)
+! In  external_ptr     : address of external behaviour
 ! In  model_dim        : dimension of modelisation (2D or 3D)
-! In  model_mfront     : type of modelisation MFront
+! In  nbVariUMAT       : number of internal state variables for UMAT
 ! Out nbVari           : number of internal state variables
 ! Out numeLaw          : index of subroutine for behaviour
 ! Out nbVariKit        : number of internal state variables for components in kit
@@ -71,7 +68,6 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 !
     integer :: nbVariExte, nbVariFromKit, nbVariCrystal
     aster_logical :: l_cristal, l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, l_kit
-    aster_logical :: l_exte_comp, l_mfront_proto, l_mfront_offi, l_umat
     integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -114,16 +110,17 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 
 ! - Get number of internal state variables for external behaviours
     nbVariExte = 0
-    call comp_meca_l(meca_comp, 'EXTE_COMP', l_exte_comp)
-    call comp_meca_l(meca_comp, 'MFRONT_PROTO', l_mfront_proto)
-    call comp_meca_l(meca_comp, 'MFRONT_OFFI', l_mfront_offi)
-    call comp_meca_l(meca_comp, 'UMAT', l_umat)
-    if (l_exte_comp) then
-        call comp_nbvari_ext(l_umat, nbVariUMAT, &
-                             l_mfront_proto, l_mfront_offi, &
-                             libr_name, subr_name, &
-                             model_dim, model_mfront, &
-                             nbVariExte)
+    if (extern_type .ne. 0) then
+        if (extern_type .eq. 1 .or. extern_type .eq. 2) then
+            ! MFront offi/proto
+            call mgis_get_sizeof_isvs(extern_addr, nbVariExte)
+            if (nbVariExte .eq. 0) then
+                nbVariExte = 1
+            end if
+        else
+            ! UMAT
+            nbVariExte = nbVariUMAT
+        end if
         nbVariKit(4) = nbVariExte
     end if
 

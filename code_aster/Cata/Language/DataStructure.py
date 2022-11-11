@@ -364,6 +364,10 @@ class compor_sdaster(ASSD):
     pass
 
 
+class compor_mgis(ASSD):
+    pass
+
+
 class corresp_2_mailla(ASSD):
     pass
 

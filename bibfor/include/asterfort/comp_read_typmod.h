@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
                                 model_dim, model_mfront, type_cpla_out)
         character(len=8), intent(in) :: mesh
         integer, pointer :: v_model_elem(:)
-        integer, intent(in) :: elem_type 
+        integer, intent(in) :: elem_type
         character(len=16), intent(in) :: keywf
         integer, intent(in) :: i_comp
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: type_cpla_in
-        character(len=16), intent(out) :: model_mfront
+        integer, intent(out) :: model_mfront
         integer, intent(out) :: model_dim
         character(len=16), intent(out) :: type_cpla_out
     end subroutine comp_read_typmod

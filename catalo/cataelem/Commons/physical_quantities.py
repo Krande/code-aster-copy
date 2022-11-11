@@ -592,6 +592,7 @@ COMPOR = PhysicalQuantity(
         "DEFO_LDC",
         "RIGIGEOM",
         "REGUVISC",
+        "MGISADDR",
     ),
     comment="""  COMPOR Type:K16 Comportement materiel
        RELCOM : relation de comportement : 'ELAS' , 'VMIS_ISOT_LINE' , ...
@@ -617,6 +618,7 @@ COMPOR = PhysicalQuantity(
        DEFO_LDC : deformation en entrée de la ldc : 'TOTALE' ou 'MECANIQUE'
        RIGIGEOM : travail sur geometrie deformee
        REGUVISC : régularisation visqueuse
+       MGISADDR : adresse de l'objet C++ MGISBehaviour
 """,
 )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ from numpy.linalg import norm
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=40)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="PolyCrystal_MC", UNITE_MFRONT=38)
 
 tfin = 5.0
 
@@ -344,12 +344,7 @@ FEPZZ = RECU_FONCTION(TABLE=SOLNL, PARA_X="INST", PARA_Y="EPZZ", INTERPOL="LIN")
 
 SOLMF = SIMU_POINT_MAT(
     INFO=1,
-    COMPORTEMENT=_F(
-        RELATION="MFRONT",
-        NOM_ROUTINE="asterpolycrystal_mc",
-        UNITE_LIBRAIRIE=40,
-        RESI_INTE_MAXI=1e-6,
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-6),
     NEWTON=_F(MATRICE="ELASTIQUE", PREDICTION="EXTRAPOLE", REAC_ITER=0),
     CONVERGENCE=_F(ITER_GLOB_MAXI=50),
     MATER=MATFRONT,

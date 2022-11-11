@@ -17,9 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
-
-from ..Objects import NonLinearResult, FieldOnCellsReal, FieldOnCellsComplex
+from ..Helpers import adapt_for_mgis_behaviour
+from ..Objects import FieldOnCellsComplex, FieldOnCellsReal, NonLinearResult
 from ..Supervis import ExecuteCommand
 
 
@@ -27,6 +26,8 @@ class NonLinearStaticAnalysis(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.NonLinearResult`."""
 
     command_name = "STAT_NON_LINE"
+    # Change the content of the COMPORTEMENT keyword.
+    adapt_syntax = adapt_for_mgis_behaviour
 
     def create_result(self, keywords):
         """Initialize the result.

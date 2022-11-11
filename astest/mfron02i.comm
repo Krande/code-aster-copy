@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-CREA_LIB_MFRONT(UNITE_MFRONT=40, UNITE_LIBRAIRIE=39)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="Plasticity", UNITE_MFRONT=40)
 
 MAILIN = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -108,10 +108,8 @@ U1 = STAT_NON_LINE(
     ),
     COMPORTEMENT=_F(
         RELATION="KIT_HM",
-        # RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
         RELATION_KIT=("MFRONT", "LIQU_SATU", "HYDR_UTIL"),
-        NOM_ROUTINE="asterplasticity",
-        UNITE_LIBRAIRIE=39,
+        COMPOR_MFRONT=behaviour,
         # RESI_INTE_MAXI=1e-11,
     ),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),

@@ -900,7 +900,7 @@ contains
         dpk2dc = 0.d0
         module_tang = 0.d0
 !
-        if ((jstrainexte .eq. MFRONT_STRAIN_GROTGDEP_S) .or. (jstrainexte .eq. 0)) then
+        if (jstrainexte .eq. 0) then
 !
 ! --------- Compute pre-processing E (Green-Lagrange)
 !

@@ -24,7 +24,6 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/mfront_get_nbvari.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -63,7 +62,6 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
     character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc
     character(len=16) :: kit_comp(4), answer
     aster_logical :: l_cristal, l_kit, lTotalStrain
-    aster_logical :: l_comp_external
     integer, pointer :: modelCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -139,8 +137,8 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
         type_cpla = 'VIDE'
-        call getExternalBehaviourPara(mesh, modelCell, rela_comp, kit_comp, &
-                                    l_comp_external, behaviourPrepPara%v_paraExte(iFactorKeyword), &
+        call getExternalBehaviourPara(mesh, modelCell, rela_comp, defo_comp, kit_comp, &
+                                      behaviourPrepPara%v_paraExte(iFactorKeyword), &
                                       factorKeyword, iFactorKeyword, &
                                       type_cpla_out_=type_cpla)
 

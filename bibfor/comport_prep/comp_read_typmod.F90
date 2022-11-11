@@ -25,14 +25,15 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/comp_mfront_modelem.h"
+#include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getMFrontPlaneStress.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/comp_read_mesh.h"
-#include "asterfort/comp_mfront_modelem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/getMFrontPlaneStress.h"
 !
     character(len=8), intent(in) :: mesh
     integer, pointer :: v_model_elem(:)
@@ -41,7 +42,7 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
     integer, intent(in) :: i_comp
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: type_cpla_in
-    character(len=16), intent(out) :: model_mfront
+    integer, intent(out) :: model_mfront
     integer, intent(out) :: model_dim
     character(len=16), intent(out) :: type_cpla_out
 !
@@ -67,17 +68,17 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem_affe, nb_elem, i_elem, elem_nume
+    integer :: nb_elem_affe, nb_elem, i_elem, elem_nume, model_save
     integer :: elem_type_nume, codret
     aster_logical :: l_affe_all, l_mfront_cp
     character(len=24) :: list_elem_affe
-    character(len=16) :: elem_type_name, model_save
+    character(len=16) :: elem_type_name
     integer, pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model_mfront = ' '
-    model_save = ' '
+    model_mfront = MFRONT_MODEL_UNSET
+    model_save = MFRONT_MODEL_UNSET
     model_dim = 0
     list_elem_affe = '&&COMPMECASAVE.LIST'
     type_cpla_out = 'VIDE'
@@ -125,8 +126,8 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
             call comp_mfront_modelem(elem_type_name, l_mfront_cp, &
                                      model_dim, model_mfront, &
                                      codret, type_cpla_out)
-            if (model_mfront .ne. ' ') then
-                if (model_save .eq. ' ') then
+            if (model_mfront .ne. MFRONT_MODEL_UNSET) then
+                if (model_save .eq. MFRONT_MODEL_UNSET) then
                     model_save = model_mfront
                 else
                     if ((model_save .ne. model_mfront)) then
@@ -135,11 +136,13 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
                 end if
             end if
             if (codret .eq. 1) then
-                call utmess('F', 'COMPOR4_13', nk=2, &
-                            valk=[model_save, model_mfront])
+                call utmess('F', 'COMPOR4_13', ni=2, &
+                            vali=[model_save, model_mfront], &
+                            sk="MGISBehaviourFort.h")
             end if
             if (codret .eq. 2) then
-                call utmess('F', 'COMPOR4_14', sk=model_mfront)
+                call utmess('F', 'COMPOR4_14', si=model_mfront, &
+                            sk="MGISBehaviourFort.h")
             end if
         end if
     end do

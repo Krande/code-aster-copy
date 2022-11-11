@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,6 +19,7 @@
 
 # person_in_charge: j-pierre.lefebvre at edf.fr
 
+from ..Helpers import adapt_for_mgis_behaviour
 from ..Objects import (
     LoadResult,
     ThermalResult,
@@ -39,6 +40,8 @@ class ResultsReader(ExecuteCommand):
     finite elements on a :class:`~code_aster.Objects.??`."""
 
     command_name = "LIRE_RESU"
+    # Change the content of the COMPORTEMENT keyword.
+    adapt_syntax = adapt_for_mgis_behaviour
 
     def create_result(self, keywords):
         """Initialize the result.

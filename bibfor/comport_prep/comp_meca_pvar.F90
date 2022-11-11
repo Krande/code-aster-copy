@@ -85,7 +85,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_excl, l_kit_meta, l_cristal, l_pmf, l_kit_thm
-    aster_logical :: l_umat, l_mfront_proto, l_mfront_offi
+    aster_logical :: l_mfront_proto, l_mfront_offi
     aster_logical :: l_zone_read
     character(len=8) :: mesh
     character(len=19) :: modelLigrel
@@ -103,8 +103,8 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     character(len=16) :: post_iter, vari_excl, regu_visc
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
-    character(len=16) :: model_mfront, notype
-    integer :: model_dim
+    character(len=16) :: extern_addr, notype
+    integer :: extern_type, model_dim
     type(Behaviour_ParaExte), pointer :: behaviourParaExte(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -247,12 +247,12 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
                 end if
             end if
 ! --------- Parameters for external constitutive laws
-            l_umat = behaviourParaExte(mapZoneNume)%l_umat
             l_mfront_proto = behaviourParaExte(mapZoneNume)%l_mfront_proto
             l_mfront_offi = behaviourParaExte(mapZoneNume)%l_mfront_offi
             subr_name = behaviourParaExte(mapZoneNume)%subr_name
             libr_name = behaviourParaExte(mapZoneNume)%libr_name
-            model_mfront = behaviourParaExte(mapZoneNume)%model_mfront
+            extern_addr = behaviourParaExte(mapZoneNume)%extern_addr
+            extern_type = behaviourParaExte(mapZoneNume)%extern_type
             model_dim = behaviourParaExte(mapZoneNume)%model_dim
 
 ! --------- Exception for name of internal state variables
@@ -268,13 +268,9 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 ! --------- Get names of internal state variables
             call jeecra(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'LONMAX', nbVari)
             call jeveuo(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'E', vk16=infoVari)
-            call comp_meca_name(nbVari, nbVariMeca, &
-                                l_excl, vari_excl, &
-                                l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat, &
-                                rela_comp, defo_comp, kit_comp, &
-                                type_cpla, post_iter, regu_visc, &
-                                libr_name, subr_name, model_mfront, model_dim, &
-                                infoVari)
+            call comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
+                                rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
+                                regu_visc, extern_addr, extern_type, model_dim, infoVari)
 
 ! --------- Save current zone
             zoneRead(mapZoneNume) = 1

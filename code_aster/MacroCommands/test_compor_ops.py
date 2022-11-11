@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,6 @@
 #              MACRO "TEST_COMPOR"
 #           ----------------------------
 
-#
-# utilitaires
-#
-
 import numpy as NP
 
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
@@ -37,7 +33,6 @@ from ..Commands import (
     DEFI_FONCTION,
     DEFI_LIST_INST,
     DEFI_LIST_REEL,
-    DEFI_MATERIAU,
     FORMULE,
     IMPR_FONCTION,
     IMPR_TABLE,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,10 @@
 interface
     subroutine getExternalStateVariable(rela_comp, rela_code_py,&
                                         l_mfront_offi, l_mfront_proto ,&
-                                        cptr_nbvarext, cptr_namevarext,&
-                                        variExteCode)
-        aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
+                                        extern_addr, variExteCode)
         character(len=16), intent(in) :: rela_comp, rela_code_py
-        integer, intent(in) :: cptr_nbvarext, cptr_namevarext
+        aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
+        character(len=16), intent(in) :: extern_addr
         integer, intent(out) :: variExteCode(2)
     end subroutine getExternalStateVariable
 end interface

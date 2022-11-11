@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=39)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="Chaboche", UNITE_MFRONT=38)
 
 MAIL_B = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 MAIL_B = DEFI_GROUP(reuse=MAIL_B, MAILLAGE=MAIL_B, CREA_GROUP_NO=(_F(GROUP_MA="LFE"),))
@@ -93,11 +93,7 @@ RESULTAT = STAT_NON_LINE(
     CARA_ELEM=CAR_EL_B,
     EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=PRES_LIM, TYPE_CHARGE="FIXE_PILO")),
     COMPORTEMENT=_F(
-        RELATION="MFRONT",
-        NOM_ROUTINE="asterchaboche",
-        UNITE_LIBRAIRIE=39,
-        RESI_INTE_MAXI=1.0e-12,
-        ALGO_CPLAN="ANALYTIQUE",
+        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1.0e-12, ALGO_CPLAN="ANALYTIQUE"
     ),
     INCREMENT=_F(LIST_INST=LIS_INST),
     NEWTON=_F(PAS_MINI_ELAS=0.24, REAC_INCR=1, REAC_ITER=1, REAC_ITER_ELAS=1),

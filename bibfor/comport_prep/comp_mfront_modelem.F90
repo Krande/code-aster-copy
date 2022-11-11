@@ -26,11 +26,12 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/teattr.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: elem_type_name
     aster_logical, intent(in) :: l_mfront_cp
     integer, intent(out) :: model_dim
-    character(len=16), intent(out) :: model_mfront
+    integer, intent(out) :: model_mfront
     integer, intent(out) :: codret
     character(len=16), intent(out) :: type_cpla
 !
@@ -62,7 +63,7 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
     codret = 0
     model_dim = 0
-    model_mfront = ' '
+    model_mfront = MFRONT_MODEL_UNSET
     type_cpla = 'VIDE'
 !
 ! - Get attributes on finite element
@@ -76,26 +77,25 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
     if (principal .eq. 'OUI') then
         if (model_type .eq. '3D') then
-            model_mfront = '_Tridimensional'
+            model_mfront = MFRONT_MODEL_TRIDIMENSIONAL
         elseif (model_type .eq. 'C_PLAN') then
             if (l_mfront_cp) then
-                model_mfront = '_PlaneStress'
+                model_mfront = MFRONT_MODEL_PLANESTRESS
                 type_cpla = 'ANALYTIQUE'
             else
-                model_mfront = '_Axisymmetrical'
+                model_mfront = MFRONT_MODEL_AXISYMMETRICAL
                 model_dim = 2
                 type_cpla = 'DEBORST'
             end if
         elseif (model_type .eq. 'D_PLAN') then
-            model_mfront = '_PlaneStrain'
+            model_mfront = MFRONT_MODEL_PLANESTRAIN
         elseif (model_type .eq. 'AXIS') then
-            model_mfront = '_Axisymmetrical'
+            model_mfront = MFRONT_MODEL_AXISYMMETRICAL
         elseif (model_type .eq. '1D') then
-            model_mfront = '_Axisymmetrical'
+            model_mfront = MFRONT_MODEL_AXISYMMETRICAL
             model_dim = 2
             type_cpla = 'DEBORST'
         else
-            model_mfront = model_type
             codret = 2
         end if
     end if

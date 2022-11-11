@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=39)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="Tvergaard", UNITE_MFRONT=38)
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -78,13 +78,7 @@ U_1F = STAT_NON_LINE(
     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=TRAC_1, FONC_MULT=FCT2)),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5, METHODE="MIXTE"),
     COMPORTEMENT=(
-        _F(
-            RELATION="MFRONT",
-            NOM_ROUTINE="astertvergaard",
-            UNITE_LIBRAIRIE=39,
-            GROUP_MA="CUBEDEG",
-            RESI_INTE_MAXI=1.0e-8,
-        ),
+        _F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, GROUP_MA="CUBEDEG", RESI_INTE_MAXI=1.0e-8),
         _F(RELATION="ELAS", GROUP_MA="G_CUBE"),
     ),
     INCREMENT=_F(LIST_INST=DEF2),

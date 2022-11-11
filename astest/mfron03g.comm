@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import numpy as NP
 from numpy.linalg import norm
 
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=40)
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="MonoDDCFC_Irra", UNITE_MFRONT=38)
 
 
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_CFC. Unites : MPa, mm, N
@@ -249,11 +249,7 @@ IMPLMF = SIMU_POINT_MAT(
     MATER=MATFR,
     MASSIF=_F(ANGL_EULER=angles),
     COMPORTEMENT=_F(
-        RELATION="MFRONT",
-        NOM_ROUTINE="astermonoddcfc_irra",
-        UNITE_LIBRAIRIE=40,
-        RESI_INTE_MAXI=1e-12,
-        ITER_INTE_MAXI=100,
+        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-12, ITER_INTE_MAXI=100
     ),
     INCREMENT=(_F(LIST_INST=LIS2DD),),
     NEWTON=(_F(REAC_ITER=1, PREDICTION="ELASTIQUE"),),
@@ -355,8 +351,8 @@ TEST_TABLE(
     CRITERE="ABSOLU",
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=0.0,
-    PRECISION=1.0e-8,
-    VALE_CALC=2.6429991925282e-09,
+    PRECISION=1.0e-6,
+    VALE_CALC=-6.079e-7,
 )
 
 TEST_TABLE(
@@ -366,8 +362,8 @@ TEST_TABLE(
     CRITERE="ABSOLU",
     REFERENCE="AUTRE_ASTER",
     VALE_REFE=0.0,
-    PRECISION=1.0e-8,
-    VALE_CALC=-2.0217177646511e-09,
+    PRECISION=1.0e-5,
+    VALE_CALC=1.24e-6,
 )
 
 

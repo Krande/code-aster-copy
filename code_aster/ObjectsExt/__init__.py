@@ -78,6 +78,7 @@ from .materialfield_ext import MaterialField
 from .mechanicalload_ext import MechanicalLoadReal, MechanicalLoadFunction, MechanicalLoadComplex
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
+from .mgis_behaviour_ext import MGISBehaviour
 from .model_ext import Model
 from .moderesult_ext import ModeResult
 from .paralleldofnumbering_ext import ParallelDOFNumbering

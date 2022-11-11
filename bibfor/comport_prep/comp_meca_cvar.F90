@@ -42,11 +42,10 @@ subroutine comp_meca_cvar(behaviourPrepPara)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iFactorKeyword, nbFactorKeyword
-    character(len=16) :: post_iter, meca_comp
+    character(len=16) :: post_iter, extern_addr
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla, regu_visc
     integer :: numeLawKit(4), nbVari, nbVariKit(4), numeLaw, nbVariUMAT, model_dim
-    character(len=255) :: libr_name, subr_name
-    character(len=16) :: model_mfront
+    integer :: extern_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,22 +59,20 @@ subroutine comp_meca_cvar(behaviourPrepPara)
 ! ----- Get parameters
         rela_comp = behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
         defo_comp = behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
-        meca_comp = behaviourPrepPara%v_para(iFactorKeyword)%meca_comp
         type_cpla = behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
         kit_comp = behaviourPrepPara%v_para(iFactorKeyword)%kit_comp
         mult_comp = behaviourPrepPara%v_para(iFactorKeyword)%mult_comp
         post_iter = behaviourPrepPara%v_para(iFactorKeyword)%post_iter
         regu_visc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
-        libr_name = behaviourPrepPara%v_paraExte(iFactorKeyword)%libr_name
-        subr_name = behaviourPrepPara%v_paraExte(iFactorKeyword)%subr_name
         nbVariUMAT = behaviourPrepPara%v_paraExte(iFactorKeyword)%nbVariUMAT
-        model_mfront = behaviourPrepPara%v_paraExte(iFactorKeyword)%model_mfront
+        extern_addr = behaviourPrepPara%v_paraExte(iFactorKeyword)%extern_addr
+        extern_type = behaviourPrepPara%v_paraExte(iFactorKeyword)%extern_type
         model_dim = behaviourPrepPara%v_paraExte(iFactorKeyword)%model_dim
 
 ! ----- Count the number of internal state variables and index of behaviours
         call comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
-                         post_iter, meca_comp, mult_comp, regu_visc, &
-                         libr_name, subr_name, model_dim, model_mfront, &
+                         post_iter, mult_comp, regu_visc, &
+                         extern_type, extern_addr, model_dim, &
                          nbVariUMAT, &
                          nbVari, numeLaw, nbVariKit, numeLawKit)
 

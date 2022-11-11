@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,7 +121,13 @@ class TestCase(unittest.TestCase):
         self._silent = silent
         self._passed = 0
         self._failure = 0
+        self._last_ok = True
         super().__init__("runTest")
+
+    @property
+    def last_failed(self):
+        """bool: Tell if the last test failed."""
+        return not self._last_ok
 
     def runTest(self):
         """does nothing"""
@@ -148,6 +154,7 @@ class TestCase(unittest.TestCase):
         s1 = " : " if exc else ""
         s2 = " : " if msg else ""
         here = where()
+        self._last_ok = ok
         if ok:
             self._passed += 1
             fmt = " OK  {func:>16} passed{s2}{msg}"

@@ -17,10 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getExternalStrainModel(l_mfront_offi, l_mfront_proto, paraExte, &
-                                  defo_comp, istrainexte)
-!
-    use Behaviour_type
+subroutine getExternalStrainModel(defo_comp, strain_model)
 !
     implicit none
 !
@@ -28,52 +25,39 @@ subroutine getExternalStrainModel(l_mfront_offi, l_mfront_proto, paraExte, &
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 !
-    aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
-    type(Behaviour_ParaExte), intent(in) :: paraExte
     character(len=16), intent(in) :: defo_comp
-    integer, intent(out) :: istrainexte
+    integer, intent(out) :: strain_model
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (mechanics)
 !
-! Get model of strains for external programs (MFRONT/UMAT)
+! Get model of strains for external programs (MFRONT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_mfront_proto   : .true. if MFront prototype
-! In  l_mfront_offi    : .true. if MFront official
-! In  paraExte         : external behaviours parameters
-! In  defo_comp        : DEFORMATION comportment
-! Out istrainexte      : model of (large) strains
-!                        0 - MFront is small strains
-!                        1 - MFront use F (SIMO_MIEHE)
-!                        1 - MFront use F (SIMO_MIEHE)
-!
+! In  defo_comp        : value of DEFORMATION keyword
+! Out strain_model     : model of (large) strains
+!                        1 - small strains
+!                        2 - Simo-Miehe
+!                        3 - TotalLagrangian - not yet used
 ! --------------------------------------------------------------------------------------------------
-!
-    integer :: strain_model
-!
-! --------------------------------------------------------------------------------------------------
-!
-    strain_model = paraExte%strain_model
-    istrainexte = 0
-!
-    if (l_mfront_offi .or. l_mfront_proto) then
+    strain_model = MFRONT_STRAIN_UNSET
+
 ! ----- Indicator for large strains
-        istrainexte = MFRONT_STRAIN_SMALL
-        if (strain_model .eq. MFRONT_STRAIN_SIMOMIEHE) then
-            istrainexte = MFRONT_STRAIN_SIMOMIEHE
-        end if
-        if (strain_model .eq. MFRONT_STRAIN_GROTGDEP) then
-            if (defo_comp .eq. 'PETIT') then
-                istrainexte = MFRONT_STRAIN_GROTGDEP_S
-            elseif (defo_comp .eq. 'GROT_GDEP') then
-                istrainexte = MFRONT_STRAIN_GROTGDEP_L
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-        end if
+
+!   Obsolete - for trace
+    ASSERT(defo_comp .ne. 'GROT_GDEP')
+    ASSERT(defo_comp .ne. 'SIMO_MIEHE')
+    ASSERT(defo_comp .ne. 'GREEN_LAGRANGE')
+
+!   for GDEF_LOG, prelog/poslog are called in te*
+    if (defo_comp .eq. 'PETIT' .or. &
+        defo_comp .eq. 'PETIT_REAC' .or. &
+        defo_comp .eq. 'GDEF_LOG') then
+        strain_model = MFRONT_STRAIN_SMALL
+    else
+        ASSERT(ASTER_FALSE)
     end if
-!
+
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -301,7 +301,7 @@ class LoiComportement(Base):
             and self._nom_vari is not None
             and self._nb_vari != len(self._nom_vari)
         ):
-            print(self)
+            print(self, flush=True)
             msg = ufmt(
                 "Nombre de variables internes = %d, "
                 "incohérent avec la liste des variables internes %s",
@@ -325,22 +325,10 @@ class LoiComportementMFront(LoiComportement):
 
     """Définition d'une loi de comportement MFront.
 
-    symbol_mfront : nom de la fonction dans la bibliothèque MFront
     modelisation, deformation, algo_inte : listes des valeurs acceptees
     """
 
     _ldctype = "mfront"
-    __properties__ = tuple(list(LoiComportement.__properties__) + ["symbol_mfront"])
-
-    def __init__(self, nom, symbol_mfront, doc="", **kwargs):
-        """Initialisations"""
-        # fixes les valeurs sans objet pour MFront (elles ne peuvent donc
-        # pas être fournies dans kwargs)
-        super(LoiComportementMFront, self).__init__(
-            nom, symbol_mfront=symbol_mfront, doc=doc, **kwargs
-        )
-
-    symbol_mfront = Base.gen_property("symbol_mfront", (str, str), "Fonction MFront")
 
     def long_repr(self):
         template = """Loi de comportement : %(nom)s
@@ -349,7 +337,6 @@ class LoiComportementMFront(LoiComportement):
    modélisations disponibles         : %(modelisation)r
    types de déformations             : %(deformation)r
    schémas d'intégration             : %(algo_inte)r
-   nom du symbole                    : %(symbol_mfront)r
    déformations en entrée de la loi  : %(deform_ldc)r
 """
         return template % self.dict_info()
@@ -386,7 +373,6 @@ class KIT(Base):
     type_matr_tang = property(Base.gen_getfunc(intersection, "type_matr_tang"))
     proprietes = property(Base.gen_getfunc(intersection, "proprietes"))
     syme_matr_tang = property(Base.gen_getfunc(intersection, "syme_matr_tang"))
-    symbol_mfront = property(Base.gen_getfunc(first, "symbol_mfront"))
     exte_vari = property(Base.gen_getfunc(intersection, "exte_vari"))
     deform_ldc = property(
         Base.gen_getfunc(first, "deform_ldc")
@@ -447,7 +433,12 @@ class CataLoiComportement(metaclass=Singleton):
                 del self._dico[loi]
                 i += 1
         if self.debug:
-            print("CATALC: {} objects removed".format(i))
+            print("CATALC: {} objects removed".format(i), flush=True)
+
+    def __iter__(self):
+        """Iterator on defined behaviours."""
+        for comport in self._dico.values():
+            yield comport
 
     def get(self, loi):
         """Retourne l'objet LoiComportement dont le nom est 'loi'"""
@@ -463,7 +454,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCCREE(NBKIT, LKIT, COMPOR)
         ==> comport = catalc.create(*list_kit)"""
         if self.debug:
-            print("catalc.create - args =", list_kit)
+            print("catalc.create - args =", list_kit, flush=True)
         nom = self._name()
         list_comport = [self.get(kit) for kit in list_kit]
         comport = KIT(nom, *list_comport)
@@ -476,7 +467,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCINFO(COMPOR, NUMLC, NBVARI, NBVARI_EXTE)
         ==> num_lc, nb_vari, nb_vari_exte = catalc.get_info(COMPOR)"""
         if self.debug:
-            print("catalc.get_info - args =", loi)
+            print("catalc.get_info - args =", loi, flush=True)
         comport = self.get(loi)
         if comport.exte_vari is None:
             nb = 0
@@ -490,7 +481,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCVARI(COMPOR, NBVARI, LVARI)
         ==> nom_vari = catalc.get_vari(COMPOR)"""
         if self.debug:
-            print("catalc.get_vari - args =", loi)
+            print("catalc.get_vari - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.nom_vari
 
@@ -500,7 +491,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCEXTEVARI(COMPOR, NBVARI, LVARI)
         ==> exte_vari = catalc.get_variexte(COMPOR)"""
         if self.debug:
-            print("catalc.get_variexte - args =", loi)
+            print("catalc.get_variexte - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.exte_vari
 
@@ -509,7 +500,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
         ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)"""
         if self.debug:
-            print("catalc.query - args =", loi, ":", attr, ":", valeur.strip(), ":")
+            print("catalc.query - args =", loi, ":", attr, ":", valeur.strip(), ":", flush=True)
         attr = attr.lower()
         comport = self.get(loi)
         if not attr in comport.getPropertiesNames():
@@ -523,7 +514,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCALGO(COMPOR, ALGO)
         ==> algo_inte = catalc.get_algo(COMPOR)"""
         if self.debug:
-            print("catalc.get_algo - args =", loi)
+            print("catalc.get_algo - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.algo_inte
 
@@ -533,19 +524,9 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCTYPE(COMPOR, TYPE)
         ==> ldctype = catalc.get_type(COMPOR)"""
         if self.debug:
-            print("catalc.get_type - args =", loi)
+            print("catalc.get_type - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.ldctype
-
-    def get_symbol(self, loi):
-        """Retourne le nom de la fonction dans la bibliothèque MFront
-
-        CALL LCSYMB(COMPOR, NAME)
-        ==> name = catalc.get_symbol(COMPOR)"""
-        if self.debug:
-            print("catalc.get_symbol - args =", loi)
-        comport = self.get(loi)
-        return comport.symbol_mfront
 
     def get_symmetry(self, loi):
         """Retourne le type de symétrie de la matrice
@@ -553,7 +534,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCSYMM(COMPOR, SYMMETRY)
         ==> syme_matr_tang = catalc.get_symmetry(COMPOR)"""
         if self.debug:
-            print("catalc.get_symmetry - args =", loi)
+            print("catalc.get_symmetry - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.syme_matr_tang
 
@@ -563,7 +544,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCDEFORMLDC(COMPOR, DEFORM_LDC)
         ==> deform_ldc = catalc.get_deformldc(COMPOR)"""
         if self.debug:
-            print("catalc.get_deformldc - args =", loi)
+            print("catalc.get_deformldc - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.deform_ldc
 
@@ -574,14 +555,14 @@ class CataLoiComportement(metaclass=Singleton):
          ==> regu_visc = catalc.get_reguvisc(COMPOR)"""
 
         if self.debug:
-            print("catalc.get_reguvisc - args =", loi)
+            print("catalc.get_reguvisc - args =", loi, flush=True)
         comport = self.get(loi)
         return comport.regu_visc
 
     def get_kit(self, *list_kit):
         #        """Identifie les LdC pour le kit THM """
         if self.debug:
-            print("catalc.get_kit - args =", list_kit)
+            print("catalc.get_kit - args =", list_kit, flush=True)
 
         rela_meca = "VIDE"
         rela_hydr = "VIDE"

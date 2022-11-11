@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1501,W1504,W1306,C1505
+! aslint: disable=W1306,W1501,W1504,C1505
 !
 subroutine lc0000(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
@@ -122,7 +122,6 @@ subroutine lc0000(BEHinteg, &
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1037.h"
 #include "asterfort/lc1137.h"
-#include "asterfort/lc1058.h"
 #include "asterfort/lc2001.h"
 #include "asterfort/lc2002.h"
 #include "asterfort/lc2036.h"
@@ -316,7 +315,7 @@ subroutine lc0000(BEHinteg, &
 ! - Prepare external state variables for external solvers (UMAT/MFRONT)
 !
     if (BEHinteg%l_mfront .or. BEHinteg%l_umat) then
-        call behaviourPrepESVAExte(carcri, fami, kpg, ksp, BEHinteg)
+        call behaviourPrepESVAExte(compor, fami, kpg, ksp, BEHinteg)
     end if
 !
 ! - Prepare index of behaviour law
@@ -947,15 +946,6 @@ subroutine lc0000(BEHinteg, &
                     sigp, vip, typmod, icomp, &
                     nvi, dsidep, codret)
 
-    case (1058)
-!     MFRONT
-        call lc1058(BEHinteg, &
-                    fami, kpg, ksp, ndim, typmod, &
-                    imate, compor, carcri, instam, instap, &
-                    neps, epsm, deps, nsig, sigm, &
-                    nvi, vim, option, angmas, &
-                    sigp, vip, dsidep, codret)
-
     case (1137)
 !     MONOCRISTAL, POLYCRISTAL
         call lc1137(BEHinteg, &
@@ -1249,11 +1239,11 @@ subroutine lc0000(BEHinteg, &
         ASSERT(typmod(2) .eq. ' ' .or. typmod(2) .eq. 'GRADVARI')
         ASSERT(neps .ge. ndimsi)
         ASSERT(nsig .ge. ndimsi)
-        call lcvisc(fami, kpg, ksp, ndim, imate, &
-                    lSigm, lMatr, lVari, &
+        call lcvisc(fami, kpg, ksp, ndim, imate, lSigm, lMatr, lVari, &
                     instam, instap, deps(1:ndimsi), &
                     vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
-                    sigp(1:ndimsi), vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
+                    sigp(1:ndimsi), &
+                    vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
                     dsidep(1:ndimsi, 1:ndimsi))
     end if
 !
@@ -1275,8 +1265,8 @@ subroutine lc0000(BEHinteg, &
             ASSERT(size(dsidep, 2) .ge. ndimsi)
             ASSERT(lSigm .and. lMatr)
 
-            call behaviourPredictionStress(BEHinteg%esva, &
-                                           dsidep(1:ndimsi, 1:ndimsi), sigp(1:ndimsi))
+            call behaviourPredictionStress(BEHinteg%esva, dsidep(1:ndimsi, 1:ndimsi), &
+                                           sigp(1:ndimsi))
         end if
     end if
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ DEBUT(
     DEBUG=_F(SDVERI="OUI"),
 )
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=39, DEBUG="OUI")
+behaviour = CREA_LIB_MFRONT(NOM_COMPOR="MetaAcierEPIL_PT", UNITE_MFRONT=38, DEBUG="OUI")
 
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
@@ -648,12 +648,7 @@ U = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CM2,
     EXCIT=_F(CHARGE=CH_FO, FONC_MULT=RAMPE),
-    COMPORTEMENT=_F(
-        RELATION="MFRONT",
-        NOM_ROUTINE="astermetaacierepil_pt",
-        UNITE_LIBRAIRIE=39,
-        RESI_INTE_MAXI=1e-12,
-    ),
+    COMPORTEMENT=_F(RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-12),
     INCREMENT=_F(LIST_INST=DEFLIST2, NUME_INST_FIN=79),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=40),

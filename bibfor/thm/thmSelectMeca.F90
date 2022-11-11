@@ -111,7 +111,7 @@ subroutine thmSelectMeca(ds_thm, &
     real(kind=8) :: dsdeme(6, 6), alpha0, ther_meca(6)
     integer :: ndt, ndi
     common/tdim/ndt, ndi
-    character(len=16) :: meca, defo
+    character(len=16) :: meca, defo, extern_addr
     integer :: nb_vari_meca, nume_meca, nume_thmc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -130,6 +130,7 @@ subroutine thmSelectMeca(ds_thm, &
 !
     defo = ds_thm%ds_behaviour%defo
     meca = ds_thm%ds_behaviour%rela_meca
+    extern_addr = ds_thm%ds_behaviour%extern_addr
     nb_vari_meca = ds_thm%ds_behaviour%nb_vari_meca
     nume_meca = ds_thm%ds_behaviour%nume_meca
     nume_thmc = ds_thm%ds_behaviour%nume_thmc
@@ -167,6 +168,7 @@ subroutine thmSelectMeca(ds_thm, &
     else
 ! ----- Standard behaviours
         compor_meca(RELA_NAME) = meca
+        compor_meca(MGIS_ADDR) = extern_addr
         write (compor_meca(NVAR), '(I16)') nb_vari_meca
         compor_meca(DEFO) = defo
         write (compor_meca(NUME), '(I16)') nume_meca

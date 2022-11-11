@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -296,10 +296,10 @@ DEFI_FICHIER(ACTION="LIBERER", UNITE=unite)
 TEST_FICHIER(
     FICHIER="./REPE_OUT/CHMAT.concept",
     NB_VALE_I=159,
-    VALE_CALC_I=16787803,
+    VALE_CALC_I=33565023,
     NB_VALE=0,
     VALE_CALC=0.00000000000,
-    VALE_CALC_K="643490d6a4a7e25721d14556ff05758d",
+    VALE_CALC_K="f33594918fc18a16bbfc164ae36e1a5e",
     EXPR_IGNORE=("IADM", "DATE", "LTYP", "LONO"),
 )
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_mfront_vname(nbVariMeca , &
-                                 libr_name  , subr_name  , model_mfront, model_dim,&
-                                 infoVari)
-        integer, intent(in) :: nbVariMeca
-        character(len=255), intent(in) :: libr_name, subr_name
-        character(len=16), intent(in) :: model_mfront
+    subroutine comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
+        character(len=16), intent(in) :: extern_addr
         integer, intent(in) :: model_dim
+        integer, intent(in) :: nbVariMeca
         character(len=16), pointer :: infoVari(:)
     end subroutine comp_mfront_vname
 end interface

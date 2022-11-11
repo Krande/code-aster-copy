@@ -17,28 +17,31 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getExternalBehaviourPara(mesh, v_model_elem, &
-                                    rela_comp, kit_comp, &
-                                    l_comp_external, comp_exte, &
-                                    keywf_, i_comp_, elem_type_, &
-                                    type_cpla_in_, type_cpla_out_)
+subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
+                                    kit_comp, comp_exte, keywf_, i_comp_, &
+                                    elem_type_, type_cpla_in_, type_cpla_out_)
 !
     use Behaviour_type
 !
     implicit none
 !
+#include "asterc/mgis_debug.h"
+#include "asterc/mgis_load_library.h"
+#include "asterc/umat_get_function.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_exte.h"
+#include "asterfort/comp_read_mfront.h"
 #include "asterfort/comp_read_typmod.h"
-#include "asterc/mfront_get_strain_model.h"
-!
+#include "asterfort/getExternalStrainModel.h"
+
     character(len=8), intent(in) :: mesh
     integer, pointer :: v_model_elem(:)
     character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: kit_comp(4)
-    aster_logical, intent(out) :: l_comp_external
     type(Behaviour_ParaExte), intent(inout)   :: comp_exte
     character(len=16), optional, intent(in) :: keywf_
     integer, optional, intent(in) :: i_comp_
@@ -60,7 +63,6 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, &
 !                         0 -  Get from affectation
 ! In  rela_comp        : RELATION comportment
 ! In  kit_comp         : KIT comportment
-! Out l_comp_external  : .true. if external programs for behaviour
 ! IO  comp_exte        : values defining external behaviour
 ! In  keywf            : factor keyword to read (COMPORTEMENT)
 ! In  i_comp           : factor keyword index
@@ -74,9 +76,9 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, &
     integer :: i_comp
     aster_logical :: l_mfront_proto, l_mfront_offi, l_umat
     character(len=255) :: libr_name, subr_name
-    integer :: nbVariUMAT
-    character(len=16) :: model_mfront, type_cpla_out, type_cpla_in
-    integer :: model_dim, elem_type, strain_model
+    integer :: model_mfront, nbVariUMAT
+    character(len=16) :: type_cpla_out, type_cpla_in, extern_addr
+    integer :: extern_ptr, extern_type, model_dim, elem_type, strain_model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +90,7 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, &
     libr_name = ' '
     subr_name = ' '
     nbVariUMAT = 0
-    model_mfront = ' '
+    model_mfront = MFRONT_MODEL_UNSET
     model_dim = 0
     type_cpla_out = 'VIDE'
     if (present(type_cpla_in_)) then
@@ -107,59 +109,79 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, &
         i_comp = i_comp_
     end if
 
-! - Get mechanical part of behaviour (required for KIT_THM)
+    ! - Get mechanical part of behaviour (required for KIT_THM)
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
     if (l_kit_thm) then
         relaMeca = kit_comp(1)
     else
         relaMeca = rela_comp
     end if
-!
-! - Detect type
-!
+    !
+    ! - Detect type
+    !
     call comp_meca_l(relaMeca, 'UMAT', l_umat)
     call comp_meca_l(relaMeca, 'MFRONT_OFFI', l_mfront_offi)
     call comp_meca_l(relaMeca, 'MFRONT_PROTO', l_mfront_proto)
+    extern_type = 0
+    if (l_mfront_offi) then
+        extern_type = 1
+    elseif (l_mfront_proto) then
+        extern_type = 2
+    elseif (l_umat) then
+        extern_type = 4
+    end if
 !
 ! - Get parameters for external programs (MFRONT/UMAT)
 !
-    call comp_read_exte(relaMeca, keywf, i_comp, &
-                        l_umat, l_mfront_proto, l_mfront_offi, &
-                        libr_name, subr_name, nbVariUMAT)
+    extern_addr = " "
+    extern_ptr = 0
+    if (l_umat) then
+        if (i_comp .ne. 0) then
+            call comp_read_exte(keywf, i_comp, libr_name, subr_name, nbVariUMAT)
+            call umat_get_function(libr_name, subr_name, extern_ptr)
+        end if
 !
-! - Get model for MFRONT
+! - Get pointer and model for MFRONT
 !
-    if (l_mfront_proto .or. l_mfront_offi) then
-        if (associated(v_model_elem)) then
-! --------- For *_NON_LINE cases
-            call comp_read_typmod(mesh, v_model_elem, elem_type, &
-                                  keywf, i_comp, rela_comp, type_cpla_in, &
-                                  model_dim, model_mfront, type_cpla_out)
+    elseif (l_mfront_proto .or. l_mfront_offi) then
+        ASSERT(i_comp .ne. 0 .or. comp_exte%extern_addr .ne. ' ')
+        if (i_comp .ne. 0) then
+            call comp_read_mfront(keywf, i_comp, extern_addr)
         else
-! --------- For CALC_POINT_MAT case
-            model_dim = 3
-            model_mfront = '_Tridimensional'
+            extern_addr = comp_exte%extern_addr
+        end if
+
+        if (extern_addr .ne. " ") then
+
+            if (associated(v_model_elem)) then
+!               For *_NON_LINE cases
+                call comp_read_typmod(mesh, v_model_elem, elem_type, &
+                                      keywf, i_comp, rela_comp, type_cpla_in, &
+                                      model_dim, model_mfront, type_cpla_out)
+            else
+!               For CALC_POINT_MAT case
+                model_dim = 3
+                model_mfront = MFRONT_MODEL_TRIDIMENSIONAL
+            end if
+!           Get model of strains and load library
+            call getExternalStrainModel(defo_comp, strain_model)
+
+            call mgis_load_library(extern_addr, model_mfront, strain_model)
+            ! call mgis_debug(extern_addr, "Loaded behaviour:")
+
         end if
     end if
-!
-! - Get strain model for MFRONT
-!
-    if (l_mfront_proto .or. l_mfront_offi) then
-        call mfront_get_strain_model(libr_name, subr_name, &
-                                     model_mfront, strain_model)
-    end if
-!
-! - Global flag
-!
-    l_comp_external = l_mfront_proto .or. l_mfront_offi .or. l_umat
 !
 ! - Save
 !
     if (present(type_cpla_out_)) then
         type_cpla_out_ = type_cpla_out
     end if
+    comp_exte%extern_type = extern_type
+    comp_exte%extern_addr = extern_addr
     comp_exte%libr_name = libr_name
     comp_exte%subr_name = subr_name
+    comp_exte%extern_ptr = extern_ptr
     comp_exte%model_mfront = model_mfront
     comp_exte%model_dim = model_dim
     comp_exte%nbVariUMAT = nbVariUMAT

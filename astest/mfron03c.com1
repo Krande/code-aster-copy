@@ -1,0 +1,99 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI")
+
+TFIN = 3.0
+
+MFRONT = STAT_NON_LINE(
+    reuse=MFRONT,
+    RESULTAT=MFRONT,
+    MODELE=MO,
+    CHAM_MATER=CHMATF,
+    CARA_ELEM=ORIELEM,
+    ETAT_INIT=_F(EVOL_NOLI=MFRONT),
+    EXCIT=(_F(CHARGE=CHME1), _F(CHARGE=CHME2), _F(CHARGE=CHME3), _F(CHARGE=CHME4, FONC_MULT=COEF)),
+    COMPORTEMENT=_F(
+        RELATION="MFRONT", COMPOR_MFRONT=behaviour, RESI_INTE_MAXI=1e-11, ITER_INTE_MAXI=100
+    ),
+    INCREMENT=_F(LIST_INST=LINSTOP, INST_FIN=TFIN),
+    ARCHIVAGE=_F(LIST_INST=LINSTAOP),
+    NEWTON=_F(REAC_ITER=1, PREDICTION="EXTRAPOLE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+)
+
+MFRONT = CALC_CHAMP(reuse=MFRONT, RESULTAT=MFRONT, DEFORMATION=("EPSI_ELGA", "EPSP_ELGA"))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=3.0,
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            RESULTAT=MFRONT,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-16.112157615655267,
+            VALE_REFE=-16.112,
+            PRECISION=2.0e-5,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            RESULTAT=MFRONT,
+            NOM_CHAM="EPSI_ELGA",
+            NOM_CMP="EPXX",
+            VALE_CALC=-1.02500755e-03,
+            VALE_REFE=-1.025e-3,
+            PRECISION=1.0e-4,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            RESULTAT=MFRONT,
+            NOM_CHAM="EPSI_ELGA",
+            NOM_CMP="EPYY",
+            VALE_CALC=-0.000937146720034,
+            VALE_REFE=-9.37146e-4,
+            PRECISION=1.0e-5,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            RESULTAT=MFRONT,
+            NOM_CHAM="EPSP_ELGA",
+            NOM_CMP="EPYY",
+            VALE_CALC=-0.0002774595420775919,
+            VALE_REFE=-2.77459e-4,
+            PRECISION=1.0e-4,
+            GROUP_MA="M1",
+        ),
+    )
+)
+
+# not yet supported with restart, see issue32700
+# IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=MFRONT))
+
+FIN()

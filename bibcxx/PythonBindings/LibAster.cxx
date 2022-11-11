@@ -101,6 +101,7 @@
 #include "PythonBindings/ListOfIntegersInterface.h"
 #include "PythonBindings/ListOfLoadsInterface.h"
 #include "PythonBindings/LoadResultInterface.h"
+#include "PythonBindings/MGISBehaviourInterface.h"
 #include "PythonBindings/MaterialFieldInterface.h"
 #include "PythonBindings/MaterialInterface.h"
 #include "PythonBindings/MatrixToPetscInterface.h"
@@ -265,6 +266,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportFullHarmonicAcousticResultToPython( mod );
     exportFluidStructureModalBasisToPython( mod );
     exportGeneralizedModeResultToPython( mod );
+    exportMGISBehaviourToPython( mod );
 
 #ifdef ASTER_HAVE_MPI
     /* These objects must be declared in ObjectsExt/* as

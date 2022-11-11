@@ -19,8 +19,8 @@
 subroutine nmfdff(ndim, nno, axi, g, r, &
                   rigi, matsym, fr, vff, dff, &
                   def, pff)
-!     BUT:  CALCUL DES PRDUITS DU GRADIENT DE TRANSFORMATION FR
-!     PAR LES DERIVEES DE FONCITONS DE FORME DFF POUR NMDLOG ET NMGR3D
+!     BUT:  CALCUL DES PRODUITS DU GRADIENT DE TRANSFORMATION FR
+!     PAR LES DERIVEES DE FONCTIONS DE FORME DFF POUR NMDLOG
 !     CONFIGURATION LAGRANGIENNE.
 ! ----------------------------------------------------------------------
 ! IN  NDIM    : DIMENSION DU PROBLEME : 2 OU 3

@@ -49,7 +49,7 @@
 !
 ! Size
 !
-#define COMPOR_SIZE 23
+#define COMPOR_SIZE 24
 !
 ! Slots: general
 !
@@ -64,6 +64,7 @@
 #define DEFO_LDC     21
 #define RIGI_GEOM    22
 #define REGUVISC     23
+#define MGIS_ADDR    24
 !
 ! Slots: for KIT
 !
@@ -161,17 +162,19 @@
 !
 ! Slots: For external solvers (UMAT/MFRONT)
 !
+!       Pointer to MGISBehaviour (MFront) or function (UMAT)
+#define EXTE_PTR                16
+!       1 for MFRONT official, 2 for MFRONT proto, 4 for UMAT (default: 0 internal)
+#define EXTE_TYPE               15
 !       Strain model for (MFRONT only)
 #define EXTE_STRAIN             22
-!       Pointer to function (UMAT/MFRONT)
-#define EXTE_PTR                16
+
 !       Number and name of external state variables (MFRONT only)
-#define EXTE_ESVA_NB            14
-#define EXTE_ESVA_PTR_NAME      15
-!
+! EXTE_ESVA_NB            14
+! EXTE_ESVA_PTR_NAME      15
 !       Number and name of material properties (MFRONT only)
-#define EXTE_PROP_NB            20
-#define EXTE_PROP_PTR_NAME      19
+! EXTE_PROP_NB            20
+! EXTE_PROP_PTR_NAME      19
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -223,17 +226,20 @@
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Type of strain model (MFRONT only)
+! Type of model and strain model (MGIS)
+! keep consistency with bibcxx/Behaviours/MGISBehaviourFort.h
 !
-#define MFRONT_STRAIN_SMALL          0
-#define MFRONT_STRAIN_SIMOMIEHE      1
-#define MFRONT_STRAIN_GROTGDEP       2
-#define MFRONT_STRAIN_UNDETERMINATED 3
-#define MFRONT_STRAIN_GROTGDEP_S     4
-#define MFRONT_STRAIN_GROTGDEP_L     5
+#define MFRONT_MODEL_UNSET          0
+#define MFRONT_MODEL_TRIDIMENSIONAL 1
+#define MFRONT_MODEL_AXISYMMETRICAL 2
+#define MFRONT_MODEL_PLANESTRESS    3
+#define MFRONT_MODEL_PLANESTRAIN    4
+!
+#define MFRONT_STRAIN_UNSET         0
+#define MFRONT_STRAIN_SMALL         1
 !
 ! Maximum number of external state variables (UMAT/MFRONT)
 !
-#define EXTE_ESVA_NBMAXI             8
+#define EXTE_ESVA_NBMAXI            8
 ! Set to 1 to activate DEBUG (careful, very verbose, at each Gauss point !)
-#define LDC_PREP_DEBUG               0
+#define LDC_PREP_DEBUG              0

@@ -184,9 +184,8 @@ subroutine nmgr2d(option, typmod, &
         call pk2sig(ndim, fPrev, detfPrev, sigmPrep, sigmPrev(1, kpg), -1)
         sigmPrep(4) = sigmPrep(4)*rac2
 ! ----- Compute behaviour
-        if ((strain_model .eq. MFRONT_STRAIN_GROTGDEP_S) .or. &
-            (strain_model .eq. 0)) then
-! --------- Check "small strains"
+        if (strain_model .eq. MFRONT_STRAIN_SMALL .or. strain_model .eq. MFRONT_STRAIN_UNSET) then
+            ! --------- Check "small strains"
             maxeps = 0.d0
             do j = 1, 6
                 epsgIncr(j) = epsgCurr(j)-epsgPrev(j)
@@ -205,29 +204,6 @@ subroutine nmgr2d(option, typmod, &
                         6, epsgPrev, epsgIncr, 6, sigmPrep, &
                         vim(1, kpg), option, angl_naut, &
                         sigmPost, vip(1, kpg), 36, dsidep, &
-                        cod(kpg), mult_comp)
-            if (cod(kpg) .eq. 1) then
-                goto 999
-            end if
-
-        elseif (strain_model .eq. MFRONT_STRAIN_GROTGDEP_L) then
-! --------- Jacobian must been positive !
-            call lcdetf(ndim, fCurr, detfCurr)
-            if (detfCurr .le. 1.D-6) then
-                cod(kpg) = 1
-                goto 999
-            end if
-! --------- Compute behaviour
-! Remarque: dsidep est dimensionne (6,9) pour la zone memoire et le controle dans lc0000
-! Mais seule la partie (6,6) est effectivement remplie par MFRONT (curieusement)
-            sigmPost = 0.d0
-
-            call nmcomp(BEHinteg, &
-                        fami, kpg, 1, ndim, typmod, &
-                        imate, compor, carcri, instam, instap, &
-                        9, fPrev, fCurr, 6, sigmPrep, &
-                        vim(1, kpg), option, angl_naut, &
-                        sigmPost, vip(1, kpg), 54, dsidep, &
                         cod(kpg), mult_comp)
             if (cod(kpg) .eq. 1) then
                 goto 999

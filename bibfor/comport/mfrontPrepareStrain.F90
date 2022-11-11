@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
+subroutine mfrontPrepareStrain(l_greenlag, l_pred, &
                                neps, epsm, deps, &
-                               stran, dstran, detf_)
+                               stran, dstran)
 !
     implicit none
 !
@@ -28,11 +28,10 @@ subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    aster_logical, intent(in) :: l_simomiehe, l_grotgdep, l_pred
+    aster_logical, intent(in) :: l_greenlag, l_pred
     integer, intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
     real(kind=8), intent(out) :: stran(neps), dstran(neps)
-    real(kind=8), optional, intent(out) :: detf_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,8 +42,7 @@ subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_simomiehe      : .true. if large strains with SIMO_MIEHE
-! In  l_grotgdep       : .true. if large strains with GROT_GDEP
+! In  l_greenlag       : .true. if large strains with GREEN_LAGRANGE
 ! In  l_pred           : flag if prediction
 ! In  option           : option of calcul : RIGI_MECA, FULL_MECA...
 ! In  neps             : number of components of strains
@@ -58,7 +56,8 @@ subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8), parameter :: rac2 = 1.0
+    !sqrt(2.d0)
     real(kind=8) :: dfgrd0(3, 3), dfgrd1(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,20 +65,7 @@ subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
     stran(1:neps) = 0.d0
     dstran(1:neps) = 0.d0
 !
-    if (l_simomiehe) then
-        ASSERT(neps .eq. 9)
-        dfgrd0(:, :) = 0.d0
-        dfgrd1(:, :) = 0.d0
-        call dcopy(neps, epsm, 1, dfgrd0, 1)
-        if (l_pred) then
-            call dcopy(neps, dfgrd0, 1, dfgrd1, 1)
-        else
-            dfgrd1 = matmul(reshape(deps, (/3, 3/)), dfgrd0)
-        end if
-        call dcopy(neps, dfgrd0, 1, stran, 1)
-        call dcopy(neps, dfgrd1, 1, dstran, 1)
-        call lcdetf(3, dfgrd1, detf_)
-    elseif (l_grotgdep) then
+    if (l_greenlag) then
         ASSERT(neps .eq. 9)
         dfgrd0(:, :) = 0.d0
         dfgrd1(:, :) = 0.d0

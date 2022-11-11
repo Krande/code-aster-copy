@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ from .cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
     nom="META_LEMA_ANI",
-    symbol_mfront="astermeta_lema_ani",
     lc_type=None,
     doc="""Loi de comportement viscoplastique anisotrope prenant en compte la métallurgie,
             pour le Zirconium uniquement R4.04.04 et R4.04.05""",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=40)
-CREA_LIB_MFRONT(UNITE_MFRONT=39, UNITE_LIBRAIRIE=41)
+viscochab = CREA_LIB_MFRONT(NOM_COMPOR="ViscoChaboche", UNITE_MFRONT=38)
+memo_nrad = CREA_LIB_MFRONT(NOM_COMPOR="ViscoMemoNrad", UNITE_MFRONT=39)
 
 pilote = ""
 # pilote='INTERACTIF'
@@ -102,8 +102,8 @@ ACIER[2] = DEFI_MATERIAU(
 
 typcal = [None] * ncal
 typcal[0] = ["VISC_MEMO_NRAD", "BRENT", 0, " ", " "]
-typcal[1] = ["MFRONT", " ", 1, "asterviscochaboche", 40]
-typcal[2] = ["MFRONT", " ", 2, "asterviscomemonrad", 41]
+typcal[1] = ["MFRONT", " ", 1, viscochab, 40]
+typcal[2] = ["MFRONT", " ", 2, memo_nrad, 41]
 
 
 compor = [None] * ncal
@@ -119,20 +119,12 @@ compor[0] = [
 compor[1] = [
     {
         "RELATION": typcal[1][0],
-        "NOM_ROUTINE": typcal[1][3],
-        "UNITE_LIBRAIRIE": typcal[1][4],
+        "COMPOR_MFRONT": typcal[1][3],
         "ITER_INTE_PAS": 10,
         "RESI_INTE_MAXI": 1e-12,
     }
 ]
-compor[2] = [
-    {
-        "RELATION": typcal[2][0],
-        "NOM_ROUTINE": typcal[2][3],
-        "UNITE_LIBRAIRIE": typcal[2][4],
-        "ITER_INTE_PAS": 10,
-    }
-]
+compor[2] = [{"RELATION": typcal[2][0], "COMPOR_MFRONT": typcal[2][3], "ITER_INTE_PAS": 10}]
 
 
 legende = [None] * ncal

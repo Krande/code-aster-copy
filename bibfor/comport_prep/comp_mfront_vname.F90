@@ -17,9 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_mfront_vname(nbVariMeca, &
-                             libr_name, subr_name, model_mfront, model_dim, &
-                             infoVari)
+subroutine comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
 !
     implicit none
 !
@@ -28,14 +26,13 @@ subroutine comp_mfront_vname(nbVariMeca, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/lxlgut.h"
-#include "asterc/mfront_get_number_of_internal_state_variables.h"
-#include "asterc/mfront_get_internal_state_variables.h"
-#include "asterc/mfront_get_internal_state_variables_types.h"
+#include "asterc/mgis_get_number_of_isvs.h"
+#include "asterc/mgis_get_isvs.h"
+#include "asterc/mgis_get_isvs_sizes.h"
 !
-    integer, intent(in) :: nbVariMeca
-    character(len=255), intent(in) :: libr_name, subr_name
-    character(len=16), intent(in) :: model_mfront
+    character(len=16), intent(in) :: extern_addr
     integer, intent(in) :: model_dim
+    integer, intent(in) :: nbVariMeca
     character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,72 +43,65 @@ subroutine comp_mfront_vname(nbVariMeca, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nbVariMeca       : number of internal state variables for mechanical part of behaviour
-! In  libr_name        : name of library
-! In  subr_name        : name of comportement in library
-! In  model_mfront     : type of modelisation MFront
+! In  extern_addr      : MGIS address
 ! In  model_dim        : dimension of modelisation (2D or 3D)
+! In  nbVariMeca       : number of internal state variables for mechanical part of behaviour
 ! Ptr infoVari         : pointer to names of internal state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbVariType, iVariType, iVari, iTens, leng
-    character(len=16) :: vari_name, variName, variType
+    integer :: nbVariMFront, iVariType, iVari, iTens, variSize, leng
+    character(len=16) :: vari_name, variName
     character(len=80), pointer :: variNameList(:) => null()
-    character(len=80), pointer :: variTypeList(:) => null()
+    integer, pointer :: variSizeList(:) => null()
     character(len=2), parameter :: cmpv_name(6) = (/'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'/)
-    character(len=2), parameter :: cmpt_name(9) = (/'F0','F1','F2','F3','F4','F5','F6','F7','F8'/)
+    character(len=2), parameter :: cmpt_name(9) = (/ &
+                                   'F0', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mfront_get_number_of_internal_state_variables(libr_name, subr_name, &
-                                                       model_mfront, nbVariType)
     if (nbVariMeca .ne. 0) then
-        if (nbVariType .eq. 0) then
+        call mgis_get_number_of_isvs(extern_addr, nbVariMFront)
+        if (nbVariMFront .eq. 0) then
             iVari = 1
             infoVari(iVari) = 'VIDE'
         else
-            AS_ALLOCATE(vk80=variNameList, size=nbVariType)
-            AS_ALLOCATE(vk80=variTypeList, size=nbVariType)
-            call mfront_get_internal_state_variables(libr_name, subr_name, &
-                                                     model_mfront, variNameList, &
-                                                     nbVariType)
-            call mfront_get_internal_state_variables_types(libr_name, subr_name, &
-                                                           model_mfront, variTypeList)
+            AS_ALLOCATE(vk80=variNameList, size=nbVariMFront)
+            AS_ALLOCATE(vi=variSizeList, size=nbVariMFront)
+            call mgis_get_isvs(extern_addr, variNameList)
+            call mgis_get_isvs_sizes(extern_addr, variSizeList)
             iVari = 0
-            do iVariType = 1, nbVariType
+            do iVariType = 1, nbVariMFront
                 variName = variNameList(iVariType) (1:16)
-                variType = variTypeList(iVariType) (1:16)
+                variSize = variSizeList(iVariType)
                 leng = lxlgut(variName)
-                if (variType .eq. 'scalar') then
-                    iVari = iVari+1
-                    infoVari(iVari) = variName
-                elseif (variType .eq. 'vector') then
+                ! scalar, vector, tensor
+                ASSERT(variSize .eq. 1 .or. variSize .eq. 2*model_dim .or. variSize .eq. 9)
+                if (variSize .eq. 1) then
+                    infoVari(iVari+1) = variName
+                elseif (variSize .eq. 2*model_dim) then
                     do iTens = 1, 2*model_dim
                         if (leng .le. 14) then
                             vari_name = variName(1:leng)//cmpv_name(iTens)
                         else
                             vari_name = variName(1:14)//cmpv_name(iTens)
                         end if
-                        iVari = iVari+1
-                        infoVari(iVari) = vari_name
+                        infoVari(iVari+iTens) = vari_name
                     end do
-                elseif (variType .eq. 'tensor') then
+                elseif (variSize .eq. 9) then
                     do iTens = 1, 9
                         if (leng .le. 14) then
                             vari_name = variName(1:leng)//cmpt_name(iTens)
                         else
                             vari_name = variName(1:14)//cmpt_name(iTens)
                         end if
-                        iVari = iVari+1
-                        infoVari(iVari) = vari_name
+                        infoVari(iVari+iTens) = vari_name
                     end do
-                else
-                    ASSERT(ASTER_FALSE)
                 end if
+                iVari = iVari+variSize
             end do
             AS_DEALLOCATE(vk80=variNameList)
-            AS_DEALLOCATE(vk80=variTypeList)
+            AS_DEALLOCATE(vi=variSizeList)
         end if
         ASSERT(nbVariMeca .eq. iVari)
     end if
