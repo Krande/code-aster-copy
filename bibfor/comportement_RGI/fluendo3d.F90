@@ -282,6 +282,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     call getValVect(xmat, nrjm, dt80, biotw00, xnsat00, poro2, vrag00,&
                  nrjf,  sfld, mvgn, epc0,ekdc, eprg00, gfr, alat, krgi00,&
                  tetar, tetas, ind1= nbelas3d+18)
+    nrjm=dmax1(nrjm,1.d0)
 !   volume d eau pour le non sature
     vw2=sech
 !   initialisation des variables internes associee a la saturation si premier pas
