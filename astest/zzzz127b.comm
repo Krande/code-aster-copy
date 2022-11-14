@@ -218,6 +218,58 @@ CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
 MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )
 
+
+
+# 3-3 AVEC LIAISON_CHAMNO :
+
+# --------------------
+
+
+CH1 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'NOEU_TEMP_R',
+                     AFFE = (_F( GROUP_NO = 'E',
+                                NOM_CMP  = ('TEMP',),
+                                VALE     = ( 1.0),
+                               ),
+                               _F( GROUP_NO = 'D',
+                                NOM_CMP  = ('TEMP',),
+                                VALE     = ( -0.5),
+                               ),
+                             _F( GROUP_NO = 'C',
+                                NOM_CMP  = ('TEMP',),
+                                VALE     = ( -0.5),
+                               ),
+                            ),
+                 );
+
+
+CH2 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'NOEU_TEMP_R',
+                     AFFE = (_F( GROUP_NO = 'E2',
+                                NOM_CMP  = ('TEMP',),
+                                VALE     = ( 1.0),
+                               ),
+                               _F( GROUP_NO = 'D2',
+                                NOM_CMP  = ('TEMP',),
+                                VALE     = ( -0.5),
+                               ),
+                             _F( GROUP_NO = 'C2',
+                                NOM_CMP  = ('TEMP',),
+                                VALE     = ( -0.5),
+                               ),
+                            ),
+                 );
+
+
+
+CH13A=AFFE_CHAR_THER( INFO=1, MODELE=MO,LIAISON_CHAMNO=(
+    _F( CHAM_NO = CH1, COEF_IMPO = 0,),)
+         )
+
+CH13B=AFFE_CHAR_THER( INFO=1, MODELE=MO,LIAISON_CHAMNO=(
+    _F( CHAM_NO = CH2, COEF_IMPO = 0,),)
+         )
+MEST13=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
+                _F( CHARGE = CH0), _F( CHARGE = CH13A), _F( CHARGE =CH13B)) )
+
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MEST11,
                    NOM_CHAM='TEMP',
@@ -228,6 +280,15 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MEST12,
+                   NOM_CHAM='TEMP',
+                   GROUP_NO='F',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=2.5000000000000,
+                   VALE_REFE=2.5,
+                   PRECISION=1.E-12,),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=MEST13,
                    NOM_CHAM='TEMP',
                    GROUP_NO='F',
                    NOM_CMP='TEMP',
