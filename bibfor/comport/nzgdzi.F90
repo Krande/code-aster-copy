@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501
 !
-subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
+subroutine nzgdzi(fami, kpg, ksp, ndim, imat, &
                   compor, carcri, instam, instap, fm,&
                   df, sigm, vim, option, sigp,&
                   vip, dsigdf, iret)
@@ -56,10 +56,10 @@ real(kind=8), intent(in) :: instap
 real(kind=8), intent(in) :: fm(3, 3)
 real(kind=8), intent(in) :: df(3, 3)
 real(kind=8), intent(in) :: sigm(*)
-real(kind=8), intent(in) :: vim(6)
+real(kind=8), intent(in) :: vim(*)
 character(len=16), intent(in) :: option
 real(kind=8), intent(out) :: sigp(*)
-real(kind=8), intent(out) :: vip(6)
+real(kind=8), intent(out) :: vip(*)
 real(kind=8), intent(out) :: dsigdf(6, 3, 3)
 integer, intent(out) :: iret
 !
@@ -117,6 +117,7 @@ integer, intent(out) :: iret
     real(kind=8), parameter :: kr(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
     real(kind=8), parameter :: pdtsca(6) = (/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/)
     aster_logical :: resi, rigi, l_temp
+    aster_logical :: lMatr, lVari, lSigm
     aster_logical :: l_visc, l_plas, l_anneal, l_plas_tran, l_hard_isotline, l_hard_isotnlin
     data ind   /1,4,5,&
                 4,2,6,&
@@ -134,23 +135,28 @@ integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    do i = 1, 2*ndim
-        sigp(i) = 0.d0
-    end do
-    vip(1:6)            = 0.d0
-    dsigdf(1:6,1:3,1:3) = 0.d0
-    iret                = 0
-    resi                = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi                = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-    dt                  = instap-instam
+    iret = 0
+    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
+    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    dt = instap-instam
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+    if (lVari) then
+        vip(1:9) = 0.d0
+    endif
+    if (lMatr) then
+        dsigdf(1:6,1:3,1:3) = 0.d0
+    endif
+    if (lSigm) then
+        sigp(1:2*ndim) = 0.d0
+    endif
 
 ! - Behaviour in kit
     metaRela = compor(META_RELA)
     metaGlob = compor(META_GLOB)
 
-!
 ! - Get metallurgy type
-!
     call metaGetType(meta_type, nb_phase)
     ASSERT(meta_type .eq. META_ZIRC)
     ASSERT(nb_phase .eq. 3)

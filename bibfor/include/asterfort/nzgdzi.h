@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ interface
         real(kind=8), intent(in) :: fm(3, 3)
         real(kind=8), intent(in) :: df(3, 3)
         real(kind=8), intent(in) :: sigm(*)
-        real(kind=8), intent(in) :: vim(6)
+        real(kind=8), intent(in) :: vim(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(out) :: sigp(*)
-        real(kind=8), intent(out) :: vip(6)
+        real(kind=8), intent(out) :: vip(*)
         real(kind=8), intent(out) :: dsigdf(6, 3, 3)
         integer, intent(out) :: iret
     end subroutine nzgdzi
