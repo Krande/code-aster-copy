@@ -25,22 +25,23 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-###################################################################
+###################################################################################
 #
 #   Solve coupling problem with HHO
-#   u -> displacement, d -> macro-dommage
+#   u -> displacement, dx -> macro-damage, d -> micro-damage
 #
 #   Continuous:
-#   (PK(u,d), grad v) = 0, E(u,d) = grad(u) + alpha * d * Id
-#   (A * grad d, grad p) + (H(u) * d, p)  - (H(u) * f, p) = 0
-#    with H(u) = H * (1 + norm2(u))
+#   R_u(u,dx,d) = (PK1(u,dx,d), grad v) = 0, \forall v
+#   R_dx(u,dx,d) = (Ax * grad dx, grad px) + (Hx*(dx-d), px), \forall px
+#
+#   d(t+dt) = min(1, max(d(t), (2 phi(u) + Hx(dx+1/beta) ) / (2 phi(u) + Hx)))
 #
 #   HHO:
 #   sum_{T \in Th} (PK(huT, d_T), GkT(hvT))_T + stab(huT, hvT) = 0
-#   sum_{T \in Th} (A * GkT(hdT), GkT(hpT))_T + stab(hdT, hpT) +
-#      (H(uhT) * d_T, p_T) _T = ((uhT) * f, p_T)_T
+#   sum_{T \in Th} (Ax * GkT(hdxT), GkT(hpxT))_T + stab(hdxT, hpxT) +
+#      (H * (dx_T - dT), px_T)_T = 0
 #
-###################################################################
+####################################################################################
 
 
 mesh0 = code_aster.Mesh.buildSquare(refine=3)
@@ -99,13 +100,15 @@ THER["MATER"] = {"LAMBDA": A, "RHO_CP": H}
 
 cs = CoupledSolver(MECA, THER)
 
-u, sief, d = cs.solve()
+sol = cs.solve()
 
 u_ref = 1028.577291151862
-d_ref = 1175.794430261763
+dx_ref = 1175.794430261763
+d_ref = 800.0000000000003
 
-test.assertAlmostEqual((u.norm("NORM_2") - u_ref)/u_ref, 0, delta=1e-6)
-test.assertAlmostEqual((d.norm("NORM_2") - d_ref)/d_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref)/u_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.dx.norm("NORM_2") - dx_ref)/dx_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.d.norm("NORM_2") - d_ref)/d_ref, 0, delta=1e-6)
 
 test.printSummary()
 

@@ -21,29 +21,50 @@ import code_aster
 from code_aster.Commands import *
 
 
-###################################################################
+###################################################################################
 #
 #   Solve coupling problem with HHO
-#   u -> displacement, d -> macro-dommage
+#   u -> displacement, dx -> macro-damage, d -> micro-damage
 #
 #   Continuous:
-#   (sigma(u,d), grad v) = 0, Eps = eps(u) + alpha * d * Id
-#   (A * grad d, grad p) + (H(u) * d, p)  - (H(u) * f, p) = 0
+#   R_u(u,dx,d) = (PK1(u,dx,d), grad v) = 0, \forall v
+#   R_dx(u,dx,d) = (Ax * grad dx, grad px) + (Hx*(dx-d), px), \forall px
+#
+#   d(t+dt) = min(1, max(d(t), (2 phi(u) + Hx(dx+1/beta) ) / (2 phi(u) + Hx)))
 #
 #   HHO:
 #   sum_{T \in Th} (PK(huT, d_T), GkT(hvT))_T + stab(huT, hvT) = 0
-#   sum_{T \in Th} (A * GkT(hdT), GkT(hpT))_T + stab(hdT, hpT) +
-#      (H(uhT) * d_T, p_T) _T = ((uhT) * f, p_T)_T
+#   sum_{T \in Th} (Ax * GkT(hdxT), GkT(hpxT))_T + stab(hdxT, hpxT) +
+#      (H * (dx_T - dT), px_T)_T = 0
 #
-###################################################################
+####################################################################################
 
 import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities import force_list
 
 
+class CoupledState:
+
+    u = dx = d = None
+    u_nodes = dx_nodes = d_nodes = None
+    time = None
+
+    def __init__(self, u, dx, d, time=0.0):
+        self.u = u.duplicate()
+        self.dx = dx.duplicate()
+        self.d = d.duplicate()
+        self.time = time
+
+    def projectOnLagrangeSpace(self, hho_meca, hho_dama):
+
+        self.u_nodes = hho_meca.projectOnLagrangeSpace(self.u)
+        self.dx_nodes = hho_dama.projectOnLagrangeSpace(self.dx)
+        self.d_nodes = hho_dama.projectOnLagrangeSpace(self.d)
+
+
 class MecaSolver:
-    """ Solve the mecanical problem """
+    """Solve the mecanical problem"""
 
     model = mater = loads = None
 
@@ -53,34 +74,32 @@ class MecaSolver:
         self.loads = param["EXCIT"]
 
     def create_material(self, d_nodes):
-        return AFFE_MATERIAU(MAILLAGE=self.model.getMesh(),
-                             AFFE=_F(TOUT='OUI',
-                                     MATER=self.mater,
-                                     ),
-                             AFFE_VARC=(_F(NOM_VARC='TEMP',
-                                                    CHAM_GD=d_nodes,
-                                                    VALE_REF=0.0),
-                                        ),
-                             )
+        return AFFE_MATERIAU(
+            MAILLAGE=self.model.getMesh(),
+            AFFE=_F(TOUT="OUI", MATER=self.mater),
+            AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=d_nodes, VALE_REF=0.0),),
+        )
 
-    def solve(self, d_nodes):
-        """ Solve mechanical problem """
+    def solve(self, state_curr):
+        """Solve mechanical problem"""
 
-        material = self.create_material(d_nodes)
+        material = self.create_material(state_curr.dx_nodes)
 
         timeList = DEFI_LIST_REEL(VALE=(0.0, 1.0))
 
-        resuMeca = STAT_NON_LINE(MODELE=self.model,
-                                 CHAM_MATER=material,
-                                 INCREMENT=_F(LIST_INST=timeList,),
-                                 METHODE="NEWTON",
-                                 EXCIT=self.loads)
+        resuMeca = STAT_NON_LINE(
+            MODELE=self.model,
+            CHAM_MATER=material,
+            INCREMENT=_F(LIST_INST=timeList),
+            METHODE="NEWTON",
+            EXCIT=self.loads,
+        )
 
         return resuMeca.getField("DEPL", 1), resuMeca.getField("SIEF_ELGA", 1)
 
 
-class DommageSolver:
-    """ Solve the dommage problem """
+class DamageSolver:
+    """Solve the damage problem"""
 
     model = mater = loads = source = None
 
@@ -91,21 +110,25 @@ class DommageSolver:
         self.source = param["SOURCE"]
 
     def create_material(self, u_nodes):
-        therMate = DEFI_MATERIAU(THER=_F(
-            LAMBDA=self.mater["LAMBDA"],
-            RHO_CP=self.mater["RHO_CP"] * (1. + u_nodes.norm("NORM_2")),
-        ),)
+        therMate = DEFI_MATERIAU(
+            THER=_F(
+                LAMBDA=self.mater["LAMBDA"],
+                RHO_CP=self.mater["RHO_CP"] * (1.0 + u_nodes.norm("NORM_2")),
+            )
+        )
 
-        return AFFE_MATERIAU(MAILLAGE=self.model.getMesh(),
-                             AFFE=_F(TOUT='OUI',
-                                     MATER=therMate,
-                                     ),
-                             )
+        return AFFE_MATERIAU(MAILLAGE=self.model.getMesh(), AFFE=_F(TOUT="OUI", MATER=therMate))
 
-    def solve(self, u_nodes):
-        """ Solve dommage problem """
+    def evalMacroDamage(self, u, dx, d):
+        """Evaluate macrodamage"""
 
-        material = self.create_material(u_nodes)
+        # this is not the true expression
+        return d
+
+    def solve(self, state_curr):
+        """Solve damaage problem"""
+
+        material = self.create_material(state_curr.u_nodes)
 
         # create PhysicalProblem
         phys_pb = code_aster.PhysicalProblem(self.model, material)
@@ -127,16 +150,14 @@ class DommageSolver:
         matK.addElementaryMatrix(matEK)
         matK.assemble()
 
-        # compute M = (rho_cp(u) * d_T, p_T) _T
+        # compute M = (rho_cp * d_T, p_T) _T
         matEM = disc_comp.getMassMatrix()
         matM = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
         matM.addElementaryMatrix(matEM)
         matM.assemble()
 
-        # project load
-        f_hho = hho.projectOnHHOCellSpace(self.source)
-
-        d_hho = hho.projectOnHHOSpace(0.0)
+        d_curr = hho.projectOnHHOCellSpace(self.source)
+        dx_curr = hho.projectOnHHOSpace(0.0)
 
         diriBCs = disc_comp.getDirichletBC()
 
@@ -145,65 +166,73 @@ class DommageSolver:
 
         print("Newton solver:")
         for i in range(100):
-            Resi = matK * d_hho + matM * (d_hho - f_hho)
+            # the residual is ok
+            Resi = matK * dx_curr + matM * (dx_curr - d_curr)
+            # the jacobian is inexacte. Use \tilde(Hx) insted of Hx
             Jaco = matK + matM
 
             print("*Iter %d: residual %f" % (i, Resi.norm("NORM_2")))
             if Resi.norm("NORM_2") < 10e-8:
-                return d_hho
+                return dx_curr, d_curr
 
             mySolver.factorize(Jaco)
-            dd_hho = mySolver.solve(-Resi, diriBCs)
-            d_hho += dd_hho
+            dx_incr = mySolver.solve(-Resi, diriBCs)
+            dx_curr += dx_incr
 
-        raise RuntimeError("No convergence of dommage solver")
+            # il faut calculer correctement
+            d_curr = self.evalMacroDamage(state_curr.u_nodes, dx_curr, d_curr)
+
+        raise RuntimeError("No convergence of damage solver")
 
 
 class CoupledSolver:
 
-    domm_para = meca_para = None
+    dama_para = meca_para = None
 
-    def __init__(self, MECA, DOMM):
-        self.domm_para = DOMM
+    def __init__(self, MECA, DAMA):
+        self.dama_para = DAMA
         self.meca_para = MECA
 
     def solve(self):
 
         print("Coupled solver")
-
-        # initial solution
-        d_init = code_aster.FieldOnNodesReal(self.domm_para["MODELE"])
-        u_init = code_aster.FieldOnNodesReal(self.meca_para["MODELE"])
-
-        d_curr = d_prev = d_init
-        u_curr = u_prev = u_init
-
         # init solver
         meca_solver = MecaSolver(self.meca_para)
-        domm_solver = DommageSolver(self.domm_para)
+        dama_solver = DamageSolver(self.dama_para)
 
-        hho_meca = code_aster.HHO(
-            code_aster.PhysicalProblem(self.meca_para["MODELE"], None))
-        hho_domm = code_aster.HHO(
-            code_aster.PhysicalProblem(self.domm_para["MODELE"], None))
+        hho_meca = code_aster.HHO(code_aster.PhysicalProblem(self.meca_para["MODELE"], None))
+        hho_dama = code_aster.HHO(code_aster.PhysicalProblem(self.dama_para["MODELE"], None))
+
+        # initial solution
+        u_init = code_aster.FieldOnNodesReal(self.meca_para["MODELE"])
+        dx_init = code_aster.FieldOnNodesReal(self.dama_para["MODELE"])
+        d_init = code_aster.FieldOnNodesReal(self.dama_para["MODELE"])
+
+        state_prev = CoupledState(u_init, dx_init, d_init)
+        state_curr = CoupledState(u_init, dx_init, d_init)
+
+        state_prev.projectOnLagrangeSpace(hho_meca, hho_dama)
+        state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
 
         for step in range(100):
             # solve mechanical problem
-            u_curr, sief_curr = meca_solver.solve(
-                hho_domm.projectOnLagrangeSpace(d_curr))
+            state_curr.u, sief_curr = meca_solver.solve(state_curr)
 
-            # solve dommage problem
-            d_curr = domm_solver.solve(hho_meca.projectOnLagrangeSpace(u_curr))
+            # solve damaage problem
+            state_curr.dx, state_curr.d = dama_solver.solve(state_curr)
 
-            resi_meca = (u_curr - u_prev).norm("NORM_INFINITY")
-            resi_domm = (d_curr - d_prev).norm("NORM_INFINITY")
+            resi_u = (state_curr.u - state_prev.u).norm("NORM_INFINITY")
+            resi_dx = (state_curr.dx - state_prev.dx).norm("NORM_INFINITY")
+            resi_d = (state_curr.d - state_prev.d).norm("NORM_INFINITY")
 
-            print("Step %d with residual (%f, %f)" %
-                  (step, resi_meca, resi_domm))
-            if resi_meca < 1e-6 and resi_domm < 1e-6:
-                return u_curr, sief_curr, d_curr
+            print("Step %d with residual (%f, %f, %f)" % (step, resi_u, resi_dx, resi_d))
+            if resi_u < 1e-8 and resi_dx < 1e-8 and resi_d < 1e-8:
+                return state_curr
 
-            u_prev = u_curr
-            d_prev = d_curr
+            state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
+
+            state_prev.u = state_curr.u.duplicate()
+            state_prev.dx = state_curr.dx.duplicate()
+            state_prev.d = state_curr.d.duplicate()
 
         raise RuntimeError("No convergence of coupled solver")
