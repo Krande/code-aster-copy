@@ -42,11 +42,13 @@ from code_aster.Commands import *
 import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities import force_list
+from code_aster.MacroCommands.NonLinearSolver import TimeStepper
 
 
 class CoupledState:
 
     u = dx = d = None
+    sief_elga = vari_elga = None
     u_nodes = dx_nodes = d_nodes = None
     time = None
 
@@ -61,6 +63,16 @@ class CoupledState:
         self.u_nodes = hho_meca.projectOnLagrangeSpace(self.u)
         self.dx_nodes = hho_dama.projectOnLagrangeSpace(self.dx)
         self.d_nodes = hho_dama.projectOnLagrangeSpace(self.d)
+
+    def duplicate(self):
+        dup = CoupledState(self.u, self.dx, self.d, self.time)
+        dup.u_nodes = self.u_nodes.duplicate()
+        dup.dx_nodes = self.dx_nodes.duplicate()
+        dup.d_nodes = self.d_nodes.duplicate()
+        dup.vari_elga = self.vari_elga.duplicate()
+        dup.sief_elga = self.sief_elga.duplicate()
+
+        return dup
 
 
 class MecaSolver:
@@ -80,12 +92,20 @@ class MecaSolver:
             AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=d_nodes, VALE_REF=0.0),),
         )
 
-    def solve(self, state_curr):
+    def solve(self, state_prev, state_curr):
         """Solve mechanical problem"""
 
         material = self.create_material(state_curr.dx_nodes)
 
-        timeList = DEFI_LIST_REEL(VALE=(0.0, 1.0))
+        timeList = DEFI_LIST_REEL(VALE=(state_prev.time, state_curr.time))
+
+        opt = {}
+        if state_curr.sief_elga is not None:
+            opt["ETAT_INIT"] = {
+                "DEPL": state_prev.u,
+                "SIGM": state_prev.sief_elga,
+                "VARI": state_prev.vari_elga,
+            }
 
         resuMeca = STAT_NON_LINE(
             MODELE=self.model,
@@ -93,21 +113,25 @@ class MecaSolver:
             INCREMENT=_F(LIST_INST=timeList),
             METHODE="NEWTON",
             EXCIT=self.loads,
+            **opt
         )
 
-        return resuMeca.getField("DEPL", 1), resuMeca.getField("SIEF_ELGA", 1)
+        return (
+            resuMeca.getField("DEPL", 1).duplicate(),
+            resuMeca.getField("SIEF_ELGA", 1).duplicate(),
+            resuMeca.getField("VARI_ELGA", 1).duplicate(),
+        )
 
 
 class DamageSolver:
     """Solve the damage problem"""
 
-    model = mater = loads = source = None
+    model = mater = loads = None
 
     def __init__(self, param):
         self.model = param["MODELE"]
         self.mater = param["MATER"]
         self.loads = force_list(param["EXCIT"])
-        self.source = param["SOURCE"]
 
     def create_material(self, u_nodes):
         therMate = DEFI_MATERIAU(
@@ -125,7 +149,7 @@ class DamageSolver:
         # this is not the true expression
         return d
 
-    def solve(self, state_curr):
+    def solve(self, state_prev, state_curr):
         """Solve damaage problem"""
 
         material = self.create_material(state_curr.u_nodes)
@@ -156,13 +180,14 @@ class DamageSolver:
         matM.addElementaryMatrix(matEM)
         matM.assemble()
 
-        d_curr = hho.projectOnHHOCellSpace(self.source)
-        dx_curr = hho.projectOnHHOSpace(0.0)
-
         diriBCs = disc_comp.getDirichletBC()
 
         # linear solver
         mySolver = code_aster.MumpsSolver()
+
+        # init with previous converged solution
+        d_curr = state_curr.d
+        dx_curr = state_curr.dx
 
         print("Newton solver:")
         for i in range(100):
@@ -193,7 +218,7 @@ class CoupledSolver:
         self.dama_para = DAMA
         self.meca_para = MECA
 
-    def solve(self):
+    def solve(self, timeList):
 
         print("Coupled solver")
         # init solver
@@ -203,36 +228,50 @@ class CoupledSolver:
         hho_meca = code_aster.HHO(code_aster.PhysicalProblem(self.meca_para["MODELE"], None))
         hho_dama = code_aster.HHO(code_aster.PhysicalProblem(self.dama_para["MODELE"], None))
 
+        # Time stepper
+        stepper = TimeStepper(timeList.getValues())
+
         # initial solution
+        time_init = 0.0
         u_init = code_aster.FieldOnNodesReal(self.meca_para["MODELE"])
         dx_init = code_aster.FieldOnNodesReal(self.dama_para["MODELE"])
-        d_init = code_aster.FieldOnNodesReal(self.dama_para["MODELE"])
+        d_init = hho_dama.projectOnHHOCellSpace(self.dama_para["SOURCE"])
 
-        state_prev = CoupledState(u_init, dx_init, d_init)
-        state_curr = CoupledState(u_init, dx_init, d_init)
+        state_prev = CoupledState(u_init, dx_init, d_init, time_init)
+        state_curr = CoupledState(u_init, dx_init, d_init, time_init)
 
         state_prev.projectOnLagrangeSpace(hho_meca, hho_dama)
         state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
 
-        for step in range(100):
-            # solve mechanical problem
-            state_curr.u, sief_curr = meca_solver.solve(state_curr)
+        while not stepper.hasFinished():
+            state_curr.time = stepper.getNext()
+            print("Time : %f" % stepper.getNext())
+            for it in range(100):
+                u_iter = state_curr.u.duplicate()
+                dx_iter = state_curr.dx.duplicate()
+                d_iter = state_curr.d.duplicate()
 
-            # solve damaage problem
-            state_curr.dx, state_curr.d = dama_solver.solve(state_curr)
+                # solve mechanical problem
+                state_curr.u, state_curr.sief_elga, state_curr.vari_elga = meca_solver.solve(
+                    state_prev, state_curr
+                )
 
-            resi_u = (state_curr.u - state_prev.u).norm("NORM_INFINITY")
-            resi_dx = (state_curr.dx - state_prev.dx).norm("NORM_INFINITY")
-            resi_d = (state_curr.d - state_prev.d).norm("NORM_INFINITY")
+                # solve damaage problem
+                state_curr.dx, state_curr.d = dama_solver.solve(state_curr, state_curr)
 
-            print("Step %d with residual (%f, %f, %f)" % (step, resi_u, resi_dx, resi_d))
-            if resi_u < 1e-8 and resi_dx < 1e-8 and resi_d < 1e-8:
-                return state_curr
+                resi_u = (state_curr.u - u_iter).norm("NORM_INFINITY")
+                resi_dx = (state_curr.dx - dx_iter).norm("NORM_INFINITY")
+                resi_d = (state_curr.d - d_iter).norm("NORM_INFINITY")
 
-            state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
+                print("Step %d with residual (%f, %f, %f)" % (it, resi_u, resi_dx, resi_d))
+                if resi_u < 1e-8 and resi_dx < 1e-8 and resi_d < 1e-8:
+                    break
 
-            state_prev.u = state_curr.u.duplicate()
-            state_prev.dx = state_curr.dx.duplicate()
-            state_prev.d = state_curr.d.duplicate()
+                state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
 
-        raise RuntimeError("No convergence of coupled solver")
+            # finish step
+            stepper.completed()
+
+            state_prev = state_curr.duplicate()
+
+        return state_curr

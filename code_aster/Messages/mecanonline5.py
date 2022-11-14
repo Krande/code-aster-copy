@@ -338,9 +338,7 @@ A cause des erreurs précédentes, le code s'arrête.
 
     69 : _("""La formulation HHO est incompatible avec les chargements suiveurs."""),
 
-    70 : _("""La formulation HHO est incompatible avec ETAT_INIT."""),
-
-    71 : _("""La formulation HHO est incompatible en reprise de calcul."""),
+    70 : _("""La formulation HHO est incompatible avec reuse"""),
 
     72 : _("""La modélisation XFEM implique la réactualisation de la matrice REAC_ITER=1."""),
 

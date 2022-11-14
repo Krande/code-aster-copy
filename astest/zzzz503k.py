@@ -46,69 +46,64 @@ test = code_aster.TestCase()
 
 mesh0 = code_aster.Mesh.buildSquare(refine=3)
 
-mesh = CREA_MAILLAGE(MAILLAGE=mesh0,
-                     MODI_HHO=_F(TOUT='OUI',),)
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
 # define model
-model_ther = AFFE_MODELE(MAILLAGE=mesh,
-                         AFFE=_F(TOUT='OUI',
-                                 MODELISATION='PLAN_HHO',
-                                 FORMULATION='LINEAIRE',
-                                 PHENOMENE='THERMIQUE')
-                         )
+model_ther = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=_F(TOUT="OUI", MODELISATION="PLAN_HHO", FORMULATION="LINEAIRE", PHENOMENE="THERMIQUE"),
+)
 
-model_meca = AFFE_MODELE(MAILLAGE=mesh,
-                         AFFE=_F(TOUT='OUI',
-                                 MODELISATION='D_PLAN_HHO',
-                                 FORMULATION='LINEAIRE',
-                                 PHENOMENE='MECANIQUE')
-                         )
+model_meca = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=_F(TOUT="OUI", MODELISATION="D_PLAN_HHO", FORMULATION="LINEAIRE", PHENOMENE="MECANIQUE"),
+)
 
 THER = {"MODELE": model_ther}
 MECA = {"MODELE": model_meca}
 
+rampe = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1000, 1000))
 
 # define BC
-bc_ther = AFFE_CHAR_CINE(MODELE=model_ther,
-                         THER_IMPO=_F(GROUP_MA=('RIGHT', 'LEFT',
-                                                'TOP', 'BOTTOM',),  TEMP=0.0),
-                         )
+bc_ther = AFFE_CHAR_CINE(
+    MODELE=model_ther, THER_IMPO=_F(GROUP_MA=("RIGHT", "LEFT", "TOP", "BOTTOM"), TEMP=0.0)
+)
 
-THER["EXCIT"] = { "CHARGE" : bc_ther}
+THER["EXCIT"] = {"CHARGE": bc_ther, "FONC_MULT": rampe}
 
 
-bc_meca = AFFE_CHAR_CINE(MODELE=model_meca,
-                         MECA_IMPO=(_F(GROUP_MA=('RIGHT'),  DX=0.0, DY=0.0),
-                                    _F(GROUP_MA=("LEFT"), DY=0.2),),
-                         )
-MECA["EXCIT"] = { "CHARGE" : bc_meca}
+bc_meca = AFFE_CHAR_CINE(
+    MODELE=model_meca,
+    MECA_IMPO=(_F(GROUP_MA=("RIGHT"), DX=0.0, DY=0.0), _F(GROUP_MA=("LEFT"), DY=0.2)),
+)
+MECA["EXCIT"] = {"CHARGE": bc_meca, "FONC_MULT": rampe}
 
 # load
 
-THER["SOURCE"] = 100.
+THER["SOURCE"] = 100.0
 
 # material
 
-MECA["MATER"] = DEFI_MATERIAU(ELAS=_F(E=200000.,
-                                      NU=0.3,
-                                      ALPHA=1.0,)
-                              )
+MECA["MATER"] = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, ALPHA=1.0))
 
 A = 10
 H = 2
 THER["MATER"] = {"LAMBDA": A, "RHO_CP": H}
 
+
+l_inst = DEFI_LIST_REEL(VALE=(0.5, 1.0))
+
 cs = CoupledSolver(MECA, THER)
 
-sol = cs.solve()
+sol = cs.solve(l_inst)
 
 u_ref = 1028.577291151862
 dx_ref = 1175.794430261763
 d_ref = 800.0000000000003
 
-test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref)/u_ref, 0, delta=1e-6)
-test.assertAlmostEqual((sol.dx.norm("NORM_2") - dx_ref)/dx_ref, 0, delta=1e-6)
-test.assertAlmostEqual((sol.d.norm("NORM_2") - d_ref)/d_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref) / u_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.dx.norm("NORM_2") - dx_ref) / dx_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.d.norm("NORM_2") - d_ref) / d_ref, 0, delta=1e-6)
 
 test.printSummary()
 

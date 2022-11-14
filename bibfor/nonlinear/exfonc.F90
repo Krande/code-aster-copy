@@ -428,9 +428,6 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         if (l_reuse) then
             call utmess('F', 'MECANONLINE5_70')
         endif
-        if (l_state_init) then
-            call utmess('F', 'MECANONLINE5_71')
-        endif
         if (lResiCompRela) then
             call utmess('F', 'MECANONLINE5_73')
         end if
