@@ -166,6 +166,16 @@
  FINSF
  %
  GROUP_MA
+ GROUP_MA_LG_1        
+ M7       M8      
+ FINSF
+ %
+ GROUP_MA
+ GROUP_MA_LG_2        
+ M10       M11      
+ FINSF
+ %
+ GROUP_MA
  GROUP_MA_PAROI_1        
  M8       M9      
  FINSF
