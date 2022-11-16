@@ -133,6 +133,7 @@ subroutine modirepresu(resuou, resuin )
     call rscrsd('G', resuou, tysd, nbordr)
 !
     lModelVariable = ASTER_FALSE
+    modelRefe = " "
     do ioc = 1, nocc
         call getvtx('MODI_CHAM', 'NOM_CHAM',  iocc=ioc, scal=option,    nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
@@ -159,7 +160,7 @@ subroutine modirepresu(resuou, resuin )
 !           RECUPERATION DU MODELE ASSOCIE AU CHAMP
             model='';carele=''
             call rslesd(resuin(1:8), iordr, model_ = model, cara_elem_ = carele)
-            if (iordr .eq. 1) then
+            if (iord .eq. 1) then
                 modelRefe = model
             else
                 if (modelRefe.ne.model) then
