@@ -50,7 +50,7 @@ implicit none
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi, hhoQuadCellMass
     integer :: cbs, fbs, total_dofs, npg_rigi, npg_mass, itemps
-    character(len=4) :: fami_rigi, fami_mass
+    character(len=8), parameter :: fami_rigi = 'RIGI', fami_mass = 'MASS'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     real(kind=8), dimension(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) :: gradfull
@@ -64,9 +64,7 @@ implicit none
 !
 ! --- Get element parameters
 !
-    fami_rigi = 'RIGI'
     call elrefe_info(fami=fami_rigi, npg=npg_rigi)
-    fami_mass = 'MASS'
     call elrefe_info(fami=fami_mass, npg=npg_mass)
 !
 ! --- Number of dofs

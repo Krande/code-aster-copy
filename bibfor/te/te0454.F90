@@ -49,7 +49,7 @@ implicit none
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi
     integer :: cbs, fbs, total_dofs, npg
-    character(len=4) :: fami
+    character(len=8), parameter :: fami = 'RIGI'
     character(len=8) :: typmod(2)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
@@ -62,7 +62,6 @@ implicit none
 !
 ! --- Get element parameters
 !
-    fami = 'RIGI'
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs

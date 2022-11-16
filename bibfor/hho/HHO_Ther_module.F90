@@ -80,7 +80,7 @@ contains
         type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
         real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
         real(kind=8), intent(in)        :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
-        character(len=*), intent(in)    :: fami
+        character(len=8), intent(in)    :: fami
         real(kind=8), intent(out), optional :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
         real(kind=8), intent(out), optional :: rhs(MSIZE_TDOFS_SCAL)
 !
@@ -239,7 +239,7 @@ contains
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(inout)   :: hhoData
         type(HHO_Quadrature), intent(in):: hhoQuadCellMass
-        character(len=*), intent(in)    :: fami
+        character(len=8), intent(in)    :: fami
         real(kind=8), intent(out), optional :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
         real(kind=8), intent(out), optional :: rhs(MSIZE_TDOFS_SCAL)
 !
@@ -591,7 +591,7 @@ contains
 !
     implicit none
 !
-        character(len=*), intent(in)  :: fami
+        character(len=8), intent(in)  :: fami
         integer, intent(in)           :: imate, npg, ndim
         real(kind=8), intent(in)      :: time
         real(kind=8) :: coeff
@@ -652,7 +652,7 @@ contains
     implicit none
 !
         type(HHO_Data), intent(inout) :: hhoData
-        character(len=4) :: fami
+        character(len=8) :: fami
         integer, intent(in) :: nbQuadPoints, ndim
         real(kind=8), intent(in) :: time
 !

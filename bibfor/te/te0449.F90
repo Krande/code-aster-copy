@@ -58,7 +58,7 @@ implicit none
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     integer :: cbs, fbs, total_dofs, npg
-    character(len=4) :: fami
+    character(len=8), parameter :: fami = 'MASS'
     real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: lhs
 !
 ! --- Get HHO informations
@@ -67,7 +67,6 @@ implicit none
 !
 ! --- Get element parameters
 !
-    fami = 'MASS'
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs

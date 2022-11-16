@@ -58,7 +58,7 @@ implicit none
     integer :: jmatt, icompo, npg
     integer :: codret, jcret, jgrad, jstab, icarcr
     aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
-    character(len=4) :: fami
+    character(len=4), parameter :: fami = 'RIGI'
     character(len=8) :: typmod(2)
     character(len=16) :: defo_comp, type_comp
     type(HHO_Data) :: hhoData
@@ -73,7 +73,6 @@ implicit none
 !
 ! --- Get element parameters
 !
-    fami = 'RIGI'
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
