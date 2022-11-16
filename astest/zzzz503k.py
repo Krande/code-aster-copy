@@ -101,9 +101,9 @@ u_ref = 1028.577291151862
 dx_ref = 1175.794430261763
 d_ref = 800.0000000000003
 
-test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref) / u_ref, 0, delta=1e-6)
-test.assertAlmostEqual((sol.dx.norm("NORM_2") - dx_ref) / dx_ref, 0, delta=1e-6)
-test.assertAlmostEqual((sol.d.norm("NORM_2") - d_ref) / d_ref, 0, delta=1e-6)
+test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref) / u_ref, 0, delta=1e-4)
+test.assertAlmostEqual((sol.dx.norm("NORM_2") - dx_ref) / dx_ref, 0, delta=1e-4)
+test.assertAlmostEqual((sol.d.norm("NORM_2") - d_ref) / d_ref, 0, delta=1e-4)
 
 test.printSummary()
 
