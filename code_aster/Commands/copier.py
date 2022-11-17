@@ -59,7 +59,7 @@ class Copier(ExecuteCommand):
         other = keywords['CONCEPT']
 
         if isinstance(other, Result):
-            indexes = other.getRanks()
+            indexes = other.getIndexes()
             for i in indexes:
                 if other.hasModel(i):
                     self._result.setModel(other.getModel(i), i)

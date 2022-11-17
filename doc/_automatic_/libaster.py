@@ -9597,6 +9597,13 @@ class Result(DataStructure):
             list[FiniteElementDescriptor]: list of finite element descriptor
         """
     
+    def getIndexes(self):
+        """Return the list of ranks used to store fields
+        
+        Returns:
+            list[int]: List of ranks used to store fields.
+        """
+    
     def getListOfLoads(self, rank):
         """Get list of loads on the specified rank
         
@@ -9664,18 +9671,11 @@ class Result(DataStructure):
             list[Model]: list of models.
         """
     
-    def getNumberOfRanks(self):
+    def getNumberOfIndexes(self):
         """Get the number of rank stored in the result
         
         Returns:
             int: number of rank stored.
-        """
-    
-    def getRanks(self):
-        """Return the list of ranks used to store fields
-        
-        Returns:
-            list[int]: List of ranks used to store fields.
         """
     
     def getTable(self, identifier):
@@ -9770,11 +9770,11 @@ class Result(DataStructure):
             local (bool): Print only the local domain if *True*. (default: True)
         """
     
-    def resize(self, nbRanks):
+    def resize(self, nbIndexes):
         """Resize the object.
         
         Arguments:
-            nbRanks (int): new expected size. Should be greater than the current size,
+            nbIndexes (int): new expected size. Should be greater than the current size,
                 otherwise the size is unchanged.
         """
     
@@ -11910,6 +11910,17 @@ class HHO:
     
     def __init__(self, arg0):
         pass
+    
+    def getMicroDamageTerms(self, arg0, arg1, arg2):
+        """Compute terms for micro-damage.
+        
+        Arguments:
+        
+        Returns:
+              FieldOnNodesReal: micro-damage field (HHO)
+              FieldOnNodesReal: micro-damage forces
+              AssemblyMatrixTemperatureReal: micro-damage matrix
+        """
     
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.

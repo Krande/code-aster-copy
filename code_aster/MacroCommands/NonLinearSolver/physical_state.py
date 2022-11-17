@@ -261,7 +261,7 @@ class PhysicalState:
                 assert isinstance(resu, NonLinearResult)
                 if "INST_ETAT_INIT" in init_params:
                     self._time = float(init_params.get("INST_ETAT_INIT"))
-                    rank = resu.getNumberOfRanks() - 1
+                    rank = resu.getNumberOfIndexes() - 1
                     self.extractFieldsFromResult(resu, rank, ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
 
     @profile

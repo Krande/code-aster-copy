@@ -31,8 +31,16 @@ class StorageManager:
     class Slot:
         """Container that holds objects to be saved"""
 
-        __slots__ = ("index", "time", "model", "material_field",
-                     "elem_char", "load", "fields", "param")
+        __slots__ = (
+            "index",
+            "time",
+            "model",
+            "material_field",
+            "elem_char",
+            "load",
+            "fields",
+            "param",
+        )
 
     result = None
     buffer = None
@@ -80,6 +88,8 @@ class StorageManager:
             self.list_time = SearchList(list_time, kwargs["PRECISION"], kwargs["CRITERE"])
             assert all(self.list_time.unique(t) for t in list_time)
 
+        self.result.resize(50)
+
     def setInitialIndex(self, index):
         """Set initial index.
 
@@ -89,7 +99,7 @@ class StorageManager:
         self.curr_index = index
         self.init_index = index
 
-        if self.result.getNumberOfRanks() > 0:
+        if self.result.getNumberOfIndexes() > 0:
             self.result.clear(self.init_index)
 
     def hasToBeStored(self, time):
@@ -126,6 +136,22 @@ class StorageManager:
         """
         return self.result
 
+    def storeParam(self, **kwargs):
+        """Store parameters like time, model...
+
+        Arguments:
+            kwargs: named parameters
+
+        """
+
+        self.result.resize(self.result.getNumberOfIndexes() + 10)
+
+        if "model" in kwargs:
+            self.result.setModel(kwargs["model"], self.curr_index)
+
+        if "time" in kwargs:
+            self.result.setTimeValue(kwargs["time"], self.curr_index)
+
     @profile
     def storeState(self, time, phys_pb, phys_state, param=None):
         """Store a new state.
@@ -159,15 +185,16 @@ class StorageManager:
             field (FieldOn***): field to store
             field_type (str) : type of the field as DEPL, SIEF_ELGA...
         """
+
         if field is not None and field_type not in self.excl_fields:
             self.result.setField(field, field_type, self.curr_index)
             UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=time, vali=self.curr_index)
 
     @profile
     def store(self):
-        """Build result with all ranks in buffer."""
+        """Build result with all indexes in buffer."""
 
-        new_size = self.result.getNumberOfRanks() + len(self.buffer)
+        new_size = self.result.getNumberOfIndexes() + len(self.buffer)
         self.result.resize(new_size)
         for slot in self.buffer:
             curr_index = slot.index

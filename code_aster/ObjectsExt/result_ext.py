@@ -45,8 +45,8 @@ class ResultStateBuilder(InternalStateBuilder):
         super().save(result)
         # mesh
         self._st["mesh"] = result.getMesh()
-        # list of ranks
-        self._st["rank"] = result.getRanks()
+        # list of indexs
+        self._st["index"] = result.getIndexes()
         # list of Model objects
         self._st["model"] = []
         # list of MaterialField objects
@@ -59,7 +59,7 @@ class ResultStateBuilder(InternalStateBuilder):
         self._st["feds"] = result.getFiniteElementDescriptors()
         # list of prof_chno
         self._st["fnds"] = result.getFieldOnNodesDescriptions()
-        for i in self._st["rank"]:
+        for i in self._st["index"]:
             if result.hasModel(i):
                 self._st["model"].append(result.getModel(i))
             if result.hasMaterialField(i):
@@ -69,28 +69,28 @@ class ResultStateBuilder(InternalStateBuilder):
             if result.hasListOfLoads(i):
                 self._st["loads"].append(result.getListOfLoads(i))
 
-        if len(self._st["rank"]) != len(self._st["model"]):
+        if len(self._st["index"]) != len(self._st["model"]):
             logger.debug(
                 f"Inconsistent definition of models: "
-                f"{len(self._st['rank'])} ranks, {len(self._st['model'])} models"
+                f"{len(self._st['index'])} indexs, {len(self._st['model'])} models"
             )
             self._st["model"] = []
-        if len(self._st["rank"]) != len(self._st["mater"]):
+        if len(self._st["index"]) != len(self._st["mater"]):
             logger.debug(
                 f"Inconsistent definition of materials fields: "
-                f"{len(self._st['rank'])} ranks, {len(self._st['mater'])} materials"
+                f"{len(self._st['index'])} indexs, {len(self._st['mater'])} materials"
             )
             self._st["mater"] = []
-        if len(self._st["cara_elem"]) > 0 and len(self._st["rank"]) != len(self._st["cara_elem"]):
+        if len(self._st["cara_elem"]) > 0 and len(self._st["index"]) != len(self._st["cara_elem"]):
             logger.debug(
                 f"Inconsistent definition of elementary characteristics fields: "
-                f"{len(self._st['rank'])} ranks, {len(self._st['cara_elem'])} elementary characteristics"
+                f"{len(self._st['index'])} indexs, {len(self._st['cara_elem'])} elementary characteristics"
             )
             self._st["cara_elem"] = []
-        if len(self._st["loads"]) > 0 and len(self._st["rank"]) != len(self._st["loads"]):
+        if len(self._st["loads"]) > 0 and len(self._st["index"]) != len(self._st["loads"]):
             logger.debug(
                 f"Inconsistent definition of list of loads: "
-                f"{len(self._st['rank'])} ranks, {len(self._st['loads'])} list of loads"
+                f"{len(self._st['index'])} indexs, {len(self._st['loads'])} list of loads"
             )
             self._st["loads"] = []
         return self
@@ -104,15 +104,15 @@ class ResultStateBuilder(InternalStateBuilder):
         """
         super().restore(result)
         result.setMesh(self._st["mesh"])
-        for i, rank in enumerate(self._st["rank"]):
+        for i, index in enumerate(self._st["index"]):
             if self._st["model"]:
-                result.setModel(self._st["model"][i], rank)
+                result.setModel(self._st["model"][i], index)
             if self._st["mater"]:
-                result.setMaterialField(self._st["mater"][i], rank)
+                result.setMaterialField(self._st["mater"][i], index)
             if len(self._st["cara_elem"]) > 0 and self._st["cara_elem"]:
-                result.setElementaryCharacteristics(self._st["cara_elem"][i], rank)
+                result.setElementaryCharacteristics(self._st["cara_elem"][i], index)
             if len(self._st["loads"]) > 0 and self._st["loads"]:
-                result.setListOfLoads(self._st["loads"][i], rank)
+                result.setListOfLoads(self._st["loads"][i], index)
 
         if result.getMesh():
             result.build(self._st["feds"], self._st["fnds"])
@@ -135,7 +135,7 @@ class ExtendedResult:
 
     def _getIndexFromParameter(self, para, value, crit, prec):
         """
-        Get the rank corresponding to a given value of an access parameter.
+        Get the index corresponding to a given value of an access parameter.
 
         Arguments:
             para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
@@ -144,7 +144,7 @@ class ExtendedResult:
             prec (float) : precision for the search criterion
 
         Returns:
-            index (int) : the corresponding index (rank)
+            index (int) : the corresponding index (index)
 
         """
         acpara = self.getAccessParameters()

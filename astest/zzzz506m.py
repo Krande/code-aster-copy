@@ -140,8 +140,8 @@ RES_NEW = MECA_NON_LINE(CHAM_MATER=AFFE,
 #          DETERMINATION DE LA REFERENCE
 #=========================================================
 
-nbRank = RES.getNumberOfRanks()
-test.assertEqual(RES.getNumberOfRanks(), RES_NEW.getNumberOfRanks())
+nbIndexes = RES.getNumberOfIndexes()
+test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
 
 
 
@@ -149,7 +149,7 @@ test.assertEqual(RES.getNumberOfRanks(), RES_NEW.getNumberOfRanks())
 #            REALISATION DES TESTS
 #=========================================================
 
-for rank in range(nbRank):
+for rank in range(nbIndexes):
     # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
     DEPL_REF= RES.getFieldOnNodesReal("DEPL", rank)
     SIGMA_REF= RES.getFieldOnCellsReal("SIEF_ELGA", rank)

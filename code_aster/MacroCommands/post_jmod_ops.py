@@ -30,10 +30,10 @@ from ..Cata.DataStructure import mode_meca
 from ..SD.sd_mater import sd_compor1
 from ..Objects.table_py import Table, merge
 from ..Messages import UTMESS, MasquerAlarme
-from ..MacroCommands.Utils.partition import * 
+from ..MacroCommands.Utils.partition import *
 from ..Utilities.misc import get_titre_concept
 from ..Commands import (AFFE_MODELE, CALC_CHAMP, CALC_TABLE, CREA_CHAMP,
-                        CREA_TABLE, CREA_RESU, DEFI_FICHIER, DEFI_GROUP,  
+                        CREA_TABLE, CREA_RESU, DEFI_FICHIER, DEFI_GROUP,
                         DETRUIRE, IMPR_TABLE, IMPR_RESU, LIRE_MAILLAGE,
                         FORMULE, POST_ELEM, POST_RELEVE_T)
 
@@ -47,13 +47,13 @@ TestUNIT='NO'
 def cross_product(a, b):
     """
     The cross product of two vectors: a x b
-    Store in list type    
+    Store in list type
     """
 
     cross = [(a[1] * b[2]) - (a[2] * b[1]),
              (a[2] * b[0]) - (a[0] * b[2]),
              (a[0] * b[1]) - (a[1] * b[0])]
-    
+
     return cross
 
 #-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ def syme_point_plan(P1, P2, P3, PM):
     vec1 = np.array(P3) - np.array(P1)
     vec2 = np.array(P2) - np.array(P1)
     normal = np.cross(vec1, vec2)
-    
+
     A, B, C = normal
     D = np.dot(normal, np.array(P3)) * -1.
 
@@ -87,7 +87,7 @@ def unit_normal(P0, P1, P2):
     Store in list type
     """
 
-    
+
     x_co = np.linalg.det([[1,P0[1],P0[2]],
                           [1,P1[1],P1[2]],
                           [1,P2[1],P2[2]]])
@@ -95,13 +95,13 @@ def unit_normal(P0, P1, P2):
     y_co = np.linalg.det([[P0[0],1,P0[2]],
                           [P1[0],1,P1[2]],
                           [P2[0],1,P2[2]]])
-    
+
     z_co = np.linalg.det([[P0[0],P0[1],1],
                           [P1[0],P1[1],1],
                           [P2[0],P2[1],1]])
-    
+
     magnitude = (x_co**2 + y_co**2 + z_co**2)**0.5
-        
+
     return [x_co/magnitude, y_co/magnitude, z_co/magnitude]
 
 #-----------------------------------------------------------------------------
@@ -110,15 +110,15 @@ def get_contraint(self, __RESU, inst):
     """
     Get contraint
     """
-    
-    
-        
+
+
+
     __SIGF = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                         OPERATION='EXTR',
                         RESULTAT=__RESU,
                         NOM_CHAM='SIEF_ELGA',
                         INST=inst,)
-            
+
     return __SIGF
 
 #-----------------------------------------------------------------------------
@@ -127,8 +127,8 @@ def get_deformation(self, __RESU, nom_cham, inst):
     """
     Get deformation
     """
-    
-        
+
+
     __EPSI_XX = CREA_CHAMP(TYPE_CHAM=nom_cham+'_EPSI_R',
                              OPERATION='EXTR',
                              RESULTAT=__RESU,
@@ -143,14 +143,14 @@ def get_displacement(self, __RESU, inst):
     """
     Get displacement
     """
-    
-        
+
+
     __DEPINT = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                           OPERATION='EXTR',
                           RESULTAT=__RESU,
                           NOM_CHAM='DEPL',
                           INST=inst,)
-            
+
     return __DEPINT
 
 #-----------------------------------------------------------------------------
@@ -159,8 +159,8 @@ def get_strain_energy(self, __RESU, inst):
     """
     Get strain energy
     """
-    
-        
+
+
     __WELAS = CREA_CHAMP(TYPE_CHAM='ELGA_ENER_R',
                          OPERATION='EXTR',
                          RESULTAT=__RESU,
@@ -175,7 +175,7 @@ def display_node_inst(FOND_FISS, iNP, inst, NB_COUCHES, NP, closedCrack):
     """
     Display node and instant being processed
     """
-    
+
 
     NOFF = FOND_FISS.sdj.FOND_NOEU.get()
     if NOFF is None:
@@ -184,12 +184,12 @@ def display_node_inst(FOND_FISS, iNP, inst, NB_COUCHES, NP, closedCrack):
 
     if closedCrack == 'OUI':
         del NOFF[-1]
-        
+
     NOFF.append('GLOBAL  ')
     texte = "\n" + "#" + "-" * 78 + "\n" + "# NODE: %s" % NOFF[iNP] +\
       " INSTANT: %f" % inst + "      NB_COUCHES: %i" % NB_COUCHES +\
       "      ("+str(iNP+1)+"/"+str(NP)+")" + "\n"
-      
+
     aster.affiche('MESSAGE', texte)
 
 #-----------------------------------------------------------------------------
@@ -222,7 +222,7 @@ def no_fond_fiss(self, FOND_FISS):
     Store nodes in dict type
     """
 
-    
+
     fond_fiss_no = FOND_FISS.sdj.FOND_NOEU.get()
     if fond_fiss_no is None:
         UTMESS('F', 'RUPTURE0_11')
@@ -234,7 +234,7 @@ def no_fond_fiss(self, FOND_FISS):
     else:
         closedCrack = 'OUI'
         NP = len(fond_fiss_no) - 1
-        
+
     TPFISS = dict(zip(range(1, 1+NP), fond_fiss_no))
 
     return (NP, TPFISS, closedCrack)
@@ -247,7 +247,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
     Store in dict type
     """
 
-    
+
     TLIPSUP = {}
     TLIPINF = {}
 
@@ -259,20 +259,20 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
         lip_sup_nodes = FOND_FISS.sdj.SUPNORM_NOEU2.get()
 
     if lip_sup_nodes is None:
-        UTMESS('F', 'RUPTURE0_11')    
-    
+        UTMESS('F', 'RUPTURE0_11')
+
     lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
 
     if syme_type != 'OUI':
-        
+
         if NB_COUCHES < 10:
             lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
         else:
             lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
-            
+
         if lip_sup_nodes is None:
             UTMESS('F', 'RUPTURE0_11')
-             
+
         lip_inf_nodes = list(map(lambda x: x.rstrip(), lip_inf_nodes))
 
 
@@ -286,7 +286,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
             TLIPINF[i+1] = [x.strip() for x in TLIPINFX if x.strip()]
 
     if closedCrack == 'OUI':
-        
+
         no_cross_lip_sup = None
         no_cross_lip_inf = None
 
@@ -306,7 +306,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
                 for j in TLIPINF[2]:
                     if i == j:
                         no_cross_lip_inf = i
-      
+
             if no_cross_lip_inf is not None:
                 for iNP in range(NP):
                     idx = TLIPINF[iNP+1].index(no_cross_lip_inf)
@@ -323,18 +323,18 @@ def na_poinsf(self, FOND_FISS, symeType, elemType):
 
     lip_sup_nodes = FOND_FISS.sdj.SUPNORM_NOEU2.get()
     if lip_sup_nodes is None:
-        UTMESS('F', 'RUPTURE0_11')    
+        UTMESS('F', 'RUPTURE0_11')
     lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
-    
+
     if symeType == 'OUI':
         if elemType == 'SEG2':
             poinsf_na = (lip_sup_nodes[1])
         else:
-            poinsf_na = (lip_sup_nodes[2])          
-    else:       
+            poinsf_na = (lip_sup_nodes[2])
+    else:
         lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
         if lip_inf_nodes is None:
-            UTMESS('F', 'RUPTURE0_11')    
+            UTMESS('F', 'RUPTURE0_11')
         lip_inf_nodes = list(map(lambda x: x.rstrip(), lip_inf_nodes))
 
         if elemType == 'SEG2':
@@ -359,9 +359,9 @@ def na_lips(self, MAIL__,  FOND_FISS, symeType):
         UTMESS('F', 'RUPTURE0_19')
 
     lipInfName = None
-   
+
     if symeType != 'OUI':
-        
+
         lipInfName= FOND_FISS.getLowerLipGroupName()
 
         ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
@@ -376,10 +376,10 @@ def check_hexa_type(self, MAIL, nameMa):
     Check hexa element type of mail group nameMa
     """
 
-    
+
 
     lMailType = aster.getvectjev("&CATA.TM.NOMTM")
-    
+
     meshGroupMa = MAIL.sdj.GROUPEMA.get()[nameMa.ljust(24)]
     meshType = MAIL.sdj.TYPMAIL.get()
 
@@ -388,7 +388,7 @@ def check_hexa_type(self, MAIL, nameMa):
             hexaType = 'OUI'
         else:
             hexaType = 'NON'
-    
+
     return hexaType
 
 #-----------------------------------------------------------------------------
@@ -397,8 +397,8 @@ def crea_group_no_from_no(self, MAIL, nameGroupNo, lNode):
     """
     Create node group from node
     """
-    
-        
+
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_NO=(_F(NOM=nameGroupNo, NOEUD=lNode),),)
 
@@ -409,7 +409,7 @@ def crea_group_no_from_group_ma(self, MAIL, nameGroupNo, nameGroupMa):
     Create node group from mail group and then delete mail group
     """
 
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_NO=(_F(NOM=nameGroupNo, GROUP_MA=nameGroupMa,),),)
 
@@ -423,14 +423,14 @@ def crea_group_ma_from_list_ma(self, MAIL, listma, nameGroupMa):
                   CREA_GROUP_MA=_F(NOM=nameGroupMa,
                                    MAILLE=listma,),);
 
-    
+
 #-----------------------------------------------------------------------------
 
 def crea_group_ma_appui_group_no(self, MAIL, nameGroupMa, nameGroupNo):
     """
     Create mail group supported on node group
     """
-        
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_MA=_F(NOM=nameGroupMa,
                                 OPTION='APPUI',
@@ -444,7 +444,7 @@ def crea_group_ma_appui_group_no_2d(self, MAIL, nameGroupMa, nameGroupNo):
     """
     Create mail group supported on node group with mail type in 2D
     """
-        
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_MA=_F(NOM=nameGroupMa,
                                 OPTION='APPUI',
@@ -458,7 +458,7 @@ def del_group_ma(self, MAIL, lMail):
     """
     Delete mail group
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, DETR_GROUP_MA =_F(NOM =lMail),)
 
 #-----------------------------------------------------------------------------
@@ -467,7 +467,7 @@ def del_group_no(self, MAIL, lGroupNo):
     """
     Delete node group
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, DETR_GROUP_NO =_F(NOM =lGroupNo),)
 
 #-----------------------------------------------------------------------------
@@ -476,7 +476,7 @@ def diff_group_ma(self, MAIL, nameGroupMa, lMail1, lMail2):
     """
     Create mail group that is different from two other mail groups
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_MA=_F(NOM=nameGroupMa,
                                 DIFFE=(lMail1, lMail2),),)
@@ -487,7 +487,7 @@ def diff_group_no(self, MAIL, nameGroupNo, nameGroupsNoDiff):
     """
     Create node group that is different of many node groups
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_NO=_F(NOM=nameGroupNo,
                                 DIFFE=nameGroupsNoDiff,),)
@@ -498,7 +498,7 @@ def intersec_group_ma(self, MAIL, nameGroupMa, lMail1, lMail2):
     """
     Intersection of two mail groups
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_MA=_F(NOM=nameGroupMa,
                                 INTERSEC=(lMail1, lMail2),),)
@@ -509,7 +509,7 @@ def intersec_group_no(self, MAIL, nameGroupNo, lNode1, lNode2):
     """
     Intersection of two node groups
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_NO=_F(NOM=nameGroupNo,
                                 INTERSEC=(lNode1, lNode2),),)
@@ -520,7 +520,7 @@ def union_group_ma(self, MAIL, nameGroupMa, lMail1, lMail2):
     """
     Create mail group that is different from two other mail groups
     """
-    
+
     DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
                CREA_GROUP_MA=_F(NOM=nameGroupMa,
                                 UNION=(lMail1, lMail2),),)
@@ -554,18 +554,18 @@ def calc_tvect(self, all_co, TPFISS, VNPF, N1, N2, N3):
     """
     Compute TVECTEUR
     """
-            
+
     if cross_product([1,0,0],[0,1,0])!=[0,0,1]:
         UTMESS('A', "RUPTURE4_1",valr=cross_product([1,0,0],[0,1,0]))
 
-    VTFF1 = (np.array(all_co[TPFISS[N2]]) - 
+    VTFF1 = (np.array(all_co[TPFISS[N2]]) -
              np.array(all_co[TPFISS[N1]])).tolist()
     VNFF1 = cross_product(VTFF1, VNPF)
-        
+
     VTFF2 = (np.array(all_co[TPFISS[N3]]) -
              np.array(all_co[TPFISS[N2]])).tolist()
     VNFF2 = cross_product(VTFF2, VNPF)
-        
+
     TVECT = (0.5 * (np.array(VNFF1) + np.array(VNFF2))).tolist()
 
     return TVECT
@@ -584,23 +584,23 @@ def calc_tvect_bord(self, all_co, TPFISS, VNPF, N1, N2, PI):
         VECT1X = np.array(all_co[TPFISS[N2]]) - np.array(all_co[TPFISS[N1]])
     else:
         VECT1X = np.array(all_co[TPFISS[N1]]) - np.array(all_co[TPFISS[N2]])
-        
+
     VECT1X = VECT1X.tolist()
     VECT1 = cross_product(VECT1X, VNPF)
-    
+
     VPLANX = (np.array(all_co[PI]) - np.array(all_co[TPFISS[N1]])).tolist()
     VPLAN = cross_product(VPLANX, VNPF)
-    
+
     if -1.E-10 <= (np.dot(np.array(VPLAN), np.array(VECT1))) <= 1.E-10:
         TVECT = VECT1
-        
+
     else:
         PK = (np.array(all_co[TPFISS[N1]]) + np.array(VNPF)).tolist()
-    
+
         P1 = (np.array(all_co[TPFISS[N1]]) + np.array(VECT1)).tolist()
-    
+
         P2 = syme_point_plan(all_co[PI], all_co[TPFISS[N1]], PK, P1)
-    
+
         VECT2 = (np.array(P2) - np.array(all_co[TPFISS[N1]])).tolist()
 
         TVECT = (np.array(VECT1) + np.array(VECT2)).tolist()
@@ -624,9 +624,9 @@ def calc_area(self, MAILAREA, nameGroupMa):
                               MODELE=__MODE,
                               PROL_ZERO='OUI',
                               AFFE=(_F(GROUP_MA=nameGroupMa,
-                                       NOM_CMP='X1',  
+                                       NOM_CMP='X1',
                                        VALE=1.,),),)
-            
+
     __RESU_AREA = CREA_RESU(OPERATION='AFFE',
                             TYPE_RESU='EVOL_ELAS',
                             NOM_CHAM='VARI_ELGA',
@@ -648,14 +648,14 @@ def calc_area(self, MAILAREA, nameGroupMa):
                       _F(NOM=__RESU_AREA),
                       _F(NOM=__POST_AREA),
                         ),)
-    
+
     return __AREA
 
 #-----------------------------------------------------------------------------
 
 def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE,
                                lVect, symeType):
-    
+
     """
     Calculate varied area
     """
@@ -668,12 +668,12 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE,
                 lNode1[0][1:len(lNode1[0])-1] + lNode1[1][1:len(lNode1[1])-1])
         crea_group_no_from_no(self, MAIL, 'NOAREAY',
                 lNode2[0][1:len(lNode2[0])-1] + lNode2[1][1:len(lNode2[1])-1])
-        
+
     crea_group_ma_appui_group_no_2d(self, MAIL, 'MAAREAX', 'NOAREAX')
     crea_group_ma_appui_group_no_2d(self, MAIL, 'MAAREAY', 'NOAREAY')
-            
+
     intersec_group_ma(self, MAIL, 'MAAREA', 'MAAREAX', 'MAAREAY')
-    
+
     areaIni = calc_area(self, MAIL, 'MAAREA')
 
     del_group_no(self, MAIL, 'NOAREAX')
@@ -704,12 +704,12 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE,
                 lNode1[0][1:len(lNode1[0])-1] + lNode1[1][1:len(lNode1[1])-1])
         crea_group_no_from_no(self, __MAIL2, 'NOAREAY',
                 lNode2[0][1:len(lNode2[0])-1] + lNode2[1][1:len(lNode2[1])-1])
-            
+
     crea_group_ma_appui_group_no_2d(self, __MAIL2, 'MAAREAX', 'NOAREAX')
     crea_group_ma_appui_group_no_2d(self, __MAIL2, 'MAAREAY', 'NOAREAY')
-            
+
     intersec_group_ma(self, __MAIL2, 'MAAREA', 'MAAREAX', 'MAAREAY')
-    
+
     areaFin = calc_area(self, __MAIL2, 'MAAREA')
 
     del_group_no(self, __MAIL2, 'NOAREAX')
@@ -717,16 +717,16 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE,
     del_group_ma(self, __MAIL2, 'MAAREAX')
     del_group_ma(self, __MAIL2, 'MAAREAY')
     del_group_ma(self, __MAIL2, 'MAAREA')
-    
+
     DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),),)
 
     XAIRE = areaFin - areaIni
-            
+
     if symeType != 'OUI':
         XAIRE = XAIRE / 2.
-    
+
     return XAIRE
-            
+
 #-----------------------------------------------------------------------------
 
 def calc_vari_area_no_midd(self, MAIL, NB_COUCHES, lNode, NODESBOUGE, lVect,
@@ -734,7 +734,7 @@ def calc_vari_area_no_midd(self, MAIL, NB_COUCHES, lNode, NODESBOUGE, lVect,
     """
     Calculate varied area
     """
-    
+
     if symeType == 'OUI':
         crea_group_no_from_no(self, MAIL, 'NOAREA', lNode[1:len(lNode)-1])
     else:
@@ -785,25 +785,25 @@ def calc_vari_area_no_midd(self, MAIL, NB_COUCHES, lNode, NODESBOUGE, lVect,
         intersec_group_ma(self, __MAIL2, 'MAAREASUP', lipInfName, 'MAAREATEM')
         intersec_group_ma(self, __MAIL2, 'MAAREAINF', lipSupName, 'MAAREATEM')
         union_group_ma(self, __MAIL2, 'MAAREA', 'MAAREASUP', 'MAAREAINF')
-    
+
     areaFin = calc_area(self, __MAIL2, 'MAAREA')
-                    
+
     del_group_no(self, __MAIL2, 'NOAREA')
     del_group_ma(self, __MAIL2, 'MAAREA')
     del_group_ma(self, __MAIL2, 'MAAREATEM')
     if symeType != 'OUI':
         del_group_ma(self, __MAIL2, 'MAAREASUP')
         del_group_ma(self, __MAIL2, 'MAAREAINF')
-    
+
     DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),),)
 
     XAIRE = areaFin - areaIni
-    
+
     if symeType != 'OUI':
         XAIRE = XAIRE / 2.
 
     return XAIRE
-            
+
 #-----------------------------------------------------------------------------
 
 def calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect,
@@ -811,7 +811,7 @@ def calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect
     """
     Calculate varied area
     """
-    
+
     Nodes = []
 
     if symeType == 'OUI':
@@ -830,7 +830,7 @@ def calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect
             for iNP in range(1, NPP+1):
                 Nodes = Nodes + lNode[0][iNP][1:len(lNode[0][iNP])-1] +\
                                 lNode[1][iNP][1:len(lNode[1][iNP])-1]
-        
+
     crea_group_no_from_no(self, MAIL, 'NOAREA', Nodes)
     crea_group_ma_appui_group_no_2d(self, MAIL, 'MAAREATEM', 'NOAREA')
 
@@ -840,7 +840,7 @@ def calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect
         intersec_group_ma(self, MAIL, 'MAAREASUP', lipInfName, 'MAAREATEM')
         intersec_group_ma(self, MAIL, 'MAAREAINF', lipSupName, 'MAAREATEM')
         union_group_ma(self, MAIL, 'MAAREA', 'MAAREASUP', 'MAAREAINF')
-  
+
     areaIni = calc_area(self, MAIL, 'MAAREA')
 
     del_group_no(self, MAIL, 'NOAREA')
@@ -858,21 +858,21 @@ def calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect
             mesh.cn[iNode, 0] = mesh.cn[iNode, 0] + lVect[iKey][0]
             mesh.cn[iNode, 1] = mesh.cn[iNode, 1] + lVect[iKey][1]
             mesh.cn[iNode, 2] = mesh.cn[iNode, 2] + lVect[iKey][2]
-    
+
     newMesh = mesh.ToAster()
     DEFI_FICHIER(UNITE=newMesh, ACTION='LIBERER')
     __MAIL2 = LIRE_MAILLAGE(FORMAT='ASTER', UNITE=newMesh)
 
     crea_group_no_from_no(self, __MAIL2, 'NOAREA', Nodes)
     crea_group_ma_appui_group_no_2d(self, __MAIL2, 'MAAREATEM', 'NOAREA')
-        
+
     if symeType == 'OUI':
         intersec_group_ma(self, __MAIL2, 'MAAREA', lipSupName, 'MAAREATEM')
     else:
         intersec_group_ma(self, __MAIL2, 'MAAREASUP', lipInfName, 'MAAREATEM')
         intersec_group_ma(self, __MAIL2, 'MAAREAINF', lipSupName, 'MAAREATEM')
-        union_group_ma(self, __MAIL2, 'MAAREA', 'MAAREASUP', 'MAAREAINF')  
-    
+        union_group_ma(self, __MAIL2, 'MAAREA', 'MAAREASUP', 'MAAREAINF')
+
     areaFin = calc_area(self, __MAIL2, 'MAAREA')
 
     del_group_no(self, __MAIL2, 'NOAREA')
@@ -881,16 +881,16 @@ def calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect
     if symeType != 'OUI':
         del_group_ma(self, __MAIL2, 'MAAREASUP')
         del_group_ma(self, __MAIL2, 'MAAREAINF')
-    
+
     DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),),)
-    
+
     XAIRE = areaFin - areaIni
 
     if symeType != 'OUI':
         XAIRE = XAIRE / 2.
-    
+
     return XAIRE
-            
+
 #-----------------------------------------------------------------------------
 
 def calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES, NPP, lNode,
@@ -911,12 +911,12 @@ def calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES, NPP, lNode,
         crea_group_no_from_no(self, MAIL, 'NOAREAY',
                                   lNode[0][NPP][1:len(lNode[0][NPP])-1] +
                                   lNode[1][NPP][1:len(lNode[1][NPP])-1])
-        
+
     crea_group_ma_appui_group_no_2d(self, MAIL, 'MAAREAX', 'NOAREAX')
     crea_group_ma_appui_group_no_2d(self, MAIL, 'MAAREAY', 'NOAREAY')
-            
+
     intersec_group_ma(self, MAIL, 'MAAREA', 'MAAREAX', 'MAAREAY')
-    
+
     areaIni = calc_area(self, MAIL, 'MAAREA')
 
     del_group_no(self, MAIL, 'NOAREAX')
@@ -933,12 +933,12 @@ def calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES, NPP, lNode,
             mesh.cn[iNode, 0] = mesh.cn[iNode, 0] + lVect[iKey][0]
             mesh.cn[iNode, 1] = mesh.cn[iNode, 1] + lVect[iKey][1]
             mesh.cn[iNode, 2] = mesh.cn[iNode, 2] + lVect[iKey][2]
-    
+
     newMesh = mesh.ToAster()
     DEFI_FICHIER(UNITE=newMesh, ACTION='LIBERER')
     __MAIL2 = LIRE_MAILLAGE(FORMAT='ASTER', UNITE=newMesh)
 
-    if symeType == 'OUI':        
+    if symeType == 'OUI':
         crea_group_no_from_no(self, __MAIL2, 'NOAREAX',
                                   lNode[1][1:len(lNode[1])-1])
         crea_group_no_from_no(self, __MAIL2, 'NOAREAY',
@@ -950,12 +950,12 @@ def calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES, NPP, lNode,
         crea_group_no_from_no(self, __MAIL2, 'NOAREAY',
                                   lNode[0][NPP][1:len(lNode[0][NPP])-1] +
                                   lNode[1][NPP][1:len(lNode[1][NPP])-1])
-        
+
     crea_group_ma_appui_group_no_2d(self, __MAIL2, 'MAAREAX', 'NOAREAX')
     crea_group_ma_appui_group_no_2d(self, __MAIL2, 'MAAREAY', 'NOAREAY')
-            
+
     intersec_group_ma(self, __MAIL2, 'MAAREA', 'MAAREAX', 'MAAREAY')
-    
+
     areaFin = calc_area(self, __MAIL2, 'MAAREA')
 
     del_group_no(self, MAIL, 'NOAREAX')
@@ -963,16 +963,16 @@ def calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES, NPP, lNode,
     del_group_ma(self, MAIL, 'MAAREAX')
     del_group_ma(self, MAIL, 'MAAREAY')
     del_group_ma(self, MAIL, 'MAAREA')
-    
+
     DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),),)
-    
+
     XAIRE = areaFin - areaIni
 
     if symeType != 'OUI':
         XAIRE = XAIRE / 2.
 
     return XAIRE
-            
+
 #-----------------------------------------------------------------------------
 
 def cal_strain_energy(self, MODE, __EPSI_ELGA, __SIGF):
@@ -1050,7 +1050,7 @@ def field_q_local(self, MAIL, nameGroupNo, nameCmp, value):
                             _F(GROUP_NO=nameGroupNo,
                                NOM_CMP=nameCmp[0],
                                VALE=value[0],),),)
-                
+
     __QY = CREA_CHAMP(OPERATION='AFFE',
                       TYPE_CHAM='NOEU_DEPL_R',
                       MAILLAGE=MAIL,
@@ -1058,9 +1058,9 @@ def field_q_local(self, MAIL, nameGroupNo, nameCmp, value):
                                NOM_CMP=('DX','DY','DZ'),
                                VALE=(0.,0.,0.),),
                             _F(GROUP_NO=nameGroupNo,
-                               NOM_CMP=nameCmp[1],  
+                               NOM_CMP=nameCmp[1],
                                VALE=value[1],),),)
-                
+
     __QZ = CREA_CHAMP(OPERATION='AFFE',
                       TYPE_CHAM='NOEU_DEPL_R',
                       MAILLAGE=MAIL,
@@ -1134,19 +1134,19 @@ def grad_u(self, MAIL, MODE, MATE, namePara, DEPL, lInst):
     __U1 = FORMULE(NOM_PARA=('DX','DY','DZ'), VALE=namePara[0])
     __U2 = FORMULE(NOM_PARA=('DX','DY','DZ'), VALE=namePara[1])
     __U3 = FORMULE(NOM_PARA=('DX','DY','DZ'), VALE=namePara[2])
-        
+
     __CHU = CREA_CHAMP(OPERATION='AFFE',
                        TYPE_CHAM='NOEU_NEUT_F',
                        MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
                                NOM_CMP=('X1','X2','X3'),
                                VALE_F=(__U1, __U2, __U3),),)
-        
+
     __DEPU = CREA_CHAMP(OPERATION='EVAL',
                         TYPE_CHAM='NOEU_NEUT_R',
                         CHAM_F=__CHU,
                         CHAM_PARA=DEPL,)
-        
+
     __DEPU = CREA_CHAMP(OPERATION='ASSE',
                         MODELE=MODE,
                         TYPE_CHAM ='NOEU_DEPL_R',
@@ -1154,7 +1154,7 @@ def grad_u(self, MAIL, MODE, MATE, namePara, DEPL, lInst):
                                 TOUT='OUI',
                                 NOM_CMP=('X1','X2','X3'),
                                 NOM_CMP_RESU=('DX','DY','DZ'),),)
-        
+
     __DEPU = CREA_RESU(OPERATION='AFFE',
                        NOM_CHAM='DEPL',
                        TYPE_RESU='EVOL_ELAS',
@@ -1166,13 +1166,13 @@ def grad_u(self, MAIL, MODE, MATE, namePara, DEPL, lInst):
                           CHAM_MATER=MATE,
                           RESULTAT=__DEPU,
                           DEFORMATION=('EPSI_ELGA'),)
-        
+
     __GRADEP = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                           OPERATION='EXTR',
                           RESULTAT=__GRADEP,
                           NOM_CHAM='EPSI_ELGA',
                           INST=lInst,)
-        
+
     DETRUIRE(CONCEPT=(_F(NOM=__U1),
                       _F(NOM=__U2),
                       _F(NOM=__U3),
@@ -1188,7 +1188,7 @@ def grad_q(self, MAIL, MODE, MATE, nameGroupNo, nameCmp, value, lInst):
     """
     Gradient of Q
     """
-    
+
     __DEPQ = CREA_CHAMP(OPERATION='AFFE',
                         TYPE_CHAM='NOEU_DEPL_R',
                         MAILLAGE=MAIL,
@@ -1196,7 +1196,7 @@ def grad_q(self, MAIL, MODE, MATE, nameGroupNo, nameCmp, value, lInst):
                                  NOM_CMP=('DX','DY','DZ'),
                                  VALE=(0.,0.,0.),),
                               _F(GROUP_NO=(nameGroupNo),
-                                 NOM_CMP=nameCmp,  
+                                 NOM_CMP=nameCmp,
                                  VALE=value,),),)
 
     __RDEPQ = CREA_RESU(OPERATION='AFFE',
@@ -1204,19 +1204,19 @@ def grad_q(self, MAIL, MODE, MATE, nameGroupNo, nameCmp, value, lInst):
                         TYPE_RESU='EVOL_ELAS',
                         AFFE=_F(CHAM_GD=__DEPQ,
                                 INST=lInst),)
-        
+
     __RDEPQ = CALC_CHAMP(reuse=__RDEPQ,
                          MODELE=MODE,
                          CHAM_MATER=MATE,
                          RESULTAT=__RDEPQ,
                          DEFORMATION=('EPSI_ELGA'),)
-        
+
     __GRAQ = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                         OPERATION='EXTR',
                         RESULTAT=__RDEPQ,
                         NOM_CHAM='EPSI_ELGA',
                             INST=lInst,)
-        
+
     DETRUIRE(CONCEPT=(_F(NOM=__DEPQ),
                       _F(NOM=__RDEPQ),
                         ),)
@@ -1255,13 +1255,13 @@ def grad_q_glob(self, MAIL, MODE, MATE, NPP, nameCmp, value, index, lInst):
                          CHAM_MATER=MATE,
                          RESULTAT=__RDEPQ,
                          DEFORMATION=('EPSI_ELGA'),)
-       
+
     __GRAQ = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                         OPERATION='EXTR',
                         RESULTAT=__RDEPQ,
                         INST=lInst,
                         NOM_CHAM='EPSI_ELGA',)
-        
+
     DETRUIRE(CONCEPT=(_F(NOM=__DEPQ),
                       _F(NOM=__RDEPQ),
                         ),)
@@ -1325,7 +1325,7 @@ def grad_noeu(self, MAIL, MODE, MATE, __FIELD, inst):
                       _F(NOM=__FIELD_CALX),
                       _F(NOM=__RFIELD),
                     ),)
-    
+
     return __GRAD_FIELD
 
 #-----------------------------------------------------------------------------
@@ -1351,14 +1351,14 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA,
             if lMailles[jMail] == iMailR:
                 value.append(lValues[jMail])
         dicElemValue['M'+str(iMailR)] = value
-        
+
     nom = aster.getvectjev("&CATA.TM.NOMTM")
     if type(MAIL) != types.StringType:
         nom_maillage = MAIL.nom
     else:
         nom_maillage = MAIL
     nom_maillage = S.ljust(nom_maillage, 8)
-    
+
     tm = np.array(aster.getvectjev(nom_maillage + '.TYPMAIL'))
     nom_mailles = [None] + [tm.strip() for tm in aster.getvectjev('&CATA.TM.NOMTM')]
     dico_connexite = aster.getcolljev(nom_maillage + '.CONNEX')
@@ -1371,20 +1371,20 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA,
     for iElem in dicAllElems.keys():
         if iElem in listElemTMAIL:
             dicElemNode[iElem] = dicAllElems[iElem]
-    
+
     dicGrad = {}
-    
+
     for iElemTMAIL in listElemTMAIL:
 
         texte = "#" + "-" * 55 + "\n" + "# MAILLE: %s" % iElemTMAIL +\
                 "         ("+str(listElemTMAIL.index(iElemTMAIL)+1) +\
                 "/" + str(len(listElemTMAIL)) + ")"
-                
+
         aster.affiche('MESSAGE', texte)
-        
+
         __tmpLocal = [{'NOM_CMP': ('DX','DY','DZ'),
                        'TOUT': 'OUI', 'VALE': (0.,0.,0.)}]
-            
+
         for iDicElem in range(len(dicElemNode[iElemTMAIL])):
             dictTmp = {}
             dictTmp['NOM_CMP'] = 'DX'
@@ -1418,15 +1418,15 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA,
 
     __tmpGlob = [{'CHAM_GD': (__EPSI_ELGA), 'TOUT': 'OUI',
                   'CUMUL': ('OUI'), 'COEF_R': (0.),}]
-        
+
     for ilElem in range(len(listElemTMAIL)):
         dictTmp = {}
         dictTmp['CHAM_GD'] = dicGrad[listElemTMAIL[ilElem]]
         dictTmp['MAILLE'] = listElemTMAIL[ilElem]
         dictTmp['CUMUL'] = 'OUI'
         dictTmp['COEF_R'] = 1.
-        __tmpGlob.append(dictTmp)                
-                    
+        __tmpGlob.append(dictTmp)
+
     __GRAD_FIELD_CAL = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                   OPERATION='ASSE',
                                   MODELE=MODE,
@@ -1458,7 +1458,7 @@ def cal_j01(self, MODE, TMAIL, lInst, __WELAS, __GQX, __GQY, __GQZ):
                             _F(GROUP_MA=TMAIL, CHAM_GD=__GQZ,
                                NOM_CMP=('EPZZ',), NOM_CMP_RESU=('X4',),),
                             ),)
-    
+
     __FMULTJ01 = FORMULE(NOM_PARA=('X1','X2','X3','X4'),
                          VALE='X1*(X2+X3+X4)')
 
@@ -1483,7 +1483,7 @@ def cal_j01(self, MODE, TMAIL, lInst, __WELAS, __GQX, __GQY, __GQZ):
                                    GROUP_MA=TMAIL,
                                    NOM_CMP='X5',
                                    TYPE_MAILLE='3D'),)
-    
+
     DETRUIRE(CONCEPT=(_F(NOM=__CHJ01),
                       _F(NOM=__FMULTJ01),
                       _F(NOM=__CHFMUJ01),
@@ -1546,7 +1546,7 @@ def cal_j02(self, MODE, TMAIL, lInst, __SIGF, __GDEPX, __GDEPY, __GDEPZ,
                               _F(GROUP_MA=TMAIL, CHAM_GD=__GQZ,
                                  NOM_CMP=('EPZZ',), NOM_CMP_RESU=('X18',),),
                               ),)
-    
+
     __FMULTGRAUQ_X19 = FORMULE(NOM_PARA=('X1','X2','X3','X10','X13','X16'),
                                VALE='X1*X10+(X2*2)*(X13*2)+(X3*2)*(X16*2)')
     __FMULTGRAUQ_X20 = FORMULE(NOM_PARA=('X1','X2','X3','X11','X14','X17'),
@@ -1565,7 +1565,7 @@ def cal_j02(self, MODE, TMAIL, lInst, __SIGF, __GDEPX, __GDEPY, __GDEPZ,
                                VALE='(X7*2)*(X11*2)+(X8*2)*X14+X9*(X17*2)')
     __FMULTGRAUQ_X27 = FORMULE(NOM_PARA=('X7','X8','X9','X12','X15','X18'),
                                VALE='(X7*2)*(X12*2)+(X8*2)*(X15*2)+X9*X18')
-    
+
     __CHFMUGRAUQ = CREA_CHAMP(OPERATION='AFFE',
                               TYPE_CHAM='ELGA_NEUT_F',
                               MODELE=MODE, PROL_ZERO='OUI',
@@ -1652,7 +1652,7 @@ def cal_j02(self, MODE, TMAIL, lInst, __SIGF, __GDEPX, __GDEPY, __GDEPZ,
     __CHJ02INT = CREA_CHAMP(OPERATION='EVAL',
                             TYPE_CHAM='ELGA_NEUT_R',
                             CHAM_F=__CHFMUJ02, CHAM_PARA=(__CHJ02,),)
-    
+
     __RESUJ02 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                           NOM_CHAM='VARI_ELGA',
                           AFFE=_F(MODELE=MODE, INST=lInst,
@@ -1707,7 +1707,7 @@ def cal_j04(self, MODE, TMAIL, lInst, SIG_CMP, EPS_CMP, __SIGF, dicGradEps,
                                 _F(GROUP_MA=TMAIL, CHAM_GD=__QZ_GAUSS,
                                    NOM_CMP=('EPZZ',), NOM_CMP_RESU=('X7',),),
                                 ),)
-        
+
         __FMULTJ04 = FORMULE(NOM_PARA=('X1','X2','X3','X4','X5','X6','X7'),
                              VALE='(X1*X2*X5)+(X1*(X3*2)*X6)+(X1*(X4*2)*X7)')
 
@@ -1716,7 +1716,7 @@ def cal_j04(self, MODE, TMAIL, lInst, SIG_CMP, EPS_CMP, __SIGF, dicGradEps,
                                 MODELE=MODE, PROL_ZERO='OUI',
                                 AFFE=_F(GROUP_MA=TMAIL, NOM_CMP='X8',
                                         VALE_F=__FMULTJ04),)
-        
+
         __CHJ04INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                                 CHAM_F=__CHFMUJ04, CHAM_PARA=(__CHJ04,),)
 
@@ -1724,7 +1724,7 @@ def cal_j04(self, MODE, TMAIL, lInst, SIG_CMP, EPS_CMP, __SIGF, dicGradEps,
                               NOM_CHAM='VARI_ELGA',
                               AFFE=_F(MODELE=MODE, INST=lInst,
                                       CHAM_GD=__CHJ04INT,),)
-        
+
         __J04 = POST_ELEM(RESULTAT=__RESUJ04,
                           MODELE=MODE, INST=lInst,
                           INTEGRALE=_F(NOM_CHAM='VARI_ELGA',
@@ -1745,7 +1745,7 @@ def cal_j04(self, MODE, TMAIL, lInst, SIG_CMP, EPS_CMP, __SIGF, dicGradEps,
             __IJ04_J = [iJ04 * 2. for iJ04 in __IJ04_J]
 
         __J04_J = np.array(__J04_J) + np.array(__IJ04_J)
-    
+
     return __J04_J
 
 #-----------------------------------------------------------------------------
@@ -1773,16 +1773,16 @@ def cal_j05(self, MODE, TMAIL, lInst, __GRAD_WELAS,
                             _F(GROUP_MA=TMAIL, CHAM_GD=__QZ_GAUSS,
                                NOM_CMP=('EPZZ',), NOM_CMP_RESU=('X6',),),
                             ),)
-    
+
     __FMULTJ05 = FORMULE(NOM_PARA=('X1','X2','X3','X4','X5','X6'),
                          VALE='(X1*X4)+((X2*2)*X5)+((X3*2)*X6)')
-    
+
     __CHFMUJ05 = CREA_CHAMP(OPERATION='AFFE',
                             TYPE_CHAM='ELGA_NEUT_F',
                             MODELE=MODE, PROL_ZERO='OUI',
                             AFFE=_F(GROUP_MA=TMAIL, NOM_CMP='X7',
                                     VALE_F=__FMULTJ05),)
-    
+
     __CHJ05INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                             CHAM_F=__CHFMUJ05, CHAM_PARA=(__CHJ05,),)
 
@@ -1797,14 +1797,14 @@ def cal_j05(self, MODE, TMAIL, lInst, __GRAD_WELAS,
                                    GROUP_MA=TMAIL,
                                    NOM_CMP='X7',
                                    TYPE_MAILLE='3D'),)
-    
+
     DETRUIRE(CONCEPT=(_F(NOM=__CHJ05),
                       _F(NOM=__FMULTJ05),
                       _F(NOM=__CHFMUJ05),
                       _F(NOM=__CHJ05INT),
                       _F(NOM=__RESUJ05),
                       ),)
-    
+
     __J05_J = __J05.EXTR_TABLE().values()['INTE_X7']
 
     return __J05_J
@@ -1816,11 +1816,11 @@ def list_inst_calc(self, dico, NUME_ORDRE, INST, PRECISION):
     Determining the calculated instants
     """
 
-    
+
 
     lInst = list(dico['INST'])
-    
-            
+
+
     if (NUME_ORDRE is not None) and (INST is None):
         for iord in dico['NUME_ORDRE']:
             if iord not in NUME_ORDRE:
@@ -1848,8 +1848,8 @@ def list_node_calc(self, LIST_NODE, NB_POINT_FOND, TPFISS, NP):
     Determining the calculated nodes of crack front
     """
 
-    
-    
+
+
 
     if (LIST_NODE is not None) and (NB_POINT_FOND is not None):
         UTMESS('F', 'RUPTURE4_7')
@@ -1872,12 +1872,12 @@ def list_node_calc(self, LIST_NODE, NB_POINT_FOND, TPFISS, NP):
         else:
             if NB_POINT_FOND == 1:
                 listNP.append(range(NP)[0])
-                
+
             if NB_POINT_FOND == 2:
                 listNP.append(range(NP)[0])
                 listNP.append(range(NP)[-1])
-                
-            if NB_POINT_FOND > 2:            
+
+            if NB_POINT_FOND > 2:
                 iSelect = float(NP-2) / float(NB_POINT_FOND-1)
                 listNP.append(range(NP)[0])
                 for i in range(NB_POINT_FOND-2):
@@ -1912,10 +1912,10 @@ def get_result2D(self, J, __J01, linst, liord, nom_modelisation, NB_COUCHES,
     RS_modelisation = []
     RS_modelisation.append(nom_modelisation)
     RS_modelisation = RS_modelisation * len(liord)
-    
+
     RS_volume = __J01.EXTR_TABLE().values()['VOL']
     RS_volume = RS_volume * len(liord)
-    
+
     RS_contour = []
     RS_contour.append(NB_COUCHES)
     RS_contour = RS_contour * len(liord)
@@ -1926,14 +1926,14 @@ def get_result2D(self, J, __J01, linst, liord, nom_modelisation, NB_COUCHES,
     tabfact.append(_F(PARA='MODE', LISTE_K=(RS_modelisation)))
     tabfact.append(_F(PARA='VOLUME', LISTE_R=(RS_volume)))
     tabfact.append(_F(PARA='NB_COUCHES', LISTE_I=(RS_contour)))
-    
+
     if (checksym == 'OUI') and (nom_modelisation != 'AXIS'):
         tabfact.append(_F(PARA='K', LISTE_R=(K)))
-        
+
     tabfact.append(_F(PARA='J', LISTE_R=(J)))
 
     tab_result = CREA_TABLE(LISTE=tabfact, TITRE=TITRE)
-    
+
     return tab_result
 
 #-----------------------------------------------------------------------------
@@ -1950,7 +1950,7 @@ def get_result(self, __J, volume, NB_COUCHES, TITRE, TPFISS, FOND_FISS,
         titre = get_titre_concept()
 
     TPFISS[NP+1] = 'GLOBAL'
-    
+
     mcfact = []
     mcfact.append(_F(PARA='FOND_FISS', LISTE_K=[FOND_FISS.nom, ]))
     mcfact.append(_F(PARA='NUME_FOND', LISTE_I=[1, ]))
@@ -1973,8 +1973,8 @@ def get_result(self, __J, volume, NB_COUCHES, TITRE, TPFISS, FOND_FISS,
     params = params + ('NB_COUCHES',)
     params = params + ('J',)
 
-    if iord == 0 and iNP == listNP[0]:            
-            
+    if iord == 0 and iNP == listNP[0]:
+
         tab_result = CREA_TABLE(LISTE=mcfact, TITRE=titre)
         tab_result = CALC_TABLE(TABLE=tab_result, reuse=tab_result,
                                 ACTION=(_F(OPERATION='EXTR',
@@ -1985,7 +1985,7 @@ def get_result(self, __J, volume, NB_COUCHES, TITRE, TPFISS, FOND_FISS,
         __tabi = CALC_TABLE(TABLE=__tabi, reuse=__tabi,
                         ACTION=(_F(OPERATION='EXTR',
                                    NOM_PARA=tuple(params))),)
-        
+
         tab_result = CALC_TABLE(reuse=tab_result, TABLE=tab_result,
                                 ACTION=_F(TABLE=__tabi, OPERATION='COMB',
                                       NOM_PARA=['J', 'INST', 'NOEUD_FOND'],))
@@ -1996,7 +1996,7 @@ def get_result(self, __J, volume, NB_COUCHES, TITRE, TPFISS, FOND_FISS,
 
 def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NUME_ORDRE=None,
                 GROUP_NO=None, NB_POINT_FOND=None, OPTION=None, ETAT_INIT=None, TITRE=None, **args):
-    
+
 
     """
     Macro POST_J - Calculate J-integral
@@ -2017,16 +2017,16 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
     MasquerAlarme('MODELISA8_15')
     MasquerAlarme('JEVEUX1_64')
     MasquerAlarme('PREPOST2_7')
-    MasquerAlarme('MED_67')  
+    MasquerAlarme('MED_67')
 #   --------------------------------------------------------------------------
 #   NOT USER-OPTION
-#    
+#
     grad_elno_type_j03 = 'NON'
     grad_elno_type_j04 = 'NON'
     grad_elno_type_j05 = 'NON'
 
     start_post_j=time.time()
-    
+
     if OPTION != 'JMOD':
         j_correction = 'NON'
     else:
@@ -2036,13 +2036,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         UTMESS('F', 'RUPTURE4_9')
 
     # take into account the additional terms of modified J-intergral
-    
+
     modified_J = True
 #   --------------------------------------------------------------------------
 #   EXTRACT TABLE OF RESULTS
 
     tab_result = []
-    
+
 #   --------------------------------------------------------------------------
 #   GET PARAMETES AND RESULTS OF CALCULATION
 #
@@ -2079,16 +2079,16 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
     """
     Macro POST_JMOD - Calculate J-integral in 2D
     """
-    
+
     if ndim == 2:
 
         # print("Macro POST_JMOD - Calculate J-integral in 2D")
-        # get material          
+        # get material
         # On recupere le materiau et le nom de la modelisation
         nom_fiss = ''
         if FOND_FISS is not None:
             nom_fiss = FOND_FISS.getName()
-        assert nom_fiss != ''    
+        assert nom_fiss != ''
         # matph = MA.sdj.NOMRC.get()
         # si le MCS MATER n'est pas renseigne, on considere le materiau
         # present dans la sd_resultat. Si MATER est renseigne, on ecrase
@@ -2097,11 +2097,11 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         CHAM_MATER = None
         if MATER is None:
             mater, MODELISATION = aster.postkutil(1, RESULTAT.getName(), nom_fiss)
-            if RESULTAT.getNumberOfRanks() == 0:
+            if RESULTAT.getNumberOfIndexes() == 0:
                 RESULTAT.update()
-            if RESULTAT.getNumberOfRanks() > 0:
+            if RESULTAT.getNumberOfIndexes() > 0:
                 cham_maters = []
-                for j in RESULTAT.getRanks():
+                for j in RESULTAT.getIndexes():
                     if RESULTAT.hasMaterialField(j):
                         cham_maters += [RESULTAT.getMaterialField(j)]
                 if(len(cham_maters)):
@@ -2138,54 +2138,54 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         e = dicmat['E']
         nu = dicmat['NU']
-        
+
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # DIRECTION OF VIRTUAL CRACK PROPAGATION
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         # get crack tip
-        
+
         Pfiss = FOND_FISS.sdj.FOND_NOEU.get()
         Pfiss = list(map(lambda x: x.rstrip(), Pfiss))
         Nfiss = len(Pfiss)
 
-        
+
         # get crack edges
-        
+
         PropadirSup = FOND_FISS.sdj.SUPNORM_NOEU2.get()
         PropadirInf = FOND_FISS.sdj.INFNORM_NOEU2.get()
 
         if (PropadirSup is None) and (PropadirInf is None):
             UTMESS('F', 'RUPTURE4_10')
 
-            
+
         if PropadirSup is not None:
 
             # determine top edge nodes
-        
+
             PropadirSup = list(map(lambda x: x.rstrip(), PropadirSup))
             del PropadirSup[2:]
-            
+
             PropadirSup = [[Pfiss[i], PropadirSup[i * 2:(i + 1) * 2]] for i in range(0, Nfiss)]
             PropadirSup = [(i[0], i[1][0:]) for i in PropadirSup]
             PropadirSup =  dict(PropadirSup)
 
             LPfissSup = copy.copy(Pfiss)
-            
+
             for ino in Pfiss:
                 l = [elem for elem in PropadirSup[ino] if elem != '']
                 LPfissSup += l
 
             LPfissSup = list(set(LPfissSup))
             dicLPfissSup = RESULTAT.LIST_VARI_ACCES()
-            
+
             __ncoorfisSup = POST_RELEVE_T(ACTION=_F(RESULTAT=RESULTAT,
                                         OPERATION='EXTRACTION', NOEUD=LPfissSup,
                                         NOM_CHAM='DEPL', NOM_CMP=('DX', 'DY'),
                                         INTITULE='TOP EDGE COORDINATES'),)
 
             tcoorfisSup = __ncoorfisSup.EXTR_TABLE().NUME_ORDRE == dicLPfissSup['NUME_ORDRE'][0]
-            
+
             nbtfisSup = len(tcoorfisSup['NOEUD'].values()['NOEUD'])
             xsfisSup = np.array(tcoorfisSup['COOR_X'].values()['COOR_X'][:nbtfisSup])
             ysfisSup = np.array(tcoorfisSup['COOR_Y'].values()['COOR_Y'][:nbtfisSup])
@@ -2196,9 +2196,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
             l_coorfisSup = [[nsfisSup[i], xsfisSup[i], ysfisSup[i], zsfisSup[i]]\
                              for i in range(nbtfisSup)]
-            
+
             VECTEURSUP = []
-            
+
             for i in range(2):
                 if l_coorfisSup[i][0] == Pfiss[0]:
                     if i == 1:
@@ -2214,43 +2214,43 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         if PropadirInf is not None:
 
             # determine bottom edge nodes
-            
+
             PropadirInf = list(map(lambda x: x.rstrip(), PropadirInf))
             del PropadirInf[2:]
-            
+
             PropadirInf = [[Pfiss[i], PropadirInf[i * 2:(i + 1) * 2]] for i in range(0, Nfiss)]
             PropadirInf = [(i[0], i[1][0:]) for i in PropadirInf]
             PropadirInf =  dict(PropadirInf)
-        
+
             LPfissInf = copy.copy(Pfiss)
-            
+
             for ino in Pfiss:
                 l = [elem for elem in PropadirInf[ino] if elem != '']
                 LPfissInf += l
-                
+
             LPfissInf = list(set(LPfissInf))
             dicLPfissInf = RESULTAT.LIST_VARI_ACCES()
-            
+
             __ncoorfisInf = POST_RELEVE_T(ACTION=_F(RESULTAT=RESULTAT,
                                         OPERATION='EXTRACTION', NOEUD=LPfissInf,
                                         NOM_CHAM='DEPL', NOM_CMP=('DX', 'DY'),
                                         INTITULE='BOTTOM EDGE COORDINATES'),)
-            
+
             tcoorfisInf = __ncoorfisInf.EXTR_TABLE().NUME_ORDRE == dicLPfissInf['NUME_ORDRE'][0]
-            
+
             nbtfisInf = len(tcoorfisInf['NOEUD'].values()['NOEUD'])
             xsfisInf = np.array(tcoorfisInf['COOR_X'].values()['COOR_X'][:nbtfisInf])
             ysfisInf = np.array(tcoorfisInf['COOR_Y'].values()['COOR_Y'][:nbtfisInf])
             zsfisInf = np.zeros(nbtfisInf)
-            
+
             nsfisInf = tcoorfisInf['NOEUD'].values()['NOEUD'][:nbtfisInf]
             nsfisInf = list(map(lambda x: x.rstrip(), nsfisInf))
-            
+
             l_coorfisInf = [[nsfisInf[i], xsfisInf[i], ysfisInf[i], zsfisInf[i]]\
                              for i in range(nbtfisInf)]
-        
+
             VECTEURINF = []
-            
+
             for i in range(2):
                 if l_coorfisInf[i][0] == Pfiss[0]:
                     if i == 1:
@@ -2268,40 +2268,40 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         if (PropadirSup is not None) and (PropadirInf is None):
             VECTEUR = normalize(VECTEURSUP)
 
-            
+
         if (PropadirSup is None) and (PropadirInf is not None):
             VECTEUR = normalize(VECTEURINF)
-            
-        
+
+
         if (PropadirSup is not None) and (PropadirInf is not None):
-        
+
             for i in range(2):
                 if l_coorfisSup[i][0] == Pfiss[0]:
                     l_coorPfiss = l_coorfisSup[i]
                     for j in range(2):
                         if j != i:
                             l_coorfisPSup = l_coorfisSup[j]
-        
+
             for i in range(2):
                 if l_coorfisInf[i][0] != Pfiss[0]:
                        l_coorfisPInf = l_coorfisInf[i]
-        
+
             VECTEURSI = []
-            
+
             for i in range(3):
                 coorVECTEURSI = l_coorPfiss[i+1] - \
                   ((l_coorfisPSup[i+1] + l_coorfisPInf[i+1]) / 2. )
                 VECTEURSI.append(coorVECTEURSI)
-        
+
             VECTEUR = normalize(VECTEURSI)
-        
+
         VALDEPX = VECTEUR[0]
         if checksym == 'OUI':
             VALDEPX = VALDEPX * 2.
-            
+
         VALDEPY = VECTEUR[1]
-        
-        
+
+
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # CALCULATION DOMAIN
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2310,7 +2310,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                     MAILLAGE=MAIL,
                     CREA_GROUP_NO=(_F(NOM='NBOUGER',
                                       NOEUD=FOND_FISS.sdj.FOND_NOEU.get(),),),)
-        
+
         DEFI_GROUP(reuse=MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(NOM='MBOUGER',
@@ -2319,13 +2319,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                      TYPE_APPUI='AU_MOINS_UN',),)
 
         for INB_COUCHE in range(1, NB_COUCHES+1):
-                
+
             DEFI_GROUP(reuse=MAIL,
                             MAILLAGE=MAIL,
                             DETR_GROUP_NO =_F(NOM ='NBOUGER'),
                             CREA_GROUP_NO=(_F(NOM='NBOUGER',
                                             GROUP_MA='MBOUGER',),),)
-                
+
             DEFI_GROUP(reuse=MAIL,
                             MAILLAGE=MAIL,
                             DETR_GROUP_MA =_F(NOM ='MBOUGER'),
@@ -2345,14 +2345,14 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                      OPTION='APPUI',
                                      GROUP_NO='NMAIL',
                                      TYPE_APPUI='AU_MOINS_UN',),)
-        
+
         if modified_J:
 
             DEFI_GROUP(reuse=MAIL,
                         MAILLAGE=MAIL,
                         CREA_GROUP_NO=(_F(NOM='NBOUGER_IMPR',
                                         NOEUD=FOND_FISS.sdj.FOND_NOEU.get(),),),)
-            
+
             DEFI_GROUP(reuse=MAIL,
                         MAILLAGE=MAIL,
                         CREA_GROUP_MA=_F(NOM='MBOUGER_IMPR',
@@ -2361,13 +2361,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                         TYPE_APPUI='AU_MOINS_UN',),)
 
             for INB_COUCHE in range(1, 3):
-                
+
                 DEFI_GROUP(reuse=MAIL,
                                 MAILLAGE=MAIL,
                                 DETR_GROUP_NO =_F(NOM ='NBOUGER_IMPR'),
                                 CREA_GROUP_NO=(_F(NOM='NBOUGER_IMPR',
                                                 GROUP_MA='MBOUGER_IMPR',),),)
-                    
+
                 DEFI_GROUP(reuse=MAIL,
                                 MAILLAGE=MAIL,
                                 DETR_GROUP_MA =_F(NOM ='MBOUGER_IMPR'),
@@ -2386,7 +2386,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         # PRESENT OF INITIAL STRAIN
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        
+
         if ETAT_INIT is not None:
 
             DATAINIT = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
@@ -2396,12 +2396,12 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
             #if __INITEPSI['TYPE_CHAM'] == 'ELGA_EPSI_R':
 
             __EPS0ELGA = __INITEPSI
-            
+
             __EPS0NOEU = CREA_CHAMP(TYPE_CHAM='NOEU_EPSI_R',
                                     OPERATION='DISC',
                                     MODELE=MODE,
                                     CHAM_GD=__EPS0ELGA)
-            
+
             #if __INITEPSI['TYPE_CHAM'] == 'NOEU_EPSI_R':
             #
             #    __EPS0NOEU = __INITEPSI
@@ -2439,7 +2439,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                         NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),
                                         VALE=(0.,0.,0.,0.),),
                                   _F(GROUP_MA=('MBOUGER'),
-                                        NOM_CMP='EPXX',  
+                                        NOM_CMP='EPXX',
                                         VALE=VALDEPX,),),)
 
         __QX_NOEU_GAUSS = CREA_CHAMP(OPERATION='DISC',
@@ -2456,7 +2456,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                         NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),
                                         VALE=(0.,0.,0.,0.),),
                                   _F(GROUP_MA=('MBOUGER'),
-                                        NOM_CMP='EPYY',  
+                                        NOM_CMP='EPYY',
                                         VALE=VALDEPY,),),)
 
         __QY_NOEU_GAUSS = CREA_CHAMP(OPERATION='DISC',
@@ -2473,7 +2473,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         # GET COORDINATES IN 2D AXIS
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        
+
         if MODELISATION == 'AXIS':
 
             # get coordinate r
@@ -2487,7 +2487,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                        TYPE_CHAM='ELGA_GEOM_R',
                                        MODELE=MODE,
                                        CHAM_GD=__CHCOOR_NOEU,)
-            
+
 
             # get radial distance from the axis of rotation to the crack tip
 
@@ -2502,26 +2502,26 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                           == dicLPfissSup['NUME_ORDRE'][0]
 
             R_CrackTip = tcoorCrackTip['COOR_X'].values()['COOR_X'][0]
-            
-            
+
+
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # GET INSTANTS
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
         if (PropadirSup is not None):
-            
+
             tinst = __ncoorfisSup.EXTR_TABLE().NUME_ORDRE == dicLPfissSup['NUME_ORDRE']
             tinst = tinst['INST'].values()['INST']
             l_inst = [tinst[i] for i in range(len(tinst)) if tinst[i] not in tinst[:i]]
-            
+
         if (PropadirSup is None) and (PropadirInf is not None):
-            
+
             tinst = __ncoorfisInf.EXTR_TABLE().NUME_ORDRE == dicLPfissInf['NUME_ORDRE']
             tinst = tinst['INST'].values()['INST']
             l_inst = [tinst[i] for i in range(len(tinst)) if tinst[i] not in tinst[:i]]
 
-        
+
         liord = []
         linst = []
 
@@ -2536,9 +2536,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         else:
 
-            for iordre, iinst in enumerate(l_inst):         
-                for inume in range(len(NUME_ORDRE)):    
-                    if iordre == NUME_ORDRE[inume]: 
+            for iordre, iinst in enumerate(l_inst):
+                for inume in range(len(NUME_ORDRE)):
+                    if iordre == NUME_ORDRE[inume]:
                         liord.append(iordre)
                         linst.append(iinst)
 
@@ -2546,7 +2546,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                 liord.append(1)
                 linst.append(0.0)
 
-        
+
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         # LOOP ON THE INSTANTS
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2561,7 +2561,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-            # GRAD QX,X  QX,Y    
+            # GRAD QX,X  QX,Y
             __DEPIX = CREA_CHAMP(OPERATION='AFFE',
                                 TYPE_CHAM='NOEU_DEPL_R',
                                 MAILLAGE=MAIL,
@@ -2569,9 +2569,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                              NOM_CMP=('DX','DY'),
                                              VALE=(0.,0.),),
                                       _F(GROUP_MA=('MBOUGER'),
-                                             NOM_CMP='DX',  
+                                             NOM_CMP='DX',
                                              VALE=VALDEPX,),),)
-          
+
             __RDEPIX = CREA_RESU(OPERATION='AFFE',
                                 NOM_CHAM='DEPL',
                                 TYPE_RESU='EVOL_ELAS',
@@ -2591,10 +2591,10 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
             DETRUIRE(CONCEPT=(_F(NOM=__DEPIX),
                               _F(NOM=__RDEPIX),
                             ),)
-            
-        
+
+
             # GRAD QY,Y  QY,X
-        
+
             __DEPIY = CREA_CHAMP(OPERATION='AFFE',
                                 TYPE_CHAM='NOEU_DEPL_R',
                                 MAILLAGE=MAIL,
@@ -2604,59 +2604,59 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                       _F(GROUP_MA=('MBOUGER'),
                                              NOM_CMP='DY',
                                              VALE=VALDEPY,),),)
-            
+
             __RDEPIY = CREA_RESU(OPERATION='AFFE',
                                 NOM_CHAM='DEPL',
                                 TYPE_RESU='EVOL_ELAS',
                                 AFFE=_F(CHAM_GD=__DEPIY, INST=inst),)
-        
+
             __RDEPIY = CALC_CHAMP(reuse=__RDEPIY,
                                 MODELE=MODE,
                                 CHAM_MATER=MATE,
                                 RESULTAT=__RDEPIY,
                                 DEFORMATION=('EPSI_ELGA'),)
-        
+
             __GDEPIY = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                  OPERATION='EXTR',
                                  RESULTAT=__RDEPIY,
                                  NOM_CHAM='EPSI_ELGA', INST=inst, )
-        
+
             DETRUIRE(CONCEPT=(_F(NOM=__DEPIY),
                               _F(NOM=__RDEPIY),
                             ),)
 
-            
+
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             # GET DISPLACEMENT U AND CALCUL GRAD U
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
+
 
             # displacement U
-        
+
             __DEPINT = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                                 OPERATION='EXTR',
                                 RESULTAT=__RESU,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=iord,
                                   )
-        
+
 
             # creat (UX,0) and calcul GRAD UX,X  UX,Y
-            
+
             __UX1 = FORMULE(NOM_PARA=('DX','DY'),VALE='DX')
             __UX2 = FORMULE(NOM_PARA=('DX','DY'),VALE='0.')
-            
+
             __CHUX = CREA_CHAMP(OPERATION='AFFE',
                             TYPE_CHAM='NOEU_NEUT_F',
                             MAILLAGE=MAIL,
                             AFFE=_F(TOUT='OUI', NOM_CMP=('X1','X2'),
                                     VALE_F=(__UX1, __UX2)))
-            
+
             __DEPUX = CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='NOEU_NEUT_R',
                                 CHAM_F=__CHUX,
                                 CHAM_PARA=__DEPINT,)
-            
+
             __DEPUX = CREA_CHAMP(OPERATION='ASSE',
                                 MODELE=MODE,
                                 TYPE_CHAM ='NOEU_DEPL_R',
@@ -2664,46 +2664,46 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                         TOUT='OUI',
                                         NOM_CMP=('X1','X2'),
                                         NOM_CMP_RESU=('DX','DY'),),)
-            
+
             __DEPUX = CREA_RESU(OPERATION='AFFE',
                                  NOM_CHAM='DEPL',
                                  TYPE_RESU='EVOL_ELAS',
                                  AFFE=_F(CHAM_GD=__DEPUX, INST=inst),)
-            
+
             __GDEPX = CALC_CHAMP(reuse=__DEPUX,
                                 MODELE=MODE,
                                 CHAM_MATER=MATE,
                                 RESULTAT=__DEPUX,
                                 DEFORMATION=('EPSI_ELGA'),)
-            
+
             __GDEPX = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                  OPERATION='EXTR',
                                  RESULTAT=__GDEPX,
                                  NOM_CHAM='EPSI_ELGA', INST=inst,)
-            
+
             DETRUIRE(CONCEPT=(_F(NOM=__CHUX),
                               _F(NOM=__UX1),
                               _F(NOM=__UX2),
                               _F(NOM=__DEPUX),
                             ),)
-            
+
 
             # creat (0,UY) and calcul GRAD UY,Y  UY,X
-        
+
             __UY1 = FORMULE(NOM_PARA=('DX','DY'),VALE='0.')
             __UY2 = FORMULE(NOM_PARA=('DX','DY'),VALE='DY')
-        
+
             __CHUY = CREA_CHAMP(OPERATION='AFFE',
                             TYPE_CHAM='NOEU_NEUT_F',
                             MAILLAGE=MAIL,
                             AFFE=_F(TOUT='OUI', NOM_CMP=('X1','X2'),
                                     VALE_F=(__UY1, __UY2)))
-        
+
             __DEPUY = CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='NOEU_NEUT_R',
                                 CHAM_F=__CHUY,
                                 CHAM_PARA=__DEPINT,)
-        
+
             __DEPUY = CREA_CHAMP(OPERATION='ASSE',
                                 MODELE=MODE,
                                 TYPE_CHAM ='NOEU_DEPL_R',
@@ -2711,29 +2711,29 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                         TOUT='OUI',
                                         NOM_CMP=('X1','X2'),
                                         NOM_CMP_RESU=('DX', 'DY'),),)
-        
+
             __DEPUY = CREA_RESU(OPERATION='AFFE',
                                  NOM_CHAM='DEPL',
                                  TYPE_RESU='EVOL_ELAS',
                                  AFFE=_F(CHAM_GD=__DEPUY, INST=inst),)
-        
+
             __GDEPY = CALC_CHAMP(reuse=__DEPUY,
                                 MODELE=MODE,
                                 CHAM_MATER=MATE,
                                 RESULTAT=__DEPUY,
                                 DEFORMATION=('EPSI_ELGA'),)
-            
+
             __GDEPY = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                  OPERATION='EXTR',
                                  RESULTAT=__GDEPY,
                                  NOM_CHAM='EPSI_ELGA', INST=inst,)
-        
+
             DETRUIRE(CONCEPT=(_F(NOM=__CHUY),
                               _F(NOM=__UY1),
                               _F(NOM=__UY2),
                               _F(NOM=__DEPUY),
                             ),)
-        
+
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             # GET STRESS
@@ -2748,7 +2748,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 RESULTAT=__RESU,
                                 NOM_CHAM='SIEF_ELGA',
                                 NUME_ORDRE=iord,)
-        
+
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             # GET STRAIN
@@ -2763,40 +2763,40 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                     RESULTAT=__RESU,
                                     NOM_CHAM='EPSI_NOEU',
                                     NUME_ORDRE=iord,)
-            
+
             __EPSELGA = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                     OPERATION='EXTR',
                                     RESULTAT=__RESU,
                                     NOM_CHAM='EPSI_ELGA',
                                     NUME_ORDRE=iord,)
 
-        
+
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             # GET STRAIN ENERGY
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        
+
             if ETAT_INIT is None:
-                
+
                 __RESU = CALC_CHAMP(reuse=__RESU,
                                     RESULTAT=__RESU,
                                     ENERGIE=('ETOT_ELGA'),)
-            
+
                 __WELAS = CREA_CHAMP(TYPE_CHAM='ELGA_ENER_R',
                                     OPERATION='EXTR',
                                     RESULTAT=__RESU,
                                     NOM_CHAM='ETOT_ELGA',
                                     NUME_ORDRE=iord,)
-                
+
                 __WELAS = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
                             MODELE=MODE, PROL_ZERO='OUI',
                             ASSE=(
                                 _F(TOUT='OUI', CHAM_GD=__WELAS,
                                     NOM_CMP=('TOTALE',), NOM_CMP_RESU=('X10',),),
                                 ),)
-        
+
             else:
-                
+
                 # W = 1/2 * (EPS - EPS_0) * SIG
 
                 __RESU = CALC_CHAMP(reuse=__RESU,
@@ -2808,7 +2808,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                     RESULTAT=__RESU,
                                     NOM_CHAM='EPSI_ELGA',
                                     NUME_ORDRE=iord,)
-            
+
                 __CHW = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
                             MODELE=MODE, PROL_ZERO='OUI',
                             ASSE=(
@@ -2845,12 +2845,12 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                 DETRUIRE(CONCEPT=(_F(NOM=__CHW),
                                   _F(NOM=__CHFMUW),
                                 ),)
-                
+
 
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             # CALCUL J
             # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
+
 
             # -------------------------------------------------------------
             # J01
@@ -2898,7 +2898,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
             __CHJ01INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                         CHAM_F=__CHFMUJ01, CHAM_PARA=(__CHJ01,),)
-        
+
             __RESUJ01 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                         NOM_CHAM='VARI_ELGA', AFFE=_F(MODELE=MODE, INST=inst,
                                                     CHAM_GD=__CHJ01INT,),)
@@ -2915,14 +2915,14 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             ),)
 
             __J01_J = __J01.EXTR_TABLE().values()['INTE_X4']
-            
+
             __J = - __J01_J[0]
-            
+
 
             # -------------------------------------------------------------
             # J02
             # -------------------------------------------------------------
-            
+
             # GRAD U * GRAD Q
 
             __CHGRAUQ = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
@@ -2954,7 +2954,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
             __FMULTGRAUQ_X11 = FORMULE(NOM_PARA=('X3','X4','X5','X7'),
                                 VALE='((X3*2)*X5)+(X4*(X7*2))')
-        
+
             __FMULTGRAUQ_X12 = FORMULE(NOM_PARA=('X3','X4','X6','X8'),
                                 VALE='((X3*2)*(X6*2))+(X4*X8)')
 
@@ -2963,7 +2963,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                         AFFE=_F(TOUT='OUI', NOM_CMP=('X9','X10','X11','X12',),
                                     VALE_F=(__FMULTGRAUQ_X9 ,__FMULTGRAUQ_X10,
                                             __FMULTGRAUQ_X11,__FMULTGRAUQ_X12,)),)
-        
+
             __CHGRAUMQ = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                         CHAM_F=__CHFMUGRAUQ, CHAM_PARA=(__CHGRAUQ,),)
 
@@ -2977,7 +2977,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
 
             # SIGMA * (GRAD U * GRAD Q)
-            
+
             if MODELISATION != 'AXIS':
 
                 __CHJ02 = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
@@ -2998,7 +2998,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 _F(TOUT='OUI', CHAM_GD=__SIGF,
                                     NOM_CMP=('SIYY',), NOM_CMP_RESU=('X15',),),
                                 ),)
-        
+
                 __FMULTJ02 = FORMULE(NOM_PARA=('X9','X10','X11','X12','X13','X14','X15'),
                                     VALE='(X9*X13)+(X10*X14)+(X11*X14)+(X12*X15)')
 
@@ -3024,18 +3024,18 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 _F(TOUT='OUI', CHAM_GD=__CHCOOR_ELGA,
                                     NOM_CMP=('X',), NOM_CMP_RESU=('X17',),),
                                 ),)
-        
+
                 __FMULTJ02 = FORMULE(NOM_PARA=('X9','X10','X11','X12',
                                                'X13','X14','X15','X17'),
                                     VALE='((X9*X13)+(X10*X14)+(X11*X14)+(X12*X15))*X17')
-                
+
             __CHFMUJ02 = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
                         MODELE=MODE, PROL_ZERO='OUI',
                         AFFE=_F(TOUT='OUI', NOM_CMP='X16', VALE_F=__FMULTJ02),)
 
             __CHJ02INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                         CHAM_F=__CHFMUJ02, CHAM_PARA=(__CHJ02,),)
-        
+
             __RESUJ02 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                         NOM_CHAM='VARI_ELGA', AFFE=_F(MODELE=MODE, INST=inst,
                                                     CHAM_GD=__CHJ02INT,),)
@@ -3053,30 +3053,30 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             ),)
 
             __J02_J = __J02.EXTR_TABLE().values()['INTE_X16']
-            
+
             __J = __J + __J02_J[0]
 
 
             if ETAT_INIT is not None:
-                
+
                 # -------------------------------------------------------------
                 # J03
                 # -------------------------------------------------------------
-        
+
                 # if ETAT_INIT is given, calculation J03
-                
+
                 # J03 = SIGMA * GRAD EPSI_0 * Q
                 #     = SIGMA_{ij} * EPSI_0_{ij,k} * Q_{k}
 
                 SIGCOMP = ['SIXX', 'SIYY', 'SIZZ', 'SIXY']
                 EPSCOMP = ['EPXX', 'EPYY', 'EPZZ', 'EPXY']
-        
+
                 __J03_J = [0.0]
-            
+
                 for ISIGCOMP, IEPSCOMP in zip(SIGCOMP, EPSCOMP):
 
                     # GRAD EPSI_0
-        
+
                     __CHEPS0 = CREA_CHAMP(OPERATION='ASSE',
                                         MODELE=MODE,
                                         TYPE_CHAM='NOEU_DEPL_R',
@@ -3084,21 +3084,21 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 CHAM_GD=__EPS0NOEU,
                                                 NOM_CMP=(IEPSCOMP,),
                                                 NOM_CMP_RESU=('DX',),),),)
-            
+
                     __EPS0NOEUX1 = FORMULE(NOM_PARA=('DX'),VALE='DX')
                     __EPS0NOEUX2 = FORMULE(NOM_PARA=('DX'),VALE='DX*0.')
-                
+
                     __CHEPS0X = CREA_CHAMP(OPERATION='AFFE',
                                         TYPE_CHAM='NOEU_NEUT_F',
                                         MAILLAGE=MAIL,
                                         AFFE=_F(TOUT='OUI', NOM_CMP=('X1','X2'),
                                                 VALE_F=(__EPS0NOEUX1, __EPS0NOEUX2)))
-        
+
                     __CHEPS0 = CREA_CHAMP(OPERATION='EVAL',
                                         TYPE_CHAM='NOEU_NEUT_R',
                                         CHAM_F=__CHEPS0X,
                                         CHAM_PARA=__CHEPS0,)
-                
+
                     __CHEPS0 = CREA_CHAMP(OPERATION='ASSE',
                                         MODELE=MODE,
                                         TYPE_CHAM ='NOEU_DEPL_R',
@@ -3106,32 +3106,32 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 TOUT='OUI',
                                                 NOM_CMP=('X1','X2'),
                                                 NOM_CMP_RESU=('DX','DY'),),)
-        
+
                     __REPS0 = CREA_RESU(OPERATION='AFFE',
                                         NOM_CHAM='DEPL',
                                         TYPE_RESU='EVOL_ELAS',
                                         AFFE=_F(CHAM_GD=__CHEPS0, INST=inst),)
-                
+
                     __GREPS0 = CALC_CHAMP(reuse=__REPS0,
                                         MODELE=MODE,
                                         CHAM_MATER=MATE,
                                         RESULTAT=__REPS0,
                                         DEFORMATION=('EPSI_ELGA'),)
-                
+
                     __GREPS0 = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                         OPERATION='EXTR',
                                         RESULTAT=__GREPS0,
                                         NOM_CHAM='EPSI_ELGA', INST=inst)
-        
+
                     DETRUIRE(CONCEPT=(_F(NOM=__CHEPS0),
                                       _F(NOM=__EPS0NOEUX1),
                                       _F(NOM=__EPS0NOEUX2),
                                       _F(NOM=__CHEPS0X),
                                       _F(NOM=__REPS0),
-                                    ),)    
+                                    ),)
 
                     if MODELISATION != 'AXIS':
-                        
+
                         # SIGMA*(GRAD EPSI_0*Q)
 
                         __CHJ03 = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
@@ -3177,14 +3177,14 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                     __CHFMUJ03 = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
                                 MODELE=MODE, PROL_ZERO='OUI',
                                 AFFE=_F(TOUT='OUI', NOM_CMP='X6', VALE_F=__FMULTJ03),)
-        
+
                     __CHJ03INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                                 CHAM_F=__CHFMUJ03, CHAM_PARA=(__CHJ03,),)
-            
+
                     __RESUJ03 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                                 NOM_CHAM='VARI_ELGA', AFFE=_F(MODELE=MODE, INST=inst,
                                                             CHAM_GD=__CHJ03INT,),)
-        
+
                     __J03 = POST_ELEM(RESULTAT=__RESUJ03, MODELE=MODE, INST=inst,
                                 INTEGRALE=_F(NOM_CHAM='VARI_ELGA', GROUP_MA='MMAIL',
                                             NOM_CMP='X6', TYPE_MAILLE='2D'),)
@@ -3195,40 +3195,40 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                       _F(NOM=__CHFMUJ03),
                                       _F(NOM=__CHJ03INT),
                                       _F(NOM=__RESUJ03),
-                                    ),)    
+                                    ),)
 
                     __IJ03_J = __J03.EXTR_TABLE().values()['INTE_X6']
-        
+
                     if IEPSCOMP == 'EPXY':
                         __IJ03_J = [iJ03 * 2. for iJ03 in __IJ03_J]
-                    
+
                     __J03_J = np.array(__J03_J) + np.array(__IJ03_J)
-                    
+
                 __J = __J + __J03_J[0]
-                
+
 
             if modified_J:
 
                 # -------------------------------------------------------------
                 # J04
                 # -------------------------------------------------------------
-        
+
                 # J04 = SIGMA * GRAD EPSI * Q
                 #     = SIGMA_{ij} * EPSI_{ij,k} * Q_{k}
-        
+
                 SIGCOMP = ['SIXX', 'SIYY', 'SIZZ', 'SIXY']
                 EPSCOMP = ['EPXX', 'EPYY', 'EPZZ', 'EPXY']
-        
+
                 __J04_J = [0.0]
-            
+
                 for ISIGCOMP, IEPSCOMP in zip(SIGCOMP, EPSCOMP):
-        
+
                     # GRAD EPSI
 
                     if ETAT_INIT is not None:
 
                         # EPS - EPS0
-                        
+
                         __CHEPSNOEU0 = CREA_CHAMP(OPERATION='ASSE',
                                     TYPE_CHAM='NOEU_NEUT_R', MODELE=MODE,
                                     ASSE=(
@@ -3249,21 +3249,21 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                         _F(TOUT='OUI', CHAM_GD=__EPS0NOEU,
                                             NOM_CMP=('EPXY',), NOM_CMP_RESU=('X8',),),
                                         ),)
-                        
+
                         __FMULTEPS_EPXX = FORMULE(NOM_PARA=('X1','X5'), VALE='X1-X5',)
                         __FMULTEPS_EPYY = FORMULE(NOM_PARA=('X2','X6'), VALE='X2-X6',)
                         __FMULTEPS_EPZZ = FORMULE(NOM_PARA=('X3','X7'), VALE='X3-X7',)
                         __FMULTEPS_EPXY = FORMULE(NOM_PARA=('X4','X8'), VALE='X4-X8',)
-                        
+
                         __CHFMUEPS = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F',
                                     MODELE=MODE,
                                     AFFE=_F(TOUT='OUI', NOM_CMP=('X9','X10','X11','X12'),
                                             VALE_F=(__FMULTEPS_EPXX,__FMULTEPS_EPYY,
                                                     __FMULTEPS_EPZZ,__FMULTEPS_EPXY,)),)
-                        
+
                         __EPSNOEU0 = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R',
                                     CHAM_F=__CHFMUEPS, CHAM_PARA=(__CHEPSNOEU0,),)
-                        
+
                         __EPSNOEU0 = CREA_CHAMP(OPERATION='ASSE',
                                             MODELE=MODE,
                                             TYPE_CHAM='NOEU_EPSI_R',
@@ -3272,7 +3272,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 NOM_CMP=('X9','X10','X11','X12'),
                                                 NOM_CMP_RESU=('EPXX','EPYY',
                                                               'EPZZ','EPXY',),),),)
-                                        
+
                         DETRUIRE(CONCEPT=(_F(NOM=__CHEPSNOEU0),
                                           _F(NOM=__CHFMUEPS),
                                         ),)
@@ -3288,7 +3288,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                     else:
 
                         # EPS
-                        
+
                         __CHEPS = CREA_CHAMP(OPERATION='ASSE',
                                             MODELE=MODE,
                                             TYPE_CHAM='NOEU_DEPL_R',
@@ -3299,18 +3299,18 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                     __EPSNOEUX1 = FORMULE(NOM_PARA=('DX'),VALE='DX')
                     __EPSNOEUX2 = FORMULE(NOM_PARA=('DX'),VALE='DX*0.')
-                
+
                     __CHEPSX = CREA_CHAMP(OPERATION='AFFE',
                                         TYPE_CHAM='NOEU_NEUT_F',
                                         MAILLAGE=MAIL,
                                         AFFE=_F(TOUT='OUI', NOM_CMP=('X1','X2'),
                                                 VALE_F=(__EPSNOEUX1, __EPSNOEUX2)))
-        
+
                     __CHEPS = CREA_CHAMP(OPERATION='EVAL',
                                         TYPE_CHAM='NOEU_NEUT_R',
                                         CHAM_F=__CHEPSX,
                                         CHAM_PARA=__CHEPS,)
-                
+
                     __CHEPS = CREA_CHAMP(OPERATION='ASSE',
                                         MODELE=MODE,
                                         TYPE_CHAM ='NOEU_DEPL_R',
@@ -3318,32 +3318,32 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 TOUT='OUI',
                                                 NOM_CMP=('X1','X2'),
                                                 NOM_CMP_RESU=('DX','DY'),),)
-        
+
                     __REPS = CREA_RESU(OPERATION='AFFE',
                                         NOM_CHAM='DEPL',
                                         TYPE_RESU='EVOL_ELAS',
                                         AFFE=_F(CHAM_GD=__CHEPS, INST=inst),)
-                
+
                     __GREPS = CALC_CHAMP(reuse=__REPS,
                                         MODELE=MODE,
                                         CHAM_MATER=MATE,
                                         RESULTAT=__REPS,
                                         DEFORMATION=('EPSI_ELGA'),)
-                
+
                     __GREPS = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                         OPERATION='EXTR',
                                         RESULTAT=__GREPS,
                                         NOM_CHAM='EPSI_ELGA', INST=inst,)
-        
+
                     DETRUIRE(CONCEPT=(_F(NOM=__CHEPS),
                                       _F(NOM=__EPSNOEUX1),
                                       _F(NOM=__EPSNOEUX2),
                                       _F(NOM=__CHEPSX),
                                       _F(NOM=__REPS),
-                                    ),)    
+                                    ),)
 
                     if MODELISATION != 'AXIS':
-                        
+
                         # SIGMA * (GRAD EPSI * Q)
 
                         __CHJ04 = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
@@ -3389,14 +3389,14 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                     __CHFMUJ04 = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
                                 MODELE=MODE, PROL_ZERO='OUI',
                                 AFFE=_F(TOUT='OUI', NOM_CMP='X6', VALE_F=__FMULTJ04),)
-        
+
                     __CHJ04INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                                 CHAM_F=__CHFMUJ04, CHAM_PARA=(__CHJ04,),)
-            
+
                     __RESUJ04 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                                 NOM_CHAM='VARI_ELGA', AFFE=_F(MODELE=MODE, INST=inst,
                                                             CHAM_GD=__CHJ04INT,),)
-        
+
                     __J04 = POST_ELEM(RESULTAT=__RESUJ04, MODELE=MODE, INST=inst,
                                 INTEGRALE=_F(NOM_CHAM='VARI_ELGA', GROUP_MA='MMAIL_IMPR',
                                             NOM_CMP='X6', TYPE_MAILLE='2D'),)
@@ -3407,28 +3407,28 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                       _F(NOM=__CHFMUJ04),
                                       _F(NOM=__CHJ04INT),
                                       _F(NOM=__RESUJ04),
-                                    ),)    
+                                    ),)
 
                     __IJ04_J = __J04.EXTR_TABLE().values()['INTE_X6']
-        
+
                     if IEPSCOMP == 'EPXY':
                         __IJ04_J = [iJ04 * 2. for iJ04 in __IJ04_J]
-                    
+
                     __J04_J = np.array(__J04_J) + np.array(__IJ04_J)
-                
+
                 __J = __J + __J04_J[0]
 
 
                 # -------------------------------------------------------------
                 # J05
                 # -------------------------------------------------------------
-        
+
                 # J05 = GRAD W * Q
 
                 __WELAS_NOEU = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                                     OPERATION='DISC',
                                     MODELE=MODE,
-                                    CHAM_GD=__WELAS)    
+                                    CHAM_GD=__WELAS)
 
                 __CHWELASNOEU = CREA_CHAMP(OPERATION='ASSE',
                                     MODELE=MODE,
@@ -3440,7 +3440,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                 __WELASNOEUX1 = FORMULE(NOM_PARA=('DX'),VALE='DX')
                 __WELASNOEUX2 = FORMULE(NOM_PARA=('DX'),VALE='DX*0.')
-            
+
                 __CHWELASNOEUX = CREA_CHAMP(OPERATION='AFFE',
                                     TYPE_CHAM='NOEU_NEUT_F',
                                     MAILLAGE=MAIL,
@@ -3451,7 +3451,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                     TYPE_CHAM='NOEU_NEUT_R',
                                     CHAM_F=__CHWELASNOEUX,
                                     CHAM_PARA=__CHWELASNOEU,)
-            
+
                 __CHWELASNOEU = CREA_CHAMP(OPERATION='ASSE',
                                     MODELE=MODE,
                                     TYPE_CHAM ='NOEU_DEPL_R',
@@ -3464,13 +3464,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                     NOM_CHAM='DEPL',
                                     TYPE_RESU='EVOL_ELAS',
                                     AFFE=_F(CHAM_GD=__CHWELASNOEU, INST=inst),)
-            
+
                 __GRWELAS = CALC_CHAMP(reuse=__RWELASNOEU,
                                     MODELE=MODE,
                                     CHAM_MATER=MATE,
                                     RESULTAT=__RWELASNOEU,
                                     DEFORMATION=('EPSI_ELGA'),)
-            
+
                 __GRWELAS = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                                     OPERATION='EXTR',
                                     RESULTAT=__GRWELAS,
@@ -3481,11 +3481,11 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                   _F(NOM=__WELASNOEUX2),
                                   _F(NOM=__CHWELASNOEUX),
                                   _F(NOM=__RWELASNOEU),
-                                ),)    
+                                ),)
 
 
                 if MODELISATION != 'AXIS':
-                    
+
                     # GRAD W * Q
 
                     __CHJ05 = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
@@ -3523,18 +3523,18 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                     __FMULTJ05 = FORMULE(NOM_PARA=('X1','X2','X3','X4','X6'),
                                         VALE='((X1*X3)+(2*X2*X4))*X6')
-        
+
                 __CHFMUJ05 = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
                             MODELE=MODE, PROL_ZERO='OUI',
                             AFFE=_F(TOUT='OUI', NOM_CMP='X5', VALE_F=__FMULTJ05),)
-        
+
                 __CHJ05INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                             CHAM_F=__CHFMUJ05, CHAM_PARA=(__CHJ05,),)
-            
+
                 __RESUJ05 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                             NOM_CHAM='VARI_ELGA', AFFE=_F(MODELE=MODE, INST=inst,
                                                         CHAM_GD=__CHJ05INT,),)
-        
+
                 __J05 = POST_ELEM(RESULTAT=__RESUJ05, MODELE=MODE, INST=inst,
                             INTEGRALE=_F(NOM_CHAM='VARI_ELGA', GROUP_MA='MMAIL_IMPR',
                                         NOM_CMP='X5', TYPE_MAILLE='2D'),)
@@ -3552,13 +3552,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
 
             if MODELISATION == 'AXIS':
-                
+
                 # -------------------------------------------------------------
                 # J06
                 # -------------------------------------------------------------
-        
+
                 # J06 = SIGMA_PhiPhi * (U_r / r) * Q_r
-                
+
                 __DEPINT_NEUT = CREA_CHAMP(OPERATION='ASSE',
                                     MODELE=MODE,
                                     TYPE_CHAM ='NOEU_NEUT_R',
@@ -3595,7 +3595,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                 __CHJ06INT = CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R',
                             CHAM_F=__CHFMUJ06, CHAM_PARA=(__CHJ06,),)
-            
+
                 __RESUJ06 = CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',
                             NOM_CHAM='VARI_ELGA', AFFE=_F(MODELE=MODE, INST=inst,
                                                         CHAM_GD=__CHJ06INT,),)
@@ -3620,9 +3620,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                 # -------------------------------------------------------------
                 # J07
                 # -------------------------------------------------------------
-        
+
                 # J07 = W * Q_r
-                     
+
                 __CHJ07 = CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_NEUT_R',
                             MODELE=MODE, PROL_ZERO='OUI',
                             ASSE=(
@@ -3659,16 +3659,16 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                 __J07_J = __J07.EXTR_TABLE().values()['INTE_X3']
 
                 __J = __J - __J07_J[0]
-                
+
 
             if MODELISATION == 'AXIS':
-            
+
                 __J = __J / R_CrackTip
-                
-                
+
+
             J.append(__J)
 
-            
+
         DEFI_GROUP(reuse =MAIL,
                        MAILLAGE=MAIL,
                        DETR_GROUP_NO=_F(NOM=('NBOUGER', 'NMAIL'),),
@@ -3688,15 +3688,15 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         # EXTRACT RESULTS
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-            
+
         tab_result =  get_result2D(self, J, __J01, linst, liord, MODELISATION,
                                      NB_COUCHES, e, nu, checksym, TITRE)
 
     """
     Macro MODELISATION - Calculate POST_JMOD-integral in 3D
     """
-    if ndim == 3:   
-            print("Macro POST_JMOD - Calculate J-integral in 3D")                    
+    if ndim == 3:
+            print("Macro POST_JMOD - Calculate J-integral in 3D")
             #   Get symmetry problem
             post_j_marker0=time.time()
             ir, ib, symeType = aster.dismoi('SYME', FOND_FISS.getName(), 'FOND_FISS', 'F')
@@ -3709,13 +3709,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #   Get element type
 
             elemType = FOND_FISS.getCrackTipCellsType()
-            
+
         #   Constraint of number of NB_COUCHES
-            
+
             if elemType == 'SEG2':
                 if NB_COUCHES >= 20:
                     UTMESS('F', 'RUPTURE4_11')
-                    
+
             else:
                 if NB_COUCHES >= 10:
                     UTMESS('F', 'RUPTURE4_12')
@@ -3747,12 +3747,12 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
             poinsf_na = na_poinsf(self, FOND_FISS, symeType, elemType)
             if symeType == 'OUI':
-                POINSF = all_co[poinsf_na]    
+                POINSF = all_co[poinsf_na]
             else:
                 POINSF = ((np.array(all_co[poinsf_na[0]]) +
                            np.array(all_co[poinsf_na[1]]))/2.).tolist()
 
-            VNPF = unit_normal(POINSF, all_co[TPFISS[1]], all_co[TPFISS[2]]) 
+            VNPF = unit_normal(POINSF, all_co[TPFISS[1]], all_co[TPFISS[2]])
 
             if closedCrack != 'OUI':
 
@@ -3765,7 +3765,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                 TVECTEUR[1] = calc_tvect_bord(self, all_co, TPFISS, VNPF, 1, 2, PI1)
                 TVECTEUR[NP] = calc_tvect_bord(self, all_co, TPFISS, VNPF, NP, NP-1, PF1)
-                
+
                 if NP > 2:
                     for iNP in range(2, NP):
                         TVECTEUR[iNP] = calc_tvect(self, all_co, TPFISS, VNPF,
@@ -3792,7 +3792,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
             for iVect in TVECTEUR.keys():
                 TVECGLOB[iVect] = (np.array(TVECTEUR[iVect]) *
                                   (min(normVect) / normVect[iVect-1])).tolist()
-                
+
             post_j_marker1=time.time()
         #   --------------------------------------------------------------------------
         #   DOMAIN CALCULATION AND CRACK PROPAGATION VECTORS
@@ -3805,51 +3805,51 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #       -----------------------------------
         #       Domain calculation
 
-                lGroupNo_TMAIL = []          
+                lGroupNo_TMAIL = []
                 for iNP in range(NP):
                     nameGroupNo = 'TMBOUGER' + str(iNP+1)
                     lNode = TPFISS[iNP+1]
                     crea_group_no_from_no(self, MAIL, nameGroupNo, lNode)
                     lGroupNo_TMAIL.append('TMBOUGER'+str(iNP+1))
 
-                    
-                crea_group_ma_appui_group_no(self, MAIL, 'TMAIL', lGroupNo_TMAIL) 
+
+                crea_group_ma_appui_group_no(self, MAIL, 'TMAIL', lGroupNo_TMAIL)
                 for iCONT in range(1, NB_COUCHES):
-                
+
                     if elemType == 'SEG2':
-                        
+
                         for iNP in range(NP):
                             nameGroupNo = 'TMBOUGER' + str(iNP+1)
                             nameGroupMa = 'Block_tem' + str(iNP+1)
                             crea_group_ma_appui_group_no(self, MAIL, nameGroupMa, nameGroupNo)
-                            
+
                     else:
-                        
+
                         for iNP in range((NP+1)//2):
                             nameGroupNo = 'TMBOUGER' + str(2*iNP+1)
                             nameGroupMa = 'Block_tem' + str(2*iNP+1)
-                            crea_group_ma_appui_group_no(self, MAIL, nameGroupMa, nameGroupNo)  
+                            crea_group_ma_appui_group_no(self, MAIL, nameGroupMa, nameGroupNo)
 
-                    if closedCrack != 'OUI':  
+                    if closedCrack != 'OUI':
                         crea_group_ma_appui_group_no(self, MAIL, 'Block1', 'TMBOUGER1')
-                        
+
                         if elemType == 'SEG2':
-                            
+
                             for iNP in range(1, NP-1):
                                 nameGroupMa = 'Block' + str(iNP+1)
                                 lMail1 = 'Block_tem' + str(iNP+1)
                                 lMail2 = 'Block' + str(iNP)
                                 diff_group_ma(self, MAIL, nameGroupMa, lMail1, lMail2)
-                                
+
                             for iNP in range(NP-1):
                                 nameGroupNo = 'Block' + str(iNP+1)
                                 nameGroupMa = 'Block' + str(iNP+1)
                                 crea_group_no_from_group_ma(self, MAIL, nameGroupNo, nameGroupMa)
-                                
+
                             for iNP in range(NP):
                                 lMail = 'Block_tem' + str(iNP+1)
                                 del_group_ma(self, MAIL, lMail)
-                            
+
                         else:
                             for iNP in range(1, (NP-1)//2):
                                 nameGroupMa = 'Block' + str(2*iNP+1)
@@ -3861,13 +3861,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 nameGroupNo = 'Block' + str(2*iNP+1)
                                 nameGroupMa = 'Block' + str(2*iNP+1)
                                 crea_group_no_from_group_ma(self, MAIL, nameGroupNo, nameGroupMa)
-                        
+
                             for iNP in range((NP+1)//2):
                                 lMail = 'Block_tem' + str(2*iNP+1)
                                 del_group_ma(self, MAIL, lMail)
 
                         if elemType == 'SEG2':
-                            
+
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX1', 'TMBOUGER1')
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX2', 'TMBOUGER2')
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX3',
@@ -3875,39 +3875,39 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX4',
                                                                     'TMBOUGER'+str(NP-1))
                         else:
-                            
+
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX1', 'TMBOUGER1')
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX2', 'TMBOUGER3')
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX3',
                                                                     'TMBOUGER'+str(NP))
                             crea_group_ma_appui_group_no_2d(self, MAIL, 'TX4',
-                                                                    'TMBOUGER'+str(NP-2))                 
+                                                                    'TMBOUGER'+str(NP-2))
                         for iNP in range(NP):
                             lGroupNo = 'TMBOUGER' + str(iNP+1)
                             del_group_no(self, MAIL, lGroupNo)
                         diff_group_ma(self, MAIL, 'TMBOUGER1', 'TX1', 'TX2')
                         diff_group_ma(self, MAIL, 'TMBOUGER'+str(NP), 'TX3', 'TX4')
-             
+
                         crea_group_no_from_group_ma(self, MAIL, 'TMBOUGER1', 'TMBOUGER1')
                         crea_group_no_from_group_ma(self, MAIL, 'TMBOUGER'+str(NP),
                                                                 'TMBOUGER'+str(NP))
-                        
+
                         for iTX in ['TX1', 'TX2', 'TX3', 'TX4']:
                             del_group_ma(self, MAIL, iTX)
-                                              
+
                         if elemType == 'SEG2':
 
                             if NP > 2:
-                                
+
                                 for iNP in range(1, NP-1):
                                     nameGroupNo = 'TMBOUGER' + str(iNP+1)
                                     lNode1 = 'Block' + str(iNP)
                                     lNode2 = 'Block' + str(iNP+1)
                                     intersec_group_no(self, MAIL, nameGroupNo, lNode1, lNode2)
-                                    
+
                             for iNP in range(NP-1):
                                 lNode = 'Block' + str(iNP+1)
-                                del_group_no(self, MAIL, lNode)                       
+                                del_group_no(self, MAIL, lNode)
                         else:
 
                             if NP > 3:
@@ -3916,21 +3916,21 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                     lNode1 = 'Block' + str(2*iNP-1)
                                     lNode2 = 'Block' + str(2*iNP+1)
                                     intersec_group_no(self, MAIL, nameGroupNo, lNode1, lNode2)
-                            for iNP in range(1, (NP+1)//2):                    
+                            for iNP in range(1, (NP+1)//2):
                                 nameGroupNo = 'TMBOUGER' + str(2*iNP)
                                 GroupNo1 = 'Block' + str(2*iNP-1)
                                 GroupNo2 = 'TMBOUGER' + str(2*iNP-1)
                                 GroupNo3 = 'TMBOUGER' + str(2*iNP+1)
                                 nameGroupsNoDiff = (GroupNo1, GroupNo2, GroupNo3)
                                 diff_group_no(self, MAIL, nameGroupNo, nameGroupsNoDiff)
-                                
+
                             for iNP in range((NP-1)//2):
                                 lNode = 'Block' + str(2*iNP+1)
-                                del_group_no(self, MAIL, lNode)   
+                                del_group_no(self, MAIL, lNode)
                     else:
-                            
+
                         if elemType == 'SEG2':
-                            
+
                             nameGroupMa = 'Block1'
                             lMail1 = 'Block_tem' + str(1)
                             lMail2 = 'Block_tem' + str(NP)
@@ -3946,10 +3946,10 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 nameGroupNo = 'Block' + str(iNP+1)
                                 nameGroupMa = 'Block' + str(iNP+1)
                                 crea_group_no_from_group_ma(self, MAIL, nameGroupNo, nameGroupMa)
-                                
+
                             for iNP in range(NP):
                                 lMail = 'Block_tem' + str(iNP+1)
-                                del_group_ma(self, MAIL, lMail)    
+                                del_group_ma(self, MAIL, lMail)
                         else:
 
                             nameGroupMa = 'Block1'
@@ -3971,18 +3971,18 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             for iNP in range((NP+1)//2):
                                 lMail = 'Block_tem' + str(2*iNP+1)
                                 del_group_ma(self, MAIL, lMail)
-                                
+
                         for iNP in range(NP):
                             lGroupNo = 'TMBOUGER' + str(iNP+1)
                             del_group_no(self, MAIL, lGroupNo)
-                        
+
                         if elemType == 'SEG2':
 
                             nameGroupNo = 'TMBOUGER1'
                             lNode1 = 'Block1'
                             lNode2 = 'Block' + str(NP)
                             intersec_group_no(self, MAIL, nameGroupNo, lNode1, lNode2)
-                            
+
                             for iNP in range(1, NP):
                                 nameGroupNo = 'TMBOUGER' + str(iNP+1)
                                 lNode1 = 'Block' + str(iNP)
@@ -3991,7 +3991,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                             for iNP in range(NP):
                                 lNode = 'Block' + str(iNP+1)
-                                del_group_no(self, MAIL, lNode)                           
+                                del_group_no(self, MAIL, lNode)
                         else:
 
                             nameGroupNo = 'TMBOUGER1'
@@ -4004,7 +4004,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 lNode1 = 'Block' + str(2*iNP-1)
                                 lNode2 = 'Block' + str(2*iNP+1)
                                 intersec_group_no(self, MAIL, nameGroupNo, lNode1, lNode2)
-                            
+
                             for iNP in range(1, (NP+1)//2):
                                 nameGroupNo = 'TMBOUGER' + str(2*iNP)
                                 GroupNo1 = 'Block' + str(2*iNP-1)
@@ -4019,11 +4019,11 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             GroupNo3 = 'TMBOUGER' + str(NP-1)
                             nameGroupsNoDiff = (GroupNo1, GroupNo2, GroupNo3)
                             diff_group_no(self, MAIL, nameGroupNo, nameGroupsNoDiff)
-                                
+
                             for iNP in range((NP+1)//2):
                                 lNode = 'Block' + str(2*iNP+1)
                                 del_group_no(self, MAIL, lNode)
-                        
+
                     del_group_ma(self, MAIL, 'TMAIL')
                     crea_group_ma_appui_group_no(self, MAIL, 'TMAIL', lGroupNo_TMAIL)
 
@@ -4035,19 +4035,19 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                 ElemsTMAIL = MAIL.sdj.GROUPEMA.get()['TMAIL'.ljust(24)]
                 listElemTMAIL = ['M'+str(iElem) for iElem in ElemsTMAIL]
-                
+
                 post_j_marker2=time.time()
-                    
+
         #       -----------------------------------
         #       Propagation vectors
-            
+
                 TQ = {}
                 TQGLOB = {}
                 TLIPSUPCAL = {}
                 TLIPINFCAL = {}
-                
+
                 if elemType == 'SEG2':
-                    
+
                     for iNP in range(NP):
                         TLIPSUPCAL[iNP+1] = TLIPSUP[iNP+1][0:NB_COUCHES+1]
 
@@ -4055,18 +4055,18 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             TLIPINFCAL[iNP+1] = TLIPINF[iNP+1][0:NB_COUCHES+1]
 
                 else:
-                    
+
                     for iNP in range((NP+1)//2):
                         TLIPSUPCAL[2*iNP+1] = TLIPSUP[2*iNP+1][0:2*NB_COUCHES+1]
-                        
+
                         if symeType != 'OUI':
                             TLIPINFCAL[2*iNP+1] = TLIPINF[2*iNP+1][0:2*NB_COUCHES+1]
 
                     if closedCrack != 'OUI':
-                            
+
                         for iNP in range(1, (NP+1)//2):
                             TLIPSUPCAL[2*iNP] = TLIPSUP[2*iNP][0:NB_COUCHES+1]
-            
+
                             if symeType != 'OUI':
                                 TLIPINFCAL[2*iNP] = TLIPINF[2*iNP][0:NB_COUCHES+1]
 
@@ -4074,10 +4074,10 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                         for iNP in range(1, NP//2+1):
                             TLIPSUPCAL[2*iNP] = TLIPSUP[2*iNP][0:NB_COUCHES+1]
-            
+
                             if symeType != 'OUI':
                                 TLIPINFCAL[2*iNP] = TLIPINF[2*iNP][0:NB_COUCHES+1]
-                        
+
                 if elemType == 'SEG2':
 
                     if symeType == 'OUI':
@@ -4086,51 +4086,51 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         #                   ---------------
         #                   TQ[1]
-                            
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[1][0:NB_COUCHES]]
-                            
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     TLIPSUPCAL[1], TLIPSUPCAL[2],
                                                     NODESBOUGE, TVECTEUR[1], symeType)
-                            
+
                             TQ[1] = (np.array(TVECTEUR[1])*XMULT/XAIRE).tolist()
-                            
+
         #                   ---------------
         #                   TQ[NP]
-                            
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[NP][0:NB_COUCHES]]
-                            
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     TLIPSUPCAL[NP], TLIPSUPCAL[NP-1],
                                                     NODESBOUGE, TVECTEUR[NP], symeType)
-                            
+
                             TQ[NP] = (np.array(TVECTEUR[NP])*XMULT/XAIRE).tolist()
-                            
+
         #                   ---------------
         #                   TQ[iNP]
-                            
+
                             if NP > 2:
                                 for iNP in range(1, NP-1):
-                                    
+
                                     NODESBOUGE = [int(iNo[1:]) - 1
                                                   for iNo in TLIPSUPCAL[iNP+1][0:NB_COUCHES]]
-                            
+
                                     XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 TLIPSUPCAL[iNP+1], NODESBOUGE, TVECTEUR[iNP+1],
                                                 symeType, closedCrack, lipSupName, lipInfName)
-                                
+
                                     TQ[iNP+1] = (np.array(TVECTEUR[iNP+1])*XMULT/XAIRE).tolist()
 
         #                   ---------------
         #                   TQ['GLOBAL']
-                            
+
                             NODESBOUGE = {}
                             for iKey in TLIPSUPCAL.keys():
                                 NODESBOUGE[iKey] = [int(iNo[1:]) - 1
                                                     for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]]
-                            
+
                             if NP == 2:
                                 XAIRE = calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES,
                                             NP, TLIPSUPCAL, NODESBOUGE, TVECGLOB, symeType)
@@ -4138,7 +4138,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES,
                                             NP, TLIPSUPCAL, NODESBOUGE, TVECGLOB,
                                             symeType, closedCrack, lipSupName, lipInfName)
-                            
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4148,7 +4148,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #                   TQ[iNP]
 
                             for iNP in range(NP):
-                                
+
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                               for iNo in TLIPSUPCAL[iNP+1][0:NB_COUCHES]]
 
@@ -4165,11 +4165,11 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             for iKey in TLIPSUPCAL.keys():
                                 NODESBOUGE[iKey] = [int(iNo[1:]) - 1
                                                     for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES]]
-                                
+
                             XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES,
                                         NP, TLIPSUPCAL, NODESBOUGE, TVECGLOB,
                                         symeType, closedCrack, lipSupName, lipInfName)
-                            
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4179,58 +4179,58 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         #                   ---------------
         #                   TQ[1]
-                   
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[1][0:NB_COUCHES] +
                                                      TLIPINFCAL[1][1:NB_COUCHES]]
-                   
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     (TLIPSUPCAL[1], TLIPINFCAL[1]),
                                                     (TLIPSUPCAL[2], TLIPINFCAL[2]),
                                                     NODESBOUGE, TVECTEUR[1], symeType)
-                        
+
                             TQ[1] = (np.array(TVECTEUR[1])*XMULT/XAIRE).tolist()
-                   
+
         #                   ---------------
         #                   TQ[NP]
-                   
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[NP][0:NB_COUCHES] +
                                                      TLIPINFCAL[NP][1:NB_COUCHES]]
-                   
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     (TLIPSUPCAL[NP], TLIPINFCAL[NP]),
                                                     (TLIPSUPCAL[NP-1], TLIPINFCAL[NP-1]),
                                                     NODESBOUGE, TVECTEUR[NP], symeType)
-                        
+
                             TQ[NP] = (np.array(TVECTEUR[NP])*XMULT/XAIRE).tolist()
-                   
+
         #                   ---------------
         #                   TQ[iNP]
-                   
+
                             if NP > 2:
-                                for iNP in range(1, NP-1):                  
-                   
+                                for iNP in range(1, NP-1):
+
                                     NODESBOUGE = [int(iNo[1:]) - 1
                                               for iNo in TLIPSUPCAL[iNP+1][0:NB_COUCHES] +
                                                          TLIPINFCAL[iNP+1][1:NB_COUCHES]]
-                   
+
                                     XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 (TLIPSUPCAL[iNP+1], TLIPINFCAL[iNP+1]),
                                                 NODESBOUGE, TVECTEUR[iNP+1], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                     TQ[iNP+1] = (np.array(TVECTEUR[iNP+1])*XMULT/XAIRE).tolist()
 
         #                   ---------------
         #                   TQ['GLOBAL']
-                   
+
                             NODESBOUGE = {}
                             for iKey in TLIPSUPCAL.keys():
                                 NODESBOUGE[iKey] = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[iKey][0:NB_COUCHES] +
                                                      TLIPINFCAL[iKey][1:NB_COUCHES]]
-                   
+
                             if NP == 2:
                                 XAIRE = calc_vari_area_no_glob_one_elem(self, MAIL,
                                             NB_COUCHES, NP, (TLIPSUPCAL, TLIPINFCAL),
@@ -4239,7 +4239,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NP,
                                             (TLIPSUPCAL, TLIPINFCAL), NODESBOUGE, TVECGLOB,
                                             symeType, closedCrack, lipSupName, lipInfName)
-                   
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4249,7 +4249,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #                   TQ[iNP]
 
                             for iNP in range(NP):
-                                
+
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                       for iNo in TLIPSUPCAL[iNP+1][0:NB_COUCHES] +
                                                  TLIPINFCAL[iNP+1][1:NB_COUCHES]]
@@ -4258,9 +4258,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 (TLIPSUPCAL[iNP+1], TLIPINFCAL[iNP+1]),
                                                 NODESBOUGE, TVECTEUR[iNP+1], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                 TQ[iNP+1] = (np.array(TVECTEUR[iNP+1])*XMULT/XAIRE).tolist()
-                                    
+
         #                   ---------------
         #                   TQ['GLOBAL']
 
@@ -4274,7 +4274,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                             NP, (TLIPSUPCAL, TLIPINFCAL),
                                             NODESBOUGE, TVECGLOB, symeType,
                                             closedCrack, lipSupName, lipInfName)
-                                
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4286,62 +4286,62 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         #                   ---------------
         #                   TQ[1]
-                  
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[1][0:2*NB_COUCHES-1]]
-                        
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     TLIPSUPCAL[1], TLIPSUPCAL[3],
                                                     NODESBOUGE, TVECTEUR[1], symeType)
-                        
+
                             TQ[1] = (np.array(TVECTEUR[1])*XMULT/XAIRE).tolist()
-                  
+
         #                   ---------------
         #                   TQ[NP]
-                  
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[NP][0:2*NB_COUCHES-1]]
-                        
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     TLIPSUPCAL[NP], TLIPSUPCAL[NP-2],
                                                     NODESBOUGE, TVECTEUR[NP], symeType)
-                        
+
                             TQ[NP] = (np.array(TVECTEUR[NP])*XMULT/XAIRE).tolist()
-                  
+
         #                   ---------------
         #                   TQ[2*iNP+1]
-                  
+
                             if NP > 3:
                                 for iNP in range(1, (NP-1)//2):
-                                
+
                                     NODESBOUGE = [int(iNo[1:]) - 1
                                             for iNo in TLIPSUPCAL[2*iNP+1][0:2*NB_COUCHES-1]]
-                        
+
                                     XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                     TLIPSUPCAL[2*iNP+1], NODESBOUGE,
                                                     TVECTEUR[2*iNP+1], symeType,
                                                     closedCrack, lipSupName, lipInfName)
-                                
+
                                     TQ[2*iNP+1] = (np.array(TVECTEUR[2*iNP+1])*XMULT/XAIRE).tolist()
-                  
+
         #                   ---------------
         #                   TQ[2*iNP]
-                  
+
                             for iNP in range(1, (NP+1)//2):
-                  
+
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                               for iNo in TLIPSUPCAL[2*iNP][0:NB_COUCHES]]
-                                
+
                                 XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 TLIPSUPCAL[2*iNP], NODESBOUGE,
                                                 TVECTEUR[2*iNP], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                            
+
                                 TQ[2*iNP] = (np.array(TVECTEUR[2*iNP])*XMULT/XAIRE).tolist()
-                  
+
         #                   ---------------
         #                   TQ['GLOBAL']
-                  
+
                             NODESBOUGE = {}
                             for iKey in range((NP+1)//2):
                                 NODESBOUGE[2*iKey+1] = [int(iNo[1:]) - 1
@@ -4349,7 +4349,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 if iKey > 0:
                                     NODESBOUGE[2*iKey] = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[2*iKey][0:NB_COUCHES]]
-                  
+
                             if NP == 3:
                                 XAIRE = calc_vari_area_no_glob_one_elem(self, MAIL,
                                                     NB_COUCHES, NP, TLIPSUPCAL,
@@ -4358,7 +4358,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NP,
                                             TLIPSUPCAL, NODESBOUGE, TVECGLOB, symeType,
                                             closedCrack, lipSupName, lipInfName)
-                  
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4367,29 +4367,29 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #                   ---------------
         #                   TQ[2*iNP+1]
 
-                            for iNP in range((NP+1)//2):                        
+                            for iNP in range((NP+1)//2):
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                     for iNo in TLIPSUPCAL[2*iNP+1][0:2*NB_COUCHES-1]]
                                 XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 TLIPSUPCAL[2*iNP+1], NODESBOUGE,
                                                 TVECTEUR[2*iNP+1], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                 TQ[2*iNP+1] = (np.array(TVECTEUR[2*iNP+1])*XMULT/XAIRE).tolist()
 
         #                   ---------------
         #                   TQ[2*iNP]
 
                             for iNP in range(1, NP//2+1):
-                 
+
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[2*iNP][0:NB_COUCHES]]
-                                
+
                                 XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 TLIPSUPCAL[2*iNP], NODESBOUGE,
                                                 TVECTEUR[2*iNP], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                            
+
                                 TQ[2*iNP] = (np.array(TVECTEUR[2*iNP])*XMULT/XAIRE).tolist()
 
         #                   ---------------
@@ -4407,7 +4407,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NP,
                                         TLIPSUPCAL, NODESBOUGE, TVECGLOB,
                                         symeType, closedCrack, lipSupName, lipInfName)
-                                
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4417,68 +4417,68 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         #                   ---------------
         #                   TQ[1]
-                     
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[1][0:2*NB_COUCHES-1] +
                                                      TLIPINFCAL[1][1:2*NB_COUCHES-1]]
-                     
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     (TLIPSUPCAL[1], TLIPINFCAL[1]),
                                                     (TLIPSUPCAL[3], TLIPINFCAL[3]),
                                                     NODESBOUGE, TVECTEUR[1], symeType)
-                            
+
                             TQ[1] = (np.array(TVECTEUR[1])*XMULT/XAIRE).tolist()
-                     
+
         #                   ---------------
         #                   TQ[NP]
-                     
+
                             NODESBOUGE = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[NP][0:2*NB_COUCHES-1] +
                                                      TLIPINFCAL[NP][1:2*NB_COUCHES-1]]
-                     
+
                             XAIRE = calc_vari_area_no_bord(self, MAIL, NB_COUCHES,
                                                     (TLIPSUPCAL[NP], TLIPINFCAL[NP]),
                                                     (TLIPSUPCAL[NP-2], TLIPINFCAL[NP-2]),
                                                     NODESBOUGE, TVECTEUR[NP], symeType)
-                            
+
                             TQ[NP] = (np.array(TVECTEUR[NP])*XMULT/XAIRE).tolist()
-                     
+
         #                   ---------------
         #                   TQ[2*iNP+1]
-                     
+
                             if NP > 3:
                                 for iNP in range(1, (NP-1)//2):
-                     
+
                                     NODESBOUGE = [int(iNo[1:]) - 1
                                               for iNo in TLIPSUPCAL[2*iNP+1][0:NB_COUCHES] +
                                                          TLIPINFCAL[2*iNP+1][1:NB_COUCHES]]
-                     
+
                                     XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 (TLIPSUPCAL[2*iNP+1], TLIPINFCAL[2*iNP+1]),
                                                 NODESBOUGE, TVECTEUR[2*iNP+1], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                     TQ[2*iNP+1] = (np.array(TVECTEUR[2*iNP+1])*XMULT/XAIRE).tolist()
-                     
+
         #                   ---------------
         #                   TQ[2*iNP]
-                     
+
                             for iNP in range(1, (NP+1)//2):
-                     
+
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                               for iNo in TLIPSUPCAL[2*iNP][0:NB_COUCHES] +
                                                          TLIPINFCAL[2*iNP][1:NB_COUCHES]]
-                     
+
                                 XAIRE = calc_vari_area_no_midd(self, MAIL, NB_COUCHES,
                                                 (TLIPSUPCAL[2*iNP], TLIPINFCAL[2*iNP]),
                                                 NODESBOUGE, TVECTEUR[2*iNP], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                 TQ[2*iNP] = (np.array(TVECTEUR[2*iNP])*XMULT/XAIRE).tolist()
-                     
+
         #                   ---------------
         #                   TQ['GLOBAL']
-                     
+
                             NODESBOUGE = {}
                             for iKey in range((NP+1)//2):
                                 NODESBOUGE[2*iKey+1] = [int(iNo[1:]) - 1
@@ -4488,7 +4488,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                     NODESBOUGE[2*iKey] = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[2*iKey][0:NB_COUCHES] +
                                                      TLIPINFCAL[2*iKey][1:NB_COUCHES]]
-                     
+
                             if NP == 3:
                                 XAIRE = calc_vari_area_no_glob_one_elem(self, MAIL, NB_COUCHES,
                                                         NP, (TLIPSUPCAL, TLIPINFCAL),
@@ -4497,7 +4497,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NP,
                                             (TLIPSUPCAL, TLIPINFCAL), NODESBOUGE, TVECGLOB,
                                             symeType, closedCrack, lipSupName, lipInfName)
-                     
+
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
@@ -4516,14 +4516,14 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 (TLIPSUPCAL[2*iNP+1], TLIPINFCAL[2*iNP+1]),
                                                 NODESBOUGE, TVECTEUR[2*iNP+1], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                 TQ[2*iNP+1] = (np.array(TVECTEUR[2*iNP+1])*XMULT/XAIRE).tolist()
-                                
+
         #                   ---------------
         #                   TQ[2*iNP]
-                            
+
                             for iNP in range(1, NP//2+1):
-                 
+
                                 NODESBOUGE = [int(iNo[1:]) - 1
                                               for iNo in TLIPSUPCAL[2*iNP][0:NB_COUCHES] +
                                                          TLIPINFCAL[2*iNP][1:NB_COUCHES]]
@@ -4532,7 +4532,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                 (TLIPSUPCAL[2*iNP], TLIPINFCAL[2*iNP]),
                                                 NODESBOUGE, TVECTEUR[2*iNP], symeType,
                                                 closedCrack, lipSupName, lipInfName)
-                                
+
                                 TQ[2*iNP] = (np.array(TVECTEUR[2*iNP])*XMULT/XAIRE).tolist()
 
         #                   ---------------
@@ -4548,7 +4548,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                 NODESBOUGE[2*iKey] = [int(iNo[1:]) - 1
                                           for iNo in TLIPSUPCAL[2*iKey][0:NB_COUCHES] +
                                                      TLIPINFCAL[2*iKey][1:NB_COUCHES]]
-                                
+
                             XAIRE = calc_vari_area_no_glob(self, MAIL, NB_COUCHES, NP,
                                         (TLIPSUPCAL, TLIPINFCAL), NODESBOUGE, TVECGLOB,
                                         symeType, closedCrack, lipSupName, lipInfName)
@@ -4593,7 +4593,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                         if GROUP_NO[incr_gno]  == knodes.strip() :
                             # print("collgrno[knodes]  ",collgrno[knodes])
 
-                            LIST_NODE__ = [cnom[node - 1].strip() for node in collgrno[knodes] ] 
+                            LIST_NODE__ = [cnom[node - 1].strip() for node in collgrno[knodes] ]
                             # print("LIST_NODE__  ",LIST_NODE__)
 
                             if   incr_gno  == 0:
@@ -4609,8 +4609,8 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
             # print("LIST_NODE  ",LIST_NODE)
             # print("NB_POINT_FOND  ",NB_POINT_FOND)
-            
-                
+
+
             listNP = list_node_calc(self, LIST_NODE, NB_POINT_FOND, TPFISS, NP)
 
         #   --------------------------------------------------------------------------
@@ -4620,13 +4620,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #
             SIG_CMP = ['SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ']
             EPS_CMP = ['EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ']
-                
+
             for iord, inst in enumerate(lInst):
 
                 __SIGF = get_contraint(self, __RESU, inst)
 
                 __DEPINT = get_displacement(self, __RESU, inst)
-                
+
                 __GDEPX = grad_u(self, MAIL, MODE, MATE,
                                        ['DX', '0.', '0.'], __DEPINT, inst)
                 __GDEPY = grad_u(self, MAIL, MODE, MATE,
@@ -4644,33 +4644,33 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                          ASSE=(_F(TOUT='OUI', CHAM_GD=__WELAS,
                                                   NOM_CMP=('TOTALE',),
                                                   NOM_CMP_RESU=('X13',),),),)
-                    
+
                     if OPTION == 'JMOD':
-                    
+
                         __EPSI_ELGA = get_deformation(self, __RESU, 'ELGA', inst)
 
                 else:
-                
+
                     __EPSI_TOTA = get_deformation(self, __RESU, 'ELGA', inst)
-                    
+
                     DATA_INIT = ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
                     # print ("^^^^^^^^^^^^^^^^^^^^^^")
-                    # print ("dir EPSI_INIT",dir(DATA_INIT['EPSI'])) 
-                    # print ("dir EPSI_INIT",DATA_INIT['EPSI'].keys())) 
-                    # print ("Type EPSI_INIT",type(DATA_INIT['EPSI'])) 
-                     
+                    # print ("dir EPSI_INIT",dir(DATA_INIT['EPSI']))
+                    # print ("dir EPSI_INIT",DATA_INIT['EPSI'].keys()))
+                    # print ("Type EPSI_INIT",type(DATA_INIT['EPSI']))
+
                     __EPSI_INIT = DATA_INIT['EPSI']
-                    # print ("Type EPSI_INIT",__EPSI_INIT.getType()) 
-                    # print ("Name EPSI_INIT",__EPSI_INIT.getName()) 
-                    
- 
+                    # print ("Type EPSI_INIT",__EPSI_INIT.getType())
+                    # print ("Name EPSI_INIT",__EPSI_INIT.getName())
+
+
                     # __EPSI_INIT = DATA_INIT[DATA_INIT.keys()[0]]
 
                     # if __EPSI_INIT['TYPE_CHAM'][:4] == 'ELGA':
                     if __EPSI_INIT.getType() == 'CHAM_ELEM':
 
                         __EPS0_ELGA = __EPSI_INIT
-                        
+
                     else:
 
                         __EPS0_ELGA = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
@@ -4685,9 +4685,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                       CUMUL='OUI', COEF_R= 1.),
                                                    _F(CHAM_GD=__EPS0_ELGA, TOUT='OUI',
                                                       CUMUL='OUI', COEF_R=-1.),),)
-                    
+
                     __WELAS = cal_strain_energy(self, MODE, __EPSI_ELGA, __SIGF)
-                    
+
         #       ----------------------------------------------------------------------
         #       INITIAL STRAIN - GRADIENT
         #
@@ -4709,9 +4709,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                  OPERATION='DISC',
                                                  MODELE=MODE,
                                                  CHAM_GD=__EPS0_ELGA)
-                    
+
                     dicGradEps0 = {}
-                
+
                     for iEPS_CMP in EPS_CMP:
 
                         if grad_elno_type_j03 == 'OUI':
@@ -4722,7 +4722,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                         __EPS0_ELGA, __EPS0_CAL, inst)
 
                         else:
-                        
+
                             __EPS0_CAL = CREA_CHAMP(OPERATION='ASSE',
                                                     MODELE=MODE,
                                                     TYPE_CHAM='NOEU_DEPL_R',
@@ -4730,7 +4730,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                              CHAM_GD=__EPS0_NOEU,
                                                              NOM_CMP=(iEPS_CMP,),
                                                              NOM_CMP_RESU=('DX',),),),)
-            
+
                             __GRAD_EPS0 = grad_noeu(self, MAIL, MODE, MATE,
                                                         __EPS0_CAL, inst)
 
@@ -4757,9 +4757,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                  OPERATION='DISC',
                                                  MODELE=MODE,
                                                  CHAM_GD=__EPSI_ELGA)
-                    
+
                     dicGradEps = {}
-                
+
                     for iEPS_CMP in EPS_CMP:
 
                         if grad_elno_type_j04 == 'OUI':
@@ -4770,7 +4770,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                         __EPSI_ELGA, __EPSI_CAL, inst)
 
                         else:
-                        
+
                             __EPSI_CAL = CREA_CHAMP(OPERATION='ASSE',
                                                     MODELE=MODE,
                                                     TYPE_CHAM='NOEU_DEPL_R',
@@ -4778,12 +4778,12 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                              CHAM_GD=__EPSI_NOEU,
                                                              NOM_CMP=(iEPS_CMP,),
                                                              NOM_CMP_RESU=('DX',),),),)
-            
+
                             __GRAD_EPSI = grad_noeu(self, MAIL, MODE, MATE,
                                                         __EPSI_CAL, inst)
 
                         dicGradEps[iEPS_CMP] = __GRAD_EPSI
-                
+
         #           ------------------------------------------------------------------
         #           J05: GRAD W
 
@@ -4793,16 +4793,16 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                           ASSE=(_F(TOUT='OUI', CHAM_GD=__WELAS,
                                                    NOM_CMP=('X13',),
                                                    NOM_CMP_RESU=('V1',),),),)
-                        
+
                     if grad_elno_type_j05 == 'OUI':
 
                         __WELAS_ELNO = CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                                                   OPERATION='DISC',
                                                   MODELE=MODE,
                                                   CHAM_GD=__WELASV)
-                        
+
                         __WELAS_CAL = __WELAS_ELNO.EXTR_COMP('V1', ['TMAIL',], 1)
-             
+
                         __GRAD_WELAS = grad_elno(self, MAIL, MODE, MATE, listElemTMAIL,
                                                         __EPSI_ELGA, __WELAS_CAL, inst)
 
@@ -4812,7 +4812,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                   OPERATION='DISC',
                                                   MODELE=MODE,
                                                   CHAM_GD=__WELASV)
-                
+
                         __WELAS_CAL = CREA_CHAMP(OPERATION='ASSE',
                                                  MODELE=MODE,
                                                  TYPE_CHAM='NOEU_DEPL_R',
@@ -4832,7 +4832,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                     display_node_inst(FOND_FISS, iNP, inst, NB_COUCHES, NP, closedCrack)
 
                     if iNP < NP:
-                        
+
                         __GQX = grad_q(self, MAIL, MODE, MATE, 'TMBOUGER'+str(iNP+1),
                                          'DX', TQ[iNP+1][0], inst)
                         __GQY = grad_q(self, MAIL, MODE, MATE, 'TMBOUGER'+str(iNP+1),
@@ -4879,9 +4879,9 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                                                           ['DX', 'DY', 'DZ'], TQGLOB)
 
                         __QX_GA = field_node_to_gauss(self, MODE, __QX, 'DX', 'EPXX')
-                        
+
                         __QY_GA = field_node_to_gauss(self, MODE, __QY, 'DY', 'EPYY')
-                        
+
                         __QZ_GA = field_node_to_gauss(self, MODE, __QZ, 'DZ', 'EPZZ')
 
         #           ------------------------------------------------------------------
@@ -4891,13 +4891,13 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         #               --------------------------------------------------------------
         #               J03 = SIGF * GRAD EPS0 * Q
-        #            
+        #
                         __J03_J = cal_j04(self, MODE, 'TMAIL', inst, SIG_CMP,
                                                 EPS_CMP, __SIGF, dicGradEps0,
                                                 __QX_GA, __QY_GA, __QZ_GA)
 
                         __J = __J + __J03_J[0]
-                        
+
         #           ------------------------------------------------------------------
         #           MODIFIED J
         #
@@ -4905,31 +4905,31 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
         #               --------------------------------------------------------------
         #               J04 = SIGF * GRAD EPSI * Q
-        #            
+        #
                         if j_correction != 'OUI':
-                            
+
                             __J04_J = cal_j04(self, MODE, 'TMAIL', inst, SIG_CMP,
                                                     EPS_CMP, __SIGF, dicGradEps,
                                                     __QX_GA, __QY_GA, __QZ_GA)
 
                         else:
-                            
+
                             __J04_J = cal_j04(self, MODE, 'TMAIL_IMPR', inst, SIG_CMP,
                                                     EPS_CMP, __SIGF, dicGradEps,
                                                     __QX_GA, __QY_GA, __QZ_GA)
-                        
+
                         __J = __J + __J04_J[0]
 
         #               --------------------------------------------------------------
         #               J05 = GRAD W * Q
         #
                         if j_correction != 'OUI':
-                            
+
                             __J05_J = cal_j05(self, MODE, 'TMAIL', inst,
                                               __GRAD_WELAS, __QX_GA, __QY_GA, __QZ_GA)
 
                         else:
-                            
+
                             __J05_J = cal_j05(self, MODE, 'TMAIL_IMPR', inst,
                                               __GRAD_WELAS, __QX_GA, __QY_GA, __QZ_GA)
 
@@ -4950,7 +4950,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
             for iNP in range(NP):
                 lGroupNo = 'TMBOUGER' + str(iNP+1)
                 del_group_no(self, MAIL, lGroupNo)
-                
+
             del_group_ma(self, MAIL, 'TMAIL')
 
             if j_correction == 'OUI':
@@ -4959,7 +4959,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
         #-----------------------------------------------------------------------------
     #print("tab_result",tab_result)
     end_post_j=time.time()
-    
+
     #print("POST_J elapsed Time total=",end_post_j-start_post_j)
     #print("POST_J elapsed Time Initialization=",post_j_marker0-start_post_j)
     #print("POST_J elapsed Time for Virtual Crack propagation direction=",post_j_marker1-post_j_marker0)

@@ -149,15 +149,15 @@ SOLUR = LIRE_RESU(MODELE=model,
 #          DETERMINATION DE LA REFERENCE
 #=========================================================
 
-nbRank = SOLUT.getNumberOfRanks()
-test.assertEqual(SOLUT.getNumberOfRanks(), SOLUN.getNumberOfRanks())
+nbIndexes = SOLUT.getNumberOfIndexes()
+test.assertEqual(SOLUT.getNumberOfIndexes(), SOLUN.getNumberOfIndexes())
 
 
 #=========================================================
 #            REALISATION DES TESTS
 #=========================================================
 
-for rank in range(nbRank):
+for rank in range(nbIndexes):
     DEPL_REF= SOLUT.getFieldOnNodesReal("DEPL", rank)
     SIGMA_REF= SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
     VARI_REF=SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)

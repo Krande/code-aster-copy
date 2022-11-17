@@ -76,9 +76,9 @@ def observation_ops(self,
     mayaexp = MODELE_2.getMesh()
 
     # cham_mater et cara_elem pour le resultat a projeter
-    if RESULTAT.getNumberOfRanks() > 0:
+    if RESULTAT.getNumberOfIndexes() > 0:
         cara_elems = []
-        for j in RESULTAT.getRanks():
+        for j in RESULTAT.getIndexes():
             if RESULTAT.hasElementaryCharacteristics(j):
                 cara_elems += [RESULTAT.getElementaryCharacteristics(j)]
         assert len(cara_elems) <= 1
@@ -89,9 +89,9 @@ def observation_ops(self,
     else:
         cara_elem = None
 
-    if RESULTAT.getNumberOfRanks() > 0:
+    if RESULTAT.getNumberOfIndexes() > 0:
         cham_maters = []
-        for j in RESULTAT.getRanks():
+        for j in RESULTAT.getIndexes():
             if RESULTAT.hasMaterialField(j):
                 cham_maters += [RESULTAT.getMaterialField(j)]
 
@@ -127,7 +127,7 @@ def observation_ops(self,
         afreq = None
         NUME_DDL = None
 
-    indice = list(range(RESULTAT.getNumberOfRanks()))
+    indice = list(range(RESULTAT.getNumberOfIndexes()))
 
 #***********************************************
 #  PHASE DE CALCUL DE LA DEFORMATION MOYENNE AUX NOEUDS
@@ -146,7 +146,7 @@ def observation_ops(self,
         if TYPE_CHAM is None:
             UTMESS('F', 'UTILITAI8_24', valk=['NOEU_EPSI', nomcham])
         else:
-            num_ordr = RESULTAT.getRanks()
+            num_ordr = RESULTAT.getIndexes()
 
             if RESULTAT.getType() == "EVOL_ELAS":
                 list_inst = RESULTAT.LIST_VARI_ACCES()['INST']
@@ -455,7 +455,7 @@ def observation_ops(self,
 #                         ANGL_NAUT = (alpha, beta, gamma), )
 #                    )
         if MODI_REPERE is not None:
-            num_ordr = __proj.getRanks()
+            num_ordr = __proj.getIndexes()
 
             for modif_rep in MODI_REPERE:
                 modi_rep = modif_rep
@@ -592,7 +592,7 @@ def observation_ops(self,
 #*************************************************
         resu_filtre = None
         if FILTRE is not None:
-            num_ordr = __proj.getRanks()
+            num_ordr = __proj.getIndexes()
 
             __chamf = [None] * len(indice)
             if RESULTAT.getType() == "EVOL_ELAS":

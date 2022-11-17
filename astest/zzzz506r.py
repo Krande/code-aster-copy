@@ -189,15 +189,15 @@ U2 = MECA_NON_LINE(MODELE=MODELE,
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
 
-nbRank = U1.getNumberOfRanks()
+nbIndexes = U1.getNumberOfIndexes()
 
-DEPL_REF = U1.getFieldOnNodesReal("DEPL", nbRank - 1)
-SIGMA_REF = U1.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
-VARI_REF = U1.getFieldOnCellsReal("VARI_ELGA", nbRank - 1)
+DEPL_REF = U1.getFieldOnNodesReal("DEPL", nbIndexes - 1)
+SIGMA_REF = U1.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+VARI_REF = U1.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
 
-DEPL = U2.getFieldOnNodesReal("DEPL", nbRank - 1)
-SIGMA = U2.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
-VARI = U2.getFieldOnCellsReal("VARI_ELGA", nbRank - 1)
+DEPL = U2.getFieldOnNodesReal("DEPL", nbIndexes - 1)
+SIGMA = U2.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+VARI = U2.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA
@@ -279,22 +279,22 @@ U4 = MECA_NON_LINE(MODELE=MODELE,
 # Test des intervalles de temps
 test = code_aster.TestCase()
 
-nbRank3 = U3.getNumberOfRanks()
-nbRank4 = U4.getNumberOfRanks()
+nbIndexes3 = U3.getNumberOfIndexes()
+nbIndexes4 = U4.getNumberOfIndexes()
 
-range3 = [U3.getTimeValue(i) for i in range(nbRank3)]
-range4 = [U3.getTimeValue(i) for i in range(nbRank4)]
+range3 = [U3.getTimeValue(i) for i in range(nbIndexes3)]
+range4 = [U3.getTimeValue(i) for i in range(nbIndexes4)]
 
-test.assertEqual(nbRank3, nbRank4)
+test.assertEqual(nbIndexes3, nbIndexes4)
 test.assertEqual(range3, range4)
 
-DEPL_REF = U3.getFieldOnNodesReal("DEPL", nbRank3 - 1)
-SIGMA_REF = U3.getFieldOnCellsReal("SIEF_ELGA", nbRank3 - 1)
-VARI_REF = U3.getFieldOnCellsReal("VARI_ELGA", nbRank3 - 1)
+DEPL_REF = U3.getFieldOnNodesReal("DEPL", nbIndexes3 - 1)
+SIGMA_REF = U3.getFieldOnCellsReal("SIEF_ELGA", nbIndexes3 - 1)
+VARI_REF = U3.getFieldOnCellsReal("VARI_ELGA", nbIndexes3 - 1)
 
-DEPL = U4.getFieldOnNodesReal("DEPL", nbRank3 - 1)
-SIGMA = U4.getFieldOnCellsReal("SIEF_ELGA", nbRank3 - 1)
-VARI = U4.getFieldOnCellsReal("VARI_ELGA", nbRank3 - 1)
+DEPL = U4.getFieldOnNodesReal("DEPL", nbIndexes3 - 1)
+SIGMA = U4.getFieldOnCellsReal("SIEF_ELGA", nbIndexes3 - 1)
+VARI = U4.getFieldOnCellsReal("VARI_ELGA", nbIndexes3 - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA

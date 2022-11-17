@@ -62,7 +62,7 @@ void Result::_setFieldBase(
     AS_ASSERT( rschex.first == 0 || rschex.first == 100 || rschex.first == 110 );
 
     if ( rschex.first == 110 ) {
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
+        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfIndexes() ) );
         rschex = _getNewFieldName( trim_name, rank );
     };
 
@@ -148,7 +148,7 @@ void Result::setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGE
 
 ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
 
-    ASTERINTEGER nb_ranks = getNumberOfRanks();
+    ASTERINTEGER nb_ranks = getNumberOfIndexes();
 
     AS_ASSERT( rank <= nb_ranks );
 
@@ -178,10 +178,10 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
     return 0.0;
 };
 
-void Result::allocate( ASTERINTEGER nbRanks ) {
+void Result::allocate( ASTERINTEGER nbIndexes ) {
 
     std::string base( JeveuxMemoryTypesNames[Permanent] );
-    ASTERINTEGER nbordr = nbRanks;
+    ASTERINTEGER nbordr = nbIndexes;
     CALLO_RSCRSD( base, getName(), getType(), &nbordr );
 
     AS_ASSERT( _calculationParameter->build( true ) );
@@ -189,21 +189,21 @@ void Result::allocate( ASTERINTEGER nbRanks ) {
 };
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
-    auto indexes = getRanks();
+    auto indexes = getIndexes();
     for ( auto &index : indexes ) {
         setElementaryCharacteristics( cara, index );
     }
 };
 
 void Result::setMaterialField( const MaterialFieldPtr &mater ) {
-    auto indexes = getRanks();
+    auto indexes = getIndexes();
     for ( auto &index : indexes ) {
         setMaterialField( mater, index );
     }
 };
 
 void Result::setModel( const ModelPtr &model ) {
-    auto indexes = getRanks();
+    auto indexes = getIndexes();
     for ( auto &index : indexes ) {
         setModel( model, index );
     }
@@ -304,9 +304,9 @@ ModelPtr Result::getModel() const {
 
 ModelPtr Result::getModel( ASTERINTEGER rank ) const { return _mapModel.at( rank ); };
 
-ASTERINTEGER Result::getNumberOfRanks() const { return _serialNumber->size(); };
+ASTERINTEGER Result::getNumberOfIndexes() const { return _serialNumber->size(); };
 
-VectorLong Result::getRanks() const { return _serialNumber->toVector(); };
+VectorLong Result::getIndexes() const { return _serialNumber->toVector(); };
 
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
                                                  const ASTERINTEGER rank ) const {
@@ -354,7 +354,7 @@ py::dict Result::getAccessParameters() const {
 
     AS_ASSERT( _calculationParameter->build() );
 
-    ASTERINTEGER nb_ranks = getNumberOfRanks();
+    ASTERINTEGER nb_ranks = getNumberOfIndexes();
 
     var_name = "NUME_ORDRE";
     py::list listValues;
@@ -622,7 +622,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
 
-    const auto nbRanks = getNumberOfRanks();
+    const auto nbIndexes = getNumberOfIndexes();
 
     for ( auto &fed : feds ) {
         _fieldBuidler.addFiniteElementDescriptor( fed );
@@ -636,9 +636,9 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     for ( const auto &[key, obj] : _namesOfFields ) {
         obj->updateValuePointer();
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
-        AS_ASSERT( nbRanks <= obj->size() );
+        AS_ASSERT( nbIndexes <= obj->size() );
 
-        for ( ASTERINTEGER index = 0; index < nbRanks; ++index ) {
+        for ( ASTERINTEGER index = 0; index < nbIndexes; ++index ) {
             std::string name( trim( ( *obj )[index].toString() ) );
             if ( name != "" ) {
                 const ASTERINTEGER rank = ( *_serialNumber )[index];
@@ -760,23 +760,46 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
         ++cmpt;
     }
 
+    // add of listofloads
+    auto indexes = getIndexes();
+    std::string type = "EXCIT";
+    std::string cel( "L" );
+    for ( auto &index : indexes ) {
+        ASTERINTEGER rank = ( *_serialNumber )[index];
+        std::string value( 24, ' ' );
+        CALLO_RSADPA_ZK24_WRAP( &index, getName(), value, type, cel );
+        std::string name = value.substr( 0, 19 );
+        // only if created by a fortran command
+        if ( name.substr( 0, 8 ) != getName().substr( 0, 8 ) )
+            continue;
+        mapRankLoads::iterator it;
+        for ( it = _mapLoads.begin(); it != _mapLoads.end(); it++ ) {
+            if ( name == it->second->getName() )
+                break;
+        }
+        if ( it == _mapLoads.end() ) {
+            _mapLoads[index] = std::make_shared< ListOfLoads >( name );
+        } else
+            _mapLoads[index] = it->second;
+    }
+
     CALL_JEDEMA();
     return update_tables();
 };
 
 bool Result::exists() const { return _symbolicNamesOfFields->exists(); };
 
-void Result::resize( ASTERINTEGER nbRanks ) {
+void Result::resize( ASTERINTEGER nbIndexes ) {
     if ( !exists() ) {
-        allocate( nbRanks );
+        allocate( nbIndexes );
     } else {
-        CALLO_RSAGSD( getName(), &nbRanks );
+        CALLO_RSAGSD( getName(), &nbIndexes );
     }
 }
 
 void Result::clear( const ASTERINTEGER &index ) {
 
-    auto old_index = getRanks();
+    auto old_index = getIndexes();
 
     ASTERINTEGER nume_ordre = index;
     CALLO_RSRUSD( getName(), &nume_ordre );
@@ -814,7 +837,7 @@ void Result::clear( const ASTERINTEGER &index ) {
 };
 
 void Result::clear() {
-    auto index = getRanks()[0];
+    auto index = getIndexes()[0];
     CALLO_RSRUSD( getName(), &index );
 
     _mapModel.clear();

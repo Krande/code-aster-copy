@@ -109,8 +109,8 @@ SOLUN.printListOfFields()
 #          DETERMINATION DE LA REFERENCE
 #=========================================================
 
-nbRank = SOLUT.getNumberOfRanks()
-test.assertEqual(SOLUT.getNumberOfRanks(), SOLUN.getNumberOfRanks())
+nbIndexes = SOLUT.getNumberOfIndexes()
+test.assertEqual(SOLUT.getNumberOfIndexes(), SOLUN.getNumberOfIndexes())
 
 
 
@@ -120,7 +120,7 @@ test.assertEqual(SOLUT.getNumberOfRanks(), SOLUN.getNumberOfRanks())
 #            REALISATION DES TESTS
 #=========================================================
 
-for rank in range(nbRank):
+for rank in range(nbIndexes):
     # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
     DEPL_REF= SOLUT.getFieldOnNodesReal("DEPL", rank)
     SIGMA_REF= SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)

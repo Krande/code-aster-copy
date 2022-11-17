@@ -179,10 +179,10 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Allouer une sd_resultat
-     * @param nbRanks nombre de numéro d'ordre
+     * @param nbIndexes nombre de numéro d'ordre
      * @return true si l'allocation s'est bien passée
      */
-    void allocate( ASTERINTEGER nbRanks );
+    void allocate( ASTERINTEGER nbIndexes );
 
     /**
      * @brief Add elementary characteristics to container
@@ -462,15 +462,15 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Get the number of steps stored in the Result
-     * @return nbRanks
+     * @return nbIndexes
      */
-    ASTERINTEGER getNumberOfRanks() const;
+    ASTERINTEGER getNumberOfIndexes() const;
 
     /**
      * @brief Get the number of steps stored in the Result
-     * @return nbRanks
+     * @return nbIndexes
      */
-    VectorLong getRanks() const;
+    VectorLong getIndexes() const;
 
     /**
      * @brief Get all the fields stored in the Result
@@ -480,7 +480,7 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Print all the fields stored in the Result
-     * @return nbRanks
+     * @return nbIndexes
      */
     void printListOfFields() const;
 
@@ -503,7 +503,7 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Update the  Result's size
      */
-    void resize( ASTERINTEGER nbRanks );
+    void resize( ASTERINTEGER nbIndexes );
 
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
 

@@ -68,7 +68,7 @@ class ComputeAdditionalField(ExecuteCommand):
             if dofNume is not None:
                 self._result.setDOFNumbering(dofNume)
 
-            for rank in self._result.getRanks():
+            for rank in self._result.getIndexes():
                 if keywords["RESULTAT"].hasListOfLoads(rank):
                     list_of_load = keywords["RESULTAT"].getListOfLoads(rank)
                     self._result.setListOfLoads(list_of_load, rank)

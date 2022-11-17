@@ -271,7 +271,7 @@ Returns:
               )",
               py::arg( "rank" ) )
         .def( "getModel", py::overload_cast<>( &Result::getModel, py::const_ ) )
-        .def( "getNumberOfRanks", &Result::getNumberOfRanks, R"(
+        .def( "getNumberOfIndexes", &Result::getNumberOfIndexes, R"(
 Get the number of rank stored in the result
 
 Returns:
@@ -327,7 +327,7 @@ Return the names of the contant real fields on cells as Python list.
 Returns:
     list(str): List of names of the contant fields on cells.
         )" )
-        .def( "getRanks", &Result::getRanks, R"(
+        .def( "getIndexes", &Result::getIndexes, R"(
 Return the list of ranks used to store fields
 
 Returns:
@@ -454,10 +454,10 @@ Returns:
 Resize the object.
 
 Arguments:
-    nbRanks (int): new expected size. Should be greater than the current size,
+    nbIndexes (int): new expected size. Should be greater than the current size,
         otherwise the size is unchanged.
         )",
-              py::arg( "nbRanks" ) )
+              py::arg( "nbIndexes" ) )
         .def(
             "setField",
             py::overload_cast< const FieldOnNodesRealPtr, const std::string &, const ASTERINTEGER >(

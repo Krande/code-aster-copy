@@ -770,9 +770,9 @@ class PostRocheCommon():
                 if charg.get(mc):
                     if mc =='TOUT_ORDRE':
                         kwNumeTran = 'NUME_ORDRE'
-                        listNumeTran = resDyn.getRanks()
+                        listNumeTran = resDyn.getIndexes()
                         if resCorr is not None:
-                            listNumeTranCorr = resCorr.getRanks()
+                            listNumeTranCorr = resCorr.getIndexes()
                             if listNumeTranCorr != listNumeTran:
                                 UTMESS('F','POSTROCHE_7',vali=iocc)
                     elif mc=='LIST_ORDRE':

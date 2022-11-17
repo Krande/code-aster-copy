@@ -87,15 +87,15 @@ RES_N = MECA_NON_LINE(
     SOLVEUR=_F(METHODE="MUMPS"),
 )
 
-nbRank = RES.getNumberOfRanks()
+nbIndexes = RES.getNumberOfIndexes()
 
-DEPL_REF = RES.getFieldOnNodesReal("DEPL", nbRank - 1)
-SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
-VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", nbRank - 1)
+DEPL_REF = RES.getFieldOnNodesReal("DEPL", nbIndexes - 1)
+SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
 
-DEPL = RES_N.getFieldOnNodesReal("DEPL", nbRank - 1)
-SIGMA = RES_N.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
-VARI = RES_N.getFieldOnCellsReal("VARI_ELGA", nbRank - 1)
+DEPL = RES_N.getFieldOnNodesReal("DEPL", nbIndexes - 1)
+SIGMA = RES_N.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+VARI = RES_N.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA

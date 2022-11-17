@@ -107,8 +107,8 @@ RES_NEW = MECA_NON_LINE(
 #          DETERMINATION DE LA REFERENCE
 # =========================================================
 
-nbRank = RES.getNumberOfRanks()
-test.assertEqual(RES.getNumberOfRanks(), RES_NEW.getNumberOfRanks())
+nbIndexes = RES.getNumberOfIndexes()
+test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
 
 
 # =========================================================
@@ -116,7 +116,7 @@ test.assertEqual(RES.getNumberOfRanks(), RES_NEW.getNumberOfRanks())
 # =========================================================
 fmt = "# check diff: {0:3d} {1:<6s} {2:12.6e} {3:12.6e} {4:12.6e}"
 
-for rank in range(nbRank):
+for rank in range(nbIndexes):
     DEPL_REF = RES.getFieldOnNodesReal("DEPL", rank)
     SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", rank)
     VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", rank)

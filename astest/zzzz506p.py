@@ -134,10 +134,10 @@ RES_NEW = MECA_NON_LINE(CHAM_MATER=AFFE,
 #          DETERMINATION DE LA REFERENCE
 # =========================================================
 
-nbRank = RES.getNumberOfRanks()
-test.assertEqual(RES.getNumberOfRanks(), RES_NEW.getNumberOfRanks())
-test.assertSequenceEqual(RES.getRanks(), RES_NEW.getRanks())
-test.assertSequenceEqual(RES_NEW.getRanks(), range(4))
+nbIndexes = RES.getNumberOfIndexes()
+test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
+test.assertSequenceEqual(RES.getIndexes(), RES_NEW.getIndexes())
+test.assertSequenceEqual(RES_NEW.getIndexes(), range(4))
 
 # =========================================================
 #            REALISATION DES TESTS
@@ -145,13 +145,13 @@ test.assertSequenceEqual(RES_NEW.getRanks(), range(4))
 
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-DEPL_REF = RES.getFieldOnNodesReal("DEPL", nbRank - 1)
-SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
-VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", nbRank - 1)
+DEPL_REF = RES.getFieldOnNodesReal("DEPL", nbIndexes - 1)
+SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
 
-DEPL = RES_NEW.getFieldOnNodesReal("DEPL", nbRank - 1)
-SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
-VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", nbRank - 1)
+DEPL = RES_NEW.getFieldOnNodesReal("DEPL", nbIndexes - 1)
+SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
+VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", nbIndexes - 1)
 
 DIF_DEPL = DEPL_REF - DEPL
 

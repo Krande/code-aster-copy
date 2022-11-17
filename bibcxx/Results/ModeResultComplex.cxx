@@ -32,8 +32,8 @@
 
 FieldOnNodesComplexPtr ModeResultComplex::getEmptyFieldOnNodesComplex( const std::string name,
                                                                        const int rank ) {
-    const ASTERINTEGER nbRanks = getNumberOfRanks();
-    if ( rank > nbRanks || rank <= 0 )
+    const ASTERINTEGER nbIndexes = getNumberOfIndexes();
+    if ( rank > nbIndexes || rank <= 0 )
         throw std::runtime_error( "Order number out of range" );
     ASTERINTEGER retour;
     retour = 0;
@@ -47,7 +47,7 @@ FieldOnNodesComplexPtr ModeResultComplex::getEmptyFieldOnNodesComplex( const std
 
     auto curIter = _dictOfVectorOfComplexFieldsNodes.find( name );
     if ( curIter == _dictOfVectorOfComplexFieldsNodes.end() ) {
-        _dictOfVectorOfComplexFieldsNodes[name] = VectorOfComplexFieldsNodes( nbRanks );
+        _dictOfVectorOfComplexFieldsNodes[name] = VectorOfComplexFieldsNodes( nbIndexes );
     }
     _dictOfVectorOfComplexFieldsNodes[name][rank - 1] = result;
     return result;
@@ -55,8 +55,8 @@ FieldOnNodesComplexPtr ModeResultComplex::getEmptyFieldOnNodesComplex( const std
 
 FieldOnNodesComplexPtr ModeResultComplex::getComplexFieldOnNodes( const std::string name,
                                                                   const int rank ) const {
-    const ASTERINTEGER nbRanks = getNumberOfRanks();
-    if ( rank > nbRanks || rank <= 0 )
+    const ASTERINTEGER nbIndexes = getNumberOfIndexes();
+    if ( rank > nbIndexes || rank <= 0 )
         throw std::runtime_error( "Order number out of range" );
 
     auto curIter = _dictOfVectorOfComplexFieldsNodes.find( trim( name ) );

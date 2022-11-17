@@ -1815,11 +1815,11 @@ def post_k1_k2_k3_ops(
     CHAM_MATER = None
     if MATER is None:
         mater, MODELISATION = aster.postkutil(1, RESULTAT.getName(), nom_fiss)
-        if RESULTAT.getNumberOfRanks() == 0:
+        if RESULTAT.getNumberOfIndexes() == 0:
             RESULTAT.update()
-        if RESULTAT.getNumberOfRanks() > 0:
+        if RESULTAT.getNumberOfIndexes() > 0:
             cham_maters = []
-            for j in RESULTAT.getRanks():
+            for j in RESULTAT.getIndexes():
                 if RESULTAT.hasMaterialField(j):
                     cham_maters += [RESULTAT.getMaterialField(j)]
             if len(cham_maters):

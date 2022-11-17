@@ -557,7 +557,7 @@ class Structure(WithEmbeddedObjects):
             for isub, sub in enumerate(self.lSubS):
                 if sub == sub1:
                     # number of local modes per interface
-                    nRanks = len(sub.iModes.getRanks()) // len(sub.lIName)
+                    nRanks = len(sub.iModes.getIndexes()) // len(sub.lIName)
                     # name of the interface where the interface modes are built
                     inames = [n for n in sub.lIName for _ in range(nRanks)]
                     # keep only the interface modes of the current interface
@@ -571,7 +571,7 @@ class Structure(WithEmbeddedObjects):
                     values1[iConstraints: iConstraints + nConstraintSub1] = 1
                 if sub == sub2:
                     # number of local modes per interface
-                    nRanks = len(sub.iModes.getRanks()) // len(sub.lIName)
+                    nRanks = len(sub.iModes.getIndexes()) // len(sub.lIName)
                     # name of the interface where the interface modes are built
                     inames = [n for n in sub.lIName for _ in range(nRanks)]
                     index = np.where(np.array(inames) == interface.name)[0]
@@ -634,13 +634,13 @@ class Structure(WithEmbeddedObjects):
             lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers())
 
             modes = sub.modes
-            em = [modes.getField('DEPL', r).getValues() for r in modes.getRanks()]
+            em = [modes.getField('DEPL', r).getValues() for r in modes.getIndexes()]
             decalage += len(em)
             em = np.vstack(em).T
             em[lag, :] = 0.  # mise a zero des Lagrange
 
             imodes = sub.iModes
-            im = [imodes.getField('DEPL', r).getValues() for r in imodes.getRanks()]
+            im = [imodes.getField('DEPL', r).getValues() for r in imodes.getIndexes()]
             lIndexOfInterfModes.append(np.arange(len(im)) + decalage)
             lNumberOfInterfModes.append(len(im))
             decalage += len(im)
@@ -701,8 +701,8 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         raise KeyError("res1, res2, and mass must be of same length")
     nStruct = len(lres1)
     # selection of the eigenvalues to be used
-    nres1 = np.min(np.array([_res.getNumberOfRanks() for _res in lres1]))
-    nres2 = np.min(np.array([_res.getNumberOfRanks() for _res in lres2]))
+    nres1 = np.min(np.array([_res.getNumberOfIndexes() for _res in lres1]))
+    nres2 = np.min(np.array([_res.getNumberOfIndexes() for _res in lres2]))
     if list1 and not all([i in range(nres1) for i in list1]):
         raise KeyError("list1 is out of bound")
     if list2 and not all([i in range(nres2) for i in list2]):

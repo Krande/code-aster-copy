@@ -385,7 +385,7 @@ for k in range (1,NBPAS):
                                    EVOL=__a,
                                    VALE_REF=TREF,),)
 
-    nb_nu_orb = RESU_MEC.getNumberOfRanks()
+    nb_nu_orb = RESU_MEC.getNumberOfIndexes()
 
 #2.2.5 Calcul mecanique du pas de temps k
     RESU_MEC=STAT_NON_LINE(reuse=RESU_MEC,

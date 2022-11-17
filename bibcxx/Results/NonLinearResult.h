@@ -59,8 +59,6 @@ class NonLinearResult : public TransientResult {
     void setContact( const ContactPtr contact );
 
     void setContact( const ContactPtr contact, const ASTERINTEGER &rank );
-
-    bool build();
 };
 
 /**

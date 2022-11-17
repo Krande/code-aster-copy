@@ -142,7 +142,7 @@ def meca_non_line_ops(self, **args):
         if "EVOL_NOLI" in args["ETAT_INIT"]:
             resu = args["ETAT_INIT"].get("EVOL_NOLI")
             assert isinstance(resu, NonLinearResult)
-            tini = resu.getTimeValue(resu.getNumberOfRanks() - 1)
+            tini = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
             if "INST_ETAT_INIT" in args["ETAT_INIT"]:
                 tini = args["ETAT_INIT"].get("INST_ETAT_INIT")
             timeStepper.setInitialStep(tini)

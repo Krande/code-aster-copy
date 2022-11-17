@@ -67,7 +67,7 @@ resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
                             _F(CHARGE=char_meca,),),
                      )
 
-ranks = resu.getRanks()
+ranks = resu.getIndexes()
 test.assertEqual(len(ranks), 1)
 test.assertAlmostEqual(ranks[0], 1.0)
 resu.debugPrint(10+rank)

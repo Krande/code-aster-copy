@@ -74,13 +74,6 @@ void DEFSSPSPSPSP( ASSVECWITHMASK, assvecwithmask, const char *, STRING_SIZE, co
 #define CALLO_AP_ASSEMBLY_VECTOR( a ) CALLO( AP_ASSEMBLY_VECTOR, ap_assembly_vector, a )
 void DEFS( AP_ASSEMBLY_VECTOR, ap_assembly_vector, const char *, STRING_SIZE );
 
-#define CALLO_COMPSTRESSFIELD( a, b, c, d, e, f, g, h, i, j )                                      \
-    CALLOOOOOOPPPP( COMPSTRESSFIELD, compstressfield, a, b, c, d, e, f, g, h, i, j )
-void DEFSSSSSSPPPP( COMPSTRESSFIELD, compstressfield, const char *, STRING_SIZE, const char *,
-                    STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                    STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL *, ASTERLOGICAL *,
-                    ASTERINTEGER *, ASTERDOUBLE * );
-
 #define CALLO_CONLAG( a, b ) CALLOP( CONLAG, conlag, a, b )
 void DEFSP( CONLAG, conlag, const char *, STRING_SIZE, ASTERDOUBLE * );
 

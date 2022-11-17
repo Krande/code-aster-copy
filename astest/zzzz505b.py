@@ -83,14 +83,14 @@ fields = sorted(["COMPORTEMENT", "DEPL", "SIEF_ELGA", "VARI_ELGA"])
 
 test.assertSequenceEqual(sorted(SOLUT.getFieldsNames()), fields )
 
-nbRank = SOLUT.getNumberOfRanks()
+nbIndexes = SOLUT.getNumberOfIndexes()
 
 # New result
 SOLUN = code_aster.NonLinearResult()
 
-SOLUN.allocate(nbRank)
+SOLUN.allocate(nbIndexes)
 
-for rank in range(nbRank):
+for rank in range(nbIndexes):
     SOLUN.setModel( SOLUT.getModel(rank), rank )
     SOLUN.setMaterialField( SOLUT.getMaterialField(rank), rank )
     SOLUN.setField( SOLUT.getField("DEPL", rank), "DEPL", rank )
@@ -156,13 +156,13 @@ SOLUR = LIRE_RESU(MODELE=model,
 #            REALISATION DES TESTS
 #=========================================================
 
-test.assertEqual(SOLUT.getNumberOfRanks(), SOLUR.getNumberOfRanks())
-test.assertSequenceEqual(SOLUT.getRanks(), [0, 1, 2])
-test.assertSequenceEqual(SOLUR.getRanks(), [0, 1, 2])
+test.assertEqual(SOLUT.getNumberOfIndexes(), SOLUR.getNumberOfIndexes())
+test.assertSequenceEqual(SOLUT.getIndexes(), [0, 1, 2])
+test.assertSequenceEqual(SOLUR.getIndexes(), [0, 1, 2])
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
 
-for rank in range(SOLUT.getNumberOfRanks()):
+for rank in range(SOLUT.getNumberOfIndexes()):
 
     DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
     SIGMA_REF= SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
@@ -261,24 +261,24 @@ for rank in range(SOLUT.getNumberOfRanks()):
 #            TEST RESIZE METHOD
 #=========================================================
 
-nbRank = SOLUN.getNumberOfRanks()
-SOLUN.resize(nbRank + 1 )
-SOLUN.setModel(SOLUN.getModel(nbRank-1), nbRank)
-SOLUN.setMaterialField(SOLUN.getMaterialField(nbRank-1), nbRank )
-SOLUN.setField(SOLUN.getFieldOnNodesReal("DEPL", nbRank-1), "DEPL", nbRank )
+nbIndexes = SOLUN.getNumberOfIndexes()
+SOLUN.resize(nbIndexes + 1 )
+SOLUN.setModel(SOLUN.getModel(nbIndexes-1), nbIndexes)
+SOLUN.setMaterialField(SOLUN.getMaterialField(nbIndexes-1), nbIndexes )
+SOLUN.setField(SOLUN.getFieldOnNodesReal("DEPL", nbIndexes-1), "DEPL", nbIndexes )
 
 # CHECK THAT the fields are properly copied
-test.assertEqual(SOLUN.getModel(nbRank-1), SOLUN.getModel(nbRank))
-test.assertEqual(SOLUN.getMaterialField(nbRank-1), SOLUN.getMaterialField(nbRank-1))
-test.assertEqual(SOLUN.getFieldOnNodesReal("DEPL", nbRank-1).getValues(),
-                 SOLUN.getFieldOnNodesReal("DEPL", nbRank).getValues())
+test.assertEqual(SOLUN.getModel(nbIndexes-1), SOLUN.getModel(nbIndexes))
+test.assertEqual(SOLUN.getMaterialField(nbIndexes-1), SOLUN.getMaterialField(nbIndexes-1))
+test.assertEqual(SOLUN.getFieldOnNodesReal("DEPL", nbIndexes-1).getValues(),
+                 SOLUN.getFieldOnNodesReal("DEPL", nbIndexes).getValues())
 
 
 #=========================================================
 #            TEST NORM METHODS
 #=========================================================
 
-sig = SOLUN.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
+sig = SOLUN.getFieldOnCellsReal("SIEF_ELGA", nbIndexes - 1)
 test.assertAlmostEqual(sig.norm("NORM_2"), 24162.483694014656, 8)
 test.assertAlmostEqual(sig.norm("NORM_1"), 640625.2493377978, 8)
 test.assertAlmostEqual(sig.norm("NORM_INFINITY"), 1317.268981963458, 8)

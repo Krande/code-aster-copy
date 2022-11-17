@@ -78,7 +78,7 @@ implicit none
     endif
     lfichUniq = .false._1
 !
-!XX if (nbrank .eq. 0) then
+!XX if (nbIndexes .eq. 0) then
         call getfac(keywf, keywfNb)
 ! ----- Check for parallel mesh vs restriction on proc0
         call getvid(keywf, 'MAILLAGE', iocc=1, scal=mesh, nbret=nbMesh)
