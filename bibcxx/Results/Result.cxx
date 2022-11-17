@@ -189,38 +189,23 @@ void Result::allocate( ASTERINTEGER nbRanks ) {
 };
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
-    ASTERINTEGER nbRanks = getNumberOfRanks();
-    if ( nbRanks > 0 ) {
-        _serialNumber->updateValuePointer();
-        for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-            const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-            if ( _mapElemCara.find( iordr ) == _mapElemCara.end() )
-                setElementaryCharacteristics( cara, iordr );
-        }
+    auto indexes = getRanks();
+    for ( auto &index : indexes ) {
+        setElementaryCharacteristics( cara, index );
     }
 };
 
 void Result::setMaterialField( const MaterialFieldPtr &mater ) {
-    ASTERINTEGER nbRanks = getNumberOfRanks();
-    if ( nbRanks > 0 ) {
-        _serialNumber->updateValuePointer();
-        for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-            const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-            if ( _mapMaterial.find( iordr ) == _mapMaterial.end() )
-                setMaterialField( mater, iordr );
-        }
+    auto indexes = getRanks();
+    for ( auto &index : indexes ) {
+        setMaterialField( mater, index );
     }
 };
 
 void Result::setModel( const ModelPtr &model ) {
-    ASTERINTEGER nbRanks = getNumberOfRanks();
-    if ( nbRanks > 0 ) {
-        _serialNumber->updateValuePointer();
-        for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-            const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-            if ( _mapModel.find( iordr ) == _mapModel.end() )
-                setModel( model, iordr );
-        }
+    auto indexes = getRanks();
+    for ( auto &index : indexes ) {
+        setModel( model, index );
     }
 };
 

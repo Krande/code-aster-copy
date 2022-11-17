@@ -28,40 +28,39 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 pMesh = code_aster.ParallelMesh()
-pMesh.readMedFile("mesh004a/%d.med"%rank, True)
+pMesh.readMedFile("mesh004a/%d.med" % rank, True)
 
 monModel = code_aster.Model(pMesh)
-monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
-                              code_aster.Modelings.Tridimensional)
+monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
 monModel.build()
 
 testMesh = monModel.getMesh()
 test.assertEqual(testMesh.getType(), "MAILLAGE_P")
 
-acier = DEFI_MATERIAU(ELAS = _F(E = 2.e11,
-                                NU = 0.3,),)
+acier = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3))
 
 affectMat = code_aster.MaterialField(pMesh)
-affectMat.addMaterialOnMesh( acier )
+affectMat.addMaterialOnMesh(acier)
 affectMat.build()
 
 testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")
 
 charCine = code_aster.MechanicalDirichletBC(monModel)
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0.0, "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0.0, "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0.0, "COTE_B")
 charCine.build()
 
 charCine2 = code_aster.MechanicalDirichletBC(monModel)
-charCine2.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
+charCine2.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1.0, "COTE_H")
 charCine2.build()
 
-resu = MECA_STATIQUE(MODELE=monModel, CHAM_MATER=affectMat,
-  EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charCine2)),)
+resu = MECA_STATIQUE(
+    MODELE=monModel, CHAM_MATER=affectMat, EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charCine2))
+)
 
-resu.printMedFile("fort."+str(rank+40)+".med")
+resu.printMedFile("fort." + str(rank + 40) + ".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
@@ -70,6 +69,17 @@ sfon.build()
 val = [0.134202362865, 0.134202362865, 0.154144849556, 0.154144849556]
 print(rank, sfon.getValue(4, 1))
 test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
+
+# test for issue32395
+test.assertEqual(affectMat, resu.getMaterialField())
+
+affectMat2 = code_aster.MaterialField(pMesh)
+affectMat2.addMaterialOnMesh(acier)
+affectMat2.build()
+
+resu.setMaterialField(affectMat2)
+test.assertEqual(affectMat2, resu.getMaterialField())
+
 
 test.printSummary()
 

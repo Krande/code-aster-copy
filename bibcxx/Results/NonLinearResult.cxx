@@ -34,12 +34,9 @@ void NonLinearResult::setContact( const ContactPtr contact, const ASTERINTEGER &
 };
 
 void NonLinearResult::setContact( const ContactPtr contact ) {
-    _serialNumber->updateValuePointer();
-    ASTERINTEGER nbRanks = _serialNumber->size();
-    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-        const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-        if ( _mapContact.find( iordr ) == _mapContact.end() )
-            setContact( contact, iordr );
+    auto indexes = getRanks();
+    for ( auto &index : indexes ) {
+        setContact( contact, index );
     }
 };
 
