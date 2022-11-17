@@ -69,7 +69,7 @@ use calcG_type
     integer, parameter :: l_def_title = 70
 !
     integer :: i_l_obj, i_obj
-    character(len=24) :: vk(3), nomobj
+    character(len=24) :: vk(3)
     character(len=16) :: obje_type
     aster_logical, parameter :: debug = ASTER_FALSE
     real(kind=8) :: start, finish

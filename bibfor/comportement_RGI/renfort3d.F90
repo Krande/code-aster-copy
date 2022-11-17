@@ -56,12 +56,11 @@ implicit none
 !     variables locales      
       real(kind=8) :: epsrf3(3),gamr3(3)
       real(kind=8) :: epsr,ynorm,Teta,Tetaref
-      real(kind=8) :: kt,km,kf,mucr,mu0,ATR1,epsmk,cc0,depsm,dsigr,f1,sigeq,f2
+      real(kind=8) :: kt,km,kf,mucr,mu0,ATR1,epsmk,cc0,dsigr,f1,sigeq
       real(kind=8) :: epsemin,dtk,xkk,ake,akk,bk,xmm,ame,amm,bm,dep,deps
       real(kind=8) :: depse1,depse2,depsk1,depsk2,depsm1,depsm2,depsp,ep,epse0
       real(kind=8) :: tol_syr,epsek,hp,tauk,taum,x1
-      real(kind=8) :: epspm,eps_nl
-      real(kind=8) :: epspm3(3),gamp3(3)
+      real(kind=8) :: eps_nl
       parameter (epsemin=1.0d-20,tol_syr=1.00001)  
 
 !     intialisation      

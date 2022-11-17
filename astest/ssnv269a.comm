@@ -36,7 +36,7 @@ M=LIRE_MAILLAGE(FORMAT='MED',
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(
-                                  _F(JUSQU_A=5.0,
+                                  _F(JUSQU_A=4.0,
                                      PAS=0.05,),
 
 
@@ -52,13 +52,13 @@ mod=AFFE_MODELE(MAILLAGE=M,
 HYDR1=DEFI_CONSTANTE(VALE = 1.,)
 PORO=DEFI_CONSTANTE(VALE = 0.134,)
 CNAD=DEFI_CONSTANTE(VALE = 0.,)
-ROA1=DEFI_CONSTANTE(VALE = 0.0025,)
+ROA1=DEFI_CONSTANTE(VALE = 0.01,)
 VR11=DEFI_CONSTANTE(VALE = 1.0,) 
 VR12=DEFI_CONSTANTE(VALE = 0.0,)
 VR13=DEFI_CONSTANTE(VALE = 0.0,)
 
 mat1=DEFI_MATERIAU(ELAS=_F(    
-                               E=45550,
+                               E=40000,
                                NU=0.2,
                                RHO=0.002500,
                                ALPHA=1e-5,),
@@ -81,16 +81,16 @@ mat1=DEFI_MATERIAU(ELAS=_F(
 
 # MECANIQUE
 
-                                 RT              =  2.2,
+                                 RT              =  3.7,
                                  EPT             =  1e-4,
-                                 RC              =  50.,
+                                 RC              =  35.,
                                  EPC             =  1.e-3,
                                  DELT            =  1.,
                                  BETA            =  0.15,
                                  REF             =  4.,
                                  EKDC            =  1.0e-3,
-                                 GFT             =  0.1,
-                                 GFR             =  0.1,
+                                 GFT             =  100e-6,
+                                 GFR             =  100e-6,
 
 # ENDOMMAGEMENT THERMIQUE
 
@@ -212,13 +212,13 @@ fieldmat=AFFE_MATERIAU(MAILLAGE=M,
 
  
 
+
 DEPL1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=( 0.0,0.0,
-                           1.0,0.0,
-                           2.0, -3e-4,
-                           3.0,0,
-                           4.0, 3e-5,
-                           5.0,0.),
+                           1.0,3e-5,
+                           2.0,0,
+                           3.0,-3e-4,
+                           4.0,0.),
                     PROL_DROITE='EXCLU',
                     PROL_GAUCHE='EXCLU',);
 
@@ -263,14 +263,7 @@ Rcinz21=AFFE_CHAR_MECA(MODELE=mod,
                                    COEF_MULT =(1., -1),
                                    COEF_IMPO = 0, ),)                                   
                                    
-                                   
-Conv1 = DEFI_FONCTION(ABSCISSE=(0.0,  400.),
-                   NOM_PARA='INST',
-                   ORDONNEE=( 1e-3, 1e-3))
-
-Pconv2 = AFFE_CHAR_MECA_F(PRES_REP=_F(PRES=Conv1,
-                                      GROUP_MA=('SLOADXBE','SLOADYBE','SLOADZBE', )),
-                                      MODELE=mod)              
+     
 
 RES1=STAT_NON_LINE(CHAM_MATER=fieldmat,
                    MODELE=mod,
@@ -279,8 +272,7 @@ RES1=STAT_NON_LINE(CHAM_MATER=fieldmat,
                                   ARRET='OUI',),
                    COMPORTEMENT=_F(TOUT='OUI',
                                    RELATION='RGI_BETON_BA',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=5.0,),
+                   INCREMENT=_F(LIST_INST=L_INS1,),
                   NEWTON=_F(PREDICTION='ELASTIQUE',
                              MATRICE='ELASTIQUE',),
                    INFO=1,          
@@ -301,16 +293,22 @@ RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,
                 DEFORMATION=('EPSI_ELNO'))
 
 
-
-# VALEURS DE NON-REGRESSION
-TEST_RESU(RESU=(_F(INST=2.0,
+TEST_RESU(RESU=(_F(INST=1.0,
                    MAILLE='M12',
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    POINT=7,
                    RESULTAT=RES1,
                    VALE_ABS='NON',
-                   VALE_CALC=-35.0141759614),
+                   VALE_CALC=1.57197399759),
+                _F(INST=2.0,
+                   MAILLE='M12',
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   POINT=7,
+                   RESULTAT=RES1,
+                   VALE_ABS='NON',
+                   VALE_CALC=-1.98932721551),
                 _F(INST=3.0,
                    MAILLE='M12',
                    NOM_CHAM='SIEF_ELGA',
@@ -318,7 +316,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    POINT=7,
                    RESULTAT=RES1,
                    VALE_ABS='NON',
-                   VALE_CALC=1.98189046969),
+                   VALE_CALC=-26.1568827725),
                 _F(INST=4.0,
                    MAILLE='M12',
                    NOM_CHAM='SIEF_ELGA',
@@ -326,7 +324,8 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    POINT=7,
                    RESULTAT=RES1,
                    VALE_ABS='NON',
-                   VALE_CALC=2.12993949189)))
+                   VALE_CALC=2.01385279783)))
+
 
 
 IMPR_RESU(FORMAT='MED',

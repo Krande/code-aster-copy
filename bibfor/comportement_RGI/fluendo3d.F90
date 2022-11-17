@@ -77,7 +77,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     real(kind=8) :: dth00, dth1, dther, dtmaxi, dtmaxik, dtmaxim, dvrgi, dvw, ekdc
     real(kind=8) :: epc0, epc00, epleqc, epleqc0, epleqc00, vrgi
     real(kind=8) :: epleqc01, epser, epsklim1, epsklim2, epsm00, inputVR6(6,16)
-    real(kind=8) :: ept, ept00, ept1, epsklim, hyd00, valr(2), inputR(25)
+    real(kind=8) :: ept, ept00, ept1, epsklim, hyd00, inputR(25)
     real(kind=8) :: pg0, rc00, rc1, reduc1, ref00, ref1, rt00, rt1, outputR(6)
     real(kind=8) :: tauk00, tauk1, taum00, teta, treps, trepspg, gfr, epeqpc, errgf
     real(kind=8) :: umdt, vrgi00, vrgi1, vrgi2, vw, vw1, vw2, we0s
@@ -770,7 +770,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                     ngf, ekdc, epspc6, dt3, dr3,&
                     dgt3, dgc3, dc, wl3, xmt,&
                     dtiso, rt, dtr, dim3, ndim,&
-                    ifour, epeqpc, young, ept, errgf)
+                    ifour, epeqpc, ept, errgf)
 !            stockage des endommagements de fissuration et ouverture
         varf(96)=dtr
         do i = 1, 3

@@ -20,7 +20,7 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
       gft,gfr,iso,sigf6,sigf6d,rt33,ref33,&
       souplesse66,epspg6,eprg00,a,b,x,ipzero,ngf,&
       ekdc,epspc6,dt3,dr3,dgt3,dgc3,dc,wl3,xmt,dtiso,rt,dtr,&
-      dim3,ndim,ifour,epeqpc,young,ept,errgf)
+      dim3,ndim,ifour,epeqpc,ept,errgf)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 
@@ -65,7 +65,7 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
 
       real(kind=8) :: gfrmin,trepsdc,xx1
       
-      real(kind=8) :: umdtr,young,gftmin,ept,errgf
+      real(kind=8) :: umdtr,gftmin,ept,errgf
 
 !     seuil init d endo par rgi
       real(kind=8) :: epsseuil0

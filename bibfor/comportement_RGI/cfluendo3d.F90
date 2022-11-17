@@ -105,7 +105,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi
     real(kind=8) :: dt3d
 !
-    character(len=12) :: rela_name
+    character(len=16) :: rela_name
 !
 !   --------------------------------------------------------------------
 !   Nombre de paramètres matériau et de variables internes
@@ -402,7 +402,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         end do
     endif
 !
-    if (L_CORR(option)) then
+    if (L_MATR(option)) then
 !
         zero = 0.d0
         un = 1.d0

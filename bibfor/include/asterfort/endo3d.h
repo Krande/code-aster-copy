@@ -23,7 +23,7 @@ interface
            gft,gfr,iso,sigf6,sigf6d,rt33,ref33,&
            souplesse66,epspg6,eprg00,a,b,x,ipzero,ngf,&
            ekdc,epspc6,dt3,dr3,dgt3,dgc3,dc,wl3,xmt,dtiso,rt,dtr,&
-           dim3,ndim,ifour,epeqpc,young,ept,errgf)
+           dim3,ndim,ifour,epeqpc,ept,errgf)
 
 
         real(kind=8) :: wpl3(3)
@@ -63,7 +63,6 @@ interface
         integer :: ndim
         integer :: ifour
         real(kind=8) :: epeqpc
-        real(kind=8) :: young
         real(kind=8) :: ept
         real(kind=8) :: errgf
     end subroutine endo3d

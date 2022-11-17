@@ -62,6 +62,13 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
     real(kind=8) :: epsrf(nbrenf), epspmf(nbrenf),sigrf(nbrenf), eprk0(nbrenf), eplrf(nbrenf)
     real(kind=8) :: eps_nl(nbrenf), eprkf(nbrenf), eprmf(nbrenf), sigrh6(6), sigrm6(6)
     real(kind=8) :: sig133(3,3), vsig133(3,3), sig13(3)
+    character(len=4) :: nomvr(nbrenf,3), nomroa(nbrenf)
+    data nomvr(1,:)/'VR11','VR12','VR13'/
+    data nomvr(2,:)/'VR21','VR22','VR23'/
+    data nomvr(3,:)/'VR31','VR32','VR33'/
+    data nomvr(4,:)/'VR41','VR42','VR43'/
+    data nomvr(5,:)/'VR51','VR52','VR53'/
+    data nomroa/'ROA1','ROA2','ROA3','ROA4','ROA5'/
     
 !-----------------------------------------------------------------------
 !   pour ne pas avoir de fluage mettre plast_seule à vrai
@@ -91,7 +98,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 
 !       vérif / normalisation vecteur direction             
         vnorm=sqrt(vecr(i,1)**2+vecr(i,2)**2+vecr(i,3)**2)  
-        if (vnorm .lt. r8miem()) call utmess('F','COMPOR3_1')
+        if (vnorm .lt. r8miem()) call utmess('F','COMPOR3_1', nk=3, valk=nomvr(i,:))
         vecr(i,:)=vecr(i,:)/vnorm
 
 !       hplr(i)=module d ecrouissage cinematique des armatures
@@ -120,7 +127,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 !           rhov=rhov+rhor(j)
 !       end do
         if (rhov .gt. 1.d0) then
-            call utmess('F', 'COMPOR3_10')
+            call utmess('F', 'COMPOR3_10', nk=2, valk = [nomroa(1),nomroa(nrenf00)])
         end if
     end do 
 

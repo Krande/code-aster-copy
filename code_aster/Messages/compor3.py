@@ -21,7 +21,7 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1 : _("""RGI_BETON_BA : les paramètres VR11, VR12 et VR13 sont tous nuls.
+    1 : _("""RGI_BETON_BA : les paramètres %(k1)s, %(k2)s et %(k3)s sont tous nuls.
  Ils engendrent un vecteur nul."""),
 
     2 : _("""Dans le KIT_DDI, on ne peut pas coupler GRANGER avec %(k1)s."""),
@@ -37,7 +37,7 @@ cata_msg = {
     9 : _("""La valeur du séchage de référence doit être nulle pour la loi de comportement %(k1)s."""),
 
     10 : _("""RGI_BETON_BA : Le taux d'armature est inférieur ou égal à 1.
- La somme des paramètres ROA1 à ROA5 doit être supérieure à 1."""),
+ La somme des paramètres %(k1)s à %(k2)s doit être supérieure à 1."""),
 
     11 : _("""
  Produit scalaire presque nul entre les vecteurs :

@@ -26,8 +26,8 @@ subroutine couplagpp3d(a, ngf, na, nc, nf0, ig,&
 !   ************************************************************************
     implicit none
 
-    real(kind=8), intent(inout) :: a(ngf,ngf+1)
     integer, intent(in) :: ngf, na, nc, nf0, ig(nc)
+    real(kind=8), intent(inout) :: a(ngf,ngf+1)
     real(kind=8), intent(in) :: dgfa_ds(nc, 6), dpfa_ds(nc, 6), dpfa_dpg(nc)
     real(kind=8), intent(in) :: dpg_depspg6(6), raideur66p(6, 6),dpfa_dr(nc)
     real(kind=8), intent(in) :: dra_dl(nc), dpg_depsa6(6)
