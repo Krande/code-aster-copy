@@ -101,7 +101,7 @@ class PhysicalProblem {
     ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _elemChara; };
 
     /** @brief Get material parameters*/
-    CodedMaterialPtr getCodedMaterial() const { return _codedMater; };
+    CodedMaterialPtr getCodedMaterial() const;
 
     /** @brief Get list of loads */
     ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; };

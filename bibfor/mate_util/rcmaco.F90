@@ -46,10 +46,8 @@ character(len=1), intent(in), optional :: base_
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbcmp,  igrp
-    character(len=8) :: nomgd
+    integer :: igrp
     character(len=19) :: codi
-    integer, pointer :: desc(:) => null()
     character(len=1) :: base
 !
 ! ----------------------------------------------------------------------
@@ -62,9 +60,6 @@ character(len=1), intent(in), optional :: base_
     endif
 !
     call jeveut(chmatgrp, 'L', igrp)
-    call jeveuo(chmat(1:8)//'.CHAMP_MAT .DESC', 'L', vi=desc)
-    call jenuno(jexnum('&CATA.GD.NOMCMP', desc(1)), nomgd)
-    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     if (imate .gt. 9999) then
         call utmess('F', 'CALCULEL6_11')
     endif
