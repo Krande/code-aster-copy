@@ -119,7 +119,7 @@ def cherche_trajet(
     # BOOT OF THE CRACK SEARCH PROCEDURE
     #
     methodeProj = "COLLOCATION"
-    Coortot = __mail.sdj.COORDO.VALE.get()
+    Coortot = __mail.getCoordinates().getValues()
     Xtot = Coortot[coorIni1 : len(Coortot) : 3]
     Ytot = Coortot[coorIni2 : len(Coortot) : 3]
     Endono = __ENDOGM.EXTR_COMP(NOM_CMP, [], 1)
@@ -192,7 +192,7 @@ def cherche_trajet(
     idxpred2 = NP.where(NonVide == nbPoints)[0]
 
     EndoOrth = dx0.valeurs
-    Coor0 = __MAI.sdj.COORDO.VALE.get()
+    Coor0 = __MAI.getCoordinates().getValues()
     CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
     CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
 
@@ -276,7 +276,7 @@ def cherche_trajet(
     idxpred = NP.where(NonVide == nbPoints)[0]
     EndoOrth = dx0.valeurs
 
-    Coor0 = __MAI.sdj.COORDO.VALE.get()
+    Coor0 = __MAI.getCoordinates().getValues()
     CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
     CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
     CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
@@ -418,7 +418,7 @@ def cherche_trajet(
                     break
 
             EndoOrth = dx0.valeurs
-            Coor0 = __MAI.sdj.COORDO.VALE.get()
+            Coor0 = __MAI.getCoordinates().getValues()
             CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
             CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
             CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
@@ -606,7 +606,7 @@ def calcul_ouverture(
         resu_mail0, arcgma0, angles0, nbno0 = crea_mail_lig_coup(dime, lignort, groups0, arcs0)
         __MAI = crea_sd_mail(self, os.linesep.join(resu_mail0))
 
-        CoorTotOrtho = __MAI.sdj.COORDO.VALE.get()
+        CoorTotOrtho = __MAI.getCoordinates().getValues()
         XtotOrtho = NP.array(CoorTotOrtho[coorIni1 : len(CoorTotOrtho) : 3])
         YtotOrtho = NP.array(CoorTotOrtho[coorIni2 : len(CoorTotOrtho) : 3])
 

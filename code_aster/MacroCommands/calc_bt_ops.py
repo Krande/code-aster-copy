@@ -2172,7 +2172,7 @@ def calc_bt_ops(self, **args):
 
     def input_results(BASE, __STRESS):
         """ """
-        b = BASE.sdj.COORDO.VALE.get()  # Nodal list
+        b = BASE.getCoordinates().getValues()  # Nodal list
         c = BASE.sdj.CONNEX.get()  # Connectivity matrix
 
         __Nodes = np.zeros((int(len(b) / 3), 4))

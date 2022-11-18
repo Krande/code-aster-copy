@@ -65,7 +65,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,VECT_2,MAILLAGE,**args):
 
   # On recupere la connectivite, les noms des mailles,
   # les coordonnees et le groupes de mailles GROUP_MA
-  coordo=MAILLAGE.sdj.COORDO.VALE.get()
+  coordo=MAILLAGE.getCoordinates().getValues()
   connex=MAILLAGE.sdj.CONNEX.get()
   nommai=MAILLAGE.sdj.NOMMAI.get()
   groupma=MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]

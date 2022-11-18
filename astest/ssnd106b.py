@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ def char_rota_ops(self,MODELE,ANGLE_DEGRES,TINI,TFIN,RESU,MAIL,**args):
     import numpy as NP
 
     angle=ANGLE_DEGRES*math.pi/180.0
-    coordo=MAIL.sdj.COORDO.VALE.get()
+    coordo=MAIL.getCoordinates().getValues()
     nomnoe=MAIL.sdj.NOMNOE.get()
     coordo=NP.reshape(coordo,[len(coordo)//3,3])
     X=coordo[:,0]

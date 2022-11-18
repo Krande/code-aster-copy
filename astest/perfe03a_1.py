@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-from code_aster.Commands import DEFI_GROUP 
+from code_aster.Commands import DEFI_GROUP
 from random import random
 import numpy as NP
 
-def F_DEFI_GROUP(MAIL) : 
+def F_DEFI_GROUP(MAIL) :
 
 
 
@@ -70,7 +70,7 @@ def F_DEFI_GROUP(MAIL) :
                  # get the coordinates of the mesh nodes, and the number of nodes
                  print('Getting mesh nodes and coordinates...')
                  full_mesh_name = "%-8s" % (mesh_name,)
-                 coordo=MAIL.sdj.COORDO.VALE.get()
+                 coordo=MAIL.getCoordinates().getValues()
                  nb_nodes = len(coordo) / 3
                  coordo   = NP.reshape(coordo, [nb_nodes, 3])
                  print('Done.')
