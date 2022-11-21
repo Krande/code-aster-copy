@@ -63,7 +63,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
 };
 
 CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
-    if ( _codedMater->exists() ) {
+    if ( _codedMater && _codedMater->exists() ) {
         _codedMater->updateValuePointers();
     }
 

@@ -11911,17 +11911,6 @@ class HHO:
     def __init__(self, arg0):
         pass
     
-    def getMicroDamageTerms(self, arg0, arg1, arg2):
-        """Compute terms for micro-damage.
-        
-        Arguments:
-        
-        Returns:
-              FieldOnNodesReal: micro-damage field (HHO)
-              FieldOnNodesReal: micro-damage forces
-              AssemblyMatrixTemperatureReal: micro-damage matrix
-        """
-    
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
         

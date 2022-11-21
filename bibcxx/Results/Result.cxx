@@ -769,7 +769,6 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
         if ( rschex.first == 0 || rschex.first == 100 || rschex.first == 110 ) {
             std::string value( 24, ' ' );
             CALLO_RSADPA_ZK24_WRAP( &index, getName(), value, type, cel );
-            std::cout << "RR: " << value << std::endl;
             std::string name = value.substr( 0, 19 );
             // only if created by a fortran command
             if ( name.substr( 0, 8 ) != getName().substr( 0, 8 ) )
