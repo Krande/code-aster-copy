@@ -19,11 +19,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcmfmc(chmatz, chmacz, l_thm_, l_ther_, basename_, base)
-        character(len=*), intent(in) :: chmatz
-        character(len=*), intent(out) :: chmacz
-        aster_logical, intent(in), optional :: l_thm_, l_ther_
-        character(len=*), intent(in), optional :: basename_
-        character(len=1), intent(in), optional :: base
-    end subroutine rcmfmc
+    subroutine updateMateco(mater, mateco, l_thm, l_ther)
+        character(len=8), intent(in) :: mateco, mater
+        aster_logical, intent(in) :: l_thm, l_ther
+    end subroutine updateMateco
 end interface

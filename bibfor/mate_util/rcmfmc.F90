@@ -43,7 +43,7 @@ implicit none
 character(len=*), intent(in) :: chmatz
 character(len=*), intent(out) :: chmacz
 aster_logical, intent(in), optional :: l_thm_, l_ther_
-character(len=*), intent(inout), optional :: basename_
+character(len=*), intent(in), optional :: basename_
 character(len=1), intent(in), optional :: base
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,6 +90,7 @@ character(len=1), intent(in), optional :: base
     chmace = basename//'.MATE_CODE'
     chmacegrp = chmace//'.GRP'
     chmacengrp = chmace//'.NGRP'
+
 !
     if( present(base) ) then
         bas = base

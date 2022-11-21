@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -36,8 +36,7 @@ extern "C" {
 void DEFSS( CREATE_ENTHALPY, create_enthalpy, const char *, STRING_SIZE, const char *,
             STRING_SIZE );
 
-#define CALLO_RCMFMC( a, b, c, d, e, f )                                                      \
-    CALLOOPPOO( RCMFMC, rcmfmc, a, b, c, d, e, f )
+#define CALLO_RCMFMC( a, b, c, d, e, f ) CALLOOPPOO( RCMFMC, rcmfmc, a, b, c, d, e, f )
 void DEFSSPPSS( RCMFMC, rcmfmc, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 ASTERLOGICAL *, ASTERLOGICAL *, const char *, STRING_SIZE, const char *,
                 STRING_SIZE );
@@ -51,6 +50,10 @@ extern void DEFSSPSPPSPPP( RCVALE_WRAP, rcvale_wrap, char *, STRING_SIZE, char *
 #define CALLO_RCSTOC_VERIF( a, b, c, d ) CALLOOOP( RCSTOC_VERIF, rcstoc_verif, a, b, c, d )
 extern void DEFSSSP( RCSTOC_VERIF, rcstoc_verif, const char *, STRING_SIZE, const char *,
                      STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_UPDATEMATECO( a, b, c, d ) CALLOOPP( UPDATEMATECO, updatemateco, a, b, c, d )
+extern void DEFSSPP( UPDATEMATECO, updatemateco, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE, ASTERLOGICAL *, ASTERLOGICAL * );
 
 #ifdef __cplusplus
 }

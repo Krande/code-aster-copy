@@ -343,9 +343,11 @@ character(len=1), intent(in), optional :: base_
                     code=-1
                     call jeveuo(ch19(1:16)//'.LISV_R8', 'L', jlisvr8)
                     call jelira(ch19(1:16)//'.LISV_R8', 'LONMAX', nbreel)
+                    call jedetr(ch19(1:16)//'.LISV_VR')
                     call wkvect(ch19(1:16)//'.LISV_VR', 'V V R', nbreel+1,jlisvr)
                     call jeveut(ch19(1:16)//'.LISV_VR', 'E', jlisvr)
                     zr(jlisvr-1+1)=dble(nbreel)
+                    call jedetr(ch19(1:16)//'.LISV_IA')
                     call wkvect(ch19(1:16)//'.LISV_IA', 'V V I', 2,jlisvi)
                     call jeveut(ch19(1:16)//'.LISV_IA', 'E', jlisvi)
                     zi(jlisvi-1+1)=code
@@ -366,9 +368,11 @@ character(len=1), intent(in), optional :: base_
 !                      necessaires a l'evaluation rapide des listes de fonctions :
                     call jeveuo(ch19(1:16)//'.LISV_FO', 'L', jlisvfo)
                     call jelira(ch19(1:16)//'.LISV_FO', 'LONMAX', nbfonc)
+                    call jedetr(ch19(1:16)//'.LISV_VR')
                     call wkvect(ch19(1:16)//'.LISV_VR', 'V V R', nbfonc+1,jlisvr)
                     call jeveut(ch19(1:16)//'.LISV_VR', 'E', jlisvr)
                     zr(jlisvr-1+1)=dble(nbfonc)
+                    call jedetr(ch19(1:16)//'.LISV_IA')
                     call wkvect(ch19(1:16)//'.LISV_IA', 'V V I', 3+lfct*nbfonc,jlisvi)
                     call jeveut(ch19(1:16)//'.LISV_IA', 'E', jlisvi)
                     zi(jlisvi-1+1)=code

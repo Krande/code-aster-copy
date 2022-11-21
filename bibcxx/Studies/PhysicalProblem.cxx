@@ -57,19 +57,17 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
             AS_ABORT( msg );
         }
 
-        //   To do: fix 32398
-        // _codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
-        // _codedMater->allocate( true );
+        _codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
+        _codedMater->allocate( true );
     }
 };
 
 CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
-    //   To do: fix 32398
-    // return _codedMater;
+    if ( _codedMater->exists() ) {
+        _codedMater->updateValuePointers();
+    }
 
-    auto codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
-    codedMater->allocate( true );
-    return codedMater;
+    return _codedMater;
 };
 
 void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
