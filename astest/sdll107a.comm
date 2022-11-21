@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1796,7 +1796,8 @@ DYNAMODE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  RIGI_NOR = 1.E6,
                                  RIGI_TAN = 0.,
                                  FROTTEMENT='COULOMB',
-                                 COULOMB = 0.3),
+                                 COULOMB = 0.3,
+                                 INTITULE='DIS_CHOC_N76XXXXXXXXXXXX'),
                               _F(RELATION='DIS_CHOC',
                                  GROUP_NO_1 = 'N70',
                                  OBSTACLE = OBST,
@@ -1817,6 +1818,16 @@ TT=POST_DYNA_MODA_T(      RESU_GENE=DYNAMODE,
                                   SEUIL_FORCE = 0.,
                                   DUREE_REPOS = 0.)
                         )
+
+TEST_TABLE(VALE_CALC_K='DIS_CHOC_N76XXXXXXXXXXXX',
+           NOM_PARA='INTITULE',
+           TABLE=TT,
+           FILTRE=(_F(NOM_PARA='CALCUL',
+                      VALE_K='DEPL_X',),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N76',),
+                   ),
+           )
 
 IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',

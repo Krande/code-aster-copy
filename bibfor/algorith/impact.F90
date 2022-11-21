@@ -24,7 +24,8 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
     integer :: nbpt, nbchoc, npari
     real(kind=8) :: fn(*), t(*), vn(*), offset, elapse, wk3(*), fnmaxa, fnmety
     real(kind=8) :: fnmmoy
-    character(len=16) :: lpari(*), valek(*)
+    character(len=16) :: lpari(*) 
+    character(len=24) :: valek(*)
     character(len=*) :: nmtab
 !        COMPTAGE DES CHOCS AMV
 !

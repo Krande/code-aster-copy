@@ -39,7 +39,8 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
     real(kind=8) :: temps(*), dloc(*), fcho(*), vgli(*), wk1(*), wk2(*), wk3(*)
     real(kind=8) :: tdebut, tfin, offset
     character(len=*) :: nomres
-    character(len=8) :: noecho(*), intitu(*)
+    character(len=8) :: noecho(*)
+    character(len=24) :: intitu(*)
 !     CALCUL ET IMPRESSION DES STATISTIQUES DE CHOC
 !
 !     NBOBST       : NB DE NOEUDS DE CHOC
@@ -71,35 +72,36 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
     real(kind=8) :: para(7)
     character(len=8) :: noeud, tpara(nbpara)
     character(len=16) :: tdepl(ndepl), tforn(nforn), tstch(nstch), tusur(nusur)
-    character(len=16) :: tvar(10), npara(nbpara), valek(3)
+    character(len=16) :: tvar(10), npara(nbpara)
+    character(len=24) :: valek(3)
     complex(kind=8) :: c16b
     data tvar  / 'DEPL_X' , 'DEPL_Y' , 'DEPL_Z' , 'DEPL_RADIAL',&
      &             'DEPL_ANGULAIRE' , 'FORCE_NORMALE' , 'FORCE_TANG_1',&
      &             'FORCE_TANG_2' , 'STAT_CHOC' , 'PUIS_USURE' /
-    data npara / 'INTITU','NOEUD', 'CALCUL'        , 'MOYEN'        ,&
+    data npara / 'INTITULE','NOEUD', 'CALCUL'        , 'MOYEN'        ,&
      &             'ECART_TYPE'    , 'RMS'           , 'MAXI'         ,&
      &             'MINI'          , 'MOYEN_T_TOTAL' , 'MOYEN_T_CHOC' ,&
      &             'RMS_T_TOTAL'   , 'RMS_T_CHOC'    , 'NB_CHOC_S'    ,&
      &             'NB_REBON_CHOC' , 'T_CHOC_MOYEN'  , 'T_CHOC_MAXI'  ,&
      &             'T_CHOC_MINI'   , 'T_REBON_MOYEN' , '%_T_CHOC'     ,&
      &             'PUIS_USURE'    /
-    data tpara / 'K8', 'K8'      , 'K16'           , 'R'            ,&
+    data tpara / 'K24', 'K8'      , 'K16'           , 'R'            ,&
      &             'R'             , 'R'             , 'R'            ,&
      &             'R'             , 'R'             , 'R'            ,&
      &             'R'             , 'R'             , 'I'            ,&
      &             'I'             , 'R'             , 'R'            ,&
      &             'R'             , 'R'             , 'I'            ,&
      &             'R'             /
-    data tdepl / 'INTITU','NOEUD', 'CALCUL'        , 'MOYEN'        ,&
+    data tdepl / 'INTITULE','NOEUD', 'CALCUL'        , 'MOYEN'        ,&
      &             'ECART_TYPE'    , 'RMS'           , 'MAXI'         ,&
      &             'MINI'          /
-    data tforn / 'INTITU','NOEUD', 'CALCUL'        , 'MOYEN_T_TOTAL',&
+    data tforn / 'INTITULE','NOEUD', 'CALCUL'        , 'MOYEN_T_TOTAL',&
      &             'MOYEN_T_CHOC'  , 'RMS_T_TOTAL'   , 'RMS_T_CHOC'   ,&
      &             'MAXI'          /
-    data tstch / 'INTITU','NOEUD', 'CALCUL'        , 'NB_CHOC_S'    ,&
+    data tstch / 'INTITULE','NOEUD', 'CALCUL'        , 'NB_CHOC_S'    ,&
      &             'NB_REBON_CHOC' , 'T_CHOC_MOYEN'  , 'T_CHOC_MAXI'  ,&
      &             'T_CHOC_MINI'   , 'T_REBON_MOYEN' , '%_T_CHOC'     /
-    data tusur / 'INTITU','NOEUD', 'CALCUL'        , 'PUIS_USURE'   /
+    data tusur / 'INTITULE','NOEUD', 'CALCUL'        , 'PUIS_USURE'   /
 !-----------------------------------------------------------------------
 !
     c16b=(0.d0,0.d0)
