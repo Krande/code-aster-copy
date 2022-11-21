@@ -765,22 +765,25 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     std::string type = "EXCIT";
     std::string cel( "L" );
     for ( auto &index : indexes ) {
-        ASTERINTEGER rank = ( *_serialNumber )[index];
-        std::string value( 24, ' ' );
-        CALLO_RSADPA_ZK24_WRAP( &index, getName(), value, type, cel );
-        std::string name = value.substr( 0, 19 );
-        // only if created by a fortran command
-        if ( name.substr( 0, 8 ) != getName().substr( 0, 8 ) )
-            continue;
-        mapRankLoads::iterator it;
-        for ( it = _mapLoads.begin(); it != _mapLoads.end(); it++ ) {
-            if ( name == it->second->getName() )
-                break;
+        auto rschex = _getNewFieldName( type, index );
+        if ( rschex.first == 0 || rschex.first == 100 || rschex.first == 110 ) {
+            std::string value( 24, ' ' );
+            CALLO_RSADPA_ZK24_WRAP( &index, getName(), value, type, cel );
+            std::cout << "RR: " << value << std::endl;
+            std::string name = value.substr( 0, 19 );
+            // only if created by a fortran command
+            if ( name.substr( 0, 8 ) != getName().substr( 0, 8 ) )
+                continue;
+            mapRankLoads::iterator it;
+            for ( it = _mapLoads.begin(); it != _mapLoads.end(); it++ ) {
+                if ( name == it->second->getName() )
+                    break;
+            }
+            if ( it == _mapLoads.end() ) {
+                _mapLoads[index] = std::make_shared< ListOfLoads >( name );
+            } else
+                _mapLoads[index] = it->second;
         }
-        if ( it == _mapLoads.end() ) {
-            _mapLoads[index] = std::make_shared< ListOfLoads >( name );
-        } else
-            _mapLoads[index] = it->second;
     }
 
     CALL_JEDEMA();
