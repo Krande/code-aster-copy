@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: fcho(:) => null()
     real(kind=8), pointer :: dloc(:) => null()
-    character(len=8), pointer :: inti(:) => null()
+    character(len=24), pointer :: inti(:) => null()
     integer, pointer :: icho(:) => null()
     character(len=8), pointer :: ncho(:) => null()
 !-----------------------------------------------------------------------
@@ -123,7 +123,7 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
     AS_ALLOCATE(vr =vin , size=    nbtot*nbpt)
     AS_ALLOCATE(vi =icho, size=    nbtot*nbpt)
     AS_ALLOCATE(vk8=ncho, size=  2*nbtot)
-    AS_ALLOCATE(vk8=inti, size=    nbtot)
+    AS_ALLOCATE(vk24=inti, size=    nbtot)
 
     do ic = 1, nbchoc
         i = chindx(ic)
@@ -148,7 +148,7 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
 
             icho((j-1)*nbtot+(ic-1)+1)  = nint(vint((j-1)*nbvint+vindx(i)-1+13))
         end do
-        inti(ic)       = nlname((i-1)*5+1)(1:8)
+        inti(ic)       = nlname((i-1)*5+1)(1:24)
         ncho(ic)       = nlname((i-1)*5+2)(1:8)
         ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
     end do
@@ -177,7 +177,7 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
 
             icho((j-1)*nbtot+(ic-1)+1)         = 0
         end do
-        inti(ic)       = nlname((i-1)*5+1)(1:8)
+        inti(ic)       = nlname((i-1)*5+1)(1:24)
         ncho(ic)       = nlname((i-1)*5+2)(1:8)
         ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
     end do
@@ -218,7 +218,7 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
     AS_DEALLOCATE(vr =vin)
     AS_DEALLOCATE(vi =icho)
     AS_DEALLOCATE(vk8=ncho)
-    AS_DEALLOCATE(vk8=inti)
+    AS_DEALLOCATE(vk24=inti)
 !
     call jedema()
 end subroutine

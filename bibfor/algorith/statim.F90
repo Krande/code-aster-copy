@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,8 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     real(kind=8) :: temps(*), fcho(*), vgli(*), tdebut, tfin
     real(kind=8) :: wk1(*), wk2(*), wk3(*), fnmaxa, fnmety, fnmmoy
     real(kind=8) :: offset, trepos, vint(*)
-    character(len=8) :: noecho(*), intitu(*)
+    character(len=8) :: noecho(*)
+    character(len=24) :: intitu(*)
     character(len=*) :: nomres
 !
 !     CALCUL ET IMPRESSION DES STATISTIQUES DE CHOC
@@ -63,7 +64,8 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     character(len=4) :: tpara(nbpara)
     character(len=8) :: noeud
     character(len=16) :: tvar(4), lpari(npari), lparg(nparg), lparp(nparp)
-    character(len=16) :: valek(4), npara(nbpara), lparf(nparf)
+    character(len=16) :: npara(nbpara), lparf(nparf)
+    character(len=24) :: valek(4)
 !
     data tvar  / 'IMPACT' , 'GLOBAL' , 'PROBA'  , 'FLAMBAGE' /
 !
@@ -74,7 +76,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                 'CLASSE'        , 'DEBUT'         , 'FIN'          ,&
                 'PROBA'         , 'FLAMBAGE'      , 'ECRAS_RESI'   ,&
                 'INST_FLAMB'    /
-    data tpara/ 'K8', 'K8'      , 'K16'           , 'I'            ,&
+    data tpara/ 'K24', 'K8'      , 'K16'           , 'I'            ,&
                 'R'             , 'R'             , 'R'            ,&
                 'R'             , 'R'             , 'I'            ,&
                 'R'             , 'R'             , 'R'            ,&
