@@ -194,7 +194,7 @@ character(len=*) :: questi, repkz, nomobz
                     else if (questi .eq. 'EXI_POUTRE') then
                         if (lteatt('POUTRE', 'OUI', typel=elemTypeName)) repk='OUI'
                         if (repk .eq. 'OUI') exit
-                        
+
                     else if (questi .eq. 'EXI_COQUE') then
                         if (lteatt('COQUE', 'OUI', typel=elemTypeName)) repk='OUI'
                         if (repk .eq. 'OUI') exit
@@ -244,6 +244,7 @@ character(len=*) :: questi, repkz, nomobz
                         call teattr('C', 'TYPMOD2', typmod2, iret, typel=elemTypeName)
                         if (typmod2 .eq. 'HHO') then
                             repk = 'OUI'
+                            go to 99
                         else
                             repk = 'NON'
                         endif
@@ -254,6 +255,7 @@ character(len=*) :: questi, repkz, nomobz
                             repk = 'NON'
                         else
                             repk = 'OUI'
+                            go to 99
                         endif
 
                     else if (questi .eq. 'EXI_HHO_LINE') then
