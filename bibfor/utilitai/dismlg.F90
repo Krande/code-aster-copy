@@ -262,6 +262,7 @@ character(len=*) :: questi, repkz, nomobz
                     call teattr('C', 'TYPMOD2', typmod2, iret, typel=nomte)
                     if (typmod2 .eq. 'HHO') then
                         repk='OUI'
+                            go to 99
                     else
                         repk='NON'
                     endif
@@ -272,6 +273,7 @@ character(len=*) :: questi, repkz, nomobz
                         repk='NON'
                     else
                         repk='OUI'
+                            go to 99
                     endif
 
                 else if (questi.eq.'EXI_HHO_LINE') then
@@ -538,6 +540,8 @@ character(len=*) :: questi, repkz, nomobz
 !     ----
         ierd=1
     endif
+!
+ 99 continue
 !
     repkz=repk
     call jedema()
