@@ -72,12 +72,13 @@ class HHO {
     /**
      * @brief Project function on HHO space
      */
-    FieldOnNodesRealPtr projectOnHHOSpace( const FunctionPtr fct, ASTERDOUBLE time = 0.0 ) const;
+    FieldOnNodesRealPtr projectOnHHOSpace( const GenericFunctionPtr fct,
+                                           ASTERDOUBLE time = 0.0 ) const;
 
     /**
      * @brief Project function on HHO Cell-space
      */
-    FieldOnNodesRealPtr projectOnHHOCellSpace( const FunctionPtr fct,
+    FieldOnNodesRealPtr projectOnHHOCellSpace( const GenericFunctionPtr fct,
                                                ASTERDOUBLE time = 0.0 ) const;
 };
 

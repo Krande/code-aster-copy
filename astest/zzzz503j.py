@@ -94,7 +94,8 @@ matM.addElementaryMatrix(matEM)
 matM.assemble()
 
 # compute ( H * f, v_T)_T
-f_hho = hho.projectOnHHOCellSpace(f)
+form = FORMULE(VALE='X-X+Y-Y+100', NOM_PARA=['X', 'Y'],)
+f_hho = hho.projectOnHHOSpace(form)
 rhs2 = H * matM * f_hho
 rhs = disc_comp.getNeumannForces()
 

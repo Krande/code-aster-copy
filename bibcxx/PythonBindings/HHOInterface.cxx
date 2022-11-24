@@ -39,8 +39,8 @@ void exportHHOToPython( py::module_ &mod ) {
         )",
               py::arg( "hho_field" ) )
         .def( "projectOnHHOSpace",
-              py::overload_cast< const FunctionPtr, ASTERDOUBLE >( &HHO::projectOnHHOSpace,
-                                                                   py::const_ ),
+              py::overload_cast< const GenericFunctionPtr, ASTERDOUBLE >( &HHO::projectOnHHOSpace,
+                                                                          py::const_ ),
               R"(
       Project real function to HHO-space
 
@@ -65,8 +65,8 @@ void exportHHOToPython( py::module_ &mod ) {
         )",
               py::arg( "value" ) )
         .def( "projectOnHHOCellSpace",
-              py::overload_cast< const FunctionPtr, ASTERDOUBLE >( &HHO::projectOnHHOCellSpace,
-                                                                   py::const_ ),
+              py::overload_cast< const GenericFunctionPtr, ASTERDOUBLE >(
+                  &HHO::projectOnHHOCellSpace, py::const_ ),
               R"(
       Project real function to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only

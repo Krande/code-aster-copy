@@ -24,7 +24,7 @@
 
 FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
     auto funct = std::make_shared< Function >();
-    funct->setValues( {1.}, {value} );
+    funct->setValues( { 1. }, { value } );
     funct->setResultName( "TOUTRESU" );
     funct->setParameterName( "TOUTPARA" );
     funct->setInterpolation( "LIN LIN" );
@@ -72,7 +72,7 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     return exitField->toFieldOnNodes();
 };
 
-FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FunctionPtr fct, ASTERDOUBLE time ) const {
+FieldOnNodesRealPtr HHO::projectOnHHOSpace( const GenericFunctionPtr fct, ASTERDOUBLE time ) const {
 
     const std::string option = "HHO_PROJ_THER";
     auto model = _phys_problem->getModel();
@@ -87,7 +87,7 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const FunctionPtr fct, ASTERDOUBLE t
     const std::string physicalName( "NEUT_K8" );
     funcField->allocate( physicalName );
     ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< JeveuxChar8 > b( {"Z1"}, {fct->getName()} );
+    ConstantFieldValues< JeveuxChar8 > b( { "Z1" }, { fct->getName() } );
     funcField->setValueOnZone( a, b );
 
     // Input fields
@@ -111,7 +111,8 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
     return projectOnHHOSpace( _createFunc( value ) );
 };
 
-FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const FunctionPtr fct, ASTERDOUBLE time ) const {
+FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const GenericFunctionPtr fct,
+                                                ASTERDOUBLE time ) const {
 
     auto hho_field = projectOnHHOSpace( fct, time );
 
