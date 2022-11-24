@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -31,108 +31,117 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
+#else
+typedef int hid_t;
 #endif
 #include <stdlib.h>
 
-ASTERINTEGER DEFPSSSPSP(HDFWSV, hdfwsv, hid_t *idf, char *nomg, STRING_SIZE lg,
-                        char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt,
-                        ASTERINTEGER *ltype, char *sv, STRING_SIZE toto, ASTERINTEGER *lsv)
-{
+ASTERINTEGER DEFPSSSPSP( HDFWSV, hdfwsv, hid_t *idf, char *nomg, STRING_SIZE lg, char *nomdts,
+                         STRING_SIZE ln, char *type, STRING_SIZE lt, ASTERINTEGER *ltype, char *sv,
+                         STRING_SIZE toto, ASTERINTEGER *lsv ) {
 #ifdef ASTER_HAVE_HDF5
-  hid_t idfic,datatype,dataspace,dataset,type_id;
-  herr_t iret;
-  hsize_t dimsf[1];
-  int lg2,lmot;
-  char *nomd,*vtype,*mot=NULL,*pmot;
-  int k;
-  void *malloc(size_t size);
+    hid_t idfic, datatype, dataspace, dataset, type_id;
+    herr_t iret;
+    hsize_t dimsf[1];
+    int lg2, lmot;
+    char *nomd, *vtype, *mot = NULL, *pmot;
+    int k;
+    void *malloc( size_t size );
 
-  idfic=(hid_t) *idf;
-  nomd = (char *) malloc((lg+ln+2) * sizeof(char));
-  for (k=0;k<lg;k++) {
-     nomd[k] = nomg[k];
-  }
-  k=lg-1;
-  while (k>=0){
-    if (nomd[k] == ' ') { k--;}
-    else break;
-  }
-  nomd[k+1] = '/';
-  lg2=k+1+1;
-  for (k=0;k<ln;k++) {
-     nomd[lg2+k] = nomdts[k];
-  }
-  k=lg2+ln-1;
-  while (k>=0){
-    if (nomd[k] == ' ') { k--;}
-    else break;
-  }
-  nomd[k+1] = '\0';
+    idfic = (hid_t)*idf;
+    nomd = (char *)malloc( ( lg + ln + 2 ) * sizeof( char ) );
+    for ( k = 0; k < lg; k++ ) {
+        nomd[k] = nomg[k];
+    }
+    k = lg - 1;
+    while ( k >= 0 ) {
+        if ( nomd[k] == ' ' ) {
+            k--;
+        } else
+            break;
+    }
+    nomd[k + 1] = '/';
+    lg2 = k + 1 + 1;
+    for ( k = 0; k < ln; k++ ) {
+        nomd[lg2 + k] = nomdts[k];
+    }
+    k = lg2 + ln - 1;
+    while ( k >= 0 ) {
+        if ( nomd[k] == ' ' ) {
+            k--;
+        } else
+            break;
+    }
+    nomd[k + 1] = '\0';
 
-  vtype = (char *) malloc((lt+1) * sizeof(char));
-  for (k=0;k<lt;k++) {
-     vtype[k] = type[k];
-  }
-  vtype[lt] = '\0';
-/*
- *   Type à déterminer en fonction de l'argument type
-*/
-  dimsf[0] = (hsize_t)*lsv;
-  if        (strcmp(vtype,"R") == 0) {
-    type_id = H5T_NATIVE_DOUBLE;
-  } else if (strcmp(vtype,"C") == 0) {
-    type_id = H5T_NATIVE_DOUBLE;
+    vtype = (char *)malloc( ( lt + 1 ) * sizeof( char ) );
+    for ( k = 0; k < lt; k++ ) {
+        vtype[k] = type[k];
+    }
+    vtype[lt] = '\0';
+    /*
+     *   Type à déterminer en fonction de l'argument type
+     */
     dimsf[0] = (hsize_t)*lsv;
-  } else if (strcmp(vtype,"I") == 0) {
-    type_id = H5T_NATIVE_LONG;
-  } else if (strcmp(vtype,"S") == 0) {
-    type_id = H5T_NATIVE_INT;
-  } else if (strcmp(vtype,"L") == 0) {
-    type_id = H5T_NATIVE_HBOOL;
-  } else if (strcmp(vtype,"K") == 0) {
-    type_id = H5T_FORTRAN_S1;
-    pmot = (char *) sv;
-    lmot = (int)( *lsv * (*ltype));
-    mot = (char *) malloc(lmot*sizeof(char));
-    for (k=0;k<*lsv;k++) {
-        mot[k] = *pmot;
-        pmot = pmot+(*ltype);
+    if ( strcmp( vtype, "R" ) == 0 ) {
+        type_id = H5T_NATIVE_DOUBLE;
+    } else if ( strcmp( vtype, "C" ) == 0 ) {
+        type_id = H5T_NATIVE_DOUBLE;
+        dimsf[0] = (hsize_t)*lsv;
+    } else if ( strcmp( vtype, "I" ) == 0 ) {
+        type_id = H5T_NATIVE_LONG;
+    } else if ( strcmp( vtype, "S" ) == 0 ) {
+        type_id = H5T_NATIVE_INT;
+    } else if ( strcmp( vtype, "L" ) == 0 ) {
+        type_id = H5T_NATIVE_HBOOL;
+    } else if ( strcmp( vtype, "K" ) == 0 ) {
+        type_id = H5T_FORTRAN_S1;
+        pmot = (char *)sv;
+        lmot = (int)( *lsv * ( *ltype ) );
+        mot = (char *)malloc( lmot * sizeof( char ) );
+        for ( k = 0; k < *lsv; k++ ) {
+            mot[k] = *pmot;
+            pmot = pmot + ( *ltype );
+        }
+    } else {
+        return -1;
     }
-  } else {
-    return -1 ;
-  }
-  if (type_id == H5T_FORTRAN_S1) {
-    if ((datatype = H5Tcopy(type_id))<0 )
-      return -1 ;
-    if (type_id == H5T_FORTRAN_S1) {
-      if ((iret = H5Tset_size(datatype,*ltype)) <0 ) return -1;
-      if ((iret = H5Tset_strpad(datatype, H5T_STR_SPACEPAD)) <0 ) return -1;
+    if ( type_id == H5T_FORTRAN_S1 ) {
+        if ( ( datatype = H5Tcopy( type_id ) ) < 0 )
+            return -1;
+        if ( type_id == H5T_FORTRAN_S1 ) {
+            if ( ( iret = H5Tset_size( datatype, *ltype ) ) < 0 )
+                return -1;
+            if ( ( iret = H5Tset_strpad( datatype, H5T_STR_SPACEPAD ) ) < 0 )
+                return -1;
+        }
+    } else {
+        datatype = type_id;
     }
-  } else {
-    datatype=type_id;
-  }
 
-  if ((dataspace = H5Screate_simple(1, dimsf, NULL))<0 )
-    return -1 ;
-  if ((dataset = H5Dcreate(idfic, nomd, datatype, dataspace, H5P_DEFAULT,
-                           H5P_DEFAULT, H5P_DEFAULT))<0 )
-    return -1 ;
-  if ((iret = H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv))<0 )
-    return -1 ;
-  if ((iret = H5Dclose(dataset))<0 )
-    return -1 ;
-  if ((iret = H5Sclose(dataspace))<0 )
-    return -1 ;
-  if (type_id == H5T_FORTRAN_S1) {
-    if ((iret = H5Tclose(datatype))<0 )
-      return -1 ;
-  }
+    if ( ( dataspace = H5Screate_simple( 1, dimsf, NULL ) ) < 0 )
+        return -1;
+    if ( ( dataset = H5Dcreate( idfic, nomd, datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT,
+                                H5P_DEFAULT ) ) < 0 )
+        return -1;
+    if ( ( iret = H5Dwrite( dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv ) ) < 0 )
+        return -1;
+    if ( ( iret = H5Dclose( dataset ) ) < 0 )
+        return -1;
+    if ( ( iret = H5Sclose( dataspace ) ) < 0 )
+        return -1;
+    if ( type_id == H5T_FORTRAN_S1 ) {
+        if ( ( iret = H5Tclose( datatype ) ) < 0 )
+            return -1;
+    }
 
-  free(nomd);
-  free(vtype);
-  if (type_id == H5T_FORTRAN_S1) { free(mot);}
+    free( nomd );
+    free( vtype );
+    if ( type_id == H5T_FORTRAN_S1 ) {
+        free( mot );
+    }
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+    CALL_UTMESS( "F", "FERMETUR_3" );
 #endif
-  return 0 ;
+    return 0;
 }

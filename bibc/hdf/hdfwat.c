@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -31,44 +31,48 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
-#endif
-
-ASTERINTEGER DEFPSPS(HDFWAT, hdfwat, hid_t *iddat, char *nomat, STRING_SIZE ln,
-                                ASTERINTEGER *nbv, char *valat, STRING_SIZE lv)
-{
-  ASTERINTEGER iret=-1;
-#ifdef ASTER_HAVE_HDF5
-  hid_t ida,aid,aty,att;
-  herr_t ret,retc;
-  hsize_t dimsf[1];
-  int rank=1;
-  int k;
-  char *nom;
-  void *malloc(size_t size);
-
-  ida=(hid_t) *iddat;
-  dimsf[0]=(hsize_t)*nbv;
-  nom = (char *) malloc((ln+1) * sizeof(char));
-  for (k=0;k<ln;k++) {
-     nom[k] = nomat[k];
-  }
-  k=ln-1;
-  while (nom[k] == ' ') { k--;}
-  nom[k+1] = '\0';
-  if ( (aid = H5Screate(H5S_SIMPLE)) >= 0) {
-    H5Sset_extent_simple( aid, rank, dimsf, NULL );
-    if ( (aty = H5Tcopy(H5T_FORTRAN_S1)) >= 0) {
-                H5Tset_size(aty, lv);
-      if ( (att = H5Acreate(ida, nom, aty, aid, H5P_DEFAULT, H5P_DEFAULT)) >= 0) {
-        if ( (ret = H5Awrite(att, aty, valat)) >= 0) {
-          if ( (retc = H5Sclose(aid)) >= 0)  iret = 0;
-        }
-      }
-    }
-  }
-  free(nom);
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+typedef int hid_t;
 #endif
-  return iret;
+
+ASTERINTEGER DEFPSPS( HDFWAT, hdfwat, hid_t *iddat, char *nomat, STRING_SIZE ln, ASTERINTEGER *nbv,
+                      char *valat, STRING_SIZE lv ) {
+    ASTERINTEGER iret = -1;
+#ifdef ASTER_HAVE_HDF5
+    hid_t ida, aid, aty, att;
+    herr_t ret, retc;
+    hsize_t dimsf[1];
+    int rank = 1;
+    int k;
+    char *nom;
+    void *malloc( size_t size );
+
+    ida = (hid_t)*iddat;
+    dimsf[0] = (hsize_t)*nbv;
+    nom = (char *)malloc( ( ln + 1 ) * sizeof( char ) );
+    for ( k = 0; k < ln; k++ ) {
+        nom[k] = nomat[k];
+    }
+    k = ln - 1;
+    while ( nom[k] == ' ' ) {
+        k--;
+    }
+    nom[k + 1] = '\0';
+    if ( ( aid = H5Screate( H5S_SIMPLE ) ) >= 0 ) {
+        H5Sset_extent_simple( aid, rank, dimsf, NULL );
+        if ( ( aty = H5Tcopy( H5T_FORTRAN_S1 ) ) >= 0 ) {
+            H5Tset_size( aty, lv );
+            if ( ( att = H5Acreate( ida, nom, aty, aid, H5P_DEFAULT, H5P_DEFAULT ) ) >= 0 ) {
+                if ( ( ret = H5Awrite( att, aty, valat ) ) >= 0 ) {
+                    if ( ( retc = H5Sclose( aid ) ) >= 0 )
+                        iret = 0;
+                }
+            }
+        }
+    }
+    free( nom );
+#else
+    CALL_UTMESS( "F", "FERMETUR_3" );
+#endif
+    return iret;
 }

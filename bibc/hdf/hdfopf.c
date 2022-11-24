@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -27,31 +27,34 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
-#endif
-
-hid_t DEFS(HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln)
-{
-  hid_t iret=-1;
-#ifdef ASTER_HAVE_HDF5
-  hid_t idfic;
-  int k;
-  char *nomf;
-  void *malloc(size_t size);
-
-  nomf = (char *) malloc((ln+1) * sizeof(char));
-  for (k=0;k<ln;k++) {
-     nomf[k] = nomfic[k];
-  }
-  k=ln-1;
-  while (nomf[k] == ' ') { k--;}
-  nomf[k+1] = '\0';
-  // désactive les impressions HDF dans stdout
-  H5Eset_auto1(NULL,NULL);
-  if ( (idfic = H5Fopen(nomf, H5F_ACC_RDONLY, H5P_DEFAULT)) >= 0)
-    iret =  idfic;
-  free (nomf);
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+typedef int hid_t;
 #endif
-  return iret;
+
+hid_t DEFS( HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln ) {
+    hid_t iret = -1;
+#ifdef ASTER_HAVE_HDF5
+    hid_t idfic;
+    int k;
+    char *nomf;
+    void *malloc( size_t size );
+
+    nomf = (char *)malloc( ( ln + 1 ) * sizeof( char ) );
+    for ( k = 0; k < ln; k++ ) {
+        nomf[k] = nomfic[k];
+    }
+    k = ln - 1;
+    while ( nomf[k] == ' ' ) {
+        k--;
+    }
+    nomf[k + 1] = '\0';
+    // désactive les impressions HDF dans stdout
+    H5Eset_auto1( NULL, NULL );
+    if ( ( idfic = H5Fopen( nomf, H5F_ACC_RDONLY, H5P_DEFAULT ) ) >= 0 )
+        iret = idfic;
+    free( nomf );
+#else
+    CALL_UTMESS( "F", "FERMETUR_3" );
+#endif
+    return iret;
 }

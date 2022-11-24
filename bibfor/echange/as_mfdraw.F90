@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine as_mfdraw(fid, cha, filter, val, locname,&
     aster_int :: numdt, numo, filter
     real(kind=8) :: dt
     real(kind=8) :: val(*)
-#ifdef _DISABLE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

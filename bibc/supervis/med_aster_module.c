@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -18,89 +18,81 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "Python.h"
-
 #include "aster_utils.h"
 
 #ifdef ASTER_HAVE_MED
 #include "med.h"
 
 /* ---------------------------------------------------------------------- */
-static PyObject * aster_nom_ch_med(self, args)
+static PyObject *aster_nom_ch_med( self, args )
 PyObject *self; /* Not used */
 PyObject *args;
 {
-    PyObject *dic_champ_comp = (PyObject*)0;
+    PyObject *dic_champ_comp = (PyObject *)0;
     PyObject *tupstr;
-    char* nomFichierMed;
+    char *nomFichierMed;
     int nbChamps;
-    char* nomChamp;
-    char* nomMaillage;
-    char* dtUnit;
+    char *nomChamp;
+    char *nomMaillage;
+    char *dtUnit;
     int iChamp;
     int nbComp;
-    char* nomsComp;
-    char* unitesComp;
+    char *nomsComp;
+    char *unitesComp;
     med_idt numFichier = 0;
     med_bool mailLoc;
     med_field_type typeChamp;
     med_int nbCstp;
 
-    if (!PyArg_ParseTuple(args, "s", &nomFichierMed)) return NULL;
+    if ( !PyArg_ParseTuple( args, "s", &nomFichierMed ) )
+        return NULL;
 
-    numFichier = MEDfileOpen(nomFichierMed,MED_ACC_RDONLY);
-    if ( numFichier <= 0 ) return PyList_New(0);
+    numFichier = MEDfileOpen( nomFichierMed, MED_ACC_RDONLY );
+    if ( numFichier <= 0 )
+        return PyList_New( 0 );
 
-    nbChamps = (int)MEDnField(numFichier);
+    nbChamps = (int)MEDnField( numFichier );
 
-    nomChamp = MakeBlankFStr(MED_NAME_SIZE);
-    nomMaillage = MakeBlankFStr(MED_NAME_SIZE);
-    dtUnit = MakeBlankFStr(MED_NAME_SIZE);
+    nomChamp = MakeBlankFStr( MED_NAME_SIZE );
+    nomMaillage = MakeBlankFStr( MED_NAME_SIZE );
+    dtUnit = MakeBlankFStr( MED_NAME_SIZE );
     dic_champ_comp = PyDict_New();
-    for (iChamp = 1; iChamp <= nbChamps; ++iChamp) {
-        nbComp = (int)MEDfieldnComponent(numFichier,iChamp);
-        nomsComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
-        unitesComp = MakeBlankFStr(nbComp*MED_SNAME_SIZE);
+    for ( iChamp = 1; iChamp <= nbChamps; ++iChamp ) {
+        nbComp = (int)MEDfieldnComponent( numFichier, iChamp );
+        nomsComp = MakeBlankFStr( nbComp * MED_SNAME_SIZE );
+        unitesComp = MakeBlankFStr( nbComp * MED_SNAME_SIZE );
 
-        MEDfieldInfo(numFichier, iChamp, nomChamp, nomMaillage, &mailLoc, &typeChamp,
-                     nomsComp, unitesComp, dtUnit, &nbCstp);
-        tupstr = MakeTupleString((long)nbComp, nomsComp, (STRING_SIZE)MED_SNAME_SIZE, NULL);
+        MEDfieldInfo( numFichier, iChamp, nomChamp, nomMaillage, &mailLoc, &typeChamp, nomsComp,
+                      unitesComp, dtUnit, &nbCstp );
+        tupstr = MakeTupleString( (long)nbComp, nomsComp, (STRING_SIZE)MED_SNAME_SIZE, NULL );
 
-        PyDict_SetItem(dic_champ_comp, PyUnicode_FromString(nomChamp), tupstr);
+        PyDict_SetItem( dic_champ_comp, PyUnicode_FromString( nomChamp ), tupstr );
         Py_DECREF( tupstr );
-        FreeStr(nomsComp);
-        FreeStr(unitesComp);
+        FreeStr( nomsComp );
+        FreeStr( unitesComp );
     }
-    MEDfileClose(numFichier);
+    MEDfileClose( numFichier );
 
-    FreeStr(nomChamp);
-    FreeStr(nomMaillage);
-    FreeStr(dtUnit);
+    FreeStr( nomChamp );
+    FreeStr( nomMaillage );
+    FreeStr( dtUnit );
 
     return dic_champ_comp;
 }
+#endif
 
 static PyMethodDef methods[] = {
-    {"get_nom_champ_med", aster_nom_ch_med, METH_VARARGS},
-    { NULL, NULL, 0, NULL }
-};
+#ifdef ASTER_HAVE_MED
+    { "get_nom_champ_med", aster_nom_ch_med, METH_VARARGS },
+#endif
+    { NULL, NULL, 0, NULL } };
 
 static struct PyModuleDef med_aster_def = {
-        PyModuleDef_HEAD_INIT,
-        "med_aster",
-        NULL,
-        -1,
-        methods,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-};
+    PyModuleDef_HEAD_INIT, "med_aster", NULL, -1, methods, NULL, NULL, NULL, NULL };
 
 #ifndef ASTER_WITHOUT_PYMOD
-PyObject* PyInit_med_aster(void)
-{
-    PyObject* med_aster = PyModule_Create(&med_aster_def);
+PyObject *PyInit_med_aster( void ) {
+    PyObject *med_aster = PyModule_Create( &med_aster_def );
     return med_aster;
 }
-#endif
 #endif

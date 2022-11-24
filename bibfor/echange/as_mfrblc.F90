@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine as_mfrblc(fid, nent, nvent, ncent, cs,&
     aster_int :: nent, nvent, ncent, cs, swm, stm, start
     aster_int :: stride, count, bsize, lbsize, flt, cret
     character(len=*) :: pname
-#ifdef _DISABLE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

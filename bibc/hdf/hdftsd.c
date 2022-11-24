@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -31,41 +31,46 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
-#endif
-#define FALSE   0
-
-ASTERINTEGER DEFPSPP(HDFTSD, hdftsd, hid_t *iddat, char *type, STRING_SIZE lt,
-                ASTERINTEGER *ltype, ASTERINTEGER *lv)
-{
-  ASTERINTEGER iret=-1;
-#ifdef ASTER_HAVE_HDF5
-  hid_t id,datatype,class,dataspace;
-  hsize_t dims_out[1];
-  int k,rank,status;
-
-  id=(hid_t) *iddat;
-  datatype  = H5Dget_type(id);
-  class     = H5Tget_class(datatype);
-  if      (class == H5T_INTEGER)  *type='I';
-  else if (class == H5T_FLOAT)    *type='R';
-  else if (class == H5T_STRING)   *type='K';
-  else                            *type='?';
-
-  for (k=1;k<lt;k++) {
-    *(type+k)=' ';
-  }
-  if ((*ltype = (ASTERINTEGER)H5Tget_size(datatype))>=0 ) {
-    if ((dataspace = H5Dget_space(id))>=0 ) {
-      if ((rank = H5Sget_simple_extent_ndims(dataspace))==1) {
-        status = H5Sget_simple_extent_dims(dataspace, dims_out, NULL);
-        *lv = (ASTERINTEGER)dims_out[0];
-        H5Sclose(dataspace);
-        iret=0;
-      }
-    }
-  }
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+typedef int hid_t;
 #endif
-  return iret;
+#define FALSE 0
+
+ASTERINTEGER DEFPSPP( HDFTSD, hdftsd, hid_t *iddat, char *type, STRING_SIZE lt, ASTERINTEGER *ltype,
+                      ASTERINTEGER *lv ) {
+    ASTERINTEGER iret = -1;
+#ifdef ASTER_HAVE_HDF5
+    hid_t id, datatype, class, dataspace;
+    hsize_t dims_out[1];
+    int k, rank, status;
+
+    id = (hid_t)*iddat;
+    datatype = H5Dget_type( id );
+    class = H5Tget_class( datatype );
+    if ( class == H5T_INTEGER )
+        *type = 'I';
+    else if ( class == H5T_FLOAT )
+        *type = 'R';
+    else if ( class == H5T_STRING )
+        *type = 'K';
+    else
+        *type = '?';
+
+    for ( k = 1; k < lt; k++ ) {
+        *( type + k ) = ' ';
+    }
+    if ( ( *ltype = (ASTERINTEGER)H5Tget_size( datatype ) ) >= 0 ) {
+        if ( ( dataspace = H5Dget_space( id ) ) >= 0 ) {
+            if ( ( rank = H5Sget_simple_extent_ndims( dataspace ) ) == 1 ) {
+                status = H5Sget_simple_extent_dims( dataspace, dims_out, NULL );
+                *lv = (ASTERINTEGER)dims_out[0];
+                H5Sclose( dataspace );
+                iret = 0;
+            }
+        }
+    }
+#else
+    CALL_UTMESS( "F", "FERMETUR_3" );
+#endif
+    return iret;
 }

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -28,38 +28,41 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
-#endif
-
-hid_t DEFPS(HDFOPG, hdfopg, hid_t *idf, char *nomgr, STRING_SIZE ln)
-{
-  hid_t iret=-1;
-#ifdef ASTER_HAVE_HDF5
-  hid_t  idgrp,idfic;
-  char *nomd;
-  int k;
-  void *malloc(size_t size);
-
-  idfic=(hid_t) *idf;
-  nomd = (char *) malloc((ln+1) * sizeof(char));
-  for (k=0;k<ln;k++) {
-     nomd[k] = nomgr[k];
-  }
-  k=ln-1;
-  while (k>=0){
-     if (nomd[k] == ' ' || nomd[k] == '/') { k--;}
-     else break;
-  }
-  if ( k == -1 ) {
-    nomd[k+1] = '/';
-    k++;
-  }
-  nomd[k+1] = '\0';
-
-  if ((idgrp = H5Gopen2(idfic, nomd, H5P_DEFAULT)) >= 0)
-    iret = idgrp;
-  free (nomd);
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+typedef int hid_t;
 #endif
-  return iret;
+
+hid_t DEFPS( HDFOPG, hdfopg, hid_t *idf, char *nomgr, STRING_SIZE ln ) {
+    hid_t iret = -1;
+#ifdef ASTER_HAVE_HDF5
+    hid_t idgrp, idfic;
+    char *nomd;
+    int k;
+    void *malloc( size_t size );
+
+    idfic = (hid_t)*idf;
+    nomd = (char *)malloc( ( ln + 1 ) * sizeof( char ) );
+    for ( k = 0; k < ln; k++ ) {
+        nomd[k] = nomgr[k];
+    }
+    k = ln - 1;
+    while ( k >= 0 ) {
+        if ( nomd[k] == ' ' || nomd[k] == '/' ) {
+            k--;
+        } else
+            break;
+    }
+    if ( k == -1 ) {
+        nomd[k + 1] = '/';
+        k++;
+    }
+    nomd[k + 1] = '\0';
+
+    if ( ( idgrp = H5Gopen2( idfic, nomd, H5P_DEFAULT ) ) >= 0 )
+        iret = idgrp;
+    free( nomd );
+#else
+    CALL_UTMESS( "F", "FERMETUR_3" );
+#endif
+    return iret;
 }

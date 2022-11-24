@@ -94,9 +94,8 @@ def build(self):
     # - build of the shared lib (libaster)
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
-    excl = [] if env.BUILD_MED else ["**/med_aster_module.c"]
 
-    build_libbibc(self, env, excl)
+    build_libbibc(self, env)
     build_libaster(self, env)
 
     self.add_group()
@@ -113,14 +112,14 @@ def process_h(self, node):
     pass
 
 
-def build_libbibc(self, env, excl):
+def build_libbibc(self, env):
     use = ["BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
     get_srcs = self.path.get_src().ant_glob
     # compile *.c
     self(
         features="c cshlib",
         name="asterbibc",
-        source=get_srcs("**/*.c", excl=excl + [PYMAIN]),
+        source=get_srcs("**/*.c", excl=[PYMAIN]),
         target="bibc",
         defines="",
         use=use,

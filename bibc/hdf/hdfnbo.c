@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -30,37 +30,40 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
-#endif
-
-ASTERINTEGER DEFPS(HDFNBO, hdfnbo, hid_t *idf, char *nomgr, STRING_SIZE ln)
-{
-  ASTERINTEGER nbobj=0;
-#ifdef ASTER_HAVE_HDF5
-  hid_t idfic, bidon=0;
-  char *nomg;
-  int k;
-  int idx ;
-  void *malloc(size_t size);
-
-  herr_t indiceNbName(hid_t loc_id, const char *name, const H5L_info_t *info, void *opdata);
-
-  idfic=(hid_t) *idf;
-
-  nomg = (char *) malloc((ln+1) * sizeof(char));
-  for (k=0;k<ln;k++) {
-     nomg[k] = nomgr[k];
-  }
-  k=ln-1;
-  while (nomg[k] == ' ') { k--;}
-  nomg[k+1] = '\0';
-
-  idx = H5Literate_by_name (idfic, nomg , H5_INDEX_NAME, H5_ITER_NATIVE, NULL, indiceNbName,
-                            &nbobj, bidon);
-  free(nomg);
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+typedef int hid_t;
 #endif
-  return nbobj;
+
+ASTERINTEGER DEFPS( HDFNBO, hdfnbo, hid_t *idf, char *nomgr, STRING_SIZE ln ) {
+    ASTERINTEGER nbobj = 0;
+#ifdef ASTER_HAVE_HDF5
+    hid_t idfic, bidon = 0;
+    char *nomg;
+    int k;
+    int idx;
+    void *malloc( size_t size );
+
+    herr_t indiceNbName( hid_t loc_id, const char *name, const H5L_info_t *info, void *opdata );
+
+    idfic = (hid_t)*idf;
+
+    nomg = (char *)malloc( ( ln + 1 ) * sizeof( char ) );
+    for ( k = 0; k < ln; k++ ) {
+        nomg[k] = nomgr[k];
+    }
+    k = ln - 1;
+    while ( nomg[k] == ' ' ) {
+        k--;
+    }
+    nomg[k + 1] = '\0';
+
+    idx = H5Literate_by_name( idfic, nomg, H5_INDEX_NAME, H5_ITER_NATIVE, NULL, indiceNbName,
+                              &nbobj, bidon );
+    free( nomg );
+#else
+    CALL_UTMESS( "F", "FERMETUR_3" );
+#endif
+    return nbobj;
 }
 /*
     http://www.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Visit
@@ -89,15 +92,14 @@ ASTERINTEGER DEFPS(HDFNBO, hdfnbo, hid_t *idf, char *nomgr, STRING_SIZE ln)
 */
 
 #ifdef ASTER_HAVE_HDF5
-herr_t indiceNbName(hid_t id,const char *nom,  const H5L_info_t *info, void *opdata)
-{
-  int *compteur;
-  herr_t      status;
-  H5O_info_t      infobuf;
+herr_t indiceNbName( hid_t id, const char *nom, const H5L_info_t *info, void *opdata ) {
+    int *compteur;
+    herr_t status;
+    H5O_info_t infobuf;
 
-  compteur = (int *) opdata;
-/*  status = H5Oget_info_by_name (id, nom, &infobuf, H5P_DEFAULT); */
-  (*compteur)++;
-  return 0;
+    compteur = (int *)opdata;
+    /*  status = H5Oget_info_by_name (id, nom, &infobuf, H5P_DEFAULT); */
+    ( *compteur )++;
+    return 0;
 }
 #endif

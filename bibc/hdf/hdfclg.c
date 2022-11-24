@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -27,18 +27,19 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
+#else
+typedef int hid_t;
 #endif
 
-ASTERINTEGER DEFP(HDFCLG, hdfclg, hid_t *idg)
-{
+ASTERINTEGER DEFP( HDFCLG, hdfclg, hid_t *idg ) {
 #ifdef ASTER_HAVE_HDF5
-   hid_t  idgrp;
-   herr_t icode;
-   idgrp=(hid_t) *idg;
-   if ((icode = H5Gclose(idgrp)) < 0)
-      return -1 ;
+    hid_t idgrp;
+    herr_t icode;
+    idgrp = (hid_t)*idg;
+    if ( ( icode = H5Gclose( idgrp ) ) < 0 )
+        return -1;
 #else
-   CALL_UTMESS("F", "FERMETUR_3");
+    CALL_UTMESS( "F", "FERMETUR_3" );
 #endif
-   return 0;
+    return 0;
 }

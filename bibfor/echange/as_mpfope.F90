@@ -21,7 +21,6 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     implicit none
 #include "asterf.h"
 #include "asterf_types.h"
-#include "mpif.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "med/mpfope.h"
@@ -30,7 +29,7 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     aster_int, intent(in) :: acces
     aster_int, intent(in) :: comm
     aster_int, intent(out) :: cret
-#ifdef _DISABLE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

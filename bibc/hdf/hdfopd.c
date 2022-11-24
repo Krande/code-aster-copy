@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -29,50 +29,54 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
+#else
+typedef int hid_t;
 #endif
 #ifdef ASTER_HAVE_MED
 #include "med.h"
 #endif
 
-hid_t DEFPSS(HDFOPD, hdfopd, hid_t *idf, char *nomg,
-                    STRING_SIZE lg, char *nomd, STRING_SIZE ln)
-{
-  hid_t iret=-1;
+hid_t DEFPSS( HDFOPD, hdfopd, hid_t *idf, char *nomg, STRING_SIZE lg, char *nomd, STRING_SIZE ln ) {
+    hid_t iret = -1;
 #ifdef ASTER_HAVE_HDF5
-  hid_t id,idfic,dapl_id;
-  int k,lg2;
-  char *nom;
-  void *malloc(size_t size);
-  dapl_id=0;
+    hid_t id, idfic, dapl_id;
+    int k, lg2;
+    char *nom;
+    void *malloc( size_t size );
+    dapl_id = 0;
 
-  idfic=(hid_t) *idf;
-  nom = (char *) malloc((lg+ln+2) * sizeof(char));
-  for (k=0;k<lg;k++) {
-     nom[k] = nomg[k];
-  }
-  k=lg-1;
-  while (k>=0){
-     if(nom[k] == ' ' || nom[k] == '/') { k--;}
-     else break;
-  }
-  nom[k+1] = '/';
-  lg2=k+2;
-  for (k=0;k<ln;k++) {
-     nom[lg2+k] = nomd[k];
-  }
-  k=lg2+ln-1;
-  while (k>=0){
-    if (nom[k] == ' ') { k--;}
-    else break;
-  }
-  nom[k+1] = '\0';
+    idfic = (hid_t)*idf;
+    nom = (char *)malloc( ( lg + ln + 2 ) * sizeof( char ) );
+    for ( k = 0; k < lg; k++ ) {
+        nom[k] = nomg[k];
+    }
+    k = lg - 1;
+    while ( k >= 0 ) {
+        if ( nom[k] == ' ' || nom[k] == '/' ) {
+            k--;
+        } else
+            break;
+    }
+    nom[k + 1] = '/';
+    lg2 = k + 2;
+    for ( k = 0; k < ln; k++ ) {
+        nom[lg2 + k] = nomd[k];
+    }
+    k = lg2 + ln - 1;
+    while ( k >= 0 ) {
+        if ( nom[k] == ' ' ) {
+            k--;
+        } else
+            break;
+    }
+    nom[k + 1] = '\0';
 
-  if ( (id = H5Dopen2(idfic,nom,dapl_id)) >= 0)
-    iret = id;
+    if ( ( id = H5Dopen2( idfic, nom, dapl_id ) ) >= 0 )
+        iret = id;
 
-  free (nom);
+    free( nom );
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+    CALL_UTMESS( "F", "FERMETUR_3" );
 #endif
-  return iret;
+    return iret;
 }

@@ -24,12 +24,16 @@ from waflib import Configure, Utils, Errors
 def options(self):
     group = self.add_option_group("Mumps library options")
     group.add_option(
-        "--disable-mumps", action="store_false", dest="enable_mumps", help="Disable MUMPS support"
+        "--disable-mumps",
+        action="store_false",
+        default=None,
+        dest="enable_mumps",
+        help="Disable MUMPS support",
     )
     group.add_option(
         "--enable-mumps",
         action="store_true",
-        default=True,
+        default=None,
         dest="enable_mumps",
         help="Force MUMPS support",
     )

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -30,43 +30,51 @@
 /-----------------------------------------------------------------------------*/
 #ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
-#endif
-
-ASTERINTEGER DEFPPPP(HDFRSV, hdfrsv, hid_t *idat, ASTERINTEGER *lsv,
-                     void *sv, ASTERINTEGER *icv)
-{
-  ASTERINTEGER iret=-1;
-#ifdef ASTER_HAVE_HDF5
-  hid_t ida,datatype,dasp,bidon=0;
-  herr_t ier;
-  hsize_t dims[1];
-  int rank,status;
-
-  ida = (hid_t) *idat;
-  rank = 1;
-  if ((datatype = H5Dget_type(ida))>=0 ) {
-    if ((dasp = H5Dget_space(ida))>=0 ) {
-      if ((rank = H5Sget_simple_extent_ndims(dasp))==1) {
-        status = H5Sget_simple_extent_dims(dasp, dims, NULL);
-      }
-      if (*lsv >= (long) dims[0]) {
-        if ((ier = H5Dread(ida, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv))>=0 ) {
-          if ( H5Tequal(H5T_STD_I32LE,datatype)>0 || H5Tequal(H5T_STD_I64LE,datatype)>0  ||
-               H5Tequal(H5T_STD_I32BE,datatype)>0 || H5Tequal(H5T_STD_I64BE,datatype)>0 ) {
-            if (*icv != 0) {
-          if ((H5Tconvert(datatype,H5T_NATIVE_LONG,*lsv,sv,NULL,bidon)) >= 0) {
-                iret = 0;
-              }
-            } else { iret = 0; }
-          } else { iret = 0; }
-          H5Tclose(datatype);
-        }
-      }
-      H5Sclose(dasp);
-    }
-  }
 #else
-  CALL_UTMESS("F", "FERMETUR_3");
+typedef int hid_t;
 #endif
-  return iret ;
+
+ASTERINTEGER DEFPPPP( HDFRSV, hdfrsv, hid_t *idat, ASTERINTEGER *lsv, void *sv,
+                      ASTERINTEGER *icv ) {
+    ASTERINTEGER iret = -1;
+#ifdef ASTER_HAVE_HDF5
+    hid_t ida, datatype, dasp, bidon = 0;
+    herr_t ier;
+    hsize_t dims[1];
+    int rank, status;
+
+    ida = (hid_t)*idat;
+    rank = 1;
+    if ( ( datatype = H5Dget_type( ida ) ) >= 0 ) {
+        if ( ( dasp = H5Dget_space( ida ) ) >= 0 ) {
+            if ( ( rank = H5Sget_simple_extent_ndims( dasp ) ) == 1 ) {
+                status = H5Sget_simple_extent_dims( dasp, dims, NULL );
+            }
+            if ( *lsv >= (long)dims[0] ) {
+                if ( ( ier = H5Dread( ida, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv ) ) >= 0 ) {
+                    if ( H5Tequal( H5T_STD_I32LE, datatype ) > 0 ||
+                         H5Tequal( H5T_STD_I64LE, datatype ) > 0 ||
+                         H5Tequal( H5T_STD_I32BE, datatype ) > 0 ||
+                         H5Tequal( H5T_STD_I64BE, datatype ) > 0 ) {
+                        if ( *icv != 0 ) {
+                            if ( ( H5Tconvert( datatype, H5T_NATIVE_LONG, *lsv, sv, NULL,
+                                               bidon ) ) >= 0 ) {
+                                iret = 0;
+                            }
+                        } else {
+                            iret = 0;
+                        }
+                    } else {
+                        iret = 0;
+                    }
+                    H5Tclose( datatype );
+                }
+            }
+            H5Sclose( dasp );
+        }
+    }
+#else
+    CALL_UTMESS( "F", "FERMETUR_3" );
+#endif
+    return iret;
 }
