@@ -63,13 +63,13 @@ use petsc_data_module
 #ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
-    integer :: nsmdi, nsmhc, ndprop, nz, bs, numpro, iaux, jjoint
-    integer :: jsmdi, jsmhc, procol, prolig, lgenvo, jvaleu
-    integer :: i, k, nzdeb, nzfin, jaux, jdelg, jmdla
-    integer :: jnequ, iligl, jcoll, iligg, jcolg, numloc, numglo
+    integer :: nsmdi, nsmhc, ndprop, nz, bs
+    integer :: jsmdi, jsmhc, procol, prolig
+    integer :: k, nzdeb, nzfin, jdelg, jmdla
+    integer :: jnequ, iligl, jcoll, iligg, jcolg
     integer :: rang, nbproc, jprddl, jnugll, nloc, nglo
     integer :: nuno1, nuno2, num_ddl_max, imult, ipos, ibid
-    integer :: num_ddl_min, jslvi, tbloc, iret, nblag, jdeeq
+    integer :: num_ddl_min, iret, nblag, jdeeq
     integer :: imults
 !
     mpi_int :: mrank, msize, mpicou
@@ -77,8 +77,6 @@ use petsc_data_module
     character(len=19) :: nomat, nosolv
     character(len=16) :: idxo, idxd
     character(len=14) :: nonu
-    character(len=4) :: kbid, chnbjo
-    character(len=8) :: k8bid
 !
     parameter   (idxo  ='&&APALMC.IDXO___')
     parameter   (idxd  ='&&APALMC.IDXD___')
@@ -88,10 +86,9 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !     Variables PETSc
+    PetscInt, parameter :: one = to_petsc_int(1)
     PetscErrorCode  :: ierr
     PetscInt :: low, high, neql, neqg, unused_nz
-    PetscScalar :: xx(1)
-    PetscOffset :: xidx
     Mat :: a
 !----------------------------------------------------------------
     call jemarq()
@@ -122,8 +119,8 @@ use petsc_data_module
     call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
     nloc = zi(jnequ)
     nglo = zi(jnequ+1)
-    neqg = nglo
-    neql = nloc
+    neqg = to_petsc_int(nglo)
+    neql = to_petsc_int(nloc)
 !
 #if ASTER_PETSC_INT_SIZE == 4
 ! maximum number of equation with short integer - use long int to remove this limit
@@ -161,8 +158,8 @@ use petsc_data_module
 
     call MatSetType(a, MATMPIAIJ, ierr)
     ASSERT(ierr.eq.0)
-    low=num_ddl_min
-    high=num_ddl_max+1
+    low=to_petsc_int(num_ddl_min)
+    high=to_petsc_int(num_ddl_max+1)
 !
 #if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxo, 'V V S', ndprop, vi4=v_idxo)
@@ -174,7 +171,7 @@ use petsc_data_module
 !
     jcolg = zi(jnugll)
     if (zi(jprddl) .eq. rang) then
-        v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + 1
+        v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + one
     endif
 !
 !   On commence par s'occuper du nombre de NZ par ligne
@@ -197,14 +194,14 @@ use petsc_data_module
                 nuno1 = 1
             endif
             if (procol .eq. rang .and. prolig .eq. rang) then
-                v_idxd(iligg - low +1) = v_idxd(iligg - low +1) + 1
+                v_idxd(iligg - low +1) = v_idxd(iligg - low +1) + one
                 if (iligg .ne. jcolg) then
-                    v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + 1
+                    v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + one
                 endif
             else if (procol .ne. rang .and. prolig .eq. rang) then
-                v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + 1
+                v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + one
             else if (procol .eq. rang .and. prolig .ne. rang) then
-                v_idxo(jcolg - low +1) = v_idxo(jcolg - low +1) + 1
+                v_idxo(jcolg - low +1) = v_idxo(jcolg - low +1) + one
             endif
         end do
     end do
@@ -239,7 +236,7 @@ use petsc_data_module
 !           (voir issue31132)
             !ibid = (v_idxd(iligg - low +1)/imults)*(imult) + 1
             ibid = imult * 6
-            v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + ibid
+            v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + to_petsc_int(ibid)
         enddo
     endif
     unused_nz = -1

@@ -57,7 +57,7 @@ use petsc_data_module
     integer :: nsmdi, nsmhc, nz, jprddl, nloc, nglo, jcoll
     integer :: jsmdi, jsmhc, ndprop, procol
     integer :: k, nzdeb, nzfin, jcolg, iligl, jaux
-    integer :: prolig, iligg, iaux, numpro, jjoint, jvaleu, numloc
+    integer :: prolig, iligg, iaux, numpro, jjoint, numloc
     integer :: lgenvo, numglo, comple
     mpi_int :: mpicou
 !
@@ -66,6 +66,7 @@ use petsc_data_module
     PetscInt, pointer :: v_idxdc(:) => null()
     PetscInt, pointer :: v_idxoc(:) => null()
     PetscInt, pointer :: v_valeur(:) => null()
+    PetscInt, parameter :: one = to_petsc_int(1)
 !
 !
     character(len=4) :: chnbjo
@@ -130,7 +131,7 @@ use petsc_data_module
 !
     do jcoll = 1, nloc
         procol = zi(jprddl-1+jcoll)
-        if (procol .eq. rang) ndprop = ndprop+1
+        if (procol .eq. rang) ndprop = ndprop+one
     end do
     call VecCreateMPI(mpicou, to_petsc_int(ndprop), to_petsc_int(neqg), tmp, ierr)
     ASSERT(ierr.eq.0)
@@ -154,9 +155,9 @@ use petsc_data_module
 !
     jcolg = zi(jnugll)
     if (zi(jprddl) .eq. rang) then
-        v_idxd(jcolg-low) = v_idxd(jcolg-low)+1
+        v_idxd(jcolg-low) = v_idxd(jcolg-low)+one
     else
-        v_idxdc(1) = v_idxdc(1)+1
+        v_idxdc(1) = v_idxdc(1)+one
     endif
 !
 !     ON COMMENCE PAR NOTER DDL PAR DDL LE NOMBRE DE TERMES POSSEDES
@@ -173,22 +174,22 @@ use petsc_data_module
 !         SOIT LA COLONNE ET LA LIGNE APPARTIENNENT AU PROC COURANT
 !         AUQUEL CAS, ON S'EN PREOCCUPE POUR L'ALLOCATION
             if (procol .eq. rang .and. prolig .eq. rang) then
-                v_idxd(iligg-low) = v_idxd(iligg-low)+1
+                v_idxd(iligg-low) = v_idxd(iligg-low)+one
                 if (iligg .ne. jcolg) then
-                    v_idxd(jcolg-low) = v_idxd(jcolg-low)+1
+                    v_idxd(jcolg-low) = v_idxd(jcolg-low)+one
                 endif
 !           SOIT ILS N'APPARTIENNENT PAS AU PROC COURANT TOUS LES
 !         DEUX, DANS CE CAS ON LES OUBLIE
             else if (procol.ne.rang.and.prolig.ne.rang) then
                 if (procol .eq. prolig) then
-                    v_idxdc(iligl) = v_idxdc(iligl)+1
+                    v_idxdc(iligl) = v_idxdc(iligl)+one
                     if (iligg .ne. jcolg) then
-                        v_idxdc(jcoll) = v_idxdc(jcoll)+1
+                        v_idxdc(jcoll) = v_idxdc(jcoll)+one
                     endif
                 else
-                    v_idxoc(iligl) = v_idxoc(iligl)+1
+                    v_idxoc(iligl) = v_idxoc(iligl)+one
                     if (iligg .ne. jcolg) then
-                        v_idxoc(jcoll) = v_idxoc(jcoll)+1
+                        v_idxoc(jcoll) = v_idxoc(jcoll)+one
                     endif
                 endif
 !         SOIT L'UN DES DEUX APPARTIENT AU PROC COURANT
@@ -196,11 +197,11 @@ use petsc_data_module
 !         OU ON PREVIENT L'AUTRE PROC
             else
                 if (procol .eq. rang) then
-                    v_idxo(jcolg-low) = v_idxo(jcolg-low)+1
-                    v_idxoc(iligl) = v_idxoc(iligl)+1
+                    v_idxo(jcolg-low) = v_idxo(jcolg-low)+one
+                    v_idxoc(iligl) = v_idxoc(iligl)+one
                 else
-                    v_idxo(iligg-low) = v_idxo(iligg-low)+1
-                    v_idxoc(jcoll) = v_idxoc(jcoll)+1
+                    v_idxo(iligg-low) = v_idxo(iligg-low)+one
+                    v_idxoc(jcoll) = v_idxoc(jcoll)+one
                 endif
             endif
         end do
@@ -281,8 +282,8 @@ use petsc_data_module
 !
     comple=nglo-ndprop
     do iaux = 1, ndprop
-        v_idxd(iaux)=min(v_idxd(iaux),ndprop)
-        v_idxo(iaux)=min(v_idxo(iaux),comple)
+        v_idxd(iaux)=min(v_idxd(iaux),to_petsc_int(ndprop))
+        v_idxo(iaux)=min(v_idxo(iaux),to_petsc_int(comple))
     enddo
 !
     call MatCreate(mpicou, ap(kptsc), ierr)

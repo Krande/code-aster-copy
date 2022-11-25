@@ -280,7 +280,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
           if (i2.ne.0) then
              call utmess('A', 'FACTOR_47')
           else
-            icntl(17)=redmpi
+            icntl(17)=to_mumps_int(redmpi)
           endif
         endif
 !
@@ -343,25 +343,25 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         end select
 
         if (type .eq. 'S') then
-          smpsk%keep(370)=k370
-          smpsk%keep(371)=k371
-          smpsk%keep(401)=k401
-          smpsk%keep(268)=k268
+          smpsk%keep(370)=to_mumps_int(k370)
+          smpsk%keep(371)=to_mumps_int(k371)
+          smpsk%keep(401)=to_mumps_int(k401)
+          smpsk%keep(268)=to_mumps_int(k268)
         else if (type.eq.'C') then
-          cmpsk%keep(370)=k370
-          cmpsk%keep(371)=k371
-          cmpsk%keep(401)=k401
-          cmpsk%keep(268)=k268
+          cmpsk%keep(370)=to_mumps_int(k370)
+          cmpsk%keep(371)=to_mumps_int(k371)
+          cmpsk%keep(401)=to_mumps_int(k401)
+          cmpsk%keep(268)=to_mumps_int(k268)
         else if (type.eq.'D') then
-          dmpsk%keep(370)=k370
-          dmpsk%keep(371)=k371
-          dmpsk%keep(401)=k401
-          dmpsk%keep(268)=k268
+          dmpsk%keep(370)=to_mumps_int(k370)
+          dmpsk%keep(371)=to_mumps_int(k371)
+          dmpsk%keep(401)=to_mumps_int(k401)
+          dmpsk%keep(268)=to_mumps_int(k268)
         else if (type.eq.'Z') then
-          zmpsk%keep(370)=k370
-          zmpsk%keep(371)=k371
-          zmpsk%keep(401)=k401
-          zmpsk%keep(268)=k268
+          zmpsk%keep(370)=to_mumps_int(k370)
+          zmpsk%keep(371)=to_mumps_int(k371)
+          zmpsk%keep(401)=to_mumps_int(k401)
+          zmpsk%keep(268)=to_mumps_int(k268)
         endif
 !
 ! ---     MESSAGES/ALERTES MUMPS

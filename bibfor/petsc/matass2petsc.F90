@@ -67,7 +67,7 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: k, nglo, ierror
+    integer :: k, ierror
     integer ::  ibid
     real(kind=8) :: rbid
 !

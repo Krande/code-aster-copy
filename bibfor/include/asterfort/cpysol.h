@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 !
 interface
-    subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
+    subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 #ifdef ASTER_HAVE_PETSC
-        PetscInt :: debglo, nbval
+        PetscInt :: debglo
 #else
-        integer(kind=4) :: debglo, nbval
+        integer(kind=4) :: debglo
 #endif
         real(kind=8) :: rsolu(*), vecpet(*)
         character(len=14) :: numddl

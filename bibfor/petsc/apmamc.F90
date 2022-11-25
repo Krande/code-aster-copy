@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,7 @@ use petsc_data_module
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
     integer :: jdval1, jdval2, jvalm, jvalm2
     integer :: k, ilig, nzdeb, nzfin,bs, ieq1, ieq2
-    integer :: iterm, jterm, nbterm, neq2
-    integer :: nbloc, kbloc, k1, k2, k3
+    integer :: iterm, jterm, neq2
     integer :: jrefn,jdeeq,numno1,numno2,nucmp1,nucmp2,rang
 !
     character(len=19) :: nomat, nosolv
@@ -85,7 +84,7 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low2, high2, neq, jcol1, jcol2, low1
+    PetscInt :: low2, high2, jcol1, jcol2
     PetscInt :: mm, nn
     PetscErrorCode ::  ierr
     PetscInt, parameter :: ione = 1
@@ -117,7 +116,7 @@ use petsc_data_module
     ldebug=.false.
     if (ldebug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-        noma = zk24(jrefn)
+        noma = zk24(jrefn)(1:8)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
         call asmpi_info(rank = mrank, size = msize)
         rang = to_aster_int(mrank)
@@ -190,13 +189,13 @@ use petsc_data_module
 !      Indices F : jcol1, ilig
 !------------------------------------------------
 
-    do jcol2 = low2, high2-1
+    do jcol2 = low2, high2-ione
 !       -- Les termes non-nuls de A(1:jcol2,jcol2) sont stockes dans valm (nzdeb:nzfin)
 !          Si A n'est pas symetrique, les termes non-nuls de A(jcol2,1:jcol2) sont stockes
 !          dans valm2 (nzdeb:nzfin)
         iterm=0
         jterm=0
-        jcol1=jcol2+1
+        jcol1=jcol2+ione
         if (jcol1.eq.1) then
             nzdeb = 1
         else
@@ -222,7 +221,7 @@ use petsc_data_module
             zr(jdval2+jterm-1)=valm
 !           -- on stocke l'indice C de la ligne, c'est
 !              l'indice de la colonne transposee
-            v_dxi2(jterm)=ilig-1
+            v_dxi2(jterm)=to_petsc_int(ilig-1)
 !           Writings to get the stiffness matrix wrt nodes and dof numbers
             if (ldebug) then
                 numno1 = zi(jdeeq+2*(ilig-1))
@@ -245,7 +244,7 @@ use petsc_data_module
                 valm=zr(jvalm-1+k)
                 zr(jdval1+iterm-1)=valm
 !               -- on stocke l'indice C de la ligne
-                v_dxi1(iterm)=ilig-1
+                v_dxi1(iterm)=to_petsc_int(ilig-1)
 !               Writings to get the stiffness matrix wrt nodes and dof numbers
                 if (ldebug) then
                     numno1 = zi(jdeeq+2*(ilig-1))
@@ -287,9 +286,9 @@ use petsc_data_module
 !  -------------------------------------------------
 !
 !   -- On lit colonne par colonne upper(A( :,high2:))
-    do jcol2 = high2, neq2-1
+    do jcol2 = high2, to_petsc_int(neq2-1)
         iterm=0
-        jcol1=jcol2+1
+        jcol1=jcol2+ione
         ASSERT(jcol1.ge.2)
         nzdeb = smdi(jcol1-1) + 1
         nzfin = smdi(jcol1)
@@ -303,7 +302,7 @@ use petsc_data_module
                 iterm=iterm+1
                 valm=zr(jvalm-1+k)
                 zr(jdval1+iterm-1)=valm
-                v_dxi1(iterm)=ilig-1
+                v_dxi1(iterm)=to_petsc_int(ilig-1)
 !               Writings to get the stiffness matrix wrt nodes and dof numbers
                 if (ldebug) then
                     numno1 = zi(jdeeq+2*(ilig-1))

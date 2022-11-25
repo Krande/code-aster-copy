@@ -23,8 +23,10 @@ subroutine crnlgn(numddl)
 #include "asterf_config.h"
 #include "asterf_types.h"
 #include "asterf.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -34,6 +36,7 @@ subroutine crnlgn(numddl)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
     character(len=14) :: numddl
@@ -41,11 +44,11 @@ subroutine crnlgn(numddl)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: ili, nunoel, l, idprn1, idprn2, ntot, lonmax, nbno_prno
+    integer :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
     integer :: nbddll, i_proc, ino, iret, nbcmp
     integer :: numero_noeud, numero_cmp, rang, nbproc, jrefn
-    integer :: nec, numloc, dime, nbddl_lag, jmdlag
-    integer :: pos, nuno, jmlogl, i_ddl, jnbddl
+    integer :: nec, numloc, nbddl_lag
+    integer :: pos, i_ddl, jnbddl, gd, nec_max
     mpi_int :: mrank, msize, mpicou
     mpi_int, parameter :: one4 = to_mpi_int(1)
     integer, pointer :: v_noext(:) => null()
@@ -61,8 +64,7 @@ subroutine crnlgn(numddl)
     integer, pointer :: v_mult2(:) => null()
     integer, pointer :: v_mdlag(:) => null()
 !
-    character(len=4) :: chnbjo
-    character(len=8) :: k8bid, noma
+    character(len=8) :: k8bid, mesh
     character(len=19) :: nomlig
     character(len=24) :: owner, mult1, mult2
 !
@@ -87,16 +89,15 @@ subroutine crnlgn(numddl)
     nbproc = to_aster_int(msize)
 !
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    noma = zk24(jrefn)
+    mesh = zk24(jrefn)(1:8)
 !
-    call jeveuo(noma//'.DIME', 'L', dime)
-
-!   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
-!   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
-    call jelira(jexnum(numddl//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
-    nec = ntot/zi(dime) - 2
+    call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
+    nec = nbec(gd)
+    nec_max = nec
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=nec_max)
+    ASSERT(nec == nec_max)
 !
-    call jeveuo(noma//'.NOEX', 'L', vi=v_noext)
+    call jeveuo(mesh//'.NOEX', 'L', vi=v_noext)
 !
     call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
     call jeveuo(numddl//'.NUME.NEQU', 'L', vi=v_nequ)

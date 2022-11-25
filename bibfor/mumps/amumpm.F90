@@ -268,27 +268,27 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             end if
             if (type .eq. 'S') then
                 allocate (smpsk%blkptr(nblk + 1))
-                smpsk%nblk = nblk
+                smpsk%nblk = to_mumps_int(nblk)
                 do k = 1, nblk + 1
-                    smpsk%blkptr(k) = zi(iblock + k - 1)
+                    smpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
                 end do
             else if (type .eq. 'C') then
                 allocate (cmpsk%blkptr(nblk + 1))
-                cmpsk%nblk = nblk
+                cmpsk%nblk = to_mumps_int(nblk)
                 do k = 1, nblk + 1
-                    cmpsk%blkptr(k) = zi(iblock + k - 1)
+                    cmpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
                 end do
             else if (type .eq. 'D') then
                 allocate (dmpsk%blkptr(nblk + 1))
-                dmpsk%nblk = nblk
+                dmpsk%nblk = to_mumps_int(nblk)
                 do k = 1, nblk + 1
-                    dmpsk%blkptr(k) = zi(iblock + k - 1)
+                    dmpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
                 end do
             else if (type .eq. 'Z') then
                 allocate (zmpsk%blkptr(nblk + 1))
-                zmpsk%nblk = nblk
+                zmpsk%nblk = to_mumps_int(nblk)
                 do k = 1, nblk + 1
-                    zmpsk%blkptr(k) = zi(iblock + k - 1)
+                    zmpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
                 end do
             end if
             call jedetr(kblock)
@@ -523,7 +523,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             write (ifm, *) '   UNDER/OVERFLOWS: ', nfilt3, '/', nfilt2
         endif
 ! if (ldist...
-    endif 
+    endif
 !
 !       ------------------------------------------------
 !       ALLOCATION DES OBJETS MUMPS F90

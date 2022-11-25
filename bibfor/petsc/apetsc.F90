@@ -84,8 +84,8 @@ use elg_module
 #ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
-    integer :: iprem, k, l, nglo, kdeb, jnequ, ier2
-    integer ::  kptsc, jerr, lslvo
+    integer :: iprem, k, nglo, kdeb, jnequ, ier2
+    integer ::  kptsc, lslvo
     integer :: np, i
     real(kind=8) :: r8
 !
@@ -246,7 +246,7 @@ use elg_module
     if (action .eq. 'PRERES' .or. nomat_courant.eq.'&&apldlt.matr') then
 !
 !       -- Verification que la matrice n'a pas deja ete factorisee
-        etamat = refa(8)
+        etamat = refa(8)(1:4)
         if (etamat .eq. 'DECT') then
             call utmess('A', 'PETSC_4')
             goto 999

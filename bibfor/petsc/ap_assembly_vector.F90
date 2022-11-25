@@ -66,7 +66,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     real(kind=8), dimension(:), pointer :: val => null()
     character(len=16) :: typsd
     character(len=19) :: cn19, pfchno, nommai
-    aster_logical :: petscInit, dbg
+    aster_logical :: dbg
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -151,7 +151,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         end if
         !if( pddl(iloc) .eq. rang ) then
         nval = nval+1
-        ig_petsc_c(nval) = zi(jnulg+iloc-1)
+        ig_petsc_c(nval) = to_petsc_int(zi(jnulg+iloc-1))
         val(nval) = zr(jvale+iloc-1)
         !endif
     end do

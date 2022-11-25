@@ -59,7 +59,7 @@ implicit none
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc
-    integer :: dimgeo, dimgeo_b, niremp, istat
+    integer :: dimgeo, dimgeo_b, niremp
     integer :: jnequ, jnequl
     integer :: nloc, neqg, ndprop, ieq, numno, icmp
     integer :: iret, i
@@ -68,7 +68,6 @@ implicit none
     integer, dimension(:), pointer :: slvi => null()
     integer, dimension(:), pointer :: prddl => null()
     integer, dimension(:), pointer :: deeq => null()
-    integer, dimension(:), pointer :: delg => null()
     integer, dimension(:), pointer :: nulg => null()
     integer, dimension(:), pointer :: nlgp => null()
     mpi_int :: mpicomm
@@ -501,11 +500,11 @@ implicit none
         call ISDestroy(auxIS, ierr)
         call MatDestroy(auxMat, ierr)
         ASSERT(ierr == 0)
-!       Set the PC definition 
+!       Set the PC definition
         call dismoi('TYPE_MATRICE', nomat, 'MATR_ASSE', repk=syme)
         factor = 'lu'
         if (syme .eq. 'SYMETRI') factor = 'cholesky'
-    
+
         call codent(int(nbproc/2), 'D', nbproc_str, 'F')
         myopt = '-prefix_push pc_hpddm_ ' // &
         '-prefix_push levels_1_ ' // &
@@ -533,7 +532,7 @@ implicit none
         '-prefix_pop ' // &
         '-define_subdomains ' // &
         '-has_neumann ' // &
-        '-prefix_pop ' 
+        '-prefix_pop '
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
         ASSERT(ierr == 0)
         call PCSetFromOptions(pc, ierr)

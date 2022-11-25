@@ -162,7 +162,7 @@ subroutine mat_record ( matas, solveu, kptsc )
     ASSERT(nonus(kptsc).eq.' ')
   !
     nomats(kptsc) = matas
-    nonus(kptsc) = nu
+    nonus(kptsc) = nu(1:14)
     nosols(kptsc) = solveu
   endif
 !

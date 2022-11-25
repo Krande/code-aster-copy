@@ -122,7 +122,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         AS_ALLOCATE( vr=val, size=nloc )
         do iloc = 1, nloc
             ! Indice global PETSc (convention C)
-            ig_petsc_c( iloc ) = nlgp( iloc ) - 1
+            ig_petsc_c( iloc ) = to_petsc_int(nlgp( iloc ) - 1)
             ! Indice global Aster (convention F)
             iglo               = nulg( iloc )
             val( iloc )        = rsolu( iglo )

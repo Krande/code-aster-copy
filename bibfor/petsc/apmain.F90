@@ -55,10 +55,10 @@ use lmp_module, only : lmp_update
 ! IN  : ISTOP (I)  : COMPORTEMENT EN CAS D'ERREUR
 ! OUT : IRET  (I)  : CODE RETOUR
 !---------------------------------------------------------------
-#include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/create_custom_ksp.h"
 #include "asterc/matfpe.h"
+#include "asterfort/ap2foi.h"
 #include "asterfort/apalmc.h"
 #include "asterfort/apalmd.h"
 #include "asterfort/apalmh.h"
@@ -68,13 +68,12 @@ use lmp_module, only : lmp_update
 #include "asterfort/apmamh.h"
 #include "asterfort/appcpr.h"
 #include "asterfort/appcrs.h"
-#include "asterfort/ap2foi.h"
 #include "asterfort/apsolu.h"
 #include "asterfort/apvsmb.h"
 #include "asterfort/apvsmbh.h"
 #include "asterfort/assert.h"
-#include "asterfort/csmbgg.h"
 #include "asterfort/cpysol.h"
+#include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
@@ -88,19 +87,16 @@ use lmp_module, only : lmp_update
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
 #ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ, iaux
-    integer :: lmat, idvalc, jslvi, jslvk, jslvr, jcoll, icode
-    integer :: jnugll, jprddl, nloc, tbloc, jvaleu, ndprop
-    mpi_int :: mrank, msize
+    integer :: ifm, niv, ierd, nmaxit, ptserr, iaux
+    integer :: lmat, idvalc, icode
     integer, dimension(:), pointer :: slvi => null()
-    integer :: ndprop4, iterm, nglo
     mpi_int :: mpicomm
-    integer :: nuno, jrefn, jdeeq, jmlogl, nucmp, j
 !
     character(len=24) :: precon, algo
     character(len=24), dimension(:), pointer :: slvk  => null()
@@ -121,13 +117,11 @@ use lmp_module, only : lmp_update
 !
     PetscInt :: its, maxits
     PetscErrorCode ::  ierr
-    PetscInt :: i, low, high, ndpro2
-    PetscInt :: bs, mm, nn
+    PetscInt :: low, high
     PetscReal :: rtol, atol, dtol
     Vec :: r
     PetscScalar :: xx(1), ires, fres
     PetscOffset :: xidx
-    VecScatter :: ctx
     KSPConvergedReason :: indic
     Mat :: a
     KSP :: ksp
@@ -470,8 +464,7 @@ use lmp_module, only : lmp_update
             call VecGetArray(x, xx, xidx, ierr)
             ASSERT(ierr.eq.0)
 !
-            ndpro2 = high - low
-            call cpysol(nomat, nonu, rsolu, low, xx(xidx+1), ndpro2)
+            call cpysol(nomat, nonu, rsolu, low, xx(xidx+1))
 !
             call VecRestoreArray(x, xx, xidx, ierr)
             ASSERT(ierr.eq.0)

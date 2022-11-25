@@ -49,7 +49,7 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: nsmdi, nsmhc, nz, bs, nblloc2
-    integer :: i, k, ilig, jcol1,jcol2,nbo, nbd, nzdeb, nzfin, nbterm
+    integer :: k, ilig, jcol1,jcol2,nbo, nbd, nzdeb, nzfin
     PetscInt :: mm
     mpi_int :: mpicou
     integer, pointer :: smdi(:) => null()
@@ -67,7 +67,7 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low2, high2, low1, high1, unused_nz
+    PetscInt :: low2, high2, unused_nz
     PetscErrorCode ::  ierr
     integer :: neq
     Vec :: vtmp
@@ -156,11 +156,11 @@ use petsc_data_module
                nbo = nbo + 1
            else
                nbd = nbd + 1
-               v_idxd(ilig-low2) = v_idxd(ilig-low2) + 1
+               v_idxd(ilig-low2) = v_idxd(ilig-low2) + to_petsc_int(1)
            endif
        end do
-       v_idxd(jcol2+1-low2) = v_idxd(jcol2+1-low2) + nbd - 1
-       v_idxo(jcol2+1-low2) = v_idxo(jcol2+1-low2) + nbo
+       v_idxd(jcol2+1-low2) = v_idxd(jcol2+1-low2) + to_petsc_int(nbd - 1)
+       v_idxo(jcol2+1-low2) = v_idxo(jcol2+1-low2) + to_petsc_int(nbo)
     end do
 !   -- Ensuite on complete le tableau du bloc hors diagonal
 !      Indices C : jcol2
@@ -176,7 +176,7 @@ use petsc_data_module
             if (ilig .lt. (low2+1)) then
                 continue
             else if (ilig.le.high2) then
-                v_idxo(ilig-low2) = v_idxo(ilig-low2) + 1
+                v_idxo(ilig-low2) = v_idxo(ilig-low2) + to_petsc_int(1)
             else
                 exit
             endif

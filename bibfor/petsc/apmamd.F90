@@ -111,8 +111,8 @@ use petsc_data_module
     call jeveuo(nonu//'.NUML.NLGP', 'L', jnugll)
     nloc = zi(jnequl)
     nglo = zi(jnequ)
-    neql = nloc
-    neqg = nglo
+    neql = to_petsc_int(nloc)
+    neqg = to_petsc_int(nglo)
     nz=zi(jsmdi-1+nloc)
 !
 ! La matrice Aster est-elle symétrique ?
@@ -172,7 +172,7 @@ use petsc_data_module
 ! Stockage dans val1 de A(iligg,jcolg)
             zr(jdval1+iterm-1)=valm
 ! et de son indice ligne global (C)
-            v_dxi1(iterm)=iligg-1
+            v_dxi1(iterm)=to_petsc_int(iligg-1)
 ! On passe à la *ligne* jcoll
             if (iligg .ne. jcolg) then
 ! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg)
@@ -192,7 +192,7 @@ use petsc_data_module
 ! on stocke dans val2
                 zr(jdval2+jterm-1)=valm
 ! avec l'indice colonne global (C) correspondant
-                v_dxi2(jterm)=iligg-1
+                v_dxi2(jterm)=to_petsc_int(iligg-1)
             endif
         end do
 ! Envoi de la colonne jcolg

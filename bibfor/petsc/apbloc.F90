@@ -201,7 +201,7 @@ use petsc_data_module
 
 !   -- sauvegarde des informations calculees dans le common :
 !   ---------------------------------------------------------
-    tblocs(kptsc)=tbloc
+    tblocs(kptsc)=to_petsc_int(tbloc)
     call jedema()
     if (dbg) write(6,*) 'apbloc tbloc=',tbloc
 #else

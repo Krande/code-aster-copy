@@ -120,7 +120,7 @@ use petsc_data_module
     if (nmaxit .le. 0) then
         maxits = PETSC_DEFAULT_INTEGER
     else
-        maxits = nmaxit
+        maxits = to_petsc_int(nmaxit)
     endif
 !
     rtol = resire

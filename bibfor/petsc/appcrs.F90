@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ use petsc_data_module
     fillin = zr(jslvr-1+3)
     niremp = zi(jslvi-1+4)
 !
-    fill = niremp
+    fill = to_petsc_int(niremp)
     fillp = fillin
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
@@ -172,23 +172,23 @@ use petsc_data_module
                call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
                call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
                nloc = zi(jnequl)
-               neq = zi(jnequ)
+               neq = to_petsc_int(zi(jnequ))
             else
                call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
                call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
                nloc = zi(jnequ)
-               neq = zi(jnequ+1)
+               neq = to_petsc_int(zi(jnequ+1))
             end if
             ndprop = 0
             do jcoll = 0, nloc-1
-                if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+1
+                if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+to_petsc_int(1)
             end do
 !
             ASSERT( xlocal == PETSC_NULL_VEC )
             call VecCreateMPI(mpicou, ndprop, neq, xlocal, ierr)
         else
             call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
-            neq=nsmdi
+            neq=to_petsc_int(nsmdi)
             ASSERT( xlocal == PETSC_NULL_VEC )
             call VecCreateMPI(mpicou, PETSC_DECIDE, neq, xlocal, ierr)
         endif

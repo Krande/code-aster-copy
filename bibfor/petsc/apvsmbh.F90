@@ -51,7 +51,7 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: jnequ, jnequl, jnugll, jprddl, iret
+    integer :: jnequ, jnugll, jprddl, iret
     integer :: nloc, nglo, ndprop
     integer :: bs, jcoll, jvaleu, iterm, nuno, nucmp, step
     integer, pointer :: v_nuls(:) => null()
@@ -104,12 +104,12 @@ use petsc_data_module
     do jcoll = 0, nloc - 1
         if ( zi(jprddl + jcoll) .eq. rang ) ndprop = ndprop + 1
     end do
-    ndprop4 = ndprop
+    ndprop4 = to_petsc_int(ndprop)
     call VecCreate(mpicomm, b, ierr)
     ASSERT(ierr .eq. 0)
     call VecSetBlockSize(b, to_petsc_int(bs), ierr)
     ASSERT(ierr .eq. 0)
-    call VecSetSizes(b, to_petsc_int(ndprop4), to_petsc_int(nglo), ierr)
+    call VecSetSizes(b, ndprop4, to_petsc_int(nglo), ierr)
     ASSERT(ierr .eq. 0)
     call VecSetType(b, VECMPI, ierr)
     ASSERT(ierr .eq. 0)
@@ -122,7 +122,7 @@ use petsc_data_module
     iterm = 0
     do jcoll = 0, nloc - 1
         if ( zi(jprddl + jcoll) .eq. rang ) then
-            v_indic(iterm + 1) = zi(jnugll + jcoll)
+            v_indic(iterm + 1) = to_petsc_int(zi(jnugll + jcoll))
             zr(jvaleu + iterm) = rsolu(jcoll + 1)
             iterm = iterm + 1
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ use saddle_point_module, only : update_double_lagrange
 #ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
-    integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
-    integer :: nbproc, lmat, neq, fictif, bs,ieq,k
+    integer :: jnequ, jnequl, nloc, nglo, rang
+    integer :: nbproc, lmat, neq, bs,ieq
     integer :: iloc, iglo
     integer :: jrefn, jdeeq, numno1, nucmp1
     integer, dimension(:), pointer :: nlgp => null(), nulg=> null(), prddl =>null()
@@ -64,7 +64,7 @@ use saddle_point_module, only : update_double_lagrange
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: i, neqg, neql, nuglpe, high2, low2
+    PetscInt :: neqg, neql, nuglpe, high2, low2
     PetscErrorCode ::  ierr
     PetscScalar :: xx(1)
     PetscOffset :: xidx
@@ -88,7 +88,7 @@ use saddle_point_module, only : update_double_lagrange
     endif
 !
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-    neqg = zi(jnequ)
+    neqg = to_petsc_int(zi(jnequ))
     !
     if (lmd) then
 !
@@ -105,7 +105,7 @@ use saddle_point_module, only : update_double_lagrange
 !
         nloc = zi(jnequl)
         nglo = neqg
-        neql = nloc
+        neql = to_petsc_int(nloc)
 !
         do iloc = 1, nglo
             rsolu(iloc)=0.d0
@@ -120,7 +120,7 @@ use saddle_point_module, only : update_double_lagrange
 !
         do iloc = 1, nloc
             if ( prddl(iloc) .eq. rang ) then
-                nuglpe= nlgp(iloc)
+                nuglpe= to_petsc_int(nlgp(iloc))
                 iglo= nulg(iloc)
                 rsolu(iglo)=xx(xidx+nuglpe-low2)
             endif
@@ -171,7 +171,7 @@ use saddle_point_module, only : update_double_lagrange
 !
     if (ldebug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-        noma = zk24(jrefn)
+        noma = zk24(jrefn)(1:8)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
         do ieq = 1, neq
             numno1 = zi(jdeeq+2*(ieq-1))

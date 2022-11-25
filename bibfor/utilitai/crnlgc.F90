@@ -32,6 +32,7 @@ subroutine crnlgc(numddl)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codlet.h"
+#include "asterfort/create_graph_comm.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/isdeco.h"
@@ -47,26 +48,25 @@ subroutine crnlgc(numddl)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/create_graph_comm.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
     character(len=14) :: numddl
 
 #ifdef ASTER_HAVE_MPI
 !
     integer :: rang, nbproc, jrefn, iaux, nddll
-    integer :: iproc1, iproc2, posit, nb_comm, icmp, ico2, nbcmp
-    integer :: dime, idprn1, idprn2, ntot, ili, nunoel
-    integer :: nec, l, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
-    integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom, nddld
-    integer :: nbddll, jnequ, nddl, jenco2, deccmp, jcpne2
-    integer :: jnbddl, decalp, jddlco, posddl, nuddl, inttmp, nbnoer, jrecep1
-    integer :: decalm, nbjver, jprddl, jnujoi, cmpteu, lgrcor, jnbjoi, curpos
-    integer :: jmlogl, nuno, ieq, numero_noeud, nb_ddl_envoi, nbddl
-    integer :: ibid, nddlg, jenvoi2, jrecep2, ijoin, numnoe
+    integer :: nb_comm, icmp, ico2, nbcmp
+    integer :: idprn1, idprn2, ili
+    integer :: nec, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
+    integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom
+    integer :: nbddll, jnequ, nddl, jenco2, jcpne2
+    integer :: nbnoer, jrecep1, curpos, ijoin
+    integer :: jmlogl, nuno, nb_ddl_envoi, nbddl
+    integer :: nddlg, jenvoi2, jrecep2, numnoe, gd
     integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag
     integer :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
     mpi_int :: mrank, mnbproc, mpicou, tag4, numpr4, n4e, n4r
@@ -79,13 +79,12 @@ subroutine crnlgc(numddl)
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
 !
-    character(len=4) :: chnbjo
+    character(len=3) :: chnbjo
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig, comm_name, tag_name
-    character(len=24) :: nojoie, nojoir, nonulg, join
+    character(len=24) :: nojoie, nojoir, nonulg
 !
 !----------------------------------------------------------------------
-    integer :: zzprno
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -96,7 +95,7 @@ subroutine crnlgc(numddl)
 !     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
-    zzprno(ili, nunoel, l) = zi(idprn1 - 1 + zi(idprn2 + ili - 1) + (nunoel - 1)*(nec + 2) + l - 1)
+#define zzprno(ili, nunoel, l) zi(idprn1 - 1 + zi(idprn2 + ili - 1) + (nunoel - 1)*(nec + 2) + l-1)
 !
     call jemarq()
 !
@@ -111,8 +110,8 @@ subroutine crnlgc(numddl)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    mesh = zk24(jrefn)
-    nomgdr = zk24(jrefn + 1)
+    mesh = zk24(jrefn)(1:8)
+    nomgdr = zk24(jrefn + 1)(1:8)
 
     call jeveuo(numddl//'.NUME.NULG', 'E', vi=v_nugll)
     call jeveuo(numddl//'.NUME.PDDL', 'E', vi=v_posdd)
@@ -134,14 +133,12 @@ subroutine crnlgc(numddl)
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
     call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jelira(jexnum(numddl//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
     call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
 
-    call jeveuo(mesh//'.DIME', 'L', dime)
-
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
-!   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
-    nec = ntot/zi(dime) - 2
+!
+    call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
+    nec = nbec(gd)
     call wkvect('&&CRNULG.NEC', 'V V I', nec, jencod)
     call wkvect('&&CRNULG.NEC2', 'V V I', nec, jenco2)
 
@@ -194,14 +191,15 @@ subroutine crnlgc(numddl)
         call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
                               zi(jrecep1), n4r, numpr4, tag4, mpicou)
 
-!       On continue si le joint à des DDL
-        if (zi(jrecep1) > 0) then
-            call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1), jenvoi2)
-            call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1), jrecep2)
-            call codlet(numpro, 'G', chnbjo)
+
+        call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', max(1, zi(jrecep1)), jenvoi2)
+        call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', max(1, zi(jenvoi1)), jrecep2)
+        call codlet(numpro, 'G', chnbjo)
+
+        nbddl = 0
+        if(zi(jrecep1) > 0) then
             call wkvect(numddl//'.NUMEE'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
 !
-            nbddl = 0
             do jaux = 1, nbnoee
                 poscom = (jaux - 1)*(1 + nec) + 1
                 numno1 = zi(jrecep1 + poscom)
@@ -229,13 +227,15 @@ subroutine crnlgc(numddl)
                     end if
                 end do
             end do
+        end if
 !
-            ASSERT(zi(jrecep1) .eq. nbddl)
-            n4e = to_mpi_int(nbddl)
-            n4r = nb_ddl_envoi
-            call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
-                                  zi(jrecep2), n4r, numpr4, tag4, mpicou)
+        ASSERT(zi(jrecep1) .eq. nbddl)
+        n4e = to_mpi_int(nbddl)
+        n4r = to_mpi_int(nb_ddl_envoi)
+        call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
+                              zi(jrecep2), n4r, numpr4, tag4, mpicou)
 
+        if(nb_ddl_envoi > 0) then
             call wkvect(numddl//'.NUMER'//chnbjo, 'G V I', nb_ddl_envoi, jnujoi2)
 !
             curpos = 0
@@ -252,10 +252,10 @@ subroutine crnlgc(numddl)
                 end do
             end do
             ASSERT(curpos .eq. nb_ddl_envoi)
+        end if
 !
         call jedetr('&&CRNULG.NUM_DDL_GLOB_E')
         call jedetr('&&CRNULG.NUM_DDL_GLOB_R')
-    end if
 !
         call jedetr('&&CRNULG.NOEUD_NEC_E1')
         call jedetr('&&CRNULG.NOEUD_NEC_R1')
@@ -345,6 +345,7 @@ subroutine crnlgc(numddl)
         else
             ASSERT(v_posdd(iaux) .ne. -1)
         end if
+        ASSERT(v_nugll(iaux) .ne. -1)
     end do
 !
 ! --- Affichage inconnue systeme

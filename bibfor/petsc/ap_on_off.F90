@@ -48,7 +48,7 @@ use elg_module
 #ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
-    integer :: iprem, k, ier2, jerr
+    integer :: iprem, k, ier2
     integer :: np
     real(kind=8) :: r8
 !

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
+subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
     implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_r.h"
@@ -23,13 +23,16 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterc/asmpi_sendrecv_r.h"
 #include "asterc/loisem.h"
 #include "asterf_config.h"
+#include "asterf_debug.h"
 #include "asterf_petsc.h"
 #include "asterf_types.h"
 #include "asterf.h"
-#include "asterf_debug.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codlet.h"
+#include "asterfort/create_graph_comm.h"
+#include "asterfort/crnustd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -40,16 +43,15 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
+#include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/crnustd.h"
-#include "asterfort/create_graph_comm.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 !
 #ifdef ASTER_HAVE_PETSC
-    PetscInt :: debglo, nbval
+    PetscInt :: debglo
 #else
-    integer(kind=4) :: debglo, nbval
+    integer(kind=4) :: debglo
 #endif
     real(kind=8) :: rsolu(*), vecpet(*)
     character(len=14) :: numddl
@@ -60,10 +62,10 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     integer :: rang, nbproc, numpro, jjointr, jjointe, lmat
     integer :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg
     integer :: jprddl, jnequ, nloc, nlili, ili, iret, ijoin
-    integer :: numglo, jdeeq, jrefn, jmlogl, nuno1, nucmp1, numloc
-    integer :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec, dime
-    integer :: nunoel, l, jjoinr, jnujoi1, jnujoi2, nbnoer, nddll, ntot
-    integer :: numnoe, step, nb_comm
+    integer :: numglo, jrefn, nuno1, nucmp1, numloc
+    integer :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec
+    integer :: jjoinr, jnujoi1, jnujoi2, nbnoer, nddll
+    integer :: numnoe, step, nb_comm, gd
     aster_logical :: ldebug
     integer, pointer :: v_nuls(:) => null()
     integer, pointer :: v_deeg(:) => null()
@@ -71,15 +73,14 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     integer, pointer :: v_tag(:) => null()
     integer, save :: nstep = 0
 !
-    mpi_int :: n4r, n4e, iaux4, tag4, numpr4
-    mpi_int :: mrank, msize, iermpi, mpicou
+    mpi_int :: n4r, n4e, tag4, numpr4
+    mpi_int :: mrank, msize, mpicou
 !
-    character(len=4) :: chnbjo
+    character(len=3) :: chnbjo
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig, comm_name, tag_name
-    character(len=24) :: nojoinr, nojoine, nonulg, join
+    character(len=24) :: nojoinr, nojoine
 !----------------------------------------------------------------------
-    integer :: zzprno
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -90,7 +91,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
-    zzprno(ili, nunoel, l) = zi(idprn1 - 1 + zi(idprn2 + ili - 1) + (nunoel - 1)*(nec + 2) + l - 1)
+#define zzprno(ili, nunoel, l) zi(idprn1 - 1 + zi(idprn2 + ili - 1) + (nunoel - 1)*(nec + 2) + l-1)
 !
     call jemarq()
 !
@@ -146,10 +147,10 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
                 zr(jvaleue + jaux) = rsolu(numloc)
             end do
 !
-            n4e = lgenvo
-            n4r = lgrecep
+            n4e = to_mpi_int(lgenvo)
+            n4r = to_mpi_int(lgrecep)
             tag4 = to_mpi_int(v_tag(iaux))
-            numpr4 = numpro
+            numpr4 = to_mpi_int(numpro)
             call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
                                   zr(jvaleur), n4r, numpr4, tag4, mpicou)
 
@@ -169,17 +170,14 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
     call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jelira(jexnum(numddl//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    noma = zk24(jrefn)
-
-    call jeveuo(noma//'.DIME', 'L', dime)
+    noma = zk24(jrefn)(1:8)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
-!   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
-    nec = ntot/zi(dime) - 2
+    call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
+    nec = nbec(gd)
     call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
     do ili = 2, nlili
         call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)

@@ -148,14 +148,14 @@ contains
             bs=1
 ! exception for the last iteration wich concerns a single field where we need the real bs
 ! is_list(5) in the above example
-            if (idx==nb_fields-1) bs=fields_size(nb_fields-idx)
+            if (idx==nb_fields-1) bs=to_petsc_int(fields_size(nb_fields-idx))
             start=1
             end=sum(fields_size(1:nb_fields-idx))
             call get_is_of_field(is_list(2*idx-1), nonu, ap(kptsc), cmp_global(start:end), bs)
             if (debug) write(ifm, *) "Treating field nb ", 2*idx-1, ": ", cmp_global(start:end),&
                        " with bs=", bs
 ! the single block
-            bs=fields_size(nb_fields-idx+1)
+            bs=to_petsc_int(fields_size(nb_fields-idx+1))
             start=sum(fields_size(1:nb_fields-idx))+1
             end=sum(fields_size(1:nb_fields-idx+1))
             call get_is_of_field(is_list(2*idx), nonu, ap(kptsc), cmp_global(start:end), bs)
@@ -321,7 +321,7 @@ contains
 !
 !  Local variables
 !
-        mpi_int :: rang, nbproc, mpicomm, mpicomm2
+        mpi_int :: rang, nbproc, mpicomm
         PetscErrorCode :: ierr
         MatNullSpace :: sp
         PetscScalar :: xx_v(1)
@@ -701,9 +701,9 @@ contains
                         ieqgp = ieqg
                     endif
                     if (any(kcmp == nocmp )) then
-                        ndl = ndl + 1
+                        ndl = ndl + to_petsc_int(1)
                         if (passe == 2) then
-                            idl( ndl ) = ieqgp - 1
+                            idl( ndl ) = to_petsc_int(ieqgp - 1)
                         endif
                     endif
                 endif
