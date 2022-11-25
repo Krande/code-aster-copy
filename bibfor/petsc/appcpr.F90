@@ -18,6 +18,7 @@
 
 subroutine appcpr(kptsc)
 !
+#include "asterf_types.h"
 #include "asterf_petsc.h"
 ! person_in_charge: natacha.bereux at edf.fr
 use aster_petsc_module
@@ -84,17 +85,18 @@ implicit none
     real(kind=8) :: fillin, val
     real(kind=8), dimension(:), pointer :: coordo => null()
     real(kind=8), dimension(:), pointer :: slvr => null()
-    integer(kind=4), pointer :: nulg_i4(:) => null()
+    integer(kind=4), pointer :: nulg_i8(:) => null()
     !
     aster_logical :: lmd, lmhpc, lmp_is_active
 !
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: low, high, bs, nterm, nsmooth
-    PetscErrorCode ::  ierr
+    PetscErrorCode :: ierr
     PetscReal :: fillp
     PetscScalar :: xx_v(1)
     PetscOffset :: xx_i
+    PetscInt, pointer :: nulg_ip(:) => null()
 
     Mat :: a, auxMat
     Vec :: coords
@@ -488,10 +490,16 @@ implicit none
         ASSERT(ierr == 0)
 !       Get the local dof in the global numbering
         call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
-        AS_ALLOCATE(size=size(nulg), vi4=nulg_i4)
-        nulg_i4(1:size(nulg)) = (/ (to_petsc_int(nulg(i)), i=1,size(nulg)) /)
-        call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_i4, PETSC_COPY_VALUES,&
-                             auxIS, ierr)
+
+#if ASTER_PETSC_INT_SIZE == 4
+        AS_ALLOCATE(size=size(nulg), vi4=nulg_ip)
+#else
+        AS_ALLOCATE(size=size(nulg), vi=nulg_ip)
+#endif
+        nulg_ip(1:size(nulg)) = (/ (to_petsc_int(nulg(i)), i=1,size(nulg)) /)
+        call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, PETSC_COPY_VALUES,&
+                                auxIS, ierr)
+        ASSERT(ierr == 0)
 
         if (ASTER_FALSE) call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
 !       Set the Neumann matrix
@@ -537,7 +545,11 @@ implicit none
         ASSERT(ierr == 0)
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
-        AS_DEALLOCATE(vi4=nulg_i4)
+#if ASTER_PETSC_INT_SIZE == 4
+        AS_DEALLOCATE(vi4=nulg_ip)
+#else
+        AS_DEALLOCATE(vi=nulg_ip)
+#endif
 
 !-----------------------------------------------------------------------
     else if (precon == 'SANS') then
