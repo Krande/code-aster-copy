@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 
 #ifdef ASTER_HAVE_MPI
 
@@ -486,6 +487,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
                 nodesOfGrp[i] = it->second + 1;
             }
+            std::sort( nodesOfGrp.begin(), nodesOfGrp.end() );
 
             _groupsOfNodes->push_back( nameOfTheGroup, nodesOfGrp );
         }
@@ -546,6 +548,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
                 cellsOfGrp[i] = it->second + 1;
             }
+            std::sort( cellsOfGrp.begin(), cellsOfGrp.end() );
 
             _groupsOfCells->push_back( nameOfTheGroup, cellsOfGrp );
         }

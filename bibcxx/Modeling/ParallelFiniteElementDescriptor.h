@@ -81,6 +81,15 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
     };
 
     /**
+     * @brief Get the mapping between local and global numbering of nodes
+     * @return JeveuxVector of the indirection
+     */
+    const JeveuxVectorLong getLocalToGlobalMapping() const {
+        _globalNumberingVirtualNodes->updateValuePointer();
+        return _globalNumberingVirtualNodes;
+    }
+
+    /**
      * @typedef ParallelFiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
      */

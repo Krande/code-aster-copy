@@ -121,7 +121,7 @@ class DataStructure {
      * @brief Function membre debugPrint
      * @param logicalUnit Unite logique d'impression
      */
-    void debugPrint( const int logicalUnit = 6 ) const;
+    virtual void debugPrint( const int logicalUnit = 6 ) const;
 
     /**
      * @brief Function membre getName

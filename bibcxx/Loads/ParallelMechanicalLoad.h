@@ -29,6 +29,8 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <fstream>
+
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/MechanicalLoad.h"
@@ -147,6 +149,39 @@ class ParallelMechanicalLoad : public DataStructure {
                                       _cimpo );
         transferConstantFieldOnCells(
             load->getMechanicalLoadDescription()->getMultiplicativeField(), _cmult );
+    };
+
+    /**
+     * @brief Function membre debugPrint
+     * @param logicalUnit Unite logique d'impression
+     */
+    void debugPrint( const int logicalUnit = 6 ) const {
+        this->DataStructure::debugPrint( logicalUnit );
+        std::ofstream outFile;
+        outFile.open( "fort." + std::to_string( logicalUnit ), std::ios::app );
+        const auto& explorer = _FEDesc->getVirtualCellsExplorer();
+        const auto& mesh = _FEDesc->getMesh();
+        auto& LToGmapMesh = mesh->getLocalToGlobalMapping();
+        auto& LToGmapFE = _FEDesc->getLocalToGlobalMapping();
+        LToGmapMesh->updateValuePointer();
+        LToGmapFE->updateValuePointer();
+        outFile << "\nEcriture de la connectivité des mailles fantômes en numérotation globale\n";
+        for ( const auto meshElem : explorer ) {
+            const auto &numElem = meshElem.getCellIndex();
+            outFile << numElem << " : ";
+            bool keepElem = false;
+            int pos = 0, curOwner = -1;
+            for ( auto numNode : meshElem ) {
+                if( numNode > 0 ) {
+                    outFile << (*LToGmapMesh)[numNode-1] << " ";
+                }
+                else {
+                    outFile << (*LToGmapFE)[-numNode-1] << " ";
+                }
+            }
+            outFile << std::endl;
+        }
+        outFile.close();
     };
 
     /**
