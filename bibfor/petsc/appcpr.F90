@@ -85,7 +85,6 @@ implicit none
     real(kind=8) :: fillin, val
     real(kind=8), dimension(:), pointer :: coordo => null()
     real(kind=8), dimension(:), pointer :: slvr => null()
-    integer(kind=4), pointer :: nulg_i8(:) => null()
     !
     aster_logical :: lmd, lmhpc, lmp_is_active
 !

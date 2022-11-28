@@ -17,93 +17,170 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
 :py:class:`DiscreteComputation` --- DiscreteComputation object
 ******************************************************
 """
 
-from libaster import DiscreteComputation
+from libaster import (
+    DiscreteComputation,
+    AssemblyMatrixDisplacementReal,
+    AssemblyMatrixTemperatureReal,
+    AssemblyMatrixPressureComplex,
+)
 
 from ..Utilities import injector, profile
 
 
 @injector(DiscreteComputation)
 class ExtendedDiscreteComputation:
-
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a MaterialField
         object during unpickling.
         """
-        return (self.getPhysicalProblem(), )
+        return (self.getPhysicalProblem(),)
 
     @profile
-    def getLinearStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True):
+    def getLinearStiffnessMatrix(
+        self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True, assembly=False
+    ):
         """Return the elementary matrices for stiffness matrix depending of the physic.
-            Option RIGI_MECA or RIGI_THER or RIGI_ACOU.
+        Option RIGI_MECA or RIGI_THER or RIGI_ACOU.
 
-            Arguments:
-                  time (float): Current time for external state variable evaluation.
-                    Only needed if material depends on time (default: 0.0)
-                  fourierMode (int): Fourier mode (default: -1)
-                  groupOfCells (list[str]): compute matrices on given groups of cells.
-                      If it is empty, the full model is used
-                  with_dual (bool): compute dual terms or not (default: True)
-            Returns:
-                  ElementaryMatrix: elementary stiffness matrix
+        Arguments:
+              time (float): Current time for external state variable evaluation.
+                Only needed if material depends on time (default: 0.0)
+              fourierMode (int): Fourier mode (default: -1)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it is empty, the full model is used
+              with_dual (bool): compute dual terms or not (default: True)
+              assembly (bool): assemble elementary matrix (default: False)
+        Returns:
+              ElementaryMatrix / AssemblyMatrix: (elementary) stiffness matrix depends
+                on 'assembly' keyword
         """
 
         model = self.getPhysicalProblem().getModel()
 
         if model.isMechanical():
-            return self.getElasticStiffnessMatrix(time, fourierMode, groupOfCells, with_dual)
+            matr_elem = self.getElasticStiffnessMatrix(time, fourierMode, groupOfCells, with_dual)
+
+            if assembly:
+                matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         elif model.isThermal():
-            return self.getLinearConductivityMatrix(time, fourierMode, groupOfCells, with_dual)
+            matr_elem = self.getLinearConductivityMatrix(time, fourierMode, groupOfCells, with_dual)
+
+            if assembly:
+                matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         elif model.isAcoustic():
-            return self.getLinearMobilityMatrix(groupOfCells, with_dual)
+            matr_elem = self.getLinearMobilityMatrix(groupOfCells, with_dual)
+
+            if assembly:
+                matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
         else:
             raise RuntimeError("Unknown physic")
 
+        return matr_elem
+
     @profile
-    def getDualStiffnessMatrix(self):
+    def getDualStiffnessMatrix(self, assembly=False):
         """Return the elementary matrices for dual stiffness matrix depending of the physic.
 
-            Returns:
-                  ElementaryMatrix: elementary dual stiffness matrix
+        Arguments:
+              assembly (bool): assemble elementary matrix (default: False)
+        Returns:
+              ElementaryMatrix: elementary dual stiffness matrix
         """
 
         model = self.getPhysicalProblem().getModel()
 
         if model.isMechanical():
-            return self.getDualElasticStiffnessMatrix()
+            matr_elem = self.getDualElasticStiffnessMatrix()
+
+            if assembly:
+                matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         elif model.isThermal():
-            return self.getDualLinearConductivityMatrix()
+            matr_elem = self.getDualLinearConductivityMatrix()
+
+            if assembly:
+                matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         elif model.isAcoustic():
-            return self.getDualLinearMobilityMatrix()
+            matr_elem = self.getDualLinearMobilityMatrix()
+
+            if assembly:
+                matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         else:
             raise RuntimeError("Unknown physic")
+
+        return matr_elem
 
     @profile
-    def getMassMatrix(self, time=0.0, groupOfCells=[]):
+    def getMassMatrix(self, time=0.0, groupOfCells=[], assembly=False):
         """Return the elementary matrices formass matrix depending of the physic.
-            Option MASS_MECA or MASS_THER or MASS_ACOU.
+        Option MASS_MECA or MASS_THER or MASS_ACOU.
 
-            Arguments:
-                  time (float): Current time for external state variable evaluation.
-                    Only needed if material depends on time (default: 0.0)
-                  groupOfCells (list[str]): compute matrices on given groups of cells.
-                      If it is empty, the full model is used
-            Returns:
-                  ElementaryMatrix: elementary mass matrix
+        Arguments:
+              time (float): Current time for external state variable evaluation.
+                Only needed if material depends on time (default: 0.0)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it is empty, the full model is used
+              assembly (bool): assemble elementary matrix (default: False)
+        Returns:
+              ElementaryMatrix: elementary mass matrix
         """
 
         model = self.getPhysicalProblem().getModel()
 
         if model.isMechanical():
-            return self.getMechanicalMassMatrix(False, time, groupOfCells)
+            matr_elem = self.getMechanicalMassMatrix(False, time, groupOfCells)
+
+            if assembly:
+                matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         elif model.isThermal():
-            return self.getLinearCapacityMatrix(time, groupOfCells)
+            matr_elem = self.getLinearCapacityMatrix(time, groupOfCells)
+
+            if assembly:
+                matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
+
         elif model.isAcoustic():
-            return self.getCompressibilityMatrix(groupOfCells)
+            matr_elem = self.getCompressibilityMatrix(groupOfCells)
+
+            if assembly:
+                matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
+                matr_asse.addElementaryMatrix(matr_elem)
+                matr_asse.assemble()
+                return matr_asse
         else:
             raise RuntimeError("Unknown physic")
+
+        return matr_elem

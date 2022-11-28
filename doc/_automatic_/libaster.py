@@ -11914,7 +11914,7 @@ class HHO:
     def projectOnHHOCellSpace(self, *args, **kwargs):
         """Overloaded function.
         
-        1. projectOnHHOCellSpace(self: libaster.HHO, func: libaster.Function, time: float = 0.0) -> libaster.FieldOnNodesReal
+        1. projectOnHHOCellSpace(self: libaster.HHO, func: libaster.GenericFunction, time: float = 0.0) -> libaster.FieldOnNodesReal
         
         
               Project real function to HHO Cell-space
@@ -11944,7 +11944,7 @@ class HHO:
     def projectOnHHOSpace(self, *args, **kwargs):
         """Overloaded function.
         
-        1. projectOnHHOSpace(self: libaster.HHO, func: libaster.Function, time: float = 0.0) -> libaster.FieldOnNodesReal
+        1. projectOnHHOSpace(self: libaster.HHO, func: libaster.GenericFunction, time: float = 0.0) -> libaster.FieldOnNodesReal
         
         
               Project real function to HHO-space

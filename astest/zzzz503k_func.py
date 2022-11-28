@@ -169,10 +169,7 @@ class DamageSolver:
         hho = code_aster.HHO(phys_pb)
 
         # compute K = (lamda * GkT(hdT), GkT(hpT))_T + lambda * stab(hdT, hpT)
-        matEK = disc_comp.getLinearStiffnessMatrix()
-        matK = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
-        matK.addElementaryMatrix(matEK)
-        matK.assemble()
+        matK = disc_comp.getLinearStiffnessMatrix(assembly=True)
 
         # compute M = (rho_cp * d_T, p_T) _T
         matEM = disc_comp.getMassMatrix()
