@@ -26,34 +26,30 @@ subroutine couplagf3d(a,b,ngf,kveve66,kmm66,&
 !   ************************************************************************
 implicit none
 
-       integer ngf,i,j
-       real(kind=8) :: a(ngf,ngf+1),b(ngf)
-       real(kind=8) :: kveve66(6,6),kmm66(6,6),kmve66(6,6),kvem66(6,6)
-       real(kind=8) :: bve6(6),bm6(6)
+    integer ngf,i,j
+    real(kind=8) :: a(ngf,ngf+1),b(ngf)
+    real(kind=8) :: kveve66(6,6),kmm66(6,6),kmve66(6,6),kvem66(6,6)
+    real(kind=8) :: bve6(6),bm6(6)
 
 
-!      remise a zero de la matrice de couplage globale
-       do i=1,ngf
-        do j=1,(ngf+1)
-           a(i,j)=0.d0
-        end do
-        b(i)=0.d0
-       end do
+!   remise a zero de la matrice de couplage globale
+    a(:,:)=0.d0
+    b(:)=0.d0
 
-!      remplssage des termes de couplage fluage->fluage
+!    remplssage des termes de couplage fluage->fluage
 !    a=  |kveve kvem |
 !        |kmve  kmm  |
-       do i=1,6
+    do i=1,6
         do j=1,6
-!         cas des deux matrices de couplage directe
-          a(i,j)=kveve66(i,j)
-          a(i+6,j+6)=kmm66(i,j)
-!         matrices de couplage indirecte
-          a(i+6,j)=kmve66(i,j)
-          a(i,j+6)=kvem66(i,j)
+!           cas des deux matrices de couplage directe
+            a(i,j)=kveve66(i,j)
+            a(i+6,j+6)=kmm66(i,j)
+!           matrices de couplage indirecte
+            a(i+6,j)=kmve66(i,j)
+            a(i,j+6)=kvem66(i,j)
         end do
 !       second membres
         b(i)=bve6(i)
         b(i+6)=bm6(i)
-      end do
+    end do
 end subroutine

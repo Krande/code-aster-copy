@@ -28,8 +28,6 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     implicit none
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/hydramat3d.h"
 #include "asterfort/thermat3d.h"
 #include "asterfort/hydravar3d.h"
@@ -85,11 +83,12 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     integer :: i, j, npas1, nt, ifour, iplalim, inputI(4), outputI(3)
 !
     integer :: ngf
+    parameter(ngf=65)
 !   tableau pour la resolution des systemes lineaires
-    real(kind=8), pointer :: X(:) => null()
-    real(kind=8), pointer :: B(:) => null()
-    real(kind=8), allocatable :: A(:, :)
-    integer, pointer :: ipzero(:) => null()
+    real(kind=8) :: X(ngf)
+    real(kind=8) :: B(ngf)
+    real(kind=8) :: A(ngf, ngf+1)
+    integer :: ipzero(ngf)
 !   donnes pour test fluage3d
     real(kind=8) :: epse06(6), epsk06(6), epsm06(6), sig06(6), phi0, we0, taum1
     real(kind=8) :: epse16(6), epsk16(6), epsm16(6), sig16(6)
@@ -176,19 +175,13 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     real(kind=8) :: epstf6(6), sigmf6(6) 
 !-----------------------------------------------------------------------
     if (nmatbe2 .eq. 0) then
-        ngf = 22
         is_ba = ASTER_FALSE
         iplalim = 4
     else
 !       RGI_BETON_BA
-        ngf = 65
         is_ba = ASTER_TRUE
         iplalim = 1000
     endif
-    AS_ALLOCATE(vr=X, size=ngf)
-    AS_ALLOCATE(vr=B, size=ngf)
-    ALLOCATE(A(ngf,(ngf+1)))
-    AS_ALLOCATE(vi=ipzero, size=ngf)
 !
     call iniInt0(err1, npas1, nt, ifour)
     call iniReal0(vrgi2, epleqc, epleqc0, epleqc00, deltam, avean,&
@@ -819,10 +812,5 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   affectation dans le tableau de sortie des contraintes
     sigf(1:nstrs)=sigf6d(1:nstrs)
 999 continue
-!
-    AS_DEALLOCATE(vr=X)
-    AS_DEALLOCATE(vr=B)
-    deallocate(A)
-    AS_DEALLOCATE(vi=ipzero)
 !
 end subroutine
