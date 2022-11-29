@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                  time_curr, time, temp_iter, compor_ther, varc_curr, &
-                  matr_elem, base, &
+                  tpsthe, time, temp_iter, compor_ther, varc_curr, &
+                  matr_elem, base, l_stat, &
                   dry_prev_, dry_curr_)
 !
     implicit none
@@ -39,13 +39,14 @@ subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
     character(len=24), intent(in) :: lload_info
     character(len=24), intent(in) :: cara_elem
     character(len=24), intent(in) :: mate, mateco
-    real(kind=8), intent(in) :: time_curr
+    real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: compor_ther
     character(len=19), intent(in) :: varc_curr
     character(len=24), intent(in) :: matr_elem
     character(len=1), intent(in) :: base
+    aster_logical, intent(in) :: l_stat
     character(len=24), optional, intent(in) :: dry_prev_
     character(len=24), optional, intent(in) :: dry_curr_
 !
@@ -62,7 +63,7 @@ subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 ! In  lload_info       : name of object for list of loads info
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  mate             : name of material characteristics (field)
-! In  time_curr        : current time
+! In  tpsthe           : parameters for time
 ! In  time             : time (<CARTE>)
 ! In  temp_iter        : temperature field at current Newton iteration
 ! In  compor_ther      : name of comportment definition (field)
@@ -71,6 +72,7 @@ subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 ! In  base             : JEVEUX base for object
 ! In  dry_prev         : previous drying
 ! In  dry_curr         : current drying
+! In  l_stat           : .true. if stationnary
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,11 +90,17 @@ subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
     character(len=24), pointer :: v_load_name(:) => null()
     integer, pointer :: v_load_info(:) => null()
     character(len=24) :: dry_prev, dry_curr
+    real(kind=8) :: time_curr, para(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     resu_elem = matr_elem(1:8)//'.0000000'
     stop_calc = 'S'
+    time_curr = tpsthe(1)
+!   theta
+    para(1) = tpsthe(3)
+!   deltat
+    para(2) = tpsthe(2)
 !
 ! - Get fields
 !
@@ -116,15 +124,15 @@ subroutine merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
 !
 ! - Generate new RESU_ELEM name
 !
-    newnom = resu_elem(10:16)
+    newnom = resu_elem(9:16)
     call gcnco2(newnom)
     resu_elem(10:16) = newnom(2:8)
 !
 ! - Tangent matrix - Volumic terms
 !
-    call ther_mtan(model, cara_elem, mateco, time, varc_curr, &
+    call ther_mtan(model, cara_elem, mateco, para, varc_curr, &
                    compor_ther, temp_iter, dry_prev, dry_curr, resu_elem, &
-                   matr_elem, base)
+                   matr_elem, base, l_stat)
 !
 ! - Init fields
 !

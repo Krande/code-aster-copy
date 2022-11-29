@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       vtempp   , vec2nd     , mediri     , conver   , hydr_prev ,&
                       hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt    ,&
                       cnresi   , ther_crit_i, ther_crit_r, reasma   , ds_algorom,&
-                      ds_print , sddisc     , iter_newt )
+                      ds_print , sddisc     , iter_newt  , l_stat)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         character(len=24), intent(in) :: model
@@ -60,5 +60,6 @@ interface
         aster_logical :: reasma
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         type(NL_DS_Print), intent(inout) :: ds_print
+        aster_logical, intent(in) :: l_stat
     end subroutine nxnewt
 end interface

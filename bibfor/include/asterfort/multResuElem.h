@@ -15,12 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine te0287(option, nomte)
-        character(len=16) :: option
-        character(len=16) :: nomte
-    end subroutine te0287
+    subroutine multResuElem(resu_elem, coef_mult)
+        character(len=19), intent(in) :: resu_elem
+        real(kind=8), intent(in) :: coef_mult
+    end subroutine multResuElem
 end interface

@@ -36,7 +36,7 @@ subroutine te0242(option, nomte)
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'MTAN_RIGI_MASS'
+!                          OPTION : 'RIGI_THER_TANG'
 !                          ELEMENTS 2D LUMPES
 !
 !    - ARGUMENTS:
@@ -50,16 +50,16 @@ subroutine te0242(option, nomte)
     integer :: icodre(nbres)
     character(len=8) :: elrefe, alias8
     character(len=32) :: phenom
-    real(kind=8) :: lambda, r8bid, rhocp, deltat
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, theta, khi, tpgi
+    real(kind=8) :: lambda, r8bid
+    real(kind=8) :: dfdx(9), dfdy(9), poids, r, tpgi
     real(kind=8) :: mt(9, 9), coorse(18), diff, tpsec, tpg
     real(kind=8) :: fluloc(2), fluglo(2), lambor(2), orig(2), p(2, 2), point(2)
     real(kind=8) :: alpha, xnorm, xu, yu
-    integer :: ndim, nno, nnos, kp, npg, i, j, ij, k, itemps, ifon(6)
+    integer :: ndim, nno, nnos, kp, npg, i, j, ij, k, ifon(6)
     integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: icomp, itempi, imattt, jgano, ipoid2, npg2
-    integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
-    integer :: isechf, isechi, ibid
+    integer :: icomp, itempi, imattt, jgano
+    integer :: c(6, 9), ise, nse, nnop2
+    integer :: isechf, ibid
     aster_logical :: aniso, global
 !
 !====
@@ -71,11 +71,6 @@ subroutine te0242(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    else
-        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     end if
 !
     call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
@@ -86,25 +81,18 @@ subroutine te0242(option, nomte)
 !====
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PMATTTR', 'E', imattt)
-!
-    deltat = zr(itemps+1)
-    theta = zr(itemps+2)
-    khi = zr(itemps+3)
 !====
 ! 1.3 PREALABLES LIES AU SECHAGE
 !====
     if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
-            call jevech('PTMPCHI', 'L', isechi)
             call jevech('PTMPCHF', 'L', isechf)
         else
 !            POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!            ISECHI ET ISECHF SONT FICTIFS
-            isechi = itempi
+!            ISECHF EST FICTIF
             isechf = itempi
         end if
 !====
@@ -162,7 +150,6 @@ subroutine te0242(option, nomte)
 !
         if (zk16(icomp) (1:5) .eq. 'THER_') then
 !
-! ------- CALCUL DU PREMIER TERME
 ! ------- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
 !
             do kp = 1, npg
@@ -227,41 +214,8 @@ subroutine te0242(option, nomte)
                     do j = 1, nno
                         ij = ij+1
                         mt(c(ise, i), c(ise, j)) = mt(c(ise, i), c(ise, j))+&
-                                                & poids*theta*&
+                                                & poids*&
                                                 & (fluglo(1)*dfdx(j)+fluglo(2)*dfdy(j))
-                    end do
-                end do
-            end do
-!
-! ------- CALCUL DU DEUXIEME TERME
-! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
-!
-            do i = 1, nno
-                do j = 1, 2
-                    coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-                end do
-            end do
-!
-            do kp = 1, npg2
-                k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
-                            poids, dfdx, dfdy)
-                r = 0.d0
-                tpgi = 0.d0
-                do i = 1, nno
-                    r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-                    tpgi = tpgi+zr(itempi-1+c(ise, i))*zr(ivf2+k+i-1)
-                end do
-                if (lteatt('AXIS', 'OUI')) poids = poids*r
-                call rcfode(ifon(1), tpgi, r8bid, rhocp)
-!
-                ij = imattt-1
-                do i = 1, nno
-                    do j = 1, nno
-                        ij = ij+1
-                        mt(c(ise, i), c(ise, j)) = mt(c(ise, i), c(ise, j))+&
-                                                & poids*khi*rhocp*&
-                                                & zr(ivf2+k+i-1)*zr(ivf2+k+j-1)/deltat
                     end do
                 end do
             end do
@@ -293,37 +247,8 @@ subroutine te0242(option, nomte)
                     do j = 1, nno
                         ij = ij+1
                         mt(c(ise, i), c(ise, j)) = mt(c(ise, i), c(ise, j))+poids*&
-                                                &(diff*theta*&
+                                                &(diff*&
                                                 &  (dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j)))
-                    end do
-                end do
-            end do
-!
-! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
-!
-            do i = 1, nno
-                do j = 1, 2
-                    coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-                end do
-            end do
-!
-            do kp = 1, npg2
-                k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
-                            poids, dfdx, dfdy)
-                r = 0.d0
-                do i = 1, nno
-                    r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-                end do
-                if (lteatt('AXIS', 'OUI')) poids = poids*r
-!
-                ij = imattt-1
-                do i = 1, nno
-!
-                    do j = 1, nno
-                        ij = ij+1
-                        mt(c(ise, i), c(ise, j)) = mt(c(ise, i), c(ise, j))+poids*&
-                                                &(khi*zr(ivf2+k+i-1)*zr(ivf2+k+j-1)/deltat)
                     end do
                 end do
             end do

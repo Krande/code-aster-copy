@@ -241,8 +241,8 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 ! - Tangent matrix (non-linear) - Volumic and surfacic terms
 !
     call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                time_curr, time, temp_iter, compor, varc_curr, &
-                merigi, 'V', &
+                tpsthe, time, temp_iter, compor, varc_curr, &
+                merigi, 'V', l_stat, &
                 dry_prev, dry_curr)
     nb_matr = 0
     call jeexin(merigi(1:8)//'           .RELR', iret)

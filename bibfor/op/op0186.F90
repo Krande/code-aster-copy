@@ -293,7 +293,7 @@ subroutine op0186()
                 vtempp, cn2mbr_stat, mediri, conver, vhydr, &
                 vhydrp, dry_prev, dry_curr, compor, vabtla, &
                 cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
-                ds_print, sddisc, iter_newt)
+                ds_print, sddisc, iter_newt, l_stat)
 !
 ! --- SI NON CONVERGENCE ALORS RECHERCHE LINEAIRE
 !       (CALCUL DE RHO) SUR L INCREMENT VTEMPP

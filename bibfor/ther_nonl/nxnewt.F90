@@ -24,7 +24,7 @@ subroutine nxnewt(model, mate, mateco, cara_elem, list_load, nume_dof, &
                   vtempp, vec2nd, mediri, conver, hydr_prev, &
                   hydr_curr, dry_prev, dry_curr, compor, cnvabt, &
                   cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
-                  ds_print, sddisc, iter_newt)
+                  ds_print, sddisc, iter_newt, l_stat)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -81,6 +81,7 @@ subroutine nxnewt(model, mate, mateco, cara_elem, list_load, nume_dof, &
     real(kind=8) :: ther_crit_r(*)
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_Print), intent(inout) :: ds_print
+    aster_logical, intent(in) :: l_stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -210,8 +211,8 @@ subroutine nxnewt(model, mate, mateco, cara_elem, list_load, nume_dof, &
     if (reasma) then
 ! ----- Compute tangent matrix (non-linear) - Volumic and surfacic terms
         call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                    time_curr, time, temp_iter, compor, varc_curr, &
-                    merigi, 'V', &
+                    tpsthe, time, temp_iter, compor, varc_curr, &
+                    merigi, 'V', l_stat, &
                     dry_prev, dry_curr)
 
         nbmat = 0

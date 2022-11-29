@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -312,20 +312,29 @@ class THPLQU4(Element):
             ),
             para_out=((SP.PPHASNOU, LC.EPHASNO_),),
         ),
-        OP.MTAN_RIGI_MASS(
+        OP.RIGI_THER_TANG(
             te=242,
             para_in=(
-                (OP.MTAN_RIGI_MASS.PCOMPOR, CCOMPOR),
+                (OP.RIGI_THER_TANG.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PCAMASS, CCAMASS),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTEMPSR, CTEMPSR),
                 (SP.PTMPCHF, DDL_THER),
-                (SP.PTMPCHI, DDL_THER),
-                (OP.MTAN_RIGI_MASS.PVARCPR, LC.ZVARCPG),
+                (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.MTAN_RIGI_MASS.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
+        ),
+        OP.MASS_THER_TANG(
+            te=246,
+            para_in=(
+                (OP.MASS_THER_TANG.PCOMPOR, CCOMPOR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PTEMPEI, DDL_THER),
+                (OP.MASS_THER_TANG.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((OP.MASS_THER_TANG.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_SOURNL(
             te=354,

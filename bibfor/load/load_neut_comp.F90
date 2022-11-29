@@ -112,7 +112,7 @@ subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
 !
 ! --------- Generate new RESU_ELEM name
 !
-            newnom = resu_elem(10:16)
+            newnom = resu_elem(9:16)
             call gcnco2(newnom)
             resu_elem(10:16) = newnom(2:8)
 !

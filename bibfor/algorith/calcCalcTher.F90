@@ -20,7 +20,7 @@
 !
 subroutine calcCalcTher(nb_option, list_option, &
                         list_load, model, mate, mateco, cara_elem, &
-                        time_curr, time, &
+                        tpsthe, time, &
                         temp_prev, incr_temp, compor_ther, temp_curr, &
                         ve_charther, me_mtanther, ve_dirichlet, &
                         ve_evolther_l, ve_evolther_nl, ve_resither, &
@@ -43,7 +43,7 @@ subroutine calcCalcTher(nb_option, list_option, &
     character(len=16), intent(in) :: list_option(:)
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: model, mate, mateco, cara_elem
-    real(kind=8), intent(in) :: time_curr
+    real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=*), intent(in) :: temp_prev, incr_temp, temp_curr
     character(len=24), intent(in) :: compor_ther
@@ -71,7 +71,7 @@ subroutine calcCalcTher(nb_option, list_option, &
 ! In  model            : name of model
 ! In  mate             : name of material characteristics (field)
 ! In  cara_elem        : name of elementary characteristics (field)
-! In  time_curr        : current time
+! In  tpsthe           : current time
 ! In  time             : name of field for time parameters
 ! In  temp_prev        : temperature at beginning of step
 ! In  incr_temp        : increment of temperature
@@ -90,13 +90,16 @@ subroutine calcCalcTher(nb_option, list_option, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_char_ther, l_mtan_ther, l_char_evol, l_resi_ther, l_lagr
+    aster_logical :: l_char_ther, l_mtan_ther, l_char_evol, l_resi_ther, l_lagr, l_stat
     character(len=24) :: lload_name, lload_info, varc_curr
+    real(kind=8) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
+
+    time_curr = tpsthe(1)
 !
 ! - Prepare command variables
 !
@@ -121,9 +124,10 @@ subroutine calcCalcTher(nb_option, list_option, &
 ! - Physical dof computation
 !
     if (l_mtan_ther) then
+        l_stat = ASTER_FALSE
         call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                    time_curr, time, temp_curr, compor_ther, varc_curr, &
-                    me_mtanther, 'G')
+                    tpsthe, time, temp_curr, compor_ther, varc_curr, &
+                    me_mtanther, 'G', l_stat)
     end if
 !
 ! - Lagrange dof computation

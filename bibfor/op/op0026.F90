@@ -57,7 +57,7 @@ subroutine op0026()
     integer :: nume_inst, nume_harm
     integer :: long
     real(kind=8) :: time_prev, time_curr
-    real(kind=8) :: deltat, khi, theta
+    real(kind=8) :: deltat, khi, theta, tpsthe(6)
     character(len=8) :: table_new, table_old
     type(NL_DS_Constitutive) :: ds_constitutive
     character(len=16) :: phenom
@@ -143,9 +143,13 @@ subroutine op0026()
                           nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                           l_pred)
     elseif (phenom .eq. 'THERMIQUE') then
+        tpsthe(:) = 0.d0
+        tpsthe(1) = time_curr
+        tpsthe(2) = deltat
+        tpsthe(3) = theta
         call calcCalcTher(nb_option, list_option, &
                           list_load, model, mate, mateco, cara_elem, &
-                          time_curr, time, &
+                          tpsthe, time, &
                           temp_prev, incr_temp, compor_ther, temp_curr, &
                           ve_charther, me_mtanther, vediri, &
                           ve_evolther_l, ve_evolther_nl, ve_resither, &

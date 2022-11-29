@@ -39,7 +39,7 @@ subroutine te0279(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !    - FONCTION REALISEE:  CALCUL DES MATRICES TANGENTES ELEMENTAIRES
-!                          OPTION : 'MTAN_RIGI_MASS'
+!                          OPTION : 'RIGI_THER_TANG'
 !                          ELEMENTS 3D ISO PARAMETRIQUES LUMPES
 !
 !    - ARGUMENTS:
@@ -51,31 +51,22 @@ subroutine te0279(option, nomte)
     integer :: nbres
     parameter(nbres=3)
     integer :: icodre(nbres)
-    character(len=2) :: typgeo
     character(len=32) :: phenom
-    real(kind=8) :: rhocp, lambda, theta, deltat, khi, tpgi
+    real(kind=8) :: lambda, tpgi
     real(kind=8) :: p(3, 3), dfdx(27), dfdy(27), dfdz(27), poids, r8bid
     real(kind=8) :: tpsec, diff, lambor(3), orig(3), dire(3)
     real(kind=8) :: point(3), angl(3), fluloc(3), fluglo(3)
     real(kind=8) :: alpha, beta
     integer :: ipoids, ivf, idfde, igeom, imate, icamas
-    integer :: jgano, nno, kp, npg, i, j, ij, l, imattt, itemps, ifon(6)
-    integer :: isechi, isechf
+    integer :: jgano, nno, kp, npg, i, j, ij, l, imattt, ifon(6)
+    integer :: isechf
     integer :: icomp, itempi, nnos, ndim, nuno, n1, n2
-    integer :: npg2, ipoid2, ivf2, idfde2
     aster_logical :: aniso, global
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    end if
+
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
@@ -84,14 +75,9 @@ subroutine te0279(option, nomte)
 !====
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PMATTTR', 'E', imattt)
-!
-    deltat = zr(itemps+1)
-    theta = zr(itemps+2)
-    khi = zr(itemps+3)
 !
     if (zk16(icomp) (1:5) .eq. 'THER_') then
 !====
@@ -186,35 +172,8 @@ subroutine te0279(option, nomte)
 !
                 do j = 1, i
                     ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*theta*(fluglo(1)*dfdx(j)+fluglo(2)*&
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(fluglo(1)*dfdx(j)+fluglo(2)*&
                                       &dfdy(j)+fluglo(3)*dfdz(j))
-                end do
-            end do
-        end do
-!
-! ---   CALCUL DU DEUXIEME TERME
-!
-        do kp = 1, npg2
-            l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
-                        poids, dfdx, dfdy, dfdz)
-!
-! ---       EVALUATION DE LA CAPACITE CALORIFIQUE
-! ---       PAS DE TRAITEMENT POUR L ORTHOTROPIE (RHOCP NON CONCERNE)
-!
-            tpgi = 0.d0
-            do i = 1, nno
-                tpgi = tpgi+zr(itempi+i-1)*zr(ivf2+l+i-1)
-            end do
-            call rcfode(ifon(1), tpgi, r8bid, rhocp)
-!
-! ---       CALCUL DE LA DEUXIEME COMPOSANTE DU TERME ELEMENTAIRE
-!
-            do i = 1, nno
-                do j = 1, i
-                    ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*khi*rhocp*zr(ivf2+l+i-1)*zr(ivf2+l+j&
-                                      &-1)/deltat
                 end do
             end do
         end do
@@ -225,12 +184,10 @@ subroutine te0279(option, nomte)
 !====
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. &
             'SECH_NAPPE') then
-            call jevech('PTMPCHI', 'L', isechi)
             call jevech('PTMPCHF', 'L', isechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!          ISECHI ET ISECHF SONT FICTIFS
-            isechi = itempi
+!          ISECHF EST FICTIFS
             isechf = itempi
         end if
         do kp = 1, npg
@@ -248,21 +205,8 @@ subroutine te0279(option, nomte)
 !
                 do j = 1, i
                     ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(theta*diff*(dfdx(i)*dfdx(j)+df&
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(diff*(dfdx(i)*dfdx(j)+df&
                                       &dy(i)*dfdy(j)+dfdz(i)*dfdz(j)))
-                end do
-            end do
-        end do
-        do kp = 1, npg2
-            l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
-                        poids, dfdx, dfdy, dfdz)
-            do i = 1, nno
-!
-                do j = 1, i
-                    ij = (i-1)*i/2+j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(khi*zr(ivf2+l+i-1)*zr(ivf2+l+j-1)&
-                                      &/deltat)
                 end do
             end do
         end do
