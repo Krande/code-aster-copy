@@ -157,14 +157,18 @@ class ParallelMechanicalLoad : public DataStructure {
      */
     void debugPrint( const int logicalUnit = 6 ) const {
         this->DataStructure::debugPrint( logicalUnit );
-        std::ofstream outFile;
-        outFile.open( "fort." + std::to_string( logicalUnit ), std::ios::app );
         const auto& explorer = _FEDesc->getVirtualCellsExplorer();
         const auto& mesh = _FEDesc->getMesh();
         auto& LToGmapMesh = mesh->getLocalToGlobalMapping();
         auto& LToGmapFE = _FEDesc->getLocalToGlobalMapping();
+        auto e1 = LToGmapMesh->exists();
+        auto e2 = LToGmapFE->exists();
+        if( !e1 || !e2 ) return;
         LToGmapMesh->updateValuePointer();
         LToGmapFE->updateValuePointer();
+
+        std::ofstream outFile;
+        outFile.open( "fort." + std::to_string( logicalUnit ), std::ios::app );
         outFile << "\nEcriture de la connectivité des mailles fantômes en numérotation globale\n";
         for ( const auto meshElem : explorer ) {
             const auto &numElem = meshElem.getCellIndex();
