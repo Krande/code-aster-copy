@@ -69,7 +69,8 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2, var0(6), sig0(6)
 !
-    real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
+!    real(kind=8) :: hydrm, hydrp, sechm, vgm, vgp
+    real(kind=8) :: sechp, sref
     real(kind=8) :: alpham, alphap,  teta13d, teta23d, sech, epstf3d(6)
 !
 !
@@ -153,21 +154,19 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !!     RECUPERATION DE L HYDRATATION DEBUT DE PAS
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
-                ksp, hydrm, codret)
-    if (codret .ne. 0) then
-        hydrm=0.d0
-        codret = 0
-    endif
+!    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+!                ksp, hydrm, codret)
+!    if (codret .ne. 0) then
+!        hydrm=0.d0
+!    endif
 !!
 !! ------------------------------------------------
 !!     RECUPERATION DE L HYDRATATION FIN DE PAS
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
-                ksp, hydrp, codret)
-    if (codret .ne. 0) then
-        hydrp=0.d0
-        codret = 0
-    endif
+!    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+!                ksp, hydrp, codret)
+!    if (codret .ne. 0) then
+!        hydrp=0.d0
+!    endif
 !
 ! ------------------------------------------------
 !     RECUPERATION DU SECHAGE
@@ -177,7 +176,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !    call rcvarc(' ', 'SECH', '-', fami, kpg,&
 !                ksp, sechm, iret)
 !    if (iret .ne. 0) sechm=0.d0
-    sechm=0.d0
     call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
                 ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
@@ -190,21 +188,19 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 ! -----------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL DEBUT DE PAS
-    call rcvarc(' ', 'X1', '-', fami, kpg,&
-                ksp, vgm, codret)
-    if (codret .ne. 0) then
-        vgm=0.d0
-        codret = 0
-    endif
+!    call rcvarc(' ', 'X1', '-', fami, kpg,&
+!                ksp, vgm, codret)
+!    if (codret .ne. 0) then
+!        vgm=0.d0
+!    endif
 !
 ! ------------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL FIN DE PAS
-    call rcvarc(' ', 'X1', '+', fami, kpg,&
-                ksp, vgp, codret)
-    if (codret .ne. 0) then
-        vgp=0.d0
-        codret = 0
-    endif
+!    call rcvarc(' ', 'X1', '+', fami, kpg,&
+!                ksp, vgp, codret)
+!    if (codret .ne. 0) then
+!        vgp=0.d0
+!    endif
 !
 ! ------------------------------------------------
 !
