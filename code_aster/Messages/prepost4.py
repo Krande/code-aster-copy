@@ -301,7 +301,7 @@ composé de 0 sous objet !
  Car elle est insérée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
 
 Conseils :
- Vous pouvez utiliser les mots-clés GROUP_MA_VOL en 3D et GROUP_MA_SURF en 2D pour choisir une des
+ Vous pouvez utiliser le mot-clé GROUP_MA_INTERNE pour choisir une des
  deux mailles supports et ainsi choisir la normale permettant la réorientation.
 """),
 
