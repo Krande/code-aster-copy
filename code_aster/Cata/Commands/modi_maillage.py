@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,12 +110,10 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            ),
          ),
          MODI_MAILLE     =FACT(statut='f',max=1,
-           regles=(AU_MOINS_UN('GROUP_MA_FOND','MAILLE_FOND','GROUP_NO_FOND','NOEUD_FOND'),),
+           regles=(AU_MOINS_UN('GROUP_MA_FOND','GROUP_NO_FOND',),),
            OPTION          =SIMP(statut='o',typ='TXM',into=("NOEUD_QUART",) ),
            GROUP_MA_FOND   =SIMP(statut='f',typ=grma,max=1),
-           MAILLE_FOND     =SIMP(statut='c',typ=ma  ,max=1),
            GROUP_NO_FOND   =SIMP(statut='f',typ=grno,max=1),
-           NOEUD_FOND      =SIMP(statut='c',typ=no  ,max=1),
          ),
          MODI_BASE       =FACT(statut='f',
            VECT_X          =SIMP(statut='o',typ='R',min=2,max=3),
@@ -141,14 +139,12 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
          ),
          ABSC_CURV       =FACT(statut='f',max=1,
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE',),
-                   UN_PARMI('GROUP_NO_ORIG','NOEUD_ORIG',),
                    EXCLUS('TOUT','GROUP_MA'),
                    EXCLUS('TOUT','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
            GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,max=1),
-           NOEUD_ORIG      =SIMP(statut='c',typ=no,max=1),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          translation={

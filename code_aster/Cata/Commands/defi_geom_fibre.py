@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,12 @@ DEFI_GEOM_FIBRE=OPER(
     INFO=SIMP(statut='f',typ='I', defaut= 1 ,into=(1,2)),
 # ============================================================================
     SECTION             =FACT(statut='f',max='**',
-        regles=(AU_MOINS_UN('TOUT_SECT','GROUP_MA_SECT','MAILLE_SECT'),
-                PRESENT_ABSENT('TOUT_SECT','GROUP_MA_SECT','MAILLE_SECT'),),
+        regles=(AU_MOINS_UN('TOUT_SECT','GROUP_MA_SECT'),
+                PRESENT_ABSENT('TOUT_SECT','GROUP_MA_SECT'),),
 
         GROUP_FIBRE       =SIMP(statut='o',typ='TXM',min=1,max=1),
         TOUT_SECT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
         GROUP_MA_SECT     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-        MAILLE_SECT       =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
 
         MAILLAGE_SECT     =SIMP(statut='o',typ=maillage_sdaster),
         COOR_AXE_POUTRE   =SIMP(statut='o',typ='R',min=2,max=2),

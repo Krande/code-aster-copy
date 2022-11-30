@@ -862,10 +862,6 @@ def macr_lign_coupe_ops(self, LIGN_COUPE, RESULTAT=None, CHAM_GD=None,
                 argsup['GROUP_NO_ORIG'] = m2.get('GROUP_NO_ORIG')
             if m2.get('GROUP_NO_EXTR'):
                 argsup['GROUP_NO_EXTR'] = m2.get('GROUP_NO_EXTR')
-            if m2.get('NOEUD_ORIG'):
-                argsup['NOEUD_ORIG'] = m2.get('NOEUD_ORIG')
-            if m2.get('NOEUD_EXTR'):
-                argsup['NOEUD_EXTR'] = m2.get('NOEUD_EXTR')
             if m2.get('VECT_ORIE'):
                 argsup['VECT_ORIE'] = m2.get('VECT_ORIE')
 

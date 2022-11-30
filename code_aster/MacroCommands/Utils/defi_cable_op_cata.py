@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,15 +34,12 @@ DEFI_CABLE_OP_CATA=OPER(nom="DEFI_CABLE_OP",op= 180,
          GROUP_MA_BETON  =SIMP(statut='o',typ=grma,max='**'),
          ANALYSE         =SIMP(statut='f',typ='TXM',into=("DEFI","ETCC","RUPT"),defaut="DEFI",),
          DEFI_CABLE      =FACT(statut='o',max='**',
-           regles=(UN_PARMI('MAILLE','GROUP_MA'),
-                   UN_PARMI('NOEUD_ANCRAGE','GROUP_NO_ANCRAGE'),
-                   ),
+           regles=(UN_PARMI('MAILLE','GROUP_MA'),),
            MAILLE          =SIMP(statut='f',typ=ma,min=2,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma),
-           NOEUD_ANCRAGE   =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max=2),
            GROUP_NO_ANCRAGE=SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
            GROUP_NO_FUT    =SIMP(statut='f',typ=grno,validators=NoRepeat(),max=2),
-           
+
            TENSION         =SIMP(statut='f',typ=table_sdaster),
          ),
          ADHERENT        =SIMP(statut='f',typ='TXM',defaut='OUI',into=("OUI","NON") ),

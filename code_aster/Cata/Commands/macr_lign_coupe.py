@@ -103,7 +103,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
 
            b_forc_noda    =BLOC(condition = """equal_to("TYPE", 'GROUP_NO') or equal_to("TYPE", 'GROUP_MA')""",
-             
+
              regles=( PRESENT_PRESENT('MOMENT','RESULTANTE'), ),
              RESULTANTE      =SIMP(statut='f',typ='TXM',max='**',into=("DX","DY","DZ","NXX","NYY","NXY")),
              MOMENT          =SIMP(statut='f',typ='TXM',max='**',into=("DRX","DRY","DRZ","MXX","MYY","MXY")),
@@ -120,15 +120,11 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              GROUP_NO        =SIMP(statut='o',typ=grno, max=1),),
 
            b_grma          =BLOC(condition = """equal_to("TYPE", 'GROUP_MA')""",
-                                 regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
-                                         EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
              GROUP_MA        =SIMP(statut='o',typ=grma, max=1),
              MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
              # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine:
              # si le groupe de mailles forme une ligne fermée, il FAUT choisir l'origine et l'extrémité (= origine):
-             NOEUD_ORIG      =SIMP(statut='c',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
-             NOEUD_EXTR      =SIMP(statut='c',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
              # si le groupe de mailles forme une ligne fermée, on peut choisir le sens de parcours
              VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisé seulement si NOEUD_ORIG=NOEUD_EXTR

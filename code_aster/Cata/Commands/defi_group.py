@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -197,48 +197,34 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
              PRECISION       =SIMP(statut='o',typ='R' ),
            ),
            b_segm_droi_ordo=BLOC(condition = """equal_to("OPTION", 'SEGM_DROI_ORDO')""",
-             regles=(AU_MOINS_UN('NOEUD','GROUP_NO'),
-                     UN_PARMI('NOEUD_ORIG','GROUP_NO_ORIG'),
-                     UN_PARMI('NOEUD_EXTR','GROUP_NO_EXTR'),),
              NOM             =SIMP(statut='o',typ='TXM'),
-             NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             NOEUD_ORIG      =SIMP(statut='c',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
-             NOEUD_EXTR      =SIMP(statut='c',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
              PRECISION       =SIMP(statut='o',typ='R' ),
              CRITERE         =SIMP(statut='o',typ='TXM',into=("ABSOLU","RELATIF") ),
            ),
            b_noeud_ordo    =BLOC(condition = """equal_to("OPTION", 'NOEUD_ORDO')""",
-             regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
-                     EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
              NOM             =SIMP(statut='o',typ='TXM'),
              GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
              # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine.
              # sinon, le code choisit une origine parmi les deux.
              # si le groupe de mailles forme une ligne fermée, on peut choisir l'origine et l'extrémité (= origine).
-             NOEUD_ORIG      =SIMP(statut='c',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
-             NOEUD_EXTR      =SIMP(statut='c',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
              # si le groupe de mailles forme une ligne fermée, on peut choisir le sens de parcours :
-             VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisé seulement si NOEUD_ORIG=NOEUD_EXTR
+             VECT_ORIE       =SIMP(statut='f',typ='R',max=3),
              # si la ligne est fermee et que l'on ne donne pas xxx_ORIG, on peut demander au code de choisir
              # un noeud origine quelconque.
              ORIGINE         =SIMP(statut='f',typ='TXM',into=("SANS",) ),
            ),
            b_tunnel    =BLOC(condition = """equal_to("OPTION", 'TUNNEL')""",
-             regles=(AU_MOINS_UN ('TOUT','GROUP_MA','MAILLE'),
-                     EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),
-                     AU_MOINS_UN ('GROUP_MA_AXE','MAILLE_AXE'),),
+             regles=(AU_MOINS_UN ('TOUT','GROUP_MA','MAILLE'),),
              NOM             =SIMP(statut='o',typ='TXM'),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA_AXE    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE_AXE      =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-             NOEUD_ORIG      =SIMP(statut='c',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
              RAYON           =SIMP(statut='o',typ='R'),
              LONGUEUR        =SIMP(statut='f',typ='R'),

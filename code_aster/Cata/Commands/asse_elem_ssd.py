@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,12 +71,9 @@ ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",
            INTERFACE_1     =SIMP(statut='o',typ='TXM' ),
            SOUS_STRUC_2    =SIMP(statut='o',typ='TXM' ),
            INTERFACE_2     =SIMP(statut='o',typ='TXM' ),
-           regles=(EXCLUS('GROUP_MA_MAIT_1','GROUP_MA_MAIT_2','MAILLE_MAIT_2'),
-                   EXCLUS('MAILLE_MAIT_1','GROUP_MA_MAIT_2','MAILLE_MAIT_2'),),
+           regles=(EXCLUS('GROUP_MA_MAIT_1','GROUP_MA_MAIT_2',),),
            GROUP_MA_MAIT_1   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE_MAIT_1     =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA_MAIT_2   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE_MAIT_2     =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            OPTION            =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("REDUIT","CLASSIQUE") ),
          ),
         VERIF           =FACT(statut='d',max=1,

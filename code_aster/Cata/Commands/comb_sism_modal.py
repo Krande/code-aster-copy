@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,12 +134,11 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            TYPE_COMBI      =SIMP(statut='f',typ='TXM',into=("QUAD","LINE","ABS") ),
          ),
          DEPL_MULT_APPUI =FACT(statut='f',max='**',
-           regles=(UN_PARMI('NOEUD','GROUP_NO'),EXCLUS('NOEUD_REFE','GROUP_NO_REFE'),
+           regles=(UN_PARMI('NOEUD','GROUP_NO'),
                    AU_MOINS_UN('DX','DY','DZ' ),),
            NOM_CAS         =SIMP(statut='o',typ='TXM',max='**'),
            NUME_CAS        =SIMP(statut='o',typ='I',max='**'),
            MODE_STAT       =SIMP(statut='o',typ=mode_meca, ),
-           NOEUD_REFE      =SIMP(statut='c',typ=no,max=1),
            GROUP_NO_REFE   =SIMP(statut='f',typ=grno,max=1),
            NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),

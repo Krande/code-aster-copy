@@ -152,17 +152,16 @@ def _getGroups(cata, keywords):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO", "SANS_GROUP_NO"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA", "SANS_GROUP_MA"))
-                _excludeGroup(mcf, ("NOEUD", "SANS_NOEUD", "MAILLE", "SANS_MAILLE"))
+                _excludeGroup(mcf, ("NOEUD", "SANS_NOEUD", "MAILLE"))
         elif key in ("LIAISON_GROUP", "LIAISON_COQUE", "LIAISON_ELEM"):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_1", "GROUP_NO_2", "SANS_GROUP_NO"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_1", "GROUP_MA_2"))
-                _excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD", "MAILLE_1", "MAILLE_2"))
+                _excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD", "MAILLE_1"))
         elif key in ("LIAISON_RBE3", "LIAISON_MAIL"):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_MAIT", "GROUP_NO_ESCL"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_MAIT", "GROUP_MA_ESCL"))
-                _excludeGroup(mcf, ("NOEUD_ESCL", "NOEUD_MAIT", "MAILLE_MAIT", "MAILLE_ESCL"))
         elif key in load_types:
             raise NotImplementedError("Type of load {0!r} not yet "
                                     "implemented in parallel".format(key))

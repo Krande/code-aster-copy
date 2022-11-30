@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,12 +48,8 @@ def asse_elem_ssd_ops(self, RESU_ASSE_SSD, SOUS_STRUC, LIAISON, VERIF, **args):
         arg_liaison = {}
         if LIAISON[i]['GROUP_MA_MAIT_1']:
             arg_liaison['GROUP_MA_MAIT_1'] = LIAISON[i]['GROUP_MA_MAIT_1']
-        if LIAISON[i]['MAILLE_MAIT_1']:
-            arg_liaison['MAILLE_MAIT_1'] = LIAISON[i]['MAILLE_MAIT_1']
         if LIAISON[i]['GROUP_MA_MAIT_2']:
             arg_liaison['GROUP_MA_MAIT_2'] = LIAISON[i]['GROUP_MA_MAIT_2']
-        if LIAISON[i]['MAILLE_MAIT_2']:
-            arg_liaison['MAILLE_MAIT_2'] = LIAISON[i]['MAILLE_MAIT_2']
         if LIAISON[i]['OPTION']:
             arg_liaison['OPTION'] = LIAISON[i]['OPTION']
             if arg_liaison['OPTION'] == 'CLASSIQUE' and args['METHODE'] == 'ELIMINE':

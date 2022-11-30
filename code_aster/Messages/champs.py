@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,7 @@ cata_msg = {
 
     2 : _("""
  Le champ %(k1)s n'est pas défini sur la totalité des noeuds précisés
- dans le mot-clé GROUP_MA_ESCL, GROUP_NO_ESCL, MAILLE_ESCL ou
- NOEUD_ESCL.
+ dans le mot-clé GROUP_MA_ESCL ou GROUP_NO_ESCL.
 
  Il vous faut compléter le champ %(k1)s.
 """),

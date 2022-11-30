@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ OBSERVATION=MACRO(nom="OBSERVATION",
          MATR_MASS       =SIMP(statut='f',typ=(matr_asse_depl_r) ),
          VIS_A_VIS       =FACT(statut='f',max='**',
              regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
-                     AU_MOINS_UN('TOUT_2','GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),),
+                     AU_MOINS_UN('TOUT_2','GROUP_MA_2','GROUP_NO_2','NOEUD_2'),),
              TOUT_1          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE_1        =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -91,7 +91,6 @@ OBSERVATION=MACRO(nom="OBSERVATION",
              NOEUD_1         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
              TOUT_2          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE_2        =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              NOEUD_2         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
              CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),

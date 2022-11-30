@@ -133,7 +133,7 @@ def _getGroups(cata, keywords):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO", "SANS_GROUP_NO"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA", "SANS_GROUP_MA"))
-                _excludeGroup(mcf, ("NOEUD", "SANS_NOEUD", "MAILLE", "SANS_MAILLE"))
+                _excludeGroup(mcf, ("NOEUD", "MAILLE"))
         elif key in ("LIAISON_DDL",):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO",))
@@ -142,12 +142,11 @@ def _getGroups(cata, keywords):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_1", "GROUP_NO_2", "SANS_GROUP_NO"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_1", "GROUP_MA_2"))
-                _excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD", "MAILLE_1", "MAILLE_2"))
+                _excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD", "MAILLE_1"))
         elif key in ("LIAISON_MAIL",):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_ESCL",))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_MAIT", "GROUP_MA_ESCL"))
-                _excludeGroup(mcf, ("NOEUD_ESCL", "MAILLE_MAIT", "MAILLE_ESCL"))
         elif key in ("LIAISON_UNIF",):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO",))
