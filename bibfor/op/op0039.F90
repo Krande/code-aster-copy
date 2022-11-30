@@ -55,7 +55,7 @@ implicit none
     character(len=8) :: fileFormat
     character(len=16) :: fileName
     integer :: nbMesh, nbResu, nbField, nbRet, nbNodeCmp
-    integer :: nn, rank
+    integer :: nn, rank, nbprocs
     real(kind=8) :: fileVersionR
     real(kind=8), parameter :: eps = 1.0d-6
     character(len=8) :: model, mesh, resultMesh, proc0, ispar
@@ -71,6 +71,7 @@ implicit none
 !
     call asmpi_info(rank=mrank, size=msize)
     rank = to_aster_int(mrank)
+    nbprocs = to_aster_int(msize)
 !
     call getvtx(' ', 'PROC0', scal=proc0, nbret=nbRet)
     if (nbRet .ne. 1) then
@@ -158,11 +159,13 @@ implicit none
             endif
         endif
         if (fileFormat .eq.'MED') then
-            call getvtx(' ', 'FICHIER_UNIQUE', scal=fichierUnique, nbret=nbRet)
-            if (fichierUnique.eq.'OUI' .and. ispar == "OUI") then
-                lfichUniq = .true._1
-                ASSERT(proc0 .eq. 'NON')
-            end if
+            if(  nbprocs.gt.1 ) then
+                call getvtx(' ', 'FICHIER_UNIQUE', scal=fichierUnique, nbret=nbRet)
+                if (fichierUnique.eq.'OUI' .and. ispar == "OUI") then
+                    lfichUniq = .true._1
+                    ASSERT(proc0 .eq. 'NON')
+                end if
+            endif
             call ultype(fileUnit, fileType)
             if (fileType .ne. 'B' .and. fileType .ne. 'L') then
                 call utmess('A','RESULT3_12')
