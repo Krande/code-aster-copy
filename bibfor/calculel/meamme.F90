@@ -16,12 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine meamme(optionz,&
-                  modelz, nbLoad, listLoadK24,&
+subroutine meamme(modelz,&
                   matez, matecoz, caraElemz,&
                   time, basez,&
                   matrRigiz, matrMassz,&
-                  matrElemz, listElemCalcz,&
+                  matrElemz, &
                   variz, comporz)
 !
 implicit none
@@ -48,15 +47,11 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 !
-character(len=*), intent(in) :: optionz
 character(len=*), intent(in) :: modelz
-integer, intent(in) :: nbLoad
-character(len=24), pointer :: listLoadK24(:)
 character(len=*), intent(in) :: matez, matecoz, caraElemz
 real(kind=8), intent(in) :: time
 character(len=*), intent(in) :: basez
 character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
-character(len=*), intent(in) :: listElemCalcz
 character(len=*), intent(in) :: variz, comporz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,14 +85,13 @@ character(len=*), intent(in) :: variz, comporz
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
-    character(len=16), parameter :: phenom = 'MECANIQUE'
+    character(len=16), parameter :: option = 'AMOR_MECA'
     integer :: nbFieldIn, nbFieldOut
     character(len=2) :: codret
     integer :: iret
     integer, parameter :: modeFourier = 0
-    character(len=16) :: option
     character(len=24), parameter :: chvarc = '&&MEAMME.CHVARC'
-    character(len=24) :: compor, listElemCalc, vari
+    character(len=24) :: compor, vari
     character(len=8) :: physQuantityName
     character(len=24) :: matrRigi, matrMass
     character(len=24) :: resuElemRigi, resuElemMass
@@ -105,16 +99,12 @@ character(len=*), intent(in) :: variz, comporz
     character(len=1) :: base
     character(len=8) :: model, caraElem, mesh
     character(len=24) :: mate, mateco
-    character(len=19) :: matrElem, resuElem, ligrel
-    integer :: iLoad, indxResuElem
+    character(len=19) :: matrElem
     integer :: nbResuElem, iResuElem, idxResuElemRigi
     integer :: nbSubstruct
     character(len=24), pointer :: rerr(:) => null()
     character(len=24), pointer :: listResuElem(:) => null()
-    aster_logical :: hasDirichlet
-    character(len=8) :: loadName
-    character(len=13) :: loadDescBase
-    character(len=19) :: loadMapName, loadLigrel
+    character(len=19) :: modelLigrel, modelResu
     character(len=24), parameter :: nonLinearMap = "&&MEAMMA.NONLIN"
     integer, parameter :: nbCmp = 1
     character(len=8), parameter :: cmpName = ('X1')
@@ -125,25 +115,23 @@ character(len=*), intent(in) :: variz, comporz
     call jemarq()
 
 ! - Initializations
-    option       = optionz
-    model        = modelz
-    caraElem     = caraElemz
-    mate         = matez
-    mateco       = matecoz
-    matrElem     = matrElemz
-    base         = basez
-    listElemCalc = listElemCalcz
-    matrRigi     = matrRigiz
-    matrMass     = matrMassz
-    compor       = comporz
-    vari         = variz
-    hasDirichlet = option .eq. 'RIGI_MECA_HYST'
+    model = modelz
+    caraElem = caraElemz
+    mate = matez
+    mateco = matecoz
+    matrElem = matrElemz
+    base = basez
+    matrRigi = matrRigiz
+    matrMass = matrMassz
+    compor = comporz
+    vari = variz
     lpain  = ' '
     lchin  = ' '
     lpaout = ' '
     lchout = ' '
 
-! - Prepare flags
+! - Get parameters
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
 
@@ -168,10 +156,10 @@ character(len=*), intent(in) :: variz, comporz
             call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24 = listResuElem)
             call jelira(matrRigi(1:19)//'.RELR', 'LONUTI', nbResuElem)
             do iResuElem = 1, nbResuElem
-                resuElemRigi    = listResuElem(iResuElem)
+                resuElemRigi = listResuElem(iResuElem)
                 idxResuElemRigi = iResuElem
-                call dismoi('NOM_LIGREL', resuElemRigi, 'RESUELEM', repk=ligrel)
-                if (ligrel(1:8) .eq. model(1:8)) then
+                call dismoi('NOM_MODELE', resuElemRigi, 'RESUELEM', repk=modelResu)
+                if (modelResu .eq. model) then
                     goto 20
                 endif
             end do
@@ -189,8 +177,8 @@ character(len=*), intent(in) :: variz, comporz
             call jelira(matrMass(1:19)//'.RELR', 'LONUTI', nbResuElem)
             do iResuElem = 1, nbResuElem
                 resuElemMass = listResuElem(iResuElem)
-                call dismoi('NOM_LIGREL', resuElemMass, 'RESUELEM', repk=ligrel)
-                if (ligrel(1:8) .eq. model(1:8)) then
+                call dismoi('NOM_MODELE', resuElemMass, 'RESUELEM', repk=modelResu)
+                if (modelResu .eq. model) then
                     goto 40
                 endif
             end do
@@ -260,14 +248,8 @@ character(len=*), intent(in) :: variz, comporz
     endif
 
 ! - Output fields
-    if (option .eq. 'AMOR_MECA') then
-        lpaout(1) = 'PMATUUR'
-        lpaout(2) = 'PMATUNS'
-    else if (option .eq. 'RIGI_MECA_HYST') then
-        lpaout(1) = 'PMATUUC'
-    else
-        ASSERT(ASTER_FALSE)
-    endif
+    lpaout(1) = 'PMATUUR'
+    lpaout(2) = 'PMATUNS'
     lchout(1) = matrElem(1:8)//'.ME001'
     lchout(2) = matrElem(1:8)//'.ME002'
     nbFieldOut = 2
@@ -276,7 +258,7 @@ character(len=*), intent(in) :: variz, comporz
     ASSERT(nbFieldIn .le. nbFieldInMax)
     ASSERT(nbFieldOut .le. nbFieldOutMax)
     call calcul('S',&
-                option, listElemCalc,&
+                option, modelLigrel,&
                 nbFieldIn, lchin, lpain,&
                 nbFieldOut, lchout, lpaout,&
                 base, 'OUI')
@@ -284,57 +266,6 @@ character(len=*), intent(in) :: variz, comporz
 ! - Save RESU_ELEM
     call reajre(matrElem, lchout(1), base)
     call reajre(matrElem, lchout(2), base)
-
-! - Dirichlet
-    option       = 'MECA_DDLM_R'
-    nbFieldIn    = 1
-    nbFieldOut   = 1
-    resuElem     = matrElem(1:8)//'.XXXXXXX'
-    call jelira(matrElem(1:19)//'.RELR', 'LONUTI', indxResuElem)
-    indxResuElem = indxResuElem + 1
-    if (hasDirichlet) then
-        do iLoad = 1, nbLoad
-! --------- Current load
-            loadName    = listLoadK24(iLoad)(1:8)
-            call lisnnl(phenom, loadName, loadDescBase)
-            loadMapName = loadDescBase//'.CMULT'
-            loadLigrel  = loadDescBase//'.LIGRE'
-
-! --------- Detect if current load is OK
-            call jeexin(loadLigrel(1:19)//'.LIEL', iret)
-            if (iret .le. 0) cycle
-            call exisd('CHAMP_GD', loadMapName, iret)
-            if (iret .le. 0) cycle
-
-! --------- Input field
-            lpain(1) = 'PDDLMUR'
-            lchin(1) = loadMapName
-
-! --------- Generate new RESU_ELEM name
-            call codent(indxResuElem, 'D0', resuElem(10:16))
-
-! --------- Output field
-            lpaout(1) = 'PMATUUR'
-            lchout(1) = resuElem
-
-! --------- Compute
-            ASSERT(nbFieldIn .le. nbFieldInMax)
-            ASSERT(nbFieldOut .le. nbFieldOutMax)
-            call calcul('S',&
-                        option, loadLigrel,&
-                        nbFieldIn, lchin, lpain,&
-                        nbFieldOut, lchout, lpaout,&
-                        base, 'OUI')
-
-! --------- Save RESU_ELEM
-            call reajre(matrElem, resuElem, base)
-            indxResuElem = indxResuElem + 1
-            if (indxResuElem .eq. 9999999) then
-                call utmess('F', 'CHARGES6_82', sk = 'RIGI_MECA_HYST')
-            endif
-
-        end do
-    endif
 
 ! - Clean
     call redetr(matrElem)

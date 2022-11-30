@@ -241,7 +241,7 @@ integer :: faccvg, ldccvg, condcvg
 ! - Compute damping (Rayleigh) elementary matrices
 !
     if (l_comp_damp) then
-        call nmcmat('MEAMOR', 'AMOR_MECA', ' ', ASTER_TRUE,&
+        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE,&
                     ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
     endif

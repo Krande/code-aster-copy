@@ -83,7 +83,7 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
     type(HHO_Field) :: hhoField
     integer :: numins, iterat, ldccvg
     integer :: nb_matr
-    character(len=16) :: optrig, optamo
+    character(len=16) :: optrig
     character(len=6) :: list_matr_type(20)
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
@@ -181,8 +181,7 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
 ! --- AJOUT DE LA MATRICE AMORTISSEMENT DANS LA LISTE
 !
     if (lamor .and. .not.lktan) then
-        optamo = 'AMOR_MECA'
-        call nmcmat('MEAMOR', optamo, ' ', ASTER_TRUE,&
+        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE,&
                     ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
 !

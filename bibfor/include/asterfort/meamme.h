@@ -18,22 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine meamme(optionz,&
-                      modelz, nbLoad, listLoadK24,&
+    subroutine meamme(modelz,&
                       matez, matecoz, caraElemz,&
                       time, basez,&
                       matrRigiz,  matrMassz,&
-                      matrElemz, listElemCalcz,&
+                      matrElemz, &
                       variz, comporz)
-        character(len=*), intent(in) :: optionz
         character(len=*), intent(in) :: modelz
-        integer, intent(in) :: nbLoad
-        character(len=24), pointer :: listLoadK24(:)
         character(len=*), intent(in) :: matez, matecoz, caraElemz
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: basez
         character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
-        character(len=*), intent(in) :: listElemCalcz
         character(len=*), intent(in) :: variz, comporz
     end subroutine meamme
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ integer :: faccvg, ldccvg
     aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi, l_first_step
     aster_logical :: l_neum_undead, lshima, lprmo
     character(len=16) :: explMatrType
-    character(len=16) :: option_nonlin, optamo
+    character(len=16) :: option_nonlin
     integer :: ifm, niv, ibid
     integer :: iter_newt
     integer :: nb_matr
@@ -130,7 +130,6 @@ integer :: faccvg, ldccvg
     call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
     nb_matr              = 0
     list_matr_type(1:20) = ' '
-    optamo = 'AMOR_MECA'
     faccvg = -1
     ldccvg = -1
 !
@@ -202,7 +201,7 @@ integer :: faccvg, ldccvg
 ! - Compute damping (Rayleigh) elementary matrices
 !
     if (l_comp_damp) then
-        call nmcmat('MEAMOR', optamo, ' ', ASTER_TRUE,&
+        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE,&
                     ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)
     endif
