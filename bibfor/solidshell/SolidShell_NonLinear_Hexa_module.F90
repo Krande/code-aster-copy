@@ -475,7 +475,7 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom,&
     lSigm     = L_SIGM(option)
     lVect     = L_VECT(option)
     lMatr     = L_MATR(option)
-    lVari     = L_MATR(option)
+    lVari     = L_VARI(option)
     lMatrPred = L_MATR_PRED(option)
 
 ! - Properties of finite element
