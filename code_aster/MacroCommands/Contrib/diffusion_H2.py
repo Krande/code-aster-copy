@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,8 +233,6 @@ CHAR_GRAD_IMPO = UserMacro("CHAR_GRAD_IMPO", CHAR_GRAD_IMPO_cata, char_grad_impo
 #
 
 def char_grad_ini_ops(self, RESU_H2, GRMAVOL, DIME, **args):
-
-
     grad = []
     # On boucle sur les mailles du groupe de mailles GRMAVOL
 
@@ -244,23 +242,13 @@ def char_grad_ini_ops(self, RESU_H2, GRMAVOL, DIME, **args):
     # Recuperation du maillage a partir du resultat
     mesh = moth.getMesh()
 
-    nommai = mesh.sdj.NOMMAI.get()
-    connex = mesh.sdj.CONNEX.get()
-    groupma = mesh.sdj.GROUPEMA.get()[GRMAVOL.ljust(24)]
-
-    for ima in groupma:
-        # ATTENTION : dans Python, les tableaux commencent a 0
-        # mais dans la connectivite, les noeuds commencent a 1!
-        lnoeu = NP.array(connex[ima]) - 1
-        # ajout dans le mot-cle facteur PRE_GRAD_TEMP
-        nom_maille = nommai[ima - 1]
-        mon_dico = {}
-        mon_dico["MAILLE"] = nom_maille
-        mon_dico["FLUX_X"] = 0.
-        mon_dico["FLUX_Y"] = 0.
-        if DIME == 3:
-            mon_dico["FLUX_Z"] = 0.
-        grad.append(mon_dico)
+    mon_dico = {}
+    mon_dico["GROUP_MA"] = GRMAVOL
+    mon_dico["FLUX_X"] = 0.
+    mon_dico["FLUX_Y"] = 0.
+    if DIME == 3:
+        mon_dico["FLUX_Z"] = 0.
+    grad.append(mon_dico)
 
     chth = AFFE_CHAR_THER(MODELE=moth, INFO=args.get('INFO'),
                           PRE_GRAD_TEMP=grad,

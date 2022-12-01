@@ -187,7 +187,12 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
           _namesMap( ptr ),
           _capacity( 0 ){};
 
-    ~JeveuxCollectionClass(){};
+    ~JeveuxCollectionClass() {
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "DEBUG: JeveuxCollection.destr: " << _name << std::endl;
+        // #endif
+        this->deallocate();
+    };
 
     /**
      * @brief
@@ -638,9 +643,8 @@ bool JeveuxCollectionClass< ValueType, AccessType >::contains( const std::string
     ASTERINTEGER returnBool;
     CALLO_JEXNOM( charJeveuxName, _name, name );
     CALLO_JEEXIN( charJeveuxName, &returnBool );
-    if ( returnBool == 0 )
-        return false;
-    return true;
+
+    return returnBool != 0;
 };
 
 template < class ValueType, class AccessType >
@@ -650,9 +654,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::contains( const ASTERINTEGE
     CALLO_JEXNUM( charJeveuxName, _name, &returnBool );
     CALLO_JEEXIN( charJeveuxName, &returnBool );
 
-    if ( returnBool == 0 )
-        return false;
-    return true;
+    return returnBool != 0;
 };
 
 template < class ValueType, class AccessType >

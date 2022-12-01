@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,6 @@ Problème lors de l'utilisation de MACR_CARA_POUTRE
 
 GROUP_MA et GROUP_MA_BORD doivent avoir le même nombre de groupes de mailles.
 À un GROUP_MA doit correspondre un GROUP_MA_BORD.
-"""),
-
-    2: _("""
-Problème lors de l'utilisation de MACR_CARA_POUTRE
-
-Vous avez renseigné NOEUD avec GROUP_MA et GROUP_MA_BORD.
-Le nombre de noeud doit être égal au nombre de groupes mailles donné à GROUP_MA et
-GROUP_MA_BORD.
-À un NOEUD doit correspondre un GROUP_MA et un GROUP_MA_BORD .
 """),
 
     3: _("""
@@ -100,13 +91,6 @@ Les valeurs sont ignorées.
 Problème lors de l'utilisation de MACR_CARA_POUTRE
 
 Vous avez renseigné GROUP_NO. Le GROUP_NO %(k1)s n'existe pas dans le maillage.
-"""),
-
-
-    9: _("""
-Problème lors de l'utilisation de MACR_CARA_POUTRE
-
-Vous avez renseigné NOEUD. Le noeud %(k1)s n'existe pas dans le maillage.
 """),
 
 

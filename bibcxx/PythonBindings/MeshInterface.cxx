@@ -54,6 +54,14 @@ Returns:
     bool: *True* if exists, *False* otherwise.
         )",
               py::arg( "group_name" ), py::arg( "local" ) = false )
+        .def( "setGroupOfCells", &Mesh::setGroupOfCells, R"(
+Set new group of cells in the mesh
+
+Arguments:
+    group_name (str): Name of the new group.
+    cell_ids (list[int]) : cell ids which are in the group
+        )",
+              py::arg( "group_name" ), py::arg( "cell_ids" ) )
         .def( "getCells", &Mesh::getCells, R"(
 Return the list of the indexes of the cells that belong to a group of cells.
 
@@ -85,6 +93,15 @@ Returns:
     bool: *True* if exists, *False* otherwise.
         )",
               py::arg( "group_name" ), py::arg( "local" ) = false )
+        .def( "setGroupOfNodes", &Mesh::setGroupOfNodes, R"(
+Set new group of nodes in the mesh
+
+Arguments:
+    group_name (str): Name of the new group.
+    node_ids (list[int]) : node ids which are in the group
+    localNumbering=false (bool): not used (for compatibilty with ParallelMesh)
+        )",
+              py::arg( "group_name" ), py::arg( "node_ids" ), py::arg( "localNumbering" ) = false )
         .def( "_getNodes", &Mesh::getNodes, R"(
 Return the list of the indexes of the nodes that belong to a group of nodes.
 

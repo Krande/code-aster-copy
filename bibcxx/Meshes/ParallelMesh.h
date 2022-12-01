@@ -65,16 +65,9 @@ class ParallelMesh : public BaseMesh {
     /** @brief List of joints */
     std::map< ASTERINTEGER, std::pair< JeveuxVectorLong, JeveuxVectorLong > > _joints;
     /** @brief Global to local node number */
-    std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
+    std::map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
 
-    void _buildGlobal2LocalMap() {
-        getLocalToGlobalMapping()->updateValuePointer();
-        ASTERINTEGER nloc = getLocalToGlobalMapping()->size();
-
-        _global2localMap.reserve( nloc );
-        for ( auto j = 0; j < nloc; j++ )
-            _global2localMap[( *getLocalToGlobalMapping() )[j]] = j;
-    };
+    void _buildGlobal2LocalMap();
 
   public:
     /**
@@ -119,6 +112,17 @@ class ParallelMesh : public BaseMesh {
     VectorString getGroupsOfCells( const bool local = false ) const;
 
     VectorString getGroupsOfNodes( const bool local = false ) const;
+
+    /**
+     * @brief Create a group of cells
+     */
+    void setGroupOfCells( const std::string &name, const VectorLong &cell_ids );
+
+    /**
+     * @brief Create a group of nodes
+     */
+    void setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
+                          const bool localNumbering = false );
 
     VectorLong getCells( const std::string name = "" ) const;
 
@@ -166,6 +170,10 @@ class ParallelMesh : public BaseMesh {
      * @return JeveuxVector of the indirection
      */
     const JeveuxVectorLong getLocalToGlobalMapping() const { return _globalNumbering; };
+
+    const std::map< ASTERINTEGER, ASTERINTEGER > getGlobalToLocalMapping() const {
+        return _global2localMap;
+    };
 
     /**
      * @brief Returns the nodes indexes of a group of cells

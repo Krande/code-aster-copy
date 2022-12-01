@@ -228,6 +228,21 @@ class BaseMesh : public DataStructure, public ListOfTables {
     };
 
     /**
+     * @brief Create a group of cells
+     */
+    virtual void setGroupOfCells( const std::string &name, const VectorLong &cell_ids ) {
+        AS_ASSERT( false );
+    };
+
+    /**
+     * @brief Create a group of nodes
+     */
+    virtual void setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
+                                  const bool localNumbering = false ) {
+        AS_ASSERT( false );
+    };
+
+    /**
      * @brief Returns the cells indexes of a group of cells
      * @return VectorLong
      */

@@ -67,6 +67,17 @@ class Mesh : public BaseMesh {
 
     VectorString getGroupsOfNodes( const bool local = false ) const;
 
+    /**
+     * @brief Create a group of cells
+     */
+    void setGroupOfCells( const std::string &name, const VectorLong &cell_ids );
+
+    /**
+     * @brief Create a group of nodes
+     */
+    void setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
+                          const bool localNumbering = false );
+
     VectorLong getCells( const std::string name = "" ) const;
 
     /**

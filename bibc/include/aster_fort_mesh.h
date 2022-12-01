@@ -31,6 +31,20 @@
 extern "C" {
 #endif
 
+#define CALLO_ADDGROUPNODE( a, b ) CALLOP( ADDGROUPNODE, addgroupnode, a, b )
+void DEFSP( ADDGROUPNODE, addgroupnode, const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_ADDGROUPELEM( a, b ) CALLOP( ADDGROUPELEM, addgroupelem, a, b )
+void DEFSP( ADDGROUPELEM, addgroupelem, const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_ADDGRPMA( a, b, c, d, e ) CALLOOPPP( ADDGRPMA, addgrpma, a, b, c, d, e )
+void DEFSSPPP( ADDGRPMA, addgrpma, const char *, STRING_SIZE, const char *, STRING_SIZE,
+               const ASTERINTEGER *, ASTERINTEGER *, ASTERLOGICAL * );
+
+#define CALLO_ADDGRPNO( a, b, c, d, e ) CALLOOPPP( ADDGRPNO, addgrpno, a, b, c, d, e )
+void DEFSSPPP( ADDGRPNO, addgrpno, const char *, STRING_SIZE, const char *, STRING_SIZE,
+               const ASTERINTEGER *, ASTERINTEGER *, ASTERLOGICAL * );
+
 #define CALLO_CARGEO( a ) CALLO( CARGEO, cargeo, a )
 void DEFS( CARGEO, cargeo, const char *, STRING_SIZE );
 
@@ -51,46 +65,39 @@ extern void DEFSS( GET_MED_TYPES, get_med_types, const char *, STRING_SIZE, cons
                    STRING_SIZE );
 
 #define CALL_GET_MED_CONNECTIVITY( a, b ) CALLSS( GET_MED_CONNECTIVITY, get_med_connectivity, a, b )
-#define CALLO_GET_MED_CONNECTIVITY( a, b ) \
+#define CALLO_GET_MED_CONNECTIVITY( a, b )                                                         \
     CALLOO( GET_MED_CONNECTIVITY, get_med_connectivity, a, b )
 extern void DEFSS( GET_MED_CONNECTIVITY, get_med_connectivity, const char *, STRING_SIZE,
                    const char *, STRING_SIZE );
 
-
 #define CALL_CNCINV( a, b, c, d, e ) CALLSPPSS( CNCINV, cncinv, a, b, c, d, e )
-#define CALLO_CNCINV( a, b, c, d, e ) \
-    CALLOPPOO( CNCINV, cncinv, a, b, c, d, e )
+#define CALLO_CNCINV( a, b, c, d, e ) CALLOPPOO( CNCINV, cncinv, a, b, c, d, e )
 extern void DEFSPPSS( CNVINV, cncinv, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
-                     const char *, STRING_SIZE, const char *, STRING_SIZE );
+                      const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_CHVENO( a, b, c ) CALLSSS( CHVENO, chveno, a, b, c )
-#define CALLO_CHVENO( a, b, c ) \
-    CALLOOO( CHVENO, chveno, a, b, c )
-extern void DEFSSS( CHVENO, chveno, const char *, STRING_SIZE,
-                     const char *, STRING_SIZE, const char *, STRING_SIZE );
-
+#define CALLO_CHVENO( a, b, c ) CALLOOO( CHVENO, chveno, a, b, c )
+extern void DEFSSS( CHVENO, chveno, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE );
 
 #define CALL_CHECKNORMALS( a, b, c ) CALLSSS( CHECKNORMALS, checknormals, a, b, c )
-#define CALLO_CHECKNORMALS( a, b, c ) \
-    CALLOOO( CHECKNORMALS, checknormals, a, b, c )
-extern void DEFSSS( CHECKNORMALS, checknormals, const char *, STRING_SIZE,
-                     const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_CHECKNORMALS( a, b, c ) CALLOOO( CHECKNORMALS, checknormals, a, b, c )
+extern void DEFSSS( CHECKNORMALS, checknormals, const char *, STRING_SIZE, const char *,
+                    STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_CNVOIS( a, b, c, d, e, f, g ) CALLOPOPPPO( CNVOIS, cnvois, a, b, c, d, e, f, g )
-extern void DEFSPSPPPS( CNVOIS, cnvois, const char *, STRING_SIZE, ASTERINTEGER *,
-                     const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
-                        ASTERINTEGER * , const char *, STRING_SIZE );
+extern void DEFSPSPPPS( CNVOIS, cnvois, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+                        STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, const char *,
+                        STRING_SIZE );
 
-
-#define CALL_AJELLT( a, b, c, d, e, f, g, h, i ) \
-        CALLSSPSSSSPS( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
-#define CALLO_AJELLT( a, b, c, d, e, f, g, h, i ) \
-        CALLOOPOOOOPO( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
-extern void DEFSSPSSSSPS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, \
-                        STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE, \
-                        const char *, STRING_SIZE, const char *, STRING_SIZE, \
-                        const char *, STRING_SIZE, const ASTERINTEGER *, \
-                        const char *, STRING_SIZE );
+#define CALL_AJELLT( a, b, c, d, e, f, g, h, i )                                                   \
+    CALLSSPSSSSPS( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
+#define CALLO_AJELLT( a, b, c, d, e, f, g, h, i )                                                  \
+    CALLOOPOOOOPO( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
+extern void DEFSSPSSSSPS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                          const ASTERINTEGER *, const char *, STRING_SIZE, const char *,
+                          STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                          const ASTERINTEGER *, const char *, STRING_SIZE );
 
 #ifdef __cplusplus
 }

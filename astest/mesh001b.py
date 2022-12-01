@@ -460,6 +460,21 @@ test.assertSequenceEqual(
     sorted([globalNodesNum[i] for i in nodeLocWithGhosts[rank]]),
 )
 
+# test add group
+mesh.setGroupOfNodes("TEST_GNO", mesh.getNodesFromCells("Cable0", True, None), localNumbering=True)
+test.assertSequenceEqual(
+    mesh.getNodesFromCells("Cable0", True, None), mesh.getNodes("TEST_GNO", True)
+)
+mesh.setGroupOfNodes("TEST_GN1", [0, 12, 48, 18, 87], localNumbering=False)
+nodeglob = [[87], [], [0, 12, 18, 48, 87]]
+test.assertSequenceEqual(nodeglob[rank], mesh.getNodes("TEST_GN1", False))
+
+# test global to local mapping
+local_map = mesh.getLocalToGlobalMapping()
+global_map = mesh.getGlobalToLocalMapping()
+
+for i in range(len(local_map)):
+    test.assertEqual(i, global_map[local_map[i]] )
 
 new_mesh = mesh.refine(2)
 

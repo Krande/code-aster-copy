@@ -533,17 +533,14 @@ AFFE_CHAR_MECA = OPER(
         max="**",
         fr=tr("Définit la meme relation linéaire entre certains DDLs de couples de noeuds"),
         regles=(
-            UN_PARMI("GROUP_MA_1", "MAILLE_1", "GROUP_NO_1", "NOEUD_1"),
+            UN_PARMI("GROUP_MA_1", "GROUP_NO_1", "NOEUD_1"),
             UN_PARMI("GROUP_MA_2", "GROUP_NO_2", "NOEUD_2"),
             EXCLUS("GROUP_MA_1", "GROUP_NO_2"),
             EXCLUS("GROUP_MA_1", "NOEUD_2"),
             EXCLUS("GROUP_NO_1", "GROUP_MA_2"),
-            EXCLUS("MAILLE_1", "GROUP_NO_2"),
-            EXCLUS("MAILLE_1", "NOEUD_2"),
             EXCLUS("NOEUD_1", "GROUP_MA_2"),
         ),
         GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO_1=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOEUD_1=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
@@ -713,11 +710,9 @@ AFFE_CHAR_MECA = OPER(
         b_3d_pou=BLOC(
             condition="""equal_to("OPTION", '3D_POU')""",
             regles=(
-                UN_PARMI("GROUP_MA_1", "MAILLE_1"),
                 UN_PARMI("GROUP_NO_2", "NOEUD_2", "GROUP_MA_2",),
             ),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             NOEUD_2=SIMP(statut="c", typ=no),
             GROUP_MA_2=SIMP(statut="f", typ=grma),
@@ -725,9 +720,7 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_3d_pou_arlequin=BLOC(
             condition="""equal_to("OPTION", '3D_POU_ARLEQUIN')""",
-            regles=(UN_PARMI("GROUP_MA_1", "MAILLE_1")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             CARA_ELEM=SIMP(statut="o", typ=cara_elem),
             CHAM_MATER=SIMP(statut="o", typ=cham_mater),
@@ -735,11 +728,9 @@ AFFE_CHAR_MECA = OPER(
         b_2d_pou=BLOC(
             condition="""equal_to("OPTION", '2D_POU')""",
             regles=(
-                UN_PARMI("GROUP_MA_1", "MAILLE_1"),
                 UN_PARMI("GROUP_NO_2", "NOEUD_2", "GROUP_MA_2"),
             ),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             NOEUD_2=SIMP(statut="c", typ=no),
             GROUP_MA_2=SIMP(statut="f", typ=grma),
@@ -747,9 +738,8 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_coq_pou_tuy=BLOC(
             condition="""equal_to("OPTION", 'COQ_POU') or equal_to("OPTION", 'COQ_TUYAU')""",
-            regles=(UN_PARMI("GROUP_MA_1", "MAILLE_1"), UN_PARMI("GROUP_NO_2", "NOEUD_2")),
+            regles=( UN_PARMI("GROUP_NO_2", "NOEUD_2")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             NOEUD_2=SIMP(statut="c", typ=no),
             CARA_ELEM=SIMP(statut="o", typ=(cara_elem)),
@@ -757,9 +747,8 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_3d_tuyau=BLOC(
             condition="""equal_to("OPTION", '3D_TUYAU')""",
-            regles=(UN_PARMI("GROUP_MA_1", "MAILLE_1"), UN_PARMI("GROUP_NO_2", "NOEUD_2")),
+            regles=(UN_PARMI("GROUP_NO_2", "NOEUD_2")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             NOEUD_2=SIMP(statut="c", typ=no),
             CARA_ELEM=SIMP(statut="o", typ=(cara_elem)),
@@ -768,9 +757,8 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_plaq_pout_orth=BLOC(
             condition="""equal_to("OPTION", 'PLAQ_POUT_ORTH')""",
-            regles=(UN_PARMI("GROUP_MA_1", "MAILLE_1"), UN_PARMI("GROUP_NO_2", "NOEUD_2")),
+            regles=(UN_PARMI("GROUP_NO_2", "NOEUD_2")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
             NOEUD_2=SIMP(statut="c", typ=no),
             ANGL_MAX=SIMP(statut="f", typ="R", defaut=1.0),
@@ -1141,7 +1129,6 @@ AFFE_CHAR_MECA = OPER(
         regles=(
             AU_MOINS_UN(
                 "GROUP_MA_1",
-                "MAILLE_1",
                 "GROUP_MA_2",
                 "GROUP_NO_1",
                 "NOEUD_1",
@@ -1150,7 +1137,6 @@ AFFE_CHAR_MECA = OPER(
             ),
         ),
         GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO_1=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOEUD_1=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),

@@ -49,7 +49,7 @@ CHTH=AFFE_CHAR_THER_F(  MODELE=MOTH,FLUX_REP=(
           _F( GROUP_MA = 'GRMA12', FLUN = PHI1)),
            ECHANGE=_F( GROUP_MA = 'GRMA14', COEF_H = COEH, TEMP_EXT = T_EX),
           TEMP_IMPO=_F( GROUP_NO = 'GRNM15', TEMP = T_IM),
-          LIAISON_DDL=_F( NOEUD = ('N13', 'N6',), COEF_MULT = (1., -1.,),
+          LIAISON_DDL=_F( GROUP_NO = ('N13', 'N6',), COEF_MULT = (1., -1.,),
                        COEF_IMPO = T40)
          )
 

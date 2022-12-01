@@ -33,6 +33,17 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
+void ParallelMesh::_buildGlobal2LocalMap() {
+    auto l2g = getLocalToGlobalMapping();
+    if ( l2g->exists() ) {
+        l2g->updateValuePointer();
+        ASTERINTEGER nloc = l2g->size();
+
+        for ( auto j = 0; j < nloc; j++ )
+            _global2localMap[( *l2g )[j]] = j;
+    }
+};
+
 bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
     const bool ret = BaseMesh::readMedFile( fileName );
 
@@ -145,6 +156,48 @@ VectorString ParallelMesh::getGroupsOfNodes( const bool local ) const {
 
     return VectorString( _setOfAllGON.begin(), _setOfAllGON.end() );
 }
+
+void ParallelMesh::setGroupOfCells( const std::string &name, const VectorLong &cell_ids ) {
+    if ( !name.empty() && !cell_ids.empty() ) {
+        ASTERLOGICAL isAdded = false;
+        const auto name_s = ljust( trim( name ), 24, ' ' );
+        auto cell_ids_u = unique( cell_ids );
+        std::for_each( cell_ids_u.begin(), cell_ids_u.end(), []( ASTERINTEGER &d ) { d += 1; } );
+        ASTERINTEGER size = cell_ids_u.size(), un = 1;
+        CALLO_ADDGROUPELEM( getName(), &un );
+        CALLO_ADDGRPMA( getName(), name_s, cell_ids_u.data(), &size, (ASTERLOGICAL *)&isAdded );
+        _groupsOfCells->build( true );
+    }
+    this->updateGlobalGroupOfCells();
+};
+
+void ParallelMesh::setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
+                                    const bool localNumbering ) {
+    if ( !name.empty() && !node_ids.empty() ) {
+        ASTERLOGICAL isAdded = false;
+        const auto name_s = ljust( trim( name ), 24, ' ' );
+        auto node_ids_u = unique( node_ids );
+        if ( !localNumbering ) {
+            VectorLong node_g;
+            node_g.reserve( node_ids_u.size() );
+            for ( auto &node_id : node_ids_u ) {
+                if ( _global2localMap.count( node_id ) > 0 ) {
+                    node_g.push_back( _global2localMap[node_id] );
+                }
+            }
+            node_ids_u = node_g;
+        }
+        ASTERINTEGER size = node_ids_u.size(), un = 1;
+        if ( size > 0 ) {
+            std::for_each( node_ids_u.begin(), node_ids_u.end(),
+                           []( ASTERINTEGER &d ) { d += 1; } );
+            CALLO_ADDGROUPNODE( getName(), &un );
+            CALLO_ADDGRPNO( getName(), name_s, node_ids_u.data(), &size, (ASTERLOGICAL *)&isAdded );
+            _groupsOfNodes->build( true );
+        }
+    }
+    this->updateGlobalGroupOfNodes();
+};
 
 VectorLong ParallelMesh::getCells( const std::string name ) const {
 
@@ -341,6 +394,8 @@ bool ParallelMesh::build() {
 
         CALL_JEDEMA();
     }
+
+    _buildGlobal2LocalMap();
 
     return BaseMesh::build();
 }

@@ -55,6 +55,14 @@ Returns:
     bool: *True* if exists, *False* otherwise.
         )",
               py::arg( "group_name" ), py::arg( "local" ) = false )
+        .def( "setGroupOfCells", &ParallelMesh::setGroupOfCells, R"(
+Set new group of cells in the mesh
+
+Arguments:
+    group_name (str): Name of the new group.
+    cell_ids (list[int]) : cell ids which are in the group
+        )",
+              py::arg( "group_name" ), py::arg( "cell_ids" ) )
         .def( "getCells", &ParallelMesh::getCells, R"(
 Return the list of the indexes of the cells that belong to a group of cells.
 
@@ -86,6 +94,15 @@ Returns:
     bool: *True* if exists, *False* otherwise.
         )",
               py::arg( "group_name" ), py::arg( "local" ) = false )
+        .def( "setGroupOfNodes", &ParallelMesh::setGroupOfNodes, R"(
+Set new group of nodes in the mesh
+
+Arguments:
+    group_name (str): Name of the new group.
+    node_ids (list[int]) : node ids which are in the group
+    localNumbering=false (bool): ids are given in the local numbering ?
+        )",
+              py::arg( "group_name" ), py::arg( "node_ids" ), py::arg( "localNumbering" ) = false )
         .def( "_getNodes", &ParallelMesh::getNodes,
               R"(
 Return the list of the indexes of the nodes that belong to a group of nodes
@@ -184,7 +201,21 @@ Returns:
     list[int]: Indexes of the nodes of the group.
         )",
               py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
-              py::arg( "same_rank" ) = PythonBool::None );
+              py::arg( "same_rank" ) = PythonBool::None )
+        .def( "getLocalToGlobalMapping", &ParallelMesh::getLocalToGlobalMapping,
+              R"(
+Returns local to global numbering mapping for nodes
+
+Returns:
+    list[int]: local to global numbering mapping.
+        )" )
+        .def( "getGlobalToLocalMapping", &ParallelMesh::getGlobalToLocalMapping,
+              R"(
+Returns global to local numbering mapping for nodes
+
+Returns:
+    dict[int]: global to local numbering mapping.
+        )" );
 };
 
 #endif /* ASTER_HAVE_MPI */

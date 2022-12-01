@@ -161,6 +161,15 @@ test.assertSequenceEqual(medconn[49 - 1], conn_med)
 test.assertEqual(npcoord.min(), 0.)
 test.assertEqual(npcoord.max(), 1.)
 
+# test ass new group
+mesh.setGroupOfCells("TEST_GMA", [0, 1])
+# print(mesh.getGroupsOfCells(), flush=True)
+test.assertTrue(mesh.hasGroupOfCells("Haut"))
+test.assertTrue(mesh.hasGroupOfCells("TEST_GMA"))
+test.assertSequenceEqual(mesh.getCells("TEST_GMA"), [0, 1])
+mesh.setGroupOfNodes("TEST_GNO", [14, 8])
+test.assertSequenceEqual(mesh.getNodes("TEST_GNO"), [8, 14])
+
 # refine the mesh
 mesh = mesh.refine(2)
 test.assertEqual(mesh.getNumberOfNodes(), 729)

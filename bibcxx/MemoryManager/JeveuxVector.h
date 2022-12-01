@@ -65,7 +65,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         // #ifdef ASTER_DEBUG_CXX
         //         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
         // #endif
-        _valuePtr = nullptr;
+        this->deallocate();
     };
 
     /**

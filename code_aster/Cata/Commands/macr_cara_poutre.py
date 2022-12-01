@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,10 +81,6 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
          b_gma_bord  =BLOC(
             condition = """exists("GROUP_MA_BORD")""",
             fr=tr(" calcul des carac. mécaniques"),
-            regles=(UN_PARMI('NOEUD','GROUP_NO')),
-            NOEUD          =SIMP(statut='c',typ=no,max='**',
-                                 fr=tr("Simplement pour empecher des pivots nuls le cas echeant. "
-                                      "Fournir un noeud quelconque")),
             GROUP_NO       =SIMP(statut='f',typ=grno,max='**',
                                  fr=tr("Simplement pour empêcher des pivots nuls le cas échéant. "
                                       "Fournir un noeud quelconque par GROUP_MA")),

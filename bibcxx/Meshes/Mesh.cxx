@@ -25,6 +25,7 @@
 
 #include "Meshes/Mesh.h"
 
+#include "aster_fort_mesh.h"
 #include "astercxx.h"
 
 #include "Utilities/Tools.h"
@@ -69,6 +70,33 @@ VectorString Mesh::getGroupsOfNodes( const bool ) const {
     }
     return names;
 }
+
+void Mesh::setGroupOfCells( const std::string &name, const VectorLong &cell_ids ) {
+    if ( !name.empty() && !cell_ids.empty() ) {
+        ASTERLOGICAL isAdded = false;
+        const auto name_s = ljust( trim( name ), 24, ' ' );
+        auto cell_ids_u = unique( cell_ids );
+        std::for_each( cell_ids_u.begin(), cell_ids_u.end(), []( ASTERINTEGER &d ) { d += 1; } );
+        ASTERINTEGER size = cell_ids_u.size(), un = 1;
+        CALLO_ADDGROUPELEM( getName(), &un );
+        CALLO_ADDGRPMA( getName(), name_s, cell_ids_u.data(), &size, (ASTERLOGICAL *)&isAdded );
+        _groupsOfCells->build( true );
+    }
+};
+
+void Mesh::setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
+                            const bool localNumbering ) {
+    if ( !name.empty() && !node_ids.empty() ) {
+        ASTERLOGICAL isAdded = false;
+        const auto name_s = ljust( trim( name ), 24, ' ' );
+        auto node_ids_u = unique( node_ids );
+        std::for_each( node_ids_u.begin(), node_ids_u.end(), []( ASTERINTEGER &d ) { d += 1; } );
+        ASTERINTEGER size = node_ids_u.size(), un = 1;
+        CALLO_ADDGROUPNODE( getName(), &un );
+        CALLO_ADDGRPNO( getName(), name_s, node_ids_u.data(), &size, (ASTERLOGICAL *)&isAdded );
+        _groupsOfNodes->build( true );
+    }
+};
 
 VectorLong Mesh::getCells( const std::string name ) const {
 

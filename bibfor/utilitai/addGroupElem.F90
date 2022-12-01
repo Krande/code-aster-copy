@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,34 +63,36 @@ implicit none
     gpptnm = mesh//'.PTRNOMMAI'
     grpmav = '&&ADDGRE.GROUPEMA'
 !
-    call jeexin(grpmai, iret)
-    if (iret .eq. 0) then
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nb_add, ' ')
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_add)
-    else
-        call jelira(grpmai, 'NOMUTI', nb_group)
-        nb_group_new = nb_group + nb_add
-        call cpclma(mesh, '&&ADDGRE', 'GROUPEMA', 'V')
-        call jedetr(grpmai)
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nb_group_new, ' ')
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_group_new)
-        do i_group = 1, nb_group
-            call jenuno(jexnum(grpmav, i_group), group_name)
-            call jecroc(jexnom(grpmai, group_name))
-            call jeveuo(jexnum(grpmav, i_group), 'L', vi = v_list_old)
-            call jelira(jexnum(grpmav, i_group), 'LONUTI', nb_enti)
-            call jeecra(jexnom(grpmai, group_name), 'LONMAX', max(nb_enti, 1))
-            call jeecra(jexnom(grpmai, group_name), 'LONUTI', nb_enti)
-            call jeveuo(jexnom(grpmai, group_name), 'E', vi = v_list_new)
-            do i_enti = 1, nb_enti
-                v_list_new(i_enti) = v_list_old(i_enti)
+    if(nb_add > 0) then
+        call jeexin(grpmai, iret)
+        if (iret .eq. 0) then
+            call jedetr(gpptnm)
+            call jecreo(gpptnm, 'G N K24')
+            call jeecra(gpptnm, 'NOMMAX', nb_add, ' ')
+            call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_add)
+        else
+            call jelira(grpmai, 'NOMUTI', nb_group)
+            nb_group_new = nb_group + nb_add
+            call cpclma(mesh, '&&ADDGRE', 'GROUPEMA', 'V')
+            call jedetr(grpmai)
+            call jedetr(gpptnm)
+            call jecreo(gpptnm, 'G N K24')
+            call jeecra(gpptnm, 'NOMMAX', nb_group_new, ' ')
+            call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_group_new)
+            do i_group = 1, nb_group
+                call jenuno(jexnum(grpmav, i_group), group_name)
+                call jecroc(jexnom(grpmai, group_name))
+                call jeveuo(jexnum(grpmav, i_group), 'L', vi = v_list_old)
+                call jelira(jexnum(grpmav, i_group), 'LONUTI', nb_enti)
+                call jeecra(jexnom(grpmai, group_name), 'LONMAX', max(nb_enti, 1))
+                call jeecra(jexnom(grpmai, group_name), 'LONUTI', nb_enti)
+                call jeveuo(jexnom(grpmai, group_name), 'E', vi = v_list_new)
+                do i_enti = 1, nb_enti
+                    v_list_new(i_enti) = v_list_old(i_enti)
+                enddo
             enddo
-        enddo
-    endif
+        endif
+    end if
 !
     call jedetr(grpmav)
 !

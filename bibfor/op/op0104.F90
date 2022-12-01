@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,8 @@ subroutine op0104()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/addGroupElem.h"
+#include "asterfort/addGroupNode.h"
 #include "asterfort/cgrcbp.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/detgnm.h"
@@ -49,11 +51,11 @@ subroutine op0104()
 #include "asterfort/utmess.h"
 !
 !
-    integer :: n1, n2, nbgrma, nbgmin, iret, nbgma, nbgrmn, i, j, nbma, jgg, jvg
-    integer :: nbocc, nbgrno, iocc, nbgnin, nbgno, nbgrnn, nbno, n3
+    integer :: n1, n2, nbgrma, nbgmin, iret, nbgma
+    integer :: nbocc, nbgrno, iocc, nbgnin, n3
     character(len=8) :: k8b, ma, ma2
     character(len=16) :: nomcmd, typcon, option
-    character(len=24) :: grpmai, grpnoe, grpmav, grpnov, gpptnm, gpptnn, nomg
+    character(len=24) :: grpmai, grpnoe, grpmav, grpnov, gpptnm, gpptnn
     aster_logical :: l_write
 !     ------------------------------------------------------------------
     call jemarq()
@@ -92,39 +94,12 @@ subroutine op0104()
     if (nbgrma .eq. 0) goto 107
 !
 !     --- ON AGRANDIT LA COLLECTION SI NECESSAIRE :
+    call addGroupElem(ma, nbgrma)
     nbgmin = 0
     call jeexin(grpmai, iret)
-    if (iret .eq. 0 .and. nbgrma .ne. 0) then
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbgrma, ' ')
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
-                    nbgrma)
-    else if (iret .eq. 0 .and. nbgrma .eq. 0) then
-    else
-        call jelira(grpmai, 'NOMUTI', nbgma)
-        nbgmin = nbgma
-        nbgrmn = nbgma + nbgrma
-        call cpclma(ma, '&&OP0104', 'GROUPEMA', 'V')
-        call jedetr(grpmai)
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbgrmn, ' ')
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
-                    nbgrmn)
-        do i = 1, nbgma
-            call jenuno(jexnum(grpmav, i), nomg)
-            call jecroc(jexnom(grpmai, nomg))
-            call jeveuo(jexnum(grpmav, i), 'L', jvg)
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma, 1))
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
-            call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
-            do j = 0, nbma-1
-                zi(jgg+j) = zi(jvg+j)
-            end do
-        end do
-    endif
+    if(iret > 0) then
+        call jelira(grpmai, 'NOMUTI', nbgmin)
+    end if
 107  continue
 !
 !
@@ -164,39 +139,12 @@ subroutine op0104()
 !
 !
 !     --- ON AGRANDIT LA COLLECTION SI NECESSAIRE :
-    call jeexin(grpnoe, iret)
+    call addGroupNode(ma, nbgrno)
     nbgnin = 0
-    if (iret .eq. 0 .and. nbgrno .ne. 0) then
-        call jedetr(gpptnn)
-        call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbgrno, ' ')
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
-                    nbgrno)
-    else if (iret .eq. 0 .and. nbgrno .eq. 0) then
-    else
-        call jelira(grpnoe, 'NOMUTI', nbgno)
-        nbgrnn = nbgno + nbgrno
-        nbgnin = nbgno
-        call cpclma(ma, '&&OP0104', 'GROUPENO', 'V')
-        call jedetr(grpnoe)
-        call jedetr(gpptnn)
-        call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbgrnn, ' ')
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
-                    nbgrnn)
-        do i = 1, nbgno
-            call jenuno(jexnum(grpnov, i), nomg)
-            call jecroc(jexnom(grpnoe, nomg))
-            call jeveuo(jexnum(grpnov, i), 'L', jvg)
-            call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno, 1))
-            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
-            call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
-            do j = 0, nbno-1
-                zi(jgg+j) = zi(jvg+j)
-            end do
-        end do
-    endif
+    call jeexin(grpnoe, iret)
+    if(iret > 0) then
+        call jelira(grpnoe, 'NOMUTI', nbgnin)
+    end if
 207  continue
 !
 !     --- TRAITEMENT DU MOT CLEF CREA_GROUP_MA :
