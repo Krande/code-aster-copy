@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -162,9 +162,9 @@ integer :: codret
                 ntypef = caimpi(1,nrimpr)
                 call jenuno(jexnum('&CATA.TE.NOMTE', ntypef), nomtef)
 !
-                call uteref(chanom, typech, ntypef, nomtef, nomfpg,&
-                            nbnoso, nbnoto, nbrepg, ndim, refcoo,&
-                            gscoo, wg, nochmd, codret)
+                call uteref(chanom, typech, ntypef, nomtef, lfichUniq,&
+                            nomfpg, nbnoso, nbnoto, nbrepg, ndim,&
+                            refcoo, gscoo, wg, nochmd, codret)
                 if (codret .eq. 1) then
                     codret = 0
                     goto 20

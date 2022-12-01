@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
-                  nnos, nno, nbpg, ndim, refcoo,&
-                  gscoo, wg, nochmd, codret)
+subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq,&
+                  nomfpg, nnos, nno, nbpg, ndim,&
+                  refcoo, gscoo, wg, nochmd, codret)
 !
 !-----------------------------------------------------------------------
 !     UTILITAIRE - ELEMENT DE REFERENCE
@@ -71,6 +71,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/asmpi_comm_vect.h"
 !
     integer :: tyelas
     integer :: nnos, nno, nbpg, ndim
@@ -82,6 +83,7 @@ implicit none
     character(len=16) :: nomfpg
     character(len=19) :: chanom
     character(len=64) :: nochmd
+    aster_logical :: lfichUniq
 !
     integer :: codret
 !
@@ -92,7 +94,7 @@ implicit none
     integer :: itype, nb1, nbelr, jmolo, idime, ipg
     integer :: ifm, nivinf, igrel
     integer :: ierd, jliel, nbgrel
-    integer :: iaux, dimtopo
+    integer :: iaux, dimtopo, vimolo(1)
     aster_logical :: ljoint, lpenta
 !
     integer, parameter:: lgmax = 1000
@@ -149,6 +151,7 @@ implicit none
 !     -------------------------------------------------------------
 !
     if (codret .eq. 0) then
+        imolo = 0
         do igrel=1,nbgrel
             call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
             call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nb1)
@@ -166,9 +169,17 @@ implicit none
             endif
         end do
 !
-        ASSERT(.false.)
+        if( .not.lfichUniq ) then
+            ASSERT(.false.)
+        endif
 !
  32     continue
+
+        if( lfichUniq ) then
+            vimolo(1) = imolo
+            call asmpi_comm_vect('MPI_MAX', 'I', 1, vi=vimolo)
+            imolo = vimolo(1)
+        endif
 !
     endif
 !

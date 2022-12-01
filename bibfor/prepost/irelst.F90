@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -175,8 +175,8 @@ character(len=80) :: caimpk(3, nbimpr)
         call elref2(nomtef, MT_NBFAMX, lielrf, nbelr)
         ASSERT(nbelr.gt.0)
         !
-        call uteref(chanom, typech, ntypef, nomtef, nomfpg, &
-                    nbnoso, nbnoto, nbrepg, ndim, refcoo, &
+        call uteref(chanom, typech, ntypef, nomtef, .false._1, &
+                    nomfpg, nbnoso, nbnoto, nbrepg, ndim, refcoo, &
                     gscoo, wg, nochmd, codret)
         !
         nomasu = ' '

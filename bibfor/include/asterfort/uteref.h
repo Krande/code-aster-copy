@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,14 @@
 !
 !
 interface
-    subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
-                      nnos, nno, nbpg, ndim, refcoo,&
-                      gscoo, wg, nochmd, codret)
+    subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq,&
+                      nomfpg, nnos, nno, nbpg, ndim,&
+                      refcoo, gscoo, wg, nochmd, codret)
         character(len=19) :: chanom
         character(len=8) :: typech
         integer :: tyelas
         character(len=16) :: nomte
+        aster_logical :: lfichUniq
         character(len=16) :: nomfpg
         integer :: nnos
         integer :: nno
