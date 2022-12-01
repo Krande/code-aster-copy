@@ -113,7 +113,6 @@ AFFE_CHAR_MECA = OPER(
         max=1,
         fr=tr("Champ de pesanteur"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GRAVITE=SIMP(statut="o", typ="R", min=1, max=1),
         DIRECTION=SIMP(statut="o", typ="R", min=3, max=3),
     ),
@@ -122,7 +121,6 @@ AFFE_CHAR_MECA = OPER(
         max=1,
         fr=tr("Définition d'un chargement de rotation"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         VITESSE=SIMP(statut="o", typ="R", min=1, max=1),
         AXE=SIMP(statut="o", typ="R", min=2, max=3),
@@ -135,7 +133,7 @@ AFFE_CHAR_MECA = OPER(
             "Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées)"
         ),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD"),
             AU_MOINS_UN(
                 "DX",
                 "DY",
@@ -249,10 +247,9 @@ AFFE_CHAR_MECA = OPER(
             ),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
+        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         BLOCAGE=SIMP(
@@ -377,15 +374,13 @@ AFFE_CHAR_MECA = OPER(
         max="**",
         fr=tr("Bloque des DDLs dans un repère local d'une poutre"),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO"),
             AU_MOINS_UN("DX", "DY", "DZ", "DRX", "DRY", "DRZ"),
             UN_PARMI("VECT_Y", "ANGL_VRIL"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         DX=SIMP(statut="f", typ="R"),
@@ -407,7 +402,6 @@ AFFE_CHAR_MECA = OPER(
             "Impose à tous les noeuds d'une face une ou plusieurs valeurs de déplacement (ou de certaines grandeurs associées)"
         ),
         regles=(
-            UN_PARMI("GROUP_MA", "MAILLE"),
             AU_MOINS_UN(
                 "DX",
                 "DY",
@@ -439,7 +433,6 @@ AFFE_CHAR_MECA = OPER(
         ),
         #  rajout d'un mot clé REPERE :/ LOCAL /GLOBAL
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         DX=SIMP(statut="f", typ="R"),
@@ -472,14 +465,12 @@ AFFE_CHAR_MECA = OPER(
             "Impose à tous les noeuds d'une arete des elements 3D une ou plusieurs valeurs de déplacement"
         ),
         regles=(
-            UN_PARMI("GROUP_MA", "MAILLE"),
             AU_MOINS_UN("DX", "DY", "DZ", "DTAN", "PRES", "PHI", "TEMP", "PRE1", "PRE2"),
             EXCLUS("DTAN", "DX"),
             EXCLUS("DTAN", "DY"),
             EXCLUS("DTAN", "DZ"),
         ),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         DX=SIMP(statut="f", typ="R"),
@@ -511,13 +502,11 @@ AFFE_CHAR_MECA = OPER(
             " dans un repère oblique quelconque"
         ),
         regles=(
-            AU_MOINS_UN("GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+            AU_MOINS_UN("GROUP_MA", "GROUP_NO"),
             AU_MOINS_UN("DX", "DY", "DZ", "DRX", "DRY", "DRZ"),
         ),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         ANGL_NAUT=SIMP(statut="o", typ="R", max=3),
@@ -533,19 +522,15 @@ AFFE_CHAR_MECA = OPER(
         max="**",
         fr=tr("Définit la meme relation linéaire entre certains DDLs de couples de noeuds"),
         regles=(
-            UN_PARMI("GROUP_MA_1", "GROUP_NO_1", "NOEUD_1"),
-            UN_PARMI("GROUP_MA_2", "GROUP_NO_2", "NOEUD_2"),
+            UN_PARMI("GROUP_MA_1", "GROUP_NO_1"),
+            UN_PARMI("GROUP_MA_2", "GROUP_NO_2"),
             EXCLUS("GROUP_MA_1", "GROUP_NO_2"),
-            EXCLUS("GROUP_MA_1", "NOEUD_2"),
             EXCLUS("GROUP_NO_1", "GROUP_MA_2"),
-            EXCLUS("NOEUD_1", "GROUP_MA_2"),
         ),
         GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO_1=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD_1=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD_2=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         DDL_1=SIMP(
             statut="o", typ="TXM", into=C_NOM_DDL_INTO("MECANIQUE", with_dnor=True), max="**"
@@ -564,9 +549,7 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Définit des relations linéaires permettant de recoller deux bords d'une structure"),
-        regles=(
-            AU_MOINS_UN("GROUP_MA_ESCL", "GROUP_NO_ESCL"),
-        ),
+        regles=(AU_MOINS_UN("GROUP_MA_ESCL", "GROUP_NO_ESCL"),),
         GROUP_MA_MAIT=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_MA_ESCL=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO_ESCL=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
@@ -678,11 +661,9 @@ AFFE_CHAR_MECA = OPER(
             "Modélise une partie indéformable d'une structure. "
             "Le mot clé TRAN permettent d'imposer le déplacement de la partie indéformable."
         ),
-        regles=(UN_PARMI("GROUP_NO", "NOEUD", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("GROUP_NO", "GROUP_MA"),),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         DIST_MIN=SIMP(statut="f", typ="R"),
@@ -709,12 +690,9 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_3d_pou=BLOC(
             condition="""equal_to("OPTION", '3D_POU')""",
-            regles=(
-                UN_PARMI("GROUP_NO_2", "NOEUD_2", "GROUP_MA_2",),
-            ),
+            regles=(UN_PARMI("GROUP_NO_2", "GROUP_MA_2"),),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
-            NOEUD_2=SIMP(statut="c", typ=no),
             GROUP_MA_2=SIMP(statut="f", typ=grma),
             ANGL_MAX=SIMP(statut="f", typ="R", defaut=1.0),
         ),
@@ -727,40 +705,31 @@ AFFE_CHAR_MECA = OPER(
         ),
         b_2d_pou=BLOC(
             condition="""equal_to("OPTION", '2D_POU')""",
-            regles=(
-                UN_PARMI("GROUP_NO_2", "NOEUD_2", "GROUP_MA_2"),
-            ),
+            regles=(UN_PARMI("GROUP_NO_2", "GROUP_MA_2"),),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
-            NOEUD_2=SIMP(statut="c", typ=no),
             GROUP_MA_2=SIMP(statut="f", typ=grma),
             # ANGL_MAX    =SIMP(statut='f',typ='R',defaut= 1. ), ??? voir fortran, pas mis dans la doc
         ),
         b_coq_pou_tuy=BLOC(
             condition="""equal_to("OPTION", 'COQ_POU') or equal_to("OPTION", 'COQ_TUYAU')""",
-            regles=( UN_PARMI("GROUP_NO_2", "NOEUD_2")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
-            NOEUD_2=SIMP(statut="c", typ=no),
             CARA_ELEM=SIMP(statut="o", typ=(cara_elem)),
             AXE_POUTRE=SIMP(statut="o", typ="R", max=3),
         ),
         b_3d_tuyau=BLOC(
             condition="""equal_to("OPTION", '3D_TUYAU')""",
-            regles=(UN_PARMI("GROUP_NO_2", "NOEUD_2")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
-            NOEUD_2=SIMP(statut="c", typ=no),
             CARA_ELEM=SIMP(statut="o", typ=(cara_elem)),
             AXE_POUTRE=SIMP(statut="o", typ="R", max=3),
             ANGL_MAX=SIMP(statut="f", typ="R", defaut=1.0),
         ),
         b_plaq_pout_orth=BLOC(
             condition="""equal_to("OPTION", 'PLAQ_POUT_ORTH')""",
-            regles=(UN_PARMI("GROUP_NO_2", "NOEUD_2")),
             GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_NO_2=SIMP(statut="f", typ=grno),
-            NOEUD_2=SIMP(statut="c", typ=no),
             ANGL_MAX=SIMP(statut="f", typ="R", defaut=1.0),
             VERIF_EXCENT=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
         ),
@@ -769,11 +738,9 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Impose une meme valeur (inconnue) à des DDLs d'un ensemble de noeuds"),
-        regles=(UN_PARMI("GROUP_NO", "NOEUD", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("GROUP_NO", "GROUP_MA"),),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         DDL=SIMP(statut="o", typ="TXM", into=C_NOM_DDL_INTO("MECANIQUE"), max="**"),
@@ -820,7 +787,7 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         fr=tr("Applique à des noeuds des forces nodales"),
         max="**",
-        regles=(AU_MOINS_UN("GROUP_NO", "NOEUD"), AU_MOINS_UN("FX", "FY", "FZ", "MX", "MY", "MZ")),
+        regles=(UN_PARMI("GROUP_NO", "NOEUD"), AU_MOINS_UN("FX", "FY", "FZ", "MX", "MY", "MZ")),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),
@@ -835,9 +802,8 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique des forces surfaciques sur une face d'élément volumique"),
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"), AU_MOINS_UN("FX", "FY", "FZ")),
+        regles=(AU_MOINS_UN("FX", "FY", "FZ")),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),
         FY=SIMP(statut="f", typ="R"),
         FZ=SIMP(statut="f", typ="R"),
@@ -846,9 +812,8 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique des forces linéiques à une arete d'élément volumique ou de coque"),
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"), AU_MOINS_UN("FX", "FY", "FZ", "MX", "MY", "MZ")),
+        regles=(AU_MOINS_UN("FX", "FY", "FZ", "MX", "MY", "MZ")),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),
         FY=SIMP(statut="f", typ="R"),
         FZ=SIMP(statut="f", typ="R"),
@@ -860,9 +825,8 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique des forces linéiques au bord d'un domaine 2D ou AXIS ou AXIS_FOURIER"),
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"), AU_MOINS_UN("FX", "FY", "FZ")),
+        regles=(AU_MOINS_UN("FX", "FY", "FZ")),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),
         FY=SIMP(statut="f", typ="R"),
         FZ=SIMP(statut="f", typ="R"),
@@ -871,14 +835,9 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique des forces volumiques (2D ou 3D) à un domaine volumique"),
-        regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-            AU_MOINS_UN("FX", "FY", "FZ"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"), AU_MOINS_UN("FX", "FY", "FZ")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),
         FY=SIMP(statut="f", typ="R"),
         FZ=SIMP(statut="f", typ="R"),
@@ -896,13 +855,12 @@ AFFE_CHAR_MECA = OPER(
             "Applique une pression à un domaine de milieu continu 2D ou 3D, ou à un domaine de coques et tuyaux"
         ),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "FISSURE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE", "FISSURE"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "FISSURE"),
+            PRESENT_ABSENT("TOUT", "GROUP_MA", "FISSURE"),
             AU_MOINS_UN("PRES", "CISA_2D"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FISSURE=SIMP(statut="f", typ=fiss_xfem, min=1, max=100),
         PRES=SIMP(statut="f", typ="R"),
         CISA_2D=SIMP(statut="f", typ="R"),
@@ -913,10 +871,8 @@ AFFE_CHAR_MECA = OPER(
         fr=tr(
             "Calcul l'effet de fond sur une branche de tuyauterie (modélisation 3D) soumise à une pression"
         ),
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"),),
         GROUP_MA_INT=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         PRES=SIMP(statut="o", typ="R"),
     ),
     PRE_EPSI=FACT(
@@ -924,9 +880,9 @@ AFFE_CHAR_MECA = OPER(
         max="**",
         fr=tr("Applique un chargement de déformation initiale à un élément 2D, 3D ou de structure"),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "EPSI"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("EPSI", "TOUT", "GROUP_MA", "MAILLE"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "EPSI"),
+            PRESENT_ABSENT("TOUT", "GROUP_MA"),
+            PRESENT_ABSENT("EPSI", "TOUT", "GROUP_MA"),
             AU_MOINS_UN(
                 "EPSI",
                 "EPXX",
@@ -966,7 +922,6 @@ AFFE_CHAR_MECA = OPER(
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         EPXX=SIMP(statut="f", typ="R"),
         EPYY=SIMP(statut="f", typ="R"),
         EPZZ=SIMP(statut="f", typ="R"),
@@ -989,13 +944,9 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique des forces linéiques sur des éléments de type poutre"),
-        regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FORCE", into=("VENT", "FORCE")),
         #  rajour d'un mot clé REPERE :/ LOCAL /GLOBAL
         b_force=BLOC(
@@ -1070,13 +1021,9 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         max="**",
         fr=tr("Applique une pression sur des éléments TUYAU"),
-        regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         PRES=SIMP(statut="o", typ="R"),
     ),
     FORCE_COQUE=FACT(
@@ -1084,8 +1031,7 @@ AFFE_CHAR_MECA = OPER(
         max="**",
         fr=tr("Applique des forces surfaciques sur des éléments de types coques"),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
+            UN_PARMI("TOUT", "GROUP_MA"),
             AU_MOINS_UN("FX", "FY", "FZ", "MX", "MY", "MZ", "PRES", "F1", "F2", "F3", "MF1", "MF2"),
             PRESENT_ABSENT("FX", "PRES", "F1", "F2", "F3", "MF1", "MF2"),
             PRESENT_ABSENT("FY", "PRES", "F1", "F2", "F3", "MF1", "MF2"),
@@ -1105,7 +1051,6 @@ AFFE_CHAR_MECA = OPER(
         #  rajour d'un mot clé REPERE :/ LOCAL /GLOBAL
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FX=SIMP(statut="f", typ="R"),
         FY=SIMP(statut="f", typ="R"),
         FZ=SIMP(statut="f", typ="R"),
@@ -1126,24 +1071,13 @@ AFFE_CHAR_MECA = OPER(
         fr=tr(
             "Permet de représenter le raccord entre des éléments de coques au moyen des relations linéaires"
         ),
-        regles=(
-            AU_MOINS_UN(
-                "GROUP_MA_1",
-                "GROUP_MA_2",
-                "GROUP_NO_1",
-                "NOEUD_1",
-                "GROUP_NO_2",
-                "NOEUD_2",
-            ),
-        ),
+        regles=(AU_MOINS_UN("GROUP_MA_1", "GROUP_MA_2", "GROUP_NO_1", "GROUP_NO_2"),),
         GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO_1=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD_1=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO_1=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD_2=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
     ),
@@ -1174,13 +1108,9 @@ AFFE_CHAR_MECA = OPER(
             "Appliquer la force de LAPLACE agissant sur un conducteur principal, due à la présence d'un conducteur "
             "secondaire droit"
         ),
-        regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         POSITION=SIMP(
             statut="f", typ="TXM", fr=tr("Direction prédéfinie"), into=("PARA", "INFI", "FINI")
         ),
@@ -1211,14 +1141,12 @@ AFFE_CHAR_MECA = OPER(
             "secondaire non nécessairement droit"
         ),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
+            UN_PARMI("TOUT", "GROUP_MA"),
             AU_MOINS_UN("GROUP_MA_2", "TRANS", "SYME"),
             EXCLUS("TRANS", "SYME"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         TRANS=SIMP(statut="f", typ="R", max="**"),
         SYME=SIMP(statut="f", typ="R", max="**"),
@@ -1227,22 +1155,15 @@ AFFE_CHAR_MECA = OPER(
         statut="f",
         fr=tr("Applique une impédance acoustique à une face"),
         max="**",
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"),),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         IMPE=SIMP(statut="o", typ="R"),
     ),
     VITE_FACE=FACT(
         statut="f",
         fr=tr("Impose des vitesses normales à une face (phénomène ACOUSTIQUE), "),
         max="**",
-        regles=(
-            AU_MOINS_UN("GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("GROUP_MA", "MAILLE"),
-            UN_PARMI("VNOR", "DIRECTION"),
-        ),
+        regles=(UN_PARMI("VNOR", "DIRECTION"),),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         VNOR=SIMP(statut="f", typ="R"),
         DIRECTION=SIMP(statut="f", typ="R", min=2, max=3),
         b_nonNormal=BLOC(condition="""exists("DIRECTION")""", VITE=SIMP(statut="o", typ="R")),
@@ -1253,9 +1174,7 @@ AFFE_CHAR_MECA = OPER(
         fr=tr(
             "Applique une amplitude de pression d'onde incidente sinusoidale arrivant normalement à une face"
         ),
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"),),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         PRES=SIMP(statut="o", typ="R"),
     ),
     FLUX_THM_REP=FACT(
@@ -1265,14 +1184,9 @@ AFFE_CHAR_MECA = OPER(
             "Applique à un domaine de milieu continu 2D ou 3D un flux de chaleur et/ou un apport de masse fluide "
             "(flux hydraulique)"
         ),
-        regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-            AU_MOINS_UN("FLUN", "FLUN_HYDR1", "FLUN_HYDR2"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"), AU_MOINS_UN("FLUN", "FLUN_HYDR1", "FLUN_HYDR2")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         FLUN=SIMP(statut="f", typ="R"),
         FLUN_HYDR1=SIMP(statut="f", typ="R"),
         FLUN_HYDR2=SIMP(statut="f", typ="R"),
@@ -1285,13 +1199,11 @@ AFFE_CHAR_MECA = OPER(
             "(flux hydraulique)"
         ),
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
+            UN_PARMI("TOUT", "GROUP_MA"),
             AU_MOINS_UN("COEF_11", "COEF_12", "COEF_21", "COEF_22"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         COEF_11=SIMP(statut="o", typ="R"),
         COEF_12=SIMP(statut="f", typ="R"),
         COEF_21=SIMP(statut="f", typ="R"),

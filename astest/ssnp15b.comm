@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,17 +62,17 @@ TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
-                        FORCE_CONTOUR=_F(MAILLE='GAUCHE',
+                        FORCE_CONTOUR=_F(GROUP_MA='GAUCHE',
                                          FX=-1.,),)
 
 CISAIL=AFFE_CHAR_MECA(MODELE=MO,
-                      FORCE_CONTOUR=(_F(MAILLE='GAUCHE',
+                      FORCE_CONTOUR=(_F(GROUP_MA='GAUCHE',
                                         FY=-1.,),
-                                     _F(MAILLE='DROITE',
+                                     _F(GROUP_MA='DROITE',
                                         FY=1.,),
-                                     _F(MAILLE='HAUT',
+                                     _F(GROUP_MA='HAUT',
                                         FX=1.,),
-                                     _F(MAILLE='BAS',
+                                     _F(GROUP_MA='BAS',
                                         FX=-1.,),),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,

@@ -85,6 +85,10 @@ MAIL = DEFI_GROUP(reuse=MAIL,
                                _F(NOM='LATHD',
                                   DIFFE=('LAT_RIGH','HA10'))))
 
+MAIL = DEFI_GROUP( reuse=MAIL, MAILLAGE=MAIL,
+            CREA_GROUP_MA=_F( NOM = 'M128',
+                              MAILLE =('M128')))
+
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL,))
 
 list_group_ma=['ELEM'+str(n) for n in range(nbcouche)]
@@ -196,7 +200,7 @@ ONDE=AFFE_CHAR_MECA_F(MODELE=MODELE,INFO=2,
                             TYPE_ONDE = Onde,
                             FONC_SIGNAL = vite,
                             DIST=-5.0,
-                            MAILLE='M128'))
+                            GROUP_MA='M128'))
 # ---Fin
 IMPR_CO(CONCEPT=_F(NOM=ONDE))
 

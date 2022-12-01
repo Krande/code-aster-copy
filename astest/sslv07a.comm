@@ -66,6 +66,11 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
             CREA_GROUP_MA=_F( NOM = 'BAS',
                               MAILLE =('M1','M2','M3','M4')))
 
+
+DEFI_GROUP( reuse=MA, MAILLAGE=MA,
+            CREA_GROUP_MA=_F( NOM = 'PES',
+                              MAILLE =('M5','M6','M7','M8')))
+
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
             CREA_GROUP_MA=_F( NOM = 'HAUT',
                               MAILLE =('M9','M10','M11','M12')))
@@ -132,8 +137,7 @@ BLOQU=AFFE_CHAR_MECA(MODELE=MO,
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   PESANTEUR=_F(GRAVITE=9.81,
                                DIRECTION=(0.0,0.0,-1.0,),
-                               GROUP_MA=('BAS','HAUT'),
-                               MAILLE=('M5','M6','M7','M8'),
+                               GROUP_MA=('BAS','HAUT', "PES"),
                               ),
                   FORCE_FACE=_F(GROUP_MA='FACESUP',
                                 FZ=229553.0,),)
