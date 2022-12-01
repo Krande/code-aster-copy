@@ -69,7 +69,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     integer :: jluti, jmarq, jorig, jrnom, jtype, jusadi, k
     integer :: l, lcarao, ldynol, lloc, lmarq, lon, lon1
     integer :: lon2, n, nbacce, nbext, nbgros, nblim, nblma1
-    integer :: nblma2, nbloco, nbpeti, nrepo
+    integer :: nblma2, nbloco, nbpeti, nrepo, mfic_prev
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )
     common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -459,6 +459,13 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             valk(2) = cversb
             valk(3) = cversu
             call utmess('A', 'JEVEUX_08', nk=3, valk=valk)
+        endif
+!
+!       calcul de la taille maximale précédemment utilisée
+        mfic_prev = longbl(ic)*nbenrg(ic)*lois
+        if (mfic_prev .ne. mfic .and. iext(ic) .gt. 0) then
+            mfic = mfic_prev
+            call utmess("I", "JEVEUX1_79", sr=1.0d0*mfic/1024/1024)
         endif
 !
         if (nbloc .eq. 0) then

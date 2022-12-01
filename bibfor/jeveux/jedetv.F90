@@ -88,7 +88,7 @@ subroutine jedetv()
     valr(1)= 100.d0
     valr(2)= nbacce(2*ic-1)*longbl(ic)*lois/1024.d0
     valr(3)= nbacce(2*ic  )*longbl(ic)*lois/1024.d0
-    if (valr(3) .gt. valr(1)*valr(2) .and. valr(2) .ne. 0) then
+    if (valr(3) .gt. valr(1)*valr(2) .and. valr(2) .gt. 10.d0) then
         call utmess('A', 'JEVEUX1_64', nr=3, valr=valr)
     endif
 !
