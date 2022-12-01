@@ -62,7 +62,6 @@ except ImportError:
 
 DEFAULT_MEMORY_LIMIT = 2047 if "32" in platform.architecture()[0] else 4096
 DEFAULT_TIME_LIMIT = 86400
-DEFAULT_BASE_SIZE_LIMIT = 48000
 RCDIR = osp.abspath(
     osp.join(osp.dirname(__file__), os.pardir, os.pardir, os.pardir, os.pardir, "share", "aster")
 )
@@ -357,16 +356,11 @@ class ExecutionParameter(metaclass=Singleton):
             "--maxbase",
             action="store",
             type=float,
-            default=DEFAULT_BASE_SIZE_LIMIT,
-            help="size limit in MB for code_aster out-of-core files (glob.*, " "default: 48 GB)",
+            default=None,
+            help="size limit in MB for code_aster out-of-core files (glob.*, " "default: 2 TB)",
         )
         parser.add_argument(
-            "--max_base",
-            dest="maxbase",
-            action="store",
-            type=float,
-            default=DEFAULT_BASE_SIZE_LIMIT,
-            help=SUPPRESS,
+            "--max_base", dest="maxbase", action="store", type=float, default=None, help=SUPPRESS
         )
         parser.add_argument(
             "--numthreads", action="store", type=int, default=1, help="maximum number of threads"
@@ -467,6 +461,17 @@ class ExecutionParameter(metaclass=Singleton):
         logger.debug("Read options: %r", vars(args))
         if "-max_base" in " ".join(ignored):
             deprecate("-max_base", case=4, help="Use '--max_base' instead.")
+
+        # default value with DEBUT
+        if not args.Continue:
+            if not args.maxbase:
+                # use default from envima.c
+                args.maxbase = -1
+        else:
+            # --max_base must not be changed with POURSUITE
+            if args.maxbase:
+                logger.warning("'--max_base' is ignored with POURSUITE.")
+                args.maxbase = None
 
         # assign parameter values
         for opt, value in list(vars(args).items()):

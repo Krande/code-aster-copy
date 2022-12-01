@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine dbg_base()
 !
     aster_logical :: exist
     integer, parameter :: n = 5
-    integer :: lfic(n), mfic
-    common /fenvje/  lfic, mfic
+    integer :: lfic, mfic
+    common /fenvje/  lfic(n), mfic
 !
     character(len=2) :: dn2
     character(len=5) :: classe
@@ -73,9 +73,11 @@ subroutine dbg_base()
     nbrec = nblmax(ic)
     dbsize = recsize * nbrec
     objint = recint / 4
-!   with 48 GB, noobj=245768
+!   with 2 TB, noobj=10486101
     nbobj = 4 * nbrec * perc / 100
     vali(1) = dbsize
+    vali(10) = mfic * 1024
+    vali(9) = lfic(ic) * 1000
     vali(2) = recsize
     vali(3) = recint
     vali(4) = nbrec
@@ -83,8 +85,6 @@ subroutine dbg_base()
     vali(6) = nbobj
     vali(7) = nbobj * objint * 8
     vali(8) = nbobj * objint
-    vali(9) = lfic(ic) * 1000
-    vali(10) = mfic * 1024
     call utmess('I', 'JEVEUX1_97', vali=vali, ni=10)
 
     inquire(file=dbname//'.1', exist=exist)
