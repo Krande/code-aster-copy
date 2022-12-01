@@ -144,6 +144,9 @@ character(len=8), optional :: nosdfu
     else
         nofimd = kfic(1:200)
     endif
+    if (lfu .and. nofimd(1:1) .ne. "/") then
+        call utmess("F", "MED_11", sk=nofimd)
+    endif
 !
     if (niv .gt. 1) then
         write (ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd

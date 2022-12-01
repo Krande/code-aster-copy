@@ -91,6 +91,15 @@ On ne peut pas écrire au format MED %(i1)d.%(i2)d.%(i3)d.
      Le groupe "%(k1)s" est renommé en "%(k2)s".
 """
     ),
+    11: _(
+        """
+On essaie d'imprimer dans '%(k1)s'.
+Pour imprimer des résultats au format MED dans un unique fichier, il est nécessaire
+de préciser un chemin absolu vers ce fichier (doit commencer par '/').
+
+Risque & Conseil : Utiliser DEFI_FICHIER pour associer l'unité logique à un chemin absolu.
+    """
+    ),
     12: _(
         """
   -> Erreur, code retour = %(k1)s
