@@ -207,7 +207,7 @@ TEST_RESU(
             NUME_ORDRE=1,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            NOEUD="N19",
+            GROUP_NO="N19",
             VALE_CALC=-0.00043318679271560356,
         ),
     )

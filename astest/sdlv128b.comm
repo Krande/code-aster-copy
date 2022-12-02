@@ -153,10 +153,10 @@ masse = 0
 # noeud N353 == group_ma SOU_DIS2
 if masse:
     MASSE=POST_ELEM(MASS_INER=(_F(TOUT='OUI',),
-                               _F(MAILLE='M10594'),
-                               _F(MAILLE='M10595'),
-                               _F(MAILLE='M15485'),
-                               _F(MAILLE='M15505'),
+                               _F(GROUP_MA='M10594'),
+                               _F(GROUP_MA='M10595'),
+                               _F(GROUP_MA='M15485'),
+                               _F(GROUP_MA='M15505'),
                               ),
                 MODELE=MODELNUM,
                 CHAM_MATER=MATNUM,

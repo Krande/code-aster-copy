@@ -104,7 +104,7 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = ('PRISM','DROITE'),
+                   GROUP_MA = ('PRISM','DROITE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D'
                      ),
@@ -147,7 +147,7 @@ CM_F=AFFE_MATERIAU(MAILLAGE=MA,
 LIAISON=AFFE_CHAR_CINE(
   MODELE=MO,
   MECA_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
 
@@ -174,7 +174,7 @@ PAM_J = AFFE_CHAR_CINE(
 TRAC_1=AFFE_CHAR_CINE(
   MODELE=MO,
   MECA_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
+    _F(GROUP_MA='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
     )
   )
 

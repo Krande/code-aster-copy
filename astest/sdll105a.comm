@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
 
 COLONNE=AFFE_MODELE(
                      MAILLAGE=MAYA,AFFE=(
-                     _F( MAILLE = ('MASSE',),
+                     _F( GROUP_MA = ('MASSE',),
                            MODELISATION = 'DIS_T',
                            PHENOMENE = 'MECANIQUE'),
                      _F( GROUP_MA = ('GRMAA', 'GRMAAM',),
@@ -68,10 +68,10 @@ CARA=AFFE_CARA_ELEM(
                       0.000000000E+00, 0.000000000E+00, 5.000000000E-02,
                       5.000000000E-02, 5.000000000E-02, 6.939778172E-03,
                      )),
-            DISCRET=(_F( MAILLE = ('MASSE',),
+            DISCRET=(_F( GROUP_MA = ('MASSE',),
                                CARA = 'M_T_D_N',
                                VALE = (10.,)),
-                     _F( MAILLE = ('MASSE',),
+                     _F( GROUP_MA = ('MASSE',),
                                CARA = 'K_T_D_N',
                                VALE = (0.,0.,0.))
                     )

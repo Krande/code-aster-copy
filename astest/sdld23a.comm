@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,10 +60,10 @@ CARELEM1=AFFE_CARA_ELEM(   MODELE=MO1,DISCRET=(
      _F(  GROUP_MA='NOEUDS',
                CARA = 'A_T_D_N',
                VALE = (0.,0.,0., )),
-     _F(  MAILLE = ('M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',),
+     _F(  GROUP_MA = ('M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',),
                CARA = 'K_T_D_L',
                VALE = (1.E+5, 0., 0.,)),
-     _F(  MAILLE = ('M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',),
+     _F(  GROUP_MA = ('M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',),
                CARA = 'A_T_D_L',
                VALE = (50., 0., 0.,)))
                          )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ TEST_TABLE(
 TEST_RESU(RESU=(_F(INST=0.0,
                    RESULTAT=EVOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N739',
+                   GROUP_NO='N739',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.005129395833726875,
                    CRITERE=('RELATIF', 'RELATIF'),
@@ -56,7 +56,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                 _F(INST=0.0,
                    RESULTAT=EVOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N731',
+                   GROUP_NO='N731',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.00513552992572644,
                    CRITERE=('RELATIF', 'RELATIF'),
@@ -64,7 +64,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                 _F(INST=tfin,
                    RESULTAT=RESUGLO1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N739',
+                   GROUP_NO='N739',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.006216267643761434,
                    CRITERE=('RELATIF', 'RELATIF'),
@@ -72,7 +72,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                 _F(INST=tfin,
                    RESULTAT=RESUGLO1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DX',
                    VALE_CALC=-0.004957789605078844,
                    CRITERE=('RELATIF', 'RELATIF'),

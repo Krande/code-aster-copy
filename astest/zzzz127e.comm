@@ -26,8 +26,8 @@ mesh = MODI_MAILLAGE(
     reuse=mesh,
     MAILLAGE=mesh,
     ORIE_NORM_COQUE=(
-        _F(GROUP_MA=("IFS1",), NOEUD=("N2",), VECT_NORM=(1.0, 0.0, 0.0)),
-        _F(GROUP_MA=("IFS2",), NOEUD=("N14",), VECT_NORM=(1.0, 0.0, 0.0)),
+        _F(GROUP_MA=("IFS1",), GROUP_NO=("N2",), VECT_NORM=(1.0, 0.0, 0.0)),
+        _F(GROUP_MA=("IFS2",), GROUP_NO=("N14",), VECT_NORM=(1.0, 0.0, 0.0)),
     ),
 )
 

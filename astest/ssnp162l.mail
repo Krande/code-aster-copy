@@ -57,4 +57,19 @@
  PRISMDEG
  FINSF
  %
+ GROUP_MA
+ GAUCHE2                 
+ GAUCHE2 
+ FINSF
+ %
+ GROUP_MA
+ DROITE                  
+ DROITE  
+ FINSF
+ %
+ GROUP_MA
+ PRISM                   
+ PRISM   
+ FINSF
+ %
  FIN

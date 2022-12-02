@@ -430,7 +430,7 @@ T3 = CREA_CHAMP(
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N939",
+            GROUP_NO="N939",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T1,
@@ -439,7 +439,7 @@ TEST_RESU(
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            NOEUD="N939",
+            GROUP_NO="N939",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T2,
@@ -448,7 +448,7 @@ TEST_RESU(
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            NOEUD="N939",
+            GROUP_NO="N939",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T3,
@@ -462,7 +462,7 @@ TEST_RESU(
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N1334",
+            GROUP_NO="N1334",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T1,
@@ -471,7 +471,7 @@ TEST_RESU(
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            NOEUD="N1334",
+            GROUP_NO="N1334",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T2,
@@ -480,7 +480,7 @@ TEST_RESU(
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            NOEUD="N1334",
+            GROUP_NO="N1334",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T3,
@@ -494,7 +494,7 @@ TEST_RESU(
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N1498",
+            GROUP_NO="N1498",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T1,
@@ -503,7 +503,7 @@ TEST_RESU(
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            NOEUD="N1498",
+            GROUP_NO="N1498",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T2,
@@ -512,7 +512,7 @@ TEST_RESU(
             REFERENCE="NON_DEFINI",
         ),
         _F(
-            NOEUD="N1498",
+            GROUP_NO="N1498",
             NOM_CMP="TEMP",
             PRECISION=1.0e-2,
             CHAM_GD=T3,

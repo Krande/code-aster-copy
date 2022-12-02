@@ -26,10 +26,10 @@ meshColle = LIRE_MAILLAGE(UNITE=30, FORMAT="MED", INFO=2)
 mesh = MODI_MAILLAGE(reuse=mesh,
                      MAILLAGE=mesh,
                      ORIE_NORM_COQUE=(_F(GROUP_MA=('IFS1', ),
-                                         NOEUD=('N2', ),
+                                         GROUP_NO=('N2', ),
                                          VECT_NORM=(1.0, 0.0, 0.0)),
                                       _F(GROUP_MA=('IFS2', ),
-                                         NOEUD=('N14', ),
+                                         GROUP_NO=('N14', ),
                                          VECT_NORM=(1.0, 0.0, 0.0))
                                       ),
                      )
@@ -37,10 +37,10 @@ mesh = MODI_MAILLAGE(reuse=mesh,
 meshColle = MODI_MAILLAGE(reuse=meshColle,
                          MAILLAGE=meshColle,
                          ORIE_NORM_COQUE=(_F(GROUP_MA=('IFS1', ),
-                                             NOEUD=('N2', ),
+                                             GROUP_NO=('N2', ),
                                              VECT_NORM=(1.0, 0.0, 0.0)),
                                           _F(GROUP_MA=('IFS2', ),
-                                             NOEUD=('N14', ),
+                                             GROUP_NO=('N14', ),
                                              VECT_NORM=(1.0, 0.0, 0.0))
                                           ),
                          )
