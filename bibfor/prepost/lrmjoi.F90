@@ -100,18 +100,6 @@ use sort_module
     nonulg = mesh//'.NULOGL'
     call wkvect(nonulg, 'G V I', nbnoeu, jnlogl)
 !
-! --- On renomme les noeuds avec le numéro global
-!
-    nomnoe = mesh//'.NOMNOE'
-    call jedetr(nomnoe)
-    call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
-    do ino = 1 , nbnoeu
-        call codlet(ino, 'G', code)
-        nom = 'N'//code
-        call jecroc(jexnom(nomnoe, nom))
-    end do
-!
 ! --- L'objet .NOEX permet de savoir à qui appartient le noeud.
 !     Pour les noeuds internes, c'est le proc courant
 !     Pour les noeuds joints, c'est un autre proc et il faut le trouver par lecture des joints
@@ -228,6 +216,18 @@ use sort_module
             node_id = v_connex(ino)
             v_maex(ima) = min(v_maex(ima), v_noext(node_id))
         end do
+    end do
+!
+! --- On renomme les noeuds avec le numéro global
+!
+    nomnoe = mesh//'.NOMNOE'
+    call jedetr(nomnoe)
+    call jecreo(nomnoe, 'G N K8')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
+    do ino = 1 , nbnoeu
+        call codlet(zi(jnlogl + ino - 1), 'G', code)
+        nom = 'N'//code
+        call jecroc(jexnom(nomnoe, nom))
     end do
 !
     call jedema()

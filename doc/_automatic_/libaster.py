@@ -678,6 +678,23 @@ class Mesh(BaseMesh):
         Returns:
             bool: *True* if succeeds, *False* otherwise.
         """
+    
+    def setGroupOfCells(self, group_name, cell_ids):
+        """Set new group of cells in the mesh
+        
+        Arguments:
+            group_name (str): Name of the new group.
+            cell_ids (list[int]) : cell ids which are in the group
+        """
+    
+    def setGroupOfNodes(self, group_name, node_ids, localNumbering= False):
+        """Set new group of nodes in the mesh
+        
+        Arguments:
+            group_name (str): Name of the new group.
+            node_ids (list[int]) : node ids which are in the group
+            localNumbering=false (bool): not used (for compatibilty with ParallelMesh)
+        """
 
 # built-in function getMedCouplingConversionData in libaster
 
@@ -11015,6 +11032,13 @@ class ParallelMesh(BaseMesh):
             list[int]: MPI-Rank of the owners of the cells
         """
     
+    def getGlobalToLocalMapping(self):
+        """Returns global to local numbering mapping for nodes
+        
+        Returns:
+            dict[int]: global to local numbering mapping.
+        """
+    
     def getGroupsOfCells(self, local= False):
         """Return the list of the existing (local or global) groups of cells.
         
@@ -11047,6 +11071,13 @@ class ParallelMesh(BaseMesh):
         
         Returns:
             list[int]: Indexes of the nodes.
+        """
+    
+    def getLocalToGlobalMapping(self):
+        """Returns local to global numbering mapping for nodes
+        
+        Returns:
+            list[int]: local to global numbering mapping.
         """
     
     def getNodesRank(self):
@@ -11090,6 +11121,23 @@ class ParallelMesh(BaseMesh):
         
         Returns:
             bool: *True* if exists, *False* otherwise.
+        """
+    
+    def setGroupOfCells(self, group_name, cell_ids):
+        """Set new group of cells in the mesh
+        
+        Arguments:
+            group_name (str): Name of the new group.
+            cell_ids (list[int]) : cell ids which are in the group
+        """
+    
+    def setGroupOfNodes(self, group_name, node_ids, localNumbering= False):
+        """Set new group of nodes in the mesh
+        
+        Arguments:
+            group_name (str): Name of the new group.
+            node_ids (list[int]) : node ids which are in the group
+            localNumbering=false (bool): ids are given in the local numbering ?
         """
 
 # class ParallelDOFNumbering in libaster

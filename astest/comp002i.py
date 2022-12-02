@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ def TEST_ECART(ch_param2, label_cal, N_pas, Ncal, ch_param, R_SI, prec_ecart, pr
             preczero = prec_zero[i]
             ch_for = 'relative_error(' + ch_cal + ',' + chref[
                 iref] + ',' + str(coef) + ',' + str(preczero) + ')'
-            ERR_REL = FORMULE(NOM_PARA=(ch_cal, chref[iref]),
+            ERR_REL = FORMULE(NOM_PARA=list(set([ch_cal, chref[iref]])),
                               VALE = ch_for,
                               relative_error=relative_error)
             R_SI[i] = CALC_TABLE(TABLE=R_SI[i], reuse=R_SI[i],
