@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,10 +112,14 @@ MAILMES0 = LIRE_MAILLAGE(FORMAT='IDEAS',
 MAILMESU=CREA_MAILLAGE(MAILLAGE=MAILMES0,
          CREA_POI1= _F(NOM_GROUP_MA='N2N3',   NOEUD=('N2','N3'), ))
 
-
+MAILMESU = DEFI_GROUP( reuse=MAILMESU, MAILLAGE=MAILMESU,
+            CREA_GROUP_MA=(
+               _F( NOM = 'M1', MAILLE =('M1')),
+            _F( NOM = 'M2', MAILLE =('M2')),
+            ))
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
-                              _F( MAILLE = ('M1','M2',),
+                              _F( GROUP_MA = ('M1','M2',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
                               _F( GROUP_MA = ('N2N3',),

@@ -166,9 +166,16 @@ MAILMES0 = LIRE_MAILLAGE(FORMAT='IDEAS',
 MAILMESU=CREA_MAILLAGE(MAILLAGE=MAILMES0,
          CREA_POI1= _F(NOM_GROUP_MA='N3N4N5',   NOEUD=('N3','N4','N5'), ))
 
+MAILMESU = DEFI_GROUP( reuse=MAILMESU, MAILLAGE=MAILMESU,
+            CREA_GROUP_MA=(
+               _F( NOM = 'M3', MAILLE =('M3')),
+            _F( NOM = 'M4', MAILLE =('M4')),
+            _F( NOM = 'M5', MAILLE =('M5')),
+            ))
+
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
-                              _F( MAILLE = ('M3','M4','M5',),
+                              _F( GROUP_MA = ('M3','M4','M5',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
                               _F( GROUP_MA = ('N3N4N5',),
