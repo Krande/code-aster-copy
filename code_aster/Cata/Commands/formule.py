@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,19 +25,21 @@ from ..Language.Syntax import *
 
 
 def formule_prod(self, VALE, VALE_C, **args):
-    if args.get('__all__'):
+    if args.get("__all__"):
         return (formule, formule_c)
     if VALE is not None:
         return formule
     elif VALE_C is not None:
         return formule_c
 
-FORMULE=FORM(nom="FORMULE",
-             op=None,
-             sd_prod=formule_prod,
-             fr=tr("Définit une formule réelle ou complexe à partir de son expression mathématique"),
-    regles = (UN_PARMI('VALE', 'VALE_C',),),
-    VALE     = SIMP(statut='f', typ='TXM'),
-    VALE_C   = SIMP(statut='f', typ='TXM'),
-    NOM_PARA = SIMP(statut='o', typ='TXM', max='**'),
+
+FORMULE = FORM(
+    nom="FORMULE",
+    op=None,
+    sd_prod=formule_prod,
+    fr=tr("Définit une formule réelle ou complexe à partir de son expression mathématique"),
+    regles=(UN_PARMI("VALE", "VALE_C"),),
+    VALE=SIMP(statut="f", typ="TXM"),
+    VALE_C=SIMP(statut="f", typ="TXM"),
+    NOM_PARA=SIMP(statut="o", typ="TXM", validators=NoRepeat(), max="**"),
 )

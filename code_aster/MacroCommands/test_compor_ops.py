@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,8 @@ def TEST_ECART(self, ch_param2, label_cal, N_pas, Ncal, ch_param, __RSI, prec_ec
                 ch_cal, chref[iref], coef, preczero)
             nompar1 = '%s' % (ch_cal)
             nompar2 = '%s' % (chref[iref])
-            __errrel = FORMULE(NOM_PARA=(nompar1, nompar2),
+            nompar = set([nompar1, nompar2])
+            __errrel = FORMULE(NOM_PARA=list(nompar),
                 VALE=valfor,
                 relative_error=relative_error)
             if __ersi is None:
