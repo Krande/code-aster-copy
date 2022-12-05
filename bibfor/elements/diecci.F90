@@ -82,6 +82,8 @@ subroutine diecci(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    call utmess('A', 'DISCRETS_24')
+
     iret = 0
     ! récupération du matériau
     call jevech('PMATERC', 'L', imat)
