@@ -82,26 +82,13 @@ aster_logical, intent(out) :: l_incr
         call comp_meca_elas(compor, l_etat_init)
     endif
 !
-! --- Incremental behavior or not ?
-!
-    if (l_impel) then
-        l_incr = ASTER_FALSE
-    else
-        call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
-        if (repk == 'ELAS') then
-            l_incr = ASTER_FALSE
-        else if (repk=='INCR'.or.repk=='MIXTE') then
-            l_incr = ASTER_TRUE
-        else
-            ASSERT(ASTER_FALSE)
-        endif
-    endif
-!
 ! --- Check COMPORTEMENT / RELATION in result for incremental comportement
 !
-    if (l_incr) then
+    if (.not. l_impel) then
         call cgCreateCompIncr(compor, l_etat_init)
     endif
+!
+! --- Incremental behavior or not ?
 !
     call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
     if (repk == 'ELAS') then

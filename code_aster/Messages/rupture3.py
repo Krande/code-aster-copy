@@ -60,7 +60,8 @@ Veuillez l'enlever.
 """),
 
     8: _("""
-La relation suivante n'est pas supportée: %(k1)s. Uniquement les lois basées sur VMIS_ISOT_*** sont prévues pour un calcul élastoplastique.
+La relation suivante n'est pas supportée: %(k1)s. Uniquement les lois basées sur VMIS_ISOT_*** sont prévues pour un calcul élastoplastique,
+à l'exception de VMIS_ISOT_NL.
 """),
 
     9: _("""
