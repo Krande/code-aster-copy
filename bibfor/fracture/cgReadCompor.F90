@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,26 +89,13 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
         call comp_meca_elas(compor, nb_cmp, l_etat_init)
     endif
 !
-! --- Incremental behavior or not ?
-!
-    if (l_impel) then
-        l_incr = ASTER_FALSE
-    else
-        call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
-        if (repk == 'ELAS') then
-            l_incr = ASTER_FALSE
-        else if (repk=='INCR'.or.repk=='MIXTE') then
-            l_incr = ASTER_TRUE
-        else
-            ASSERT(ASTER_FALSE)
-        endif
-    endif
-!
 ! --- Check COMPORTEMENT / RELATION in result for incremental comportement
 !
-    if (l_incr) then
+    if (.not. l_impel) then
         call cgCreateCompIncr(compor, l_etat_init)
     endif
+!
+! --- Incremental behavior or not ?
 !
     call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
     if (repk == 'ELAS') then

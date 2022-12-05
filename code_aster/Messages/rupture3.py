@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,8 @@ Veuillez l'enlever.
 """),
 
     8: _("""
-La relation suivante n'est pas supportée: %(k1)s. Uniquement les lois basées sur VMIS_ISOT_*** sont prévues pour un calcul élastoplastique.
+La relation suivante n'est pas supportée: %(k1)s. Uniquement les lois basées sur VMIS_ISOT_*** sont prévues pour un calcul élastoplastique,
+à l'exception de VMIS_ISOT_NL.
 """),
 
     9: _("""

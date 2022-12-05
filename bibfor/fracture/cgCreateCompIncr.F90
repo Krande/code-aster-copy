@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ use Behaviour_type
         defo_comp = v_compor_vale(nb_cmp_max*(i_zone-1)+DEFO)
 !
         if(rela_comp(1:4) .ne. "ELAS") then
-            if(rela_comp(1:10) == "VMIS_ISOT_") then
+            if(rela_comp(1:10) == "VMIS_ISOT_" .and. .not. (rela_comp(11:12) == "NL")) then
                 rela_new = "ELAS_VMIS_"//rela_comp(11:16)
                 v_compor_vale(nb_cmp_max*(i_zone-1)+RELA_NAME) = rela_new
                 if(l_etat_init) then
