@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -173,10 +173,15 @@ Pour information :
 - Modèle   : <%(k1)s>, Option   : non-linéaire
 - Comportement : <%(k2)s>, Relation : <%(k3)s>
    Maille   : <%(k4)s>
-"""),
-
-
-    25 : _("""
+"""
+    ),
+    24: _(
+        """
+Attention, la loi DIS_ECRO_CINE donne des résultats faux en chargement cyclique.
+"""
+    ),
+    25: _(
+        """
 Vous utilisez des discrets %(k1)s alors que vous n'avez pas affecté ses caractéristiques.
 Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET OU DISCRET_2D.
 """),
