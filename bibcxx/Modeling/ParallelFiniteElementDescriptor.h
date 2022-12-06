@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -89,6 +89,15 @@ public:
         _joins->updateValuePointer();
         return _joins;
     };
+
+    /**
+     * @brief Get the mapping between local and global numbering of nodes
+     * @return JeveuxVector of the indirection
+     */
+    const JeveuxVectorLong getLocalToGlobalMapping() const {
+        _globalNumberingVirtualNodes->updateValuePointer();
+        return _globalNumberingVirtualNodes;
+    }
 
     /**
      * @typedef ParallelFiniteElementDescriptorPtr

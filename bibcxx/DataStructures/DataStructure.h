@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -107,7 +107,7 @@ class DataStructure {
      * @brief Function membre debugPrint
      * @param logicalUnit Unite logique d'impression
      */
-    void debugPrint( const int logicalUnit = 6 ) const;
+    virtual void debugPrint( const int logicalUnit = 6 ) const;
 
     /**
      * @brief Function membre debugPrint

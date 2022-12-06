@@ -3,7 +3,7 @@
  * @brief Implementation de
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,6 +29,7 @@
 #include "Meshes/ConnectionMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 
+#include <algorithm>
 #ifdef ASTER_HAVE_MPI
 
 /* Initial constructor for an object of ConnectionMesh. This class is only
@@ -549,6 +550,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
 
                 nodesOfGrp[ i ] = it->second;
             }
+            std::sort( nodesOfGrp.begin(), nodesOfGrp.end() );
 
             _groupsOfNodes->allocateObjectByName( nameOfTheGroup, nbNodes );
             _groupsOfNodes->getObjectFromName( nameOfTheGroup ).setValues( nodesOfGrp );
@@ -612,6 +614,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
 
                 cellsOfGrp[ i ] = it->second;
             }
+            std::sort( cellsOfGrp.begin(), cellsOfGrp.end() );
 
             _groupsOfCells->allocateObjectByName( nameOfTheGroup, nbCells );
             _groupsOfCells->getObjectFromName( nameOfTheGroup ).setValues( cellsOfGrp );

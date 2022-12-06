@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/jgetptc.h"
 #include "asterfort/mcconl.h"
 #include "asterfort/mrconl.h"
@@ -89,11 +91,12 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, k, ifm, niv
-    integer :: jj, nbeql, nuglo, jrhs, j
-    integer :: jrefn, jmlogl, jdeeq, nuno, nucmp
+    integer :: jj, nbeql, nuglo, jrhs, j, dime, ntot, nec, nlili, ili
+    integer :: jrefn, jmlogl, jdeeq, nuno, nucmp, lonmax
+    integer :: nbno_prno, ino, ieq, nbcmp, jdee2, idprn1, idprn2
     character(len=1) :: rouc
     character(len=4) :: etam
-    character(len=8) :: mesh
+    character(len=8) :: mesh, k8bid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival, nonulg
@@ -110,6 +113,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     complex(kind=8), pointer :: csolu2(:) => null()
     type(c_ptr) :: pteur_c
     cbid = dcmplx(0.d0, 0.d0)
+#define zzprno(ili,nunoel,l)  zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -181,11 +185,43 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     if (l_debug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
+        call wkvect(nonu//'.NUME.DEE2', 'V V I', 2*nnbsol, jdee2)
         mesh = zk24(jrefn)(1:8)
         if (lmhpc) then
             nonulg = mesh//'.NULOGL'
             call jeveuo(nonulg, 'L', jmlogl)
         endif
+
+        call jeveuo(mesh//'.DIME', 'L', dime)
+        call jelira(jexnum(nonu//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
+        call jeveuo(nonu//'.NUME.PRNO', 'L', idprn1)
+        call jeveuo(jexatr(nonu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
+        nec = ntot/zi(dime) - 2
+        call jelira(nonu//'.NUME.PRNO', 'NMAXOC', nlili)
+        do ili = 1, nlili
+            call jelira(jexnum(nonu//'.NUME.PRNO', ili), 'LONMAX', lonmax)
+            nbno_prno = lonmax/(nec+2)
+            do ino = 1, nbno_prno
+                ieq = zzprno(ili, ino, 1)
+                nbcmp = zzprno(ili, ino, 2)
+                do j = 1, nbcmp
+                    if( zi(jdeeq+2*(ieq-1)).eq.0 ) then
+                        if( ili.eq.1 ) then
+                            zi(jdee2+2*(ieq-1)) = ino
+                            zi(jdee2+2*(ieq-1)+1) = -j
+                        else
+                            zi(jdee2+2*(ieq-1)) = -ino
+                            zi(jdee2+2*(ieq-1)+1) = j
+                        endif
+                    else
+                        zi(jdee2+2*(ieq-1)) = zi(jdeeq+2*(ieq-1))
+                        zi(jdee2+2*(ieq-1)+1) = zi(jdeeq+2*(ieq-1)+1)
+                    endif
+                    ieq = ieq + 1
+                enddo
+            enddo
+        enddo
+        jdeeq = jdee2
     endif
 !
 !
@@ -284,7 +320,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                         if(ltypr) then
                             if(l_debug) then
                                 nuno  = zi(jdeeq+2*(j-1))
-                                if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
+                                if( nuno.gt.0 ) nuno = zi(jmlogl + nuno - 1) + 1
                                 nucmp = zi(jdeeq+2*(j-1) + 1)
 !                    numéro noeud global, num comp du noeud, rhs
                                 write(101+rang,*) nuno, nucmp, nuglo, rsolu(j)
@@ -296,7 +332,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     endif
                     if(l_debug) then
                         nuno  = zi(jdeeq+2*(j-1))
-                        if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
+                        if( nuno.gt.0 ) nuno = zi(jmlogl + nuno - 1) + 1
                         nucmp = zi(jdeeq+2*(j-1) + 1)
 !                    numéro noeud global, num comp du noeud, rhs
                         write(201+rang,*) nuno, nucmp, rsolu(j), pddl(j), j ,nulg(j)
@@ -491,13 +527,13 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     if(l_debug) then
                         do j = 1, nbeql
                             nuno  = zi(jdeeq+2*(j-1))
-                            if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
+                            if( nuno.gt.0 ) nuno = zi(jmlogl + nuno - 1) + 1
                             nucmp = zi(jdeeq+2*(j-1) + 1)
 !                    numero ddl local, numéro noeud local, numéro noeud global, num comp du noeud,
 !                                num ddl global, num proc proprio, solution
                             ! write(51+rang,*) j, zi(jdeeq+2*(j-1)), nuno, nucmp,  &
                             !                      nulg(j), pddl(j), rsolu(j)
-                            write(51+rang,*) nuno, nucmp, rsolu(j)
+                            write(51+rang,*) nuno, nucmp, rsolu2(j)
                         end do
                         flush(51+rang)
                     end if
@@ -613,6 +649,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !       ------------------------------------------------
         ASSERT(.false.)
     endif
+    call jedetr(nonu//'.NUME.DEE2')
     call jedema()
 #endif
 end subroutine
