@@ -23,8 +23,7 @@ interface
     subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                           teta1, teta2, dt, ppas, theta, fl3d,&
                           end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero,&
-                          nvarbe, ngf, rc00, var0, varf, sigf6d, ierr1)
-        integer, intent(in) :: nvarbe
+                          ngf, rc00, var0, varf, sigf6d, ierr1)
         integer, intent(in) :: ngf
         real(kind=8), intent(in) :: dt3(3)
         real(kind=8), intent(in) :: dr3(3)

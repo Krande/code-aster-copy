@@ -23,8 +23,7 @@ interface
                nstrs,var0,varf,nvari,nbelas3d,&
                teta1,teta2,dt,epstf,ierr1,&
                iso,mfr,end3d,fl3d,local,&
-               ndim,nmatbe2,iteflumax,sech,&
-               nvarbe)
+               ndim,nmatbe2,iteflumax,sech)
         real(kind=8), intent(in) :: xmat(:)
         real(kind=8) :: sig0(6)
         real(kind=8) :: sigf(:)
@@ -48,6 +47,5 @@ interface
         integer, intent(in) :: nmatbe2
         integer, intent(in) :: iteflumax
         real(kind=8) :: sech
-        integer, intent(in) :: nvarbe
     end subroutine fluendo3d
 end interface

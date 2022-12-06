@@ -26,6 +26,7 @@ subroutine tirViscoElas(fl3d, var0, xmat, inputR, inputVR6, ngf,  &
 !-----------------------------------------------------------------------
     implicit none
 #include "asterf_types.h"
+#include "rgi_module.h"
 #include "asterfort/dflufin3d.h"
 #include "asterfort/conso3d.h"
 #include "asterfort/matfluag3d.h"
@@ -55,8 +56,8 @@ subroutine tirViscoElas(fl3d, var0, xmat, inputR, inputVR6, ngf,  &
     real(kind=8) :: epsk06(6), epse06(6), sig06(6)
 !-----------------------------------------------------------------------
 !
-    call getValVect(var0, bw0, pw0, bg0, pg0, vectInd = [66,56,65,61])
-    call getValVect(xmat, xflu, dfmx, psik, vectInd = [19,39,18])
+    call getValVect(var0, bw0, pw0, bg0, pg0, vectInd = [BIOW,PSHR,BIOG,PRGI])
+    call getValVect(xmat, xflu, dfmx, psik, vectInd = [XFLU,DFMX,YKSY])
     call getValVect(inputR, delta, rc, epsm11, epser,  CWp, CthP, Cthv,&
                     dt1, theta1, tauk1, taum1, ind1=1)
     call getR6Mat6(inputVR6, dsw06, epsm06, sigke06, deps6r2,&

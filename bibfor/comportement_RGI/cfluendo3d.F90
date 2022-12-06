@@ -50,8 +50,8 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     
 !
 ! DECLARATIONS LOCALES
-    integer :: nvarflumax, nmatflumax, nvarbe
-    parameter(nvarflumax=158, nmatflumax=165, nvarbe=114)
+    integer :: nvarflumax, nmatflumax
+    parameter(nvarflumax=158, nmatflumax=165)
 !
     integer :: nmatbe, nmatac, nmatflu, nvarflu, nmatbe2, nmatbe3
 !   Nombre de paramètres relatifs au beton
@@ -383,7 +383,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
                    var03d, varf3d, nvari3d, nbelas3d, teta13d,&
                    teta23d, dt3d, epstf3d, ierr1, iso1,&
                    mfr11, end3d, fl3d, local11, ndim,&
-                   nmatbe3, iteflumaxi, sech, nvarbe)
+                   nmatbe3, iteflumaxi, sech)
 !
     do i = 1, 3
         sigp(i) = sigf3d(i)

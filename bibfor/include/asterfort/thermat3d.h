@@ -19,13 +19,13 @@
 !
 #include "asterf_types.h"
 interface 
-      subroutine thermat3d(teta1,nrjm,tetas,tetar,DT80,&
+      subroutine thermat3d(teta1,nrjm,tetas,tetar,dtt80,&
                dth0,DTH,CTHP,CTHV)
         real(kind=8), intent(in) :: teta1
         real(kind=8), intent(in) :: nrjm
         real(kind=8), intent(in) :: tetas
         real(kind=8), intent(in) :: tetar
-        real(kind=8), intent(in) :: DT80
+        real(kind=8), intent(in) :: dtt80
         real(kind=8), intent(in) :: dth0
         real(kind=8), intent(out) :: DTH
         real(kind=8), intent(out) :: CTHP

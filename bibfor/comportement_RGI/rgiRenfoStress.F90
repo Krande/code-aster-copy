@@ -19,12 +19,13 @@
 subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                           teta1, teta2, dt, ppas, theta, fl3d,&
                           end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero, &
-                          nvarbe, ngf, rc00, var0, varf, sigf6d, ierr1)
+                          ngf, rc00, var0, varf, sigf6d, ierr1)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
     implicit none
 #include "asterf_types.h"
+#include "rgi_module.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/x6x33.h"
@@ -36,7 +37,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 #include "asterfort/renfort3d.h"
 #include "asterfort/getValVect.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: nvarbe, ngf, iadrmat, ipzero(ngf)
+    integer, intent(in) :: ngf, iadrmat, ipzero(ngf)
     real(kind=8), intent(in) :: xmat(*), sigmf6(6), epstf6(6), epspt6(6)
     real(kind=8), intent(in) :: var0(*), rc00, teta1, teta2, dt, theta
     real(kind=8), intent(in) :: wpl3(3), vwpl33(3,3), vwpl33t(3,3), dt3(3), dr3(3)
@@ -81,7 +82,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
     ierr1 = 0
     
 !   nombre de renforts anisotropes reparties (min 0, max 5)
-    nrenf00=int(xmat(iadrmat))
+    nrenf00=int(xmat(NREN))
     ASSERT(nrenf00.le.nbrenf)   
 !
 !   récupération des données matériaux concernant les armatures
@@ -92,7 +93,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 !       syr(i)=limite élastique des renforts
 !       taur(i)=cisaillement maxi renfort matrice
 !       vecr(i,1:3)=direction projetée axe base fixe 1             
-        iadr = iadrmat + nbparr*(i-1)+1
+        iadr = NREN + nbparr*(i-1)+1
         call getValVect(xmat, rhor(i), deqr(i), yor(i), syr(i),&
                     taur(i), vecr(i,1), vecr(i,2),  vecr(i,3), ind1=iadr)
 
@@ -115,7 +116,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 !       xmuthr(i)=taux de chargement à partir duquel l activation therm dépend du chargement
 !       tokr(i)=temps caractéristique de kelvin pour les renforts             
 !       yksyr(i)=rapport Ekelvin/Eélastique pour les renforts             
-        iadr = iadrmat + nbparr*(i-1)+9
+        iadr = NREN + nbparr*(i-1)+9
         call getValVect(xmat, hplr(i), tor(i), ekr(i), skr(i),&
                     ATRR(i), gamr(i), khir(i),  sprec(i), ttaref(i),&
                     xnr(i), xmuthr(i), tokr(i), yksyr(i), ind1=iadr)
@@ -134,9 +135,9 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
 !   Contrainte princales du beton
     call x6x33(sigmf6, sig133)
     call b3d_valp33(sig133, sig13, vsig133)
-    varf(156)=MAX(sig13(1),sig13(2),sig13(3))
-    varf(158)=MIN(sig13(1),sig13(2),sig13(3))
-    varf(157)=(sig13(1)+sig13(2)+sig13(3))-(varf(156)+varf(158))
+    varf(SPM1)=MAX(sig13(1),sig13(2),sig13(3))
+    varf(SPM3)=MIN(sig13(1),sig13(2),sig13(3))
+    varf(SPM2)=(sig13(1)+sig13(2)+sig13(3))-(varf(SPM1)+varf(SPM3))
 
 ! - Calcul des contraintes dans les renforts
     if (nrenf00 .ne. 0) then
@@ -149,13 +150,13 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
         call x6x33(epspt6, epspmf33)
 !       calcul des contraintes axiales dans chaque renfort            
         do i = 1, nrenf00
-            epsr0(i)=var0(nvarbe+7*(i-1)+1)
-            eplr0(i)=var0(nvarbe+7*(i-1)+2)
-            sigr0(i)=var0(nvarbe+7*(i-1)+3)
-            eprm0(i)=var0(nvarbe+7*(i-1)+4)
-            mu_r0(i)=var0(nvarbe+7*(i-1)+5)
-            eprk0(i)=var0(nvarbe+7*(i-1)+6)
-            spre0(i)=var0(nvarbe+7*(i-1)+7)
+            epsr0(i)=var0(EPSIN(i))
+            eplr0(i)=var0(EPSEQ(i))
+            sigr0(i)=var0(SNR(i))
+            eprm0(i)=var0(ERM(i))
+            mu_r0(i)=var0(MUR(i))
+            eprk0(i)=var0(ERK(i))
+            spre0(i)=var0(SPR(i))
 !             if(istep.eq.2) then
 !              recuperation de la deformation finale non locale
 !               eps_nl(i)=var0(NVARFLU3D+NVARSUP3D+(i-1)*NVARENF3D+2)
@@ -177,13 +178,13 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
                 ierr1=1
                 goto 999
             end if 
-            varf(nvarbe+7*(i-1)+1)=epsrf(i)
-            varf(nvarbe+7*(i-1)+2)=eplrf(i)
-            varf(nvarbe+7*(i-1)+3)=sigrf(i)
-            varf(nvarbe+7*(i-1)+4)=eprmf(i)
-            varf(nvarbe+7*(i-1)+5)=mu_r0(i)
-            varf(nvarbe+7*(i-1)+6)=eprkf(i)
-            varf(nvarbe+7*(i-1)+7)=spref(i)                
+            varf(EPSIN(i))=epsrf(i)
+            varf(EPSEQ(i))=eplrf(i)
+            varf(SNR(i))=sigrf(i)
+            varf(ERM(i))=eprmf(i)
+            varf(MUR(i))=mu_r0(i)
+            varf(ERK(i))=eprkf(i)
+            varf(SPR(i))=spref(i)                
 !
 !            modification de la direction par effet goujon, calcul des      
 !            vecteurs forces sur chaque fissure                         
@@ -274,7 +275,7 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6,&
     end if 
 !   tenseur des contrainte matrice seule et homogeneise  Sbei 
     do i = 1, 6
-        varf(nvarbe+7*5+i)= sigmf6(i)
+        varf(SBE(i))= sigmf6(i)
     end do
 999 continue
         

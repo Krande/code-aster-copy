@@ -27,6 +27,7 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !-----------------------------------------------------------------------
     implicit none
 #include "asterf_types.h"
+#include "rgi_module.h"
 #include "asterfort/b3d_valp33.h"
 #include "asterfort/bgpg3d.h"
 #include "asterfort/bwpw3d.h"
@@ -122,10 +123,10 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
     real(kind=8) :: hpla
     parameter(hpla=1.0d-3)
     integer :: vectind0(17), vectind1(17)
-    data vectind0/14, 40, 41, 43, 42, 27, 45, 58, 47, 48&
-                 ,49, 46, 59, 57, 55, 56, 54/
-    data vectind1/53, 52, 51, 50, 60, 28, 35, 15, 29, 31&
-                  ,9, 32, 13, 61, 19, 39, 18/
+    data vectind0/VVRG, TAUG, NRJG, TRAG, SRSG, VRAG, TDEF, NRJD, SRSD, VDEF,&
+                  CNAD, NRJP, TTRD, TFID, TTDD, TDID, EXMD/
+    data vectind1/EXND, CNAB, CNAK, SSAD, TTKF, NRJF, ALAT, KGEL, SFLD, EPC,&
+                  RC, EKDC, HRGI, HPEV, XFLU, DFMX, YKSY/
 ! ----------------------------------------------------------------------
 
     call getValVect(inputR, biotw, poro, vw, xnsat, pglim, teta, dt1,&
@@ -161,8 +162,8 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
     supr(:) = 0
     call iniVect0(nc, fa, dpfa_dpg, fg, fglim, dra_dl, dpfa_dr) 
 
-    treps = varf(28)
-    trepspg=var0(29)
+    treps = varf(TEPS)
+    trepspg=var0(TEPG)
 
     call getValVect(xmat, phivg, taar, nrjg, trag, srsrag, vrag00, tdef,&
                     nrjd, srsdef, vdef00, cna, nrjp, ttrd, tfid, ttdd,&
@@ -170,7 +171,7 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
     call getValVect(xmat, exnd, cnab, cnak, ssad, ttkf, nrjf, alat, kgel,&
                     sfld, epc0, rc00, ekdc, hplg, hpev, xflu, dfmx, psik,&
                     vectInd=vectind1)
-    call getValVect(xmat, dim3, mvgn, vectInd=[44,30])
+    call getValVect(xmat, dim3, mvgn, vectInd=[DIM3,MVGN])
 
     epser=(rc00/young00)/3.d0
     epc00=dmax1(epc0,3.d0*epser)
@@ -189,14 +190,16 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
         if (fl3d) then
             call bwpw3d(mfr, biotw, poro, vw, xnsat,&
                         mvgn, pw, bw, srw)
-            varf(56)=pw
-            varf(66)=bw
+            varf(PSHR)=pw
+            varf(BIOW)=bw
         end if
 !
 !   reevaluation de la pression de rgi si plasticite
 !   vrgi volume effectivement formee pour ce pas
         call getValVect(var0, aar0, def0, E1, M1, E2, M2, At, St, vrgi0,&
-                        pgmax, vectInd=[62,63,97,98,99,100,101,102,60,114])
+                        pgmax, vectInd=[AAAR,ADEF,AFT1,AFM1,AFT2,AFM2,ATIL,STIL,&
+                                        PHIG,PGMAX])
+                        
 !   l avancement est actualisee dans bgpg
         call bgpg3d(ppas, bg, pg, mg, vrgi,&
                     treps, trepspg, epspt6, epspc6, phivg,&
@@ -213,19 +216,20 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !   stockage avancement et pression
         call setValVect(varf, aar1, def1, E1f, M1f, E2f, M2f,&
                         Atf, Stf, vrgi, pgmax, pg, bg,&
-                        vectInd=[62,63,97,98,99,100,101,102,60,114,61,65])
+                        vectInd=[AAAR,ADEF,AFT1,AFM1,AFT2,AFM2,ATIL,STIL &
+                                 ,PHIG,PGMAX,PRGI,BIOG])
 !
 !   prise en compte de l'amplification des depressions capillaires
 !   sous charge (l effet du chargement sur la pression capillaire
 !   est traité explicitement via sig0)
         do i = 1, 6
-            dsw6(i)=var0(73+i)
+            dsw6(i)=var0(DSW(i))
         end do
         bw0=var0(66)
         pw0=var0(56)
         call fludes3d(bw0, pw0, bw, pw, sfld, sig0, dsw6, nstrs)
         do i = 1, 6
-            varf(73+i)=dsw6(i)
+            varf(DSW(i))=dsw6(i)
         end do
 !
 !   possibilite ecoulement plastique couplé au fluage
@@ -485,23 +489,23 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
 !       premiere mise a jour a ete faite
 !       kelvin
             epsk16(i)=epsk16(i)+depsk6(i)
-            varf(i+6)=epsk16(i)
+            varf(EPK(i))=epsk16(i)
 !       maxwell
             epsm16(i)=epsm16(i)+depsm6(i)
             varf(i+12)=epsm16(i)
 !       elastique
             epse16(i)=epse16(i)+depse6(i)
-            varf(i)=epse16(i)
+            varf(EPE(i))=epse16(i)
 !       cas des deformations plastiques
 !       traction base fixe
             epspt6(i)=epspt6(i)+depspt6(i)
-            varf(29+i)=epspt6(i)
+            varf(EPTi(i))=epspt6(i)
 !       gel dans les pores
             epspg6(i)=epspg6(i)+depspg6(i)
-            varf(35+i)=epspg6(i)
+            varf(EPGi(i))=epspg6(i)
 !       cisaillement et dilatance
             epspc6(i)=epspc6(i)+depspc6(i)
-            varf(41+i)=epspc6(i)
+            varf(EPCi(i))=epspc6(i)
         end do
 !    *** actualisation deformation equivalente de compression ******
 !    comparaison avec calcul direct par la trace par l invariant
@@ -512,7 +516,7 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
         depleqc3=dsqrt(depleqc3*2.d0/3.d0)
 !    actualisation et stockage
         epleqc=dmax1(epleqc+depleqc3,epleqc01)
-        varf(67)=epleqc
+        varf(EPLC)=epleqc
 !
 !    *** actualisation des ouvertures de fissures ******************
         if (end3d) then
@@ -525,11 +529,11 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
         end if
 !    tenseur des ouvertures
         do j = 1, 6
-            varf(102+j)=wplt6(j)
-            varf(67+j)=wpltx6(j)
+            varf(WID(j))=wplt6(j)
+            varf(EMT(j))=wpltx6(j)
         end do
 !    Ouverture de fissure maximale Wpl0
-        varf(111)=dmax1((varf(103)),(varf(104)),(varf(105)))
+        varf(WPL0)=dmax1((varf(WID(1))),(varf(WID(2))),(varf(WID(3))))
 !
 !    *** actualisation de la dissipation et de l energie elastique *
 !    pour calcul consolidation debut de pas suivant
@@ -559,11 +563,11 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
         end do
 !   actualisation variation volumique totale dans variable interne
 !   dissipation et energie elastique
-        call setValVect(varf, trepspg, phi1, we1, vectInd=[29,25,26])
+        call setValVect(varf, trepspg, phi1, we1, vectInd=[TEPG,PHIM,WELA])
 !   actualisation des contraintes effectives (sans bgpg)
         do i = 1, 6
-            varf(i+18)=sig16(i)
-            varf(i+49)=sigke16(i)
+            varf(SIG(i))=sig16(i)
+            varf(SKE(i))=sigke16(i)
         end do
 !   *** test de consistance apres ecoulement plastique *************
         if ((na.ne.0) .or. indic2) then

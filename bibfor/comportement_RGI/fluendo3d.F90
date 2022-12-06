@@ -20,12 +20,12 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                      var0, varf, nvari, nbelas3d, teta1,&
                      teta2, dt, epstf, ierr1,&
                      iso, mfr, end3d, fl3d, local,&
-                     ndim, nmatbe2, iteflumax, sech,&
-                     nvarbe)
+                     ndim, nmatbe2, iteflumax, sech)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !
     implicit none
+#include "rgi_module.h"
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/hydramat3d.h"
@@ -65,13 +65,13 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   variable logique pour activer le fluage, l endo, le traitement local
     aster_logical, intent(in) :: end3d, fl3d, local
 !    nombre maximal de sous-itération de fluage
-    integer, intent(in) :: iteflumax, nvarbe
+    integer, intent(in) :: iteflumax
 ! ----------------------------------------------------------------------
     aster_logical :: is_ba, inputL(5)
     real(kind=8) :: beta, beta00, bg0, biotw, biotw00, ccmin0, dim3
     real(kind=8) :: cthp, cthp1, cthv, cthv1, cthvm, cwtauk0, cwtauk1
     real(kind=8) :: cwtaukm, delta, delta00, denom, denomin
-    real(kind=8) :: dfin0, dfin1, dflu0, dflu1, dfmx, dhydr, dt1, dt80, dteta, dth0
+    real(kind=8) :: dfin0, dfin1, dflu0, dflu1, dfmx, dhydr, dt1, dth80, dteta, dth0
     real(kind=8) :: dth00, dth1, dther, dtmaxi, dtmaxik, dtmaxim, dvrgi, dvw, ekdc
     real(kind=8) :: epc0, epc00, epleqc, epleqc0, epleqc00, vrgi
     real(kind=8) :: epleqc01, epser, epsklim1, epsklim2, epsm00, inputVR6(6,16)
@@ -131,7 +131,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     real(kind=8) :: sigp
 !   endommagement micro mecanique global
 !   indicateur de premier pas
-    aster_logical :: ppas
+    aster_logical :: ppas0
 !   CWtauk : coeff pour la prise en compte du fluage de dessiccation sur tauk
 !   eprg00 : deformation caracteristique pour l ecrouissage et l endo de rgi
 !   et pour l endo de traction
@@ -156,7 +156,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   coeff THM  / fluage debut de pas
     real(kind=8) :: CWp0, CthP0, Cthv0, dsw06(6)
 !   endommagements et ouvertures de fissures dans leur base principale
-    real(kind=8) :: dt3(3), dr3(3), dgt3(3), dgc3(3), dc, wl3(3)
+    real(kind=8) :: dt3(3), dr3(3), dgt3(3), dgc3(3), dcc, wl3(3)
 !   traitement endommagement isotrope prepic
     real(kind=8) :: xmt, dtr
     aster_logical :: dtiso
@@ -187,7 +187,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     call iniReal0(vrgi2, epleqc, epleqc0, epleqc00, deltam, avean,&
                   epleqc01, we0s, epeqpc, we0, lambda, mu, bg, mg, pg)
     call iniReal0(pw, bw, sigp, cwtauk, srw, bw0, pw0, dfl00, dfl0,&
-                  cwp, dc, xmt, dtr, vrgi0, aar0, aar1, def1, def0)
+                  cwp, dcc, xmt, dtr, vrgi0, aar0, aar1, def1, def0)
     call iniReal0(At, St, M1, E1, M2, E2, AtF, StF, M1F, E1F, M2F, E2F) 
     call iniVect0(3, cc03, dt3, dr3, dgt3, dgc3, wl3)
     call iniVect0(6, deps6r2, deps6r3, deps6r, sigf6d, dsw6,&
@@ -224,26 +224,26 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   taum00 = temps caracteristique pour Maxwell
     call getValVect(xmat, hydr, hyds, rt00, ref00, rc00, delta00, beta00,&
                  ept00, hplg, phivg, kgel, gft00, epsm00, psik,&
-                 xflu, tauk00, taum00, ind1=nbelas3d+1)
+                 xflu, tauk00, taum00, ind1=HYDR)
 !     stockage dans une variable interne pour avoir la vitesse
-    if (abs(var0(64)-1.d0) .ge. r8prem()) then
+    if (abs(var0(PPAS)-1.d0) .ge. r8prem()) then
 !       au 1er passage on suppose hyd0=hydr
         hyd0=hydr
 !       on initialise var03d en cas de sous incrementation par fluage
-        var0(48)=hyd0
+        var0(HYDF)=hyd0
     else
-        hyd0=var0(48)
+        hyd0=var0(HYDF)
     end if
     dhydr=hydr-hyd0
-    varf(48)=hydr
+    varf(HYDF)=hydr
 !     stockage hydratation initiale pour calcul final de pression
     hyd00=hyd0
 !
 !     Module d'Young et coefficient de Poisson
     if (.not. is_ba) then
-        call getValVect(xmat, young00, nu00, ind1=1)
+        call getValVect(xmat, young00, nu00, ind1=YOUN)
     else
-        call getValVect(xmat, young00, nu00, ind1=nbelas3d+58)
+        call getValVect(xmat, young00, nu00, ind1=YOUM)
     endif
 !     deformation de reference  pour le fluage prise aqu 1/3 de rc
     epser=(rc00/young00)/3.d0
@@ -255,7 +255,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     end if
 !
 !   nrjm = activation du potentiel de fluage (dmax1 pour le cas endo seul, utile dans thermat3d)
-!   dt80 = endommagement thermique a 80°C
+!   dth80 = endommagement thermique a 80°C
 !   donnees pour le calcul hydrique fin de pas
 !       biotw00 =  coeff de biot pour l eau
 !       xnsat00 = module de biot pour le non sature
@@ -272,16 +272,16 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   krgi00 = coeff de concentration de contrainte des RGI
 !   tetar = temperature de reference des parametres de fluage (celsius)
 !   tetas = temperature seuil pour l endo thermique (celsisu)
-    call getValVect(xmat, nrjm, dt80, biotw00, xnsat00, poro2, vrag00,&
+    call getValVect(xmat, nrjm, dth80, biotw00, xnsat00, poro2, vrag00,&
                  nrjf,  sfld, mvgn, epc0,ekdc, eprg00, gfr, alat, krgi00,&
-                 tetar, tetas, ind1= nbelas3d+18)
+                 tetar, tetas, ind1= NRJM)
     nrjm=dmax1(nrjm,1.d0)
 !   volume d eau pour le non sature
     vw2=sech
 !   initialisation des variables internes associee a la saturation si premier pas
-    if (abs(var0(64)-1.d0) .ge. r8prem()) then
-        var0(58)=vw2
-        var0(59)=poro2
+    if (abs(var0(PPAS)-1.d0) .ge. r8prem()) then
+        var0(WSHR)=vw2
+        var0(VSHR)=poro2
     end if
 !   eps pic comp ne peut pas etre inferieur à rc/E
     epc00=dmax1(epc0,3.d0*epser)
@@ -305,7 +305,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   ttdd = temperature de reference pour la dissolution de la def
     call getValVect(xmat, dfmx, taar, nrjg, srsrag,trag, dim3,&
                  tdef,  nrjp, srsdef, vdef00,cna, ssad, cnak,&
-                 cnab, exnd, exmd, ttdd, ind1=nbelas3d+35)
+                 cnab, exnd, exmd, ttdd, ind1=DFMX)
 !   tdid = temps caracteristique pour la dissolution de l ettringite primaire
 !   tfid = temps caracteristique pour la fixation des aluminiums en temperature
 !   nrjd = energie d activation des processus de dissolution des phases primaires
@@ -313,15 +313,15 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   ttkf = température seuil de fixation des alus en HG (RSI)
 !   hpev = ratio pour levolution du module decrouissage
     call getValVect(xmat, tdid, tfid, nrjd, ttrd,&
-                 ttkf, hpev, ind1=nbelas3d+52)
+                 ttkf, hpev, ind1=TDID)
 !   on peut traiter l'endommagement pre pic iso de traction si ept > Rt/E
     ept00=dmax1(rt00/young00,ept00)
 !
 !   indicateur de premier passage pour hydracomp3d
-    if (abs(var0(64)-1.d0) .ge. r8prem()) then
-        ppas=.true.
+    if (abs(var0(PPAS)-1.d0) .ge. r8prem()) then
+        ppas0=.true.
     else
-        ppas=.false.
+        ppas0=.false.
     end if
 !
 !   chargement de l increment de deformation imposee
@@ -357,20 +357,20 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                     err1)
 ! - influence de la temperature sur les parametres  materiau et
 !   actualisation de l endo thermique initial
-    dth00=var0(49)
-    call thermat3d(teta1, nrjm, tetas, tetar, DT80,&
+    dth00=var0(DTHE)
+    call thermat3d(teta1, nrjm, tetas, tetar, dth80,&
                    dth00, dth0, CTHp0, CTHv0)
 ! - endommagement thermique en fin de pas
-    call thermat3d(teta2, nrjm, tetas, tetar, DT80,&
+    call thermat3d(teta2, nrjm, tetas, tetar, dth80,&
                    dth0, dth1, CTHp1, CTHv1)
-    varf(49)=dth1
+    varf(DTHE)=dth1
 ! - chargement des variables internes du fluage (etat du squelette solide)
     do i = 1, 6
-        epsk006(i)=var0(i+6)
-        epsm006(i)=var0(i+12)
-        sig06(i)=var0(i+18)
-        sigke06(i)=var0(i+49)
-        dsw06(i)=var0(73+i)
+        epsk006(i)=var0(EPK(i))
+        epsm006(i)=var0(EPM(i))
+        sig06(i)=var0(SIG(i))
+        sigke06(i)=var0(SKE(i))
+        dsw06(i)=var0(DSW(i))
     end do
 !   phi00 = dissipation visqueuse
 !   dfl00 = endommagement effectif par fluage
@@ -379,15 +379,15 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !   bw0, pw0 : pression capillaire
 !   bg0, pg0 : pression RGI
     call getValVect(var0, phi00, dfl00, dth00, epleqc00, bw0, pw0,&
-                    bg0, pg0, vectInd = [25,27,49,67,66,56,65,61])
+                    bg0, pg0, vectInd = [PHIM,DFLU,DTHE,EPLC,BIOW,PSHR,BIOG,PRGI])
 !   tenseurs de deformations plastique et surpression capillaire
-    do j = 1, 6
-        epspt600(j)=var0(29+j)
-        epspg600(j)=var0(35+j)
-        epspc600(j)=var0(41+j)
-        ett600(j)=var0(96+j)
-        wplt006(j)=var0(102+j)
-        wpltx006(j)=var0(67+j)
+    do i = 1, 6
+        epspt600(i)=var0(EPTi(i))
+        epspg600(i)=var0(EPGi(i))
+        epspc600(i)=var0(EPCi(i))
+        ett600(i)=var0(AFT1-1+i)
+        wplt006(i)=var0(WID(i))
+        wpltx006(i)=var0(EMT(i))
     end do
 !
 ! - influence du degre d hydratation sur les variables internes
@@ -402,7 +402,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
         call bwpw3d(mfr, biotw, poro2, vw2, xnsat, mvgn, pw, bw, srw)
 !       modif eventuelle des viscosites en fonction de srw
         CWtauk1=1.d0/srw
-        call setValVect(varf, pw, bw, CWtauk1, vectInd=[56,66,57])
+        call setValVect(varf, pw, bw, CWtauk1, vectInd=[PSHR,BIOW,CSHR])
     end if
 ! - reevaluation de la deformation compatible avec l etat
 !   de contrainte debut de pas(pour evaluer la sous incrementation)
@@ -412,8 +412,8 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 ! - reevaluation des coeffs de consolidation en debut de pas
     if (fl3d) then
 !       effet de l eau
-        CWp0=var0(58)/var0(59)
-        CWtauk0=var0(59)/var0(58)
+        CWp0=var0(WSHR)/var0(VSHR)
+        CWtauk0=var0(VSHR)/var0(WSHR)
 !       effet l endo de fluage sur le potentiel de fluage
         call dflufin3d(sig06, bw0, pw0, bg0, pg0,&
                        dsw06, delta, rc, xflu, dfin0,&
@@ -482,13 +482,13 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !      initialisation de la temperature debut de pas
     teta=teta1
 !      increment de volume d eau reduit
-    vw1=var0(58)
+    vw1=var0(WSHR)
     dvw=(vw2-vw1)*reduc1
 !      increment de poro capillaire reduite
-    poro1=var0(59)
+    poro1=var0(VSHR)
     dporo=(poro2-poro1)*reduc1
 !      increment des potentiels de rgi
-    vrgi1=var0(60)
+    vrgi1=var0(PHIG)
     dvrgi=(vrgi2-vrgi1)*reduc1
 !      increments de deformations reduits, on reduit deps6 et non deps6r
 !      car hydracomp est reapplique plus bas
@@ -503,17 +503,17 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
     do nt = 1, npas1
 !        chargement des variables internes
         do i = 1, 6
-            epsk006(i)=var0(i+6)
-            epsm006(i)=var0(i+12)
-            sig06(i)=var0(i+18)
-            sigke06(i)=var0(i+49)
-            dsw06(i)=var0(73+i)
+            epsk006(i)=var0(EPK(i))
+            epsm006(i)=var0(EPM(i))
+            sig06(i)=var0(SIG(i))
+            sigke06(i)=var0(SKE(i))
+            dsw06(i)=var0(DSW(i))
         end do
 !
 !       recuperation de l endommagement par fluage dfl00 et thermique dth00
         call getValVect(var0, bw0, pw0, bg0, pg0, phi00, dth00, hyd0, vw,&
                         poro, vrgi00, epleqc00, dfl00,&
-                        vectInd = [66,56,65,61,25,49,48,58,59,60,67,27])
+                        vectInd = [BIOW,PSHR,BIOG,PRGI,PHIM,DTHE,HYDF,WSHR,VSHR,PHIG,EPLC,DFLU])
 !        actualisation du degre d hydratation
         hydr=hyd0+dhydr
 !        actualisation de la temperature
@@ -524,16 +524,16 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
         poro=poro+dporo
 !        actualisation du volume pour les rgi
         vrgi00=vrgi00+dvrgi
-        call setValVect(varf, hydr, vw, poro, vrgi00, vectInd=[48,58, 59,60])
+        call setValVect(varf, hydr, vw, poro, vrgi00, vectInd=[HYDF,WSHR, VSHR,PHIG])
 !
 !        recuperation de la deformation maximale de traction
-        do j = 1, 6
-            epspt600(j)=var0(29+j)
-            epspg600(j)=var0(35+j)
-            epspc600(j)=var0(41+j)
-            ett600(j)=var0(96+j)
-            wplt006(j)=var0(102+j)
-            wpltx006(j)=var0(67+j)
+        do i = 1, 6
+            epspt600(i)=var0(EPTi(i))
+            epspg600(i)=var0(EPGi(i))
+            epspc600(i)=var0(EPCi(i))
+            ett600(i)=var0(AFT1-1+i)
+            wplt006(i)=var0(WID(i))
+            wpltx006(i)=var0(EMT(i))
         end do
 !
 !       prise en compte  hydratation intermediaire si sous-increment
@@ -561,20 +561,20 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !
 !        influence de la temperature sur les parametres du materiau
 !        et calcul de l endommagement thermique
-        call thermat3d(teta, nrjm, tetas, tetar, DT80,&
+        call thermat3d(teta, nrjm, tetas, tetar, dth80,&
                        dth1, DTHER, CTHP, CTHV)
-        varf(49)=dth1
+        varf(DTHE)=dth1
 !        calcul de la pression capillaire due a leau
         if (fl3d) then
             call bwpw3d(mfr, biotw, poro, vw, xnsat,&
                         mvgn, pw, bw, srw)
-            varf(56)=pw
-            varf(66)=bw
+            varf(PSHR)=pw
+            varf(BIOW)=bw
 !        reevaluation des coeffs de consolidation apres increment hydra
 !        effet de l eau sur le potentiel de fluage
             Cwp=Srw
             CWtauk=1.d0/srw
-            varf(57)=CWtauk
+            varf(CSHR)=CWtauk
 !
 !        Modification eventuelle de la viscosite en fonction de Srw
             tauk1=tauk00*CWtauk/CTHV
@@ -614,15 +614,15 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !       E.Cheignon : sorti de tirViscoElas pour ne pas passer varf
         do i = 1, 6
 !            varf(96+i)=ett61(i)
-            varf(96+i)=0.d0
+            varf(AFT1-1+i)=0.d0
         end do
 !
 !       actualisation de la variation de volume total
-        treps=var0(28)
+        treps=var0(TEPS)
         do i = 1, 3
             treps=treps+deps6r(i)
         end do
-        varf(28)=treps
+        varf(TEPS)=treps
 !
 !       chargement des deformations plastiques du pas precedent
 !       actualisee par l hydratation
@@ -643,7 +643,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !
 !       recuperation de la variation volumique due a la rgi non
 !       actualisee par l hydratation
-        trepspg=var0(29)
+        trepspg=var0(TEPG)
 !
 !***********************************************************************
 !       verification des criteres de plasticite et ecoulements
@@ -660,7 +660,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                    epsm16, epse16, epspt6, sigke16, sig16, epspg6, epspc6)
         call setMat33Tab(inputMat33, ref33, rtg33, rt33)
         call setIntVect(inputI, iplalim, mfr, nstrs, ndim)
-        call setLogVect(inputL, fl3d, ppas, iso, local, end3d)
+        call setLogVect(inputL, fl3d, ppas0, iso, local, end3d)
         
         call plasti3d(xmat, inputR, inputVR6, inputMat33, inputI,&
                     inputL, var0, raideur66, souplesse66,&
@@ -669,11 +669,12 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                     outputI)
 !
         call getValVect(var0, aar0, def0, E1, M1, E2, M2, At, St,&
-                        vectInd=[62,63,97,98,99,100,101,102])
+                        vectInd=[AAAR,ADEF,AFT1,AFM1,AFT2,AFM2,ATIL,STIL])
 !
         call getValVect(varf, aar1, def1, E1f, M1f, E2f, M2f,&
                         Atf, Stf, vrgi, pgmax, pg, bg, trepspg,&
-                        vectInd=[62,63,97,98,99,100,101,102,60,114,61,65,29])
+                        vectInd=[AAAR,ADEF,AFT1,AFM1,AFT2,AFM2,ATIL,STIL &
+                                 ,PHIG,PGMAX,PRGI,BIOG,TEPG])
         call getValVect(outputR, srw, epeqpc, dfin1, ccmax1, pw, bw,&
                         wpl3(1), wpl3(2), wpl3(3), wplx3(1), wplx3(2),&
                         wplx3(3), ind1=1)
@@ -701,9 +702,9 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !          le sous programme de calcul de pression
 !          vrgi le volume effectif de gel pour le calcul de la pression
         vrgi0=vrgi
-        pgmax=var0(114)
+        pgmax=var0(PGMAX)
 !          dt mis a zero pour forcer la reprise de vrgi0
-        call bgpg3d(ppas, bg, pg, mg, vrgi,&
+        call bgpg3d(ppas0, bg, pg, mg, vrgi,&
                     treps, trepspg, epspt6, epspc6, phivg,&
                     pglim, dpg_depsa6, dpg_depspg6, taar, nrjg,&
                     trag, aar0, srw, srsrag, teta,&
@@ -716,18 +717,18 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                     M2F, E2F, vrgi0, ttkf, nrjf,&
                     alat, young00, nu00, kgel, pgmax)
     else
-        call getValVect(varf, pg, bg, pgmax, vectInd=[61,65,114])
+        call getValVect(varf, pg, bg, pgmax, vectInd=[PRGI,BIOG,PGMAX])
     end if
 !       stockage de la pression RGI
-    call setValVect(varf, pg, bg, pgmax, vectInd=[61,65,114])
+    call setValVect(varf, pg, bg, pgmax, vectInd=[PRGI,BIOG,PGMAX])
 !
 ! - endommagement de fluage
     dflu1=0.d0
     if (fl3d) then
-        dflu0=var0(27)
+        dflu0=var0(DFLU)
         call dflueff3d(ccmax1, dflu0, dflu1, dfin1)
     end if
-    varf(27)=dflu1
+    varf(DFLU)=dflu1
 !
 !
 !***********************************************************************
@@ -750,10 +751,10 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !       prise en compte de l'endommagement mécanique
     if (end3d) then
 !       chargement endo traction pre-pic
-        dtr=var0(96)
+        dtr=var0(DTPP)
 !       chargement endo localisee pour condition de croissance
         do i = 1, 3
-            dt3(i)=var0(79+i)
+            dt3(i)=var0(DTL(i))
         end do
 !       calcul des endommagements et ouvertures de fissures
         call endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33,&
@@ -761,33 +762,33 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
                     sigf6d, rt33, ref33, souplesse66, epspg6,&
                     eprg00, a, b, x, ipzero,&
                     ngf, ekdc, epspc6, dt3, dr3,&
-                    dgt3, dgc3, dc, wl3, xmt,&
+                    dgt3, dgc3, dcc, wl3, xmt,&
                     dtiso, rt, dtr, dim3, ndim,&
                     ifour, epeqpc, ept, errgf)
 !            stockage des endommagements de fissuration et ouverture
-        varf(96)=dtr
+        varf(DTPP)=dtr
         do i = 1, 3
 !               endo de traction
-            varf(79+i)=dt3(i)
+            varf(DTL(i))=dt3(i)
 !               endo refermeture
-            varf(82+i)=dr3(i)
+            varf(DRL(i))=dr3(i)
 !               endo RGI en traction
-            varf(85+i)=dgt3(i)
+            varf(DTG(i))=dgt3(i)
 !               endo RGI en compression
-            varf(88+i)=dgc3(i)
+            varf(DCG(i))=dgc3(i)
 !               ouverture non visco elastique
-            varf(91+i)=wl3(i)
+            varf(WL(i))=wl3(i)
         end do
 !            endo de traction global
-        varf(110)=1.d0-((1.d0-(varf(80)))*(1.d0-(varf(81)))*(1.d0-(varf(82))))
+        varf(DT0)=1.d0-((1.d0-(varf(DTL(1))))*(1.d0-(varf(DTL(2))))*(1.d0-(varf(DTL(3)))))
 !            endo de traction de RGI global
-        varf(112)=1.d0-((1.d0-(varf(86)))*(1.d0-(varf(87)))*(1.d0-(varf(88))))
+        varf(DTG0)=1.d0-((1.d0-(varf(DTG(1))))*(1.d0-(varf(DTG(2))))*(1.d0-(varf(DTG(3)))))
 !            endo de compression de RGI global
-        varf(113)=1.d0-((1.d0-(varf(89)))*(1.d0-(varf(90)))*(1.d0-(varf(91))))
+        varf(DCG0)=1.d0-((1.d0-(varf(DCG(1))))*(1.d0-(varf(DCG(2))))*(1.d0-(varf(DCG(3)))))
 !            endommagement de compression
-        varf(95)=dc
+        varf(DC)=dcc
 !            erreur de dissipation d'énergie en traction          
-        varf(109)=errgf
+        varf(ERGF)=errgf
 !            traitement erreur endo
         if (err1 .eq. 1) then
             call utmess('E', 'COMPOR3_34')
@@ -804,9 +805,9 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs,&
 !
     if (is_ba) then
         call rgiRenfoStress(xmat, nbelas3d+nmatbe2+1, sigmf6, &
-                          epstf6, epspt6, teta1, teta2, dt, ppas, theta,&
+                          epstf6, epspt6, teta1, teta2, dt, ppas0, theta,&
                           fl3d, end3d, wpl3, vwpl33, vwpl33t, dt3, dr3,&
-                          ipzero, nvarbe, ngf, rc00, var0, varf, sigf6d, ierr1)
+                          ipzero, ngf, rc00, var0, varf, sigf6d, ierr1)
     endif
 !
 !   affectation dans le tableau de sortie des contraintes
