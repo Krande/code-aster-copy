@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine momaba(mailla)
     character(len=8) :: mailla
 !
     integer :: jtyma, nbmc, nbma, jnuma, i, ityp, n1, n2, i1, nbno
-    integer :: nbmat, jpoin, ifm, niv, jcon, ndim, nn, jnbma, ncount
-    integer :: ilcnx2, nbm1, kk, numa, i1sauv, i2sauv
+    integer :: nbmat, jpoin, ifm, niv, jcon, ndim, nn, jnbma, nbnmf
+    integer :: ilcnx2, nbm1, kk, numa, i1sauv, i2sauv, nbnsf
     aster_logical :: lnmf, lmodi, lconx
     parameter(nbmc=2)
     character(len=8) :: k8b, type
@@ -255,12 +255,21 @@ subroutine momaba(mailla)
         call utmess('F', 'ALGORITH6_18')
     endif
 !
+!     ON VERIFIE QU'IL Y A AU MOINS 2 NOEUDS POUR UN
+!     MAILLAGE DE DIMENSION 3
+    if (dime(6) .eq. 3 .and. nbma .lt. 2) then
+        call utmess('F', 'ALGORITH16_74')
+    endif
+!
     call jeveuo(nomjv, 'L', jnuma)
     call wkvect('&&NOEU_MIL_FISS', 'V V I', nbma, jnbma)
 !
 ! --- TRAITEMENT DES NOEUDS
 !
-    ncount=0
+!   nombre de noeuds sommet du fond de fissure
+    nbnsf=0
+!   nombre de noeuds milieu du fond de fissure
+    nbnmf=0
     do i = 1, nbma
         n1=zi(jnuma+i-1)
         n2=0
@@ -365,13 +374,15 @@ subroutine momaba(mailla)
 !
         if (lnmf) then
 !         ON STOCKE LES NOEUDS MILIEU DU FOND DE FISSURE
-            zi(jnbma+ncount)=n1
-            ncount=ncount+1
+            zi(jnbma+nbnmf)=n1
+            nbnmf=nbnmf+1
+        else
+            nbnsf=nbnsf+1
         endif
 !
     end do
 !
-    do i = 1, ncount
+    do i = 1, nbnmf
 !       ON REAJUSTE LES COORDONNEES DES NOEUDS MILIEU
 !       DU FOND DE FISSURE
         nn=3*(zi(jnbma+i-1)-1)
@@ -382,6 +393,8 @@ subroutine momaba(mailla)
 !
     if (.not.lmodi) then
         call utmess('F', 'ALGORITH16_72')
+    elseif (nbma .gt. 1 .and. nbnmf.ne.nbnsf-1)then
+        call utmess('F', 'ALGORITH16_73', si=nbnsf-1-nbnmf)
     endif
 !
     call jedetr('&&NOEU_MIL_FISS')
