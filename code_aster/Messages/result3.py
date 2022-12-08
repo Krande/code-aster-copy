@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,9 @@ Pour supprimer l'émission de ce message d'alarme, il faut donner la valeur BINA
     34 : _("""On ne sait pas écrire les champs aux noeuds de représentation constante et à valeurs complexes au format RESULTAT."""),
 
     35 : _("""On ne sait pas écrire les champs aux noeuds de représentation constante et à valeurs complexes dans ce format."""),
+    
+    36 : _("""Avec un maillage parallèle, l'impression des résultats dans un fichier unique n'est 
+ possible que si PROC0 à la valeur 'NON'."""),
 
     40 : _("""Aucune des composantes demandées sous le mot-clé NOM_CMP pour l'impression du champ %(k1)s n'est présente."""),
 

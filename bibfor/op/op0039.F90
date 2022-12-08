@@ -163,7 +163,7 @@ implicit none
                 call getvtx(' ', 'FICHIER_UNIQUE', scal=fichierUnique, nbret=nbRet)
                 if (fichierUnique.eq.'OUI' .and. ispar == "OUI") then
                     lfichUniq = .true._1
-                    ASSERT(proc0 .eq. 'NON')
+                if(proc0 .eq. 'OUI') call utmess('F','RESULT3_36')
                 end if
             endif
             call ultype(fileUnit, fileType)
