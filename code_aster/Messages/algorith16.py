@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -281,7 +281,19 @@ Risques & conseils :
       CREA_MAILLAGE / LINE_QUAD  pour rendre le maillage quadratique.
  """),
 
-
+    73 : _("""
+Erreur utilisateur :
+  Dans la liste de noeuds fournie (MODI_MAILLAGE / MODI_MAILLE / OPTION='NOEUD_QUART')
+  pour définir le fond de fissure, il manque %(i1)d noeud(s) milieu.
+  Ces noeuds sont nécessaires au bon fonctionnement de cette commande.
+ """),
+ 
+    74 : _("""
+Erreur utilisateur :
+  La liste de noeuds fournie (MODI_MAILLAGE / MODI_MAILLE / OPTION='NOEUD_QUART')
+  contient moins de 2 noeuds. Pour un maillage en 3 dimensions, cette liste doit
+  contenir au moins 2 noeuds.
+ """),
 
 
     77 : _("""
