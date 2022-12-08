@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 implicit none
 !
 #include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
@@ -71,8 +72,8 @@ character(len=1), optional, intent(in) :: basez
     character(len=24) :: ligrch
     character(len=10) :: load_obje(2)
     character(len=19) :: cart_name
-    character(len=8) :: load_name, const_func, load_func
-    character(len=16) :: load_keyword
+    character(len=8) :: load_name, const_func, load_func, k8bid
+    character(len=16) :: load_keyword, k16bid, nomcmd
     character(len=24) :: load_type, load_para, load_keyw
     character(len=16) :: load_opti_f
     integer, pointer :: v_llresu_info(:) => null()
@@ -95,6 +96,8 @@ character(len=1), optional, intent(in) :: basez
     if( present(basez)) then
         base = basez
     end if
+!    
+    call getres(k8bid, k16bid, nomcmd)
 !
 ! - Get number of loads for loads datastructure
 !
@@ -201,8 +204,12 @@ character(len=1), optional, intent(in) :: basez
                         endif
                     endif
                     if (load_keyw.eq.'EVOL_CHAR') then
-                        ASSERT (load_type(5:7) .ne. '_FO')
-                        info_type = 'NEUM_CSTE'
+                        if(nomcmd(1:13).eq.'THER_LINEAIRE') then
+                            call utmess('F', 'CHARGES_11')
+                        else
+                            ASSERT (load_type(5:7) .ne. '_FO')
+                            info_type = 'NEUM_CSTE'
+                        endif
                     else
                         if (load_type(5:7) .eq. '_FO') then
                             info_type = 'NEUM_FO'
