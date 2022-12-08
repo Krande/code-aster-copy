@@ -51,10 +51,6 @@ extern void DEFSSPSPPSPPP( RCVALE_WRAP, rcvale_wrap, char *, STRING_SIZE, char *
 extern void DEFSSSP( RCSTOC_VERIF, rcstoc_verif, const char *, STRING_SIZE, const char *,
                      STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER * );
 
-#define CALLO_UPDATEMATECO( a, b, c, d ) CALLOOPP( UPDATEMATECO, updatemateco, a, b, c, d )
-extern void DEFSSPP( UPDATEMATECO, updatemateco, const char *, STRING_SIZE, const char *,
-                     STRING_SIZE, ASTERLOGICAL *, ASTERLOGICAL * );
-
 #ifdef __cplusplus
 }
 #endif

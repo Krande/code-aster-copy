@@ -36,8 +36,6 @@ implicit none
 !
 !   Delete matrix and their mumps/petsc associated instances
     call detmat()
-!   Unlock objects kept in memory using 'jeveut'
-    call jelibz('G')
 !   Delete objects on the volatile database
     call deleteTemporaryObjects()
 !

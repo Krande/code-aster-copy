@@ -128,10 +128,6 @@ bool CodedMaterial::constant() const {
 void CodedMaterial::updateValuePointers() const {
     bool thm( _model->existsThm() );
     bool ther = _model->isThermal();
-
-    // TODO: fix issue32398
-    // Remove when fixed
-    CALLO_UPDATEMATECO( _mater->getName(), getName(), (ASTERLOGICAL *)&thm, (ASTERLOGICAL *)&ther );
 };
 
 bool CodedMaterial::exists() const { return _field->exists(); };
