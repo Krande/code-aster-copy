@@ -132,20 +132,28 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
         nojoine = numddl//'.NUMEE'//chnbjo
         call jeexin(nojoine, iret1)
         call jeexin(nojoinr, iret2)
+        lgrecep = 0
+        lgenvo = 0
         if ((iret1 + iret2) .ne. 0) then
-            call jeveuo(nojoinr, 'L', jjointr)
-            call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
-            call jeveuo(nojoine, 'L', jjointe)
-            call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
-            ASSERT(lgenvo .gt. 0 .and. lgrecep .gt. 0)
+            if(iret1 .ne. 0) then
+                call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
+            end if
+            if(iret2 .ne. 0) then
+                call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
+            end if
+            ASSERT((lgenvo + lgrecep) .gt. 0)
 !
-            call wkvect('&&CPYSOL.TMP1E', 'V V R', lgenvo, jvaleue)
-            call wkvect('&&CPYSOL.TMP1R', 'V V R', lgrecep, jvaleur)
-            do jaux = 0, lgenvo - 1
-                numloc = zi(jjointe + jaux)
-                ASSERT(zi(jprddl + numloc - 1) .eq. rang)
-                zr(jvaleue + jaux) = rsolu(numloc)
-            end do
+            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1,lgenvo), jvaleue)
+            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1,lgrecep), jvaleur)
+
+            if(lgenvo > 0) then
+                call jeveuo(nojoine, 'L', jjointe)
+                do jaux = 0, lgenvo - 1
+                    numloc = zi(jjointe + jaux)
+                    ASSERT(zi(jprddl + numloc - 1) .eq. rang)
+                    zr(jvaleue + jaux) = rsolu(numloc)
+                end do
+            end if
 !
             n4e = to_mpi_int(lgenvo)
             n4r = to_mpi_int(lgrecep)
@@ -154,11 +162,14 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
             call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
                                   zr(jvaleur), n4r, numpr4, tag4, mpicou)
 
-            do jaux = 0, lgrecep - 1
-                numloc = zi(jjointr + jaux)
-                ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
-                rsolu(numloc) = zr(jvaleur + jaux)
-            end do
+            if(lgrecep > 0) then
+                call jeveuo(nojoinr, 'L', jjointr)
+                do jaux = 0, lgrecep - 1
+                    numloc = zi(jjointr + jaux)
+                    ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
+                    rsolu(numloc) = zr(jvaleur + jaux)
+                end do
+            end if
             call jedetr('&&CPYSOL.TMP1E')
             call jedetr('&&CPYSOL.TMP1R')
         end if
