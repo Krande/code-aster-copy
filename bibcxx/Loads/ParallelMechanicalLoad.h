@@ -29,8 +29,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fstream>
-
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/MechanicalLoad.h"
@@ -40,6 +38,8 @@
 #include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/ResultNaming.h"
+
+#include <fstream>
 
 /**
  * @class ParallelMechanicalLoad
@@ -157,13 +157,14 @@ class ParallelMechanicalLoad : public DataStructure {
      */
     void debugPrint( const int logicalUnit = 6 ) const {
         this->DataStructure::debugPrint( logicalUnit );
-        const auto& explorer = _FEDesc->getVirtualCellsExplorer();
-        const auto& mesh = _FEDesc->getMesh();
-        auto& LToGmapMesh = mesh->getLocalToGlobalMapping();
-        auto& LToGmapFE = _FEDesc->getLocalToGlobalMapping();
+        const auto &explorer = _FEDesc->getVirtualCellsExplorer();
+        const auto &mesh = _FEDesc->getMesh();
+        auto &LToGmapMesh = mesh->getLocalToGlobalMapping();
+        auto &LToGmapFE = _FEDesc->getLocalToGlobalMapping();
         auto e1 = LToGmapMesh->exists();
         auto e2 = LToGmapFE->exists();
-        if( !e1 || !e2 ) return;
+        if ( !e1 || !e2 )
+            return;
         LToGmapMesh->updateValuePointer();
         LToGmapFE->updateValuePointer();
 
@@ -176,11 +177,10 @@ class ParallelMechanicalLoad : public DataStructure {
             bool keepElem = false;
             int pos = 0, curOwner = -1;
             for ( auto numNode : meshElem ) {
-                if( numNode > 0 ) {
-                    outFile << (*LToGmapMesh)[numNode-1] << " ";
-                }
-                else {
-                    outFile << (*LToGmapFE)[-numNode-1] << " ";
+                if ( numNode > 0 ) {
+                    outFile << ( *LToGmapMesh )[numNode - 1] << " ";
+                } else {
+                    outFile << ( *LToGmapFE )[-numNode - 1] << " ";
                 }
             }
             outFile << std::endl;

@@ -30,7 +30,6 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
-#include <algorithm>
 
 #ifdef ASTER_HAVE_MPI
 

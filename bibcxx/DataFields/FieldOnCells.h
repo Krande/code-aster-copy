@@ -318,7 +318,7 @@ class FieldOnCells : public DataField {
             if ( PyComplex_Check( res ) ) {
                 ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
                 ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = { re, im };
+                tmp[i] = {re, im};
             } else {
                 PyErr_Format( PyExc_ValueError, "Returned value of \
                     type different from ASTERCOMPLEX" );
