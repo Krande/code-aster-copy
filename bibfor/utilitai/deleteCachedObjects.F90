@@ -22,7 +22,6 @@ implicit none
 !
 #include "asterfort/deleteTemporaryObjects.h"
 #include "asterfort/detmat.h"
-#include "asterfort/jelibz.h"
 !
 ! -------------------------------------------------------------------------------------
 !
@@ -36,6 +35,7 @@ implicit none
 !
 !   Delete matrix and their mumps/petsc associated instances
     call detmat()
+!   Remove call jelibz issue32398
 !   Delete objects on the volatile database
     call deleteTemporaryObjects()
 !
