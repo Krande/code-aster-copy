@@ -26,7 +26,10 @@ MESH = LIRE_MAILLAGE(FORMAT='IDEAS',
 
 MODEL=AFFE_MODELE(MAILLAGE=MESH, AFFE=_F(TOUT='OUI', PHENOMENE='THERMIQUE', MODELISATION='AXIS') )
 
-MATE=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,RHO_CP = 2.0))
+LAMBDA = DEFI_CONSTANTE(VALE=1.0)
+RHOCP  = DEFI_CONSTANTE(VALE=2.0)
+
+MATE=DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBDA,RHO_CP = RHOCP))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MESH,
                     MODELE=MODEL,
@@ -45,7 +48,7 @@ LTMPS=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 # 1. Calcul de reference :
 #-------------------------
 
-TEMPE=THER_LINEAIRE(  MODELE=MODEL,
+TEMPE=THER_NON_LINE(  MODELE=MODEL,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
@@ -165,7 +168,7 @@ CHTH2=AFFE_CHAR_THER(MODELE=MODEL,
                      EVOL_CHAR=EVOL_RE2,
                      )
 
-TEMPE2=THER_LINEAIRE(  MODELE=MODEL,
+TEMPE2=THER_NON_LINE(  MODELE=MODEL,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
@@ -299,7 +302,7 @@ CHTH3=AFFE_CHAR_THER(MODELE=MODEL,
                      EVOL_CHAR=EVOL_RE3,
                      )
 
-TEMPE3=THER_LINEAIRE(  MODELE=MODEL,
+TEMPE3=THER_NON_LINE(  MODELE=MODEL,
                           ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
