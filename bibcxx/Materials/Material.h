@@ -119,6 +119,8 @@ class Material : public DataStructure {
 
     Material( const Material &toCopy );
 
+    Material( const Material &toCopy, const VectorString MatToDelete );
+
     /**
      * @brief Add properties for a factor keyword / behaviour from user's keywords
      */

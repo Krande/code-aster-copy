@@ -3,7 +3,7 @@
  * @brief Interface python de Material
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,6 +31,7 @@ void exportMaterialToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< Material > ) )
         .def( py::init( &initFactoryPtr< Material, std::string > ) )
         .def( py::init( &initFactoryPtr< Material, Material > ) )
+        .def( py::init( &initFactoryPtr< Material, Material, VectorString > ) )
         .def( "size", &Material::size, R"(
 Return the number of material names.
 

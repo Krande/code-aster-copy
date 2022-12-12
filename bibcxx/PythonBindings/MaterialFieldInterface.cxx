@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -115,6 +115,11 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
             Returns:
                 list(PartOfMaterial): vector of material properties with mesh entities
             )" )
+
+        .def( "getMaterialsOnMeshEntities", &MaterialField::getMaterialsOnMeshEntities, R"()" )
+
+        .def( "getExtStateVariablesOnMeshEntities",
+              &MaterialField::getExtStateVariablesOnMeshEntities, R"()" )
 
         .def( "getMaterialOnCell", &MaterialField::getMaterialOnCell, R"(
             Get the material properties on a giver cell on the material field

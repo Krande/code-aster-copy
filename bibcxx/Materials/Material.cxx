@@ -162,6 +162,36 @@ Material::Material( const Material &toCopy ) : Material( ResultNaming::getNewRes
     }
 }
 
+Material::Material( const Material &toCopy, const VectorString propIgnored )
+    : Material( ResultNaming::getNewResultName() ) {
+
+    int rdepSize = toCopy._rdep->maximumSize();
+    if ( rdepSize > 0 ) {
+        _rdep->allocate( rdepSize );
+        _rdep->setParameterName( "EPSI" );
+        _rdep->setResultName( toCopy._rdep->getResultName() );
+    }
+
+    auto &tocopynames = *( toCopy._names );
+    int nbMat = tocopynames.size();
+    int nbCpt = 1;
+    for ( int i = 0; i < nbMat; i++ ) {
+
+        if ( find( propIgnored.begin(), propIgnored.end(), tocopynames[i].rstrip() ) ==
+             propIgnored.end() ) {
+            _names->push_back( tocopynames[i] );
+            auto prop = *( toCopy._prop[i] );
+            auto copy = std::make_shared< MaterialProperties >( _cptName( nbCpt ), prop );
+            _prop.push_back( copy );
+            nbCpt++;
+        }
+    }
+
+    for ( auto &ds : toCopy.getDependencies() ) {
+        addDependency( ds );
+    }
+}
+
 bool Material::build() {
     int nbMat = size();
     for ( int i = 0; i < nbMat; i++ ) {

@@ -1,0 +1,356 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+# Cas test pour valider les fonctionnalités informatiques de la macro CALC_SRM.
+
+# Modélisation A valide :
+#   - L'introduction des variables de commande dans le cham_mater en entrée.
+#   - Le mot-clé GROUP_MA(définition de la zone SRM par les groupes des mailles indépendants).
+#   - Affectation des relations de comportement autres que MC et DP en dehors de la zone SRM.
+#   - Le mot-clé CHAM_DEFO.
+#   - Loi de comportement Mohr_Coulomb dans l'algorithme SRM.
+#   - Le mot-clé METHODE = 'EXPONENTIELLE'
+#
+# Modélisation B valide :
+#   - Loi de comportement Drucker-Prager dans l'algorithme SRM.
+#   - Le mot-clé METHODE = 'LINEAIRE'
+#   - Le mot-clé TOUT = 'OUI'
+
+import math
+
+# CONVERSION DES PARAMETRE MOHR-COULOMB AUX DRUCKER-PRAGER
+def MC2DP(c, phi):
+
+    phi = phi / 180 * math.pi
+    A = 2 * math.sin(phi) / (3 - math.sin(phi))
+    S = 6 * c * math.cos(phi) / (3 - math.sin(phi))
+
+    return A, S
+
+
+def Heaviside(x):
+    if x >= 0:
+        return x
+    else:
+        return 0
+
+
+Lev_up = 77.19
+
+g = 9.81
+
+rho_w = 1e3
+
+incre = 1.0
+
+lev_below_up = Lev_up - incre
+
+Lev_dn = 43.0
+
+lev_below_dn = Lev_dn - incre
+
+pres_incre = rho_w * g * incre
+
+visco = 1e-3
+
+rho_fill = 2450
+
+rho_fond = 2250
+
+rho_core = 1900
+
+rho_rock = rho_fill
+
+rho_t_fill = rho_fill + rho_w
+
+rho_t_core = rho_core + rho_w
+
+rho_t_rock = rho_rock + rho_w
+
+rho_t_fond = rho_fond + rho_w
+
+tfin = 10
+
+nstep = 5
+
+k_fond = 1e-7 / g / rho_w * visco
+
+k_rf = 1e-5 / g / rho_w * visco
+
+k_core = 2e-8 / g / rho_w * visco
+
+k_rock = 1e-5 / g / rho_w * visco
+
+E = 250e6
+
+E_rf = E
+
+E_fond = E
+
+E_core = E
+
+E_rock = E
+
+nu = 0.3
+
+c_rf = 4e4
+
+c_fond = 4e4
+
+c_rock = 4e4
+
+c_core = 4.45e4
+
+phi_rf = 20
+
+phi_fond = 35
+
+phi_core = 23.3
+
+phi_rock = 20
+
+A_rf, S_rf = MC2DP(c_rf, phi_rf)
+A_fond, S_fond = MC2DP(c_fond, phi_fond)
+A_rock, S_rock = MC2DP(c_rock, phi_rock)
+A_core, S_core = MC2DP(c_core, phi_core)
+
+poro = 0.672
+
+# ==========================
+#  MAILLAGE ET MODELISATION
+# ==========================
+
+MAILLIN = LIRE_MAILLAGE(UNITE=20)
+
+MAILME = CREA_MAILLAGE(LINE_QUAD=_F(TOUT="OUI"), MAILLAGE=MAILLIN)
+
+MAILME = MODI_MAILLAGE(reuse=MAILME, MAILLAGE=MAILME, ORIE_PEAU_2D=_F(GROUP_MA=("upstream",)))
+
+MAILHY = CREA_MAILLAGE(LINE_QUAD=_F(TOUT="OUI"), MAILLAGE=MAILLIN)
+
+modHY = AFFE_MODELE(
+    AFFE=_F(MODELISATION=("D_PLAN_HS",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAILHY
+)
+
+modLIN = AFFE_MODELE(
+    AFFE=_F(MODELISATION=("D_PLAN",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAILLIN
+)
+
+modME = AFFE_MODELE(
+    AFFE=_F(MODELISATION=("D_PLAN",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAILME
+)
+
+# ==============
+#   MATERIAUX
+# ==============
+
+VISCO = DEFI_CONSTANTE(VALE=visco)
+
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+kw_commun = {}
+kw_commun["THM_INIT"] = (_F(PORO=poro, PRE1=0.0, TEMP=300.0),)
+kw_commun["THM_LIQU"] = _F(D_VISC_TEMP=ZERO, RHO=rho_w, UN_SUR_K=0.0, VISC=VISCO)
+
+K_rf = DEFI_CONSTANTE(VALE=k_rf)
+
+Remblai = DEFI_MATERIAU(
+    COMP_THM="LIQU_SATU",
+    ELAS=_F(ALPHA=0.0, E=E_rf, NU=nu, RHO=rho_fill),
+    THM_DIFFU=_F(BIOT_COEF=1.0, PERM_IN=K_rf, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, RHO=rho_t_fill),
+    MOHR_COULOMB=_F(ANGDIL=phi_rf, COHESION=c_rf, PHI=phi_rf),
+    DRUCK_PRAGER=_F(ALPHA=A_rf, SY=S_rf, DILAT=phi_rf, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0),
+    **kw_commun
+)
+
+K_fond = DEFI_CONSTANTE(VALE=k_fond)
+
+FOND = DEFI_MATERIAU(
+    COMP_THM="LIQU_SATU",
+    ELAS=_F(ALPHA=0.0, E=E_fond, NU=nu, RHO=rho_fond),
+    MOHR_COULOMB=_F(ANGDIL=phi_fond, COHESION=c_fond, PHI=phi_fond),
+    THM_DIFFU=_F(
+        BIOT_COEF=1.0, PERM_IN=K_fond, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, RHO=rho_t_fond
+    ),
+    DRUCK_PRAGER=_F(
+        ALPHA=A_fond, SY=S_fond, DILAT=phi_fond, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0
+    ),
+    **kw_commun
+)
+
+K_core = DEFI_CONSTANTE(VALE=k_core)
+
+CLAY = DEFI_MATERIAU(
+    COMP_THM="LIQU_SATU",
+    ELAS=_F(ALPHA=0.0, E=E_core, NU=nu, RHO=rho_core),
+    MOHR_COULOMB=_F(ANGDIL=phi_core, COHESION=c_core, PHI=phi_core),
+    THM_DIFFU=_F(
+        BIOT_COEF=1.0, PERM_IN=K_core, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, RHO=rho_t_core
+    ),
+    DRUCK_PRAGER=_F(
+        ALPHA=A_core, SY=S_core, DILAT=phi_core, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0
+    ),
+    **kw_commun
+)
+
+K_rock = DEFI_CONSTANTE(VALE=k_rock)
+
+ROCK = DEFI_MATERIAU(
+    COMP_THM="LIQU_SATU",
+    ELAS=_F(ALPHA=0.0, E=E_rock, NU=nu, RHO=rho_rock),
+    MOHR_COULOMB=_F(ANGDIL=phi_rock, COHESION=c_rock, PHI=phi_rock),
+    THM_DIFFU=_F(
+        BIOT_COEF=1.0, PERM_IN=K_rock, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, RHO=rho_t_rock
+    ),
+    DRUCK_PRAGER=_F(
+        ALPHA=A_rock, SY=S_rock, DILAT=phi_rock, ECROUISSAGE="LINEAIRE", H=1.0, P_ULTM=0.0
+    ),
+    **kw_commun
+)
+
+CMHY = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("fondation",), MATER=(FOND,)),
+        _F(GROUP_MA=("fond_fill",), MATER=(ROCK,)),
+        _F(GROUP_MA=("rockfill_down", "rockfill_up"), MATER=(Remblai,)),
+        _F(GROUP_MA=("core",), MATER=(CLAY,)),
+    ),
+    MAILLAGE=MAILHY,
+)
+
+# =====================================
+# CONDITIONS AUX LIMITES ET CHARGEMENTS
+# =====================================
+
+Pres_up = DEFI_FONCTION(
+    NOM_PARA="Y",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(lev_below_up, pres_incre, Lev_up, 0.0),
+)
+
+Pres_dn = DEFI_FONCTION(
+    NOM_PARA="Y",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(lev_below_dn, pres_incre, Lev_dn, 0.0),
+)
+
+multi = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE", VALE=(0.0, 0.0, tfin, 1.0)
+)
+
+LTr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nstep))
+
+LT = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LTr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR"))
+
+IMPERM = AFFE_CHAR_MECA(FLUX_THM_REP=_F(FLUN_HYDR1=0.0, GROUP_MA=("bottom",)), MODELE=modHY)
+
+PresH = AFFE_CHAR_MECA_F(
+    DDL_IMPO=(
+        _F(GROUP_MA=("left", "upstream"), PRE1=Pres_up),
+        _F(GROUP_MA=("downstream", "right"), PRE1=Pres_dn),
+    ),
+    MODELE=modHY,
+)
+
+# ==================
+# CALCUL HYDRAULIQUE
+# ==================
+
+RESHY = STAT_NON_LINE(
+    CHAM_MATER=CMHY,
+    COMPORTEMENT=_F(RELATION="KIT_H", RELATION_KIT=("LIQU_SATU", "HYDR_UTIL")),
+    EXCIT=(_F(CHARGE=IMPERM), _F(CHARGE=PresH)),
+    INCREMENT=_F(LIST_INST=LT),
+    MODELE=modHY,
+)
+
+linst_resurep = RESHY.LIST_VARI_ACCES()["INST"]
+instp = linst_resurep[-1]
+instm = linst_resurep[0]
+
+Heavi = FORMULE(NOM_PARA=("PRE1",), VALE="Heaviside(PRE1)", Heaviside=Heaviside)
+
+PRES = DEFI_FONCTION(
+    NOM_PARA="Y",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(lev_below_up, pres_incre, Lev_up, 0.0),
+)
+
+Presrep = AFFE_CHAR_MECA_F(MODELE=modME, PRES_REP=_F(GROUP_MA=("upstream",), PRES=PRES))
+
+DIRI = AFFE_CHAR_MECA(
+    DDL_IMPO=(_F(DX=0.0, DY=0.0, GROUP_MA=("bottom",)), _F(DX=0.0, GROUP_MA=("left", "right"))),
+    MODELE=modME,
+)
+
+Gravity = AFFE_CHAR_MECA(MODELE=modME, PESANTEUR=_F(DIRECTION=(0.0, -1.0, 0.0), GRAVITE=g))
+
+PRELIQ = PROJ_CHAMP(METHODE="COLLOCATION", MODELE_1=modHY, MODELE_2=modLIN, RESULTAT=RESHY)
+
+CHPRE1p = CREA_CHAMP(
+    INST=instp, NOM_CHAM="DEPL", OPERATION="EXTR", RESULTAT=PRELIQ, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+CHPRE1m = CREA_CHAMP(
+    INST=instm, NOM_CHAM="DEPL", OPERATION="EXTR", RESULTAT=PRELIQ, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+CHFonc = CREA_CHAMP(
+    AFFE=_F(NOM_CMP=("X1",), TOUT="OUI", VALE_F=(Heavi,)),
+    MAILLAGE=MAILLIN,
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_NEUT_F",
+)
+
+PRE1Posp = CREA_CHAMP(
+    CHAM_F=CHFonc, CHAM_PARA=(CHPRE1p,), OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R"
+)
+
+PRE1Posm = CREA_CHAMP(
+    CHAM_F=CHFonc, CHAM_PARA=(CHPRE1m,), OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R"
+)
+
+CHPtotp = CREA_CHAMP(
+    ASSE=_F(CHAM_GD=PRE1Posp, NOM_CMP=("X1",), NOM_CMP_RESU=("PTOT",), TOUT="OUI"),
+    MAILLAGE=MAILLIN,
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+CHPtotm = CREA_CHAMP(
+    ASSE=_F(CHAM_GD=PRE1Posm, NOM_CMP=("X1",), NOM_CMP_RESU=("PTOT",), TOUT="OUI"),
+    MAILLAGE=MAILLIN,
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+PRE1OK = CREA_RESU(
+    AFFE=(_F(CHAM_GD=CHPtotm, INST=(instm,)), _F(CHAM_GD=CHPtotp, INST=(instp,))),
+    NOM_CHAM="PTOT",
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_VARC",
+)
+
+REPTOT = PROJ_CHAMP(METHODE="COLLOCATION", MODELE_1=modLIN, MODELE_2=modME, RESULTAT=PRE1OK)
+
+FIN()

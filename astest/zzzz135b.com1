@@ -1,0 +1,98 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+POURSUITE(CODE="OUI")
+
+# Cas test pour valider les fonctionnalités informatiques de la macro CALC_SRM.
+
+# Modélisation A valide :
+#   - L'introduction des variables de commande dans le cham_mater en entrée.
+#   - Le mot-clé GROUP_MA(définition de la zone SRM par les groupes des mailles indépendants).
+#   - Affectation des relations de comportement autres que MC et DP en dehors de la zone SRM.
+#   - Le mot-clé CHAM_DEFO.
+#   - Loi de comportement Mohr_Coulomb dans l'algorithme SRM.
+#   - Le mot-clé METHODE = 'EXPONENTIELLE'
+#
+# Modélisation B valide :
+#   - Loi de comportement Drucker-Prager dans l'algorithme SRM.
+#   - Le mot-clé METHODE = 'LINEAIRE'
+#   - Le mot-clé TOUT = 'OUI'
+
+
+# ======================================================================================
+# MODELISATION B : SRM AVEC DRUCKER-PRAGER + PTOT + TOUT = 'OUI' + LOI_VARI = 'LINEAIRE'
+# ======================================================================================
+
+CMPTOT = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("fondation",), MATER=(FOND,)),
+        _F(GROUP_MA=("fond_fill",), MATER=(ROCK,)),
+        _F(GROUP_MA=("rockfill_down", "rockfill_up"), MATER=(Remblai,)),
+        _F(GROUP_MA=("core",), MATER=(CLAY,)),
+    ),
+    AFFE_VARC=_F(EVOL=REPTOT, NOM_VARC="PTOT", TOUT="OUI"),
+    MAILLAGE=MAILME,
+)
+
+TABFS2 = CALC_SRM(
+    MODELE=modME,
+    CHAM_MATER=CMPTOT,
+    TOUT="OUI",
+    EXCIT=(
+        _F(CHARGE=DIRI),
+        _F(CHARGE=Gravity, FONC_MULT=multi),
+        _F(CHARGE=Presrep, FONC_MULT=multi),
+    ),
+    INCREMENT=_F(LIST_INST=LTr),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+    COMPORTEMENT=(_F(RELATION="DRUCK_PRAGER"),),
+    FS=_F(
+        FS_INIT=1.78,
+        INCR_INIT=0.05,
+        RESI_MAXI=0.01,
+        ITER_MAXI=10,
+        METHODE="LINEAIRE",
+        ITER_RAFF_LINE=1,
+    ),
+)
+
+# TESTER LES RESULTATS DANS LA TABLE TABFS2
+
+TEST_TABLE(FILTRE=_F(NOM_PARA="NUMERO", VALE_I=1), NOM_PARA="FS", TABLE=TABFS2, VALE_CALC=(1.78,))
+TEST_TABLE(FILTRE=_F(NOM_PARA="NUMERO", VALE_I=2), NOM_PARA="FS", TABLE=TABFS2, VALE_CALC=(1.83,))
+TEST_TABLE(FILTRE=_F(NOM_PARA="NUMERO", VALE_I=3), NOM_PARA="FS", TABLE=TABFS2, VALE_CALC=(1.84,))
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUMERO", VALE_I=1),
+    NOM_PARA="DISP_TOT_MAXI",
+    TABLE=TABFS2,
+    VALE_CALC=(0.3196069268900407,),
+)
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUMERO", VALE_I=2),
+    NOM_PARA="DISP_TOT_MAXI",
+    TABLE=TABFS2,
+    VALE_CALC=(0.4610095633405791,),
+)
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUMERO", VALE_I=3),
+    NOM_PARA="DISP_TOT_MAXI",
+    TABLE=TABFS2,
+    VALE_CALC=(0.6337163549233418,),
+)
+
+FIN()

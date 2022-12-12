@@ -2,7 +2,7 @@
  * @file ExternalStateVariablesInterface.cxx
  * @brief Main interface for ExternalStateVariable
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,8 @@
 #include "aster_pybind.h"
 
 #include "Results/TransientResult.h"
+
+// aslint: disable=C3006
 
 void exportExternalStateVariablesToPython( py::module_ &mod ) {
     py::class_< EvolutionParameter, EvolutionParameterPtr >( mod, "EvolutionParameter" )
@@ -68,7 +70,13 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
             Arguments:
                 typeExtension (str): type of extension ('CONSTANT', 'EXCLU', 'LINEAIRE')
             )",
-              py::arg( "typeExtension" ) );
+              py::arg( "typeExtension" ) )
+        .def( "getTimeFunction", &EvolutionParameter::getTimeFunction, R"()" )
+        .def( "getTimeFormula", &EvolutionParameter::getTimeFormula, R"()" )
+        .def( "getLeftExtension", &EvolutionParameter::getLeftExtension, R"()" )
+        .def( "getRightExtension", &EvolutionParameter::getRightExtension, R"()" )
+        .def( "getFieldName", &EvolutionParameter::getFieldName, R"()" )
+        .def( "getTransientResult", &EvolutionParameter::getTransientResult, R"()" );
 
     py::class_< ExternalStateVariable, ExternalStateVariablePtr >( mod, "ExternalStateVariable" )
         .def( py::init( &initFactoryPtr< ExternalStateVariable, std::string, BaseMeshPtr > ) )
@@ -87,6 +95,7 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
         .def( "getField", &ExternalStateVariable::getField, R"(
             Get the field of values
             )" )
+        .def( "getType", &ExternalStateVariable::getType, R"()" )
         .def( "getTransientResult", &ExternalStateVariable::getTransientResult, R"(
             Get the transient result
             )" )
@@ -97,6 +106,9 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
                 value (float): reference value
             )",
               py::arg( "value" ) )
+        .def( "isSetRefe", &ExternalStateVariable::isSetRefe, R"()" )
+        .def( "getReferenceValue", &ExternalStateVariable::getReferenceValue, R"()" )
+        .def( "getEvolutionParameter", &ExternalStateVariable::getEvolutionParameter, R"()" )
         .def( "setEvolutionParameter", &ExternalStateVariable::setEvolutionParameter, R"(
             Define evolution parameters for values of external state variable
 
@@ -104,4 +116,7 @@ void exportExternalStateVariablesToPython( py::module_ &mod ) {
                 evolutionParameter (EvolutionParameter): object EvolutionParameter to define
             )",
               py::arg( "evolutionParameter" ) );
+    py::class_< ExternalVariableTraits >( mod, "ExternalVariableTraits" )
+        .def( "getExternVarTypeStr", &ExternalVariableTraits::getExternVarTypeStr, R"()" );
+    py::enum_< externVarEnumInt >( mod, "externVarEnumInt" );
 };

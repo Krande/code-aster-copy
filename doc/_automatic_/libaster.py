@@ -8202,6 +8202,8 @@ class Material(DataStructure):
         2. __init__(self: libaster.Material, arg0: str) -> None
 
         3. __init__(self: libaster.Material, arg0: libaster.Material) -> None
+
+        4. __init__(self: libaster.Material, arg0: libaster.Material, arg1: List[str]) -> None
         """
 
     def getFunction(self, materialName, propertyName):
@@ -8366,12 +8368,18 @@ class MaterialField(DataStructure):
         """Build material field
         """
 
+    def getExtStateVariablesOnMeshEntities(self):
+        pass
+
     def getMaterialOnCell(self, arg0):
         """Get the material properties on a giver cell on the material field
 
         Returns:
             Material: material properties
         """
+
+    def getMaterialsOnMeshEntities(self):
+        pass
 
     def getMesh(self):
         """Get mesh of material field
@@ -11771,6 +11779,24 @@ class EvolutionParameter:
             fieldName (str): field in transient result to define external state variable
         """
 
+    def getFieldName(self):
+        pass
+
+    def getLeftExtension(self):
+        pass
+
+    def getRightExtension(self):
+        pass
+
+    def getTimeFormula(self):
+        pass
+
+    def getTimeFunction(self):
+        pass
+
+    def getTransientResult(self):
+        pass
+
     def setLeftExtension(self, typeExtension):
         """Set type of the extension to the left of the function to shift the results
 
@@ -11830,13 +11856,25 @@ class ExternalStateVariable:
         4. __init__(self: libaster.ExternalStateVariable, arg0: externVarEnumInt, arg1: libaster.BaseMesh, arg2: str) -> None
         """
 
+    def getEvolutionParameter(self):
+        pass
+
     def getField(self):
         """Get the field of values
         """
 
+    def getReferenceValue(self):
+        pass
+
     def getTransientResult(self):
         """Get the transient result
         """
+
+    def getType(self):
+        pass
+
+    def isSetRefe(self):
+        pass
 
     def setEvolutionParameter(self, evolutionParameter):
         """Define evolution parameters for values of external state variable
@@ -11858,6 +11896,84 @@ class ExternalStateVariable:
         Arguments:
             value (float): reference value
         """
+
+# class ExternalVariableTraits in libaster
+
+class ExternalVariableTraits:
+    pass
+
+    # Method resolution order:
+    #     ExternalVariableTraits
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self,  *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature.
+        """
+
+    def getExternVarTypeStr(self):
+        pass
+
+# class externVarEnumInt in libaster
+
+class externVarEnumInt:
+    """Members:
+    """
+
+    # Method resolution order:
+    #     externVarEnumInt
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __eq__(self, other):
+        pass
+
+    def __getstate__(self):
+        pass
+
+    def __hash__(self):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __init__(self, value):
+        pass
+
+    def __int__(self):
+        pass
+
+    def __ne__(self, other):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    def name(self):
+        pass
+
+    #----------------------------------------------------------------------
+    # Data descriptors defined here:
+
+    @property
+    def __members__(self):
+        pass
+
+    @property
+    def name(self):
+        """name(self: handle) -> str
+        """
+
+    @property
+    def value(self):
+        pass
 
 # class ExternalStateVariablesResult in libaster
 

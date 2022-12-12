@@ -111,6 +111,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ExternalVariableTraits` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ExternalVariableTraits
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ForceReal` object
 ********************************************************************************
 
@@ -380,6 +389,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.StructuralForceReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.externVarEnumInt` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.externVarEnumInt
    :show-inheritance:
    :members:
 
