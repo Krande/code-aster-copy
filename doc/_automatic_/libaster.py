@@ -2265,12 +2265,39 @@ class FieldOnNodesReal(DataField):
         2. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
         """
     
-    def getNodesAndComponentsNumberFromDOF(self):
-        """Return a list of values such that for each DOF, it gives the node id and component id
-        as [dof1=[node_1, comp_1], dof2=[node_1, comp_2], ....]
+    def getNodesAndComponentsFromDOF(self, local= True):
+        """Return the list of node id and name of component for each dofs
+        
+        Arguments:
+            local (bool) = True: if True use local node index else use global index
         
         Returns:
-            list[[int, int]]: List of values (node, component) for each DOF.
+            list[tuple[int, str]] : node id and name of component for each dofs
+        """
+    
+    def getNodesAndComponentsNumberFromDOF(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. getNodesAndComponentsNumberFromDOF(self: libaster.FieldOnNodesReal, local: bool = True) -> List[Tuple[int, int]]
+        
+        
+                    Return the list of node id and component id for each dofs
+        
+                    Arguments:
+                        local (bool) = True: if True use local node index else use global index
+        
+                    Returns:
+                        list[tuple[int, int]] : node id and component if for each dofs
+                    
+        
+        2. getNodesAndComponentsNumberFromDOF(self: libaster.FieldOnNodesReal, arg0: bool) -> List[Tuple[int, int]]
+        
+        
+                    Return a list of values such that for each DOF, it gives the node id and component id
+                    as [dof1=[node_1, comp_1], dof2=[node_1, comp_2], ....]
+        
+                    Returns:
+                        list[[int, int]]: List of values (node, component) for each DOF.
         """
     
     def getNumberOfComponents(self):
@@ -11976,7 +12003,34 @@ class HHO:
                     FieldOnNodesReal: HHO field
                 
         
-        2. projectOnHHOCellSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        2. projectOnHHOCellSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
+        
+        
+              Project real function to HHO Cell-space
+              Cell space is the restriction of HHO-space to cells only
+        
+              Arguments:
+                    func (Function): real function to project
+                    time (float): time value to evaluate function (default=0.0)
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
+                
+        
+        3. projectOnHHOCellSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        
+        
+              Project real value to HHO Cell-space
+              Cell space is the restriction of HHO-space to cells only
+        
+              Arguments:
+                    value (float): value to project
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
+                
+        
+        4. projectOnHHOCellSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
         
         
               Project real value to HHO Cell-space
@@ -12005,7 +12059,32 @@ class HHO:
                     FieldOnNodesReal: HHO field
                 
         
-        2. projectOnHHOSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        2. projectOnHHOSpace(self: libaster.HHO, func: List[libaster.GenericFunction], time: float = 0.0) -> libaster.FieldOnNodesReal
+        
+        
+              Project real function to HHO-space
+        
+              Arguments:
+                    func (Function): real function to project
+                    time (float): time value to evaluate function (default=0.0)
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
+                
+        
+        3. projectOnHHOSpace(self: libaster.HHO, value: float) -> libaster.FieldOnNodesReal
+        
+        
+              Project real value to HHO-space
+        
+              Arguments:
+                    value (float): value to project
+        
+              Returns:
+                    FieldOnNodesReal: HHO field
+                
+        
+        4. projectOnHHOSpace(self: libaster.HHO, value: List[float]) -> libaster.FieldOnNodesReal
         
         
               Project real value to HHO-space

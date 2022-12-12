@@ -45,10 +45,12 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesReal::exportToSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
-        .def( "__getitem__",
-              +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
-        .def( "__setitem__", +[]( FieldOnNodesReal &v, ASTERINTEGER i,
-                                  float f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__getitem__",
+            +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__",
+            +[]( FieldOnNodesReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -65,6 +67,27 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
+        .def( "getNodesAndComponentsFromDOF", &FieldOnNodesReal::getNodesAndComponentsFromDOF, R"(
+            Return the list of node id and name of component for each dofs
+
+            Arguments:
+                local (bool) = True: if True use local node index else use global index
+
+            Returns:
+                list[tuple[int, str]] : node id and name of component for each dofs
+            )",
+              py::arg( "local" ) = true )
+        .def( "getNodesAndComponentsNumberFromDOF",
+              &FieldOnNodesReal::getNodesAndComponentsNumberFromDOF, R"(
+            Return the list of node id and component id for each dofs
+
+            Arguments:
+                local (bool) = True: if True use local node index else use global index
+
+            Returns:
+                list[tuple[int, int]] : node id and component if for each dofs
+            )",
+              py::arg( "local" ) = true )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
             Get list of components
 
@@ -166,10 +189,12 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
-        .def( "__getitem__",
-              +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
-        .def( "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
-                                  ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__getitem__",
+            +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
+                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
         .def( "setDescription", &FieldOnNodesComplex::setDescription )

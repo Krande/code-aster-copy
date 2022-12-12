@@ -417,7 +417,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Returns a vector with node index and component name for each DOFs
      */
-    std::vector< std::pair< ASTERINTEGER, std::string > > getNodesAndComponentsFromDOF() const {
+    std::vector< std::pair< ASTERINTEGER, std::string > >
+    getNodesAndComponentsFromDOF( const bool local = true ) const {
         if ( !_dofDescription )
             raiseAsterError( "Description is empty" );
 
@@ -431,7 +432,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         std::vector< std::pair< ASTERINTEGER, std::string > > ret;
         ret.reserve( nb_eq );
 
-        for ( int i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+        for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
             auto node_id = ( *nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
             auto cmp = abs( ( *nodeAndComponentsNumberFromDOF )[2 * i_eq + 1] );
             std::string cmp_name = " ";
@@ -441,6 +442,18 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             ret.push_back( std::make_pair( node_id, cmp_name ) );
         }
 
+#ifdef ASTER_HAVE_MPI
+        if ( !local && _mesh->isParallel() ) {
+
+            auto mapLG = _mesh->getLocalToGlobalMapping();
+            mapLG->updateValuePointer();
+            for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+                auto node_id = ret[i_eq].first;
+                ret[i_eq].first = ( *mapLG )[node_id];
+            }
+        }
+#endif
+
         return ret;
     };
 
@@ -448,7 +461,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Returns a vector with node index and component name for each DOFs
      */
     std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >
-    getNodesAndComponentsNumberFromDOF() const {
+    getNodesAndComponentsNumberFromDOF( const bool local = true ) const {
         if ( !_dofDescription )
             raiseAsterError( "Description is empty" );
 
@@ -465,6 +478,18 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             auto cmp = ( *nodeAndComponentsNumberFromDOF )[2 * i_eq + 1];
             ret.push_back( std::make_pair( node_id, cmp ) );
         }
+
+#ifdef ASTER_HAVE_MPI
+        if ( !local && _mesh->isParallel() ) {
+
+            auto mapLG = _mesh->getLocalToGlobalMapping();
+            mapLG->updateValuePointer();
+            for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+                auto node_id = ret[i_eq].first;
+                ret[i_eq].first = ( *mapLG )[node_id];
+            }
+        }
+#endif
 
         return ret;
     };

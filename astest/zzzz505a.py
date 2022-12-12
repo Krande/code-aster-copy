@@ -144,8 +144,24 @@ test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 # Test TEST_RESU with TEST_TYPE='MIN','MAX', 'SOMME', 'SOMME_ABS'
 
+
+def return_index(mapDOF, node_gl):
+    """Find appropriate inedx in HPC"""
+
+    index = 0
+    for node, ddl in mapDOF:
+        if node == node_gl and ddl == "DX":
+            return index
+        else:
+            index += 1
+
+    raise RuntimeError("Node not find")
+
+
 test.printSummary()
 ftest = fieldp.duplicate()
+mapDOF = ftest.getNodesAndComponentsFromDOF(False)
+
 values_test = {
     "MAX": 4.0,
     "MIN": -7.0,
@@ -154,9 +170,9 @@ values_test = {
 }
 ftest.updateValuePointers()
 # for 'MAX' - DX
-ftest[0] = 4.0
+ftest[return_index(mapDOF, 0)] = 4.0
 # for 'MIN' - DX
-ftest[3] = -7.0
+ftest[return_index(mapDOF, 15)] = -7.0
 
 # Avec NOM_CMP
 TEST_RESU(
