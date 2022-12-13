@@ -20,6 +20,23 @@
 ! -------------------------------------------------------------------------
 !
 
+! constantes
+! constante des gaz parfait en J/K/mol
+#define KGAZP 8.314d0
+!   énergie d'activation de la viscosté de l'eau en J/K/mol
+#define EASURRW 2059.d0
+! zero Kelvin
+#define ZEROKLV 273.15d0
+! 80 degré
+#define T80DEG 80.d0
+! tolérance
+#define EPSIL 1.d-6
+! volume molaire de l’ettringite différé
+#define VMAFT 715.d-6
+#define VMAFM 254.6d-6
+! Multiplicateur non linéaire maximum de potentiel de fluage
+#define XMAX 25.d0
+
 ! pour indices dans xmat
 
 #define YOUN  1

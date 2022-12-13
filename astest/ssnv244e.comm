@@ -300,7 +300,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DZ",
-            VALE_CALC=-1.0464540411439697e-05,
+                   VALE_CALC=-1.0464723702036468E-05,
             GROUP_MA="M1",
         ),
         _F(
@@ -309,7 +309,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DZ",
-            VALE_CALC=2.678767515825844e-05,
+                   VALE_CALC=2.6811844196125302E-05,
             GROUP_MA="M1",
         ),
         _F(
@@ -318,7 +318,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DZ",
-            VALE_CALC=0.0002103302858339926,
+                   VALE_CALC=0.0002104722338937658,
             GROUP_MA="M1",
         ),
         _F(
@@ -327,7 +327,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DZ",
-            VALE_CALC=0.0002631722874101131,
+                   VALE_CALC=0.0002633844286287752,
             GROUP_MA="M1",
         ),
     )

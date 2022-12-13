@@ -52,7 +52,8 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
       real(kind=8) :: rt33(3,3),rtg33(3,3),ref33(3,3)
       real(kind=8) :: raideur66(6,6),souplesse66(6,6)
       integer :: err1
-      real(kind=8) :: rteff
+      real(kind=8) :: rteff, deuxtiers
+      parameter(deuxtiers=2.d0/3.d0)
 
 !     declarations variables locales
       real(kind=8) :: umb00,umb,rtg,xrteff, dpic
@@ -64,7 +65,7 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
 !     ou bien est differente de 1
       if((abs(hydr-1.d0).ge.r8prem()).or.(hydr.gt.hyd0)) then
 !        young
-         call hydrxmat(young00,young,hydr,hyds,0.66d0,err1)
+         call hydrxmat(young00,young,hydr,hyds,deuxtiers,err1)
 !        poisson
          nu=nu00
 !        resistance a la traction
@@ -73,7 +74,7 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
          call hydrxmat(ref00,ref,hydr,hyds,1.d0,err1)
 !        resistance à la compresssion  finale (doit augmenter + vite
 !        que rt pour eviter pb d interaction entre les criteres
-         call hydrxmat(rc00,rc,hydr,hyds,0.66d0,err1)
+         call hydrxmat(rc00,rc,hydr,hyds,deuxtiers,err1)
 !        coeff drucker prager
          call hydrxmat(delta00,delta,hydr,hyds,1.d0,err1)
 !         delta=delta00
@@ -84,12 +85,12 @@ subroutine hydramat3d(hyd0,hydr,hyds,young00,young,&
          epsm=epsm00
 !        pris en compte de l hydratation sur biot en non sature
          umb00=1.d0-biotw00
-         call hydrxmat(umb00,umb,hydr,hyds,0.66d0,err1)
+         call hydrxmat(umb00,umb,hydr,hyds,deuxtiers,err1)
          biotw=1.d0-umb
 !        module de biot pour le non sature
-         call hydrxmat(xnsat00,xnsat,hydr,hyds,0.66d0,err1)
+         call hydrxmat(xnsat00,xnsat,hydr,hyds,deuxtiers,err1)
 !        energie de fissuration pour la traction
-         call hydrxmat(gft00,gft,hydr,hyds,0.66d0,err1)
+         call hydrxmat(gft00,gft,hydr,hyds,deuxtiers,err1)
 !        concentration de contraintes RGI
          krgi=krgi00
 !        deformation au pic de traction

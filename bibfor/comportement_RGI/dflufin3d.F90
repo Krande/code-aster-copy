@@ -23,6 +23,7 @@ subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc,&
 
 !   endommagement par fluage
       implicit none
+#include "rgi_module.h"
 
       real(kind=8), intent(in) :: sige6(6), bw, pw, bg, pg, dsw6(6)
       real(kind=8), intent(in) :: delta, rc, xflu
@@ -32,9 +33,6 @@ subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc,&
       real(kind=8) :: tauflu1, sigs, sig0, sigd6(6), sigeq, sigs3, taulim
       real(kind=8) :: taueq, tauflu0, xdenom, dfmx
       integer i
-      real(kind=8) :: xmax
-!     multiplicateur non lineaire maxi de potentiel de fluage
-      parameter (xmax=25.d0)
 
 !     initialisation
       taueq=0.d0
@@ -74,12 +72,12 @@ subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc,&
           dfmx=1.5d0*(1.d0-1.d0/xflu)
           if(taueq.gt.0.d0) then
              xdenom=taulim-dfmx*taueq
-             if(xdenom.gt.(taulim/xmax)) then
+             if(xdenom.gt.(taulim/XMAX)) then
                 cmp1=taulim/xdenom
 !               calcul de l'endommagement asymptotique avec le taux de charge actuel
-                dfin=dmin1(tauflu1*dfmx2,0.9999d0)
+                dfin=dmin1(tauflu1*dfmx2,1.d0-EPSIL)
              else
-                cmp1=xmax
+                cmp1=XMAX
                 dfin=dfmx2
              end if
           else

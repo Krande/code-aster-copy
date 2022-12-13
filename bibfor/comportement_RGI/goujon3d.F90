@@ -23,6 +23,7 @@ subroutine  goujon3d(endo,nbrenf,numr,numf,vecr,&
 !=====================================================================
  
 implicit none
+#include "rgi_module.h"
 #include "asterfort/matmat3d.h"
 
 !Calcul du vecteur force pour un renfort traversant une fissure
@@ -92,7 +93,7 @@ implicit none
         end if   
 !Si la valeur est quasi nulle
         if(cosa.ne.0.) then
-            if(cosa.le.0.9999) then
+            if(cosa.le.1.d0-EPSIL) then
 !            l angle entre fissure et armature est < a Pi/2 ok         
 !            ouverture dans l axe de l armature (deplacement axial)        
                ws=wpl3(i)*cosa 
