@@ -438,6 +438,17 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         return ret;
     };
 
+    ASTERINTEGER getObjectSize( const ASTERINTEGER& num ) const {
+        ASTERINTEGER num2 = num;
+        ASTERINTEGER valTmp;
+        JeveuxChar8 param( "LONMAX" );
+        std::string charval = std::string( 32, ' ' );
+        std::string charJeveuxName( 32, ' ' );
+        CALLO_JEXNUM( charJeveuxName, _name, &num2 );
+        CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
+        return valTmp;
+    };
+
     std::vector< JeveuxCollObjValType > getObjects() const {
         std::vector< JeveuxCollObjValType > ret;
         ret.reserve( size() );
@@ -518,6 +529,8 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     inline ASTERBOOL isNamed() const { return _isNamed; };
 
     inline ASTERBOOL isNumeroted() const { return ( !_isNamed ); };
+
+    inline bool empty() const { return _isEmpty; };
 
     /**
      * @brief Surcharge de l'operateur =
@@ -643,8 +656,9 @@ bool JeveuxCollectionClass< ValueType, AccessType >::contains( const std::string
     ASTERINTEGER returnBool;
     CALLO_JEXNOM( charJeveuxName, _name, name );
     CALLO_JEEXIN( charJeveuxName, &returnBool );
-
-    return returnBool != 0;
+    if ( returnBool == 0 )
+        return false;
+    return true;
 };
 
 template < class ValueType, class AccessType >
@@ -654,7 +668,9 @@ bool JeveuxCollectionClass< ValueType, AccessType >::contains( const ASTERINTEGE
     CALLO_JEXNUM( charJeveuxName, _name, &returnBool );
     CALLO_JEEXIN( charJeveuxName, &returnBool );
 
-    return returnBool != 0;
+    if ( returnBool == 0 )
+        return false;
+    return true;
 };
 
 template < class ValueType, class AccessType >

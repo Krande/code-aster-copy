@@ -350,6 +350,7 @@ class ConstantFieldOnCells : public DataField {
     ConstantFieldValues< ValueType > getValues( const int &position ) const {
         if ( position >= size() )
             throw std::runtime_error( "Out of ConstantFieldOnCells bound" );
+        _values->updateValuePointer();
 
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
         ASTERINTEGER gdeur = ( *_descriptor )[0];
@@ -596,10 +597,13 @@ class ConstantFieldOnCells : public DataField {
             _nameOfLigrels->updateValuePointer();
     };
 
-    bool build() {
-        _listOfMeshCells->build();
+    bool build( bool force = false ) {
+        if( _listOfMeshCells->empty() || force ) {
+            _listOfMeshCells->build();
+            return true;
+        }
 
-        return true;
+        return false;
     };
 };
 

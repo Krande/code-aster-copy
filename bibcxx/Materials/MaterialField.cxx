@@ -88,6 +88,55 @@ listOfPartOfMaterialField MaterialField::getVectorOfPartOfMaterialField() const 
     return toReturn;
 };
 
+MaterialPtr MaterialField::getMaterialOnCell( const std::string cellName ) const {
+    const auto cellNames = _mesh->getCellNameMap();
+    ASTERINTEGER cellId = cellNames->getIndexFromString( cellName );
+    _champ_mat->build();
+    auto size = _champ_mat->size();
+    ASTERINTEGER pos = size-1;
+    bool found = false;
+    for( ; pos >= 0; --pos ) {
+        const auto zDesc = _champ_mat->getZoneDescription( pos );
+        auto locType = zDesc.getLocalizationType();
+        if( locType == ConstantFieldOnZone::LocalizationType::AllMesh ) {
+            found = true;
+            break;
+        } else if( locType == ConstantFieldOnZone::LocalizationType::ListOfCells ) {
+            auto cellsList = zDesc.getListOfCells();
+            for( const auto& id : cellsList ) {
+                if( id == cellId ) {
+                    found = true;
+                    break;
+                }
+            }
+            if( found ) break;
+        } else {
+            throw std::runtime_error( "Localization type not allowed in MaterialField" );
+        }
+    }
+    if( !found )
+        throw std::runtime_error( "Cell "+cellName+" not found in Material" );
+
+    const auto valAndComp = _champ_mat->getValues( pos );
+    const auto& val = valAndComp.getValues();
+    const auto materName = val[0];
+    MaterialPtr toReturn;
+    found = false;
+    auto tmp = materName.toString();
+    for( const auto& pairMatEnt : _materialsOnMeshEntities ) {
+        const auto& curList = pairMatEnt.first;
+        for( const auto& mater : curList ) {
+            if( mater->getName() == tmp ) {
+                toReturn = mater;
+                found = true;
+                break;
+            }
+        }
+        if( found ) break;
+    }
+    return toReturn;
+};
+
 void MaterialField::addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav ) {
     _behaviourOnMeshEntities.push_back(
         listOfBehavioursOnMeshValue( curBehav, MeshEntityPtr( new AllMeshEntities() ) ) );

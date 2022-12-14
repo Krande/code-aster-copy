@@ -55,6 +55,8 @@ class PhysicalQuantityManager : public Singleton< PhysicalQuantityManager > {
     const JeveuxCollectionObjectChar8 &
     getComponentNames( const ASTERINTEGER &quantityNumber ) const;
 
+    ASTERINTEGER getNumberOfComponents( const ASTERINTEGER &quantityNumber ) const;
+
     ASTERINTEGER getNumberOfEncodedInteger( const ASTERINTEGER &quantityNumber ) const;
 
     std::string getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const;

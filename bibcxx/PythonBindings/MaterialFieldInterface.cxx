@@ -116,6 +116,13 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
                 list(PartOfMaterial): vector of material properties with mesh entities
             )" )
 
+        .def( "getMaterialOnCell", &MaterialField::getMaterialOnCell, R"(
+            Get the material properties on a giver cell on the material field
+
+            Returns:
+                Material: material properties
+            )" )
+
         .def( "setModel", &MaterialField::setModel, R"(
             Set model of the material field
 

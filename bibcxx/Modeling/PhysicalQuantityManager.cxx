@@ -36,6 +36,11 @@ PhysicalQuantityManager::getComponentNames( const ASTERINTEGER &quantityNumber )
 };
 
 ASTERINTEGER
+PhysicalQuantityManager::getNumberOfComponents( const ASTERINTEGER &quantityNumber ) const {
+    return _nameOfCmp->getObjectSize( quantityNumber );
+};
+
+ASTERINTEGER
 PhysicalQuantityManager::getNumberOfEncodedInteger( const ASTERINTEGER &quantityNumber ) const {
     ASTERINTEGER toReturn = 0;
     toReturn = CALL_NBEC( &quantityNumber );

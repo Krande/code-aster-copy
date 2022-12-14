@@ -183,6 +183,9 @@ class MaterialField : public DataStructure {
     /** @brief Return a vector of PartOfMaterialField */
     std::vector< PartOfMaterialFieldPtr > getVectorOfPartOfMaterialField() const;
 
+    /** @brief Return the MaterialPtr used on a cell */
+    MaterialPtr getMaterialOnCell( const std::string cellName ) const;
+
     /** @brief Get mesh */
     BaseMeshPtr getMesh() {
         if ( _mesh->isEmpty() )
